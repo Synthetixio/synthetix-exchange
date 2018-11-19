@@ -1,0 +1,2 @@
+# synthetix
+https://synthetix.exchange
