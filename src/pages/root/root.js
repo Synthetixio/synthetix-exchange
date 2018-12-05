@@ -5,7 +5,7 @@ import About from '../about';
 import HowItWorks from '../how-it-works';
 import Markets from '../markets';
 import Nav from '../../components/nav';
-import Exchange from '../exchange';
+import ExchangeRoot from '../exchange-root';
 import styles from './root.module.scss';
 
 class Root extends Component {
@@ -18,7 +18,7 @@ class Root extends Component {
           <Route exact path="/about" component={About} />
           <Route exact path="/how-it-works" component={HowItWorks} />
           <Route exact path="/markets" component={Markets} />
-          <Route path="/exchange" component={Exchange} />
+          <Route path="/exchange" component={ExchangeRoot} />
         </div>
       </Router>
     );
