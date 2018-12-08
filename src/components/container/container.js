@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './container.module.scss';
 
-const Container = ({ children }) => {
+const Container = ({ children, small }) => {
   return <div className={styles.container}>{children}</div>;
 };
 
