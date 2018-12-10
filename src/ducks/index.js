@@ -8,3 +8,7 @@ export default combineReducers({
 export const getCurrentScreen = state => {
   return state.ui.currentScreen;
 };
+
+export const walletSelectorPopupIsVisible = state => {
+  return state.ui.walletSelectorPopupIsVisible;
+};

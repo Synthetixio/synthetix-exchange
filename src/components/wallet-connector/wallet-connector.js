@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { walletSelectorPopupIsVisible } from '../../ducks/';
+import { toggleWalletSelectorPopup } from '../../ducks/ui';
+
 import styles from './wallet-connector.module.scss';
 
 class WalletConnector extends Component {
@@ -8,7 +14,11 @@ class WalletConnector extends Component {
   }
 
   connectWallet() {
-    console.log('CONNECT WALLET');
+    const {
+      toggleWalletSelectorPopup,
+      walletSelectorPopupIsVisible,
+    } = this.props;
+    toggleWalletSelectorPopup(!walletSelectorPopupIsVisible);
   }
 
   render() {
@@ -26,4 +36,18 @@ class WalletConnector extends Component {
   }
 }
 
-export default WalletConnector;
+const mapStateToProps = state => {
+  return { walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state) };
+};
+
+const mapDispatchToProps = { toggleWalletSelectorPopup };
+
+WalletConnector.propTypes = {
+  walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
+  toggleWalletSelectorPopup: PropTypes.func.isRequired,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WalletConnector);

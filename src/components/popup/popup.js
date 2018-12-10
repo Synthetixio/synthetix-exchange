@@ -1,13 +1,15 @@
 import React from 'react';
 import styles from './popup.module.scss';
 
-const Popup = ({ children, isVisible }) => {
+const Popup = ({ children, isVisible, closePopup }) => {
   return (
     <div
       className={`${styles.popup} ${isVisible ? styles.popupIsVisible : ''}`}
     >
       <div className={styles.popupInner}>
-        <button className={styles.closeButton}>close</button>
+        <button onClick={closePopup} className={styles.closeButton}>
+          close
+        </button>
       </div>
       {children}
     </div>

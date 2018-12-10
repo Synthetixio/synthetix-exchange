@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
-import Popup from '../popup';
-import styles from './wallet-selector-popup.module.scss';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import Popup from '../popup';
+
+import { toggleWalletSelectorPopup } from '../../ducks/ui';
+
+import styles from './wallet-selector-popup.module.scss';
 
 const walletTypes = ['MetaMask', 'Trezor', 'Ledger'];
 
 class WalletSelectorPopup extends Component {
+  constructor() {
+    super();
+    this.closePopup = this.closePopup.bind(this);
+  }
+
+  closePopup() {
+    const { toggleWalletSelectorPopup } = this.props;
+    toggleWalletSelectorPopup(false);
+  }
+
   render() {
     const { isVisible } = this.props;
     return (
-      <Popup isVisible={isVisible}>
+      <Popup isVisible={isVisible} closePopup={this.closePopup}>
         <div>
           <h1>Connect a Wallet</h1>
           <div className={styles.buttonsWrapper}>
@@ -27,8 +42,15 @@ class WalletSelectorPopup extends Component {
   }
 }
 
-WalletSelectorPopup.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
+const mapDispatchToProps = {
+  toggleWalletSelectorPopup,
 };
 
-export default WalletSelectorPopup;
+WalletSelectorPopup.propTypes = {
+  toggleWalletSelectorPopup: PropTypes.func.isRequired,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(WalletSelectorPopup);
