@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 
 import Popup from '../popup';
 
-import { toggleWalletSelectorPopup } from '../../ducks/ui';
+import { toggleWalletSelectorPopup, changeScreen } from '../../ducks/ui';
+
+import { connectWallet } from '../../ducks/wallet';
 
 import styles from './wallet-selector-popup.module.scss';
 
@@ -14,11 +16,20 @@ class WalletSelectorPopup extends Component {
   constructor() {
     super();
     this.closePopup = this.closePopup.bind(this);
+    this.goToWalletConnector = this.goToWalletConnector.bind(this);
   }
 
   closePopup() {
     const { toggleWalletSelectorPopup } = this.props;
     toggleWalletSelectorPopup(false);
+  }
+
+  goToWalletConnector(walletType) {
+    const { changeScreen, connectWallet } = this.props;
+    return () => {
+      connectWallet(walletType);
+      changeScreen('walletConnector');
+    };
   }
 
   render() {
@@ -30,7 +41,11 @@ class WalletSelectorPopup extends Component {
           <div className={styles.buttonsWrapper}>
             {walletTypes.map(wallet => {
               return (
-                <button key={wallet} className={styles.button}>
+                <button
+                  onClick={this.goToWalletConnector(wallet)}
+                  key={wallet}
+                  className={styles.button}
+                >
                   {wallet}
                 </button>
               );
@@ -44,10 +59,14 @@ class WalletSelectorPopup extends Component {
 
 const mapDispatchToProps = {
   toggleWalletSelectorPopup,
+  changeScreen,
+  connectWallet,
 };
 
 WalletSelectorPopup.propTypes = {
   toggleWalletSelectorPopup: PropTypes.func.isRequired,
+  changeScreen: PropTypes.func.isRequired,
+  connectWallet: PropTypes.func.isRequired,
 };
 
 export default connect(

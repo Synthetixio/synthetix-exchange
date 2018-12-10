@@ -1,12 +1,12 @@
 import React from 'react';
-import WalletWidget from '../wallet-widget';
+import WalletAddressSwitcher from '../wallet-address-switcher';
 import styles from './header.module.scss';
 
 const Header = () => {
   return (
     <div className={styles.header}>
       <div>S | Exchange</div>
-      <WalletWidget />
+      <WalletAddressSwitcher />
     </div>
   );
 };

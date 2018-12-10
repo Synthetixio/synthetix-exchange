@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Exchange from '../exchange';
-import WalletConnector from '../wallet-connector';
+import WalletConnector from '../connectToWallet';
 
 import { getCurrentScreen } from '../../ducks/';
 

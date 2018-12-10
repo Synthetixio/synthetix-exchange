@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from './wallet-widget.module.scss';
+import styles from './wallet-address-switcher.module.scss';
 
 class WalletWidget extends Component {
   render() {
