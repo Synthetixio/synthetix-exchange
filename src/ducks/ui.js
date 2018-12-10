@@ -1,7 +1,7 @@
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 
 const defaultState = {
-  currentScreen: 'walletConnector',
+  currentScreen: 'exchange',
 };
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {

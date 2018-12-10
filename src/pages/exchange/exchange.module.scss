@@ -1,0 +1,23 @@
+.exchange {
+  padding: 48px;
+  position: relative;
+}
+
+.exchangeLayout {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.exchangeLayoutColumn {
+  width: 100%;
+}
+
+.exchangeLayoutColumnSmall {
+  width: 25%;
+  min-width: 300px;
+  margin-right: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

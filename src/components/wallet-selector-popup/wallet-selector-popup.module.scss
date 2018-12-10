@@ -1,0 +1,16 @@
+.buttonsWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+}
+
+.button {
+  width: 500px;
+  height: 145px;
+  margin-top: 20px;
+  border: 1px solid #2c2945;
+  border-radius: 4px;
+  background-color: #0a0817;
+  color: white;
+  cursor: pointer;
+}

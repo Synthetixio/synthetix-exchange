@@ -1,44 +1,36 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import Header from '../../components/header';
-import Container from '../../components/container';
-import BalanceChecker from '../../components/balance-checker';
-import WalletConnector from '../../components/wallet-connector';
-import Chart from '../../components/chart';
-import RateList from '../../components/rate-list';
+import Exchange from '../exchange';
+import WalletConnector from '../wallet-connector';
+
+import { getCurrentScreen } from '../../ducks/';
 
 import styles from './root.module.scss';
 
 class Root extends Component {
   render() {
+    const { currentScreen } = this.props;
     return (
       <div className={styles.root}>
-        <div className={styles.rootInner}>
-          <Header />
-          <div className={styles.rootLayout}>
-            <div
-              className={`${styles.rootLayoutColumn} ${
-                styles.rootLayoutColumnSmall
-              }`}
-            >
-              <Container>
-                <BalanceChecker />
-              </Container>
-              <Container>
-                <WalletConnector />
-              </Container>
-            </div>
-            <div className={styles.rootLayoutColumn}>
-              <Container>
-                <Chart />
-                <RateList />
-              </Container>
-            </div>
-          </div>
-        </div>
+        {currentScreen === 'exchange' ? <Exchange /> : <WalletConnector />}
       </div>
     );
   }
 }
 
-export default Root;
+const mapStateToProps = state => {
+  return {
+    currentScreen: getCurrentScreen(state),
+  };
+};
+
+Root.propTypes = {
+  currentScreen: PropTypes.string.isRequired,
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(Root);

@@ -6,26 +6,3 @@
   width: 100%;
   margin: 0 auto;
 }
-
-.rootInner {
-  padding: 48px;
-}
-
-.rootLayout {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-}
-
-.rootLayoutColumn {
-  width: 100%;
-}
-
-.rootLayoutColumnSmall {
-  width: 25%;
-  min-width: 300px;
-  margin-right: 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}

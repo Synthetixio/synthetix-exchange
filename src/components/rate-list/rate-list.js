@@ -8,16 +8,18 @@ class RateList extends Component {
       <div className={styles.rateList}>
         <table>
           <thead>
-            <th>Current Rate</th>
-            <th>Rate</th>
-            <th>Low</th>
-            <th>High</th>
-            <th>Volume(sUSD)</th>
+            <tr>
+              <th>Current Rate</th>
+              <th>Rate</th>
+              <th>Low</th>
+              <th>High</th>
+              <th>Volume(sUSD)</th>
+            </tr>
           </thead>
           <tbody>
-            {currencies.map(currency => {
+            {currencies.map((currency, i) => {
               return (
-                <tr>
+                <tr key={i}>
                   <td>{currency}</td>
                   <td>--</td>
                   <td>--</td>
