@@ -103,6 +103,7 @@ class WalletSelectorPopup extends Component {
                 if (window.ethereum) {
                   await window.ethereum.enable();
                 }
+
                 SynthetixJsTools.setContractSettings({
                   signer,
                   networkId,
