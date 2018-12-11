@@ -1,10 +1,35 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { getCurrentWalletInfo } from '../../ducks';
+
 import styles from './wallet-address-switcher.module.scss';
 
-class WalletWidget extends Component {
+class WalletAddressSwitcher extends Component {
   render() {
-    return <div>Wallet not connected</div>;
+    const { currentWalletInfo } = this.props;
+    const walletSelected =
+      currentWalletInfo && currentWalletInfo.selectedWallet
+        ? currentWalletInfo.selectedWallet
+        : 'no wallet connected';
+    return <div>{walletSelected}</div>;
   }
 }
 
-export default WalletWidget;
+const mapStateToProps = state => {
+  return {
+    currentWalletInfo: getCurrentWalletInfo(state),
+  };
+};
+
+const mapDispatchToProps = {};
+
+WalletAddressSwitcher.propTypes = {
+  currentWalletInfo: PropTypes.object.isRequired,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WalletAddressSwitcher);

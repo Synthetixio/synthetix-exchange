@@ -18,3 +18,7 @@ export const walletSelectorPopupIsVisible = state => {
 export const getCurrentWalletType = state => {
   return state.wallet.walletType;
 };
+
+export const getCurrentWalletInfo = state => {
+  return state.wallet;
+};

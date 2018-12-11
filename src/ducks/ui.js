@@ -8,9 +8,16 @@ const defaultState = {
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case CHANGE_SCREEN:
-      return { ...state, currentScreen: action.payload };
+      return {
+        ...state,
+        currentScreen: action.payload,
+        walletSelectorPopupIsVisible: false,
+      };
     case TOGGLE_WALLET_SELECTOR_POPUP:
-      return { ...state, walletSelectorPopupIsVisible: action.payload };
+      return {
+        ...state,
+        walletSelectorPopupIsVisible: action.payload,
+      };
     default:
       return state;
   }

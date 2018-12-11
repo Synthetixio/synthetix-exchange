@@ -1,0 +1,16 @@
+.balanceTable {
+  width: 100%;
+  tr {
+    cursor: pointer;
+    td,
+    th {
+      padding: 15px 0;
+    }
+  }
+}
+
+.pagerRow {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
