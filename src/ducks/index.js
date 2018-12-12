@@ -9,6 +9,7 @@ export default combineReducers({
   synths,
 });
 
+// UI REDUCERS
 export const getCurrentScreen = state => {
   return state.ui.currentScreen;
 };
@@ -17,10 +18,16 @@ export const walletSelectorPopupIsVisible = state => {
   return state.ui.walletSelectorPopupIsVisible;
 };
 
+// WALLET REDUCERS
 export const getCurrentWalletInfo = state => {
   return state.wallet;
 };
 
+// SYNTHS REDUCERS
 export const getAvailableSynths = state => {
   return state.synths.availableSynths;
+};
+
+export const getSynthToBuy = state => {
+  return state.synths.synthToBuy;
 };

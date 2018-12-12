@@ -3,20 +3,29 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Exchange from '../exchange';
-import WalletConnector from '../connectToWallet';
+import ConnectToWallet from '../connect-to-wallet';
+import SynthTransaction from '../synth-transaction';
 
 import { getCurrentScreen } from '../../ducks/';
 
 import styles from './root.module.scss';
 
 class Root extends Component {
-  render() {
+  renderScreen() {
     const { currentScreen } = this.props;
-    return (
-      <div className={styles.root}>
-        {currentScreen === 'exchange' ? <Exchange /> : <WalletConnector />}
-      </div>
-    );
+    switch (currentScreen) {
+      case 'exchange':
+        return <Exchange />;
+      case 'connectToWallet':
+        return <ConnectToWallet />;
+      case 'synthTransaction':
+        return <SynthTransaction />;
+      default:
+        return <Exchange />;
+    }
+  }
+  render() {
+    return <div className={styles.root}>{this.renderScreen()}</div>;
   }
 }
 

@@ -22,8 +22,11 @@ import synthetixJsTools from '../../synthetixJsTool';
 import styles from './exchange.module.scss';
 
 class Exchange extends Component {
-  componentDidMount() {
+  componentWillMount() {
     synthetixJsTools.setContractSettings();
+  }
+
+  componentDidMount() {
     this.refreshData();
   }
 
