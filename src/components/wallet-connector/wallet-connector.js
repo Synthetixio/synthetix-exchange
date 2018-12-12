@@ -7,6 +7,8 @@ import { toggleWalletSelectorPopup } from '../../ducks/ui';
 
 import styles from './wallet-connector.module.scss';
 
+const WALLETS = ['metamask', 'trezor', 'ledger'];
+
 class WalletConnector extends Component {
   constructor() {
     super();
@@ -24,13 +26,24 @@ class WalletConnector extends Component {
   render() {
     return (
       <div className={styles.walletConnector}>
-        <h2>Connect a wallet to trade</h2>
-        <div className={styles.walletLogos}>
-          <div>MetaMask</div>
-          <div>Trezor</div>
-          <div>Ledger</div>
+        <div className={styles.walletConnectorInner}>
+          <h2>Connect a Wallet to Trade</h2>
+          <div className={styles.walletLogos}>
+            {WALLETS.map(wallet => (
+              <img
+                key={wallet}
+                alt="wallet icon"
+                src={`/images/wallets/${wallet}.svg`}
+              />
+            ))}
+          </div>
         </div>
-        <button onClick={this.connectWallet}>Connect Wallet</button>
+        <button
+          className={styles.walletConnectorButton}
+          onClick={this.connectWallet}
+        >
+          Connect Wallet
+        </button>
       </div>
     );
   }
