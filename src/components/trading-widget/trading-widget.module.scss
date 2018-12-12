@@ -1,0 +1,80 @@
+@import '../../styles/variables.scss';
+
+.widgetHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h2 {
+    margin: 0;
+  }
+}
+
+.widgetHeaderButton {
+  cursor: pointer;
+  background-color: $color-background;
+  font-family: 'RobotoMono-Regular';
+  letter-spacing: 1px;
+  font-size: 10px;
+  color: #ffffff;
+  border: 1px solid #28253f;
+  border-radius: 4px;
+  padding: 12px 15px;
+  text-transform: uppercase;
+  &:hover {
+    background-color: #fff;
+    color: $color-background;
+    border: 1px solid #ffffff;
+  }
+}
+
+.widgetInputs {
+  margin: 15px 0;
+}
+
+.widgetInputWrapper + .widgetInputWrapper {
+  margin-top: 10px;
+}
+
+.widgetInputWrapper {
+  position: relative;
+}
+
+.widgetInputSynth {
+  position: absolute;
+  width: 70px;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  display: flex;
+  font-family: 'Aeonik-Bold';
+  font-size: 16px;
+  img {
+    margin-right: 12px;
+  }
+}
+
+.widgetInputElement {
+  width: 100%;
+  background-color: $color-background;
+  border: 1px solid #28253f;
+  height: 50px;
+  color: #ffffff;
+  padding: 17px 90px 15px 17px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.widgetTradingButton {
+  height: 50px;
+  border-radius: 4px;
+  background-color: $color-light-blue;
+  color: #ffffff;
+  width: 100%;
+  border: 0;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}

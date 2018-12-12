@@ -9,11 +9,14 @@ import WalletConnector from '../../components/wallet-connector';
 import Chart from '../../components/chart';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
+import TradingWidget from '../../components/trading-widget';
 
 import {
   walletSelectorPopupIsVisible,
   getCurrentWalletInfo,
   getAvailableSynths,
+  getSynthToExchange,
+  getSynthToBuy,
 } from '../../ducks/';
 import { setAvailableSynths } from '../../ducks/synths';
 
@@ -38,6 +41,18 @@ class Exchange extends Component {
     }
   }
 
+  renderWalletConnectorOrTradingWidget() {
+    const { currentWalletInfo, synthToBuy, synthToExchange } = this.props;
+    return synthToBuy &&
+      synthToExchange &&
+      currentWalletInfo &&
+      currentWalletInfo.selectedWallet ? (
+      <TradingWidget />
+    ) : (
+      <WalletConnector />
+    );
+  }
+
   render() {
     const { walletSelectorPopupIsVisible } = this.props;
     return (
@@ -54,7 +69,7 @@ class Exchange extends Component {
                 <BalanceChecker />
               </Container>
               <Container>
-                <WalletConnector />
+                {this.renderWalletConnectorOrTradingWidget()}
               </Container>
             </div>
             <div className={styles.exchangeLayoutColumn}>
@@ -76,6 +91,8 @@ const mapStateToProps = state => {
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
+    synthToBuy: getSynthToBuy(state),
+    synthToExchange: getSynthToExchange(state),
   };
 };
 
@@ -88,6 +105,8 @@ Exchange.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   setAvailableSynths: PropTypes.func.isRequired,
   availableSynths: PropTypes.array.isRequired,
+  synthToBuy: PropTypes.string,
+  synthToExchange: PropTypes.string,
 };
 
 export default connect(

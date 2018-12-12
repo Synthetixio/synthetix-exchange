@@ -7,36 +7,60 @@ import { formatBigNumber } from '../../utils/converterUtils';
 
 import {
   getCurrentWalletInfo,
-  getAvailableSynths,
   getSynthToBuy,
+  getSynthToExchange,
 } from '../../ducks/';
-import { changeScreen } from '../../ducks/ui';
 
-import styles from './synth-transaction.module.scss';
+import styles from './trading-widget.module.scss';
 
 class SynthTransaction extends Component {
+  renderInputs() {
+    const { synthToBuy, synthToExchange } = this.props;
+    const inputs = [synthToExchange, synthToBuy].map(synth => {
+      return (
+        <div className={styles.widgetInputWrapper}>
+          <input
+            className={styles.widgetInputElement}
+            type="text"
+            value={'0.00'}
+          />
+          <div className={styles.widgetInputSynth}>
+            <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
+            <span>{synth}</span>
+          </div>
+        </div>
+      );
+    });
+    return <div className={styles.widgetInputs}>{inputs}</div>;
+  }
   render() {
-    const { synthToBuy } = this.props;
-    return <div>this is the syn tx screen with {synthToBuy}</div>;
+    return (
+      <div>
+        <div className={styles.widgetHeader}>
+          <h2>Trade</h2>
+          <button className={styles.widgetHeaderButton}>Trade Max</button>
+        </div>
+        {this.renderInputs()}
+        <button className={styles.widgetTradingButton}>Confirm Trade</button>
+      </div>
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
-    availableSynths: getAvailableSynths(state),
     synthToBuy: getSynthToBuy(state),
+    synthToExchange: getSynthToExchange(state),
   };
 };
 
-const mapDispatchToProps = {
-  changeScreen,
-};
+const mapDispatchToProps = {};
 
 SynthTransaction.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
-  availableSynths: PropTypes.array.isRequired,
   synthToBuy: PropTypes.string.isRequired,
+  synthToExchange: PropTypes.string.isRequired,
 };
 
 export default connect(
