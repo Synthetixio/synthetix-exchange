@@ -31,8 +31,12 @@
     }
   }
   td {
-    padding: 20px 0;
+    padding: 20px;
   }
+}
+
+.tableRowActive {
+  background-color: lighten($color-dark-grey, 10%);
 }
 
 .tableBodySynth {

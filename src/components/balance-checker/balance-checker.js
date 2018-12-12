@@ -4,7 +4,12 @@ import { connect } from 'react-redux';
 
 import numeral from 'numeral';
 
-import { getCurrentWalletInfo, getAvailableSynths } from '../../ducks/';
+import {
+  getCurrentWalletInfo,
+  getAvailableSynths,
+  getSynthToExchange,
+} from '../../ducks/';
+import { setSynthToExchange } from '../../ducks/synths';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
@@ -16,6 +21,14 @@ class BalanceChecker extends Component {
     super();
     this.state = {
       balances: null,
+    };
+    this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
+  }
+
+  selectSynthToExchange(synth) {
+    return () => {
+      const { setSynthToExchange } = this.props;
+      setSynthToExchange(synth);
     };
   }
 
@@ -53,12 +66,20 @@ class BalanceChecker extends Component {
   }
 
   renderBalance() {
-    const { availableSynths } = this.props;
+    const { availableSynths, synthToExchange } = this.props;
     const { balances } = this.state;
     if (!availableSynths) return;
     return availableSynths.map((synth, i) => {
       return (
-        <tr className={styles.tableBodyRow} key={i}>
+        <tr
+          onClick={this.selectSynthToExchange(synth)}
+          className={`${styles.tableBodyRow} ${
+            synthToExchange && synthToExchange === synth
+              ? styles.tableBodyRowActive
+              : ''
+          }`}
+          key={i}
+        >
           <td className={styles.tableBodySynth}>
             <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
             <span>{synth}</span>
@@ -97,14 +118,19 @@ const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
+    synthToExchange: getSynthToExchange(state),
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  setSynthToExchange,
+};
 
 BalanceChecker.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   availableSynths: PropTypes.array.isRequired,
+  synthToExchange: PropTypes.string,
+  setSynthToExchange: PropTypes.func.isRequired,
 };
 
 export default connect(

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
-import SynthTransaction from '../synth-transaction';
 
 import { getCurrentScreen } from '../../ducks/';
 
@@ -18,8 +17,6 @@ class Root extends Component {
         return <Exchange />;
       case 'connectToWallet':
         return <ConnectToWallet />;
-      case 'synthTransaction':
-        return <SynthTransaction />;
       default:
         return <Exchange />;
     }

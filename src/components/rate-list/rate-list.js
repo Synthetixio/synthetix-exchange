@@ -8,9 +8,10 @@ import { getAvailableSynths } from '../../ducks/';
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
 
-import styles from './rate-list.module.scss';
-import { changeScreen } from '../../ducks/ui';
 import { setSynthToBuy } from '../../ducks/synths';
+import { getSynthToExchange, getSynthToBuy } from '../../ducks';
+
+import styles from './rate-list.module.scss';
 
 class RateList extends Component {
   constructor() {
@@ -18,13 +19,13 @@ class RateList extends Component {
     this.state = {
       rates: null,
     };
+    this.selectSynthToBuy = this.selectSynthToBuy.bind(this);
   }
-  buyCurrency(currency) {
-    const { setSynthToBuy, changeScreen } = this.props;
+
+  selectSynthToBuy(currency) {
     return () => {
-      console.log(currency);
+      const { setSynthToBuy } = this.props;
       setSynthToBuy(currency);
-      changeScreen('synthTransaction');
     };
   }
 
@@ -49,11 +50,21 @@ class RateList extends Component {
   }
 
   renderTableBody() {
-    const { availableSynths } = this.props;
+    const { availableSynths, synthToExchange, synthToBuy } = this.props;
     const { rates } = this.state;
-    return availableSynths.map((synth, i) => {
+    let filteredSynths = synthToExchange
+      ? availableSynths.filter(synth => synth !== synthToExchange)
+      : availableSynths;
+
+    return filteredSynths.map((synth, i) => {
       return (
-        <tr key={i} onClick={this.buyCurrency(synth)}>
+        <tr
+          key={i}
+          className={
+            synthToBuy && synthToBuy === synth ? styles.tableRowActive : ''
+          }
+          onClick={this.selectSynthToBuy(synth)}
+        >
           <td className={styles.tableBodySynth}>
             <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
             <span>{synth}</span>
@@ -105,17 +116,19 @@ class RateList extends Component {
 const mapStateToProps = state => {
   return {
     availableSynths: getAvailableSynths(state),
+    synthToExchange: getSynthToExchange(state),
+    synthToBuy: getSynthToBuy(state),
   };
 };
 
 const mapDispatchToProps = {
-  changeScreen,
   setSynthToBuy,
 };
 
 RateList.propTypes = {
   availableSynths: PropTypes.array.isRequired,
-  changeScreen: PropTypes.func.isRequired,
+  synthToExchange: PropTypes.string,
+  synthToBuy: PropTypes.string,
   setSynthToBuy: PropTypes.func.isRequired,
 };
 

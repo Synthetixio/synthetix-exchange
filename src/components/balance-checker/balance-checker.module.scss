@@ -23,15 +23,19 @@
   }
 }
 
+.tableBodyRowActive {
+  background-color: lighten($color-dark-grey, 10%);
+}
+
 .tableBodySynth {
   display: flex;
-  padding: 15px 0 15px 15px;
+  padding: 15px;
   img {
     margin-right: 12px;
   }
 }
 
 .tableBodyBalance {
-  padding: 15px 15px 15px 0;
+  padding: 15px;
   text-align: right;
 }

@@ -29,5 +29,9 @@ export const getAvailableSynths = state => {
 };
 
 export const getSynthToBuy = state => {
-  return state.synths.synthToBuy;
+  return state.synths.toSynth;
+};
+
+export const getSynthToExchange = state => {
+  return state.synths.fromSynth;
 };
