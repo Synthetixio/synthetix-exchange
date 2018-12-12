@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="173" height="39">
+    <g fill="none" fill-rule="evenodd">
+        <g fill="#FFF" fill-rule="nonzero">
+            <path d="M16.681 16.751a2.336 2.336 0 0 1 0 4.672h-6.064c-5.872 0-10.633-4.76-10.633-10.633C-.016 4.917 4.744.156 10.617.156h15.638a2.336 2.336 0 1 1 0 4.672H10.617a5.962 5.962 0 0 0 0 11.923h6.064z"/>
+            <path d="M11.894 21.423a2.336 2.336 0 1 1 0-4.672h6.064c5.872 0 10.633 4.761 10.633 10.634S23.831 38.02 17.958 38.02H2.32a2.336 2.336 0 1 1 0-4.672h15.638a5.962 5.962 0 0 0 0-11.924h-6.064z"/>
+            <path fill-opacity=".5" d="M4.166 37.076l-3.798-2.72L24.254 1.02l3.798 2.72z"/>
+        </g>
+        <text fill="#FFF" font-family="Helvetica" font-size="14" letter-spacing="4" transform="translate(-48 -44)">
+            <tspan x="114.686" y="67.927">EXCHANGE</tspan>
+        </text>
+        <path stroke="#575379" d="M46.572.086v37.857"/>
+    </g>
+</svg>
