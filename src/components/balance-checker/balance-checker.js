@@ -58,9 +58,12 @@ class BalanceChecker extends Component {
     if (!availableSynths) return;
     return availableSynths.map((synth, i) => {
       return (
-        <tr key={i}>
-          <td>{synth}</td>
-          <td>
+        <tr className={styles.tableBodyRow} key={i}>
+          <td className={styles.tableBodySynth}>
+            <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
+            <span>{synth}</span>
+          </td>
+          <td className={styles.tableBodyBalance}>
             {balances ? numeral(Number(balances[i])).format('0,0.00') : null}
           </td>
         </tr>
@@ -71,10 +74,13 @@ class BalanceChecker extends Component {
   render() {
     return (
       <div className={styles.balanceChecker}>
-        <table>
+        <h2 className={styles.balanceCheckerHeading}>Balances</h2>
+        <table cellPadding="0" cellSpacing="0" className={styles.table}>
           <thead>
             <tr>
-              <th>Currencies</th>
+              <th>
+                <h3 className={styles.tableHeading}>Currencies</h3>
+              </th>
             </tr>
           </thead>
           <tbody>{this.renderBalance()}</tbody>

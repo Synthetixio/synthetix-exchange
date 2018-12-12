@@ -27,3 +27,17 @@ body {
   font-family: 'RobotoMono-Regular';
   src: url('/fonts/RobotoMono-Regular.ttf');
 }
+
+h2 {
+  font-family: 'Aeonik-Bold';
+  color: #ffffff;
+  font-size: 20px;
+}
+
+h3 {
+  font-family: 'RobotoMono-Regular';
+  color: #4a4762;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}

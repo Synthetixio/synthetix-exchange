@@ -1,0 +1,36 @@
+@import '../../styles/variables.scss';
+
+.balanceCheckerHeading {
+  text-align: left;
+  margin-top: 0;
+}
+
+.table {
+	width: 100%;
+}
+
+.tableHeading {
+  margin: 0;
+	text-align: left;
+}
+
+.tableBodyRow {
+  font-family: 'Aeonik-Bold';
+  font-size: 16px;
+	cursor: pointer;
+	&:hover {
+		background-color: $color-dark-grey;
+	}
+}
+
+.tableBodySynth {
+  display: flex;
+	padding: 15px 0 15px 5px;
+  img {
+    margin-right: 12px;
+  }
+}
+
+.tableBodyBalance {
+	padding: 15px 5px 15px 0;
+}
