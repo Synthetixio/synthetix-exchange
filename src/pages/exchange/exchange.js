@@ -59,7 +59,7 @@ class Exchange extends Component {
             </div>
             <div className={styles.exchangeLayoutColumn}>
               <Container>
-                <Chart />
+                {/* <Chart /> */}
                 <RateList />
               </Container>
             </div>

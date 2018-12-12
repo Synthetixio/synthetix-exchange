@@ -4,3 +4,7 @@
   padding: 35px 25px;
   border-radius: 4px;
 }
+
+.container + .container {
+  margin-top: 25px;
+}

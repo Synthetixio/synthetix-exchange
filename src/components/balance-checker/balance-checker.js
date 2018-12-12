@@ -72,9 +72,12 @@ class BalanceChecker extends Component {
   }
 
   render() {
+    const { currentWalletInfo } = this.props;
     return (
       <div className={styles.balanceChecker}>
-        <h2 className={styles.balanceCheckerHeading}>Balances</h2>
+        {currentWalletInfo && currentWalletInfo.selectedWallet ? (
+          <h2 className={styles.balanceCheckerHeading}>Balances</h2>
+        ) : null}
         <table cellPadding="0" cellSpacing="0" className={styles.table}>
           <thead>
             <tr>

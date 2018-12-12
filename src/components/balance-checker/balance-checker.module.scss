@@ -6,31 +6,32 @@
 }
 
 .table {
-	width: 100%;
+  width: 100%;
 }
 
 .tableHeading {
-  margin: 0;
-	text-align: left;
+  margin: 0 0 10px 0;
+  text-align: left;
 }
 
 .tableBodyRow {
   font-family: 'Aeonik-Bold';
   font-size: 16px;
-	cursor: pointer;
-	&:hover {
-		background-color: $color-dark-grey;
-	}
+  cursor: pointer;
+  &:hover {
+    background-color: $color-dark-grey;
+  }
 }
 
 .tableBodySynth {
   display: flex;
-	padding: 15px 0 15px 5px;
+  padding: 15px 0 15px 15px;
   img {
     margin-right: 12px;
   }
 }
 
 .tableBodyBalance {
-	padding: 15px 5px 15px 0;
+  padding: 15px 15px 15px 0;
+  text-align: right;
 }

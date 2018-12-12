@@ -1,6 +1,46 @@
+@import '../../styles/variables.scss';
+
 .rateList {
   margin-top: 40px;
   table {
     width: 100%;
+  }
+}
+
+.rateListTable {
+  tbody {
+    font-family: 'RobotoMono-Regular';
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  th {
+    border-bottom: 1px solid #28253f;
+    &:first-child {
+      text-align: left;
+    }
+  }
+  tr {
+    cursor: pointer;
+    &:hover {
+      background-color: $color-dark-grey;
+    }
+  }
+  tr + tr {
+    td {
+      border-top: 1px solid #19172a;
+    }
+  }
+  td {
+    padding: 20px 0;
+  }
+}
+
+.tableBodySynth {
+  font-family: 'Aeonik-Bold';
+  font-size: 16px;
+  letter-spacing: 0;
+  display: flex;
+  img {
+    margin-right: 12px;
   }
 }

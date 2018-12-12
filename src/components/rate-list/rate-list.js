@@ -54,16 +54,19 @@ class RateList extends Component {
     return availableSynths.map((synth, i) => {
       return (
         <tr key={i} onClick={this.buyCurrency(synth)}>
-          <td>{synth}</td>
+          <td className={styles.tableBodySynth}>
+            <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
+            <span>{synth}</span>
+          </td>
           <td>
             $
             {rates && rates[synth]
               ? numeral(rates[synth]).format('0,0.00000')
               : '--'}
           </td>
-          {/* <td>--</td>
           <td>--</td>
-          <td>--</td> */}
+          <td>--</td>
+          <td>--</td>
         </tr>
       );
     });
@@ -72,14 +75,24 @@ class RateList extends Component {
   render() {
     return (
       <div className={styles.rateList}>
-        <table>
+        <table cellSpacing="0" className={styles.rateListTable}>
           <thead>
             <tr>
-              <th>Current Rate</th>
-              <th>Rate</th>
-              {/* <th>Low</th> */}
-              {/* <th>High</th> */}
-              {/* <th>Volume(sUSD)</th> */}
+              <th>
+                <h2>Current Rate</h2>
+              </th>
+              <th>
+                <h3>Rate</h3>
+              </th>
+              <th>
+                <h3>Low</h3>
+              </th>
+              <th>
+                <h3>High</h3>
+              </th>
+              <th>
+                <h3>Volume(sUSD)</h3>
+              </th>
             </tr>
           </thead>
           <tbody>{this.renderTableBody()}</tbody>
