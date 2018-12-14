@@ -9,16 +9,17 @@ import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
 
 import { setSynthToBuy } from '../../ducks/synths';
-import { getSynthToExchange, getSynthToBuy } from '../../ducks';
+import {
+  getSynthToExchange,
+  getSynthToBuy,
+  getExchangeRates,
+} from '../../ducks';
 
 import styles from './rate-list.module.scss';
 
 class RateList extends Component {
   constructor() {
     super();
-    this.state = {
-      rates: null,
-    };
     this.selectSynthToBuy = this.selectSynthToBuy.bind(this);
   }
 
@@ -51,31 +52,31 @@ class RateList extends Component {
   }
 
   renderTableBody() {
-    const { availableSynths, synthToExchange, synthToBuy } = this.props;
-    const { rates } = this.state;
-    let filteredSynths = synthToExchange
-      ? availableSynths.filter(synth => synth !== synthToExchange)
-      : availableSynths;
+    const { exchangeRates, synthToExchange, synthToBuy } = this.props;
+    if (!exchangeRates) return;
+    const rates = exchangeRates[synthToExchange].filter(synth => {
+      return synth.synth !== synthToExchange;
+    });
 
-    return filteredSynths.map((synth, i) => {
+    return rates.map((synth, i) => {
       return (
         <tr
           key={i}
           className={
-            synthToBuy && synthToBuy === synth ? styles.tableRowActive : ''
+            synthToBuy && synthToBuy === synth.synth
+              ? styles.tableRowActive
+              : ''
           }
-          onClick={this.selectSynthToBuy(synth)}
+          onClick={this.selectSynthToBuy(synth.synth)}
         >
           <td className={styles.tableBodySynth}>
-            <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
-            <span>{synth}</span>
+            <img
+              src={`images/synths/${synth.synth}-icon.svg`}
+              alt="synth icon"
+            />
+            <span>{synth.synth}</span>
           </td>
-          <td>
-            $
-            {rates && rates[synth]
-              ? numeral(rates[synth]).format('0,0.00000')
-              : '--'}
-          </td>
+          <td>${numeral(synth.rate).format('0,0.00000')}</td>
           <td>--</td>
           <td>--</td>
           <td>--</td>
@@ -119,6 +120,7 @@ const mapStateToProps = state => {
     availableSynths: getAvailableSynths(state),
     synthToExchange: getSynthToExchange(state),
     synthToBuy: getSynthToBuy(state),
+    exchangeRates: getExchangeRates(state),
   };
 };
 
@@ -131,6 +133,7 @@ RateList.propTypes = {
   synthToExchange: PropTypes.string,
   synthToBuy: PropTypes.string,
   setSynthToBuy: PropTypes.func.isRequired,
+  exchangeRates: PropTypes.object,
 };
 
 export default connect(

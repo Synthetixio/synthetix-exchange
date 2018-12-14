@@ -28,8 +28,8 @@ class BalanceChecker extends Component {
   selectSynthToExchange(synth) {
     return () => {
       const { setSynthToExchange, synthToExchange } = this.props;
-      const selectedSynth = synthToExchange !== synth ? synth : null;
-      setSynthToExchange(selectedSynth);
+      if (synthToExchange === synth) return;
+      setSynthToExchange(synth);
     };
   }
 

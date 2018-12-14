@@ -35,3 +35,7 @@ export const getSynthToBuy = state => {
 export const getSynthToExchange = state => {
   return state.synths.fromSynth;
 };
+
+export const getExchangeRates = state => {
+  return state.synths.exchangeRates;
+};

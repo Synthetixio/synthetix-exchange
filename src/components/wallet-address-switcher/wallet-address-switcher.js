@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { getCurrentWalletInfo } from '../../ducks';
 
-import styles from './wallet-address-switcher.module.scss';
+// import styles from './wallet-address-switcher.module.scss';
 
 class WalletAddressSwitcher extends Component {
   render() {

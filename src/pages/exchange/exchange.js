@@ -6,7 +6,7 @@ import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import WalletConnector from '../../components/wallet-connector';
-import Chart from '../../components/chart';
+// import Chart from '../../components/chart';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
 import TradingWidget from '../../components/trading-widget';
@@ -25,10 +25,6 @@ import synthetixJsTools from '../../synthetixJsTool';
 import styles from './exchange.module.scss';
 
 class Exchange extends Component {
-  componentWillMount() {
-    synthetixJsTools.setContractSettings();
-  }
-
   componentDidMount() {
     this.refreshData();
   }
