@@ -100,7 +100,7 @@ class TradingWidget extends Component {
       console.log('Error during exchange', e);
     }
     if (transactionResult) {
-      const hash = transactionResult.hash;
+      const hash = transactionResult.hash || transactionResult;
       setTransactionStatusToProgress(hash);
       try {
         await synthetixJsTools.util.waitForTransaction(hash);
