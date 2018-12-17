@@ -169,6 +169,14 @@ class ConnectToWallet extends Component {
       availableWallets,
       connected,
     } = this.state;
+
+    console.log(
+      'connectToWallet',
+      walletSelectorIndex,
+      fetchingNextAddresses,
+      availableWallets,
+      connected
+    );
     return (
       <div className={styles.connectToWallet}>
         {connected ? (
