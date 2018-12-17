@@ -16,7 +16,15 @@ import SynthetixJsTools from '../../synthetixJsTool';
 
 import styles from './wallet-selector-popup.module.scss';
 
-const walletTypes = ['Metamask', 'Trezor', 'Ledger'];
+const WALLET_TYPES = ['Metamask', 'Trezor', 'Ledger'];
+const WALLET_DESCRIPTIONS = {
+  Metamask:
+    'MetaMask is a browser extension that allows you to connect directly to decentralised applications.',
+  Trezor:
+    'Connect to Synthetix and use tokens that are stored on a Trezor Hardware Wallet.',
+  Ledger:
+    'Connect to Synthetix and use tokens that are stored on a Ledger Hardware Wallet.',
+};
 
 class WalletSelectorPopup extends Component {
   constructor() {
@@ -27,6 +35,7 @@ class WalletSelectorPopup extends Component {
     };
     this.closePopup = this.closePopup.bind(this);
     this.goToWalletConnector = this.goToWalletConnector.bind(this);
+    this.renderButton = this.renderButton.bind(this);
   }
 
   componentDidMount() {
@@ -164,6 +173,30 @@ class WalletSelectorPopup extends Component {
     };
   }
 
+  renderButton(walletType) {
+    return (
+      <button
+        onClick={this.goToWalletConnector(walletType)}
+        key={walletType}
+        className={styles.button}
+      >
+        <div className={styles.buttonInner}>
+          <img
+            height={51}
+            src={`images/wallets/${walletType.toLowerCase()}-medium.svg`}
+            alt={`${walletType} icon`}
+          />
+          <div className={styles.walletDescription}>
+            <div className={styles.walletDescriptionHeading}>{walletType}</div>
+            <div className={styles.walletDescriptionText}>
+              {WALLET_DESCRIPTIONS[walletType]}
+            </div>
+          </div>
+        </div>
+      </button>
+    );
+  }
+
   render() {
     const { isVisible } = this.props;
     return (
@@ -171,17 +204,7 @@ class WalletSelectorPopup extends Component {
         <div>
           <h1>Connect a Wallet</h1>
           <div className={styles.buttonsWrapper}>
-            {walletTypes.map(wallet => {
-              return (
-                <button
-                  onClick={this.goToWalletConnector(wallet)}
-                  key={wallet}
-                  className={styles.button}
-                >
-                  {wallet}
-                </button>
-              );
-            })}
+            {WALLET_TYPES.map(this.renderButton)}
           </div>
         </div>
       </Popup>

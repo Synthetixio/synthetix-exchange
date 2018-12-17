@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .buttonsWrapper {
   display: flex;
   flex-direction: column;
@@ -8,9 +10,36 @@
   width: 500px;
   height: 145px;
   margin-top: 20px;
+  padding: 0 40px;
   border: 1px solid #2c2945;
   border-radius: 4px;
   background-color: #0a0817;
   color: white;
   cursor: pointer;
+  &:hover {
+    box-shadow: 0 5px 20px 0 rgba(255, 255, 255, 0.16);
+  }
+}
+
+.buttonInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.walletDescription {
+  text-align: left;
+  margin-left: 40px;
+}
+
+.walletDescriptionHeading {
+  font-family: 'Aeonik-Bold';
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.walletDescriptionText {
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  color: $color-font-grey;
 }
