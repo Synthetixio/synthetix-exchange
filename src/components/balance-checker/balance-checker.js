@@ -10,6 +10,7 @@ import {
   getSynthToExchange,
 } from '../../ducks/';
 import { setSynthToExchange } from '../../ducks/synths';
+import { setWalletBalances } from '../../ducks/wallet';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
@@ -19,9 +20,6 @@ import styles from './balance-checker.module.scss';
 class BalanceChecker extends Component {
   constructor() {
     super();
-    this.state = {
-      balances: null,
-    };
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
   }
 
@@ -34,7 +32,11 @@ class BalanceChecker extends Component {
   }
 
   async refreshData() {
-    const { currentWalletInfo, availableSynths } = this.props;
+    const {
+      currentWalletInfo,
+      availableSynths,
+      setWalletBalances,
+    } = this.props;
     if (
       !synthetixJsTools.initialized ||
       !currentWalletInfo ||
@@ -50,6 +52,11 @@ class BalanceChecker extends Component {
     this.setState({
       balances: balances.map(balance => formatBigNumber(balance, 6)),
     });
+    const synthsBalance = {};
+    balances.forEach((balance, i) => {
+      synthsBalance[availableSynths[i]] = formatBigNumber(balance, 6);
+    });
+    setWalletBalances(synthsBalance);
   }
 
   async componentDidMount() {
@@ -67,8 +74,8 @@ class BalanceChecker extends Component {
   }
 
   renderBalance() {
-    const { availableSynths, synthToExchange } = this.props;
-    const { balances } = this.state;
+    const { availableSynths, synthToExchange, currentWalletInfo } = this.props;
+    const { balances } = currentWalletInfo;
     if (!availableSynths) return;
     return availableSynths.map((synth, i) => {
       return (
@@ -86,7 +93,9 @@ class BalanceChecker extends Component {
             <span>{synth}</span>
           </td>
           <td className={styles.tableBodyBalance}>
-            {balances ? numeral(Number(balances[i])).format('0,0.00') : null}
+            {balances && balances[synth]
+              ? numeral(Number(balances[synth])).format('0,0.00')
+              : null}
           </td>
         </tr>
       );
@@ -125,6 +134,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   setSynthToExchange,
+  setWalletBalances,
 };
 
 BalanceChecker.propTypes = {
@@ -132,6 +142,7 @@ BalanceChecker.propTypes = {
   availableSynths: PropTypes.array.isRequired,
   synthToExchange: PropTypes.string,
   setSynthToExchange: PropTypes.func.isRequired,
+  setWalletBalances: PropTypes.func.isRequired,
 };
 
 export default connect(
