@@ -31,7 +31,14 @@ class ConnectToWallet extends Component {
   }
   async componentDidMount() {
     const { currentWalletInfo } = this.props;
-    let availableWallets = await synthetixJsTools.signer.getNextAddresses(0);
+    let availableWallets;
+    console.log('here');
+    try {
+      availableWallets = await synthetixJsTools.signer.getNextAddresses(0);
+    } catch (e) {
+      console.log('error', e);
+    }
+    console.log('availableWallets', availableWallets);
     if (!availableWallets || !availableWallets.length) {
       return;
     }
