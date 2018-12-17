@@ -9,6 +9,8 @@ import {
   getExchangeRates,
 } from '../../ducks/';
 
+import synthetixJsTools from '../../synthetixJsTool';
+
 import styles from './trading-widget.module.scss';
 
 class TradingWidget extends Component {
@@ -23,6 +25,7 @@ class TradingWidget extends Component {
     this.onFromSynthChange = this.onFromSynthChange.bind(this);
     this.onToSynthChange = this.onToSynthChange.bind(this);
     this.tradeMax = this.tradeMax.bind(this);
+    this.confirmTrade = this.confirmTrade.bind(this);
   }
 
   tradeMax() {
@@ -45,6 +48,34 @@ class TradingWidget extends Component {
         [synthToBuy]: conversionToMax,
       },
     });
+  }
+
+  async confirmTrade() {
+    const { synthToExchange, synthToBuy, currentWalletInfo } = this.props;
+    const { inputValues } = this.state;
+    const { selectedWallet } = currentWalletInfo;
+    if (
+      !synthetixJsTools.initialized ||
+      !currentWalletInfo ||
+      !currentWalletInfo.selectedWallet
+    )
+      return;
+
+    const fromSynth = synthetixJsTools.utils.toUtf8Bytes(synthToExchange);
+    const toSynth = synthetixJsTools.utils.toUtf8Bytes(synthToBuy);
+    const amount = synthetixJsTools.utils.parseEther(
+      inputValues[synthToExchange]
+    );
+    try {
+      synthetixJsTools.havvenJs.Synthetix.exchange(
+        fromSynth,
+        amount,
+        toSynth,
+        selectedWallet
+      );
+    } catch (e) {
+      console.log('Error during exchange', e);
+    }
   }
 
   convert(to, value, rates) {
@@ -135,7 +166,12 @@ class TradingWidget extends Component {
           </button>
         </div>
         {this.renderInputs()}
-        <button className={styles.widgetTradingButton}>Confirm Trade</button>
+        <button
+          onClick={this.confirmTrade}
+          className={styles.widgetTradingButton}
+        >
+          Confirm Trade
+        </button>
       </div>
     );
   }
