@@ -8,6 +8,13 @@ import {
   getSynthToExchange,
   getExchangeRates,
 } from '../../ducks/';
+import { toggleTransactionStatusPopup } from '../../ducks/ui';
+import {
+  setTransactionStatusToConfirm,
+  setTransactionStatusToProgress,
+  setTransactionStatusToSuccess,
+  setTransactionPair,
+} from '../../ducks/wallet';
 
 import synthetixJsTools from '../../synthetixJsTool';
 
@@ -51,9 +58,19 @@ class TradingWidget extends Component {
   }
 
   async confirmTrade() {
-    const { synthToExchange, synthToBuy, currentWalletInfo } = this.props;
+    const {
+      synthToExchange,
+      synthToBuy,
+      currentWalletInfo,
+      toggleTransactionStatusPopup,
+      setTransactionStatusToConfirm,
+      setTransactionStatusToProgress,
+      setTransactionStatusToSuccess,
+      setTransactionPair,
+    } = this.props;
     const { inputValues } = this.state;
     const { selectedWallet } = currentWalletInfo;
+    let transactionResult;
     if (
       !synthetixJsTools.initialized ||
       !currentWalletInfo ||
@@ -61,20 +78,36 @@ class TradingWidget extends Component {
     )
       return;
 
-    const fromSynth = synthetixJsTools.utils.toUtf8Bytes(synthToExchange);
-    const toSynth = synthetixJsTools.utils.toUtf8Bytes(synthToBuy);
-    const amount = synthetixJsTools.utils.parseEther(
-      inputValues[synthToExchange]
-    );
+    const fromAmount = inputValues[synthToExchange];
+    const toAmount = inputValues[synthToBuy];
+
     try {
-      synthetixJsTools.havvenJs.Synthetix.exchange(
-        fromSynth,
-        amount,
-        toSynth,
+      toggleTransactionStatusPopup(true);
+      setTransactionStatusToConfirm();
+      setTransactionPair({
+        fromSynth: synthToExchange,
+        toSynth: synthToBuy,
+        fromAmount,
+        toAmount,
+      });
+      transactionResult = await synthetixJsTools.havvenJs.Synthetix.exchange(
+        synthetixJsTools.utils.toUtf8Bytes(synthToExchange),
+        synthetixJsTools.utils.parseEther(fromAmount),
+        synthetixJsTools.utils.toUtf8Bytes(synthToBuy),
         selectedWallet
       );
     } catch (e) {
       console.log('Error during exchange', e);
+    }
+    if (transactionResult) {
+      const hash = transactionResult.hash;
+      setTransactionStatusToProgress(hash);
+      try {
+        await synthetixJsTools.util.waitForTransaction(hash);
+        setTransactionStatusToSuccess();
+      } catch (e) {
+        console.log('Could not get transaction confirmation', e);
+      }
     }
   }
 
@@ -186,13 +219,24 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  toggleTransactionStatusPopup,
+  setTransactionStatusToConfirm,
+  setTransactionStatusToProgress,
+  setTransactionStatusToSuccess,
+  setTransactionPair,
+};
 
 TradingWidget.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   synthToBuy: PropTypes.string.isRequired,
   synthToExchange: PropTypes.string.isRequired,
   exchangeRates: PropTypes.object.isRequired,
+  toggleTransactionStatusPopup: PropTypes.func.isRequired,
+  setTransactionStatusToConfirm: PropTypes.func.isRequired,
+  setTransactionStatusToProgress: PropTypes.func.isRequired,
+  setTransactionStatusToSuccess: PropTypes.func.isRequired,
+  setTransactionPair: PropTypes.func.isRequired,
 };
 
 export default connect(

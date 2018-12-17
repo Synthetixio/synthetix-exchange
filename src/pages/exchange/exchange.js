@@ -9,10 +9,12 @@ import WalletConnector from '../../components/wallet-connector';
 // import Chart from '../../components/chart';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
+import TransactionStatusPopup from '../../components/transaction-status-popup';
 import TradingWidget from '../../components/trading-widget';
 
 import {
   walletSelectorPopupIsVisible,
+  transactionStatusPopupIsVisible,
   getCurrentWalletInfo,
   getAvailableSynths,
   getSynthToExchange,
@@ -50,7 +52,10 @@ class Exchange extends Component {
   }
 
   render() {
-    const { walletSelectorPopupIsVisible } = this.props;
+    const {
+      walletSelectorPopupIsVisible,
+      transactionStatusPopupIsVisible,
+    } = this.props;
     return (
       <div className={styles.exchange}>
         <div className={styles.exchangeInner}>
@@ -77,6 +82,7 @@ class Exchange extends Component {
           </div>
         </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
+        <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
       </div>
     );
   }
@@ -85,6 +91,7 @@ class Exchange extends Component {
 const mapStateToProps = state => {
   return {
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
+    transactionStatusPopupIsVisible: transactionStatusPopupIsVisible(state),
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
     synthToBuy: getSynthToBuy(state),
@@ -98,6 +105,7 @@ const mapDispatchToProps = {
 
 Exchange.propTypes = {
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
+  transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
   setAvailableSynths: PropTypes.func.isRequired,
   availableSynths: PropTypes.array.isRequired,

@@ -18,6 +18,10 @@ export const walletSelectorPopupIsVisible = state => {
   return state.ui.walletSelectorPopupIsVisible;
 };
 
+export const transactionStatusPopupIsVisible = state => {
+  return state.ui.transactionStatusPopupIsVisible;
+};
+
 // WALLET REDUCERS
 export const getCurrentWalletInfo = state => {
   return state.wallet;
