@@ -88,6 +88,7 @@ class WalletSelectorPopup extends Component {
 
       // We define a new signer
       const signer = new SynthetixJsTools.signers[walletType]();
+      console.log(signer);
       SynthetixJsTools.setContractSettings({
         signer,
       });
