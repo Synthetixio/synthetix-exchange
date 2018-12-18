@@ -56,7 +56,7 @@
 .widgetInputElement {
   width: 100%;
   background-color: $color-background;
-  border: 1px solid #28253f;
+  border: 1px solid $color-input-border;
   height: 50px;
   color: #ffffff;
   padding: 17px 90px 15px 17px;
