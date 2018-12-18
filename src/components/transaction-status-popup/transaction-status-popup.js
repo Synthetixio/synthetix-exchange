@@ -83,7 +83,7 @@ class TransactionStatusPopup extends Component {
   renderWaitForSuccessContent(success) {
     return (
       <div>
-        <h1>Transaction {!success ? 'Confirmed' : 'Successed'}</h1>
+        <h1>Transaction {!success ? 'Confirmed' : 'Success'}</h1>
         {!success ? <Spinner small={true} /> : null}
         <button
           className={styles.buttonVerifyTransaction}
