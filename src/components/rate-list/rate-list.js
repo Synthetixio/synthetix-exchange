@@ -79,7 +79,6 @@ class RateList extends Component {
           <td>${numeral(synth.rate).format('0,0.00000')}</td>
           <td>--</td>
           <td>--</td>
-          <td>--</td>
         </tr>
       );
     });
@@ -102,9 +101,6 @@ class RateList extends Component {
               </th>
               <th>
                 <h3>High</h3>
-              </th>
-              <th>
-                <h3>Volume(sUSD)</h3>
               </th>
             </tr>
           </thead>
