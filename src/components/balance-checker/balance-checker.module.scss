@@ -39,3 +39,31 @@
   padding: 15px;
   text-align: right;
 }
+
+.widgetHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  h2 {
+    margin: 0;
+  }
+}
+
+.widgetHeaderButton {
+  cursor: pointer;
+  background-color: $color-background;
+  font-family: 'RobotoMono-Regular';
+  letter-spacing: 1px;
+  font-size: 10px;
+  color: #ffffff;
+  border: 1px solid #28253f;
+  border-radius: 4px;
+  padding: 12px 15px;
+  text-transform: uppercase;
+  &:hover {
+    background-color: #fff;
+    color: $color-background;
+    border: 1px solid #ffffff;
+  }
+}

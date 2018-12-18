@@ -13,6 +13,7 @@ import {
   setTransactionStatusToConfirm,
   setTransactionStatusToProgress,
   setTransactionStatusToSuccess,
+  setTransactionStatusToCleared,
   setTransactionPair,
 } from '../../ducks/wallet';
 
@@ -85,6 +86,7 @@ class TradingWidget extends Component {
       setTransactionStatusToConfirm,
       setTransactionStatusToProgress,
       setTransactionStatusToSuccess,
+      setTransactionStatusToCleared,
       setTransactionPair,
     } = this.props;
     const { inputValues } = this.state;
@@ -124,6 +126,10 @@ class TradingWidget extends Component {
       try {
         await synthetixJsTools.util.waitForTransaction(hash);
         setTransactionStatusToSuccess();
+        setTimeout(() => {
+          toggleTransactionStatusPopup(false);
+          setTransactionStatusToCleared();
+        }, 2000);
       } catch (e) {
         console.log('Could not get transaction confirmation', e);
       }
@@ -247,6 +253,7 @@ const mapDispatchToProps = {
   setTransactionStatusToConfirm,
   setTransactionStatusToProgress,
   setTransactionStatusToSuccess,
+  setTransactionStatusToCleared,
   setTransactionPair,
 };
 
@@ -259,6 +266,7 @@ TradingWidget.propTypes = {
   setTransactionStatusToConfirm: PropTypes.func.isRequired,
   setTransactionStatusToProgress: PropTypes.func.isRequired,
   setTransactionStatusToSuccess: PropTypes.func.isRequired,
+  setTransactionStatusToCleared: PropTypes.func.isRequired,
   setTransactionPair: PropTypes.func.isRequired,
 };
 

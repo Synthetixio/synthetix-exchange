@@ -11,6 +11,7 @@ import {
 } from '../../ducks/';
 import { setSynthToExchange } from '../../ducks/synths';
 import { setWalletBalances } from '../../ducks/wallet';
+import { toggleLoadingScreen } from '../../ducks/ui';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
@@ -21,6 +22,7 @@ class BalanceChecker extends Component {
   constructor() {
     super();
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
   }
 
   selectSynthToExchange(synth) {
@@ -36,6 +38,7 @@ class BalanceChecker extends Component {
       currentWalletInfo,
       availableSynths,
       setWalletBalances,
+      toggleLoadingScreen,
     } = this.props;
     if (
       !synthetixJsTools.initialized ||
@@ -56,21 +59,49 @@ class BalanceChecker extends Component {
     balances.forEach((balance, i) => {
       synthsBalance[availableSynths[i]] = formatBigNumber(balance, 6);
     });
+    toggleLoadingScreen(false);
     setWalletBalances(synthsBalance);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.refreshData();
   }
 
-  async componentDidUpdate(prevProps) {
-    const { currentWalletInfo } = this.props;
-    if (
-      currentWalletInfo.selectedWallet ===
-      prevProps.currentWalletInfo.selectedWallet
-    )
-      return;
+  handleRefresh() {
+    const { toggleLoadingScreen } = this.props;
+    toggleLoadingScreen(true);
     this.refreshData();
+  }
+
+  walletHasChanged(prevProps) {
+    const { currentWalletInfo } = this.props;
+    return (
+      currentWalletInfo.selectedWallet !==
+      prevProps.currentWalletInfo.selectedWallet
+    );
+  }
+
+  transactionWentThrough(prevProps) {
+    const { currentWalletInfo } = this.props;
+    const prevWalletInfo = prevProps.currentWalletInfo;
+    const { transactionStatus } = currentWalletInfo;
+    return (
+      prevWalletInfo &&
+      prevWalletInfo.transactionStatus &&
+      prevWalletInfo.transactionStatus !== transactionStatus &&
+      transactionStatus === 'cleared'
+    );
+  }
+
+  componentDidUpdate(prevProps) {
+    const { toggleLoadingScreen } = this.props;
+    if (
+      this.transactionWentThrough(prevProps) ||
+      this.walletHasChanged(prevProps)
+    ) {
+      toggleLoadingScreen(true);
+      this.refreshData();
+    }
   }
 
   renderBalance() {
@@ -102,13 +133,26 @@ class BalanceChecker extends Component {
     });
   }
 
-  render() {
+  renderWidgetHeader() {
     const { currentWalletInfo } = this.props;
+    if (!currentWalletInfo || !currentWalletInfo.selectedWallet) return;
+    return (
+      <div className={styles.widgetHeader}>
+        <h2 className={styles.balanceCheckerHeading}>Balances</h2>
+        <button
+          onClick={this.handleRefresh}
+          className={styles.widgetHeaderButton}
+        >
+          Refresh
+        </button>
+      </div>
+    );
+  }
+
+  render() {
     return (
       <div className={styles.balanceChecker}>
-        {currentWalletInfo && currentWalletInfo.selectedWallet ? (
-          <h2 className={styles.balanceCheckerHeading}>Balances</h2>
-        ) : null}
+        {this.renderWidgetHeader()}
         <table cellPadding="0" cellSpacing="0" className={styles.table}>
           <thead>
             <tr>
@@ -135,6 +179,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   setSynthToExchange,
   setWalletBalances,
+  toggleLoadingScreen,
 };
 
 BalanceChecker.propTypes = {
@@ -143,6 +188,7 @@ BalanceChecker.propTypes = {
   synthToExchange: PropTypes.string,
   setSynthToExchange: PropTypes.func.isRequired,
   setWalletBalances: PropTypes.func.isRequired,
+  toggleLoadingScreen: PropTypes.func.isRequired,
 };
 
 export default connect(

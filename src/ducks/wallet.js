@@ -8,7 +8,8 @@ const SET_TRANSACTION_STATUS_TO_PROGRESS =
 const SET_TRANSACTION_PAIR = 'WALLET/SET_TRANSACTION_PAIR';
 const SET_TRANSACTION_STATUS_TO_SUCCESS =
   'WALLET/SET_TRANSACTION_STATUS_TO_SUCCESS';
-const SET_TRANSACTION_HASH = 'WALLET/SET_TRANSACTION_HASH';
+const SET_TRANSACTION_STATUS_TO_CLEARED =
+  'WALLET/SET_TRANSACTION_STATUS_TO_CLEARED';
 
 const defaultState = {
   walletType: null,
@@ -46,6 +47,14 @@ const reducer = (state = defaultState, action = {}) => {
       };
     case SET_TRANSACTION_STATUS_TO_SUCCESS:
       return { ...state, transactionStatus: 'success' };
+    case SET_TRANSACTION_STATUS_TO_CLEARED: {
+      return {
+        ...state,
+        transactionHash: null,
+        transactionPair: null,
+        transactionStatus: 'cleared',
+      };
+    }
     case SET_TRANSACTION_PAIR:
       const { fromSynth, fromAmount, toSynth, toAmount } = action.payload;
       const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
@@ -89,6 +98,12 @@ export const setTransactionStatusToProgress = hash => {
 export const setTransactionStatusToSuccess = () => {
   return {
     type: SET_TRANSACTION_STATUS_TO_SUCCESS,
+  };
+};
+
+export const setTransactionStatusToCleared = () => {
+  return {
+    type: SET_TRANSACTION_STATUS_TO_CLEARED,
   };
 };
 

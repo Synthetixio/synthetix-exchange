@@ -7,7 +7,7 @@ import WalletSelectorWithBalance from '../../components/wallet-selector-with-bal
 
 import { getCurrentWalletInfo } from '../../ducks/';
 import { connectToWallet } from '../../ducks/wallet';
-import { changeScreen } from '../../ducks/ui';
+import { changeScreen, toggleLoadingScreen } from '../../ducks/ui';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
@@ -32,13 +32,11 @@ class ConnectToWallet extends Component {
   async componentDidMount() {
     const { currentWalletInfo } = this.props;
     let availableWallets;
-    console.log('here');
     try {
       availableWallets = await synthetixJsTools.signer.getNextAddresses(0);
     } catch (e) {
       console.log('error', e);
     }
-    console.log('availableWallets', availableWallets);
     if (!availableWallets || !availableWallets.length) {
       return;
     }
@@ -120,7 +118,12 @@ class ConnectToWallet extends Component {
   onSelectWallet(index) {
     return async () => {
       const { walletSelectorIndex, availableWallets } = this.state;
-      const { currentWalletInfo, connectToWallet, changeScreen } = this.props;
+      const {
+        currentWalletInfo,
+        connectToWallet,
+        changeScreen,
+        toggleLoadingScreen,
+      } = this.props;
       const { walletType } = currentWalletInfo;
       const idx = walletSelectorIndex + index;
       const availableWalletsStringArray = availableWallets.map(
@@ -136,6 +139,7 @@ class ConnectToWallet extends Component {
         selectedWallet,
       });
       await this.selectWalletIndex(idx);
+      toggleLoadingScreen(true);
       changeScreen('exchange');
     };
   }
@@ -177,13 +181,6 @@ class ConnectToWallet extends Component {
       connected,
     } = this.state;
 
-    console.log(
-      'connectToWallet',
-      walletSelectorIndex,
-      fetchingNextAddresses,
-      availableWallets,
-      connected
-    );
     return (
       <div className={styles.connectToWallet}>
         {connected ? (
@@ -213,6 +210,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   connectToWallet,
   changeScreen,
+  toggleLoadingScreen,
 };
 
 ConnectToWallet.propTypes = {
