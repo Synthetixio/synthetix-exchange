@@ -26,7 +26,7 @@ class WalletAddressSwitcher extends Component {
     if (!address) return null;
     return (
       <div className={styles.addressSwitcherWallet}>
-        {address.slice(0, 6) + '...' + address.slice(-4, -1)}
+        {address.slice(0, 6) + '...' + address.slice(-4, address.length)}
       </div>
     );
   }
