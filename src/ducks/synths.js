@@ -9,14 +9,22 @@ const defaultState = {
   availableSynths,
   defaultSynth: null,
   fromSynth: 'sUSD',
-  toSynth: null,
+  toSynth: 'sAUD',
 };
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case SET_AVAILABLE_SYNTHS:
       return { ...state, availableSynths: action.payload };
     case SET_SYNTH_TO_EXCHANGE:
-      return { ...state, fromSynth: action.payload };
+      let updateObject = {};
+      updateObject['fromSynth'] = action.payload;
+      if (state.toSynth === action.payload) {
+        const filteredSynths = availableSynths.filter(
+          synth => synth !== action.payload
+        );
+        updateObject['toSynth'] = filteredSynths[0];
+      }
+      return { ...state, ...updateObject };
     case SET_SYNTH_TO_BUY:
       return { ...state, toSynth: action.payload };
     case SET_EXCHANGE_RATES:

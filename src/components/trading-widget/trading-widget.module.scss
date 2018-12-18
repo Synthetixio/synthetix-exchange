@@ -78,4 +78,8 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.2;
+  }
 }

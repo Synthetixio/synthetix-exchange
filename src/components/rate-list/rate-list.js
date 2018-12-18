@@ -26,8 +26,8 @@ class RateList extends Component {
   selectSynthToBuy(currency) {
     return () => {
       const { setSynthToBuy, synthToBuy } = this.props;
-      const selectedSynth = currency !== synthToBuy ? currency : null;
-      setSynthToBuy(selectedSynth);
+      if (currency === synthToBuy) return;
+      setSynthToBuy(currency);
     };
   }
 

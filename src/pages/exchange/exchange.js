@@ -41,10 +41,7 @@ class Exchange extends Component {
 
   renderWalletConnectorOrTradingWidget() {
     const { currentWalletInfo, synthToBuy, synthToExchange } = this.props;
-    return synthToBuy &&
-      synthToExchange &&
-      currentWalletInfo &&
-      currentWalletInfo.selectedWallet ? (
+    return currentWalletInfo && currentWalletInfo.selectedWallet ? (
       <TradingWidget />
     ) : (
       <WalletConnector />

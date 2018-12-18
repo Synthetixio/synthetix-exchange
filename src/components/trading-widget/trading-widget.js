@@ -24,15 +24,34 @@ class TradingWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValues: {
-        [props.synthToExchange]: '',
-        [props.synthToBuy]: '',
-      },
+      inputValues: {},
     };
     this.onFromSynthChange = this.onFromSynthChange.bind(this);
     this.onToSynthChange = this.onToSynthChange.bind(this);
     this.tradeMax = this.tradeMax.bind(this);
     this.confirmTrade = this.confirmTrade.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { synthToBuy, synthToExchange } = this.props;
+    if (prevProps.synthToBuy !== synthToBuy) {
+      const synthToBuyValue = this.state.inputValues[prevProps.synthToBuy];
+      this.setState(
+        {
+          inputValues: {
+            ...this.state.inputValues,
+            [synthToBuy]: synthToBuyValue,
+          },
+        },
+        this.onFromSynthChange
+      );
+    }
+
+    if (prevProps.synthToExchange !== synthToExchange) {
+      this.setState({
+        inputValues: { [synthToExchange]: 0, [synthToBuy]: 0 },
+      });
+    }
   }
 
   tradeMax() {
@@ -121,9 +140,8 @@ class TradingWidget extends Component {
 
     const { inputValues } = this.state;
     const currentInputValue = inputValues[synthToExchange] || 0;
-    const newInputValue = e.target.validity.valid
-      ? e.target.value
-      : currentInputValue;
+    const newInputValue =
+      e && e.target.validity.valid ? e.target.value : currentInputValue;
 
     const convertedInputValue = this.convert(
       synthToBuy,
@@ -143,9 +161,8 @@ class TradingWidget extends Component {
     const { exchangeRates, synthToExchange, synthToBuy } = this.props;
     const { inputValues } = this.state;
     const currentInputValue = inputValues[synthToBuy] || 0;
-    const newInputValue = e.target.validity.valid
-      ? e.target.value
-      : currentInputValue;
+    const newInputValue =
+      e && e.target.validity.valid ? e.target.value : currentInputValue;
 
     const convertedInputValue = this.convert(
       synthToExchange,
@@ -168,7 +185,8 @@ class TradingWidget extends Component {
         <input
           className={styles.widgetInputElement}
           type="text"
-          value={inputValues[synth]}
+          value={(inputValues && inputValues[synth]) || ''}
+          placeholder={0}
           onChange={handler}
           pattern="^-?[0-9]\d*\.?\d*$"
         />
@@ -190,6 +208,10 @@ class TradingWidget extends Component {
     );
   }
   render() {
+    const { synthToBuy, synthToExchange } = this.props;
+    const { inputValues } = this.state;
+    const buttonIsEnabled =
+      inputValues[synthToBuy] && inputValues[synthToExchange];
     return (
       <div>
         <div className={styles.widgetHeader}>
@@ -200,6 +222,7 @@ class TradingWidget extends Component {
         </div>
         {this.renderInputs()}
         <button
+          disabled={!buttonIsEnabled}
           onClick={this.confirmTrade}
           className={styles.widgetTradingButton}
         >
@@ -229,7 +252,7 @@ const mapDispatchToProps = {
 
 TradingWidget.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
-  synthToBuy: PropTypes.string.isRequired,
+  synthToBuy: PropTypes.string,
   synthToExchange: PropTypes.string.isRequired,
   exchangeRates: PropTypes.object.isRequired,
   toggleTransactionStatusPopup: PropTypes.func.isRequired,
