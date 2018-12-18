@@ -7,6 +7,7 @@ import ConnectToWallet from '../connect-to-wallet';
 
 import { getCurrentScreen, getAvailableSynths } from '../../ducks/';
 import { updateExchangeRates } from '../../ducks/synths';
+import { toggleLoadingScreen } from '../../ducks/ui';
 
 import synthetixJsTools from '../../synthetixJsTool';
 
@@ -19,7 +20,11 @@ class Root extends Component {
   }
 
   async updatePrices() {
-    const { availableSynths, updateExchangeRates } = this.props;
+    const {
+      availableSynths,
+      updateExchangeRates,
+      toggleLoadingScreen,
+    } = this.props;
     if (!availableSynths) return;
     let rateObject = {};
     const rates = await synthetixJsTools.havvenJs.ExchangeRates.ratesForCurrencies(
@@ -31,9 +36,12 @@ class Root extends Component {
       );
     });
     updateExchangeRates(rateObject);
+    toggleLoadingScreen(false);
   }
 
   componentDidMount() {
+    const { toggleLoadingScreen } = this.props;
+    toggleLoadingScreen(true);
     this.updatePrices();
     setInterval(this.updatePrices, 60 * 1000);
   }
@@ -67,11 +75,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   updateExchangeRates,
+  toggleLoadingScreen,
 };
 
 Root.propTypes = {
   currentScreen: PropTypes.string.isRequired,
   availableSynths: PropTypes.array.isRequired,
+  toggleLoadingScreen: PropTypes.func.isRequired,
 };
 
 export default connect(

@@ -6,6 +6,7 @@ import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import WalletConnector from '../../components/wallet-connector';
+import LoadingScreen from '../../components/loading-screen';
 // import Chart from '../../components/chart';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -15,6 +16,7 @@ import TradingWidget from '../../components/trading-widget';
 import {
   walletSelectorPopupIsVisible,
   transactionStatusPopupIsVisible,
+  loadingScreenIsVisible,
   getCurrentWalletInfo,
   getAvailableSynths,
   getSynthToExchange,
@@ -27,18 +29,6 @@ import synthetixJsTools from '../../synthetixJsTool';
 import styles from './exchange.module.scss';
 
 class Exchange extends Component {
-  componentDidMount() {
-    this.refreshData();
-  }
-
-  async refreshData() {
-    if (!synthetixJsTools.initialized) return;
-    try {
-    } catch (e) {
-      console.log('Error while fetching data from smart contract', e);
-    }
-  }
-
   renderWalletConnectorOrTradingWidget() {
     const { currentWalletInfo, synthToBuy, synthToExchange } = this.props;
     return currentWalletInfo && currentWalletInfo.selectedWallet ? (
@@ -52,6 +42,7 @@ class Exchange extends Component {
     const {
       walletSelectorPopupIsVisible,
       transactionStatusPopupIsVisible,
+      loadingScreenIsVisible,
     } = this.props;
     return (
       <div className={styles.exchange}>
@@ -80,6 +71,7 @@ class Exchange extends Component {
         </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
+        <LoadingScreen isVisible={loadingScreenIsVisible} />
       </div>
     );
   }
@@ -89,6 +81,7 @@ const mapStateToProps = state => {
   return {
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
     transactionStatusPopupIsVisible: transactionStatusPopupIsVisible(state),
+    loadingScreenIsVisible: loadingScreenIsVisible(state),
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
     synthToBuy: getSynthToBuy(state),
@@ -103,6 +96,7 @@ const mapDispatchToProps = {
 Exchange.propTypes = {
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
   transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
+  loadingScreenIsVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
   setAvailableSynths: PropTypes.func.isRequired,
   availableSynths: PropTypes.array.isRequired,

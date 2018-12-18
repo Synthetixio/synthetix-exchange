@@ -22,6 +22,10 @@ export const transactionStatusPopupIsVisible = state => {
   return state.ui.transactionStatusPopupIsVisible;
 };
 
+export const loadingScreenIsVisible = state => {
+  return state.ui.loadingScreenIsVisible;
+};
+
 // WALLET REDUCERS
 export const getCurrentWalletInfo = state => {
   return state.wallet;
