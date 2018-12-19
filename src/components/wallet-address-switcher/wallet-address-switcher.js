@@ -27,7 +27,7 @@ class WalletAddressSwitcher extends Component {
   toggleDropdown() {
     const { currentWalletInfo } = this.props;
     const { availableWallets } = currentWalletInfo;
-    if (!availableWallets || availableWallets.lenght <= 1) return;
+    if (!availableWallets || availableWallets.length <= 1) return;
     this.setState({ dropdownIsOpen: !this.state.dropdownIsOpen });
   }
 
