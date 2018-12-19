@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner';
-import numeral from 'numeral';
+import numbro from 'numbro';
 import styles from './wallet-selector-balance.module.scss';
 
 class WalletSelectorWithBalances extends Component {
@@ -25,12 +25,23 @@ class WalletSelectorWithBalances extends Component {
           <tr key={index} onClick={onSelectWallet(index)}>
             <td>{wallet.address}</td>
             <td>
-              {numeral(
-                Number(wallet.balances[0]) + Number(wallet.balances[1])
-              ).format('0,0.00')}
+              {wallet.balances[0] && wallet.balances[1]
+                ? numbro(
+                    Number(wallet.balances[0]) + Number(wallet.balances[1])
+                  ).format('0,0.00')
+                : '0'}
             </td>
-            <td> {numeral(wallet.balances[2]).format('0,0.00')}</td>
-            <td>{numeral(wallet.balances[3]).format('0,0.000000')}</td>
+            <td>
+              {' '}
+              {wallet.balances[2]
+                ? numbro(wallet.balances[2]).format('0,0.00')
+                : 0}
+            </td>
+            <td>
+              {wallet.balances[3]
+                ? numbro(wallet.balances[3]).format('0,0.000000')
+                : 0}
+            </td>
           </tr>
         );
       });

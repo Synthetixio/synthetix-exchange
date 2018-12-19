@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import numbro from 'numbro';
 
 import Popup from '../popup';
 import Spinner from '../spinner';
@@ -29,7 +29,7 @@ class TransactionStatusPopup extends Component {
     return (
       <div className={styles.conversionAmount}>
         <span className={styles.conversionAmountValue}>
-          {numeral(amount).format('0,0.00')}
+          {numbro(amount).format('0,0.00')}
         </span>
         <span className={styles.conversionAmountSynth}>{synth}</span>
       </div>

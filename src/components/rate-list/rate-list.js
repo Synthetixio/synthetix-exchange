@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import numeral from 'numeral';
+import numbro from 'numbro';
 
 import { getAvailableSynths } from '../../ducks/';
 
@@ -59,6 +59,12 @@ class RateList extends Component {
     });
 
     return rates.map((synth, i) => {
+      // Small fix to avoid price like 0.0000 when sKRW/sJPY against sXAU
+      const precision =
+        synth.synth === 'sXAU' &&
+        (synthToExchange === 'sKRW' || synthToExchange === 'sJPY')
+          ? '0,0.00000000'
+          : '0,0.00000';
       return (
         <tr
           key={i}
@@ -76,7 +82,7 @@ class RateList extends Component {
             />
             <span>{synth.synth}</span>
           </td>
-          <td>${numeral(synth.rate).format('0,0.00000')}</td>
+          <td>${numbro(synth.rate).format(precision)}</td>
           <td>--</td>
           <td>--</td>
         </tr>

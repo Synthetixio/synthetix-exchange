@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import numeral from 'numeral';
+import numbro from 'numbro';
 
 import {
   getCurrentWalletInfo,
@@ -125,7 +125,7 @@ class BalanceChecker extends Component {
           </td>
           <td className={styles.tableBodyBalance}>
             {balances && balances[synth]
-              ? numeral(Number(balances[synth])).format('0,0.00')
+              ? numbro(Number(balances[synth])).format('0,0.00')
               : null}
           </td>
         </tr>
