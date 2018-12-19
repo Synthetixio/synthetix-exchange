@@ -168,8 +168,17 @@ class ConnectToWallet extends Component {
     const { currentWalletInfo } = this.props;
     return (
       <div className={styles.connectToWallet}>
-        <h1>Convert via {currentWalletInfo.walletType}</h1>
+        <h1>Connect via {currentWalletInfo.walletType}</h1>
+        <h2>Please connect and unlock your {currentWalletInfo.walletType}</h2>
         <Spinner />
+        <div className={styles.connectToWalletHelp}>
+          <div className={styles.connectToWalletHelpCaption}>
+            Having issues?
+          </div>
+          <a href="https://discord.gg/AEdUHzt" target="_blank">
+            Support
+          </a>
+        </div>
       </div>
     );
   }
