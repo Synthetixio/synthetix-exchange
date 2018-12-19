@@ -137,6 +137,7 @@ class ConnectToWallet extends Component {
         walletSelected: true,
         availableWallets: availableWalletsStringArray,
         selectedWallet,
+        walletPageSize: WALLET_PAGE_SIZE,
       });
       await this.selectWalletIndex(idx);
       toggleLoadingScreen(true);
