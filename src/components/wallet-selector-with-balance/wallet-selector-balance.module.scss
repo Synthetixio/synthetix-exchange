@@ -1,10 +1,36 @@
+@import '../../styles/variables.scss';
+
 .balanceTable {
-  width: 100%;
+  margin: 0 auto;
+  width: 90%;
+  tbody {
+    font-family: 'RobotoMono-Regular';
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
   tr {
     cursor: pointer;
     td,
     th {
       padding: 15px 0;
+      text-align: right;
+    }
+    th {
+      color: $color-font-grey;
+      border-bottom: 1px solid $color-input-border;
+      font-family: 'RobotoMono-Regular';
+    }
+    td:first-child,
+    th:first-child {
+      text-align: left;
+    }
+    &:hover {
+      background-color: #19172a;
+    }
+  }
+  tr + tr {
+    td {
+      border-top: 1px solid #19172a;
     }
   }
 }
@@ -13,4 +39,21 @@
   margin-top: 40px;
   display: flex;
   justify-content: space-between;
+}
+
+.pagerRowIcon {
+  cursor: pointer;
+  fill: $color-font-grey;
+  &:hover {
+    fill: #ffffff;
+  }
+}
+
+.walletSelectorHeader {
+  margin-bottom: 50px;
+  h2 {
+    font-size: 20px;
+    font-family: 'Aeonik-Regular';
+    color: $color-font-grey;
+  }
 }

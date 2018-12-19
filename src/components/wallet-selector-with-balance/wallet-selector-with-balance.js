@@ -40,43 +40,30 @@ class WalletSelectorWithBalances extends Component {
     const { onNextPage, onPrevPage, showSpinner } = this.props;
     return (
       <div className={styles.pagerRow}>
-        <div onClick={onPrevPage}>
-          <svg width="15px" height="27px" viewBox="0 0 10 18" version="1.1">
-            <g stroke="none" fill="none">
-              <g transform="translate(-719.000000, -714.000000)" fill="#25244B">
-                <g transform="translate(697.000000, 511.000000)">
-                  <g transform="translate(0.000000, 188.000000)">
-                    <path
-                      d="M24.2994063,32.41 L22.7814063,31.108 L28.8744063,24 L22.7814063,16.892 L24.2994063,15.59 L30.9504063,23.35 C31.2714063,23.724 31.2714063,24.277 30.9504063,24.651 L24.2994063,32.41 Z"
-                      transform="translate(26.986281, 24.000000) rotate(-180.000000) translate(-26.986281, -24.000000) "
-                    />
-                  </g>
-                </g>
-              </g>
-            </g>
-          </svg>
-        </div>
+        <svg
+          className={styles.pagerRowIcon}
+          width="40"
+          height="40"
+          viewBox="0 0 1792 1792"
+          onClick={onPrevPage}
+        >
+          <path d="M1203 544q0 13-10 23l-393 393 393 393q10 10 10 23t-10 23l-50 50q-10 10-23 10t-23-10l-466-466q-10-10-10-23t10-23l466-466q10-10 23-10t23 10l50 50q10 10 10 23z" />
+        </svg>
+
         {showSpinner && (
           <div className="spinner">
             <Spinner small={true} />
           </div>
         )}
-        <div onClick={onNextPage}>
-          <svg width="15px" height="27px" viewBox="0 0 10 18" version="1.1">
-            <g stroke="none" fill="none">
-              <g
-                transform="translate(-1095.000000, -714.000000)"
-                fill="#25244B"
-              >
-                <g transform="translate(697.000000, 511.000000)">
-                  <g transform="translate(0.000000, 188.000000)">
-                    <path d="M400.108,32.41 L398.59,31.108 L404.683,24 L398.59,16.892 L400.108,15.59 L406.759,23.35 C407.08,23.724 407.08,24.277 406.759,24.651 L400.108,32.41 Z" />
-                  </g>
-                </g>
-              </g>
-            </g>
-          </svg>
-        </div>
+        <svg
+          className={styles.pagerRowIcon}
+          width="40"
+          height="40"
+          viewBox="0 0 1792 1792"
+          onClick={onNextPage}
+        >
+          <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z" />
+        </svg>
       </div>
     );
   }
@@ -84,11 +71,11 @@ class WalletSelectorWithBalances extends Component {
   render() {
     return (
       <div>
-        <div>
+        <div className={styles.walletSelectorHeader}>
           <h1>Select Wallet</h1>
           <h2>Please select the wallet you would like to use</h2>
         </div>
-        <table className={styles.balanceTable}>
+        <table cellSpacing="0" cellPadding="0" className={styles.balanceTable}>
           <thead>
             <tr>
               <th>Address</th>

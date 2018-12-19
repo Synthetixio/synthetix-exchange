@@ -14,7 +14,7 @@
     letter-spacing: 2px;
   }
   th {
-    border-bottom: 1px solid #28253f;
+    border-bottom: 1px solid $color-input-border;
     &:first-child {
       text-align: left;
     }
