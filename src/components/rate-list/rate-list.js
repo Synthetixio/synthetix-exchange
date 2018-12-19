@@ -82,9 +82,11 @@ class RateList extends Component {
             />
             <span>{synth.synth}</span>
           </td>
-          <td>${numbro(synth.rate).format(precision)}</td>
-          <td>--</td>
-          <td>--</td>
+          <td />
+          <td className={styles.rate}>
+            ${numbro(synth.rate).format(precision)}
+          </td>
+          <td />
         </tr>
       );
     });
@@ -99,15 +101,11 @@ class RateList extends Component {
               <th>
                 <h2>Current Rate</h2>
               </th>
-              <th>
+              <th>{/* <h3>Low</h3> */}</th>
+              <th className={styles.rate}>
                 <h3>Rate</h3>
               </th>
-              <th>
-                <h3>Low</h3>
-              </th>
-              <th>
-                <h3>High</h3>
-              </th>
+              <th>{/* <h3>High</h3> */}</th>
             </tr>
           </thead>
           <tbody>{this.renderTableBody()}</tbody>
