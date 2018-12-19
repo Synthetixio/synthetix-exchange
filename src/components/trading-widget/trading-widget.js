@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
 
 import {
   getCurrentWalletInfo,
@@ -14,6 +15,7 @@ import {
   setTransactionStatusToProgress,
   setTransactionStatusToSuccess,
   setTransactionStatusToCleared,
+  setTransactionStatusToError,
   setTransactionPair,
 } from '../../ducks/wallet';
 
@@ -87,10 +89,11 @@ class TradingWidget extends Component {
       setTransactionStatusToProgress,
       setTransactionStatusToSuccess,
       setTransactionStatusToCleared,
+      setTransactionStatusToError,
       setTransactionPair,
     } = this.props;
     const { inputValues } = this.state;
-    const { selectedWallet } = currentWalletInfo;
+    const { selectedWallet, walletType } = currentWalletInfo;
     let transactionResult;
     if (
       !synthetixJsTools.initialized ||
@@ -118,7 +121,11 @@ class TradingWidget extends Component {
         selectedWallet
       );
     } catch (e) {
-      console.log('Error during exchange', e);
+      const transactionRejected =
+        e.message && e.message.includes(TRANSACTION_REJECTED[walletType]);
+      setTransactionStatusToError(transactionRejected ? 'rejected' : 'failed');
+
+      console.log('Error during the exchange transaction', e);
     }
     if (transactionResult) {
       const hash = transactionResult.hash || transactionResult;
@@ -254,6 +261,7 @@ const mapDispatchToProps = {
   setTransactionStatusToProgress,
   setTransactionStatusToSuccess,
   setTransactionStatusToCleared,
+  setTransactionStatusToError,
   setTransactionPair,
 };
 

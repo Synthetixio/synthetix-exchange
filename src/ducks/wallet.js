@@ -10,6 +10,15 @@ const SET_TRANSACTION_STATUS_TO_SUCCESS =
   'WALLET/SET_TRANSACTION_STATUS_TO_SUCCESS';
 const SET_TRANSACTION_STATUS_TO_CLEARED =
   'WALLET/SET_TRANSACTION_STATUS_TO_CLEARED';
+const SET_TRANSACTION_STATUS_TO_ERROR =
+  'WALLET/SET_TRANSACTION_STATUS_TO_ERROR';
+
+const defaultTransactionState = {
+  transactionStatus: null,
+  transactionErrorType: null,
+  transactionHash: null,
+  transactionPair: null,
+};
 
 const defaultState = {
   walletType: null,
@@ -19,14 +28,7 @@ const defaultState = {
   walletSelectorIndex: 0,
   networkId: 1,
   balances: null,
-  transactionStatus: null,
-  transactionHash: null,
-  transactionPair: {
-    fromSynth: 'sUSD',
-    fromAmount: 1,
-    toSynth: 'sAUD',
-    toAmount: 1.37,
-  },
+  ...defaultTransactionState,
 };
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
@@ -38,7 +40,11 @@ const reducer = (state = defaultState, action = {}) => {
     case SET_BALANCES:
       return { ...state, balances: action.payload };
     case SET_TRANSACTION_STATUS_TO_CONFIRM:
-      return { ...state, transactionStatus: 'confirm' };
+      return {
+        ...state,
+        ...defaultTransactionState,
+        transactionStatus: 'confirm',
+      };
     case SET_TRANSACTION_STATUS_TO_PROGRESS:
       return {
         ...state,
@@ -55,6 +61,12 @@ const reducer = (state = defaultState, action = {}) => {
         transactionStatus: 'cleared',
       };
     }
+    case SET_TRANSACTION_STATUS_TO_ERROR:
+      return {
+        ...state,
+        transactionStatus: 'error',
+        transactionErrorType: action.payload,
+      };
     case SET_TRANSACTION_PAIR:
       const { fromSynth, fromAmount, toSynth, toAmount } = action.payload;
       const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
@@ -104,6 +116,13 @@ export const setTransactionStatusToSuccess = () => {
 export const setTransactionStatusToCleared = () => {
   return {
     type: SET_TRANSACTION_STATUS_TO_CLEARED,
+  };
+};
+
+export const setTransactionStatusToError = errorType => {
+  return {
+    type: SET_TRANSACTION_STATUS_TO_ERROR,
+    payload: errorType,
   };
 };
 

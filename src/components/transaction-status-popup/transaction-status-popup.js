@@ -47,9 +47,11 @@ class TransactionStatusPopup extends Component {
           src={`images/wallets/${walletType.toLowerCase()}-big.svg`}
           alt={`${walletType} logo`}
         />
-        <h1>Please confirm transaction</h1>
+        <h1>Please confirm the transaction</h1>
         <p className={styles.explanationParagraph}>
-          To continue, please confirm the trade via {walletType}
+          To continue, please confirm the trade via{' '}
+          {walletType !== 'Metamask' ? 'your ' : ''}
+          {walletType}
         </p>
         <Spinner small={true} />
         <div className={styles.transactionPair}>
@@ -83,13 +85,42 @@ class TransactionStatusPopup extends Component {
   renderWaitForSuccessContent(success) {
     return (
       <div>
-        <h1>Transaction {!success ? 'Confirmed' : 'Success'}</h1>
+        <img
+          src="images/transaction-in-progress.svg"
+          alt="transaction in progress"
+        />
+        <h1>Transaction {!success ? 'in progress' : 'Success'}</h1>
         {!success ? <Spinner small={true} /> : null}
         <button
           className={styles.buttonVerifyTransaction}
           onClick={this.goToEtherscan}
         >
           Verify Transaction
+        </button>
+      </div>
+    );
+  }
+
+  renderErrorContent() {
+    const { currentWalletInfo } = this.props;
+    const errorMessageTitle =
+      currentWalletInfo.transactionErrorType === 'rejected'
+        ? 'Transaction was rejected'
+        : 'Transaction failed';
+    const errorMessageDescription =
+      currentWalletInfo.transactionErrorType === 'rejected'
+        ? 'You did not confirm the transaction.'
+        : 'An error occured during the transaction.';
+    return (
+      <div>
+        <img src="images/transaction-error.svg" alt="transaction error" />
+        <h1>{errorMessageTitle}</h1>
+        <p className={styles.errorDescription}>{errorMessageDescription}</p>
+        <button
+          className={styles.buttonVerifyTransaction}
+          onClick={this.closePopup}
+        >
+          Back
         </button>
       </div>
     );
@@ -104,7 +135,7 @@ class TransactionStatusPopup extends Component {
       case 'success':
         return this.renderWaitForSuccessContent(true);
       case 'error':
-        return 'error';
+        return this.renderErrorContent();
       default:
         return null;
     }
