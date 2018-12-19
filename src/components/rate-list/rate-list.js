@@ -15,6 +15,7 @@ import {
   getExchangeRates,
 } from '../../ducks';
 
+import { SYNTH_SIGNS } from '../../synthsList';
 import styles from './rate-list.module.scss';
 
 class RateList extends Component {
@@ -84,7 +85,8 @@ class RateList extends Component {
           </td>
           <td />
           <td className={styles.rate}>
-            ${numbro(synth.rate).format(precision)}
+            {SYNTH_SIGNS[synth.synth]}
+            {numbro(synth.rate).format(precision)}
           </td>
           <td />
         </tr>
