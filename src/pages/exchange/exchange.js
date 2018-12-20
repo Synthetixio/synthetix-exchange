@@ -34,7 +34,7 @@ class Exchange extends Component {
     return currentWalletInfo && currentWalletInfo.selectedWallet ? (
       <TradingWidget />
     ) : (
-      <TradingWidget />
+      <WalletConnector />
     );
   }
 

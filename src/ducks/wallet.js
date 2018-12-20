@@ -12,6 +12,7 @@ const SET_TRANSACTION_STATUS_TO_CLEARED =
   'WALLET/SET_TRANSACTION_STATUS_TO_CLEARED';
 const SET_TRANSACTION_STATUS_TO_ERROR =
   'WALLET/SET_TRANSACTION_STATUS_TO_ERROR';
+const SET_GAS_PRICE_AND_LIMIT = 'WALLET/SET_GAS_PRICE_AND_LIMIT';
 
 const defaultTransactionState = {
   transactionStatus: null,
@@ -28,6 +29,8 @@ const defaultState = {
   walletSelectorIndex: 0,
   networkId: 1,
   balances: null,
+  gasPrice: null,
+  gasLimit: null,
   ...defaultTransactionState,
 };
 const reducer = (state = defaultState, action = {}) => {
@@ -71,6 +74,11 @@ const reducer = (state = defaultState, action = {}) => {
       const { fromSynth, fromAmount, toSynth, toAmount } = action.payload;
       const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
       return { ...state, transactionPair };
+    case SET_GAS_PRICE_AND_LIMIT:
+      return {
+        ...state,
+        ...action.payload,
+      };
     default:
       return state;
   }
@@ -130,6 +138,13 @@ export const setTransactionPair = transactionPair => {
   return {
     type: SET_TRANSACTION_PAIR,
     payload: transactionPair,
+  };
+};
+
+export const setGasPriceAndLimit = gasSettings => {
+  return {
+    type: SET_GAS_PRICE_AND_LIMIT,
+    payload: gasSettings,
   };
 };
 

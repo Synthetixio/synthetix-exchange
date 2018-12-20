@@ -22,6 +22,7 @@ import {
   setTransactionStatusToCleared,
   setTransactionStatusToError,
   setTransactionPair,
+  setGasPriceAndLimit,
 } from '../../ducks/wallet';
 
 import synthetixJsTools from '../../synthetixJsTool';
@@ -34,14 +35,13 @@ class TradingWidget extends Component {
     this.state = {
       inputValues: {},
       transactionSpeed: 'average',
-      gasPrice: DEFAULT_GAS_PRICE,
-      gasLimit: DEFAULT_GAS_LIMIT,
       gasAndSpeedInfo: null,
     };
     this.onFromSynthChange = this.onFromSynthChange.bind(this);
     this.onToSynthChange = this.onToSynthChange.bind(this);
     this.tradeMax = this.tradeMax.bind(this);
     this.confirmTrade = this.confirmTrade.bind(this);
+    this.onTransactionSpeedChange = this.onTransactionSpeedChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -67,9 +67,10 @@ class TradingWidget extends Component {
   }
 
   async componentDidMount() {
+    const { setGasPriceAndLimit } = this.props;
     const gasAndSpeedInfo = await getGasAndSpeedInfo();
-    this.setState({
-      gasAndSpeedInfo,
+    this.setState({ gasAndSpeedInfo });
+    setGasPriceAndLimit({
       gasPrice: gasAndSpeedInfo['average'].gwei * GWEI,
       gasLimit: DEFAULT_GAS_LIMIT,
     });
@@ -110,8 +111,13 @@ class TradingWidget extends Component {
       setTransactionStatusToError,
       setTransactionPair,
     } = this.props;
-    const { inputValues, gasPrice, gasLimit } = this.state;
-    const { selectedWallet, walletType } = currentWalletInfo;
+    const { inputValues } = this.state;
+    const {
+      selectedWallet,
+      walletType,
+      gasPrice,
+      gasLimit,
+    } = currentWalletInfo;
     let transactionResult;
     if (
       !synthetixJsTools.initialized ||
@@ -122,7 +128,6 @@ class TradingWidget extends Component {
 
     const fromAmount = inputValues[synthToExchange];
     const toAmount = inputValues[synthToBuy];
-
     try {
       toggleTransactionStatusPopup(true);
       setTransactionStatusToConfirm();
@@ -245,10 +250,13 @@ class TradingWidget extends Component {
 
   onTransactionSpeedChange(speed) {
     const { gasAndSpeedInfo } = this.state;
+    const { setGasPriceAndLimit } = this.props;
     return () => {
+      setGasPriceAndLimit({
+        gasPrice: gasAndSpeedInfo[speed].gwei * GWEI,
+      });
       this.setState({
         transactionSpeed: speed,
-        gasPrice: gasAndSpeedInfo[speed].gwei * GWEI,
       });
     };
   }
@@ -261,10 +269,11 @@ class TradingWidget extends Component {
           Select transaction speed
         </div>
         <div className={styles.gweiSelectorRow}>
-          {['slow', 'average', 'fast'].map(speed => {
+          {['slow', 'average', 'fast'].map((speed, i) => {
             return (
               <div
-                onClick={this.onTransactionSpeedChange}
+                key={i}
+                onClick={this.onTransactionSpeedChange(speed)}
                 className={`${styles.gweiSelector} ${
                   transactionSpeed === speed ? styles.selected : ''
                 }`}
@@ -325,6 +334,7 @@ const mapDispatchToProps = {
   setTransactionStatusToCleared,
   setTransactionStatusToError,
   setTransactionPair,
+  setGasPriceAndLimit,
 };
 
 TradingWidget.propTypes = {
@@ -338,6 +348,7 @@ TradingWidget.propTypes = {
   setTransactionStatusToSuccess: PropTypes.func.isRequired,
   setTransactionStatusToCleared: PropTypes.func.isRequired,
   setTransactionPair: PropTypes.func.isRequired,
+  setGasPriceAndLimit: PropTypes.func.isRequired,
 };
 
 export default connect(
