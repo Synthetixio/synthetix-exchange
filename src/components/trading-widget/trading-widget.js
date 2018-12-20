@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
-
+import {
+  getGasAndSpeedInfo,
+  DEFAULT_GAS_LIMIT,
+  DEFAULT_GAS_PRICE,
+  GWEI,
+} from '../../utils/ethUtils';
 import {
   getCurrentWalletInfo,
   getSynthToBuy,
@@ -28,6 +33,10 @@ class TradingWidget extends Component {
     super(props);
     this.state = {
       inputValues: {},
+      transactionSpeed: 'average',
+      gasPrice: DEFAULT_GAS_PRICE,
+      gasLimit: DEFAULT_GAS_LIMIT,
+      gasAndSpeedInfo: null,
     };
     this.onFromSynthChange = this.onFromSynthChange.bind(this);
     this.onToSynthChange = this.onToSynthChange.bind(this);
@@ -55,6 +64,15 @@ class TradingWidget extends Component {
         inputValues: { [synthToExchange]: 0, [synthToBuy]: 0 },
       });
     }
+  }
+
+  async componentDidMount() {
+    const gasAndSpeedInfo = await getGasAndSpeedInfo();
+    this.setState({
+      gasAndSpeedInfo,
+      gasPrice: gasAndSpeedInfo['average'].gwei * GWEI,
+      gasLimit: DEFAULT_GAS_LIMIT,
+    });
   }
 
   tradeMax() {
@@ -92,7 +110,7 @@ class TradingWidget extends Component {
       setTransactionStatusToError,
       setTransactionPair,
     } = this.props;
-    const { inputValues } = this.state;
+    const { inputValues, gasPrice, gasLimit } = this.state;
     const { selectedWallet, walletType } = currentWalletInfo;
     let transactionResult;
     if (
@@ -118,7 +136,11 @@ class TradingWidget extends Component {
         synthetixJsTools.utils.toUtf8Bytes(synthToExchange),
         synthetixJsTools.utils.parseEther(fromAmount),
         synthetixJsTools.utils.toUtf8Bytes(synthToBuy),
-        selectedWallet
+        selectedWallet,
+        {
+          gasPrice,
+          gasLimit,
+        }
       );
     } catch (e) {
       const transactionRejected =
@@ -220,6 +242,45 @@ class TradingWidget extends Component {
       </div>
     );
   }
+
+  onTransactionSpeedChange(speed) {
+    const { gasAndSpeedInfo } = this.state;
+    return () => {
+      this.setState({
+        transactionSpeed: speed,
+        gasPrice: gasAndSpeedInfo[speed].gwei * GWEI,
+      });
+    };
+  }
+
+  renderGweiSelector() {
+    const { transactionSpeed, gasAndSpeedInfo } = this.state;
+    return (
+      <div className={styles.gweiSelectorWrapper}>
+        <div className={styles.gweiSelectorHeading}>
+          Select transaction speed
+        </div>
+        <div className={styles.gweiSelectorRow}>
+          {['slow', 'average', 'fast'].map(speed => {
+            return (
+              <div
+                onClick={this.onTransactionSpeedChange}
+                className={`${styles.gweiSelector} ${
+                  transactionSpeed === speed ? styles.selected : ''
+                }`}
+              >
+                {speed}
+                <div className={styles.gweiSelectorPrice}>
+                  ${gasAndSpeedInfo ? gasAndSpeedInfo[speed].price : 0}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { synthToBuy, synthToExchange } = this.props;
     const { inputValues } = this.state;
@@ -234,6 +295,7 @@ class TradingWidget extends Component {
           </button>
         </div>
         {this.renderInputs()}
+        {this.renderGweiSelector()}
         <button
           disabled={!buttonIsEnabled}
           onClick={this.confirmTrade}
