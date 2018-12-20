@@ -3,11 +3,8 @@
 .transactionStatusPopup {
   width: 580px;
   display: flex;
-  padding: 50px;
+  padding: 50px 100px;
   justify-content: center;
-  & > div {
-    width: 55%;
-  }
 }
 
 .explanationParagraph {
@@ -55,4 +52,17 @@
   font-family: 'Aeonik-Regular';
   color: $color-font-grey;
   font-size: 16px;
+}
+
+.feeRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.feeRowHeading {
+  color: $color-font-grey;
+}
+
+.feeRowValue {
+  font-family: 'RobotoMono-Regular';
 }

@@ -72,6 +72,7 @@ class TradingWidget extends Component {
     this.setState({ gasAndSpeedInfo });
     setGasPriceAndLimit({
       gasPrice: gasAndSpeedInfo['average'].gwei * GWEI,
+      transactionPriceUsd: gasAndSpeedInfo['average'].price,
       gasLimit: DEFAULT_GAS_LIMIT,
     });
   }
@@ -254,6 +255,7 @@ class TradingWidget extends Component {
     return () => {
       setGasPriceAndLimit({
         gasPrice: gasAndSpeedInfo[speed].gwei * GWEI,
+        transactionPriceUsd: gasAndSpeedInfo[speed].price,
       });
       this.setState({
         transactionSpeed: speed,

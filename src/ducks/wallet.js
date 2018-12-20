@@ -31,6 +31,7 @@ const defaultState = {
   balances: null,
   gasPrice: null,
   gasLimit: null,
+  transactionPriceUsd: null,
   ...defaultTransactionState,
 };
 const reducer = (state = defaultState, action = {}) => {
@@ -142,9 +143,16 @@ export const setTransactionPair = transactionPair => {
 };
 
 export const setGasPriceAndLimit = gasSettings => {
+  const { gasPrice, gasLimit, transactionPriceUsd } = gasSettings;
+  let data = Object.assign(
+    {},
+    gasPrice && { gasPrice },
+    gasLimit && { gasLimit },
+    transactionPriceUsd && { transactionPriceUsd }
+  );
   return {
     type: SET_GAS_PRICE_AND_LIMIT,
-    payload: gasSettings,
+    payload: data,
   };
 };
 
