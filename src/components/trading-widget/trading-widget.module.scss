@@ -83,3 +83,50 @@
     opacity: 0.2;
   }
 }
+
+.gweiSelectorWrapper {
+  margin: 20px 0;
+}
+
+.gweiSelectorRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.gweiSelector {
+  cursor: pointer;
+  text-transform: capitalize;
+  flex: 1;
+  border-bottom: 2px solid $color-input-border;
+  font-size: 14px;
+  padding-bottom: 10px;
+  &:hover {
+    border-color: #ffffff;
+  }
+  &.selected {
+    &:nth-child(1) {
+      border-color: $color-red;
+    }
+    &:nth-child(2) {
+      border-color: $color-yellow;
+    }
+    &:nth-child(3) {
+      border-color: $color-green;
+    }
+  }
+}
+
+.gweiSelectorPrice {
+  font-size: 12px;
+  font-family: 'RobotoMono-Regular';
+  margin-top: 5px;
+  color: $color-font-grey;
+}
+
+.gweiSelectorHeading {
+  margin: 10px 0;
+  font-size: 12px;
+  text-align: left;
+  color: $color-font-grey;
+  font-family: 'RobotoMono-Regular';
+}

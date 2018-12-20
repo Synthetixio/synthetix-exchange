@@ -36,6 +36,17 @@ class TransactionStatusPopup extends Component {
     );
   }
 
+  renderFees() {
+    const { currentWalletInfo } = this.props;
+    const { transactionPriceUsd } = currentWalletInfo;
+    return (
+      <div className={styles.feeRow}>
+        <span className={styles.feeRowHeading}>Ethereum Network fees</span>
+        <span className={styles.feeRowValue}>${transactionPriceUsd}</span>
+      </div>
+    );
+  }
+
   renderConfirmationContent() {
     const { currentWalletInfo } = this.props;
     if (!currentWalletInfo.walletType) return null;
@@ -63,6 +74,7 @@ class TransactionStatusPopup extends Component {
           />
           {this.renderAmount(toAmount, toSynth)}
         </div>
+        {this.renderFees()}
       </div>
     );
   }
