@@ -1,0 +1,28 @@
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #2c2945;
+  padding: 20px;
+  background-color: #0a0817;
+  display: none;
+}
+
+.popupIsVisible {
+  display: block;
+}
+
+.popupInner {
+  text-align: right;
+}
+
+.closeButton {
+  border: 1px solid #2c2945;
+  border-radius: 4px;
+  background-color: #0a0817;
+  color: white;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  cursor: pointer;
+}

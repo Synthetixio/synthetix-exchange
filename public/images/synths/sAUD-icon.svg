@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="21px" version="1.1" viewBox="0 0 20 21">
+    <defs>
+        <linearGradient id="linearGradient-1" x1="13.8343366%" x2="86.3274219%" y1="15.5894484%" y2="86.8323449%">
+            <stop offset="0%" stop-color="#1BCE4D"/>
+            <stop offset="100%" stop-color="#FFE02C"/>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" fill="none" fill-rule="evenodd" stroke="none" stroke-width="1">
+        <g id="Exchange-(Wallet-Connected)" fill="url(#linearGradient-1)" transform="translate(-78.000000, -458.000000)">
+            <g id="Group-2-Copy-3" transform="translate(77.000000, 456.000000)">
+                <g id="Group-8">
+                    <circle id="Oval-Copy" cx="10.9378784" cy="12.3935815" r="9.94764398"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
