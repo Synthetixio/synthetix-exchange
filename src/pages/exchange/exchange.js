@@ -7,7 +7,6 @@ import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import WalletConnector from '../../components/wallet-connector';
 import LoadingScreen from '../../components/loading-screen';
-// import Chart from '../../components/chart';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
