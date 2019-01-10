@@ -8,3 +8,12 @@ export const SYNTH_SIGNS = {
   sXAU: 'oz',
   sKRW: '₩',
 };
+
+export const SYNTH_TYPES = {
+  sUSD: 'currencies',
+  sAUD: 'currencies',
+  sEUR: 'currencies',
+  sJPY: 'currencies',
+  sXAU: 'commodities',
+  sKRW: 'currencies',
+};

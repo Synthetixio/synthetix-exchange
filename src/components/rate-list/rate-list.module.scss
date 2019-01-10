@@ -1,6 +1,7 @@
 @import '../../styles/variables.scss';
 
 .rateList {
+  margin-top: 15px;
   h2 {
     margin: 0;
   }
@@ -28,7 +29,7 @@
   tr {
     cursor: pointer;
     &:hover {
-      background-color: $color-dark-grey;
+      background-color: #2e324145;
     }
   }
   tr + tr {
@@ -45,7 +46,7 @@
 }
 
 .tableRowActive {
-  background-color: lighten($color-dark-grey, 10%);
+  background-color: #2e32417d;
 }
 
 .tableBodySynth {

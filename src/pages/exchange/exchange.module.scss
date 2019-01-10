@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .exchange {
   padding: 48px;
   position: relative;
@@ -21,4 +23,24 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.chartWrapper {
+  height: 402px;
+  position: relative;
+  border: 1px solid $color-border;
+  border-radius: 4px;
+}
+
+.mask {
+  position: absolute;
+  width: 100%;
+  height: 400px;
+  z-index: 1;
+  border-left: 10px solid $color-background;
+  border-right: 10px solid $color-background;
+  border-top: 7px solid $color-background;
+  border-bottom: 5px solid $color-background;
+  border-radius: 4px;
+  pointer-events: none;
 }

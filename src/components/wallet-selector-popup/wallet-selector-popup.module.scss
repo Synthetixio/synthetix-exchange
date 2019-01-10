@@ -11,9 +11,9 @@
   height: 145px;
   margin-top: 20px;
   padding: 0 40px;
-  border: 1px solid #2c2945;
+  border: 1px solid $color-border;
   border-radius: 4px;
-  background-color: #0a0817;
+  background-color: darken($color-background, 2%);
   color: white;
   cursor: pointer;
   &:hover {

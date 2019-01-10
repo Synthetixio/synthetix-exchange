@@ -1,5 +1,7 @@
+@import '../../styles/variables.scss';
+
 .container {
-  border: 1px solid #2c2945;
+  border: 1px solid $color-border;
   width: 100%;
   padding: 25px;
   border-radius: 4px;
@@ -7,4 +9,8 @@
 
 .container + .container {
   margin-top: 25px;
+}
+
+.fullHeight {
+  height: 100%;
 }
