@@ -7,7 +7,7 @@ import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import WalletConnector from '../../components/wallet-connector';
 import LoadingScreen from '../../components/loading-screen';
-// import Chart from '../../components/chart';
+import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
 import TransactionStatusPopup from '../../components/transaction-status-popup';
@@ -28,6 +28,15 @@ import synthetixJsTools from '../../synthetixJsTool';
 
 import styles from './exchange.module.scss';
 
+const currencyTable = {
+  sUSD: 'USD',
+  sEUR: 'EUR',
+  sAUD: 'AUD',
+  sJPY: 'JPY',
+  sKRW: 'KRW',
+  sXAU: 'XAU',
+};
+
 class Exchange extends Component {
   renderWalletConnectorOrTradingWidget() {
     const { currentWalletInfo, synthToBuy, synthToExchange } = this.props;
@@ -38,12 +47,20 @@ class Exchange extends Component {
     );
   }
 
+  getSymbol() {
+    const { synthToBuy, synthToExchange } = this.props;
+    if (synthToBuy == 'sXAU') {
+      return 'XAU' + currencyTable[synthToExchange];
+    } else return currencyTable[synthToExchange] + currencyTable[synthToBuy];
+  }
+
   render() {
     const {
       walletSelectorPopupIsVisible,
       transactionStatusPopupIsVisible,
       loadingScreenIsVisible,
     } = this.props;
+    const symbol = this.getSymbol();
     return (
       <div className={styles.exchange}>
         <div className={styles.exchangeInner}>
@@ -54,7 +71,7 @@ class Exchange extends Component {
                 styles.exchangeLayoutColumnSmall
               }`}
             >
-              <Container>
+              <Container fullHeight={true}>
                 <BalanceChecker />
               </Container>
               <Container>
@@ -63,7 +80,17 @@ class Exchange extends Component {
             </div>
             <div className={styles.exchangeLayoutColumn}>
               <Container>
-                {/* <Chart /> */}
+                <div className={styles.chartWrapper}>
+                  <div className={styles.mask} />
+                  <TradingViewWidget
+                    symbol={symbol}
+                    theme={Themes.DARK}
+                    autosize
+                    allow_symbol_change={false}
+                    hide_legend={false}
+                    save_image={false}
+                  />
+                </div>
                 <RateList />
               </Container>
             </div>

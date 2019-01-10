@@ -1,12 +1,15 @@
+@import '../../styles/variables.scss';
+
 .popup {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid #2c2945;
+  border: 1px solid $color-border;
   padding: 20px;
-  background-color: #0a0817;
+  background-color: darken($color-background, 2%);
   display: none;
+  z-index: 1;
 }
 
 .popupIsVisible {
@@ -20,7 +23,7 @@
 .closeButton {
   border: 1px solid #2c2945;
   border-radius: 4px;
-  background-color: #0a0817;
+  background-color: darken($color-background, 2%);
   color: white;
   text-transform: uppercase;
   padding: 10px 20px;

@@ -19,12 +19,12 @@
   font-size: 16px;
   cursor: pointer;
   &:hover {
-    background-color: $color-dark-grey;
+    background-color: #2e324145;
   }
 }
 
 .tableBodyRowActive {
-  background-color: lighten($color-dark-grey, 10%);
+  background-color: #2e32417d;
 }
 
 .tableBodySynth {
@@ -57,7 +57,7 @@
   letter-spacing: 1px;
   font-size: 10px;
   color: #ffffff;
-  border: 1px solid #28253f;
+  border: 1px solid $color-border;
   border-radius: 4px;
   padding: 12px 15px;
   text-transform: uppercase;

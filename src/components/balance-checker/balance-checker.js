@@ -16,6 +16,8 @@ import { toggleLoadingScreen } from '../../ducks/ui';
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
 
+import { SYNTH_TYPES } from '../../synthsList';
+
 import styles from './balance-checker.module.scss';
 
 class BalanceChecker extends Component {
@@ -23,6 +25,7 @@ class BalanceChecker extends Component {
     super();
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
+    this.renderTable = this.renderTable.bind(this);
   }
 
   selectSynthToExchange(synth) {
@@ -104,33 +107,35 @@ class BalanceChecker extends Component {
     }
   }
 
-  renderBalance() {
+  renderBalance(synthType) {
     const { availableSynths, synthToExchange, currentWalletInfo } = this.props;
     const { balances } = currentWalletInfo;
     if (!availableSynths) return;
-    return availableSynths.map((synth, i) => {
-      return (
-        <tr
-          onClick={this.selectSynthToExchange(synth)}
-          className={`${styles.tableBodyRow} ${
-            synthToExchange && synthToExchange === synth
-              ? styles.tableBodyRowActive
-              : ''
-          }`}
-          key={i}
-        >
-          <td className={styles.tableBodySynth}>
-            <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
-            <span>{synth}</span>
-          </td>
-          <td className={styles.tableBodyBalance}>
-            {balances && balances[synth]
-              ? numbro(Number(balances[synth])).format('0,0.00')
-              : null}
-          </td>
-        </tr>
-      );
-    });
+    return availableSynths
+      .filter(synth => SYNTH_TYPES[synth] === synthType)
+      .map((synth, i) => {
+        return (
+          <tr
+            onClick={this.selectSynthToExchange(synth)}
+            className={`${styles.tableBodyRow} ${
+              synthToExchange && synthToExchange === synth
+                ? styles.tableBodyRowActive
+                : ''
+            }`}
+            key={i}
+          >
+            <td className={styles.tableBodySynth}>
+              <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
+              <span>{synth}</span>
+            </td>
+            <td className={styles.tableBodyBalance}>
+              {balances && balances[synth]
+                ? numbro(Number(balances[synth])).format('0,0.00')
+                : null}
+            </td>
+          </tr>
+        );
+      });
   }
 
   renderWidgetHeader() {
@@ -149,20 +154,32 @@ class BalanceChecker extends Component {
     );
   }
 
+  renderTable(synthType) {
+    const balance = this.renderBalance(synthType);
+    if (!balance || balance.length === 0) return;
+    return (
+      <table cellPadding="0" cellSpacing="0" className={styles.table}>
+        <thead>
+          <tr>
+            <th>
+              <h3 className={styles.tableHeading}>{synthType}</h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>{balance}</tbody>
+      </table>
+    );
+  }
+
+  renderSynths() {
+    return ['currencies', 'commodities', 'stocks'].map(this.renderTable);
+  }
+
   render() {
     return (
       <div className={styles.balanceChecker}>
         {this.renderWidgetHeader()}
-        <table cellPadding="0" cellSpacing="0" className={styles.table}>
-          <thead>
-            <tr>
-              <th>
-                <h3 className={styles.tableHeading}>Currencies</h3>
-              </th>
-            </tr>
-          </thead>
-          <tbody>{this.renderBalance()}</tbody>
-        </table>
+        {this.renderSynths()}
       </div>
     );
   }

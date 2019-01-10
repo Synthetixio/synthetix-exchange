@@ -101,7 +101,7 @@ class RateList extends Component {
           <thead>
             <tr>
               <th>
-                <h2>Current Rate</h2>
+                <h2>Current Rates</h2>
               </th>
               <th>{/* <h3>Low</h3> */}</th>
               <th className={styles.rate}>
