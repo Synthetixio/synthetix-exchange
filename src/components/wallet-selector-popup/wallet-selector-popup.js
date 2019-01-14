@@ -169,7 +169,9 @@ class WalletSelectorPopup extends Component {
               unlocked: false,
             });
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     };
   }
 
