@@ -24,8 +24,6 @@ import {
 } from '../../ducks/';
 import { setAvailableSynths } from '../../ducks/synths';
 
-import synthetixJsTools from '../../synthetixJsTool';
-
 import styles from './exchange.module.scss';
 
 const currencyTable = {
@@ -41,7 +39,7 @@ const currencyTable = {
 
 class Exchange extends Component {
   renderWalletConnectorOrTradingWidget() {
-    const { currentWalletInfo, synthToBuy, synthToExchange } = this.props;
+    const { currentWalletInfo } = this.props;
     return currentWalletInfo && currentWalletInfo.selectedWallet ? (
       <TradingWidget />
     ) : (

@@ -87,7 +87,7 @@ class TransactionStatusPopup extends Component {
     if (networkName === 'mainnet') {
       networkName = '';
     }
-    const network = window.open(
+    window.open(
       `https://${
         networkName ? networkName + '.' : ''
       }etherscan.io/tx/${transactionHash}`

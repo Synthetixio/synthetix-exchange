@@ -36,27 +36,33 @@ const defaultState = {
 };
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
-    case CONNECT_WALLET:
+    case CONNECT_WALLET: {
       return { ...state, ...action.payload };
-    case SET_SELECTED_WALLET:
+    }
+    case SET_SELECTED_WALLET: {
       const { availableWallets, selectedWallet } = action.payload;
       return { ...state, availableWallets, selectedWallet };
-    case SET_BALANCES:
+    }
+    case SET_BALANCES: {
       return { ...state, balances: action.payload };
-    case SET_TRANSACTION_STATUS_TO_CONFIRM:
+    }
+    case SET_TRANSACTION_STATUS_TO_CONFIRM: {
       return {
         ...state,
         ...defaultTransactionState,
         transactionStatus: 'confirm',
       };
-    case SET_TRANSACTION_STATUS_TO_PROGRESS:
+    }
+    case SET_TRANSACTION_STATUS_TO_PROGRESS: {
       return {
         ...state,
         transactionStatus: 'progress',
         transactionHash: action.payload,
       };
-    case SET_TRANSACTION_STATUS_TO_SUCCESS:
+    }
+    case SET_TRANSACTION_STATUS_TO_SUCCESS: {
       return { ...state, transactionStatus: 'success' };
+    }
     case SET_TRANSACTION_STATUS_TO_CLEARED: {
       return {
         ...state,
@@ -65,21 +71,24 @@ const reducer = (state = defaultState, action = {}) => {
         transactionStatus: 'cleared',
       };
     }
-    case SET_TRANSACTION_STATUS_TO_ERROR:
+    case SET_TRANSACTION_STATUS_TO_ERROR: {
       return {
         ...state,
         transactionStatus: 'error',
         transactionErrorType: action.payload,
       };
-    case SET_TRANSACTION_PAIR:
+    }
+    case SET_TRANSACTION_PAIR: {
       const { fromSynth, fromAmount, toSynth, toAmount } = action.payload;
       const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
       return { ...state, transactionPair };
-    case SET_GAS_PRICE_AND_LIMIT:
+    }
+    case SET_GAS_PRICE_AND_LIMIT: {
       return {
         ...state,
         ...action.payload,
       };
+    }
     default:
       return state;
   }
