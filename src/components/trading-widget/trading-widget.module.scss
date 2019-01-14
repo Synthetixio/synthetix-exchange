@@ -46,10 +46,13 @@
   right: 15px;
   transform: translateY(-50%);
   display: flex;
+  align-items: center;
   font-family: 'Aeonik-Bold';
-  font-size: 16px;
+  font-size: 14px;
   img {
     margin-right: 12px;
+    width: 25px;
+    height: 25px;
   }
 }
 
