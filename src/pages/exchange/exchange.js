@@ -35,6 +35,8 @@ const currencyTable = {
   sJPY: 'JPY',
   sKRW: 'KRW',
   sXAU: 'XAU',
+  sGBP: 'GBP',
+  sCHF: 'CHF',
 };
 
 class Exchange extends Component {

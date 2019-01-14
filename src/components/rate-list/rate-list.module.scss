@@ -54,7 +54,10 @@
   font-size: 16px;
   letter-spacing: 0;
   display: flex;
+  align-items: center;
   img {
     margin-right: 12px;
+    width: 35px;
+    height: 35px;
   }
 }

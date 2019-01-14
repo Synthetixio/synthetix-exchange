@@ -1,4 +1,4 @@
-export default ['sUSD', 'sAUD', 'sEUR', 'sJPY', 'sXAU', 'sKRW'];
+export default ['sUSD', 'sAUD', 'sEUR', 'sJPY', 'sXAU', 'sKRW', 'sGBP', 'sCHF'];
 
 export const SYNTH_SIGNS = {
   sUSD: '$',
@@ -7,6 +7,8 @@ export const SYNTH_SIGNS = {
   sJPY: '¥',
   sXAU: 'oz',
   sKRW: '₩',
+  sGBP: '£',
+  sCHF: 'Fr',
 };
 
 export const SYNTH_TYPES = {
@@ -16,4 +18,6 @@ export const SYNTH_TYPES = {
   sJPY: 'currencies',
   sXAU: 'commodities',
   sKRW: 'currencies',
+  sGBP: 'currencies',
+  sCHF: 'currencies',
 };
