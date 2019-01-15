@@ -5,7 +5,6 @@ import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
 import {
   getGasAndSpeedInfo,
   DEFAULT_GAS_LIMIT,
-  DEFAULT_GAS_PRICE,
   GWEI,
 } from '../../utils/ethUtils';
 import {

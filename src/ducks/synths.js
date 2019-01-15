@@ -13,9 +13,10 @@ const defaultState = {
 };
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
-    case SET_AVAILABLE_SYNTHS:
+    case SET_AVAILABLE_SYNTHS: {
       return { ...state, availableSynths: action.payload };
-    case SET_SYNTH_TO_EXCHANGE:
+    }
+    case SET_SYNTH_TO_EXCHANGE: {
       let updateObject = {};
       updateObject['fromSynth'] = action.payload;
       if (state.toSynth === action.payload) {
@@ -25,10 +26,13 @@ const reducer = (state = defaultState, action = {}) => {
         updateObject['toSynth'] = filteredSynths[0];
       }
       return { ...state, ...updateObject };
-    case SET_SYNTH_TO_BUY:
+    }
+    case SET_SYNTH_TO_BUY: {
       return { ...state, toSynth: action.payload };
-    case SET_EXCHANGE_RATES:
+    }
+    case SET_EXCHANGE_RATES: {
       return { ...state, exchangeRates: action.payload };
+    }
     default:
       return state;
   }
