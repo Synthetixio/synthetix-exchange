@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/Havven/synthetix-exchange.svg?style=svg&circle-token=fd3dc3a4369c1e281e05262f695d59f94cf5340f)](https://circleci.com/gh/Havven/synthetix-exchange)
+[![CircleCI](https://circleci.com/gh/Synthetixio/synthetix-exchange.svg?style=svg&circle-token=fd3dc3a4369c1e281e05262f695d59f94cf5340f)](https://circleci.com/gh/Synthetixio/synthetix-exchange)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
