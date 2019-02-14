@@ -16,5 +16,15 @@
   font-style: italic;
   color: $color-font-grey;
   font-size: 12px;
-  margin-left: 10px;
+  margin: 0 20px 0 10px;
+}
+
+.envButton {
+  text-transform: uppercase;
+  border: 1px solid $color-input-border;
+  background-color: $color-background;
+  color: #ffffff;
+  height: 50px;
+  font-size: 14px;
+  padding: 0 20px;
 }
