@@ -53,6 +53,15 @@
   }
 }
 
+.totalBalance {
+  font-family: 'Aeonik-Bold';
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 15px 0;
+}
+
 .widgetHeaderButton {
   cursor: pointer;
   background-color: $color-background;

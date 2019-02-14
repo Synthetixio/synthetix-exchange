@@ -23,6 +23,10 @@ import styles from './balance-checker.module.scss';
 class BalanceChecker extends Component {
   constructor() {
     super();
+    this.state = {
+      totalBalance: null,
+      balances: null,
+    };
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.renderTable = this.renderTable.bind(this);
@@ -55,12 +59,28 @@ class BalanceChecker extends Component {
         return synthetixJsTools.havvenJs[synth].balanceOf(selectedWallet);
       })
     );
+
+    const synthsBalance = {};
+    const totalBalance = await Promise.all(
+      balances.map((balance, i) => {
+        return synthetixJsTools.havvenJs.Synthetix.effectiveValue(
+          synthetixJsTools.utils.toUtf8Bytes(availableSynths[i]),
+          balance,
+          synthetixJsTools.utils.toUtf8Bytes('sUSD')
+        );
+      })
+    );
+
+    balances.forEach(async (balance, i) => {
+      synthsBalance[availableSynths[i]] = formatBigNumber(balance, 6);
+    });
+
     this.setState({
       balances: balances.map(balance => formatBigNumber(balance, 6)),
-    });
-    const synthsBalance = {};
-    balances.forEach((balance, i) => {
-      synthsBalance[availableSynths[i]] = formatBigNumber(balance, 6);
+      totalBalance: formatBigNumber(
+        totalBalance.reduce((pre, curr) => pre.add(curr)),
+        2
+      ),
     });
     toggleLoadingScreen(false);
     setWalletBalances(synthsBalance);
@@ -154,11 +174,27 @@ class BalanceChecker extends Component {
     );
   }
 
-  renderTable(synthType) {
+  renderTotalBalance() {
+    const { totalBalance } = this.state;
+    if (!totalBalance) return;
+    return (
+      <div className={styles.totalBalance}>
+        <h3>Total</h3>
+        <div className={styles.totalBalanceAmount}>{totalBalance} sUSD</div>
+      </div>
+    );
+  }
+
+  renderTable(synthType, index) {
     const balance = this.renderBalance(synthType);
     if (!balance || balance.length === 0) return;
     return (
-      <table cellPadding="0" cellSpacing="0" className={styles.table}>
+      <table
+        key={index}
+        cellPadding="0"
+        cellSpacing="0"
+        className={styles.table}
+      >
         <thead>
           <tr>
             <th>
@@ -179,6 +215,7 @@ class BalanceChecker extends Component {
     return (
       <div className={styles.balanceChecker}>
         {this.renderWidgetHeader()}
+        {this.renderTotalBalance()}
         {this.renderSynths()}
       </div>
     );
