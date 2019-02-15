@@ -8,7 +8,8 @@ import ConnectToWallet from '../connect-to-wallet';
 import { getCurrentScreen, getAvailableSynths } from '../../ducks/';
 import { updateExchangeRates } from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
-
+import { connectToWallet } from '../../ducks/wallet';
+import { getEthereumNetwork } from '../../utils/metamaskTools';
 import synthetixJsTools from '../../synthetixJsTool';
 
 import styles from './root.module.scss';
@@ -39,11 +40,15 @@ class Root extends Component {
     toggleLoadingScreen(false);
   }
 
-  componentDidMount() {
-    const { toggleLoadingScreen } = this.props;
+  async componentDidMount() {
+    const { toggleLoadingScreen, connectToWallet } = this.props;
     toggleLoadingScreen(true);
     this.updatePrices();
     setInterval(this.updatePrices, 60 * 1000);
+    const { networkId } = await getEthereumNetwork();
+    connectToWallet({
+      networkId,
+    });
   }
 
   componentWillMount() {
@@ -76,12 +81,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   updateExchangeRates,
   toggleLoadingScreen,
+  connectToWallet,
 };
 
 Root.propTypes = {
   currentScreen: PropTypes.string.isRequired,
   availableSynths: PropTypes.array.isRequired,
   toggleLoadingScreen: PropTypes.func.isRequired,
+  connectToWallet: PropTypes.func.isRequired,
 };
 
 export default connect(

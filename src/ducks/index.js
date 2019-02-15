@@ -22,6 +22,10 @@ export const transactionStatusPopupIsVisible = state => {
   return state.ui.transactionStatusPopupIsVisible;
 };
 
+export const testnetPopupIsVisible = state => {
+  return state.ui.testnetPopupIsVisible;
+};
+
 export const loadingScreenIsVisible = state => {
   return state.ui.loadingScreenIsVisible;
 };

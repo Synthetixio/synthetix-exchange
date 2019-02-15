@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { getCurrentWalletInfo } from '../../ducks/';
+import { getCurrentWalletInfo, testnetPopupIsVisible } from '../../ducks/';
+import { toggleTestnetPopup } from '../../ducks/ui';
 
 import WalletAddressSwitcher from '../wallet-address-switcher';
 import styles from './header.module.scss';
@@ -10,10 +11,30 @@ import styles from './header.module.scss';
 class Header extends Component {
   constructor() {
     super();
+    this.onEnvButtonClick = this.onEnvButtonClick.bind(this);
   }
 
   onEnvButtonClick() {
-    console.log('yo');
+    const {
+      toggleTestnetPopup,
+      testnetPopupIsVisible,
+      currentWalletInfo,
+    } = this.props;
+    if (!currentWalletInfo.networkId || currentWalletInfo.networkId !== '42')
+      return;
+    toggleTestnetPopup(!testnetPopupIsVisible);
+  }
+
+  renderNetworkName() {
+    const { currentWalletInfo } = this.props;
+    switch (currentWalletInfo.networkId) {
+      case '1':
+        return 'MAINNET';
+      case '42':
+        return 'KOVAN';
+      default:
+        return 'MAINNET';
+    }
   }
 
   render() {
@@ -27,7 +48,7 @@ class Header extends Component {
             onClick={this.onEnvButtonClick}
             className={styles.envButton}
           >
-            Mainnet
+            {this.renderNetworkName()}
           </button>
         </div>
         <WalletAddressSwitcher />
@@ -39,13 +60,18 @@ class Header extends Component {
 const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
+    testnetPopupIsVisible: testnetPopupIsVisible(state),
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  toggleTestnetPopup,
+};
 
 Header.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
+  testnetPopupIsVisible: PropTypes.bool.isRequired,
+  toggleTestnetPopup: PropTypes.func.isRequired,
 };
 
 export default connect(

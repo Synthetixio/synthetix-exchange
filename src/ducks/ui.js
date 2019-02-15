@@ -1,12 +1,14 @@
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 const TOGGLE_WALLET_SELECTOR_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
 const TOGGLE_TRANSACTION_STATUS_POPUP = 'UI/TOGGLE_TRANSACTION_STATUS_POPUP';
+const TOGGLE_TESTNET_POPUP = 'UI/TOGGLE_TESTNET_POPUP';
 const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
 
 const defaultState = {
   currentScreen: 'exchange',
   walletSelectorPopupIsVisible: false,
   transactionStatusPopupIsVisible: false,
+  testnetPopupIsVisible: false,
   loadingScreenIsVisible: false,
 };
 const reducer = (state = defaultState, action = {}) => {
@@ -26,6 +28,11 @@ const reducer = (state = defaultState, action = {}) => {
       return {
         ...state,
         transactionStatusPopupIsVisible: action.payload,
+      };
+    case TOGGLE_TESTNET_POPUP:
+      return {
+        ...state,
+        testnetPopupIsVisible: action.payload,
       };
     case TOGGLE_LOADING_SCREEN:
       return {
@@ -47,6 +54,10 @@ export const toggleWalletSelectorPopup = isVisible => {
 
 export const toggleTransactionStatusPopup = isVisible => {
   return { type: TOGGLE_TRANSACTION_STATUS_POPUP, payload: isVisible };
+};
+
+export const toggleTestnetPopup = isVisible => {
+  return { type: TOGGLE_TESTNET_POPUP, payload: isVisible };
 };
 
 export const toggleLoadingScreen = isVisible => {

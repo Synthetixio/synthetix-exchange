@@ -1,0 +1,28 @@
+@import '../../styles/variables.scss';
+
+.testnetPopup {
+  padding: 30px;
+  h1 {
+    margin: 0;
+  }
+}
+
+.steps {
+  text-align: left;
+  margin-top: 40px;
+  a {
+    color: #ffffff;
+    text-decoration: none;
+    font-family: 'Aeonik-Bold';
+  }
+}
+
+.step + .step {
+  margin-top: 20px;
+}
+
+.stepNumber {
+  font-size: 18px;
+  font-family: 'Aeonik-Bold';
+  margin-right: 10px;
+}
