@@ -20,7 +20,7 @@ class Header extends Component {
       testnetPopupIsVisible,
       currentWalletInfo,
     } = this.props;
-    if (!currentWalletInfo.networkId || currentWalletInfo.networkId !== '42')
+    if (!currentWalletInfo.networkId || currentWalletInfo.networkId === '1')
       return;
     toggleTestnetPopup(!testnetPopupIsVisible);
   }
@@ -30,6 +30,8 @@ class Header extends Component {
     switch (currentWalletInfo.networkId) {
       case '1':
         return 'MAINNET';
+      case '3':
+        return 'ROPSTEN';
       case '42':
         return 'KOVAN';
       default:
