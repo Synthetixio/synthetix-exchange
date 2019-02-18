@@ -51,3 +51,7 @@ export const getSynthToExchange = state => {
 export const getExchangeRates = state => {
   return state.synths.exchangeRates;
 };
+
+export const getEthRate = state => {
+  return state.synths.ethRate;
+};

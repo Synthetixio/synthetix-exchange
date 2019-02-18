@@ -27,16 +27,22 @@ class Root extends Component {
       toggleLoadingScreen,
     } = this.props;
     if (!availableSynths) return;
-    let rateObject = {};
-    const rates = await synthetixJsTools.havvenJs.ExchangeRates.ratesForCurrencies(
-      availableSynths.map(synth => synthetixJsTools.utils.toUtf8Bytes(synth))
-    );
-    rates.forEach((rate, i) => {
-      rateObject[availableSynths[i]] = Number(
+    let formattedSynthRates = {};
+    const [synthRates, ethRate] = await Promise.all([
+      synthetixJsTools.havvenJs.ExchangeRates.ratesForCurrencies(
+        availableSynths.map(synth => synthetixJsTools.utils.toUtf8Bytes(synth))
+      ),
+      synthetixJsTools.havvenJs.Depot.usdToEthPrice(),
+    ]);
+    synthRates.forEach((rate, i) => {
+      formattedSynthRates[availableSynths[i]] = Number(
         synthetixJsTools.havvenJs.utils.formatEther(rate)
       );
     });
-    updateExchangeRates(rateObject);
+    const formattedEthRate = synthetixJsTools.havvenJs.utils.formatEther(
+      ethRate
+    );
+    updateExchangeRates(formattedSynthRates, formattedEthRate);
     toggleLoadingScreen(false);
   }
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,7 @@ import {
   getCurrentWalletInfo,
   getAvailableSynths,
   getSynthToExchange,
+  getEthRate,
 } from '../../ducks/';
 import { setSynthToExchange } from '../../ducks/synths';
 import { setWalletBalances } from '../../ducks/wallet';
@@ -46,27 +47,28 @@ class BalanceChecker extends Component {
       availableSynths,
       setWalletBalances,
       toggleLoadingScreen,
+      ethRate,
     } = this.props;
-    if (
-      !synthetixJsTools.initialized ||
-      !currentWalletInfo ||
-      !currentWalletInfo.selectedWallet
-    )
+    const { havvenJs, utils, initialized, provider } = synthetixJsTools;
+    if (!initialized || !currentWalletInfo || !currentWalletInfo.selectedWallet)
       return;
     const { selectedWallet } = currentWalletInfo;
+    let ethBalance = await provider.getBalance(selectedWallet);
+    ethBalance = formatBigNumber(ethBalance, 2);
+    const ethBalanceValue = ethBalance * ethRate;
     const balances = await Promise.all(
       availableSynths.map(synth => {
-        return synthetixJsTools.havvenJs[synth].balanceOf(selectedWallet);
+        return havvenJs[synth].balanceOf(selectedWallet);
       })
     );
 
     const synthsBalance = {};
     const totalBalance = await Promise.all(
       balances.map((balance, i) => {
-        return synthetixJsTools.havvenJs.Synthetix.effectiveValue(
-          synthetixJsTools.utils.toUtf8Bytes(availableSynths[i]),
+        return havvenJs.Synthetix.effectiveValue(
+          utils.toUtf8Bytes(availableSynths[i]),
           balance,
-          synthetixJsTools.utils.toUtf8Bytes('sUSD')
+          utils.toUtf8Bytes('sUSD')
         );
       })
     );
@@ -74,9 +76,12 @@ class BalanceChecker extends Component {
     balances.forEach(async (balance, i) => {
       synthsBalance[availableSynths[i]] = formatBigNumber(balance, 6);
     });
-
     this.setState({
       balances: balances.map(balance => formatBigNumber(balance, 6)),
+      ethBalance: {
+        amount: ethBalance,
+        value: ethBalanceValue.toFixed(2),
+      },
       totalBalance: formatBigNumber(
         totalBalance.reduce((pre, curr) => pre.add(curr)),
         2
@@ -135,25 +140,44 @@ class BalanceChecker extends Component {
       .filter(synth => SYNTH_TYPES[synth] === synthType)
       .map((synth, i) => {
         return (
-          <tr
-            onClick={this.selectSynthToExchange(synth)}
-            className={`${styles.tableBodyRow} ${
-              synthToExchange && synthToExchange === synth
-                ? styles.tableBodyRowActive
-                : ''
-            }`}
-            key={i}
-          >
-            <td className={styles.tableBodySynth}>
-              <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
-              <span>{synth}</span>
-            </td>
-            <td className={styles.tableBodyBalance}>
-              {balances && balances[synth]
-                ? numbro(Number(balances[synth])).format('0,0.00')
-                : null}
-            </td>
-          </tr>
+          <Fragment key={i}>
+            <tr
+              onClick={this.selectSynthToExchange(synth)}
+              className={`${styles.tableBodyRow} ${
+                synthToExchange && synthToExchange === synth
+                  ? styles.tableBodyRowActive
+                  : ''
+              }`}
+              key={`synth-${i}`}
+            >
+              <td className={styles.tableBodySynth}>
+                <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
+                <span>{synth}</span>
+              </td>
+              <td className={styles.tableBodyBalance}>
+                {balances && balances[synth]
+                  ? numbro(Number(balances[synth])).format('0,0.00')
+                  : null}
+              </td>
+            </tr>
+            {synth === 'sUSD' &&
+            synthToExchange &&
+            synthToExchange === synth &&
+            balances ? (
+              <tr className={styles.tableBodyRowActive} key={`button-${i}`}>
+                <td colSpan="2" className={styles.tableBodyButtonRow}>
+                  <button
+                    onClick={this.handleRefresh}
+                    className={`${styles.balanceCheckerButton} ${
+                      styles.balanceCheckerButtonWhite
+                    }`}
+                  >
+                    Buy with ETH
+                  </button>
+                </td>
+              </tr>
+            ) : null}
+          </Fragment>
         );
       });
   }
@@ -166,7 +190,7 @@ class BalanceChecker extends Component {
         <h2 className={styles.balanceCheckerHeading}>Balances</h2>
         <button
           onClick={this.handleRefresh}
-          className={styles.widgetHeaderButton}
+          className={styles.balanceCheckerButton}
         >
           Refresh
         </button>
@@ -175,13 +199,31 @@ class BalanceChecker extends Component {
   }
 
   renderTotalBalance() {
-    const { totalBalance } = this.state;
+    const { totalBalance, ethBalance } = this.state;
     if (!totalBalance) return;
     return (
-      <div className={styles.totalBalance}>
-        <h3>Total</h3>
-        <div className={styles.totalBalanceAmount}>{totalBalance} sUSD</div>
-      </div>
+      <table cellPadding="0" cellSpacing="0" className={styles.table}>
+        <thead>
+          <tr>
+            <th>
+              <h3 className={styles.tableHeading}>Total</h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className={styles.tableBodyRow}>
+            <td className={styles.tableBodySynth}>Synths</td>
+            <td className={styles.tableBodyBalance}>{totalBalance}</td>
+          </tr>
+          <tr className={styles.tableBodyRow}>
+            <td className={styles.tableBodySynth}>ETH</td>
+            <td className={styles.tableBodyBalance}>
+              <div>{ethBalance.amount}</div>
+              <div>{ethBalance.value}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     );
   }
 
@@ -227,6 +269,7 @@ const mapStateToProps = state => {
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
     synthToExchange: getSynthToExchange(state),
+    ethRate: getEthRate(state),
   };
 };
 
@@ -243,6 +286,7 @@ BalanceChecker.propTypes = {
   setSynthToExchange: PropTypes.func.isRequired,
   setWalletBalances: PropTypes.func.isRequired,
   toggleLoadingScreen: PropTypes.func.isRequired,
+  ethRate: PropTypes.string,
 };
 
 export default connect(
