@@ -25,8 +25,21 @@ class DepotPopup extends Component {
     return (
       <Popup isVisible={isVisible} closePopup={this.closePopup}>
         <div className={styles.depotPopup}>
-          <h1>This is DEPOT POPUP</h1>
-          <h2>blablabla</h2>
+          <h1>Buy sUSD with ETH</h1>
+          <p>
+            Here you can purchase sUSD through our Depot, which is a platform
+            available through Mintr and Swappr that allows sUSD buyers to buy
+            from SNX holders who have minted sUSD.{' '}
+          </p>
+          <div className={styles.inputLabelsRow}>
+            <span>Amount</span>
+            <span>Buy Max</span>
+          </div>
+          <div className={styles.inputsRow}>
+            <input type="text" />
+            <img src="/images/swap-icon.svg" />
+            <input type="text" />
+          </div>
         </div>
       </Popup>
     );

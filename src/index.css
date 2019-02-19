@@ -13,6 +13,10 @@ body {
   box-sizing: border-box;
 }
 
+#root {
+  position: relative;
+}
+
 @font-face {
   font-family: 'Aeonik-Bold';
   src: url('/fonts/Aeonik-Bold.eot');
