@@ -12,7 +12,7 @@ import {
 } from '../../ducks/';
 import { setSynthToExchange } from '../../ducks/synths';
 import { setWalletBalances } from '../../ducks/wallet';
-import { toggleLoadingScreen } from '../../ducks/ui';
+import { toggleLoadingScreen, toggleDepotPopup } from '../../ducks/ui';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
@@ -31,6 +31,7 @@ class BalanceChecker extends Component {
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.renderTable = this.renderTable.bind(this);
+    this.showDepotPopup = this.showDepotPopup.bind(this);
   }
 
   selectSynthToExchange(synth) {
@@ -39,6 +40,11 @@ class BalanceChecker extends Component {
       if (synthToExchange === synth) return;
       setSynthToExchange(synth);
     };
+  }
+
+  showDepotPopup() {
+    const { toggleDepotPopup } = this.props;
+    toggleDepotPopup(true);
   }
 
   async refreshData() {
@@ -167,7 +173,7 @@ class BalanceChecker extends Component {
               <tr className={styles.tableBodyRowActive} key={`button-${i}`}>
                 <td colSpan="2" className={styles.tableBodyButtonRow}>
                   <button
-                    onClick={this.handleRefresh}
+                    onClick={this.showDepotPopup}
                     className={`${styles.balanceCheckerButton} ${
                       styles.balanceCheckerButtonWhite
                     }`}
@@ -277,6 +283,7 @@ const mapDispatchToProps = {
   setSynthToExchange,
   setWalletBalances,
   toggleLoadingScreen,
+  toggleDepotPopup,
 };
 
 BalanceChecker.propTypes = {
@@ -286,6 +293,7 @@ BalanceChecker.propTypes = {
   setSynthToExchange: PropTypes.func.isRequired,
   setWalletBalances: PropTypes.func.isRequired,
   toggleLoadingScreen: PropTypes.func.isRequired,
+  toggleDepotPopup: PropTypes.func.isRequired,
   ethRate: PropTypes.string,
 };
 

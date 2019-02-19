@@ -26,6 +26,10 @@ export const testnetPopupIsVisible = state => {
   return state.ui.testnetPopupIsVisible;
 };
 
+export const depotPopupIsVisible = state => {
+  return state.ui.depotPopupIsVisible;
+};
+
 export const loadingScreenIsVisible = state => {
   return state.ui.loadingScreenIsVisible;
 };
