@@ -1,7 +1,7 @@
 import synthetixJsTools from '../synthetixJsTool';
 
 export const formatBigNumber = (amount, decimals, commify) => {
-  if (!amount) return '-';
+  if (!amount) return;
   commify = !!commify;
   const amountString = synthetixJsTools.utils.formatEther(amount, { commify });
 
