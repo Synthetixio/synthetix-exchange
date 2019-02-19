@@ -15,12 +15,18 @@ body {
 
 @font-face {
   font-family: 'Aeonik-Bold';
-  src: url('/fonts/AeonikTrial-Bold.ttf');
+  src: url('/fonts/Aeonik-Bold.eot');
+  src: url('/fonts/Aeonik-Bold.woff2') format('woff2'),
+    url('/fonts/Aeonik-Bold.woff') format('woff'),
+    url('/fonts/Aeonik-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Aeonik-Regular';
-  src: url('/fonts/AeonikTrial-Regular.ttf');
+  src: url('/fonts/Aeonik-Regular.eot');
+  src: url('/fonts/Aeonik-Regular.woff2') format('woff2'),
+    url('/fonts/Aeonik-Regular.woff') format('woff'),
+    url('/fonts/Aeonik-Regular.ttf') format('truetype');
 }
 
 @font-face {
