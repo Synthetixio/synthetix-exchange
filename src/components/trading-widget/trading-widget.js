@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import GweiSelector from '../gwei-selector';
 import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
-import {
-  getGasAndSpeedInfo,
-  DEFAULT_GAS_LIMIT,
-  GWEI,
-} from '../../utils/ethUtils';
 import {
   getCurrentWalletInfo,
   getSynthToBuy,
@@ -21,7 +17,6 @@ import {
   setTransactionStatusToCleared,
   setTransactionStatusToError,
   setTransactionPair,
-  setGasPriceAndLimit,
 } from '../../ducks/wallet';
 
 import synthetixJsTools from '../../synthetixJsTool';
@@ -40,7 +35,6 @@ class TradingWidget extends Component {
     this.onToSynthChange = this.onToSynthChange.bind(this);
     this.tradeMax = this.tradeMax.bind(this);
     this.confirmTrade = this.confirmTrade.bind(this);
-    this.onTransactionSpeedChange = this.onTransactionSpeedChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -63,17 +57,6 @@ class TradingWidget extends Component {
         inputValues: { [synthToExchange]: 0, [synthToBuy]: 0 },
       });
     }
-  }
-
-  async componentDidMount() {
-    const { setGasPriceAndLimit } = this.props;
-    const gasAndSpeedInfo = await getGasAndSpeedInfo();
-    this.setState({ gasAndSpeedInfo });
-    setGasPriceAndLimit({
-      gasPrice: gasAndSpeedInfo['average'].gwei * GWEI,
-      transactionPriceUsd: gasAndSpeedInfo['average'].price,
-      gasLimit: DEFAULT_GAS_LIMIT,
-    });
   }
 
   tradeMax() {
@@ -248,49 +231,6 @@ class TradingWidget extends Component {
     );
   }
 
-  onTransactionSpeedChange(speed) {
-    const { gasAndSpeedInfo } = this.state;
-    const { setGasPriceAndLimit } = this.props;
-    return () => {
-      setGasPriceAndLimit({
-        gasPrice: gasAndSpeedInfo[speed].gwei * GWEI,
-        transactionPriceUsd: gasAndSpeedInfo[speed].price,
-      });
-      this.setState({
-        transactionSpeed: speed,
-      });
-    };
-  }
-
-  renderGweiSelector() {
-    const { transactionSpeed, gasAndSpeedInfo } = this.state;
-    return (
-      <div className={styles.gweiSelectorWrapper}>
-        <div className={styles.gweiSelectorHeading}>
-          Select transaction speed
-        </div>
-        <div className={styles.gweiSelectorRow}>
-          {['slow', 'average', 'fast'].map((speed, i) => {
-            return (
-              <div
-                key={i}
-                onClick={this.onTransactionSpeedChange(speed)}
-                className={`${styles.gweiSelector} ${
-                  transactionSpeed === speed ? styles.selected : ''
-                }`}
-              >
-                {speed}
-                <div className={styles.gweiSelectorPrice}>
-                  ${gasAndSpeedInfo ? gasAndSpeedInfo[speed].price : 0}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
   render() {
     const { synthToBuy, synthToExchange } = this.props;
     const { inputValues } = this.state;
@@ -305,7 +245,7 @@ class TradingWidget extends Component {
           </button>
         </div>
         {this.renderInputs()}
-        {this.renderGweiSelector()}
+        <GweiSelector />
         <button
           disabled={!buttonIsEnabled}
           onClick={this.confirmTrade}
@@ -335,7 +275,6 @@ const mapDispatchToProps = {
   setTransactionStatusToCleared,
   setTransactionStatusToError,
   setTransactionPair,
-  setGasPriceAndLimit,
 };
 
 TradingWidget.propTypes = {
@@ -349,7 +288,6 @@ TradingWidget.propTypes = {
   setTransactionStatusToSuccess: PropTypes.func.isRequired,
   setTransactionStatusToCleared: PropTypes.func.isRequired,
   setTransactionPair: PropTypes.func.isRequired,
-  setGasPriceAndLimit: PropTypes.func.isRequired,
 };
 
 export default connect(

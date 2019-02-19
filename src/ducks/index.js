@@ -39,6 +39,13 @@ export const getCurrentWalletInfo = state => {
   return state.wallet;
 };
 
+export const getTransactionSettings = state => {
+  return {
+    transactionSpeed: state.wallet.transactionSpeed,
+    gasAndSpeedInfo: state.wallet.gasAndSpeedInfo,
+  };
+};
+
 // SYNTHS REDUCERS
 export const getAvailableSynths = state => {
   return state.synths.availableSynths;

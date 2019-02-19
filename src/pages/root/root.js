@@ -18,19 +18,20 @@ import {
 } from '../../ducks/';
 import { updateExchangeRates } from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
-import { connectToWallet } from '../../ducks/wallet';
+import { connectToWallet, updateGasAndSpeedInfo } from '../../ducks/wallet';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 import synthetixJsTools from '../../synthetixJsTool';
+import { getGasAndSpeedInfo } from '../../utils/ethUtils';
 
 import styles from './root.module.scss';
 
 class Root extends Component {
   constructor() {
     super();
-    this.updatePrices = this.updatePrices.bind(this);
+    this.refreshData = this.refreshData.bind(this);
   }
 
-  async updatePrices() {
+  async updateRates() {
     const {
       availableSynths,
       updateExchangeRates,
@@ -56,11 +57,22 @@ class Root extends Component {
     toggleLoadingScreen(false);
   }
 
+  async updateGasAndSpeedPrices() {
+    const { updateGasAndSpeedInfo } = this.props;
+    const gasAndSpeedInfo = await getGasAndSpeedInfo();
+    updateGasAndSpeedInfo(gasAndSpeedInfo);
+  }
+
+  refreshData() {
+    this.updateRates();
+    this.updateGasAndSpeedPrices();
+  }
+
   async componentDidMount() {
     const { toggleLoadingScreen, connectToWallet } = this.props;
     toggleLoadingScreen(true);
-    this.updatePrices();
-    setInterval(this.updatePrices, 60 * 1000);
+    this.refreshData();
+    setInterval(this.refreshData, 60 * 1000);
     const { networkId } = await getEthereumNetwork();
     connectToWallet({
       networkId,
@@ -126,6 +138,7 @@ const mapDispatchToProps = {
   updateExchangeRates,
   toggleLoadingScreen,
   connectToWallet,
+  updateGasAndSpeedInfo,
 };
 
 Root.propTypes = {
@@ -133,6 +146,7 @@ Root.propTypes = {
   availableSynths: PropTypes.array.isRequired,
   toggleLoadingScreen: PropTypes.func.isRequired,
   connectToWallet: PropTypes.func.isRequired,
+  updateGasAndSpeedInfo: PropTypes.func.isRequired,
   transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
   depotPopupIsVisible: PropTypes.bool.isRequired,
   testnetPopupIsVisible: PropTypes.bool.isRequired,
