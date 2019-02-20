@@ -38,11 +38,11 @@ class TransactionStatusPopup extends Component {
 
   renderFees() {
     const { currentWalletInfo } = this.props;
-    const { transactionPriceUsd } = currentWalletInfo;
+    const { gasPriceUsd } = currentWalletInfo;
     return (
       <div className={styles.feeRow}>
         <span className={styles.feeRowHeading}>Ethereum Network fees</span>
-        <span className={styles.feeRowValue}>${transactionPriceUsd}</span>
+        <span className={styles.feeRowValue}>${gasPriceUsd}</span>
       </div>
     );
   }

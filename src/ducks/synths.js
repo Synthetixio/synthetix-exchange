@@ -10,6 +10,8 @@ const defaultState = {
   defaultSynth: null,
   fromSynth: 'sUSD',
   toSynth: 'sAUD',
+  exchangeRates: null,
+  ethRate: null,
 };
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
@@ -31,7 +33,8 @@ const reducer = (state = defaultState, action = {}) => {
       return { ...state, toSynth: action.payload };
     }
     case SET_EXCHANGE_RATES: {
-      return { ...state, exchangeRates: action.payload };
+      const { synthRates, ethRate } = action.payload;
+      return { ...state, exchangeRates: synthRates, ethRate };
     }
     default:
       return state;
@@ -59,12 +62,15 @@ const convertFromSynth = (synth, rates) => {
   return convertedRates;
 };
 
-export const updateExchangeRates = rates => {
+export const updateExchangeRates = (synthRates, ethRate) => {
   let rateObject = {};
-  Object.keys(rates).forEach(synth => {
-    rateObject[synth] = convertFromSynth(synth, rates);
+  Object.keys(synthRates).forEach(synth => {
+    rateObject[synth] = convertFromSynth(synth, synthRates);
   });
-  return { type: SET_EXCHANGE_RATES, payload: rateObject };
+  return {
+    type: SET_EXCHANGE_RATES,
+    payload: { synthRates: rateObject, ethRate },
+  };
 };
 
 export default reducer;

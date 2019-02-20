@@ -26,6 +26,10 @@ export const testnetPopupIsVisible = state => {
   return state.ui.testnetPopupIsVisible;
 };
 
+export const depotPopupIsVisible = state => {
+  return state.ui.depotPopupIsVisible;
+};
+
 export const loadingScreenIsVisible = state => {
   return state.ui.loadingScreenIsVisible;
 };
@@ -33,6 +37,13 @@ export const loadingScreenIsVisible = state => {
 // WALLET REDUCERS
 export const getCurrentWalletInfo = state => {
   return state.wallet;
+};
+
+export const getTransactionSettings = state => {
+  return {
+    transactionSpeed: state.wallet.transactionSpeed,
+    gasAndSpeedInfo: state.wallet.gasAndSpeedInfo,
+  };
 };
 
 // SYNTHS REDUCERS
@@ -50,4 +61,8 @@ export const getSynthToExchange = state => {
 
 export const getExchangeRates = state => {
   return state.synths.exchangeRates;
+};
+
+export const getEthRate = state => {
+  return state.synths.ethRate;
 };
