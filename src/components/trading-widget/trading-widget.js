@@ -154,7 +154,7 @@ class TradingWidget extends Component {
 
   convert(to, value, rates) {
     const toRate = rates.find(rate => rate.synth === to);
-    return value * toRate.rate;
+    return (value * toRate.rate).toString();
   }
 
   onFromSynthChange(e) {
@@ -170,7 +170,6 @@ class TradingWidget extends Component {
       Number(newInputValue),
       exchangeRates[synthToExchange]
     );
-
     this.setState({
       inputValues: {
         [synthToExchange]: newInputValue,
@@ -191,7 +190,6 @@ class TradingWidget extends Component {
       Number(newInputValue),
       exchangeRates[synthToBuy]
     );
-
     this.setState({
       inputValues: {
         [synthToExchange]: convertedInputValue,
