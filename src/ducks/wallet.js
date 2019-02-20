@@ -35,6 +35,7 @@ const defaultState = {
   transactionSpeed: 'average',
   gasAndSpeedInfo: null,
   gasPrice: null,
+  gasPriceUsd: null,
   gasLimit: DEFAULT_GAS_LIMIT,
   ...defaultTransactionState,
 };
@@ -94,6 +95,7 @@ const reducer = (state = defaultState, action = {}) => {
         ...state,
         gasAndSpeedInfo,
         gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
+        gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
       };
     }
     case SET_TRANSACTION_SPEED: {
@@ -103,6 +105,7 @@ const reducer = (state = defaultState, action = {}) => {
         ...state,
         transactionSpeed,
         gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
+        gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
       };
     }
     default:

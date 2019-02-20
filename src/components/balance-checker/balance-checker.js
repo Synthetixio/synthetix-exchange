@@ -219,13 +219,15 @@ class BalanceChecker extends Component {
         <tbody>
           <tr className={styles.tableBodyRow}>
             <td className={styles.tableBodySynth}>Synths</td>
-            <td className={styles.tableBodyBalance}>${totalBalance}</td>
+            <td className={styles.tableBodyBalance}>
+              ${numbro(totalBalance).format('0,0.00')} USD
+            </td>
           </tr>
           <tr className={styles.tableBodyRow}>
             <td className={styles.tableBodySynth}>ETH</td>
             <td className={styles.tableBodyBalance}>
-              <div>{ethBalance.amount}</div>
-              <div>${ethBalance.value}</div>
+              <div>{numbro(ethBalance.amount).format('0,0.00')}</div>
+              <div>${numbro(ethBalance.value).format('0,0.00')} USD</div>
             </td>
           </tr>
         </tbody>

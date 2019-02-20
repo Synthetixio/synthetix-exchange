@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import numbro from 'numbro';
 import PropTypes from 'prop-types';
 
 import Popup from '../popup';
 import GweiSelector from '../gwei-selector';
+import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
 
-import { toggleDepotPopup } from '../../ducks/ui';
+import { toggleDepotPopup, toggleTransactionStatusPopup } from '../../ducks/ui';
+import {
+  setTransactionStatusToConfirm,
+  setTransactionStatusToProgress,
+  setTransactionStatusToSuccess,
+  setTransactionStatusToCleared,
+  setTransactionStatusToError,
+  setTransactionPair,
+} from '../../ducks/wallet';
 import { getCurrentWalletInfo, getEthRate } from '../../ducks';
 
 import synthetixJsTools from '../../synthetixJsTool';
@@ -25,6 +35,7 @@ class DepotPopup extends Component {
     this.onBuyMaxClick = this.onBuyMaxClick.bind(this);
     this.onEthInputChange = this.onEthInputChange.bind(this);
     this.onSynthInputChange = this.onSynthInputChange.bind(this);
+    this.buyFromDepot = this.buyFromDepot.bind(this);
   }
 
   closePopup() {
@@ -32,8 +43,58 @@ class DepotPopup extends Component {
     toggleDepotPopup(false);
   }
 
-  buyFromDepot() {
-    console.log('buy');
+  async buyFromDepot() {
+    const { ethInputValue, synthInputValue } = this.state;
+    const {
+      currentWalletInfo,
+      toggleDepotPopup,
+      toggleTransactionStatusPopup,
+      setTransactionStatusToConfirm,
+      setTransactionStatusToProgress,
+      setTransactionStatusToSuccess,
+      setTransactionStatusToCleared,
+      setTransactionStatusToError,
+      setTransactionPair,
+    } = this.props;
+    const { gasPrice, gasLimit, walletType } = currentWalletInfo;
+    let transactionResult;
+    try {
+      toggleDepotPopup(false);
+      toggleTransactionStatusPopup(true);
+      setTransactionStatusToConfirm();
+      setTransactionPair({
+        fromSynth: 'ETH',
+        toSynth: 'sUSD',
+        fromAmount: ethInputValue,
+        toAmount: synthInputValue,
+      });
+      transactionResult = await synthetixJsTools.havvenJs.Depot.exchangeEtherForSynths(
+        {
+          gasPrice,
+          gasLimit,
+          value: synthetixJsTools.utils.parseEther(ethInputValue),
+        }
+      );
+    } catch (e) {
+      const transactionRejected =
+        e.message && e.message.includes(TRANSACTION_REJECTED[walletType]);
+      setTransactionStatusToError(transactionRejected ? 'rejected' : 'failed');
+      console.log('Error during the exchange transaction', e);
+    }
+    if (transactionResult) {
+      const hash = transactionResult.hash || transactionResult;
+      setTransactionStatusToProgress(hash);
+      try {
+        await synthetixJsTools.util.waitForTransaction(hash);
+        setTransactionStatusToSuccess();
+        setTimeout(() => {
+          toggleTransactionStatusPopup(false);
+          setTransactionStatusToCleared();
+        }, 2000);
+      } catch (e) {
+        console.log('Could not get transaction confirmation', e);
+      }
+    }
   }
 
   async componentDidUpdate(prevProps) {
@@ -71,7 +132,7 @@ class DepotPopup extends Component {
       e && e.target.validity.valid ? e.target.value : synthInputValue;
     const ethInputValue = newInputValue / ethRate;
     this.setState({
-      ethInputValue,
+      ethInputValue: ethInputValue.toString(),
       synthInputValue: newInputValue,
     });
   }
@@ -86,7 +147,9 @@ class DepotPopup extends Component {
     return (
       <div className={styles.ethBalance}>
         <span>ETH Balance</span>
-        <span>{ethBalance ? ethBalance : '0.00'}</span>
+        <span className={styles.ethBalanceValue}>
+          {ethBalance ? numbro(ethBalance).format('0,0.00') : '0.00'}
+        </span>
       </div>
     );
   }
@@ -153,13 +216,27 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
   toggleDepotPopup,
+  toggleTransactionStatusPopup,
+  setTransactionStatusToConfirm,
+  setTransactionStatusToProgress,
+  setTransactionStatusToSuccess,
+  setTransactionStatusToCleared,
+  setTransactionStatusToError,
+  setTransactionPair,
 };
 
 DepotPopup.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
   toggleDepotPopup: PropTypes.func.isRequired,
+  toggleTransactionStatusPopup: PropTypes.func.isRequired,
   ethRate: PropTypes.string,
+  setTransactionStatusToConfirm: PropTypes.func.isRequired,
+  setTransactionStatusToProgress: PropTypes.func.isRequired,
+  setTransactionStatusToSuccess: PropTypes.func.isRequired,
+  setTransactionStatusToCleared: PropTypes.func.isRequired,
+  setTransactionStatusToError: PropTypes.func.isRequired,
+  setTransactionPair: PropTypes.func.isRequired,
 };
 
 export default connect(

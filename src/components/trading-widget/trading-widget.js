@@ -134,7 +134,6 @@ class TradingWidget extends Component {
       const transactionRejected =
         e.message && e.message.includes(TRANSACTION_REJECTED[walletType]);
       setTransactionStatusToError(transactionRejected ? 'rejected' : 'failed');
-
       console.log('Error during the exchange transaction', e);
     }
     if (transactionResult) {

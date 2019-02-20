@@ -9,7 +9,7 @@ const defaultState = {
   currentScreen: 'exchange',
   walletSelectorPopupIsVisible: false,
   transactionStatusPopupIsVisible: false,
-  depotPopupIsVisible: true,
+  depotPopupIsVisible: false,
   testnetPopupIsVisible: false,
   loadingScreenIsVisible: false,
 };
