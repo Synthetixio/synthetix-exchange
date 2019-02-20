@@ -56,20 +56,8 @@ class WalletSelectorPopup extends Component {
           <h2>TESTNET mode</h2>
           <div className={styles.steps}>
             <div className={styles.step}>
-              <span className={styles.stepNumber}>1.</span>To get started with
-              Synthetix Exchange on Testnet first get some ETH from{' '}
-              {this.renderFaucetLink()}
-            </div>
-            <div className={styles.step}>
-              <span className={styles.stepNumber}>2.</span>Then swap part of
-              your ETH for SNX on{' '}
-              <a
-                href="https://swappr.io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Swappr.
-              </a>
+              To get started with Synthetix Exchange on Testnet first get some
+              ETH from {this.renderFaucetLink()}
             </div>
           </div>
         </div>
