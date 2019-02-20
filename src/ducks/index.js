@@ -30,6 +30,10 @@ export const depotPopupIsVisible = state => {
   return state.ui.depotPopupIsVisible;
 };
 
+export const feedbackPopupIsVisible = state => {
+  return state.ui.feedbackPopupIsVisible;
+};
+
 export const loadingScreenIsVisible = state => {
   return state.ui.loadingScreenIsVisible;
 };

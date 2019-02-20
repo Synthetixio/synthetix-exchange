@@ -12,6 +12,7 @@ import {
   getAvailableSynths,
   transactionStatusPopupIsVisible,
   depotPopupIsVisible,
+  feedbackPopupIsVisible,
   testnetPopupIsVisible,
   loadingScreenIsVisible,
   walletSelectorPopupIsVisible,
@@ -99,6 +100,7 @@ class Root extends Component {
     const {
       transactionStatusPopupIsVisible,
       depotPopupIsVisible,
+      feedbackPopupIsVisible,
       testnetPopupIsVisible,
       loadingScreenIsVisible,
       walletSelectorPopupIsVisible,
@@ -108,7 +110,8 @@ class Root extends Component {
       depotPopupIsVisible ||
       testnetPopupIsVisible ||
       loadingScreenIsVisible ||
-      walletSelectorPopupIsVisible
+      walletSelectorPopupIsVisible ||
+      feedbackPopupIsVisible
     );
   }
   render() {
@@ -128,6 +131,7 @@ const mapStateToProps = state => {
     availableSynths: getAvailableSynths(state),
     transactionStatusPopupIsVisible: transactionStatusPopupIsVisible(state),
     depotPopupIsVisible: depotPopupIsVisible(state),
+    feedbackPopupIsVisible: feedbackPopupIsVisible(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     loadingScreenIsVisible: loadingScreenIsVisible(state),
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
@@ -149,6 +153,7 @@ Root.propTypes = {
   updateGasAndSpeedInfo: PropTypes.func.isRequired,
   transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
   depotPopupIsVisible: PropTypes.bool.isRequired,
+  feedbackPopupIsVisible: PropTypes.bool.isRequired,
   testnetPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
