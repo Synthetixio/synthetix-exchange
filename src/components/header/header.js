@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getCurrentWalletInfo, testnetPopupIsVisible } from '../../ducks/';
-import { toggleTestnetPopup } from '../../ducks/ui';
+import { toggleTestnetPopup, toggleFeedbackPopup } from '../../ducks/ui';
 
 import WalletAddressSwitcher from '../wallet-address-switcher';
 import styles from './header.module.scss';
@@ -12,6 +12,7 @@ class Header extends Component {
   constructor() {
     super();
     this.onEnvButtonClick = this.onEnvButtonClick.bind(this);
+    this.onFeedbackButtonClick = this.onFeedbackButtonClick.bind(this);
   }
 
   onEnvButtonClick() {
@@ -23,6 +24,11 @@ class Header extends Component {
     if (!currentWalletInfo.networkId || currentWalletInfo.networkId === '1')
       return;
     toggleTestnetPopup(!testnetPopupIsVisible);
+  }
+
+  onFeedbackButtonClick() {
+    const { toggleFeedbackPopup } = this.props;
+    toggleFeedbackPopup(true);
   }
 
   renderNetworkName() {
@@ -48,12 +54,21 @@ class Header extends Component {
           <button
             type="button"
             onClick={this.onEnvButtonClick}
-            className={styles.envButton}
+            className={`${styles.headerButton} ${styles.uppercase}`}
           >
             {this.renderNetworkName()}
           </button>
         </div>
-        <WalletAddressSwitcher />
+        <div className={styles.headerRightArea}>
+          <button
+            type="button"
+            onClick={this.onFeedbackButtonClick}
+            className={styles.headerButton}
+          >
+            Got feedback?
+          </button>
+          <WalletAddressSwitcher />
+        </div>
       </div>
     );
   }
@@ -68,12 +83,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   toggleTestnetPopup,
+  toggleFeedbackPopup,
 };
 
 Header.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   testnetPopupIsVisible: PropTypes.bool.isRequired,
   toggleTestnetPopup: PropTypes.func.isRequired,
+  toggleFeedbackPopup: PropTypes.func.isRequired,
 };
 
 export default connect(

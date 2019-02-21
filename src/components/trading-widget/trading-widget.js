@@ -120,7 +120,7 @@ class TradingWidget extends Component {
         fromAmount,
         toAmount,
       });
-      transactionResult = await synthetixJsTools.havvenJs.Synthetix.exchange(
+      transactionResult = await synthetixJsTools.synthetixJs.Synthetix.exchange(
         synthetixJsTools.utils.toUtf8Bytes(synthToExchange),
         synthetixJsTools.utils.parseEther(fromAmount),
         synthetixJsTools.utils.toUtf8Bytes(synthToBuy),

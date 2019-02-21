@@ -9,7 +9,7 @@ export const getGasAndSpeedInfo = async () => {
   const convetorTxGasPrice = DEFAULT_GAS_LIMIT;
   let [egsData, ethPrice] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json'),
-    await synthetixJsTools.havvenJs.Depot.usdToEthPrice(),
+    await synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
   ]);
   egsData = await egsData.json();
   ethPrice = Number(synthetixJsTools.utils.formatEther(ethPrice));
