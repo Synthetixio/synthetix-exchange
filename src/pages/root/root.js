@@ -12,6 +12,7 @@ import {
   getAvailableSynths,
   transactionStatusPopupIsVisible,
   depotPopupIsVisible,
+  feedbackPopupIsVisible,
   testnetPopupIsVisible,
   loadingScreenIsVisible,
   walletSelectorPopupIsVisible,
@@ -39,22 +40,28 @@ class Root extends Component {
     } = this.props;
     if (!availableSynths) return;
     let formattedSynthRates = {};
-    const [synthRates, ethRate] = await Promise.all([
-      synthetixJsTools.havvenJs.ExchangeRates.ratesForCurrencies(
-        availableSynths.map(synth => synthetixJsTools.utils.toUtf8Bytes(synth))
-      ),
-      synthetixJsTools.havvenJs.Depot.usdToEthPrice(),
-    ]);
-    synthRates.forEach((rate, i) => {
-      formattedSynthRates[availableSynths[i]] = Number(
-        synthetixJsTools.havvenJs.utils.formatEther(rate)
+    try {
+      const [synthRates, ethRate] = await Promise.all([
+        synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
+          availableSynths.map(synth =>
+            synthetixJsTools.utils.toUtf8Bytes(synth)
+          )
+        ),
+        synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
+      ]);
+      synthRates.forEach((rate, i) => {
+        formattedSynthRates[availableSynths[i]] = Number(
+          synthetixJsTools.synthetixJs.utils.formatEther(rate)
+        );
+      });
+      const formattedEthRate = synthetixJsTools.synthetixJs.utils.formatEther(
+        ethRate
       );
-    });
-    const formattedEthRate = synthetixJsTools.havvenJs.utils.formatEther(
-      ethRate
-    );
-    updateExchangeRates(formattedSynthRates, formattedEthRate);
-    toggleLoadingScreen(false);
+      updateExchangeRates(formattedSynthRates, formattedEthRate);
+      toggleLoadingScreen(false);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async updateGasAndSpeedPrices() {
@@ -71,16 +78,13 @@ class Root extends Component {
   async componentDidMount() {
     const { toggleLoadingScreen, connectToWallet } = this.props;
     toggleLoadingScreen(true);
-    this.refreshData();
     setInterval(this.refreshData, 60 * 1000);
     const { networkId } = await getEthereumNetwork();
+    synthetixJsTools.setContractSettings({ networkId });
     connectToWallet({
       networkId,
     });
-  }
-
-  componentWillMount() {
-    synthetixJsTools.setContractSettings();
+    this.refreshData();
   }
 
   renderScreen() {
@@ -99,6 +103,7 @@ class Root extends Component {
     const {
       transactionStatusPopupIsVisible,
       depotPopupIsVisible,
+      feedbackPopupIsVisible,
       testnetPopupIsVisible,
       loadingScreenIsVisible,
       walletSelectorPopupIsVisible,
@@ -108,7 +113,8 @@ class Root extends Component {
       depotPopupIsVisible ||
       testnetPopupIsVisible ||
       loadingScreenIsVisible ||
-      walletSelectorPopupIsVisible
+      walletSelectorPopupIsVisible ||
+      feedbackPopupIsVisible
     );
   }
   render() {
@@ -128,6 +134,7 @@ const mapStateToProps = state => {
     availableSynths: getAvailableSynths(state),
     transactionStatusPopupIsVisible: transactionStatusPopupIsVisible(state),
     depotPopupIsVisible: depotPopupIsVisible(state),
+    feedbackPopupIsVisible: feedbackPopupIsVisible(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     loadingScreenIsVisible: loadingScreenIsVisible(state),
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
@@ -149,6 +156,7 @@ Root.propTypes = {
   updateGasAndSpeedInfo: PropTypes.func.isRequired,
   transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
   depotPopupIsVisible: PropTypes.bool.isRequired,
+  feedbackPopupIsVisible: PropTypes.bool.isRequired,
   testnetPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,

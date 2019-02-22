@@ -13,6 +13,7 @@ import WalletSelectorPopup from '../../components/wallet-selector-popup';
 import TransactionStatusPopup from '../../components/transaction-status-popup';
 import TestnetPopup from '../../components/testnet-popup';
 import DepotPopup from '../../components/depot-popup';
+import FeedbackPopup from '../../components/feedback-popup';
 import TradingWidget from '../../components/trading-widget';
 
 import {
@@ -20,6 +21,7 @@ import {
   transactionStatusPopupIsVisible,
   testnetPopupIsVisible,
   depotPopupIsVisible,
+  feedbackPopupIsVisible,
   loadingScreenIsVisible,
   getCurrentWalletInfo,
   getAvailableSynths,
@@ -65,6 +67,7 @@ class Exchange extends Component {
       loadingScreenIsVisible,
       testnetPopupIsVisible,
       depotPopupIsVisible,
+      feedbackPopupIsVisible,
     } = this.props;
     const symbol = this.getSymbol();
     return (
@@ -106,6 +109,7 @@ class Exchange extends Component {
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
         <TestnetPopup isVisible={testnetPopupIsVisible} />
         <DepotPopup isVisible={depotPopupIsVisible} />
+        <FeedbackPopup isVisible={feedbackPopupIsVisible} />
         <LoadingScreen isVisible={loadingScreenIsVisible} />
       </div>
     );
@@ -118,6 +122,7 @@ const mapStateToProps = state => {
     transactionStatusPopupIsVisible: transactionStatusPopupIsVisible(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     depotPopupIsVisible: depotPopupIsVisible(state),
+    feedbackPopupIsVisible: feedbackPopupIsVisible(state),
     loadingScreenIsVisible: loadingScreenIsVisible(state),
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
@@ -135,6 +140,7 @@ Exchange.propTypes = {
   transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
   testnetPopupIsVisible: PropTypes.bool.isRequired,
   depotPopupIsVisible: PropTypes.bool.isRequired,
+  feedbackPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
   setAvailableSynths: PropTypes.func.isRequired,

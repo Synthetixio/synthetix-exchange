@@ -68,7 +68,7 @@ class DepotPopup extends Component {
         fromAmount: ethInputValue,
         toAmount: synthInputValue,
       });
-      transactionResult = await synthetixJsTools.havvenJs.Depot.exchangeEtherForSynths(
+      transactionResult = await synthetixJsTools.synthetixJs.Depot.exchangeEtherForSynths(
         {
           gasPrice,
           gasLimit,

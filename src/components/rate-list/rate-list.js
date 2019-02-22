@@ -36,19 +36,16 @@ class RateList extends Component {
     if (!synthetixJsTools.initialized) return;
     const { availableSynths } = this.props;
     const ratesObject = {};
-
     try {
-      const ratesForCurrencies = await synthetixJsTools.havvenJs.ExchangeRates.ratesForCurrencies(
+      const ratesForCurrencies = await synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
         availableSynths.map(synth => synthetixJsTools.utils.toUtf8Bytes(synth))
       );
-
       availableSynths.forEach((synth, i) => {
         ratesObject[synth] = formatBigNumber(ratesForCurrencies[i], 6);
       });
     } catch (e) {
       console.log('Unable to fetch latest rates', e);
     }
-
     this.setState({ rates: ratesObject });
   }
 

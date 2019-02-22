@@ -67,9 +67,9 @@ class ConnectToWallet extends Component {
   async getWalletsBalances(wallets) {
     const balancePromises = wallets.map(wallet =>
       Promise.all([
-        synthetixJsTools.havvenJs.Synthetix.balanceOf(wallet.address),
-        synthetixJsTools.havvenJs.SynthetixEscrow.balanceOf(wallet.address),
-        synthetixJsTools.havvenJs.sUSD.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.Synthetix.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.SynthetixEscrow.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.sUSD.balanceOf(wallet.address),
         synthetixJsTools.provider.getBalance(wallet.address),
       ])
     );
@@ -93,9 +93,9 @@ class ConnectToWallet extends Component {
     });
     const balancePromises = nextAddresses.map(wallet =>
       Promise.all([
-        synthetixJsTools.havvenJs.Synthetix.balanceOf(wallet.address),
-        synthetixJsTools.havvenJs.SynthetixEscrow.balanceOf(wallet.address),
-        synthetixJsTools.havvenJs.sUSD.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.Synthetix.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.SynthetixEscrow.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.sUSD.balanceOf(wallet.address),
         synthetixJsTools.provider.getBalance(wallet.address),
       ])
     );

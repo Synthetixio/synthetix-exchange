@@ -12,7 +12,7 @@ import { getCurrentWalletInfo } from '../../ducks/';
 import { getExtensionUri } from '../../utils/browserUtils';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 
-import SynthetixJsTools from '../../synthetixJsTool';
+import synthetixJsTools from '../../synthetixJsTool';
 
 import styles from './wallet-selector-popup.module.scss';
 
@@ -53,11 +53,11 @@ class WalletSelectorPopup extends Component {
   registerMetamaskAddressListener = () => {
     const listener = throttle(this.onMetamaskAddressChange, 2000);
     if (
-      SynthetixJsTools.signer &&
-      SynthetixJsTools.signer.provider &&
-      SynthetixJsTools.signer.provider._web3Provider
+      synthetixJsTools.signer &&
+      synthetixJsTools.signer.provider &&
+      synthetixJsTools.signer.provider._web3Provider
     ) {
-      SynthetixJsTools.signer.provider._web3Provider.publicConfigStore.on(
+      synthetixJsTools.signer.provider._web3Provider.publicConfigStore.on(
         'update',
         listener
       );
@@ -87,8 +87,8 @@ class WalletSelectorPopup extends Component {
       const { extensionUri } = this.state;
 
       // We define a new signer
-      const signer = new SynthetixJsTools.signers[walletType]();
-      SynthetixJsTools.setContractSettings({
+      const signer = new synthetixJsTools.signers[walletType]();
+      synthetixJsTools.setContractSettings({
         signer,
       });
 
@@ -113,14 +113,14 @@ class WalletSelectorPopup extends Component {
                   await window.ethereum.enable();
                 }
 
-                SynthetixJsTools.setContractSettings({
+                synthetixJsTools.setContractSettings({
                   signer,
                   networkId,
-                  provider: SynthetixJsTools.havvenJs.ethers.providers.getDefaultProvider(
+                  provider: synthetixJsTools.synthetixJs.ethers.providers.getDefaultProvider(
                     name && name.toLowerCase()
                   ),
                 });
-                const accounts = await SynthetixJsTools.signer.getNextAddresses();
+                const accounts = await synthetixJsTools.signer.getNextAddresses();
 
                 // If we do have a wallet address, we save it
                 if (accounts.length > 0) {

@@ -6,6 +6,13 @@
   height: 50px;
 }
 
+.headerRightArea {
+  display: flex;
+  button {
+    margin-right: 40px;
+  }
+}
+
 .logoWrapper {
   display: flex;
   align-items: center;
@@ -19,12 +26,16 @@
   margin: 0 20px 0 10px;
 }
 
-.envButton {
-  text-transform: uppercase;
+.headerButton {
+  cursor: pointer;
   border: 1px solid $color-input-border;
   background-color: $color-background;
   color: #ffffff;
   height: 50px;
   font-size: 14px;
   padding: 0 20px;
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
