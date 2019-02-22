@@ -1,4 +1,4 @@
-import { SynthetixJs } from '../node_modules/synthetix-js/src/index';
+import { SynthetixJs } from 'synthetix-js';
 let SynthetixJsTools = {
   initialized: false,
   signers: SynthetixJs.signers,
