@@ -38,7 +38,7 @@ export const SYNTH_SIGNS = {
   sBTC: '₿',
 };
 
-export const SYNTH_TYPES = {
+export const SYNTH_BY_TYPE = {
   sUSD: 'currencies',
   sAUD: 'currencies',
   sEUR: 'currencies',
@@ -55,5 +55,7 @@ export const SYNTH_TYPES = {
   sSGD: 'currencies',
   sXAU: 'commodities',
   sXAG: 'commodities',
-  sBTC: 'commodities',
+  sBTC: 'crypto',
 };
+
+export const SYNTH_TYPES = ['currencies', 'commodities', 'crypto', 'stocks'];

@@ -50,11 +50,10 @@ class Header extends Component {
       <div className={styles.header}>
         <div className={styles.logoWrapper}>
           <img height="36" alt="logo" src="/images/synthetix-logo.svg" />
-          <span className={styles.beta}>[beta]</span>
           <button
             type="button"
             onClick={this.onEnvButtonClick}
-            className={`${styles.headerButton} ${styles.uppercase}`}
+            className={`${styles.headerButton} ${styles.envButton}`}
           >
             {this.renderNetworkName()}
           </button>

@@ -17,7 +17,7 @@ import { toggleLoadingScreen, toggleDepotPopup } from '../../ducks/ui';
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
 
-import { SYNTH_TYPES } from '../../synthsList';
+import { SYNTH_BY_TYPE, SYNTH_TYPES } from '../../synthsList';
 
 import styles from './balance-checker.module.scss';
 
@@ -143,7 +143,7 @@ class BalanceChecker extends Component {
     const { balances } = currentWalletInfo;
     if (!availableSynths) return;
     return availableSynths
-      .filter(synth => SYNTH_TYPES[synth] === synthType)
+      .filter(synth => SYNTH_BY_TYPE[synth] === synthType)
       .map((synth, i) => {
         return (
           <Fragment key={i}>
@@ -237,7 +237,6 @@ class BalanceChecker extends Component {
 
   renderTable(synthType, index) {
     const balance = this.renderBalance(synthType);
-    if (!balance || balance.length === 0) return;
     return (
       <table
         key={index}
@@ -248,17 +247,29 @@ class BalanceChecker extends Component {
         <thead>
           <tr>
             <th>
-              <h3 className={styles.tableHeading}>{synthType}</h3>
+              <h3 className={styles.tableHeading}>
+                {synthType === 'stocks' ? 'stocks(coming soon)' : synthType}
+              </h3>
             </th>
           </tr>
         </thead>
-        <tbody>{balance}</tbody>
+        <tbody>
+          {synthType === 'stocks' ? (
+            <tr>
+              <td style={{ textAlign: 'left' }}>
+                Let us know what you would like to see in the feedback.
+              </td>
+            </tr>
+          ) : (
+            balance
+          )}
+        </tbody>
       </table>
     );
   }
 
   renderSynths() {
-    return ['currencies', 'commodities', 'stocks'].map(this.renderTable);
+    return SYNTH_TYPES.map(this.renderTable);
   }
 
   render() {
