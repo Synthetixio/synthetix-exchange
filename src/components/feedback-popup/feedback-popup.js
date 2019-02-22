@@ -32,6 +32,12 @@ class FeedbackPopup extends Component {
     toggleFeedbackPopup(false);
   }
 
+  onTextAreaChange(field) {
+    return e => {
+      this.setState({ [field]: e.target.value });
+    };
+  }
+
   async submitForm(e) {
     e.preventDefault();
     const {
@@ -40,6 +46,7 @@ class FeedbackPopup extends Component {
       featuresNotInterestedIn,
       comments,
     } = this.state;
+
     try {
       await fetch('/', {
         method: 'POST',
@@ -88,6 +95,11 @@ class FeedbackPopup extends Component {
   }
 
   renderForm() {
+    const {
+      newFeaturesRequest,
+      featuresNotInterestedIn,
+      comments,
+    } = this.state;
     return (
       <form
         className={styles.feedbackForm}
@@ -100,15 +112,27 @@ class FeedbackPopup extends Component {
         </div>
         <div className={styles.formSection}>
           <h2>Which features would you like to see added?</h2>
-          <textarea className={styles.formTextArea} />
+          <textarea
+            className={styles.formTextArea}
+            value={newFeaturesRequest}
+            onChange={this.onTextAreaChange('newFeaturesRequest')}
+          />
         </div>
         <div className={styles.formSection}>
           <h2>Which current features are you not interested in using?</h2>
-          <textarea className={styles.formTextArea} />
+          <textarea
+            className={styles.formTextArea}
+            value={featuresNotInterestedIn}
+            onChange={this.onTextAreaChange('featuresNotInterestedIn')}
+          />
         </div>
         <div className={styles.formSection}>
           <h2>Any further comments or questions?</h2>
-          <textarea className={styles.formTextArea} />
+          <textarea
+            className={styles.formTextArea}
+            value={comments}
+            onChange={this.onTextAreaChange('comments')}
+          />
         </div>
         <button className={styles.formButton} type="submit">
           Submit
