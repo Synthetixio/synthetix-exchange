@@ -59,3 +59,23 @@ export const SYNTH_BY_TYPE = {
 };
 
 export const SYNTH_TYPES = ['currencies', 'commodities', 'crypto', 'stocks'];
+
+export const CURRENCY_TABLE = {
+  sUSD: 'USD',
+  sEUR: 'EUR',
+  sAUD: 'AUD',
+  sJPY: 'JPY',
+  sKRW: 'KRW',
+  sGBP: 'GBP',
+  sCHF: 'CHF',
+  sBRL: 'BRL',
+  sCAD: 'CAD',
+  sINR: 'INR',
+  sNZD: 'NZD',
+  sPLN: 'PLN',
+  sRUB: 'RUB',
+  sSGD: 'SGD',
+  sXAU: 'XAU',
+  sXAG: 'XAG',
+  sBTC: 'BTC',
+};

@@ -30,18 +30,9 @@ import {
 } from '../../ducks/';
 import { setAvailableSynths } from '../../ducks/synths';
 
-import styles from './exchange.module.scss';
+import { CURRENCY_TABLE } from '../../synthsList';
 
-const currencyTable = {
-  sUSD: 'USD',
-  sEUR: 'EUR',
-  sAUD: 'AUD',
-  sJPY: 'JPY',
-  sKRW: 'KRW',
-  sXAU: 'XAU',
-  sGBP: 'GBP',
-  sCHF: 'CHF',
-};
+import styles from './exchange.module.scss';
 
 class Exchange extends Component {
   renderWalletConnectorOrTradingWidget() {
@@ -56,8 +47,8 @@ class Exchange extends Component {
   getSymbol() {
     const { synthToBuy, synthToExchange } = this.props;
     if (synthToBuy == 'sXAU') {
-      return 'XAU' + currencyTable[synthToExchange];
-    } else return currencyTable[synthToExchange] + currencyTable[synthToBuy];
+      return 'XAU' + CURRENCY_TABLE[synthToExchange];
+    } else return CURRENCY_TABLE[synthToExchange] + CURRENCY_TABLE[synthToBuy];
   }
 
   render() {
