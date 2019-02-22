@@ -5,6 +5,11 @@
   margin-top: 0;
 }
 
+.tableWrapper {
+  max-height: 500px;
+  overflow: scroll;
+}
+
 .table {
   width: 100%;
 }

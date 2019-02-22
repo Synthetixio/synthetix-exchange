@@ -238,33 +238,35 @@ class BalanceChecker extends Component {
   renderTable(synthType, index) {
     const balance = this.renderBalance(synthType);
     return (
-      <table
-        key={index}
-        cellPadding="0"
-        cellSpacing="0"
-        className={styles.table}
-      >
-        <thead>
-          <tr>
-            <th>
-              <h3 className={styles.tableHeading}>
-                {synthType === 'stocks' ? 'stocks(coming soon)' : synthType}
-              </h3>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {synthType === 'stocks' ? (
+      <div className={styles.tableWrapper}>
+        <table
+          key={index}
+          cellPadding="0"
+          cellSpacing="0"
+          className={styles.table}
+        >
+          <thead>
             <tr>
-              <td style={{ textAlign: 'left' }}>
-                Let us know what you would like to see in the feedback.
-              </td>
+              <th>
+                <h3 className={styles.tableHeading}>
+                  {synthType === 'stocks' ? 'stocks(coming soon)' : synthType}
+                </h3>
+              </th>
             </tr>
-          ) : (
-            balance
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {synthType === 'stocks' ? (
+              <tr>
+                <td style={{ textAlign: 'left' }}>
+                  Let us know what you would like to see in the feedback.
+                </td>
+              </tr>
+            ) : (
+              balance
+            )}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
