@@ -24,10 +24,15 @@
     -->
     <title>Synthetix Exchange</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105320791-9"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-105320791-9"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() {
+        dataLayer.push(arguments);
+      }
       gtag('js', new Date());
 
       gtag('config', 'UA-105320791-9');
@@ -35,6 +40,18 @@
   </head>
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
+    <form
+      name="feedback"
+      method="POST"
+      netlify-honeypot="bot-field"
+      data-netlify="true"
+      hidden
+    >
+      <input type="text" name="rating" />
+      <input type="text" name="newFeaturesRequest" />
+      <input type="text" name="featuresNotInterestedIn" />
+      <input type="text" name="comments" />
+    </form>
     <div id="root"></div>
     <!--
       This HTML file is a template.
