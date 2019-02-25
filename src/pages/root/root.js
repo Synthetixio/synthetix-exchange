@@ -15,6 +15,7 @@ import {
   feedbackPopupIsVisible,
   testnetPopupIsVisible,
   loadingScreenIsVisible,
+  walkthroughPopupIsVisible,
   walletSelectorPopupIsVisible,
 } from '../../ducks/';
 import { updateExchangeRates } from '../../ducks/synths';
@@ -107,6 +108,7 @@ class Root extends Component {
       testnetPopupIsVisible,
       loadingScreenIsVisible,
       walletSelectorPopupIsVisible,
+      walkthroughPopupIsVisible,
     } = this.props;
     return (
       transactionStatusPopupIsVisible ||
@@ -114,7 +116,8 @@ class Root extends Component {
       testnetPopupIsVisible ||
       loadingScreenIsVisible ||
       walletSelectorPopupIsVisible ||
-      feedbackPopupIsVisible
+      feedbackPopupIsVisible ||
+      walkthroughPopupIsVisible
     );
   }
   render() {
@@ -138,6 +141,7 @@ const mapStateToProps = state => {
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     loadingScreenIsVisible: loadingScreenIsVisible(state),
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
+    walkthroughPopupIsVisible: walkthroughPopupIsVisible(state),
   };
 };
 
@@ -158,6 +162,7 @@ Root.propTypes = {
   depotPopupIsVisible: PropTypes.bool.isRequired,
   feedbackPopupIsVisible: PropTypes.bool.isRequired,
   testnetPopupIsVisible: PropTypes.bool.isRequired,
+  walkthroughPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
 };

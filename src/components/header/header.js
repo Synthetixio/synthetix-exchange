@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getCurrentWalletInfo, testnetPopupIsVisible } from '../../ducks/';
-import { toggleTestnetPopup, toggleFeedbackPopup } from '../../ducks/ui';
+import {
+  toggleTestnetPopup,
+  toggleFeedbackPopup,
+  toggleWalkthroughPopup,
+} from '../../ducks/ui';
 
 import WalletAddressSwitcher from '../wallet-address-switcher';
 import styles from './header.module.scss';
@@ -13,6 +17,7 @@ class Header extends Component {
     super();
     this.onEnvButtonClick = this.onEnvButtonClick.bind(this);
     this.onFeedbackButtonClick = this.onFeedbackButtonClick.bind(this);
+    this.onWalkthroughButtonClick = this.onWalkthroughButtonClick.bind(this);
   }
 
   onEnvButtonClick() {
@@ -29,6 +34,11 @@ class Header extends Component {
   onFeedbackButtonClick() {
     const { toggleFeedbackPopup } = this.props;
     toggleFeedbackPopup(true);
+  }
+
+  onWalkthroughButtonClick() {
+    const { toggleWalkthroughPopup } = this.props;
+    toggleWalkthroughPopup(true);
   }
 
   renderNetworkName() {
@@ -61,6 +71,18 @@ class Header extends Component {
         <div className={styles.headerRightArea}>
           <button
             type="button"
+            onClick={this.onWalkthroughButtonClick}
+            className={styles.headerButton}
+          >
+            <span>Walkthrough</span>
+            <img
+              className={styles.headerButtonIcon}
+              width="20"
+              src="images/play-icon.svg"
+            />
+          </button>
+          <button
+            type="button"
             onClick={this.onFeedbackButtonClick}
             className={styles.headerButton}
           >
@@ -83,6 +105,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   toggleTestnetPopup,
   toggleFeedbackPopup,
+  toggleWalkthroughPopup,
 };
 
 Header.propTypes = {
@@ -90,6 +113,7 @@ Header.propTypes = {
   testnetPopupIsVisible: PropTypes.bool.isRequired,
   toggleTestnetPopup: PropTypes.func.isRequired,
   toggleFeedbackPopup: PropTypes.func.isRequired,
+  toggleWalkthroughPopup: PropTypes.func.isRequired,
 };
 
 export default connect(

@@ -26,6 +26,16 @@
   height: 50px;
   font-size: 14px;
   padding: 0 20px;
+  display: flex;
+  align-items: center;
+  transition: transform ease-in 0.1s;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.headerButtonIcon {
+  margin-left: 10px;
 }
 
 .envButton {

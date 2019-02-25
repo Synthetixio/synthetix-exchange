@@ -4,6 +4,7 @@ const TOGGLE_TRANSACTION_STATUS_POPUP = 'UI/TOGGLE_TRANSACTION_STATUS_POPUP';
 const TOGGLE_DEPOT_POPUP = 'UI/TOGGLE_DEPOT_POPUP';
 const TOGGLE_FEEDBACK_POPUP = 'UI/TOGGLE_FEEDBACK_POPUP';
 const TOGGLE_TESTNET_POPUP = 'UI/TOGGLE_TESTNET_POPUP';
+const TOGGLE_WALKTHROUGH_POPUP = 'UI/TOGGLE_WALKTHROUGH_POPUP';
 const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
 
 const defaultState = {
@@ -11,6 +12,7 @@ const defaultState = {
   walletSelectorPopupIsVisible: false,
   transactionStatusPopupIsVisible: false,
   depotPopupIsVisible: false,
+  walkthroughPopupIsVisible: false,
   feedbackPopupIsVisible: false,
   testnetPopupIsVisible: false,
   loadingScreenIsVisible: false,
@@ -48,6 +50,11 @@ const reducer = (state = defaultState, action = {}) => {
         ...state,
         feedbackPopupIsVisible: action.payload,
       };
+    case TOGGLE_WALKTHROUGH_POPUP:
+      return {
+        ...state,
+        walkthroughPopupIsVisible: action.payload,
+      };
     case TOGGLE_LOADING_SCREEN:
       return {
         ...state,
@@ -84,6 +91,10 @@ export const toggleDepotPopup = isVisible => {
 
 export const toggleFeedbackPopup = isVisible => {
   return { type: TOGGLE_FEEDBACK_POPUP, payload: isVisible };
+};
+
+export const toggleWalkthroughPopup = isVisible => {
+  return { type: TOGGLE_WALKTHROUGH_POPUP, payload: isVisible };
 };
 
 export default reducer;

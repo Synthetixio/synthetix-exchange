@@ -14,6 +14,7 @@ import TransactionStatusPopup from '../../components/transaction-status-popup';
 import TestnetPopup from '../../components/testnet-popup';
 import DepotPopup from '../../components/depot-popup';
 import FeedbackPopup from '../../components/feedback-popup';
+import WalkthroughPopup from '../../components/walkthrough-popup';
 import TradingWidget from '../../components/trading-widget';
 
 import {
@@ -22,6 +23,7 @@ import {
   testnetPopupIsVisible,
   depotPopupIsVisible,
   feedbackPopupIsVisible,
+  walkthroughPopupIsVisible,
   loadingScreenIsVisible,
   getCurrentWalletInfo,
   getAvailableSynths,
@@ -59,6 +61,7 @@ class Exchange extends Component {
       testnetPopupIsVisible,
       depotPopupIsVisible,
       feedbackPopupIsVisible,
+      walkthroughPopupIsVisible,
     } = this.props;
     const symbol = this.getSymbol();
     return (
@@ -102,6 +105,9 @@ class Exchange extends Component {
         <DepotPopup isVisible={depotPopupIsVisible} />
         <FeedbackPopup isVisible={feedbackPopupIsVisible} />
         <LoadingScreen isVisible={loadingScreenIsVisible} />
+        {walkthroughPopupIsVisible ? (
+          <WalkthroughPopup isVisible={walkthroughPopupIsVisible} />
+        ) : null}
       </div>
     );
   }
@@ -114,6 +120,7 @@ const mapStateToProps = state => {
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     depotPopupIsVisible: depotPopupIsVisible(state),
     feedbackPopupIsVisible: feedbackPopupIsVisible(state),
+    walkthroughPopupIsVisible: walkthroughPopupIsVisible(state),
     loadingScreenIsVisible: loadingScreenIsVisible(state),
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
@@ -132,6 +139,7 @@ Exchange.propTypes = {
   testnetPopupIsVisible: PropTypes.bool.isRequired,
   depotPopupIsVisible: PropTypes.bool.isRequired,
   feedbackPopupIsVisible: PropTypes.bool.isRequired,
+  walkthroughPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
   setAvailableSynths: PropTypes.func.isRequired,

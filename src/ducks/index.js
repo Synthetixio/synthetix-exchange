@@ -34,6 +34,10 @@ export const feedbackPopupIsVisible = state => {
   return state.ui.feedbackPopupIsVisible;
 };
 
+export const walkthroughPopupIsVisible = state => {
+  return state.ui.walkthroughPopupIsVisible;
+};
+
 export const loadingScreenIsVisible = state => {
   return state.ui.loadingScreenIsVisible;
 };
