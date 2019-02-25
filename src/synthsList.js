@@ -1,4 +1,7 @@
 export default [
+  'sBTC',
+  'sXAU',
+  'sXAG',
   'sUSD',
   'sAUD',
   'sEUR',
@@ -13,9 +16,6 @@ export default [
   'sPLN',
   'sRUB',
   'sSGD',
-  'sXAU',
-  'sXAG',
-  'sBTC',
 ];
 
 export const SYNTH_SIGNS = {

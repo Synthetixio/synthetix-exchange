@@ -238,13 +238,8 @@ class BalanceChecker extends Component {
   renderTable(synthType, index) {
     const balance = this.renderBalance(synthType);
     return (
-      <div className={styles.tableWrapper}>
-        <table
-          key={index}
-          cellPadding="0"
-          cellSpacing="0"
-          className={styles.table}
-        >
+      <div key={index} className={styles.tableWrapper}>
+        <table cellPadding="0" cellSpacing="0" className={styles.table}>
           <thead>
             <tr>
               <th>

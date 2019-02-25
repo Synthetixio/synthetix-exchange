@@ -9,7 +9,7 @@ const defaultState = {
   availableSynths,
   defaultSynth: null,
   fromSynth: 'sUSD',
-  toSynth: 'sAUD',
+  toSynth: 'sBTC',
   exchangeRates: null,
   ethRate: null,
 };

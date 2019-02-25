@@ -48,8 +48,12 @@ class Exchange extends Component {
 
   getSymbol() {
     const { synthToBuy, synthToExchange } = this.props;
-    if (synthToBuy == 'sXAU') {
-      return 'XAU' + CURRENCY_TABLE[synthToExchange];
+    if (
+      synthToBuy == 'sXAU' ||
+      synthToBuy === 'sBTC' ||
+      synthToBuy === 'sXAG'
+    ) {
+      return CURRENCY_TABLE[synthToBuy] + CURRENCY_TABLE[synthToExchange];
     } else return CURRENCY_TABLE[synthToExchange] + CURRENCY_TABLE[synthToBuy];
   }
 
