@@ -249,7 +249,7 @@ class BalanceChecker extends Component {
             <tr>
               <th>
                 <h3 className={styles.tableHeading}>
-                  {synthType === 'stocks' ? 'stocks(coming soon)' : synthType}
+                  {synthType === 'stocks' ? 'stocks (coming soon)' : synthType}
                 </h3>
               </th>
             </tr>
@@ -258,7 +258,8 @@ class BalanceChecker extends Component {
             {synthType === 'stocks' ? (
               <tr>
                 <td style={{ textAlign: 'left' }}>
-                  Let us know what you would like to see in the feedback.
+                  Please let us know in the Feedback box at the top which stocks
+                  you would like to see.
                 </td>
               </tr>
             ) : (
