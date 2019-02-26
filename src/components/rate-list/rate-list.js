@@ -59,7 +59,7 @@ class RateList extends Component {
     return rates.map((synth, i) => {
       // Small fix to avoid price like 0.0000 when sKRW/sJPY against sXAU
       const precision =
-        synth.synth === 'sXAU' &&
+        (synth.synth === 'sXAU' || synth.synth === 'sBTC') &&
         (synthToExchange === 'sKRW' || synthToExchange === 'sJPY')
           ? '0,0.00000000'
           : '0,0.00000';
