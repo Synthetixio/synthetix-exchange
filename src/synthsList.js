@@ -16,6 +16,7 @@ export default [
   'sPLN',
   'sRUB',
   'sSGD',
+  'sCNY',
 ];
 
 export const SYNTH_SIGNS = {
@@ -36,6 +37,7 @@ export const SYNTH_SIGNS = {
   sXAU: 'oz',
   sXAG: 'oz',
   sBTC: '₿',
+  sCNY: '¥',
 };
 
 export const SYNTH_BY_TYPE = {
@@ -53,6 +55,7 @@ export const SYNTH_BY_TYPE = {
   sPLN: 'currencies',
   sRUB: 'currencies',
   sSGD: 'currencies',
+  sCNY: 'currencies',
   sXAU: 'commodities',
   sXAG: 'commodities',
   sBTC: 'crypto',
@@ -74,6 +77,7 @@ export const CURRENCY_TABLE = {
   sNZD: 'NZD',
   sPLN: 'PLN',
   sRUB: 'RUB',
+  sCNY: 'CNY',
   sSGD: 'SGD',
   sXAU: 'XAU',
   sXAG: 'XAG',
