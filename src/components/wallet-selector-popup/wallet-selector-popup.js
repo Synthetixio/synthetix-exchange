@@ -85,21 +85,20 @@ class WalletSelectorPopup extends Component {
     return async () => {
       const { changeScreen, connectToWallet } = this.props;
       const { extensionUri } = this.state;
-
       // We define a new signer
-      const signer = new synthetixJsTools.signers[walletType]();
-      synthetixJsTools.setContractSettings({
-        signer,
-      });
-
       try {
+        const { name, networkId } = await getEthereumNetwork();
+        const signer = new synthetixJsTools.signers[walletType]();
+        synthetixJsTools.setContractSettings({
+          networkId,
+          signer,
+        });
         switch (walletType) {
           // If signer is Metamask
           case 'Metamask':
             if (!window.web3 && extensionUri) {
               window.open(extensionUri);
             } else {
-              const { name, networkId } = await getEthereumNetwork();
               // If Metamask is not set on supported network, we send an unlocked reason
               if (!name) {
                 connectToWallet({
@@ -112,7 +111,6 @@ class WalletSelectorPopup extends Component {
                 if (window.ethereum) {
                   await window.ethereum.enable();
                 }
-
                 synthetixJsTools.setContractSettings({
                   signer,
                   networkId,
