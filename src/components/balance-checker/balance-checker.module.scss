@@ -5,12 +5,17 @@
   margin-top: 0;
 }
 
+.tableWrapper {
+  max-height: 500px;
+  overflow: scroll;
+}
+
 .table {
   width: 100%;
 }
 
 .tableHeading {
-  margin: 0 0 10px 0;
+  margin: 10px 0 5px 0;
   text-align: left;
 }
 
@@ -27,10 +32,18 @@
   background-color: #2e32417d;
 }
 
+.tableBodySynthWrapper {
+  display: flex;
+  flex-direction: column;
+  button {
+    width: 100%;
+  }
+}
+
 .tableBodySynth {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 8px;
   img {
     margin-right: 12px;
     width: 35px;
@@ -38,8 +51,17 @@
   }
 }
 
+.tableBodyButtonRow {
+  padding: 0 15px 15px 15px;
+  button {
+    width: 100%;
+  }
+}
+
 .tableBodyBalance {
-  padding: 15px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  padding: 8px;
   text-align: right;
 }
 
@@ -53,7 +75,12 @@
   }
 }
 
-.widgetHeaderButton {
+.totalBalance {
+  font-family: 'Aeonik-Bold';
+  font-size: 16px;
+}
+
+.balanceCheckerButton {
   cursor: pointer;
   background-color: $color-background;
   font-family: 'RobotoMono-Regular';
@@ -68,5 +95,15 @@
     background-color: #fff;
     color: $color-background;
     border: 1px solid #ffffff;
+  }
+}
+
+.balanceCheckerButtonWhite {
+  background-color: #ffffff;
+  color: $color-background;
+  &:hover {
+    background-color: $color-background;
+    color: #ffffff;
+    border: 1px solid $color-border;
   }
 }

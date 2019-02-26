@@ -1,3 +1,5 @@
+import { DEFAULT_GAS_LIMIT, GWEI } from '../utils/ethUtils';
+
 const CONNECT_WALLET = 'WALLET/CONNECT_WALLET';
 const SET_SELECTED_WALLET = 'WALLET/SET_SELECTED_WALLET';
 const SET_BALANCES = 'WALLET/SET_BALANCES';
@@ -12,7 +14,8 @@ const SET_TRANSACTION_STATUS_TO_CLEARED =
   'WALLET/SET_TRANSACTION_STATUS_TO_CLEARED';
 const SET_TRANSACTION_STATUS_TO_ERROR =
   'WALLET/SET_TRANSACTION_STATUS_TO_ERROR';
-const SET_GAS_PRICE_AND_LIMIT = 'WALLET/SET_GAS_PRICE_AND_LIMIT';
+const UPDATE_GAS_AND_SPEED_INFO = 'WALLET/UPDATE_GAS_AND_SPEED_INFO';
+const SET_TRANSACTION_SPEED = 'WALLET/SET_TRANSACTION_SPEED';
 
 const defaultTransactionState = {
   transactionStatus: null,
@@ -27,11 +30,13 @@ const defaultState = {
   unlocked: false,
   selectedWallet: null,
   walletSelectorIndex: 0,
-  networkId: 1,
+  networkId: '1',
   balances: null,
+  transactionSpeed: 'average',
+  gasAndSpeedInfo: null,
   gasPrice: null,
-  gasLimit: null,
-  transactionPriceUsd: null,
+  gasPriceUsd: null,
+  gasLimit: DEFAULT_GAS_LIMIT,
   ...defaultTransactionState,
 };
 const reducer = (state = defaultState, action = {}) => {
@@ -83,10 +88,24 @@ const reducer = (state = defaultState, action = {}) => {
       const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
       return { ...state, transactionPair };
     }
-    case SET_GAS_PRICE_AND_LIMIT: {
+    case UPDATE_GAS_AND_SPEED_INFO: {
+      const gasAndSpeedInfo = action.payload;
+      const transactionSpeed = state.transactionSpeed;
       return {
         ...state,
-        ...action.payload,
+        gasAndSpeedInfo,
+        gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
+        gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
+      };
+    }
+    case SET_TRANSACTION_SPEED: {
+      const gasAndSpeedInfo = state.gasAndSpeedInfo;
+      const transactionSpeed = action.payload;
+      return {
+        ...state,
+        transactionSpeed,
+        gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
+        gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
       };
     }
     default:
@@ -151,17 +170,17 @@ export const setTransactionPair = transactionPair => {
   };
 };
 
-export const setGasPriceAndLimit = gasSettings => {
-  const { gasPrice, gasLimit, transactionPriceUsd } = gasSettings;
-  let data = Object.assign(
-    {},
-    gasPrice && { gasPrice },
-    gasLimit && { gasLimit },
-    transactionPriceUsd && { transactionPriceUsd }
-  );
+export const updateGasAndSpeedInfo = gasAndSpeedInfo => {
   return {
-    type: SET_GAS_PRICE_AND_LIMIT,
-    payload: data,
+    type: UPDATE_GAS_AND_SPEED_INFO,
+    payload: gasAndSpeedInfo,
+  };
+};
+
+export const setTransactionSpeed = speed => {
+  return {
+    type: SET_TRANSACTION_SPEED,
+    payload: speed,
   };
 };
 

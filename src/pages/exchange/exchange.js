@@ -11,11 +11,19 @@ import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import RateList from '../../components/rate-list';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
 import TransactionStatusPopup from '../../components/transaction-status-popup';
+import TestnetPopup from '../../components/testnet-popup';
+import DepotPopup from '../../components/depot-popup';
+import FeedbackPopup from '../../components/feedback-popup';
+import WalkthroughPopup from '../../components/walkthrough-popup';
 import TradingWidget from '../../components/trading-widget';
 
 import {
   walletSelectorPopupIsVisible,
   transactionStatusPopupIsVisible,
+  testnetPopupIsVisible,
+  depotPopupIsVisible,
+  feedbackPopupIsVisible,
+  walkthroughPopupIsVisible,
   loadingScreenIsVisible,
   getCurrentWalletInfo,
   getAvailableSynths,
@@ -24,18 +32,9 @@ import {
 } from '../../ducks/';
 import { setAvailableSynths } from '../../ducks/synths';
 
-import styles from './exchange.module.scss';
+import { CURRENCY_TABLE } from '../../synthsList';
 
-const currencyTable = {
-  sUSD: 'USD',
-  sEUR: 'EUR',
-  sAUD: 'AUD',
-  sJPY: 'JPY',
-  sKRW: 'KRW',
-  sXAU: 'XAU',
-  sGBP: 'GBP',
-  sCHF: 'CHF',
-};
+import styles from './exchange.module.scss';
 
 class Exchange extends Component {
   renderWalletConnectorOrTradingWidget() {
@@ -49,9 +48,13 @@ class Exchange extends Component {
 
   getSymbol() {
     const { synthToBuy, synthToExchange } = this.props;
-    if (synthToBuy == 'sXAU') {
-      return 'XAU' + currencyTable[synthToExchange];
-    } else return currencyTable[synthToExchange] + currencyTable[synthToBuy];
+    if (
+      synthToBuy == 'sXAU' ||
+      synthToBuy === 'sBTC' ||
+      synthToBuy === 'sXAG'
+    ) {
+      return CURRENCY_TABLE[synthToBuy] + CURRENCY_TABLE[synthToExchange];
+    } else return CURRENCY_TABLE[synthToExchange] + CURRENCY_TABLE[synthToBuy];
   }
 
   render() {
@@ -59,6 +62,10 @@ class Exchange extends Component {
       walletSelectorPopupIsVisible,
       transactionStatusPopupIsVisible,
       loadingScreenIsVisible,
+      testnetPopupIsVisible,
+      depotPopupIsVisible,
+      feedbackPopupIsVisible,
+      walkthroughPopupIsVisible,
     } = this.props;
     const symbol = this.getSymbol();
     return (
@@ -98,7 +105,13 @@ class Exchange extends Component {
         </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
+        <TestnetPopup isVisible={testnetPopupIsVisible} />
+        <DepotPopup isVisible={depotPopupIsVisible} />
+        <FeedbackPopup isVisible={feedbackPopupIsVisible} />
         <LoadingScreen isVisible={loadingScreenIsVisible} />
+        {walkthroughPopupIsVisible ? (
+          <WalkthroughPopup isVisible={walkthroughPopupIsVisible} />
+        ) : null}
       </div>
     );
   }
@@ -108,6 +121,10 @@ const mapStateToProps = state => {
   return {
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
     transactionStatusPopupIsVisible: transactionStatusPopupIsVisible(state),
+    testnetPopupIsVisible: testnetPopupIsVisible(state),
+    depotPopupIsVisible: depotPopupIsVisible(state),
+    feedbackPopupIsVisible: feedbackPopupIsVisible(state),
+    walkthroughPopupIsVisible: walkthroughPopupIsVisible(state),
     loadingScreenIsVisible: loadingScreenIsVisible(state),
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
@@ -123,6 +140,10 @@ const mapDispatchToProps = {
 Exchange.propTypes = {
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
   transactionStatusPopupIsVisible: PropTypes.bool.isRequired,
+  testnetPopupIsVisible: PropTypes.bool.isRequired,
+  depotPopupIsVisible: PropTypes.bool.isRequired,
+  feedbackPopupIsVisible: PropTypes.bool.isRequired,
+  walkthroughPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
   setAvailableSynths: PropTypes.func.isRequired,

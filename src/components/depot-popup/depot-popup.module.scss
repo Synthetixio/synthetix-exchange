@@ -1,0 +1,96 @@
+@import '../../styles/variables.scss';
+
+.depotPopup {
+  width: 580px;
+}
+
+.popupDescription {
+  font-size: 16px;
+  text-align: justify;
+}
+
+.inputLabelRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  align-items: center;
+}
+
+.inputRow {
+  width: 100%;
+  margin: 10px 0 40px 0;
+  display: flex;
+  justify-content: space-between;
+  img {
+    margin: 0 10px;
+  }
+}
+
+.inputElement {
+  width: 100%;
+  background-color: $color-background;
+  border: 1px solid $color-input-border;
+  height: 50px;
+  color: #ffffff;
+  padding: 17px 90px 15px 17px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-overflow: ellipsis;
+}
+
+.buyButton {
+  margin-top: 20px;
+  height: 50px;
+  border-radius: 4px;
+  background-color: $color-light-blue;
+  color: #ffffff;
+  width: 80%;
+  border: 0;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.2;
+  }
+}
+
+.buyMaxButton {
+  cursor: pointer;
+  background-color: $color-background;
+  font-family: 'RobotoMono-Regular';
+  letter-spacing: 1px;
+  font-size: 10px;
+  color: #ffffff;
+  border: 1px solid #28253f;
+  border-radius: 4px;
+  padding: 12px 15px;
+  text-transform: uppercase;
+  &:hover {
+    background-color: #fff;
+    color: $color-background;
+    border: 1px solid #ffffff;
+  }
+}
+
+.ethBalance {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $color-border;
+}
+
+.ethBalanceValue {
+  font-family: 'RobotoMono-Regular';
+  letter-spacing: 2px;
+  font-size: 14px;
+}

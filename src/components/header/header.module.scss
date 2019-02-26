@@ -6,15 +6,39 @@
   height: 50px;
 }
 
+.headerRightArea {
+  display: flex;
+  button {
+    margin-right: 40px;
+  }
+}
+
 .logoWrapper {
   display: flex;
   align-items: center;
 }
 
-.beta {
-  font-family: 'RobotoMono-Regular';
-  font-style: italic;
-  color: $color-font-grey;
-  font-size: 12px;
+.headerButton {
+  cursor: pointer;
+  border: 1px solid $color-input-border;
+  background-color: $color-background;
+  color: #ffffff;
+  height: 50px;
+  font-size: 14px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  transition: transform ease-in 0.1s;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.headerButtonIcon {
   margin-left: 10px;
+}
+
+.envButton {
+  margin-left: 20px;
+  text-transform: uppercase;
 }

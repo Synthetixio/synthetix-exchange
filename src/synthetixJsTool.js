@@ -1,14 +1,13 @@
-import { HavvenJs } from 'havven-js';
-
+import { SynthetixJs } from 'synthetix-js';
 let SynthetixJsTools = {
   initialized: false,
-  signers: HavvenJs.signers,
+  signers: SynthetixJs.signers,
   setContractSettings: function(contractSettings) {
-    this.havvenJs = new HavvenJs(contractSettings);
-    this.signer = this.havvenJs.contractSettings.signer;
-    this.provider = this.havvenJs.contractSettings.provider;
-    this.util = this.havvenJs.util;
-    this.utils = this.havvenJs.utils;
+    this.synthetixJs = new SynthetixJs(contractSettings);
+    this.signer = this.synthetixJs.contractSettings.signer;
+    this.provider = this.synthetixJs.contractSettings.provider;
+    this.util = this.synthetixJs.util;
+    this.utils = this.synthetixJs.utils;
     this.initialized = true;
   },
 };
