@@ -174,11 +174,13 @@ class WalletSelectorPopup extends Component {
   }
 
   renderButton(walletType) {
+    const { metamaskInstalled } = this.state;
     return (
       <button
         onClick={this.goToWalletConnector(walletType)}
         key={walletType}
         className={styles.button}
+        disabled={walletType === 'Metamask' && !metamaskInstalled}
       >
         <div className={styles.buttonInner}>
           <img
@@ -187,7 +189,11 @@ class WalletSelectorPopup extends Component {
             alt={`${walletType} icon`}
           />
           <div className={styles.walletDescription}>
-            <div className={styles.walletDescriptionHeading}>{walletType}</div>
+            <div className={styles.walletDescriptionHeading}>
+              {walletType === 'Metamask' && !metamaskInstalled
+                ? 'Metamask (not installed)'
+                : walletType}
+            </div>
             <div className={styles.walletDescriptionText}>
               {WALLET_DESCRIPTIONS[walletType]}
             </div>

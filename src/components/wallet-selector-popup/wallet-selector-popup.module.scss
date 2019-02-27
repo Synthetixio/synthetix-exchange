@@ -20,6 +20,10 @@
   &:hover {
     transform: scale(1.05);
   }
+  &:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
 }
 
 .buttonInner {
