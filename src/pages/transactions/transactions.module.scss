@@ -1,0 +1,46 @@
+@import '../../styles/variables.scss';
+
+.transactions {
+  padding: 48px;
+}
+
+.transactionsLayout {
+  width: 100%;
+  margin-top: 25px;
+}
+
+.transactionTable {
+  width: 100%;
+  tbody {
+    font-family: 'RobotoMono-Regular';
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  th {
+    border-bottom: 1px solid $color-input-border;
+    &:first-child {
+      text-align: left;
+    }
+    &.rate {
+      text-align: right;
+      padding: 0 20px;
+    }
+  }
+  tr {
+    cursor: pointer;
+    &:hover {
+      background-color: #2e324145;
+    }
+  }
+  tr + tr {
+    td {
+      border-top: 1px solid #19172a;
+    }
+  }
+  td {
+    padding: 8px 20px;
+    &.rate {
+      text-align: right;
+    }
+  }
+}

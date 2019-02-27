@@ -6,15 +6,8 @@ import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import WalletConnector from '../../components/wallet-connector';
-import LoadingScreen from '../../components/loading-screen';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import RateList from '../../components/rate-list';
-import WalletSelectorPopup from '../../components/wallet-selector-popup';
-import TransactionStatusPopup from '../../components/transaction-status-popup';
-import TestnetPopup from '../../components/testnet-popup';
-import DepotPopup from '../../components/depot-popup';
-import FeedbackPopup from '../../components/feedback-popup';
-import WalkthroughPopup from '../../components/walkthrough-popup';
 import TradingWidget from '../../components/trading-widget';
 
 import {
@@ -58,15 +51,6 @@ class Exchange extends Component {
   }
 
   render() {
-    const {
-      walletSelectorPopupIsVisible,
-      transactionStatusPopupIsVisible,
-      loadingScreenIsVisible,
-      testnetPopupIsVisible,
-      depotPopupIsVisible,
-      feedbackPopupIsVisible,
-      walkthroughPopupIsVisible,
-    } = this.props;
     const symbol = this.getSymbol();
     return (
       <div className={styles.exchange}>
@@ -103,15 +87,6 @@ class Exchange extends Component {
             </div>
           </div>
         </div>
-        <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
-        <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
-        <TestnetPopup isVisible={testnetPopupIsVisible} />
-        <DepotPopup isVisible={depotPopupIsVisible} />
-        <FeedbackPopup isVisible={feedbackPopupIsVisible} />
-        <LoadingScreen isVisible={loadingScreenIsVisible} />
-        {walkthroughPopupIsVisible ? (
-          <WalkthroughPopup isVisible={walkthroughPopupIsVisible} />
-        ) : null}
       </div>
     );
   }
