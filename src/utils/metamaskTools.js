@@ -8,6 +8,7 @@ export const SUPPORTED_NETWORKS = {
 
 export async function getEthereumNetwork() {
   return await new Promise(function(resolve, reject) {
+    if (!window.web3) resolve({ name: 'MAINNET', networkId: '1' });
     window.web3.version.getNetwork((err, networkId) => {
       if (err) {
         reject(err);
