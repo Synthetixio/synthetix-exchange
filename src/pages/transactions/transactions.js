@@ -11,10 +11,17 @@ import Container from '../../components/container';
 
 import styles from './transactions.module.scss';
 
+const ETHERSCAN_URLS = {
+  1: 'https://etherscan.io/tx/',
+  3: 'https://ropsten.etherscan.io/tx/',
+  42: 'https://kovan.etherscan.io/tx/',
+};
+
 class Transactions extends Component {
   constructor() {
     super();
     this.state = {
+      myTransactions: null,
       allTransactions: null,
       transactions: null,
       showAllTrades: true,
@@ -23,27 +30,33 @@ class Transactions extends Component {
   }
 
   async componentDidMount() {
-    const transactions = await getTransactions();
+    const { currentWalletInfo } = this.props;
+    const transactions = await getTransactions(
+      currentWalletInfo && currentWalletInfo.networkId
+    );
     const filteredTransactions = transactions.filter(
       transaction => !transaction.exchangeToCurrency.includes('XDR')
     );
+
+    let myTransactions;
+    if (currentWalletInfo.selectedWallet) {
+      myTransactions = filteredTransactions.filter(
+        transaction => transaction.from === currentWalletInfo.selectedWallet
+      );
+    }
     this.setState({
       allTransactions: filteredTransactions,
+      myTransactions,
       transactions: filteredTransactions,
     });
   }
 
   toggleShowMyTrades() {
-    const { allTransactions, showAllTrades } = this.state;
-    const { currentWalletInfo } = this.props;
-    if (!currentWalletInfo.selectedWallet) return;
-    const transactionsToShow = showAllTrades
-      ? allTransactions
-      : allTransactions.filter(
-          transaction => transaction.from === currentWalletInfo.selectedWallet
-        );
+    const { allTransactions, myTransactions, showAllTrades } = this.state;
+    if (showAllTrades && (!myTransactions || myTransactions.length === 0))
+      return null;
     this.setState({
-      transactions: transactionsToShow,
+      transactions: showAllTrades ? myTransactions : allTransactions,
       showAllTrades: !showAllTrades,
     });
   }
@@ -67,6 +80,11 @@ class Transactions extends Component {
 
   renderTableBody() {
     const { transactions } = this.state;
+    const { currentWalletInfo } = this.props;
+    const networkId =
+      currentWalletInfo && currentWalletInfo.networkId
+        ? currentWalletInfo.networkId
+        : 1;
     if (!transactions) return null;
     return transactions.map((transaction, index) => {
       return (
@@ -82,7 +100,9 @@ class Transactions extends Component {
           <td className={styles.transactionLinkWrapper}>
             <a
               className={styles.transactionLink}
-              href={`https://etherscan.io/tx/${transaction.transactionHash}`}
+              href={`${ETHERSCAN_URLS[networkId]}${
+                transaction.transactionHash
+              }`}
               target="_blank"
               rel="noopener noreferrer"
             >
