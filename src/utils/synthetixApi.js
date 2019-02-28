@@ -1,6 +1,5 @@
 const SYNTHETIX_API_URL =
-  process.env.API_URL ||
-  'http://havven-api-staging.ap-southeast-2.elasticbeanstalk.com/api/';
+  process.env.API_URL || 'https://staging.api.synthetix.io/api/';
 
 export const getTransactions = async wallet => {
   const uri = `${SYNTHETIX_API_URL}blockchainEvents/SynthExchange/${
