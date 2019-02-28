@@ -4,8 +4,16 @@ import PropTypes from 'prop-types';
 
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
+import Transactions from '../transactions';
 
 import Overlay from '../../components/overlay';
+import WalletSelectorPopup from '../../components/wallet-selector-popup';
+import TransactionStatusPopup from '../../components/transaction-status-popup';
+import TestnetPopup from '../../components/testnet-popup';
+import DepotPopup from '../../components/depot-popup';
+import FeedbackPopup from '../../components/feedback-popup';
+import WalkthroughPopup from '../../components/walkthrough-popup';
+import LoadingScreen from '../../components/loading-screen';
 
 import {
   getCurrentScreen,
@@ -95,6 +103,8 @@ class Root extends Component {
         return <Exchange />;
       case 'connectToWallet':
         return <ConnectToWallet />;
+      case 'transactions':
+        return <Transactions />;
       default:
         return <Exchange />;
     }
@@ -121,11 +131,29 @@ class Root extends Component {
     );
   }
   render() {
+    const {
+      walletSelectorPopupIsVisible,
+      transactionStatusPopupIsVisible,
+      loadingScreenIsVisible,
+      testnetPopupIsVisible,
+      depotPopupIsVisible,
+      feedbackPopupIsVisible,
+      walkthroughPopupIsVisible,
+    } = this.props;
     const overlayIsVisible = this.hasOpenPopup();
     return (
       <div className={styles.root}>
         <Overlay isVisible={overlayIsVisible} />
         {this.renderScreen()}
+        <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
+        <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
+        <TestnetPopup isVisible={testnetPopupIsVisible} />
+        <DepotPopup isVisible={depotPopupIsVisible} />
+        <FeedbackPopup isVisible={feedbackPopupIsVisible} />
+        <LoadingScreen isVisible={loadingScreenIsVisible} />
+        {walkthroughPopupIsVisible ? (
+          <WalkthroughPopup isVisible={walkthroughPopupIsVisible} />
+        ) : null}
       </div>
     );
   }

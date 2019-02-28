@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { getCurrentWalletInfo, testnetPopupIsVisible } from '../../ducks/';
+import {
+  getCurrentWalletInfo,
+  testnetPopupIsVisible,
+  getCurrentScreen,
+} from '../../ducks/';
 import {
   toggleTestnetPopup,
   toggleFeedbackPopup,
   toggleWalkthroughPopup,
+  changeScreen,
 } from '../../ducks/ui';
 
 import WalletAddressSwitcher from '../wallet-address-switcher';
@@ -18,6 +23,7 @@ class Header extends Component {
     this.onEnvButtonClick = this.onEnvButtonClick.bind(this);
     this.onFeedbackButtonClick = this.onFeedbackButtonClick.bind(this);
     this.onWalkthroughButtonClick = this.onWalkthroughButtonClick.bind(this);
+    this.onPageButtonClick = this.onPageButtonClick.bind(this);
   }
 
   onEnvButtonClick() {
@@ -41,6 +47,13 @@ class Header extends Component {
     toggleWalkthroughPopup(true);
   }
 
+  onPageButtonClick() {
+    const { changeScreen, currentScreen } = this.props;
+    const nextScreen =
+      currentScreen === 'exchange' ? 'transactions' : 'exchange';
+    changeScreen(nextScreen);
+  }
+
   renderNetworkName() {
     const { currentWalletInfo } = this.props;
     switch (currentWalletInfo.networkId) {
@@ -56,6 +69,7 @@ class Header extends Component {
   }
 
   render() {
+    const { currentScreen } = this.props;
     return (
       <div className={styles.header}>
         <div className={styles.logoWrapper}>
@@ -88,6 +102,13 @@ class Header extends Component {
           >
             Got feedback?
           </button>
+          <button
+            type="button"
+            onClick={this.onPageButtonClick}
+            className={styles.headerButton}
+          >
+            {currentScreen === 'exchange' ? 'Transactions' : 'Exchange'}
+          </button>
           <WalletAddressSwitcher />
         </div>
       </div>
@@ -99,6 +120,7 @@ const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
+    currentScreen: getCurrentScreen(state),
   };
 };
 
@@ -106,6 +128,7 @@ const mapDispatchToProps = {
   toggleTestnetPopup,
   toggleFeedbackPopup,
   toggleWalkthroughPopup,
+  changeScreen,
 };
 
 Header.propTypes = {
@@ -114,6 +137,8 @@ Header.propTypes = {
   toggleTestnetPopup: PropTypes.func.isRequired,
   toggleFeedbackPopup: PropTypes.func.isRequired,
   toggleWalkthroughPopup: PropTypes.func.isRequired,
+  changeScreen: PropTypes.func.isRequired,
+  currentScreen: PropTypes.string.isRequired,
 };
 
 export default connect(

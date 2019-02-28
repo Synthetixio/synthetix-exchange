@@ -19,6 +19,7 @@
 }
 
 .headerButton {
+  width: 155px;
   cursor: pointer;
   border: 1px solid $color-input-border;
   background-color: $color-background;
@@ -28,6 +29,7 @@
   padding: 0 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: transform ease-in 0.1s;
   &:hover {
     transform: scale(1.05);
