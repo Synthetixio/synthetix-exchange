@@ -17,6 +17,12 @@ const ETHERSCAN_URLS = {
   42: 'https://kovan.etherscan.io/tx/',
 };
 
+const compareBlocks = (a, b) => {
+  if (a.blockTimestamp < b.blockTimestamp) return 1;
+  if (a.blockTimestamp > b.blockTimestamp) return -1;
+  return 0;
+};
+
 class Transactions extends Component {
   constructor() {
     super();
@@ -34,9 +40,9 @@ class Transactions extends Component {
     const transactions = await getTransactions(
       currentWalletInfo && currentWalletInfo.networkId
     );
-    const filteredTransactions = transactions.filter(
-      transaction => !transaction.exchangeToCurrency.includes('XDR')
-    );
+    const filteredTransactions = transactions
+      .sort(compareBlocks)
+      .filter(transaction => !transaction.exchangeToCurrency.includes('XDR'));
 
     let myTransactions;
     if (currentWalletInfo.selectedWallet) {
