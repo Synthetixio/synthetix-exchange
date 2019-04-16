@@ -121,9 +121,9 @@ class TradingWidget extends Component {
         toAmount,
       });
       transactionResult = await synthetixJsTools.synthetixJs.Synthetix.exchange(
-        synthetixJsTools.utils.toUtf8Bytes(synthToExchange),
+        synthetixJsTools.utils.toUtf8Bytes(synthToExchange.name),
         synthetixJsTools.utils.parseEther(fromAmount),
-        synthetixJsTools.utils.toUtf8Bytes(synthToBuy),
+        synthetixJsTools.utils.toUtf8Bytes(synthToBuy.name),
         selectedWallet,
         {
           gasPrice,
@@ -232,7 +232,7 @@ class TradingWidget extends Component {
     const { synthToBuy, synthToExchange } = this.props;
     const { inputValues } = this.state;
     const buttonIsEnabled =
-      inputValues[synthToBuy] && inputValues[synthToExchange];
+      inputValues[synthToBuy.name] && inputValues[synthToExchange.name];
     return (
       <div>
         <div className={styles.widgetHeader}>

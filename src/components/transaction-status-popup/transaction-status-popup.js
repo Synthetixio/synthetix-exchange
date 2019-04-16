@@ -31,7 +31,7 @@ class TransactionStatusPopup extends Component {
         <span className={styles.conversionAmountValue}>
           {numbro(amount).format('0,0.00')}
         </span>
-        <span className={styles.conversionAmountSynth}>{synth}</span>
+        <span className={styles.conversionAmountSynth}>{synth.name}</span>
       </div>
     );
   }
