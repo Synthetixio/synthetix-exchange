@@ -5,9 +5,6 @@ import numbro from 'numbro';
 
 import { getAvailableSynths } from '../../ducks/';
 
-import synthetixJsTools from '../../synthetixJsTool';
-import { formatBigNumber } from '../../utils/converterUtils';
-
 import { setSynthToBuy } from '../../ducks/synths';
 import {
   getSynthToExchange,
@@ -15,7 +12,6 @@ import {
   getExchangeRates,
 } from '../../ducks';
 
-import { SYNTH_SIGNS } from '../../synthsList';
 import styles from './rate-list.module.scss';
 
 class RateList extends Component {
@@ -32,58 +28,48 @@ class RateList extends Component {
     };
   }
 
-  async componentDidMount() {
-    if (!synthetixJsTools.initialized) return;
-    const { availableSynths } = this.props;
-    const ratesObject = {};
-    try {
-      const ratesForCurrencies = await synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
-        availableSynths.map(synth => synthetixJsTools.utils.toUtf8Bytes(synth))
-      );
-      availableSynths.forEach((synth, i) => {
-        ratesObject[synth] = formatBigNumber(ratesForCurrencies[i], 6);
-      });
-    } catch (e) {
-      console.log('Unable to fetch latest rates', e);
-    }
-    this.setState({ rates: ratesObject });
-  }
-
   renderTableBody() {
-    const { exchangeRates, synthToExchange, synthToBuy } = this.props;
+    const {
+      exchangeRates,
+      synthToExchange,
+      synthToBuy,
+      availableSynths,
+    } = this.props;
     if (!exchangeRates) return;
-    const rates = exchangeRates[synthToExchange].filter(synth => {
-      return synth.synth !== synthToExchange;
+
+    const filteredSynths = availableSynths.filter(synth => {
+      return synth.name !== synthToExchange.name && synth.name !== 'XDR';
     });
 
-    return rates.map((synth, i) => {
+    return filteredSynths.map((synth, i) => {
       // Small fix to avoid price like 0.0000 when sKRW/sJPY against sXAU
       const precision =
-        synth.synth === 'sXAU' &&
-        (synthToExchange === 'sKRW' || synthToExchange === 'sJPY')
+        synth.name === 'sXAU' &&
+        (synthToExchange.name === 'sKRW' || synthToExchange.name === 'sJPY')
           ? '0,0.00000000'
           : '0,0.00000';
+      const rates = exchangeRates[synthToExchange.name];
       return (
         <tr
           key={i}
           className={
-            synthToBuy && synthToBuy === synth.synth
+            synthToBuy && synthToBuy.name === synth.name
               ? styles.tableRowActive
               : ''
           }
-          onClick={this.selectSynthToBuy(synth.synth)}
+          onClick={this.selectSynthToBuy(synth)}
         >
           <td className={styles.tableBodySynth}>
             <img
-              src={`images/synths/${synth.synth}-icon.svg`}
+              src={`images/synths/${synth.name}-icon.svg`}
               alt="synth icon"
             />
-            <span>{synth.synth}</span>
+            <span>{synth.name}</span>
           </td>
           <td />
           <td className={styles.rate}>
-            {SYNTH_SIGNS[synth.synth]}
-            {numbro(synth.rate).format(precision)}
+            {synth.sign}
+            {numbro(rates[synth.name]).format(precision)}
           </td>
           <td />
         </tr>
@@ -129,8 +115,8 @@ const mapDispatchToProps = {
 
 RateList.propTypes = {
   availableSynths: PropTypes.array.isRequired,
-  synthToExchange: PropTypes.string,
-  synthToBuy: PropTypes.string,
+  synthToExchange: PropTypes.object,
+  synthToBuy: PropTypes.object,
   setSynthToBuy: PropTypes.func.isRequired,
   exchangeRates: PropTypes.object,
 };

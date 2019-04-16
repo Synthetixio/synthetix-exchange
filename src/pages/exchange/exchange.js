@@ -23,9 +23,6 @@ import {
   getSynthToExchange,
   getSynthToBuy,
 } from '../../ducks/';
-import { setAvailableSynths } from '../../ducks/synths';
-
-import { CURRENCY_TABLE } from '../../synthsList';
 
 import styles from './exchange.module.scss';
 
@@ -41,13 +38,14 @@ class Exchange extends Component {
 
   getSymbol() {
     const { synthToBuy, synthToExchange } = this.props;
+    if (!synthToBuy || !synthToExchange) return;
     if (
-      synthToBuy == 'sXAU' ||
-      synthToBuy === 'sBTC' ||
-      synthToBuy === 'sXAG'
+      synthToBuy.category == 'commodity' ||
+      synthToBuy.category === 'crypto'
     ) {
-      return CURRENCY_TABLE[synthToBuy] + CURRENCY_TABLE[synthToExchange];
-    } else return CURRENCY_TABLE[synthToExchange] + CURRENCY_TABLE[synthToBuy];
+      return synthToBuy.name.substring(1) + synthToExchange.name.substring(1);
+    } else
+      return synthToExchange.name.substring(1) + synthToBuy.name.substring(1);
   }
 
   render() {
@@ -108,9 +106,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {
-  setAvailableSynths,
-};
+const mapDispatchToProps = {};
 
 Exchange.propTypes = {
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
@@ -121,10 +117,9 @@ Exchange.propTypes = {
   walkthroughPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
-  setAvailableSynths: PropTypes.func.isRequired,
   availableSynths: PropTypes.array.isRequired,
-  synthToBuy: PropTypes.string,
-  synthToExchange: PropTypes.string,
+  synthToBuy: PropTypes.object,
+  synthToExchange: PropTypes.object,
 };
 
 export default connect(
