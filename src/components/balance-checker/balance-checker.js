@@ -17,9 +17,9 @@ import { toggleLoadingScreen, toggleDepotPopup } from '../../ducks/ui';
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
 
-import { SYNTH_BY_TYPE, SYNTH_TYPES } from '../../synthsList';
-
 import styles from './balance-checker.module.scss';
+
+const SYNTH_CATEGORIES = ['forex', 'commodity', 'crypto', 'stocks'];
 
 class BalanceChecker extends Component {
   constructor() {
@@ -64,7 +64,7 @@ class BalanceChecker extends Component {
     const ethBalanceValue = ethBalance * ethRate;
     const balances = await Promise.all(
       availableSynths.map(synth => {
-        return synthetixJs[synth].balanceOf(selectedWallet);
+        return synthetixJs[synth.name].balanceOf(selectedWallet);
       })
     );
 
@@ -72,7 +72,7 @@ class BalanceChecker extends Component {
     const totalBalance = await Promise.all(
       balances.map((balance, i) => {
         return synthetixJs.Synthetix.effectiveValue(
-          utils.toUtf8Bytes(availableSynths[i]),
+          utils.toUtf8Bytes(availableSynths[i].name),
           balance,
           utils.toUtf8Bytes('sUSD')
         );
@@ -80,7 +80,7 @@ class BalanceChecker extends Component {
     );
 
     balances.forEach(async (balance, i) => {
-      synthsBalance[availableSynths[i]] = formatBigNumber(balance, 6);
+      synthsBalance[availableSynths[i].name] = formatBigNumber(balance, 6);
     });
     this.setState({
       balances: balances.map(balance => formatBigNumber(balance, 6)),
@@ -138,31 +138,34 @@ class BalanceChecker extends Component {
     }
   }
 
-  renderBalance(synthType) {
+  renderBalance(synthCategory) {
     const { availableSynths, synthToExchange, currentWalletInfo } = this.props;
     const { balances } = currentWalletInfo;
     if (!availableSynths) return;
     return availableSynths
-      .filter(synth => SYNTH_BY_TYPE[synth] === synthType)
+      .filter(synth => synth.category === synthCategory)
       .map((synth, i) => {
         return (
           <Fragment key={i}>
             <tr
               onClick={this.selectSynthToExchange(synth)}
               className={`${styles.tableBodyRow} ${
-                synthToExchange && synthToExchange === synth
+                synthToExchange && synthToExchange.name === synth.name
                   ? styles.tableBodyRowActive
                   : ''
               }`}
               key={`synth-${i}`}
             >
               <td className={styles.tableBodySynth}>
-                <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
-                <span>{synth}</span>
+                <img
+                  src={`images/synths/${synth.name}-icon.svg`}
+                  alt="synth icon"
+                />
+                <span>{synth.name}</span>
               </td>
               <td className={styles.tableBodyBalance}>
-                {balances && balances[synth]
-                  ? numbro(Number(balances[synth])).format('0,0.00')
+                {balances && balances[synth.name]
+                  ? numbro(Number(balances[synth.name])).format('0,0.00')
                   : null}
               </td>
             </tr>
@@ -235,8 +238,8 @@ class BalanceChecker extends Component {
     );
   }
 
-  renderTable(synthType, index) {
-    const balance = this.renderBalance(synthType);
+  renderTable(synthCategory, index) {
+    const balance = this.renderBalance(synthCategory);
     return (
       <div key={index} className={styles.tableWrapper}>
         <table cellPadding="0" cellSpacing="0" className={styles.table}>
@@ -244,13 +247,17 @@ class BalanceChecker extends Component {
             <tr>
               <th>
                 <h3 className={styles.tableHeading}>
-                  {synthType === 'stocks' ? 'stocks (coming soon)' : synthType}
+                  {synthCategory === 'stocks'
+                    ? 'stocks (coming soon)'
+                    : synthCategory === 'commodity'
+                    ? 'commodities'
+                    : synthCategory}
                 </h3>
               </th>
             </tr>
           </thead>
           <tbody>
-            {synthType === 'stocks' ? (
+            {synthCategory === 'stocks' ? (
               <tr>
                 <td style={{ textAlign: 'left' }}>
                   Please let us know in the Feedback box at the top which stocks
@@ -267,7 +274,7 @@ class BalanceChecker extends Component {
   }
 
   renderSynths() {
-    return SYNTH_TYPES.map(this.renderTable);
+    return SYNTH_CATEGORIES.map(this.renderTable);
   }
 
   render() {
@@ -300,7 +307,7 @@ const mapDispatchToProps = {
 BalanceChecker.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   availableSynths: PropTypes.array.isRequired,
-  synthToExchange: PropTypes.string,
+  synthToExchange: PropTypes.object,
   setSynthToExchange: PropTypes.func.isRequired,
   setWalletBalances: PropTypes.func.isRequired,
   toggleLoadingScreen: PropTypes.func.isRequired,

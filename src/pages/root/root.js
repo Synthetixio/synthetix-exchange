@@ -26,7 +26,7 @@ import {
   walkthroughPopupIsVisible,
   walletSelectorPopupIsVisible,
 } from '../../ducks/';
-import { updateExchangeRates } from '../../ducks/synths';
+import { updateExchangeRates, setAvailableSynths } from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
 import { connectToWallet, updateGasAndSpeedInfo } from '../../ducks/wallet';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
@@ -53,13 +53,13 @@ class Root extends Component {
       const [synthRates, ethRate] = await Promise.all([
         synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
           availableSynths.map(synth =>
-            synthetixJsTools.utils.toUtf8Bytes(synth)
+            synthetixJsTools.utils.toUtf8Bytes(synth.name)
           )
         ),
         synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
       ]);
       synthRates.forEach((rate, i) => {
-        formattedSynthRates[availableSynths[i]] = Number(
+        formattedSynthRates[availableSynths[i].name] = Number(
           synthetixJsTools.synthetixJs.utils.formatEther(rate)
         );
       });
@@ -85,11 +85,16 @@ class Root extends Component {
   }
 
   async componentDidMount() {
-    const { toggleLoadingScreen, connectToWallet } = this.props;
+    const {
+      toggleLoadingScreen,
+      connectToWallet,
+      setAvailableSynths,
+    } = this.props;
     toggleLoadingScreen(true);
     setInterval(this.refreshData, 60 * 1000);
     const { networkId } = await getEthereumNetwork();
     synthetixJsTools.setContractSettings({ networkId });
+    setAvailableSynths(synthetixJsTools.synthetixJs.contractSettings.synths);
     connectToWallet({
       networkId,
     });
@@ -175,12 +180,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   updateExchangeRates,
+  setAvailableSynths,
   toggleLoadingScreen,
   connectToWallet,
   updateGasAndSpeedInfo,
 };
 
 Root.propTypes = {
+  updateExchangeRates: PropTypes.func.isRequired,
+  setAvailableSynths: PropTypes.func.isRequired,
   currentScreen: PropTypes.string.isRequired,
   availableSynths: PropTypes.array.isRequired,
   toggleLoadingScreen: PropTypes.func.isRequired,
