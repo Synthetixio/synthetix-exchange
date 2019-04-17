@@ -8,7 +8,7 @@
 
 .headerRightArea {
   display: flex;
-  button {
+  button:not(:last-child) {
     margin-right: 40px;
   }
 }
@@ -43,4 +43,18 @@
 .envButton {
   margin-left: 20px;
   text-transform: uppercase;
+}
+
+.walletConnectorButton {
+  height: 50px;
+  padding: 0 20px;
+  border-radius: 4px;
+  background-color: $color-light-blue;
+  color: #ffffff;
+  border: 0;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import GweiSelector from '../gwei-selector';
@@ -53,10 +53,15 @@ class TradingWidget extends Component {
     }
 
     if (prevProps.synthToExchange !== synthToExchange) {
-      this.setState({
-        inputValues: { [synthToExchange.name]: 0, [synthToBuy.name]: 0 },
-      });
+      this.resetInputs();
     }
+  }
+
+  resetInputs() {
+    const { synthToBuy, synthToExchange } = this.props;
+    this.setState({
+      inputValues: { [synthToExchange.name]: 0, [synthToBuy.name]: 0 },
+    });
   }
 
   tradeMax() {
@@ -145,6 +150,7 @@ class TradingWidget extends Component {
         setTimeout(() => {
           toggleTransactionStatusPopup(false);
           setTransactionStatusToCleared();
+          this.resetInputs();
         }, 2000);
       } catch (e) {
         console.log('Could not get transaction confirmation', e);
@@ -161,7 +167,7 @@ class TradingWidget extends Component {
     const { exchangeRates, synthToExchange, synthToBuy } = this.props;
 
     const { inputValues } = this.state;
-    const currentInputValue = inputValues[synthToExchange] || 0;
+    const currentInputValue = inputValues[synthToExchange.name] || 0;
     const newInputValue =
       e && e.target.validity.valid ? e.target.value : currentInputValue;
 
@@ -172,8 +178,8 @@ class TradingWidget extends Component {
     );
     this.setState({
       inputValues: {
-        [synthToExchange]: newInputValue,
-        [synthToBuy]: convertedInputValue,
+        [synthToExchange.name]: newInputValue,
+        [synthToBuy.name]: convertedInputValue,
       },
     });
   }
@@ -192,8 +198,8 @@ class TradingWidget extends Component {
     );
     this.setState({
       inputValues: {
-        [synthToExchange]: convertedInputValue,
-        [synthToBuy]: newInputValue,
+        [synthToExchange.name]: convertedInputValue,
+        [synthToBuy.name]: newInputValue,
       },
     });
   }
@@ -229,12 +235,17 @@ class TradingWidget extends Component {
   }
 
   render() {
-    const { synthToBuy, synthToExchange } = this.props;
+    const { synthToBuy, synthToExchange, currentWalletInfo } = this.props;
+    const { selectedWallet } = currentWalletInfo;
     const { inputValues } = this.state;
     const buttonIsEnabled =
       inputValues[synthToBuy.name] && inputValues[synthToExchange.name];
     return (
-      <div>
+      <div
+        className={`${styles.widget} ${
+          !selectedWallet ? styles.widgetIsDisabled : ''
+        }`}
+      >
         <div className={styles.widgetHeader}>
           <h2>Trade</h2>
           <button onClick={this.tradeMax} className={styles.widgetHeaderButton}>
@@ -250,6 +261,14 @@ class TradingWidget extends Component {
         >
           Confirm Trade
         </button>
+        {!selectedWallet ? (
+          <Fragment>
+            <div className={styles.widgetOverlay} />
+            <div className={styles.widgetOverlayMessage}>
+              Please connect your wallet
+            </div>
+          </Fragment>
+        ) : null}
       </div>
     );
   }
@@ -278,7 +297,7 @@ TradingWidget.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   synthToBuy: PropTypes.object,
   synthToExchange: PropTypes.object.isRequired,
-  exchangeRates: PropTypes.object.isRequired,
+  exchangeRates: PropTypes.object,
   toggleTransactionStatusPopup: PropTypes.func.isRequired,
   setTransactionStatusToConfirm: PropTypes.func.isRequired,
   setTransactionStatusToProgress: PropTypes.func.isRequired,

@@ -6,12 +6,14 @@ import {
   getCurrentWalletInfo,
   testnetPopupIsVisible,
   getCurrentScreen,
+  walletSelectorPopupIsVisible,
 } from '../../ducks/';
 import {
   toggleTestnetPopup,
   toggleFeedbackPopup,
   toggleWalkthroughPopup,
   changeScreen,
+  toggleWalletSelectorPopup,
 } from '../../ducks/ui';
 
 import WalletAddressSwitcher from '../wallet-address-switcher';
@@ -24,6 +26,7 @@ class Header extends Component {
     this.onFeedbackButtonClick = this.onFeedbackButtonClick.bind(this);
     this.onWalkthroughButtonClick = this.onWalkthroughButtonClick.bind(this);
     this.onPageButtonClick = this.onPageButtonClick.bind(this);
+    this.connectWallet = this.connectWallet.bind(this);
   }
 
   onEnvButtonClick() {
@@ -54,6 +57,14 @@ class Header extends Component {
     changeScreen(nextScreen);
   }
 
+  connectWallet() {
+    const {
+      toggleWalletSelectorPopup,
+      walletSelectorPopupIsVisible,
+    } = this.props;
+    toggleWalletSelectorPopup(!walletSelectorPopupIsVisible);
+  }
+
   renderNetworkName() {
     const { currentWalletInfo } = this.props;
     switch (currentWalletInfo.networkId) {
@@ -69,7 +80,8 @@ class Header extends Component {
   }
 
   render() {
-    const { currentScreen } = this.props;
+    const { currentScreen, currentWalletInfo } = this.props;
+    const { selectedWallet } = currentWalletInfo;
     return (
       <div className={styles.header}>
         <div className={styles.logoWrapper}>
@@ -109,7 +121,16 @@ class Header extends Component {
           >
             {currentScreen === 'exchange' ? 'Transactions' : 'Exchange'}
           </button>
-          <WalletAddressSwitcher />
+          {selectedWallet ? (
+            <WalletAddressSwitcher />
+          ) : (
+            <button
+              className={styles.walletConnectorButton}
+              onClick={this.connectWallet}
+            >
+              Connect Wallet
+            </button>
+          )}
         </div>
       </div>
     );
@@ -121,6 +142,7 @@ const mapStateToProps = state => {
     currentWalletInfo: getCurrentWalletInfo(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     currentScreen: getCurrentScreen(state),
+    walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
   };
 };
 
@@ -128,6 +150,7 @@ const mapDispatchToProps = {
   toggleTestnetPopup,
   toggleFeedbackPopup,
   toggleWalkthroughPopup,
+  toggleWalletSelectorPopup,
   changeScreen,
 };
 
@@ -139,6 +162,8 @@ Header.propTypes = {
   toggleWalkthroughPopup: PropTypes.func.isRequired,
   changeScreen: PropTypes.func.isRequired,
   currentScreen: PropTypes.string.isRequired,
+  walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
+  toggleWalletSelectorPopup: PropTypes.func.isRequired,
 };
 
 export default connect(

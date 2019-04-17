@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
-import WalletConnector from '../../components/wallet-connector';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import RateList from '../../components/rate-list';
 import TradingWidget from '../../components/trading-widget';
@@ -27,15 +26,6 @@ import {
 import styles from './exchange.module.scss';
 
 class Exchange extends Component {
-  renderWalletConnectorOrTradingWidget() {
-    const { currentWalletInfo } = this.props;
-    return currentWalletInfo && currentWalletInfo.selectedWallet ? (
-      <TradingWidget />
-    ) : (
-      <WalletConnector />
-    );
-  }
-
   getSymbol() {
     const { synthToBuy, synthToExchange } = this.props;
     if (!synthToBuy || !synthToExchange) return;
@@ -49,6 +39,7 @@ class Exchange extends Component {
   }
 
   render() {
+    const { synthToBuy, synthToExchange } = this.props;
     const symbol = this.getSymbol();
     return (
       <div className={styles.exchange}>
@@ -63,9 +54,11 @@ class Exchange extends Component {
               <Container fullHeight={true}>
                 <BalanceChecker />
               </Container>
-              <Container>
-                {this.renderWalletConnectorOrTradingWidget()}
-              </Container>
+              {synthToBuy && synthToExchange ? (
+                <Container>
+                  <TradingWidget />
+                </Container>
+              ) : null}
             </div>
             <div className={styles.exchangeLayoutColumn}>
               <Container>
