@@ -169,9 +169,9 @@ class BalanceChecker extends Component {
                   : null}
               </td>
             </tr>
-            {synth === 'sUSD' &&
-            synthToExchange &&
-            synthToExchange === synth &&
+            {synth.name === 'sUSD' &&
+            synthToExchange.name &&
+            synthToExchange.name === synth.name &&
             balances ? (
               <tr className={styles.tableBodyRowActive} key={`button-${i}`}>
                 <td colSpan="2" className={styles.tableBodyButtonRow}>

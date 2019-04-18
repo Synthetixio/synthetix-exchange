@@ -18,8 +18,12 @@ const sortSynths = (a, b) => {
   if (
     a.category === 'commodity' &&
     !['crypto', 'commodity'].includes(b.category)
-  )
+  ) {
     return -1;
+  }
+  if (a.category === 'forex' && b.category === 'forex' && a.name === 'sUSD') {
+    return -1;
+  }
   return 0;
 };
 

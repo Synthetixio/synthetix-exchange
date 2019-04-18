@@ -176,23 +176,29 @@ class DepotPopup extends Component {
             </button>
           </div>
           <div className={styles.inputRow}>
-            <input
-              value={ethInputValue || ''}
-              placeholder={0}
-              onChange={this.onEthInputChange}
-              pattern="^-?[0-9]\d*\.?\d*$"
-              className={styles.inputElement}
-              type="text"
-            />
+            <div className={styles.inputWrapper}>
+              <input
+                value={ethInputValue || ''}
+                placeholder={0}
+                onChange={this.onEthInputChange}
+                pattern="^-?[0-9]\d*\.?\d*$"
+                className={styles.inputElement}
+                type="text"
+              />
+              <span className={styles.inputLabel}>ETH</span>
+            </div>
             <img src="/images/swap-icon.svg" />
-            <input
-              value={synthInputValue || ''}
-              placeholder={0}
-              onChange={this.onSynthInputChange}
-              pattern="^-?[0-9]\d*\.?\d*$"
-              className={styles.inputElement}
-              type="text"
-            />
+            <div className={styles.inputWrapper}>
+              <input
+                value={synthInputValue || ''}
+                placeholder={0}
+                onChange={this.onSynthInputChange}
+                pattern="^-?[0-9]\d*\.?\d*$"
+                className={styles.inputElement}
+                type="text"
+              />
+              <span className={styles.inputLabel}>sUSD</span>
+            </div>
           </div>
           <GweiSelector />
           <button

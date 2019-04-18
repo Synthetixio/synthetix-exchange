@@ -31,6 +31,19 @@
   }
 }
 
+.inputWrapper {
+  position: relative;
+}
+
+.inputLabel {
+  font-family: 'RobotoMono-Regular';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  font-size: 14px;
+}
+
 .inputElement {
   width: 100%;
   background-color: $color-background;
