@@ -119,7 +119,7 @@ class Header extends Component {
             onClick={this.onPageButtonClick}
             className={styles.headerButton}
           >
-            {currentScreen === 'exchange' ? 'Transactions' : 'Exchange'}
+            {currentScreen === 'exchange' ? 'Trading History' : 'Exchange'}
           </button>
           {selectedWallet ? (
             <WalletAddressSwitcher />

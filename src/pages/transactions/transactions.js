@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
+import numbro from 'numbro';
 
 import { getCurrentWalletInfo } from '../../ducks/';
 
@@ -24,28 +25,32 @@ const compareBlocks = (a, b) => {
 };
 
 class Transactions extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       myTransactions: null,
       allTransactions: null,
       transactions: null,
-      showAllTrades: true,
+      showAllTrades: !(
+        props.currentWalletInfo && props.currentWalletInfo.selectedWallet
+      ),
     };
     this.toggleShowMyTrades = this.toggleShowMyTrades.bind(this);
   }
 
-  async componentDidMount() {
+  async refreshData() {
     const { currentWalletInfo } = this.props;
     const transactions = await getTransactions(
       currentWalletInfo && currentWalletInfo.networkId
     );
+    let showAllTrades = true;
     const filteredTransactions = transactions
       .sort(compareBlocks)
       .filter(transaction => !transaction.exchangeToCurrency.includes('XDR'));
 
     let myTransactions;
     if (currentWalletInfo.selectedWallet) {
+      showAllTrades = false;
       myTransactions = filteredTransactions.filter(
         transaction => transaction.from === currentWalletInfo.selectedWallet
       );
@@ -53,8 +58,24 @@ class Transactions extends Component {
     this.setState({
       allTransactions: filteredTransactions,
       myTransactions,
-      transactions: filteredTransactions,
+      transactions: showAllTrades ? filteredTransactions : myTransactions,
+      showAllTrades,
     });
+  }
+
+  componentDidMount() {
+    this.refreshData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { currentWalletInfo } = prevProps;
+    const prevSelectedWallet = currentWalletInfo.selectedWallet;
+    const selectedWallet =
+      this.props.currentWalletInfo &&
+      this.props.currentWalletInfo.selectedWallet;
+    if (prevSelectedWallet !== selectedWallet) {
+      this.refreshData();
+    }
   }
 
   toggleShowMyTrades() {
@@ -97,9 +118,12 @@ class Transactions extends Component {
         <tr key={index}>
           <td>{this.renderTransactionSynths(transaction)}</td>
           <td>
-            {transaction.exchangeFromAmount / transaction.exchangeToAmount}
+            {numbro(
+              transaction.exchangeFromAmount / transaction.exchangeToAmount
+            ).format('0,0.000000')}
           </td>
-          <td>{transaction.exchangeToAmount}</td>
+          <td>{numbro(transaction.exchangeFromAmount).format('0,0.000000')}</td>
+          <td>{numbro(transaction.exchangeToAmount).format('0,0.000000')}</td>
           <td>
             {format(new Date(transaction.blockTimestamp), 'H:mmA D/M/YYYY')}
           </td>
@@ -122,21 +146,27 @@ class Transactions extends Component {
 
   renderTransactionTable() {
     const { showAllTrades } = this.state;
+    const { currentWalletInfo } = this.props;
     return (
       <table cellSpacing="0" className={styles.transactionTable}>
         <thead>
           <tr>
             <th className={styles.headingWrapper}>
               <h2>Trade History</h2>
-              <button onClick={this.toggleShowMyTrades}>
-                {showAllTrades ? 'Show my trades' : 'Show all trades'}
-              </button>
+              {currentWalletInfo.selectedWallet ? (
+                <button onClick={this.toggleShowMyTrades}>
+                  {showAllTrades ? 'Show my trades' : 'Show all trades'}
+                </button>
+              ) : null}
             </th>
             <th>
               <h3>Rate</h3>
             </th>
             <th>
-              <h3>Amount</h3>
+              <h3>Amount (from)</h3>
+            </th>
+            <th>
+              <h3>Amount (to)</h3>
             </th>
             <th>
               <h3>Date / Time</h3>
