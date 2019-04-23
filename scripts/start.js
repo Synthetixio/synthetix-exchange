@@ -14,7 +14,6 @@ process.on('unhandledRejection', err => {
 // Ensure environment variables are read.
 require('../config/env');
 
-
 const fs = require('fs');
 const chalk = require('chalk');
 const webpack = require('webpack');
@@ -53,7 +52,7 @@ if (process.env.HOST) {
     )
   );
   console.log(
-    `If this was unintentional, check that you haven't mistakenly set it in your shell.`
+    'If this was unintentional, check that you haven\'t mistakenly set it in your shell.'
   );
   console.log(
     `Learn more here: ${chalk.yellow('http://bit.ly/CRA-advanced-config')}`
