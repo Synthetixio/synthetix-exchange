@@ -6,8 +6,8 @@ import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import RateList from '../../components/rate-list';
 import TradingWidget from '../../components/trading-widget';
+import Transactions from '../transactions';
 
 import {
   walletSelectorPopupIsVisible,
@@ -49,20 +49,15 @@ class Exchange extends Component {
             <div
               className={`${styles.exchangeLayoutColumn} ${
                 styles.exchangeLayoutColumnSmall
-              }`}
+              } ${styles.exchangeLayoutColumnLeft}`}
             >
               <Container fullHeight={true}>
                 <BalanceChecker />
               </Container>
-              {synthToBuy && synthToExchange ? (
-                <Container>
-                  <TradingWidget />
-                </Container>
-              ) : null}
             </div>
             <div className={styles.exchangeLayoutColumn}>
-              <Container>
-                <div className={styles.chartWrapper}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: '100%' }} className={styles.chartWrapper}>
                   <div className={styles.mask} />
                   <TradingViewWidget
                     symbol={symbol}
@@ -73,8 +68,21 @@ class Exchange extends Component {
                     save_image={false}
                   />
                 </div>
-                <RateList />
-              </Container>
+                <div
+                  style={{ height: '400px' }}
+                  className={`${styles.exchangeLayoutColumn} ${
+                    styles.exchangeLayoutColumnSmall
+                  } ${styles.exchangeLayoutColumnRight}`}
+                >
+                  {synthToBuy && synthToExchange ? (
+                    <Container fullHeight={true}>
+                      <TradingWidget />
+                    </Container>
+                  ) : null}
+                </div>
+              </div>
+              <div style={{ marginTop: '20px' }} />
+              <Transactions />
             </div>
           </div>
         </div>

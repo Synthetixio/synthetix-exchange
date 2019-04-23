@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { getCurrentWalletInfo } from '../../ducks/';
 
 import { getTransactions } from '../../utils/synthetixApi';
-import Header from '../../components/header';
+// import Header from '../../components/header';
 import Container from '../../components/container';
 
 import styles from './transactions.module.scss';
@@ -152,19 +152,19 @@ class Transactions extends Component {
   render() {
     const { transactions } = this.state;
     return (
-      <div className={styles.transactions}>
-        <div>
-          <Header />
-          <div className={styles.transactionsLayout}>
-            <Container minHeight={'500px'}>
-              {this.renderTransactionTable()}
-              {!transactions || transactions.length === 0 ? (
-                <h2 style={{ marginTop: '40px' }}>No Trades recorded.</h2>
-              ) : null}
-            </Container>
-          </div>
+      // <div className={styles.transactions}>
+      <div>
+        {/* <Header /> */}
+        <div className={styles.transactionsLayout}>
+          <Container minHeight={'500px'}>
+            {this.renderTransactionTable()}
+            {!transactions || transactions.length === 0 ? (
+              <h2 style={{ marginTop: '40px' }}>No Trades recorded.</h2>
+            ) : null}
+          </Container>
         </div>
       </div>
+      // </div>
     );
   }
 }
