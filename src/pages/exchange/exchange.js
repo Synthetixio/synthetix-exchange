@@ -81,7 +81,7 @@ class Exchange extends Component {
                   ) : null}
                 </div>
               </div>
-              <div style={{ marginTop: '20px' }} />
+              <div style={{ marginTop: '5px' }} />
               <Transactions />
             </div>
           </div>

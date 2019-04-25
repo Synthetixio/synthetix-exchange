@@ -1,6 +1,7 @@
 @import '../../styles/variables.scss';
 
 .rateList {
+  width: 100%;
   margin-top: 15px;
   h2 {
     margin: 0;
@@ -13,17 +14,20 @@
 .rateListTable {
   tbody {
     font-family: 'RobotoMono-Regular';
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 2px;
   }
   th {
-    border-bottom: 1px solid $color-input-border;
+    // border-bottom: 1px solid $color-input-border;
     &:first-child {
       text-align: left;
     }
     &.rate {
       text-align: right;
-      padding: 0 20px;
+      // padding: 0 20px;
+    }
+    h3 {
+      margin-bottom: 5px;
     }
   }
   tr {
@@ -38,7 +42,7 @@
     }
   }
   td {
-    padding: 8px 20px;
+    // padding: 8px 20px;
     &.rate {
       text-align: right;
     }
@@ -50,8 +54,8 @@
 }
 
 .tableBodySynth {
-  font-family: 'Aeonik-Bold';
-  font-size: 16px;
+  font-family: 'Aeonik-Regular';
+  font-size: 14px;
   letter-spacing: 0;
   display: flex;
   align-items: center;
