@@ -93,8 +93,12 @@
 .headingWrapper {
   display: flex;
   align-items: center;
+  h2 {
+    white-space: nowrap;
+  }
   button {
     cursor: pointer;
+    white-space: nowrap;
     background-color: $color-background;
     width: 135px;
     font-family: 'RobotoMono-Regular';
