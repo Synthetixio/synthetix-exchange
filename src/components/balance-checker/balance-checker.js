@@ -21,8 +21,6 @@ import SynthPicker from '../synth-picker';
 
 import styles from './balance-checker.module.scss';
 
-// const SYNTH_CATEGORIES = ['forex', 'commodity', 'crypto', 'stocks'];
-
 class BalanceChecker extends Component {
   constructor() {
     super();
@@ -32,7 +30,6 @@ class BalanceChecker extends Component {
     };
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
-    // this.renderTable = this.renderTable.bind(this);
     this.showDepotPopup = this.showDepotPopup.bind(this);
   }
 
@@ -240,43 +237,7 @@ class BalanceChecker extends Component {
     );
   }
 
-  // renderTable(synthCategory, index) {
-  //   const balance = this.renderBalance(synthCategory);
-  //   return (
-  //     <div key={index} className={styles.tableWrapper}>
-  //       <table cellPadding="0" cellSpacing="0" className={styles.table}>
-  //         <thead>
-  //           <tr>
-  //             <th>
-  //               <h3 className={styles.tableHeading}>
-  //                 {synthCategory === 'stocks'
-  //                   ? 'stocks (coming soon)'
-  //                   : synthCategory === 'commodity'
-  //                   ? 'commodities'
-  //                   : synthCategory}
-  //               </h3>
-  //             </th>
-  //           </tr>
-  //         </thead>
-  //         <tbody>
-  //           {synthCategory === 'stocks' ? (
-  //             <tr>
-  //               <td style={{ textAlign: 'left' }}>
-  //                 Please let us know in the Feedback box at the top which stocks
-  //                 you would like to see.
-  //               </td>
-  //             </tr>
-  //           ) : (
-  //             balance
-  //           )}
-  //         </tbody>
-  //       </table>
-  //     </div>
-  //   );
-  // }
-
   renderSynths() {
-    // return SYNTH_CATEGORIES.map(this.renderTable);
     return (
       <div>
         <h2 className={styles.tableHeading}>Select pair</h2>
