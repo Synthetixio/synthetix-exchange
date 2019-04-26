@@ -48,7 +48,7 @@ class RateList extends Component {
         (synthToExchange.name === 'sKRW' || synthToExchange.name === 'sJPY')
           ? '0,0.00000000'
           : '0,0.00000';
-      const rates = exchangeRates[synthToExchange.name];
+      const rates = exchangeRates[synth.name];
       return (
         <tr
           key={i}
@@ -65,8 +65,8 @@ class RateList extends Component {
             </span>
           </td>
           <td className={styles.rate}>
-            {synth.sign}
-            {numbro(rates[synth.name]).format(precision)}
+            {synthToExchange.sign}
+            {numbro(rates[synthToExchange.name]).format(precision)}
           </td>
         </tr>
       );
