@@ -12,14 +12,16 @@
   border: 1px solid $color-input-border;
   height: 50px;
   color: #ffffff;
-  padding: 0 20px;
   width: 100%;
   font-family: 'RobotoMono-Regular';
   font-size: 14px;
 }
 
 .synthPickerValue {
+  cursor: pointer;
   display: flex;
+  height: 100%;
+  padding: 0 20px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -29,8 +31,8 @@
     align-items: center;
   }
   img {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     margin-right: 5px;
   }
 }
@@ -42,9 +44,10 @@
   position: absolute;
   top: 0;
   left: calc(100% + 10px);
-  font-family: 'RobotoMono-Regular';
-  letter-spacing: 2px;
+  font-family: 'Aeonik-Regular';
+  box-shadow: 3px 2px 8px 0px rgba(255, 255, 255, 0.1);
   z-index: 10;
+  min-height: 240px;
 }
 
 .synthTable {
@@ -62,6 +65,9 @@
 }
 
 .synthTableButton {
+  outline: none;
+  cursor: pointer;
+  text-transform: capitalize;
   font-family: 'Aeonik-Regular';
   font-size: 14px;
   flex: 1;
@@ -82,7 +88,6 @@
 .synthTableBody {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding: 15px 25px 25px 25px;
 }
 
@@ -91,7 +96,7 @@
   flex-direction: row;
   align-items: center;
   margin-top: 10px;
-  width: 30%;
+  width: 33%;
   cursor: pointer;
   img {
     width: 30px;
@@ -103,4 +108,20 @@
       text-decoration: underline;
     }
   }
+}
+
+.selectSynthButton {
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  padding: 0 20px;
+  border-radius: 4px;
+  background-color: $color-light-blue;
+  color: #ffffff;
+  border: 0;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
 }

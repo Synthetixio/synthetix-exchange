@@ -7,7 +7,7 @@ import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import TradingWidget from '../../components/trading-widget';
-import Transactions from '../transactions';
+import TransactionsTable from '../../components/transactions-table';
 
 import {
   walletSelectorPopupIsVisible,
@@ -56,8 +56,8 @@ class Exchange extends Component {
               </Container>
             </div>
             <div className={styles.exchangeLayoutColumn}>
-              <div style={{ display: 'flex' }}>
-                <div style={{ width: '100%' }} className={styles.chartWrapper}>
+              <div className={styles.exchangeLayoutRow}>
+                <div className={styles.chartWrapper}>
                   <div className={styles.mask} />
                   <TradingViewWidget
                     symbol={symbol}
@@ -69,7 +69,6 @@ class Exchange extends Component {
                   />
                 </div>
                 <div
-                  style={{ height: '400px' }}
                   className={`${styles.exchangeLayoutColumn} ${
                     styles.exchangeLayoutColumnSmall
                   } ${styles.exchangeLayoutColumnRight}`}
@@ -81,8 +80,7 @@ class Exchange extends Component {
                   ) : null}
                 </div>
               </div>
-              <div style={{ marginTop: '5px' }} />
-              <Transactions />
+              <TransactionsTable />
             </div>
           </div>
         </div>

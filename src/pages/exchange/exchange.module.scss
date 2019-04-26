@@ -16,6 +16,11 @@
   width: 100%;
 }
 
+.exchangeLayoutRow {
+  display: flex;
+  margin-bottom: 5px;
+}
+
 .exchangeLayoutColumnSmall {
   width: 20%;
   min-width: 300px;
@@ -30,9 +35,11 @@
 
 .exchangeLayoutColumnRight {
   margin-left: 5px;
+  height: auto;
 }
 
 .chartWrapper {
+  flex: 1;
   height: 402px;
   position: relative;
   border: 1px solid $color-border;

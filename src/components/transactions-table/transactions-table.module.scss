@@ -9,15 +9,22 @@
   margin-top: 5px;
 }
 
+.tableWrapper {
+  height: 600px;
+  flex: 1;
+  overflow-y: scroll;
+}
+
 .transactionTable {
   width: 100%;
+  height: 500px;
+  table-layout: fixed;
   tbody {
     font-family: 'RobotoMono-Regular';
     font-size: 14px;
     letter-spacing: 2px;
   }
   th {
-    border-bottom: 1px solid $color-input-border;
     &:first-child {
       text-align: left;
     }
@@ -34,7 +41,8 @@
     }
   }
   td {
-    padding: 10px 20px;
+    border-top: 1px solid $color-input-border;
+    padding: 8px 10px;
   }
   td + td {
     text-align: right;
@@ -48,19 +56,18 @@
   display: flex;
   align-items: center;
   img {
-    margin-right: 8px;
-    width: 35px;
-    height: 35px;
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
   }
 }
 
 .transactionPair {
   display: flex;
   align-items: center;
-  margin-left: 10px;
-  min-width: 85px;
+  margin-left: 5px;
   &:first-child {
-    margin-right: 10px;
+    margin-right: 5px;
     margin-left: 0;
   }
 }

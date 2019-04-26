@@ -80,7 +80,7 @@ class Header extends Component {
   }
 
   render() {
-    const { currentScreen, currentWalletInfo } = this.props;
+    const { currentWalletInfo } = this.props;
     const { selectedWallet } = currentWalletInfo;
     return (
       <div className={styles.header}>
@@ -114,13 +114,13 @@ class Header extends Component {
           >
             Got feedback?
           </button>
-          <button
+          {/* <button
             type="button"
             onClick={this.onPageButtonClick}
             className={styles.headerButton}
           >
             {currentScreen === 'exchange' ? 'Trading History' : 'Exchange'}
-          </button>
+          </button> */}
           {selectedWallet ? (
             <WalletAddressSwitcher />
           ) : (

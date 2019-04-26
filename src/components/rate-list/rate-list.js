@@ -60,10 +60,6 @@ class RateList extends Component {
           onClick={this.selectSynthToBuy(synth)}
         >
           <td className={styles.tableBodySynth}>
-            {/* <img
-              src={`images/synths/${synth.name}-icon.svg`}
-              alt="synth icon"
-            /> */}
             <span>
               {synthToExchange.name}/{synth.name}
             </span>
