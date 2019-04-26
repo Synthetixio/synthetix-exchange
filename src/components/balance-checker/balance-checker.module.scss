@@ -1,5 +1,18 @@
 @import '../../styles/variables.scss';
 
+.select {
+  margin-top: 10px;
+  background-color: transparent;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  div {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
 .balanceCheckerHeading {
   text-align: left;
   margin-top: 0;

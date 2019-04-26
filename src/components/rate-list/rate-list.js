@@ -60,18 +60,14 @@ class RateList extends Component {
           onClick={this.selectSynthToBuy(synth)}
         >
           <td className={styles.tableBodySynth}>
-            <img
-              src={`images/synths/${synth.name}-icon.svg`}
-              alt="synth icon"
-            />
-            <span>{synth.name}</span>
+            <span>
+              {synthToExchange.name}/{synth.name}
+            </span>
           </td>
-          <td />
           <td className={styles.rate}>
             {synth.sign}
             {numbro(rates[synth.name]).format(precision)}
           </td>
-          <td />
         </tr>
       );
     });
@@ -84,13 +80,11 @@ class RateList extends Component {
           <thead>
             <tr>
               <th>
-                <h2>Current Rates</h2>
+                <h3>Pair</h3>
               </th>
-              <th>{/* <h3>Low</h3> */}</th>
               <th className={styles.rate}>
-                <h3>Rate</h3>
+                <h3>Last Price</h3>
               </th>
-              <th>{/* <h3>High</h3> */}</th>
             </tr>
           </thead>
           <tbody>{this.renderTableBody()}</tbody>
