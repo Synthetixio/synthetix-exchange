@@ -13,6 +13,7 @@
   height: 600px;
   flex: 1;
   overflow-y: scroll;
+  position: relative;
 }
 
 .transactionTable {
@@ -27,6 +28,9 @@
   th {
     &:first-child {
       text-align: left;
+    }
+    h3 {
+      font-size: 12px;
     }
   }
   th + th {
@@ -43,6 +47,7 @@
   td {
     border-top: 1px solid $color-input-border;
     padding: 8px 10px;
+    font-size: 12px;
   }
   td + td {
     text-align: right;
@@ -122,4 +127,5 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  white-space: nowrap;
 }

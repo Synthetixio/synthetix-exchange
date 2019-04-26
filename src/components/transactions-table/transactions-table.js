@@ -121,10 +121,13 @@ class Transactions extends Component {
               transaction.exchangeFromAmount / transaction.exchangeToAmount
             ).format('0,0.000000')}
           </td>
-          <td>{numbro(transaction.exchangeFromAmount).format('0,0.000000')}</td>
-          <td>{numbro(transaction.exchangeToAmount).format('0,0.000000')}</td>
           <td>
-            {format(new Date(transaction.blockTimestamp), 'H:mmA D/M/YYYY')}
+            {numbro(transaction.exchangeFromAmount).format('0,0.00')}/
+            {numbro(transaction.exchangeToAmount).format('0,0.00')}
+          </td>
+
+          <td>
+            {format(new Date(transaction.blockTimestamp), 'D/M/YYYY H:mmA ')}
           </td>
           <td className={styles.transactionLinkWrapper}>
             <a
@@ -135,7 +138,7 @@ class Transactions extends Component {
               target="_blank"
               rel="noopener noreferrer"
             >
-              See transaction
+              See txn
             </a>
           </td>
         </tr>
@@ -163,10 +166,7 @@ class Transactions extends Component {
                 <h3>Rate</h3>
               </th>
               <th>
-                <h3>Amount (from)</h3>
-              </th>
-              <th>
-                <h3>Amount (to)</h3>
+                <h3 style={{ whiteSpace: 'nowrap' }}>Amount (from/to)</h3>
               </th>
               <th>
                 <h3>Date / Time</h3>
