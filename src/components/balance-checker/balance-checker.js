@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -137,59 +137,6 @@ class BalanceChecker extends Component {
     }
   }
 
-  renderBalance(synthCategory) {
-    const { availableSynths, synthToExchange, currentWalletInfo } = this.props;
-    const { balances } = currentWalletInfo;
-    if (!availableSynths) return;
-    return availableSynths
-      .filter(synth => synth.category === synthCategory)
-      .map((synth, i) => {
-        return (
-          <Fragment key={i}>
-            <tr
-              onClick={this.selectSynthToExchange(synth)}
-              className={`${styles.tableBodyRow} ${
-                synthToExchange && synthToExchange.name === synth.name
-                  ? styles.tableBodyRowActive
-                  : ''
-              }`}
-              key={`synth-${i}`}
-            >
-              <td className={styles.tableBodySynth}>
-                <img
-                  src={`images/synths/${synth.name}-icon.svg`}
-                  alt="synth icon"
-                />
-                <span>{synth.name}</span>
-              </td>
-              <td className={styles.tableBodyBalance}>
-                {balances && balances[synth.name]
-                  ? numbro(Number(balances[synth.name])).format('0,0.00')
-                  : null}
-              </td>
-            </tr>
-            {synth.name === 'sUSD' &&
-            synthToExchange.name &&
-            synthToExchange.name === synth.name &&
-            balances ? (
-              <tr className={styles.tableBodyRowActive} key={`button-${i}`}>
-                <td colSpan="2" className={styles.tableBodyButtonRow}>
-                  <button
-                    onClick={this.showDepotPopup}
-                    className={`${styles.balanceCheckerButton} ${
-                      styles.balanceCheckerButtonWhite
-                    }`}
-                  >
-                    Buy with ETH
-                  </button>
-                </td>
-              </tr>
-            ) : null}
-          </Fragment>
-        );
-      });
-  }
-
   renderWidgetHeader() {
     const { currentWalletInfo } = this.props;
     if (!currentWalletInfo || !currentWalletInfo.selectedWallet) return;
@@ -230,6 +177,18 @@ class BalanceChecker extends Component {
             <td className={styles.tableBodyBalance}>
               <div>{numbro(ethBalance.amount).format('0,0.00')}</div>
               <div>${numbro(ethBalance.value).format('0,0.00')} USD</div>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan="2" className={styles.tableBodyButtonRow}>
+              <button
+                onClick={this.showDepotPopup}
+                className={`${styles.balanceCheckerButton} ${
+                  styles.balanceCheckerButtonWhite
+                }`}
+              >
+                Buy sUSD with ETH
+              </button>
             </td>
           </tr>
         </tbody>

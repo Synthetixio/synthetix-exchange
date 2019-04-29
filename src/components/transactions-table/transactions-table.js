@@ -183,7 +183,7 @@ class Transactions extends Component {
   render() {
     const { transactions } = this.state;
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         <div className={styles.transactionsLayout}>
           <Container minHeight={'500px'}>
             {this.renderTransactionTable()}

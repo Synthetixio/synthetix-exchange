@@ -6,7 +6,7 @@
 
 .transactionsLayout {
   width: 100%;
-  margin-top: 5px;
+  height: 100%;
 }
 
 .tableWrapper {
@@ -18,7 +18,6 @@
 
 .transactionTable {
   width: 100%;
-  height: 500px;
   table-layout: fixed;
   tbody {
     font-family: 'RobotoMono-Regular';
