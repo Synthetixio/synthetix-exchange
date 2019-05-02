@@ -30,7 +30,7 @@ import {
 import { updateExchangeRates, setAvailableSynths } from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
 import { connectToWallet, updateGasAndSpeedInfo } from '../../ducks/wallet';
-// import { getEthereumNetwork } from '../../utils/metamaskTools';
+import { getEthereumNetwork } from '../../utils/metamaskTools';
 import synthetixJsTools from '../../synthetixJsTool';
 import { getGasAndSpeedInfo } from '../../utils/ethUtils';
 
@@ -86,20 +86,20 @@ class Root extends Component {
   }
 
   async componentDidMount() {
-    // const {
-    //   toggleLoadingScreen,
-    //   connectToWallet,
-    //   setAvailableSynths,
-    // } = this.props;
-    // toggleLoadingScreen(true);
-    // setInterval(this.refreshData, 60 * 1000);
-    // const { networkId } = await getEthereumNetwork();
-    // synthetixJsTools.setContractSettings({ networkId });
-    // setAvailableSynths(synthetixJsTools.synthetixJs.contractSettings.synths);
-    // connectToWallet({
-    //   networkId,
-    // });
-    // this.refreshData();
+    const {
+      toggleLoadingScreen,
+      connectToWallet,
+      setAvailableSynths,
+    } = this.props;
+    toggleLoadingScreen(true);
+    setInterval(this.refreshData, 60 * 1000);
+    const { networkId } = await getEthereumNetwork();
+    synthetixJsTools.setContractSettings({ networkId });
+    setAvailableSynths(synthetixJsTools.synthetixJs.contractSettings.synths);
+    connectToWallet({
+      networkId,
+    });
+    this.refreshData();
   }
 
   renderScreen() {
