@@ -8,7 +8,7 @@ const TOGGLE_WALKTHROUGH_POPUP = 'UI/TOGGLE_WALKTHROUGH_POPUP';
 const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
 
 const defaultState = {
-  currentScreen: 'exchange',
+  currentScreen: 'appDown',
   walletSelectorPopupIsVisible: false,
   transactionStatusPopupIsVisible: false,
   depotPopupIsVisible: false,

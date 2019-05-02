@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
 import Transactions from '../transactions';
+import AppDown from '../app-down';
 
 import Overlay from '../../components/overlay';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -29,7 +30,7 @@ import {
 import { updateExchangeRates, setAvailableSynths } from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
 import { connectToWallet, updateGasAndSpeedInfo } from '../../ducks/wallet';
-import { getEthereumNetwork } from '../../utils/metamaskTools';
+// import { getEthereumNetwork } from '../../utils/metamaskTools';
 import synthetixJsTools from '../../synthetixJsTool';
 import { getGasAndSpeedInfo } from '../../utils/ethUtils';
 
@@ -85,20 +86,20 @@ class Root extends Component {
   }
 
   async componentDidMount() {
-    const {
-      toggleLoadingScreen,
-      connectToWallet,
-      setAvailableSynths,
-    } = this.props;
-    toggleLoadingScreen(true);
-    setInterval(this.refreshData, 60 * 1000);
-    const { networkId } = await getEthereumNetwork();
-    synthetixJsTools.setContractSettings({ networkId });
-    setAvailableSynths(synthetixJsTools.synthetixJs.contractSettings.synths);
-    connectToWallet({
-      networkId,
-    });
-    this.refreshData();
+    // const {
+    //   toggleLoadingScreen,
+    //   connectToWallet,
+    //   setAvailableSynths,
+    // } = this.props;
+    // toggleLoadingScreen(true);
+    // setInterval(this.refreshData, 60 * 1000);
+    // const { networkId } = await getEthereumNetwork();
+    // synthetixJsTools.setContractSettings({ networkId });
+    // setAvailableSynths(synthetixJsTools.synthetixJs.contractSettings.synths);
+    // connectToWallet({
+    //   networkId,
+    // });
+    // this.refreshData();
   }
 
   renderScreen() {
@@ -110,6 +111,8 @@ class Root extends Component {
         return <ConnectToWallet />;
       case 'transactions':
         return <Transactions />;
+      case 'appDown':
+        return <AppDown />;
       default:
         return <Exchange />;
     }
