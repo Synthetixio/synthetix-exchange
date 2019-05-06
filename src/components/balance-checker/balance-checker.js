@@ -177,6 +177,7 @@ class BalanceChecker extends Component {
                 <td colSpan="2" className={styles.tableBodyButtonRow}>
                   <a
                     href="https://uniswap.exchange/swap"
+                    target="_blank"
                     className={`${styles.balanceCheckerButton} ${
                       styles.balanceCheckerButtonWhite
                     } ${styles.balanceCheckerAnchor}`}
