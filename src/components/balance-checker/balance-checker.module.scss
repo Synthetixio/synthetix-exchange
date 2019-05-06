@@ -56,6 +56,7 @@
   padding: 0 15px 15px 15px;
   button {
     width: 100%;
+    margin-top: 10px;
   }
 }
 
@@ -97,6 +98,12 @@
     color: $color-background;
     border: 1px solid #ffffff;
   }
+}
+
+.balanceCheckerAnchor {
+  display: inline-block;
+  text-decoration: none;
+  width: 100%;
 }
 
 .balanceCheckerButtonWhite {

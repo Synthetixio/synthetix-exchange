@@ -175,13 +175,21 @@ class BalanceChecker extends Component {
             balances ? (
               <tr className={styles.tableBodyRowActive} key={`button-${i}`}>
                 <td colSpan="2" className={styles.tableBodyButtonRow}>
+                  <a
+                    href="https://uniswap.exchange/swap"
+                    className={`${styles.balanceCheckerButton} ${
+                      styles.balanceCheckerButtonWhite
+                    } ${styles.balanceCheckerAnchor}`}
+                  >
+                    Buy with ETH on Uniswap
+                  </a>
                   <button
                     onClick={this.showDepotPopup}
                     className={`${styles.balanceCheckerButton} ${
                       styles.balanceCheckerButtonWhite
                     }`}
                   >
-                    Buy with ETH
+                    Buy with ETH on Depot
                   </button>
                 </td>
               </tr>
