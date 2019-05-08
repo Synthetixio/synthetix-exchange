@@ -6,6 +6,7 @@ import {
   getCurrentWalletInfo,
   testnetPopupIsVisible,
   getCurrentScreen,
+  getCurrentExchangeMode,
   walletSelectorPopupIsVisible,
 } from '../../ducks/';
 import {
@@ -13,6 +14,7 @@ import {
   toggleFeedbackPopup,
   toggleWalkthroughPopup,
   changeScreen,
+  changeExchangeMode,
   toggleWalletSelectorPopup,
 } from '../../ducks/ui';
 
@@ -27,6 +29,7 @@ class Header extends Component {
     this.onWalkthroughButtonClick = this.onWalkthroughButtonClick.bind(this);
     this.onPageButtonClick = this.onPageButtonClick.bind(this);
     this.connectWallet = this.connectWallet.bind(this);
+    this.switchExchangeMode = this.switchExchangeMode.bind(this);
   }
 
   onEnvButtonClick() {
@@ -79,8 +82,14 @@ class Header extends Component {
     }
   }
 
+  switchExchangeMode() {
+    const { currentExchangeMode, changeExchangeMode } = this.props;
+    const newMode = currentExchangeMode === 'basic' ? 'pro' : 'basic';
+    changeExchangeMode(newMode);
+  }
+
   render() {
-    const { currentWalletInfo } = this.props;
+    const { currentWalletInfo, currentExchangeMode } = this.props;
     const { selectedWallet } = currentWalletInfo;
     return (
       <div className={styles.header}>
@@ -93,9 +102,15 @@ class Header extends Component {
           >
             {this.renderNetworkName()}
           </button>
+          <button
+            onClick={this.switchExchangeMode}
+            className={styles.buttonMode}
+          >{`${
+            currentExchangeMode === 'basic' ? 'Pro' : 'Basic'
+          } Mode`}</button>
         </div>
         <div className={styles.headerRightArea}>
-          <button
+          {/* <button
             type="button"
             onClick={this.onWalkthroughButtonClick}
             className={styles.headerButton}
@@ -113,7 +128,7 @@ class Header extends Component {
             className={styles.headerButton}
           >
             Got feedback?
-          </button>
+          </button> */}
           {/* <button
             type="button"
             onClick={this.onPageButtonClick}
@@ -142,6 +157,7 @@ const mapStateToProps = state => {
     currentWalletInfo: getCurrentWalletInfo(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     currentScreen: getCurrentScreen(state),
+    currentExchangeMode: getCurrentExchangeMode(state),
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
   };
 };
@@ -152,6 +168,7 @@ const mapDispatchToProps = {
   toggleWalkthroughPopup,
   toggleWalletSelectorPopup,
   changeScreen,
+  changeExchangeMode,
 };
 
 Header.propTypes = {
@@ -161,7 +178,9 @@ Header.propTypes = {
   toggleFeedbackPopup: PropTypes.func.isRequired,
   toggleWalkthroughPopup: PropTypes.func.isRequired,
   changeScreen: PropTypes.func.isRequired,
+  changeExchangeMode: PropTypes.func.isRequired,
   currentScreen: PropTypes.string.isRequired,
+  currentExchangeMode: PropTypes.string.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
   toggleWalletSelectorPopup: PropTypes.func.isRequired,
 };

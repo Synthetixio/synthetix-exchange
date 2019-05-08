@@ -58,3 +58,19 @@
   text-transform: uppercase;
   cursor: pointer;
 }
+
+.buttonMode {
+  border: none;
+  font-family: 'RobotoMono-Regular';
+  background-color: transparent;
+  font-size: 14px;
+  margin-left: 20px;
+  cursor: pointer;
+  color: #ffffff;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
