@@ -189,7 +189,7 @@ class BalanceChecker extends Component {
               >
                 Buy sUSD with ETH
               </button>
-              {/* <a
+              <a
                 href="https://uniswap.exchange/swap"
                 target="_blank"
                 className={`${styles.balanceCheckerButton} ${
@@ -197,7 +197,7 @@ class BalanceChecker extends Component {
                 } ${styles.balanceCheckerAnchor}`}
               >
                 Buy with ETH on Uniswap
-              </a> */}
+              </a>
             </td>
           </tr>
         </tbody>
