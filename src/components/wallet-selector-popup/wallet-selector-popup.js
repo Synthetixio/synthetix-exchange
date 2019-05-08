@@ -64,20 +64,18 @@ class WalletSelectorPopup extends Component {
     }
   };
 
-  onMetamaskAddressChange = data => {
+  onMetamaskAddressChange = async data => {
     const { currentWalletInfo, setSelectedWallet } = this.props;
-
     if (
       currentWalletInfo.selectedWallet.toLocaleLowerCase() ===
       data.selectedAddress.toLowerCase()
     ) {
       return;
     }
-    const newSelectedAddress = data.selectedAddress;
-
+    const newSelectedAddress = await synthetixJsTools.signer.getNextAddresses();
     setSelectedWallet({
-      availableWallets: [newSelectedAddress],
-      selectedWallet: newSelectedAddress,
+      availableWallets: newSelectedAddress,
+      selectedWallet: newSelectedAddress[0],
     });
   };
 
