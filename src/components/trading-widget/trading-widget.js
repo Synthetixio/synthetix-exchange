@@ -253,8 +253,8 @@ class TradingWidget extends Component {
     const rate = exchangeRates[synthToBuy.name][synthToExchange.name];
     return (
       <div className={styles.pairRate}>
-        <div className={styles.pairRateName}>{`${synthToExchange.name}/${
-          synthToBuy.name
+        <div className={styles.pairRateName}>{`${synthToBuy.name}/${
+          synthToExchange.name
         }:`}</div>
         {synthToExchange.sign}
         {numbro(rate).format(precision)}
