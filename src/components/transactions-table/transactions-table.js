@@ -182,14 +182,16 @@ class Transactions extends Component {
 
   render() {
     const { transactions } = this.state;
+    const hasNoTransactions = !transactions || transactions.length === 0;
     return (
       <div style={{ height: '100%' }}>
         <div className={styles.transactionsLayout}>
           <Container minHeight={'500px'}>
-            {this.renderTransactionTable()}
-            {!transactions || transactions.length === 0 ? (
+            {hasNoTransactions ? (
               <h2 style={{ marginTop: '40px' }}>No Trades recorded.</h2>
-            ) : null}
+            ) : (
+              this.renderTransactionTable()
+            )}
           </Container>
         </div>
       </div>
