@@ -18,10 +18,8 @@ class SynthPicker extends Component {
     super();
     this.state = {
       popupIsActive: false,
-      currentTab: 'crypto',
     };
     this.togglePopup = this.togglePopup.bind(this);
-    this.selectTab = this.selectTab.bind(this);
     this.selectBaseSynth = this.selectBaseSynth.bind(this);
   }
 
@@ -39,21 +37,14 @@ class SynthPicker extends Component {
     this.setState({ popupIsActive: !popupIsActive });
   }
 
-  selectTab(tab) {
-    return () => {
-      this.setState({ currentTab: tab });
-    };
-  }
-
   renderSynths() {
     const { availableSynths, currentWalletInfo } = this.props;
     const { balances } = currentWalletInfo;
-    const { currentTab } = this.state;
     const filteredSynths = availableSynths.filter(synth => {
       return (
         (!balances ||
           (balances && balances[synth.name] && balances[synth.name] > 0)) &&
-        synth.category === currentTab
+        ['crypto', 'forex', 'commodity'].includes(synth.category)
       );
     });
     return (
@@ -78,29 +69,11 @@ class SynthPicker extends Component {
   }
 
   renderPopup() {
-    const { popupIsActive, currentTab } = this.state;
+    const { popupIsActive } = this.state;
     if (!popupIsActive) return;
     return (
       <div className={styles.synthPickerBox}>
-        <div className={styles.synthTable}>
-          <div className={styles.synthTableHeader}>
-            {['crypto', 'commodity', 'forex'].map(category => {
-              return (
-                <button
-                  onClick={this.selectTab(category)}
-                  className={`${styles.synthTableButton} ${
-                    currentTab === category
-                      ? styles.synthTableButtonIsActive
-                      : ''
-                  }`}
-                >
-                  {category === 'commodity' ? 'Commodities' : category}
-                </button>
-              );
-            })}
-          </div>
-          {this.renderSynths()}
-        </div>
+        <div className={styles.synthTable}>{this.renderSynths()}</div>
       </div>
     );
   }

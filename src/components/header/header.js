@@ -98,44 +98,20 @@ class Header extends Component {
           <button
             type="button"
             onClick={this.onEnvButtonClick}
-            className={`${styles.headerButton} ${styles.envButton}`}
+            className={styles.envButton}
           >
             {this.renderNetworkName()}
           </button>
           <button
             onClick={this.switchExchangeMode}
-            className={styles.buttonMode}
+            className={styles.headerButton}
           >{`${
             currentExchangeMode === 'basic' ? 'Pro' : 'Basic'
           } Mode`}</button>
         </div>
         <div className={styles.headerRightArea}>
-          {/* <button
-            type="button"
-            onClick={this.onWalkthroughButtonClick}
-            className={styles.headerButton}
-          >
-            <span>Walkthrough</span>
-            <img
-              className={styles.headerButtonIcon}
-              width="20"
-              src="images/play-icon.svg"
-            />
-          </button>
-          <button
-            type="button"
-            onClick={this.onFeedbackButtonClick}
-            className={styles.headerButton}
-          >
-            Got feedback?
-          </button> */}
-          {/* <button
-            type="button"
-            onClick={this.onPageButtonClick}
-            className={styles.headerButton}
-          >
-            {currentScreen === 'exchange' ? 'Trading History' : 'Exchange'}
-          </button> */}
+          <button className={styles.headerButton}>Markets</button>
+          <button className={styles.headerButton}>Transactions</button>
           {selectedWallet ? (
             <WalletAddressSwitcher />
           ) : (

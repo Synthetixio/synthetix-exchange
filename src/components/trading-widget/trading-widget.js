@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import numbro from 'numbro';
+
 import GweiSelector from '../gwei-selector';
 import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
 import {
@@ -8,6 +10,7 @@ import {
   getSynthToBuy,
   getSynthToExchange,
   getExchangeRates,
+  getCurrentExchangeMode,
 } from '../../ducks/';
 import { toggleTransactionStatusPopup } from '../../ducks/ui';
 import {
@@ -234,8 +237,34 @@ class TradingWidget extends Component {
     );
   }
 
+  renderPairRate() {
+    const {
+      synthToBuy,
+      synthToExchange,
+      currentExchangeMode,
+      exchangeRates,
+    } = this.props;
+    if (currentExchangeMode === 'pro' || !exchangeRates) return;
+    const precision =
+      synthToBuy.name === 'sXAU' &&
+      (synthToExchange.name === 'sKRW' || synthToExchange.name === 'sJPY')
+        ? '0,0.00000000'
+        : '0,0.00000';
+    const rate = exchangeRates[synthToBuy.name][synthToExchange.name];
+    return (
+      <div className={styles.pairRate}>
+        <div className={styles.pairRateName}>{`${synthToExchange.name}/${
+          synthToBuy.name
+        }:`}</div>
+        {synthToExchange.sign}
+        {numbro(rate).format(precision)}
+      </div>
+    );
+  }
+
   render() {
     const { synthToBuy, synthToExchange, currentWalletInfo } = this.props;
+
     const { selectedWallet } = currentWalletInfo;
     const { inputValues } = this.state;
     const buttonIsEnabled =
@@ -252,6 +281,7 @@ class TradingWidget extends Component {
             Trade Max
           </button>
         </div>
+        {this.renderPairRate()}
         {this.renderInputs()}
         <GweiSelector />
         <button
@@ -280,6 +310,7 @@ const mapStateToProps = state => {
     synthToBuy: getSynthToBuy(state),
     synthToExchange: getSynthToExchange(state),
     exchangeRates: getExchangeRates(state),
+    currentExchangeMode: getCurrentExchangeMode(state),
   };
 };
 
@@ -304,6 +335,7 @@ TradingWidget.propTypes = {
   setTransactionStatusToSuccess: PropTypes.func.isRequired,
   setTransactionStatusToCleared: PropTypes.func.isRequired,
   setTransactionPair: PropTypes.func.isRequired,
+  currentExchangeMode: PropTypes.string.isRequired,
 };
 
 export default connect(

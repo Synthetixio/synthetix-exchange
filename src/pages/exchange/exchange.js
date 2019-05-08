@@ -40,8 +40,15 @@ class Exchange extends Component {
   }
 
   renderBasicModeContent() {
+    const { synthToBuy, synthToExchange } = this.props;
     return (
-      <div className={styles.exchangeLayoutColumn}>this is the content</div>
+      <div className={styles.exchangeLayoutColumn}>
+        {synthToBuy && synthToExchange ? (
+          <Container fullHeight={true}>
+            <TradingWidget />
+          </Container>
+        ) : null}
+      </div>
     );
   }
 

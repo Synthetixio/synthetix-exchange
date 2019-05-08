@@ -29,7 +29,7 @@
 }
 
 .tableHeading {
-  margin: 10px 0 5px 0;
+  margin: 15px 0 5px 0;
   text-align: left;
 }
 
@@ -106,10 +106,13 @@
   border-radius: 4px;
   padding: 12px 15px;
   text-transform: uppercase;
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #fff;
     color: $color-background;
     border: 1px solid #ffffff;
+  }
+  &:disabled {
+    opacity: 0.5;
   }
 }
 

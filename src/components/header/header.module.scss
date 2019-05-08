@@ -9,16 +9,19 @@
 .headerRightArea {
   display: flex;
   button:not(:last-child) {
-    margin-right: 40px;
+    margin-right: 10px;
   }
 }
 
 .logoWrapper {
   display: flex;
   align-items: center;
+  button {
+    margin-left: 20px;
+  }
 }
 
-.headerButton {
+.envButton {
   width: 155px;
   cursor: pointer;
   border: 1px solid $color-input-border;
@@ -31,6 +34,8 @@
   align-items: center;
   justify-content: center;
   transition: transform ease-in 0.1s;
+  margin-left: 20px;
+  text-transform: uppercase;
   &:hover {
     transform: scale(1.05);
   }
@@ -38,11 +43,6 @@
 
 .headerButtonIcon {
   margin-left: 10px;
-}
-
-.envButton {
-  margin-left: 20px;
-  text-transform: uppercase;
 }
 
 .walletConnectorButton {
@@ -59,17 +59,14 @@
   cursor: pointer;
 }
 
-.buttonMode {
+.headerButton {
   border: none;
   font-family: 'RobotoMono-Regular';
   background-color: transparent;
   font-size: 14px;
-  margin-left: 20px;
   cursor: pointer;
   color: #ffffff;
-  &:hover {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
   &:focus {
     outline: 0;
   }
