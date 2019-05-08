@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -16,10 +16,10 @@ import { toggleLoadingScreen, toggleDepotPopup } from '../../ducks/ui';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
+import RateList from '../rate-list';
+import SynthPicker from '../synth-picker';
 
 import styles from './balance-checker.module.scss';
-
-const SYNTH_CATEGORIES = ['forex', 'commodity', 'crypto', 'stocks'];
 
 class BalanceChecker extends Component {
   constructor() {
@@ -30,7 +30,6 @@ class BalanceChecker extends Component {
     };
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
-    this.renderTable = this.renderTable.bind(this);
     this.showDepotPopup = this.showDepotPopup.bind(this);
   }
 
@@ -138,68 +137,6 @@ class BalanceChecker extends Component {
     }
   }
 
-  renderBalance(synthCategory) {
-    const { availableSynths, synthToExchange, currentWalletInfo } = this.props;
-    const { balances } = currentWalletInfo;
-    if (!availableSynths) return;
-    return availableSynths
-      .filter(synth => synth.category === synthCategory)
-      .map((synth, i) => {
-        return (
-          <Fragment key={i}>
-            <tr
-              onClick={this.selectSynthToExchange(synth)}
-              className={`${styles.tableBodyRow} ${
-                synthToExchange && synthToExchange.name === synth.name
-                  ? styles.tableBodyRowActive
-                  : ''
-              }`}
-              key={`synth-${i}`}
-            >
-              <td className={styles.tableBodySynth}>
-                <img
-                  src={`images/synths/${synth.name}-icon.svg`}
-                  alt="synth icon"
-                />
-                <span>{synth.name}</span>
-              </td>
-              <td className={styles.tableBodyBalance}>
-                {balances && balances[synth.name]
-                  ? numbro(Number(balances[synth.name])).format('0,0.00')
-                  : null}
-              </td>
-            </tr>
-            {synth.name === 'sUSD' &&
-            synthToExchange.name &&
-            synthToExchange.name === synth.name &&
-            balances ? (
-              <tr className={styles.tableBodyRowActive} key={`button-${i}`}>
-                <td colSpan="2" className={styles.tableBodyButtonRow}>
-                  <a
-                    href="https://uniswap.exchange/swap"
-                    target="_blank"
-                    className={`${styles.balanceCheckerButton} ${
-                      styles.balanceCheckerButtonWhite
-                    } ${styles.balanceCheckerAnchor}`}
-                  >
-                    Buy with ETH on Uniswap
-                  </a>
-                  <button
-                    onClick={this.showDepotPopup}
-                    className={`${styles.balanceCheckerButton} ${
-                      styles.balanceCheckerButtonWhite
-                    }`}
-                  >
-                    Buy with ETH on Depot
-                  </button>
-                </td>
-              </tr>
-            ) : null}
-          </Fragment>
-        );
-      });
-  }
-
   renderWidgetHeader() {
     const { currentWalletInfo } = this.props;
     if (!currentWalletInfo || !currentWalletInfo.selectedWallet) return;
@@ -242,48 +179,40 @@ class BalanceChecker extends Component {
               <div>${numbro(ethBalance.value).format('0,0.00')} USD</div>
             </td>
           </tr>
+          <tr>
+            <td colSpan="2" className={styles.tableBodyButtonRow}>
+              <button
+                onClick={this.showDepotPopup}
+                className={`${styles.balanceCheckerButton} ${
+                  styles.balanceCheckerButtonWhite
+                }`}
+              >
+                Buy sUSD with ETH
+              </button>
+              <a
+                href="https://uniswap.exchange/swap"
+                target="_blank"
+                className={`${styles.balanceCheckerButton} ${
+                  styles.balanceCheckerButtonWhite
+                } ${styles.balanceCheckerAnchor}`}
+              >
+                Buy with ETH on Uniswap
+              </a>
+            </td>
+          </tr>
         </tbody>
       </table>
     );
   }
 
-  renderTable(synthCategory, index) {
-    const balance = this.renderBalance(synthCategory);
+  renderSynths() {
     return (
-      <div key={index} className={styles.tableWrapper}>
-        <table cellPadding="0" cellSpacing="0" className={styles.table}>
-          <thead>
-            <tr>
-              <th>
-                <h3 className={styles.tableHeading}>
-                  {synthCategory === 'stocks'
-                    ? 'stocks (coming soon)'
-                    : synthCategory === 'commodity'
-                    ? 'commodities'
-                    : synthCategory}
-                </h3>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {synthCategory === 'stocks' ? (
-              <tr>
-                <td style={{ textAlign: 'left' }}>
-                  Please let us know in the Feedback box at the top which stocks
-                  you would like to see.
-                </td>
-              </tr>
-            ) : (
-              balance
-            )}
-          </tbody>
-        </table>
+      <div>
+        <h2 className={styles.tableHeading}>Select pair</h2>
+        <SynthPicker />
+        <RateList />
       </div>
     );
-  }
-
-  renderSynths() {
-    return SYNTH_CATEGORIES.map(this.renderTable);
   }
 
   render() {

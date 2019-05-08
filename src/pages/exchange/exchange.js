@@ -6,8 +6,8 @@ import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import RateList from '../../components/rate-list';
 import TradingWidget from '../../components/trading-widget';
+import TransactionsTable from '../../components/transactions-table';
 
 import {
   walletSelectorPopupIsVisible,
@@ -49,19 +49,14 @@ class Exchange extends Component {
             <div
               className={`${styles.exchangeLayoutColumn} ${
                 styles.exchangeLayoutColumnSmall
-              }`}
+              } ${styles.exchangeLayoutColumnLeft}`}
             >
               <Container fullHeight={true}>
                 <BalanceChecker />
               </Container>
-              {synthToBuy && synthToExchange ? (
-                <Container>
-                  <TradingWidget />
-                </Container>
-              ) : null}
             </div>
             <div className={styles.exchangeLayoutColumn}>
-              <Container>
+              <div className={styles.exchangeLayoutRow}>
                 <div className={styles.chartWrapper}>
                   <div className={styles.mask} />
                   <TradingViewWidget
@@ -73,8 +68,19 @@ class Exchange extends Component {
                     save_image={false}
                   />
                 </div>
-                <RateList />
-              </Container>
+                <div
+                  className={`${styles.exchangeLayoutColumn} ${
+                    styles.exchangeLayoutColumnSmall
+                  } ${styles.exchangeLayoutColumnRight}`}
+                >
+                  {synthToBuy && synthToExchange ? (
+                    <Container fullHeight={true}>
+                      <TradingWidget />
+                    </Container>
+                  ) : null}
+                </div>
+              </div>
+              <TransactionsTable />
             </div>
           </div>
         </div>

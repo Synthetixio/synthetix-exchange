@@ -4,13 +4,12 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import numbro from 'numbro';
 
-import { getCurrentWalletInfo } from '../../ducks/';
+import { getCurrentWalletInfo } from '../../ducks';
 
 import { getTransactions } from '../../utils/synthetixApi';
-import Header from '../../components/header';
-import Container from '../../components/container';
+import Container from '../container';
 
-import styles from './transactions.module.scss';
+import styles from './transactions-table.module.scss';
 
 const ETHERSCAN_URLS = {
   1: 'https://etherscan.io/tx/',
@@ -122,10 +121,13 @@ class Transactions extends Component {
               transaction.exchangeFromAmount / transaction.exchangeToAmount
             ).format('0,0.000000')}
           </td>
-          <td>{numbro(transaction.exchangeFromAmount).format('0,0.000000')}</td>
-          <td>{numbro(transaction.exchangeToAmount).format('0,0.000000')}</td>
           <td>
-            {format(new Date(transaction.blockTimestamp), 'H:mmA D/M/YYYY')}
+            {numbro(transaction.exchangeFromAmount).format('0,0.00')}/
+            {numbro(transaction.exchangeToAmount).format('0,0.00')}
+          </td>
+
+          <td>
+            {format(new Date(transaction.blockTimestamp), 'D/M/YYYY H:mmA ')}
           </td>
           <td className={styles.transactionLinkWrapper}>
             <a
@@ -136,7 +138,7 @@ class Transactions extends Component {
               target="_blank"
               rel="noopener noreferrer"
             >
-              See transaction
+              See txn
             </a>
           </td>
         </tr>
@@ -148,51 +150,49 @@ class Transactions extends Component {
     const { showAllTrades } = this.state;
     const { currentWalletInfo } = this.props;
     return (
-      <table cellSpacing="0" className={styles.transactionTable}>
-        <thead>
-          <tr>
-            <th className={styles.headingWrapper}>
-              <h2>Trade History</h2>
-              {currentWalletInfo.selectedWallet ? (
-                <button onClick={this.toggleShowMyTrades}>
-                  {showAllTrades ? 'Show my trades' : 'Show all trades'}
-                </button>
-              ) : null}
-            </th>
-            <th>
-              <h3>Rate</h3>
-            </th>
-            <th>
-              <h3>Amount (from)</h3>
-            </th>
-            <th>
-              <h3>Amount (to)</h3>
-            </th>
-            <th>
-              <h3>Date / Time</h3>
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>{this.renderTableBody()}</tbody>
-      </table>
+      <div className={styles.tableWrapper}>
+        <table cellSpacing="0" className={styles.transactionTable}>
+          <thead>
+            <tr>
+              <th className={styles.headingWrapper}>
+                <h2>Trading History</h2>
+                {currentWalletInfo.selectedWallet ? (
+                  <button onClick={this.toggleShowMyTrades}>
+                    {showAllTrades ? 'Show my trades' : 'Show all trades'}
+                  </button>
+                ) : null}
+              </th>
+              <th>
+                <h3>Rate</h3>
+              </th>
+              <th>
+                <h3 style={{ whiteSpace: 'nowrap' }}>Amount (from/to)</h3>
+              </th>
+              <th>
+                <h3>Date / Time</h3>
+              </th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>{this.renderTableBody()}</tbody>
+        </table>
+      </div>
     );
   }
 
   render() {
     const { transactions } = this.state;
+    const hasNoTransactions = !transactions || transactions.length === 0;
     return (
-      <div className={styles.transactions}>
-        <div>
-          <Header />
-          <div className={styles.transactionsLayout}>
-            <Container minHeight={'500px'}>
-              {this.renderTransactionTable()}
-              {!transactions || transactions.length === 0 ? (
-                <h2 style={{ marginTop: '40px' }}>No Trades recorded.</h2>
-              ) : null}
-            </Container>
-          </div>
+      <div style={{ height: '100%' }}>
+        <div className={styles.transactionsLayout}>
+          <Container minHeight={'500px'}>
+            {hasNoTransactions ? (
+              <h2 style={{ marginTop: '40px' }}>No Trades recorded.</h2>
+            ) : (
+              this.renderTransactionTable()
+            )}
+          </Container>
         </div>
       </div>
     );
