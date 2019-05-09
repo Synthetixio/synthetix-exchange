@@ -19,6 +19,7 @@ import synthetixJsTools from '../../synthetixJsTool';
 import { formatBigNumber } from '../../utils/converterUtils';
 import RateList from '../rate-list';
 import SynthPicker from '../synth-picker';
+import Portfolio from '../portfolio';
 
 import styles from './balance-checker.module.scss';
 
@@ -28,6 +29,7 @@ class BalanceChecker extends Component {
     this.state = {
       totalBalance: null,
       balances: null,
+      synthBalances: [],
     };
     this.selectSynthToExchange = this.selectSynthToExchange.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
@@ -68,8 +70,9 @@ class BalanceChecker extends Component {
       })
     );
 
-    const synthsBalance = {};
-    const totalBalance = await Promise.all(
+    const { formatEther } = synthetixJsTools.synthetixJs.utils;
+
+    const balancesInUSD = await Promise.all(
       balances.map((balance, i) => {
         return synthetixJs.Synthetix.effectiveValue(
           utils.toUtf8Bytes(availableSynths[i].name),
@@ -79,17 +82,30 @@ class BalanceChecker extends Component {
       })
     );
 
-    balances.forEach(async (balance, i) => {
+    const synthsBalance = {};
+    balances.forEach((balance, i) => {
       synthsBalance[availableSynths[i].name] = formatBigNumber(balance, 6);
     });
+
+    const synthBalances = availableSynths.map((synth, i) => {
+      return Object.assign(
+        {},
+        synth,
+        { balance: formatEther(balances[i]) },
+        { balanceInUSD: formatEther(balancesInUSD[i]) }
+      );
+    });
+
     this.setState({
       balances: balances.map(balance => formatBigNumber(balance, 6)),
       ethBalance: {
         amount: ethBalance,
         value: ethBalanceValue.toFixed(2),
       },
+      synthBalances,
+      balancesInUSD: balancesInUSD.map(balance => formatBigNumber(balance, 6)),
       totalBalance: formatBigNumber(
-        totalBalance.reduce((pre, curr) => pre.add(curr)),
+        balancesInUSD.reduce((pre, curr) => pre.add(curr)),
         2
       ),
     });
@@ -218,10 +234,12 @@ class BalanceChecker extends Component {
 
   renderSynths() {
     const { currentExchangeMode } = this.props;
+    const { synthBalances } = this.state;
     return (
       <div>
         <h2 className={styles.tableHeading}>Your Synths</h2>
         <SynthPicker />
+        <Portfolio synthBalances={synthBalances} />
         {currentExchangeMode === 'pro' ? <RateList /> : null}
       </div>
     );

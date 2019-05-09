@@ -23,6 +23,7 @@
     "eslint-plugin-jsx-a11y": "6.1.2",
     "file-loader": "2.0.0",
     "fork-ts-checker-webpack-plugin-alt": "0.4.14",
+    "frappe-charts": "1.1.0",
     "fs-extra": "7.0.0",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
@@ -62,7 +63,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "clean-install": "rm package-lock.json && rm -rf node_modules/* && npm install"
   },
   "eslintConfig": {
     "extends": "react-app"
