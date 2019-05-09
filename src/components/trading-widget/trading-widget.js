@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import numbro from 'numbro';
 
 import GweiSelector from '../gwei-selector';
+import TradingWidgetInput from './trading-widget-input';
+
 import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
 import {
   getCurrentWalletInfo,
@@ -11,6 +13,7 @@ import {
   getSynthToExchange,
   getExchangeRates,
   getCurrentExchangeMode,
+  getAvailableSynths,
 } from '../../ducks/';
 import { toggleTransactionStatusPopup } from '../../ducks/ui';
 import {
@@ -21,6 +24,7 @@ import {
   setTransactionStatusToError,
   setTransactionPair,
 } from '../../ducks/wallet';
+import { setSynthToExchange, setSynthToBuy } from '../../ducks/synths';
 
 import synthetixJsTools from '../../synthetixJsTool';
 
@@ -38,6 +42,8 @@ class TradingWidget extends Component {
     this.onToSynthChange = this.onToSynthChange.bind(this);
     this.tradeMax = this.tradeMax.bind(this);
     this.confirmTrade = this.confirmTrade.bind(this);
+    this.setSynthToBuy = this.setSynthToBuy.bind(this);
+    this.setSynthToExchange = this.setSynthToExchange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -207,43 +213,47 @@ class TradingWidget extends Component {
     });
   }
 
-  renderInput(synth, handler) {
-    const { inputValues } = this.state;
-    return (
-      <div className={styles.widgetInputWrapper}>
-        <input
-          className={styles.widgetInputElement}
-          type="text"
-          value={(inputValues && inputValues[synth]) || ''}
-          placeholder={0}
-          onChange={handler}
-          pattern="^-?[0-9]\d*\.?\d*$"
-        />
-        <div className={styles.widgetInputSynth}>
-          <img src={`images/synths/${synth}-icon.svg`} alt="synth icon" />
-          <span>{synth}</span>
-        </div>
-      </div>
-    );
+  setSynthToBuy(synth) {
+    const { setSynthToBuy } = this.props;
+    setSynthToBuy(synth);
+  }
+
+  setSynthToExchange(synth) {
+    const { setSynthToExchange } = this.props;
+    setSynthToExchange(synth);
   }
 
   renderInputs() {
     const { synthToBuy, synthToExchange } = this.props;
+    const { inputValues } = this.state;
     return (
       <div className={styles.widgetInputs}>
-        {this.renderInput(synthToExchange.name, this.onFromSynthChange)}
-        {this.renderInput(synthToBuy.name, this.onToSynthChange)}
+        <TradingWidgetInput
+          value={(inputValues && inputValues[synthToExchange.name]) || ''}
+          onInputChange={this.onFromSynthChange}
+          currentSynth={synthToExchange.name}
+          onSynthSelect={this.setSynthToExchange}
+        />
+        <TradingWidgetInput
+          value={(inputValues && inputValues[synthToBuy.name]) || ''}
+          onInputChange={this.onToSynthChange}
+          currentSynth={synthToBuy.name}
+          onSynthSelect={this.setSynthToBuy}
+        />
       </div>
     );
   }
 
-  renderPairRate() {
+  renderPairRateAndBalance() {
     const {
       synthToBuy,
       synthToExchange,
       currentExchangeMode,
       exchangeRates,
+      currentWalletInfo,
     } = this.props;
+    const { balances } = currentWalletInfo;
+
     if (currentExchangeMode === 'pro' || !exchangeRates) return;
     const precision =
       synthToBuy.name === 'sXAU' &&
@@ -252,12 +262,29 @@ class TradingWidget extends Component {
         : '0,0.00000';
     const rate = exchangeRates[synthToBuy.name][synthToExchange.name];
     return (
-      <div className={styles.pairRate}>
-        <div className={styles.pairRateName}>{`${synthToBuy.name}/${
-          synthToExchange.name
-        }:`}</div>
-        {synthToExchange.sign}
-        {numbro(rate).format(precision)}
+      <div className={styles.pairRateAndBalanceRow}>
+        <div className={styles.pairRate}>
+          <div className={styles.pairRateName}>{`${synthToBuy.name}/${
+            synthToExchange.name
+          }:`}</div>
+          {synthToExchange.sign}
+          {numbro(rate).format(precision)}
+        </div>
+        <div className={styles.balance}>
+          <div className={styles.pairRateName}>
+            {synthToExchange.name} balance:
+          </div>
+          <div>
+            {synthToExchange.sign}
+            {balances &&
+            balances[synthToExchange.name] &&
+            Number(balances[synthToExchange.name]) > 0
+              ? numbro(Number(balances[synthToExchange.name])).format(
+                  '0,0.0000'
+                )
+              : 0}
+          </div>
+        </div>
       </div>
     );
   }
@@ -265,10 +292,14 @@ class TradingWidget extends Component {
   render() {
     const { synthToBuy, synthToExchange, currentWalletInfo } = this.props;
 
-    const { selectedWallet } = currentWalletInfo;
+    const { selectedWallet, balances } = currentWalletInfo;
     const { inputValues } = this.state;
-    const buttonIsEnabled =
-      inputValues[synthToBuy.name] && inputValues[synthToExchange.name];
+    const confirmTradeButtonIsEnabled =
+      inputValues[synthToBuy.name] &&
+      inputValues[synthToExchange.name] &&
+      Number(balances[synthToExchange.name]) > 0;
+    const tradeMaxButtonIsEnabled =
+      balances && Number(balances[synthToExchange.name]) > 0;
     return (
       <div
         className={`${styles.widget} ${
@@ -277,15 +308,19 @@ class TradingWidget extends Component {
       >
         <div className={styles.widgetHeader}>
           <h2>Trade</h2>
-          <button onClick={this.tradeMax} className={styles.widgetHeaderButton}>
+          <button
+            disabled={!tradeMaxButtonIsEnabled}
+            onClick={this.tradeMax}
+            className={styles.widgetHeaderButton}
+          >
             Trade Max
           </button>
         </div>
-        {this.renderPairRate()}
+        {this.renderPairRateAndBalance()}
         {this.renderInputs()}
         <GweiSelector />
         <button
-          disabled={!buttonIsEnabled}
+          disabled={!confirmTradeButtonIsEnabled}
           onClick={this.confirmTrade}
           className={styles.widgetTradingButton}
         >
@@ -311,6 +346,7 @@ const mapStateToProps = state => {
     synthToExchange: getSynthToExchange(state),
     exchangeRates: getExchangeRates(state),
     currentExchangeMode: getCurrentExchangeMode(state),
+    availableSynths: getAvailableSynths(state),
   };
 };
 
@@ -322,6 +358,8 @@ const mapDispatchToProps = {
   setTransactionStatusToCleared,
   setTransactionStatusToError,
   setTransactionPair,
+  setSynthToExchange,
+  setSynthToBuy,
 };
 
 TradingWidget.propTypes = {
@@ -336,6 +374,9 @@ TradingWidget.propTypes = {
   setTransactionStatusToCleared: PropTypes.func.isRequired,
   setTransactionPair: PropTypes.func.isRequired,
   currentExchangeMode: PropTypes.string.isRequired,
+  availableSynths: PropTypes.array,
+  setSynthToExchange: PropTypes.func.isRequired,
+  setSynthToBuy: PropTypes.func.isRequired,
 };
 
 export default connect(

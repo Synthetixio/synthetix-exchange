@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import numbro from 'numbro';
 import OutsideClickHandler from 'react-outside-click-handler';
+import SynthPickerBox from './synth-picker-box';
 
 import styles from './synth-picker.module.scss';
 
@@ -37,44 +38,17 @@ class SynthPicker extends Component {
     this.setState({ popupIsActive: !popupIsActive });
   }
 
-  renderSynths() {
-    const { availableSynths, currentWalletInfo } = this.props;
-    const { balances } = currentWalletInfo;
-    const filteredSynths = availableSynths.filter(synth => {
-      return (
-        (!balances ||
-          (balances && balances[synth.name] && balances[synth.name] > 0)) &&
-        ['crypto', 'forex', 'commodity'].includes(synth.category)
-      );
-    });
-    return (
-      <div className={styles.synthTableBody}>
-        {filteredSynths.length > 0 ? (
-          filteredSynths.map(synth => {
-            return (
-              <div
-                className={styles.synthWrapper}
-                onClick={this.selectBaseSynth(synth)}
-              >
-                <img src={`/images/synths/${synth.name}-icon.svg`} />
-                <span>{synth.name}</span>
-              </div>
-            );
-          })
-        ) : (
-          <div>No synths</div>
-        )}
-      </div>
-    );
-  }
-
   renderPopup() {
+    const { availableSynths, currentWalletInfo } = this.props;
     const { popupIsActive } = this.state;
     if (!popupIsActive) return;
     return (
-      <div className={styles.synthPickerBox}>
-        <div className={styles.synthTable}>{this.renderSynths()}</div>
-      </div>
+      <SynthPickerBox
+        synths={availableSynths}
+        balances={currentWalletInfo.balances}
+        position={{ bottom: 0, left: 'calc(100% + 10px)' }}
+        onSynthSelect={this.selectBaseSynth}
+      />
     );
   }
 
