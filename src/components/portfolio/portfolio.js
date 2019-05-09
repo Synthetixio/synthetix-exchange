@@ -43,7 +43,7 @@ class Portfolio extends Component {
 
       new Chart(chartTarget, {
         data,
-        type: 'percentage',
+        type: 'bar',
       });
       return null;
     };
