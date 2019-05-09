@@ -82,12 +82,6 @@ class SynthPicker extends Component {
             </div>
             {this.renderPopup()}
           </div>
-          <button
-            className={styles.selectSynthButton}
-            onClick={this.togglePopup}
-          >
-            Select Base Synth
-          </button>
         </div>
       </OutsideClickHandler>
     );

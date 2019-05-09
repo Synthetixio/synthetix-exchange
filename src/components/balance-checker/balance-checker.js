@@ -220,7 +220,7 @@ class BalanceChecker extends Component {
     const { currentExchangeMode } = this.props;
     return (
       <div>
-        <h2 className={styles.tableHeading}>Select pair</h2>
+        <h2 className={styles.tableHeading}>Your Synths</h2>
         <SynthPicker />
         {currentExchangeMode === 'pro' ? <RateList /> : null}
       </div>
