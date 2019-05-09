@@ -10,7 +10,6 @@ import { getCurrentWalletInfo, getAvailableSynths } from '../../ducks/';
 
 import { Chart } from 'frappe-charts/dist/frappe-charts.esm.js';
 import 'frappe-charts/dist/frappe-charts.min.css';
-// import styles from './rate-list.module.scss';
 
 class Portfolio extends Component {
   constructor() {
@@ -66,28 +65,13 @@ const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
-    // synthToExchange: getSynthToExchange(state),
-    // synthToBuy: getSynthToBuy(state),
-    // exchangeRates: getExchangeRates(state),
   };
-};
-
-const mapDispatchToProps = {
-  // setSynthToBuy,
 };
 
 Portfolio.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
   availableSynths: PropTypes.array.isRequired,
   synthBalances: PropTypes.array.isRequired,
-
-  // synthToExchange: PropTypes.object,
-  // synthToBuy: PropTypes.object,
-  // setSynthToBuy: PropTypes.func.isRequired,
-  // exchangeRates: PropTypes.object,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Portfolio);
+export default connect(mapStateToProps)(Portfolio);
