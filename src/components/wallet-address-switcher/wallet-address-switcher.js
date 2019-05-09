@@ -154,7 +154,7 @@ class WalletAddressSwitcher extends Component {
   render() {
     const { currentWalletInfo } = this.props;
     const { dropdownIsOpen } = this.state;
-    const { selectedWallet, availableWallets } = currentWalletInfo;
+    const { selectedWallet } = currentWalletInfo;
 
     return (
       <OutsideClickHandler
@@ -162,13 +162,8 @@ class WalletAddressSwitcher extends Component {
       >
         <div className={styles.addressSwitcherWrapper}>
           <div
-            onClick={this.toggleDropdown}
             className={`${styles.addressSwitcher} ${
               selectedWallet ? styles.addressSwitcherIsConnected : ''
-            } ${
-              availableWallets && availableWallets.length > 1
-                ? styles.addressSwitcherIsCollapsable
-                : ''
             }
           ${dropdownIsOpen ? styles.addressSwitcherIsCollapsed : ''}`}
           >

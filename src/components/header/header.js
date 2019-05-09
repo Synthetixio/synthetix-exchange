@@ -53,11 +53,11 @@ class Header extends Component {
     toggleWalkthroughPopup(true);
   }
 
-  onPageButtonClick() {
-    const { changeScreen, currentScreen } = this.props;
-    const nextScreen =
-      currentScreen === 'exchange' ? 'transactions' : 'exchange';
-    changeScreen(nextScreen);
+  onPageButtonClick(screen) {
+    return () => {
+      const { changeScreen } = this.props;
+      changeScreen(screen);
+    };
   }
 
   connectWallet() {
@@ -112,6 +112,12 @@ class Header extends Component {
         <div className={styles.headerRightArea}>
           <button className={styles.headerButton}>Markets</button>
           <button className={styles.headerButton}>Transactions</button>
+          <button
+            onClick={this.onPageButtonClick('connectToWallet')}
+            className={styles.headerButton}
+          >
+            Wallets
+          </button>
           {selectedWallet ? (
             <WalletAddressSwitcher />
           ) : (
