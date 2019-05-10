@@ -48,7 +48,8 @@ class WalletSelectorWithBalances extends Component {
   }
 
   renderPager() {
-    const { onNextPage, onPrevPage, showSpinner } = this.props;
+    const { onNextPage, onPrevPage, showSpinner, walletType } = this.props;
+    if (walletType === 'Metamask') return;
     return (
       <div className={styles.pagerRow}>
         <svg
@@ -111,6 +112,7 @@ WalletSelectorWithBalances.propTypes = {
   onNextPage: PropTypes.func.isRequired,
   onPrevPage: PropTypes.func.isRequired,
   showSpinner: PropTypes.bool.isRequired,
+  walletType: PropTypes.string.isRequired,
 };
 
 export default WalletSelectorWithBalances;

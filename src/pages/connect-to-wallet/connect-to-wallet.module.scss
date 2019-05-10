@@ -1,12 +1,14 @@
 @import '../../styles/variables.scss';
 
 .connectToWallet {
-  margin-top: 50px;
+  margin-top: 80px;
   h1 {
-    font-size: 40px;
+    font-size: 28px;
+    text-align: left;
   }
   h2 {
-    font-size: 24px;
+    text-align: left;
+    font-size: 18px;
     margin-bottom: 60px;
     font-family: 'RobotoMono-Regular';
     color: $color-font-grey;

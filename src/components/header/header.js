@@ -18,7 +18,7 @@ import {
   toggleWalletSelectorPopup,
 } from '../../ducks/ui';
 
-import WalletAddressSwitcher from '../wallet-address-switcher';
+import WalletAddressBox from '../wallet-address-box';
 import styles from './header.module.scss';
 
 class Header extends Component {
@@ -112,14 +112,19 @@ class Header extends Component {
         <div className={styles.headerRightArea}>
           <button className={styles.headerButton}>Markets</button>
           <button className={styles.headerButton}>Transactions</button>
-          <button
-            onClick={this.onPageButtonClick('connectToWallet')}
-            className={styles.headerButton}
-          >
-            Wallets
-          </button>
           {selectedWallet ? (
-            <WalletAddressSwitcher />
+            <button
+              onClick={this.onPageButtonClick('connectToWallet')}
+              className={styles.headerButton}
+            >
+              Wallets
+            </button>
+          ) : null}
+          {selectedWallet ? (
+            <WalletAddressBox
+              wallet={selectedWallet}
+              network={currentWalletInfo.networkId}
+            />
           ) : (
             <button
               className={styles.walletConnectorButton}

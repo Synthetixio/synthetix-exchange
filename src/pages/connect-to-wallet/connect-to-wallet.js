@@ -125,6 +125,8 @@ class ConnectToWallet extends Component {
         toggleLoadingScreen,
       } = this.props;
       const { walletType } = currentWalletInfo;
+      if (walletType === 'Metamask') return;
+
       const idx = walletSelectorIndex + index;
       const availableWalletsStringArray = availableWallets.map(
         wallet => wallet.address
@@ -190,7 +192,7 @@ class ConnectToWallet extends Component {
       availableWallets,
       connected,
     } = this.state;
-
+    const { currentWalletInfo } = this.props;
     return (
       <div className={styles.connectToWallet}>
         {connected ? (
@@ -202,6 +204,7 @@ class ConnectToWallet extends Component {
             onSelectWallet={this.onSelectWallet}
             onNextPage={this.onNextPage}
             onPrevPage={this.onPrevPage}
+            walletType={currentWalletInfo.walletType}
           />
         ) : (
           this.renderConnectingScreen()
