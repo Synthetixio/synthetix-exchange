@@ -88,8 +88,25 @@ class Header extends Component {
     changeExchangeMode(newMode);
   }
 
+  renderExchangeButton() {
+    const { currentExchangeMode, currentScreen } = this.props;
+    return currentScreen === 'exchange' ? (
+      <button
+        onClick={this.switchExchangeMode}
+        className={styles.headerButton}
+      >{`${currentExchangeMode === 'basic' ? 'Pro' : 'Basic'} Mode`}</button>
+    ) : (
+      <button
+        onClick={this.onPageButtonClick('exchange')}
+        className={styles.headerButton}
+      >
+        Exchange
+      </button>
+    );
+  }
+
   render() {
-    const { currentWalletInfo, currentExchangeMode } = this.props;
+    const { currentWalletInfo } = this.props;
     const { selectedWallet } = currentWalletInfo;
     return (
       <div className={styles.header}>
@@ -102,12 +119,7 @@ class Header extends Component {
           >
             {this.renderNetworkName()}
           </button>
-          <button
-            onClick={this.switchExchangeMode}
-            className={styles.headerButton}
-          >{`${
-            currentExchangeMode === 'basic' ? 'Pro' : 'Basic'
-          } Mode`}</button>
+          {this.renderExchangeButton()}
         </div>
         <div className={styles.headerRightArea}>
           <button className={styles.headerButton}>Markets</button>
