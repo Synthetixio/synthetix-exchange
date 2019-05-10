@@ -42,16 +42,18 @@
   border: 1px solid $color-input-border;
   border-top: none;
   position: absolute;
-  top: 0;
-  left: calc(100% + 10px);
-  font-family: 'Aeonik-Regular';
+  font-family: 'RobotoMono-Regular';
   box-shadow: 3px 2px 8px 0px rgba(255, 255, 255, 0.1);
   z-index: 10;
   min-height: 240px;
 }
 
 .synthTable {
-  width: 400px;
+  width: 430px;
+}
+
+.synthTableBalance {
+  margin: 0 10px;
 }
 
 .synthTableHeader {
@@ -95,8 +97,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 10px;
-  width: 33%;
+  margin: 10px 0 0 20px;
+  width: 42%;
+  font-size: 14px;
   cursor: pointer;
   img {
     width: 30px;
@@ -108,20 +111,4 @@
       text-decoration: underline;
     }
   }
-}
-
-.selectSynthButton {
-  margin-top: 10px;
-  width: 100%;
-  height: 50px;
-  padding: 0 20px;
-  border-radius: 4px;
-  background-color: $color-light-blue;
-  color: #ffffff;
-  border: 0;
-  font-family: 'RobotoMono-Regular';
-  font-size: 14px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  cursor: pointer;
 }

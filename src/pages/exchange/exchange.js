@@ -21,6 +21,7 @@ import {
   getAvailableSynths,
   getSynthToExchange,
   getSynthToBuy,
+  getCurrentExchangeMode,
 } from '../../ducks/';
 
 import styles from './exchange.module.scss';
@@ -38,9 +39,56 @@ class Exchange extends Component {
       return synthToExchange.name.substring(1) + synthToBuy.name.substring(1);
   }
 
-  render() {
+  renderBasicModeContent() {
+    const { synthToBuy, synthToExchange } = this.props;
+    return (
+      <div className={styles.exchangeLayoutColumn}>
+        {synthToBuy && synthToExchange ? (
+          <Container fullHeight={true}>
+            <TradingWidget />
+          </Container>
+        ) : null}
+      </div>
+    );
+  }
+
+  renderProModeContent() {
     const { synthToBuy, synthToExchange } = this.props;
     const symbol = this.getSymbol();
+    return (
+      <div className={styles.exchangeLayoutColumn}>
+        <div className={styles.exchangeLayoutRow}>
+          <div className={styles.chartWrapper}>
+            <div className={styles.mask} />
+            <TradingViewWidget
+              symbol={symbol}
+              theme={Themes.DARK}
+              autosize
+              allow_symbol_change={false}
+              hide_legend={false}
+              save_image={false}
+            />
+          </div>
+          <div
+            className={`${styles.exchangeLayoutColumn} ${
+              styles.exchangeLayoutColumnSmall
+            } ${styles.exchangeLayoutColumnRight}`}
+          >
+            {synthToBuy && synthToExchange ? (
+              <Container fullHeight={true}>
+                <TradingWidget />
+              </Container>
+            ) : null}
+          </div>
+        </div>
+        <TransactionsTable />
+      </div>
+    );
+  }
+
+  render() {
+    const { currentExchangeMode } = this.props;
+
     return (
       <div className={styles.exchange}>
         <div className={styles.exchangeInner}>
@@ -55,33 +103,9 @@ class Exchange extends Component {
                 <BalanceChecker />
               </Container>
             </div>
-            <div className={styles.exchangeLayoutColumn}>
-              <div className={styles.exchangeLayoutRow}>
-                <div className={styles.chartWrapper}>
-                  <div className={styles.mask} />
-                  <TradingViewWidget
-                    symbol={symbol}
-                    theme={Themes.DARK}
-                    autosize
-                    allow_symbol_change={false}
-                    hide_legend={false}
-                    save_image={false}
-                  />
-                </div>
-                <div
-                  className={`${styles.exchangeLayoutColumn} ${
-                    styles.exchangeLayoutColumnSmall
-                  } ${styles.exchangeLayoutColumnRight}`}
-                >
-                  {synthToBuy && synthToExchange ? (
-                    <Container fullHeight={true}>
-                      <TradingWidget />
-                    </Container>
-                  ) : null}
-                </div>
-              </div>
-              <TransactionsTable />
-            </div>
+            {currentExchangeMode === 'basic'
+              ? this.renderBasicModeContent()
+              : this.renderProModeContent()}
           </div>
         </div>
       </div>
@@ -102,6 +126,7 @@ const mapStateToProps = state => {
     availableSynths: getAvailableSynths(state),
     synthToBuy: getSynthToBuy(state),
     synthToExchange: getSynthToExchange(state),
+    currentExchangeMode: getCurrentExchangeMode(state),
   };
 };
 
@@ -119,6 +144,7 @@ Exchange.propTypes = {
   availableSynths: PropTypes.array.isRequired,
   synthToBuy: PropTypes.object,
   synthToExchange: PropTypes.object,
+  currentExchangeMode: PropTypes.string.isRequired,
 };
 
 export default connect(
