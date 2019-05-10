@@ -39,6 +39,7 @@ class TradingWidgetInput extends Component {
       currentSynth,
       availableSynths,
       currentWalletInfo,
+      filterNotNeeded,
     } = this.props;
     const { boxIsOpen } = this.state;
     const balances = currentWalletInfo.balances;
@@ -77,6 +78,7 @@ class TradingWidgetInput extends Component {
               balances={balances}
               position={{ top: 'calc(100% + 10px)', right: 0 }}
               onSynthSelect={this.onSynthSelect}
+              filterNotNeeded={filterNotNeeded}
             />
           ) : null}
         </OutsideClickHandler>
