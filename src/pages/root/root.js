@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Header from '../../components/header';
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
+import Transactions from '../transactions';
 
 import Overlay from '../../components/overlay';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -108,6 +109,8 @@ class Root extends Component {
         return <Exchange />;
       case 'connectToWallet':
         return <ConnectToWallet />;
+      case 'transactions':
+        return <Transactions />;
       default:
         return <Exchange />;
     }

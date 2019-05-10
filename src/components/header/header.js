@@ -123,7 +123,12 @@ class Header extends Component {
         </div>
         <div className={styles.headerRightArea}>
           <button className={styles.headerButton}>Markets</button>
-          <button className={styles.headerButton}>Transactions</button>
+          <button
+            className={styles.headerButton}
+            onClick={this.onPageButtonClick('transactions')}
+          >
+            Transactions
+          </button>
           {selectedWallet ? (
             <button
               onClick={this.onPageButtonClick('connectToWallet')}
