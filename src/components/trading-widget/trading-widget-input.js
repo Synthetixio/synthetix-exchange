@@ -5,7 +5,11 @@ import OutsideClickHandler from 'react-outside-click-handler';
 
 import SynthPickerBox from '../synth-picker/synth-picker-box';
 
-import { getCurrentWalletInfo, getAvailableSynths } from '../../ducks/';
+import {
+  getCurrentWalletInfo,
+  getAvailableSynths,
+  getCurrentExchangeMode,
+} from '../../ducks/';
 
 import styles from './trading-widget.module.scss';
 
@@ -40,6 +44,7 @@ class TradingWidgetInput extends Component {
       availableSynths,
       currentWalletInfo,
       filterNotNeeded,
+      currentExchangeMode,
     } = this.props;
     const { boxIsOpen } = this.state;
     const balances = currentWalletInfo.balances;
@@ -49,14 +54,23 @@ class TradingWidgetInput extends Component {
           onOutsideClick={() => this.setState({ boxIsOpen: false })}
         >
           <input
-            className={styles.widgetInputElement}
+            className={`${styles.widgetInputElement} ${
+              currentExchangeMode === 'basic'
+                ? styles.widgetInputElementBig
+                : ''
+            }`}
             type="text"
             value={value || ''}
             placeholder={0}
             onChange={onInputChange}
             pattern="^-?[0-9]\d*\.?\d*$"
           />
-          <div className={styles.widgetInputSynth} onClick={this.toggleBox}>
+          <div
+            className={`${styles.widgetInputSynth} ${
+              currentExchangeMode === 'basic' ? styles.widgetInputSynthBig : ''
+            }`}
+            onClick={this.toggleBox}
+          >
             <div className={styles.widgetInputInner}>
               <img
                 className={styles.inputSynthImage}
@@ -65,12 +79,14 @@ class TradingWidgetInput extends Component {
               />
               <span>{currentSynth}</span>
             </div>
-            <div className={styles.widgetInputInner}>
-              <img
-                className={styles.inputOpenDropdownIcon}
-                src="/images/angle-down-icon.svg"
-              />
-            </div>
+            {currentExchangeMode === 'basic' ? (
+              <div className={styles.widgetInputInner}>
+                <img
+                  className={styles.inputOpenDropdownIcon}
+                  src="/images/angle-down-icon.svg"
+                />
+              </div>
+            ) : null}
           </div>
           {boxIsOpen ? (
             <SynthPickerBox
@@ -91,6 +107,7 @@ const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
+    currentExchangeMode: getCurrentExchangeMode(state),
   };
 };
 
@@ -102,6 +119,7 @@ TradingWidgetInput.propTypes = {
   onInputChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   availableSynths: PropTypes.array,
+  currentExchangeMode: PropTypes.string.isRequired,
 };
 
 export default connect(
