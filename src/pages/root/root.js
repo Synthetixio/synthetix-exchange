@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import Header from '../../components/header';
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
 
@@ -146,7 +147,10 @@ class Root extends Component {
     return (
       <div className={styles.root}>
         <Overlay isVisible={overlayIsVisible} />
-        {this.renderScreen()}
+        <div className={styles.rootInner}>
+          <Header />
+          {this.renderScreen()}
+        </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
         <TestnetPopup isVisible={testnetPopupIsVisible} />
