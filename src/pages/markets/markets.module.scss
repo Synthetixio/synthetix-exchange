@@ -1,8 +1,9 @@
+@import '../../styles/variables.scss';
+
 .marketsLayout {
   margin-top: 25px;
-  // text-align: center;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .marketsTable {
@@ -12,10 +13,6 @@
     font-size: 13px;
     letter-spacing: 2px;
   }
-  th {
-    padding-bottom: 20px;
-  }
-  th,
   td {
     &:first-child {
       text-align: left;
@@ -40,6 +37,22 @@
 
 .pairHeading {
   td {
-    border-bottom: 1px solid #19172a;
+    font-family: 'Aeonik-Bold';
+    font-size: 16px;
+    padding-top: 20px;
+    border-bottom: 1px solid $color-input-border;
   }
+}
+
+.searchInput {
+  width: 100%;
+  background-color: $color-background;
+  border: 1px solid $color-input-border;
+  height: 50px;
+  color: #ffffff;
+  padding: 15px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-overflow: ellipsis;
 }
