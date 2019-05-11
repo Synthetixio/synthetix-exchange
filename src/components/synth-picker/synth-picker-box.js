@@ -17,25 +17,31 @@ class SynthPickerBox extends Component {
   }
 
   renderSynths() {
-    const { synths, balances, onSynthSelect } = this.props;
+    const { synths, balances, onSynthSelect, exchangeRates } = this.props;
     const { showAll } = this.state;
     const filteredSynths = synths.filter(synth => {
+      const rate = exchangeRates && exchangeRates[synth.name];
+      const isDust =
+        balances &&
+        balances[synth.name] &&
+        rate &&
+        Number(balances[synth.name]) * rate['sUSD'] <= 0.01;
       return (
-        (showAll ||
-          !balances ||
-          (balances && balances[synth.name] && balances[synth.name] > 0)) &&
-        ['crypto', 'forex', 'commodity'].includes(synth.category)
+        ['crypto', 'forex', 'commodity'].includes(synth.category) &&
+        (showAll ? true : !isDust)
       );
     });
     return (
       <div>
         <div className={styles.synthPickerBoxHeader}>
-          <button
-            className={styles.synthPickerBoxButton}
-            onClick={this.toggleShowAll}
-          >
-            {showAll ? 'Hide 0 Balances' : 'Show All'}
-          </button>
+          {balances ? (
+            <button
+              className={styles.synthPickerBoxButton}
+              onClick={this.toggleShowAll}
+            >
+              {showAll ? 'Hide Dust' : 'Show All'}
+            </button>
+          ) : null}
         </div>
         <div className={styles.synthTableBody}>
           {filteredSynths.map(synth => {

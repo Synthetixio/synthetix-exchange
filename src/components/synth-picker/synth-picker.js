@@ -11,6 +11,7 @@ import {
   getCurrentWalletInfo,
   getAvailableSynths,
   getSynthToExchange,
+  getExchangeRates,
 } from '../../ducks/';
 import { setSynthToExchange } from '../../ducks/synths';
 
@@ -39,7 +40,7 @@ class SynthPicker extends Component {
   }
 
   renderPopup() {
-    const { availableSynths, currentWalletInfo } = this.props;
+    const { availableSynths, currentWalletInfo, exchangeRates } = this.props;
     const { popupIsActive } = this.state;
     if (!popupIsActive) return;
     return (
@@ -48,6 +49,7 @@ class SynthPicker extends Component {
         balances={currentWalletInfo.balances}
         position={{ bottom: 0, left: 'calc(100% + 10px)' }}
         onSynthSelect={this.selectBaseSynth}
+        exchangeRates={exchangeRates}
       />
     );
   }
@@ -93,6 +95,7 @@ const mapStateToProps = state => {
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
     synthToExchange: getSynthToExchange(state),
+    exchangeRates: getExchangeRates(state),
   };
 };
 
@@ -105,6 +108,7 @@ SynthPicker.propTypes = {
   availableSynths: PropTypes.array.isRequired,
   synthToExchange: PropTypes.object,
   setSynthToExchange: PropTypes.func.isRequired,
+  exchangeRates: PropTypes.object,
 };
 
 export default connect(

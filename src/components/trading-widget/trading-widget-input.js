@@ -9,6 +9,7 @@ import {
   getCurrentWalletInfo,
   getAvailableSynths,
   getCurrentExchangeMode,
+  getExchangeRates,
 } from '../../ducks/';
 
 import styles from './trading-widget.module.scss';
@@ -45,6 +46,7 @@ class TradingWidgetInput extends Component {
       currentWalletInfo,
       filterNotNeeded,
       currentExchangeMode,
+      exchangeRates,
     } = this.props;
     const { boxIsOpen } = this.state;
     const balances = currentWalletInfo.balances;
@@ -95,6 +97,7 @@ class TradingWidgetInput extends Component {
               position={{ top: 'calc(100% + 10px)', right: 0 }}
               onSynthSelect={this.onSynthSelect}
               filterNotNeeded={filterNotNeeded}
+              exchangeRates={exchangeRates}
             />
           ) : null}
         </OutsideClickHandler>
@@ -108,6 +111,7 @@ const mapStateToProps = state => {
     currentWalletInfo: getCurrentWalletInfo(state),
     availableSynths: getAvailableSynths(state),
     currentExchangeMode: getCurrentExchangeMode(state),
+    exchangeRates: getExchangeRates(state),
   };
 };
 
@@ -120,6 +124,7 @@ TradingWidgetInput.propTypes = {
   value: PropTypes.string.isRequired,
   availableSynths: PropTypes.array,
   currentExchangeMode: PropTypes.string.isRequired,
+  exchangeRates: PropTypes.object,
 };
 
 export default connect(
