@@ -1,0 +1,45 @@
+.marketsLayout {
+  margin-top: 25px;
+  // text-align: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.marketsTable {
+  width: 800px;
+  tbody {
+    font-family: 'RobotoMono-Regular';
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  th {
+    padding-bottom: 20px;
+  }
+  th,
+  td {
+    &:first-child {
+      text-align: left;
+    }
+    text-align: right;
+  }
+  tr {
+    cursor: pointer;
+    &:hover {
+      background-color: #2e324145;
+    }
+  }
+  tr + tr {
+    td {
+      border-top: 1px solid #19172a;
+    }
+  }
+  td {
+    padding: 5px 0;
+  }
+}
+
+.pairHeading {
+  td {
+    border-bottom: 1px solid #19172a;
+  }
+}

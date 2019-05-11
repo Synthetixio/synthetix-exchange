@@ -122,7 +122,12 @@ class Header extends Component {
           {this.renderExchangeButton()}
         </div>
         <div className={styles.headerRightArea}>
-          <button className={styles.headerButton}>Markets</button>
+          <button
+            className={styles.headerButton}
+            onClick={this.onPageButtonClick('markets')}
+          >
+            Markets
+          </button>
           <button
             className={styles.headerButton}
             onClick={this.onPageButtonClick('transactions')}
