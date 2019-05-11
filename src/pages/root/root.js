@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import Header from '../../components/header';
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
+import Transactions from '../transactions';
+import Markets from '../markets';
 
 import Overlay from '../../components/overlay';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -107,6 +110,10 @@ class Root extends Component {
         return <Exchange />;
       case 'connectToWallet':
         return <ConnectToWallet />;
+      case 'transactions':
+        return <Transactions />;
+      case 'markets':
+        return <Markets />;
       default:
         return <Exchange />;
     }
@@ -146,7 +153,10 @@ class Root extends Component {
     return (
       <div className={styles.root}>
         <Overlay isVisible={overlayIsVisible} />
-        {this.renderScreen()}
+        <div className={styles.rootInner}>
+          <Header />
+          {this.renderScreen()}
+        </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
         <TestnetPopup isVisible={testnetPopupIsVisible} />

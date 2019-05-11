@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import Header from '../../components/header';
 import Container from '../../components/container';
 import BalanceChecker from '../../components/balance-checker';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
@@ -91,22 +90,19 @@ class Exchange extends Component {
 
     return (
       <div className={styles.exchange}>
-        <div className={styles.exchangeInner}>
-          <Header />
-          <div className={styles.exchangeLayout}>
-            <div
-              className={`${styles.exchangeLayoutColumn} ${
-                styles.exchangeLayoutColumnSmall
-              } ${styles.exchangeLayoutColumnLeft}`}
-            >
-              <Container fullHeight={true}>
-                <BalanceChecker />
-              </Container>
-            </div>
-            {currentExchangeMode === 'basic'
-              ? this.renderBasicModeContent()
-              : this.renderProModeContent()}
+        <div className={styles.exchangeLayout}>
+          <div
+            className={`${styles.exchangeLayoutColumn} ${
+              styles.exchangeLayoutColumnSmall
+            } ${styles.exchangeLayoutColumnLeft}`}
+          >
+            <Container fullHeight={true}>
+              <BalanceChecker />
+            </Container>
           </div>
+          {currentExchangeMode === 'basic'
+            ? this.renderBasicModeContent()
+            : this.renderProModeContent()}
         </div>
       </div>
     );

@@ -18,7 +18,7 @@ import {
   toggleWalletSelectorPopup,
 } from '../../ducks/ui';
 
-import WalletAddressSwitcher from '../wallet-address-switcher';
+import WalletAddressBox from '../wallet-address-box';
 import styles from './header.module.scss';
 
 class Header extends Component {
@@ -88,8 +88,25 @@ class Header extends Component {
     changeExchangeMode(newMode);
   }
 
+  renderExchangeButton() {
+    const { currentExchangeMode, currentScreen } = this.props;
+    return currentScreen === 'exchange' ? (
+      <button
+        onClick={this.switchExchangeMode}
+        className={styles.headerButton}
+      >{`${currentExchangeMode === 'basic' ? 'Pro' : 'Basic'} Mode`}</button>
+    ) : (
+      <button
+        onClick={this.onPageButtonClick('exchange')}
+        className={styles.headerButton}
+      >
+        Exchange
+      </button>
+    );
+  }
+
   render() {
-    const { currentWalletInfo, currentExchangeMode } = this.props;
+    const { currentWalletInfo } = this.props;
     const { selectedWallet } = currentWalletInfo;
     return (
       <div className={styles.header}>
@@ -102,24 +119,34 @@ class Header extends Component {
           >
             {this.renderNetworkName()}
           </button>
-          <button
-            onClick={this.switchExchangeMode}
-            className={styles.headerButton}
-          >{`${
-            currentExchangeMode === 'basic' ? 'Pro' : 'Basic'
-          } Mode`}</button>
+          {this.renderExchangeButton()}
         </div>
         <div className={styles.headerRightArea}>
-          <button className={styles.headerButton}>Markets</button>
-          <button className={styles.headerButton}>Transactions</button>
           <button
-            onClick={this.onPageButtonClick('connectToWallet')}
             className={styles.headerButton}
+            onClick={this.onPageButtonClick('markets')}
           >
-            Wallets
+            Markets
+          </button>
+          <button
+            className={styles.headerButton}
+            onClick={this.onPageButtonClick('transactions')}
+          >
+            Transactions
           </button>
           {selectedWallet ? (
-            <WalletAddressSwitcher />
+            <button
+              onClick={this.onPageButtonClick('connectToWallet')}
+              className={styles.headerButton}
+            >
+              Wallets
+            </button>
+          ) : null}
+          {selectedWallet ? (
+            <WalletAddressBox
+              wallet={selectedWallet}
+              network={currentWalletInfo.networkId}
+            />
           ) : (
             <button
               className={styles.walletConnectorButton}

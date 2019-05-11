@@ -1,0 +1,50 @@
+@import '../../styles/variables.scss';
+
+.addressBoxWrapper {
+  position: relative;
+}
+
+.addressBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: $color-background;
+  border: 1px solid $color-input-border;
+  height: 50px;
+  color: #ffffff;
+  padding: 0 20px 0 40px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  &:before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    border-radius: 50%;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: $color-yellow;
+  }
+}
+
+.addressBoxStatus {
+  font-family: 'Aeonik-Bold';
+  font-size: 16px;
+}
+
+.addressBoxWallet {
+  margin-left: 10px;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.addressBoxIsConnected {
+  &:before {
+    background-color: $color-green;
+  }
+}

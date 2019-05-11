@@ -239,6 +239,7 @@ class TradingWidget extends Component {
           onInputChange={this.onToSynthChange}
           currentSynth={synthToBuy.name}
           onSynthSelect={this.setSynthToBuy}
+          filterNotNeeded={true}
         />
       </div>
     );
@@ -291,9 +292,9 @@ class TradingWidget extends Component {
 
   render() {
     const { synthToBuy, synthToExchange, currentWalletInfo } = this.props;
-
     const { selectedWallet, balances } = currentWalletInfo;
     const { inputValues } = this.state;
+
     const confirmTradeButtonIsEnabled =
       inputValues[synthToBuy.name] &&
       inputValues[synthToExchange.name] &&
