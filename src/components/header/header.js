@@ -6,6 +6,7 @@ import {
   getCurrentWalletInfo,
   testnetPopupIsVisible,
   getCurrentScreen,
+  getCurrentExchangeMode,
   walletSelectorPopupIsVisible,
 } from '../../ducks/';
 import {
@@ -13,10 +14,11 @@ import {
   toggleFeedbackPopup,
   toggleWalkthroughPopup,
   changeScreen,
+  changeExchangeMode,
   toggleWalletSelectorPopup,
 } from '../../ducks/ui';
 
-import WalletAddressSwitcher from '../wallet-address-switcher';
+import WalletAddressBox from '../wallet-address-box';
 import styles from './header.module.scss';
 
 class Header extends Component {
@@ -27,6 +29,7 @@ class Header extends Component {
     this.onWalkthroughButtonClick = this.onWalkthroughButtonClick.bind(this);
     this.onPageButtonClick = this.onPageButtonClick.bind(this);
     this.connectWallet = this.connectWallet.bind(this);
+    this.switchExchangeMode = this.switchExchangeMode.bind(this);
   }
 
   onEnvButtonClick() {
@@ -50,11 +53,11 @@ class Header extends Component {
     toggleWalkthroughPopup(true);
   }
 
-  onPageButtonClick() {
-    const { changeScreen, currentScreen } = this.props;
-    const nextScreen =
-      currentScreen === 'exchange' ? 'transactions' : 'exchange';
-    changeScreen(nextScreen);
+  onPageButtonClick(screen) {
+    return () => {
+      const { changeScreen } = this.props;
+      changeScreen(screen);
+    };
   }
 
   connectWallet() {
@@ -79,6 +82,29 @@ class Header extends Component {
     }
   }
 
+  switchExchangeMode() {
+    const { currentExchangeMode, changeExchangeMode } = this.props;
+    const newMode = currentExchangeMode === 'basic' ? 'pro' : 'basic';
+    changeExchangeMode(newMode);
+  }
+
+  renderExchangeButton() {
+    const { currentExchangeMode, currentScreen } = this.props;
+    return currentScreen === 'exchange' ? (
+      <button
+        onClick={this.switchExchangeMode}
+        className={styles.headerButton}
+      >{`${currentExchangeMode === 'basic' ? 'Pro' : 'Basic'} Mode`}</button>
+    ) : (
+      <button
+        onClick={this.onPageButtonClick('exchange')}
+        className={styles.headerButton}
+      >
+        Exchange
+      </button>
+    );
+  }
+
   render() {
     const { currentWalletInfo } = this.props;
     const { selectedWallet } = currentWalletInfo;
@@ -89,40 +115,38 @@ class Header extends Component {
           <button
             type="button"
             onClick={this.onEnvButtonClick}
-            className={`${styles.headerButton} ${styles.envButton}`}
+            className={styles.envButton}
           >
             {this.renderNetworkName()}
           </button>
+          {this.renderExchangeButton()}
         </div>
         <div className={styles.headerRightArea}>
           <button
-            type="button"
-            onClick={this.onWalkthroughButtonClick}
             className={styles.headerButton}
+            onClick={this.onPageButtonClick('markets')}
           >
-            <span>Walkthrough</span>
-            <img
-              className={styles.headerButtonIcon}
-              width="20"
-              src="images/play-icon.svg"
-            />
+            Markets
           </button>
           <button
-            type="button"
-            onClick={this.onFeedbackButtonClick}
             className={styles.headerButton}
+            onClick={this.onPageButtonClick('transactions')}
           >
-            Got feedback?
+            Transactions
           </button>
-          {/* <button
-            type="button"
-            onClick={this.onPageButtonClick}
-            className={styles.headerButton}
-          >
-            {currentScreen === 'exchange' ? 'Trading History' : 'Exchange'}
-          </button> */}
           {selectedWallet ? (
-            <WalletAddressSwitcher />
+            <button
+              onClick={this.onPageButtonClick('connectToWallet')}
+              className={styles.headerButton}
+            >
+              Wallets
+            </button>
+          ) : null}
+          {selectedWallet ? (
+            <WalletAddressBox
+              wallet={selectedWallet}
+              network={currentWalletInfo.networkId}
+            />
           ) : (
             <button
               className={styles.walletConnectorButton}
@@ -142,6 +166,7 @@ const mapStateToProps = state => {
     currentWalletInfo: getCurrentWalletInfo(state),
     testnetPopupIsVisible: testnetPopupIsVisible(state),
     currentScreen: getCurrentScreen(state),
+    currentExchangeMode: getCurrentExchangeMode(state),
     walletSelectorPopupIsVisible: walletSelectorPopupIsVisible(state),
   };
 };
@@ -152,6 +177,7 @@ const mapDispatchToProps = {
   toggleWalkthroughPopup,
   toggleWalletSelectorPopup,
   changeScreen,
+  changeExchangeMode,
 };
 
 Header.propTypes = {
@@ -161,7 +187,9 @@ Header.propTypes = {
   toggleFeedbackPopup: PropTypes.func.isRequired,
   toggleWalkthroughPopup: PropTypes.func.isRequired,
   changeScreen: PropTypes.func.isRequired,
+  changeExchangeMode: PropTypes.func.isRequired,
   currentScreen: PropTypes.string.isRequired,
+  currentExchangeMode: PropTypes.string.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
   toggleWalletSelectorPopup: PropTypes.func.isRequired,
 };

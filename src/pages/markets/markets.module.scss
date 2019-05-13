@@ -1,0 +1,58 @@
+@import '../../styles/variables.scss';
+
+.marketsLayout {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+.marketsTable {
+  width: 800px;
+  tbody {
+    font-family: 'RobotoMono-Regular';
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  td {
+    &:first-child {
+      text-align: left;
+    }
+    text-align: right;
+  }
+  tr {
+    cursor: pointer;
+    &:hover {
+      background-color: #2e324145;
+    }
+  }
+  tr + tr {
+    td {
+      border-top: 1px solid #19172a;
+    }
+  }
+  td {
+    padding: 5px 0;
+  }
+}
+
+.pairHeading {
+  td {
+    font-family: 'Aeonik-Bold';
+    font-size: 16px;
+    padding-top: 20px;
+    border-bottom: 1px solid $color-input-border;
+  }
+}
+
+.searchInput {
+  width: 100%;
+  background-color: $color-background;
+  border: 1px solid $color-input-border;
+  height: 50px;
+  color: #ffffff;
+  padding: 15px;
+  font-family: 'RobotoMono-Regular';
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-overflow: ellipsis;
+}

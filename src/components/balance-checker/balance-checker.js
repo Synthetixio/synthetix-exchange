@@ -9,6 +9,7 @@ import {
   getAvailableSynths,
   getSynthToExchange,
   getEthRate,
+  getCurrentExchangeMode,
 } from '../../ducks/';
 import { setSynthToExchange } from '../../ducks/synths';
 import { setWalletBalances } from '../../ducks/wallet';
@@ -139,11 +140,13 @@ class BalanceChecker extends Component {
 
   renderWidgetHeader() {
     const { currentWalletInfo } = this.props;
-    if (!currentWalletInfo || !currentWalletInfo.selectedWallet) return;
+    const buttonIsDisabled =
+      !currentWalletInfo || !currentWalletInfo.selectedWallet;
     return (
       <div className={styles.widgetHeader}>
         <h2 className={styles.balanceCheckerHeading}>Balances</h2>
         <button
+          disabled={buttonIsDisabled}
           onClick={this.handleRefresh}
           className={styles.balanceCheckerButton}
         >
@@ -155,7 +158,6 @@ class BalanceChecker extends Component {
 
   renderTotalBalance() {
     const { totalBalance, ethBalance } = this.state;
-    if (!totalBalance) return;
     return (
       <table cellPadding="0" cellSpacing="0" className={styles.table}>
         <thead>
@@ -169,19 +171,28 @@ class BalanceChecker extends Component {
           <tr className={styles.tableBodyRow}>
             <td className={styles.tableBodySynth}>Synths</td>
             <td className={styles.tableBodyBalance}>
-              ${numbro(totalBalance).format('0,0.00')} USD
+              {totalBalance
+                ? `$${numbro(totalBalance).format('0,0.00')} USD`
+                : '--'}
             </td>
           </tr>
           <tr className={styles.tableBodyRow}>
             <td className={styles.tableBodySynth}>ETH</td>
             <td className={styles.tableBodyBalance}>
-              <div>{numbro(ethBalance.amount).format('0,0.00')}</div>
-              <div>${numbro(ethBalance.value).format('0,0.00')} USD</div>
+              <div>
+                {ethBalance ? numbro(ethBalance.amount).format('0,0.00') : '--'}
+              </div>
+              <div>
+                {ethBalance
+                  ? `$${numbro(ethBalance.value).format('0,0.00')} USD`
+                  : null}
+              </div>
             </td>
           </tr>
           <tr>
             <td colSpan="2" className={styles.tableBodyButtonRow}>
               <button
+                disabled={!totalBalance}
                 onClick={this.showDepotPopup}
                 className={`${styles.balanceCheckerButton} ${
                   styles.balanceCheckerButtonWhite
@@ -206,11 +217,12 @@ class BalanceChecker extends Component {
   }
 
   renderSynths() {
+    const { currentExchangeMode } = this.props;
     return (
       <div>
-        <h2 className={styles.tableHeading}>Select pair</h2>
+        <h2 className={styles.tableHeading}>Your Synths</h2>
         <SynthPicker />
-        <RateList />
+        {currentExchangeMode === 'pro' ? <RateList /> : null}
       </div>
     );
   }
@@ -232,6 +244,7 @@ const mapStateToProps = state => {
     availableSynths: getAvailableSynths(state),
     synthToExchange: getSynthToExchange(state),
     ethRate: getEthRate(state),
+    currentExchangeMode: getCurrentExchangeMode(state),
   };
 };
 
@@ -251,6 +264,7 @@ BalanceChecker.propTypes = {
   toggleLoadingScreen: PropTypes.func.isRequired,
   toggleDepotPopup: PropTypes.func.isRequired,
   ethRate: PropTypes.string,
+  currentExchangeMode: PropTypes.string.isRequired,
 };
 
 export default connect(

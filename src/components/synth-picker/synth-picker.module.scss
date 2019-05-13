@@ -42,16 +42,19 @@
   border: 1px solid $color-input-border;
   border-top: none;
   position: absolute;
-  top: 0;
-  left: calc(100% + 10px);
-  font-family: 'Aeonik-Regular';
+  font-family: 'RobotoMono-Regular';
   box-shadow: 3px 2px 8px 0px rgba(255, 255, 255, 0.1);
   z-index: 10;
   min-height: 240px;
+  padding: 25px;
 }
 
 .synthTable {
-  width: 400px;
+  width: 500px;
+}
+
+.synthTableBalance {
+  margin: 0 10px;
 }
 
 .synthTableHeader {
@@ -88,15 +91,16 @@
 .synthTableBody {
   display: flex;
   flex-wrap: wrap;
-  padding: 15px 25px 25px 25px;
+  margin-top: 10px;
 }
 
 .synthWrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 5px;
   width: 33%;
+  font-size: 14px;
   cursor: pointer;
   img {
     width: 30px;
@@ -110,18 +114,27 @@
   }
 }
 
-.selectSynthButton {
-  margin-top: 10px;
-  width: 100%;
-  height: 50px;
-  padding: 0 20px;
-  border-radius: 4px;
-  background-color: $color-light-blue;
-  color: #ffffff;
-  border: 0;
-  font-family: 'RobotoMono-Regular';
-  font-size: 14px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.synthPickerBoxHeader {
+  text-align: right;
+}
+
+.synthPickerBoxButton {
   cursor: pointer;
+  background-color: $color-background;
+  font-family: 'RobotoMono-Regular';
+  letter-spacing: 1px;
+  font-size: 11px;
+  color: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: 4px;
+  padding: 12px 15px;
+  text-transform: uppercase;
+  &:hover:not(:disabled) {
+    background-color: #fff;
+    color: $color-background;
+    border: 1px solid #ffffff;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
 }

@@ -44,16 +44,19 @@
   background-color: $color-background;
   font-family: 'RobotoMono-Regular';
   letter-spacing: 1px;
-  font-size: 10px;
+  font-size: 11px;
   color: #ffffff;
   border: 1px solid #28253f;
   border-radius: 4px;
   padding: 12px 15px;
   text-transform: uppercase;
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #fff;
     color: $color-background;
     border: 1px solid #ffffff;
+  }
+  &:disabled {
+    opacity: 0.5;
   }
 }
 
@@ -71,19 +74,39 @@
 
 .widgetInputSynth {
   position: absolute;
-  width: 70px;
+  cursor: pointer;
+  padding-left: 10px;
   top: 50%;
+  width: 80px;
   right: 15px;
+  height: 100%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   font-family: 'Aeonik-Bold';
   font-size: 14px;
-  img {
-    margin-right: 12px;
-    width: 25px;
-    height: 25px;
-  }
+  border-left: 1px solid $color-input-border;
+}
+
+.widgetInputSynthBig {
+  width: 100px;
+}
+
+.widgetInputInner {
+  display: flex;
+  align-items: center;
+}
+
+.inputSynthImage {
+  margin-right: 5px;
+  width: 25px;
+  height: 25px;
+}
+
+.inputOpenDropdownIcon {
+  width: 15px;
+  margin-left: 10px;
 }
 
 .widgetInputElement {
@@ -92,11 +115,15 @@
   border: 1px solid $color-input-border;
   height: 50px;
   color: #ffffff;
-  padding: 17px 90px 15px 17px;
+  padding: 17px 100px 15px 17px;
   font-family: 'RobotoMono-Regular';
   font-size: 14px;
   letter-spacing: 2px;
   text-overflow: ellipsis;
+}
+
+.widgetInputElementBig {
+  padding: 17px 120px 15px 17px;
 }
 
 .widgetTradingButton {
@@ -115,4 +142,25 @@
     cursor: not-allowed;
     opacity: 0.2;
   }
+}
+
+.pairRateAndBalanceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.pairRate {
+  display: flex;
+  text-align: left;
+  font-family: 'RobotoMono-Regular';
+}
+
+.pairRateName {
+  margin-right: 30px;
+}
+
+.balance {
+  display: flex;
 }

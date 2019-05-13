@@ -29,7 +29,7 @@
 }
 
 .tableHeading {
-  margin: 10px 0 5px 0;
+  margin: 20px 0 5px 0;
   text-align: left;
 }
 
@@ -100,16 +100,19 @@
   background-color: $color-background;
   font-family: 'RobotoMono-Regular';
   letter-spacing: 1px;
-  font-size: 10px;
+  font-size: 11px;
   color: #ffffff;
   border: 1px solid $color-border;
   border-radius: 4px;
   padding: 12px 15px;
   text-transform: uppercase;
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #fff;
     color: $color-background;
     border: 1px solid #ffffff;
+  }
+  &:disabled {
+    opacity: 0.5;
   }
 }
 

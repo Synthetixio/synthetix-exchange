@@ -1,4 +1,5 @@
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
+const CHANGE_MODE = 'UI/CHANGE_MODE';
 const TOGGLE_WALLET_SELECTOR_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
 const TOGGLE_TRANSACTION_STATUS_POPUP = 'UI/TOGGLE_TRANSACTION_STATUS_POPUP';
 const TOGGLE_DEPOT_POPUP = 'UI/TOGGLE_DEPOT_POPUP';
@@ -9,6 +10,7 @@ const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
 
 const defaultState = {
   currentScreen: 'exchange',
+  exchangeMode: 'basic',
   walletSelectorPopupIsVisible: false,
   transactionStatusPopupIsVisible: false,
   depotPopupIsVisible: false,
@@ -24,6 +26,11 @@ const reducer = (state = defaultState, action = {}) => {
         ...state,
         currentScreen: action.payload,
         walletSelectorPopupIsVisible: false,
+      };
+    case CHANGE_MODE:
+      return {
+        ...state,
+        exchangeMode: action.payload,
       };
     case TOGGLE_WALLET_SELECTOR_POPUP:
       return {
@@ -67,6 +74,10 @@ const reducer = (state = defaultState, action = {}) => {
 
 export const changeScreen = screen => {
   return { type: CHANGE_SCREEN, payload: screen };
+};
+
+export const changeExchangeMode = mode => {
+  return { type: CHANGE_MODE, payload: mode };
 };
 
 export const toggleWalletSelectorPopup = isVisible => {
