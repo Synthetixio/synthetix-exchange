@@ -96,7 +96,11 @@ class Root extends Component {
     setInterval(this.refreshData, 60 * 1000);
     const { networkId } = await getEthereumNetwork();
     synthetixJsTools.setContractSettings({ networkId });
-    setAvailableSynths(synthetixJsTools.synthetixJs.contractSettings.synths);
+    // We remove all the synths which aren't considered as assets (eg: XDR)
+    const allSynths = synthetixJsTools.synthetixJs.contractSettings.synths.filter(
+      synth => synth.asset
+    );
+    setAvailableSynths(allSynths);
     connectToWallet({
       networkId,
     });
