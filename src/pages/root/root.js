@@ -28,7 +28,11 @@ import {
   walkthroughPopupIsVisible,
   walletSelectorPopupIsVisible,
 } from '../../ducks/';
-import { updateExchangeRates, setAvailableSynths } from '../../ducks/synths';
+import {
+  updateExchangeRates,
+  setAvailableSynths,
+  updateFrozenSynths,
+} from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
 import { connectToWallet, updateGasAndSpeedInfo } from '../../ducks/wallet';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
@@ -81,8 +85,29 @@ class Root extends Component {
     updateGasAndSpeedInfo(gasAndSpeedInfo);
   }
 
+  async getFrozenSynths() {
+    const { availableSynths, updateFrozenSynths } = this.props;
+    if (!availableSynths) return;
+    let frozenSynths = {};
+    const inverseSynths = availableSynths
+      .filter(synth => synth.name.charAt(0) === 'i')
+      .map(synth => synth.name);
+    const results = await Promise.all(
+      inverseSynths.map(synth =>
+        synthetixJsTools.synthetixJs.ExchangeRates.rateIsFrozen(
+          synthetixJsTools.utils.toUtf8Bytes(synth)
+        )
+      )
+    );
+    results.forEach((isFrozen, index) => {
+      if (isFrozen) frozenSynths[inverseSynths[index]] = true;
+    });
+    updateFrozenSynths(frozenSynths);
+  }
+
   refreshData() {
     this.updateRates();
+    this.getFrozenSynths();
     this.updateGasAndSpeedPrices();
   }
 
@@ -195,6 +220,7 @@ const mapDispatchToProps = {
   toggleLoadingScreen,
   connectToWallet,
   updateGasAndSpeedInfo,
+  updateFrozenSynths,
 };
 
 Root.propTypes = {
@@ -212,6 +238,7 @@ Root.propTypes = {
   walkthroughPopupIsVisible: PropTypes.bool.isRequired,
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
+  updateFrozenSynths: PropTypes.func.isRequired,
 };
 
 export default connect(

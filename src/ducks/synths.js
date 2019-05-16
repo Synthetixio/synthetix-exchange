@@ -2,11 +2,13 @@ const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
 const SET_SYNTH_TO_BUY = 'SYNTHS/SET_SYNTH_TO_BUY';
 const SET_SYNTH_TO_EXCHANGE = 'SYNTHS/SET_SYNTH_TO_EXCHANGE';
 const SET_EXCHANGE_RATES = 'SYNTHS/SET_EXCHANGE_RATES';
+const SET_FROZEN_SYNTHS = 'SYNTHS/SET_FROZEN_SYNTHS';
 
 const defaultState = {
   availableSynths: [],
   synthTypes: [],
   defaultSynth: null,
+  frozenSynths: null,
   fromSynth: null,
   toSynth: null,
   exchangeRates: null,
@@ -54,6 +56,9 @@ const reducer = (state = defaultState, action = {}) => {
       const { synthRates, ethRate } = action.payload;
       return { ...state, exchangeRates: synthRates, ethRate };
     }
+    case SET_FROZEN_SYNTHS: {
+      return { ...state, frozenSynths: action.payload };
+    }
     default:
       return state;
   }
@@ -69,6 +74,10 @@ export const setSynthToBuy = synth => {
 
 export const setSynthToExchange = synth => {
   return { type: SET_SYNTH_TO_EXCHANGE, payload: synth };
+};
+
+export const updateFrozenSynths = synths => {
+  return { type: SET_FROZEN_SYNTHS, payload: synths };
 };
 
 const convertFromSynth = (synth, rates) => {
