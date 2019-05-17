@@ -112,7 +112,7 @@ class WalletSelectorPopup extends Component {
                 synthetixJsTools.setContractSettings({
                   signer,
                   networkId,
-                  provider: synthetixJsTools.synthetixJs.ethers.providers.getDefaultProvider(
+                  provider: synthetixJsTools.synthetixJs.ethers.getDefaultProvider(
                     name && name.toLowerCase()
                   ),
                 });

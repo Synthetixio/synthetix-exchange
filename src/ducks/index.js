@@ -78,3 +78,7 @@ export const getExchangeRates = state => {
 export const getEthRate = state => {
   return state.synths.ethRate;
 };
+
+export const getFrozenSynths = state => {
+  return state.synths.frozenSynths;
+};

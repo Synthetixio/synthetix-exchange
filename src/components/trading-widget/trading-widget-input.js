@@ -47,6 +47,7 @@ class TradingWidgetInput extends Component {
       filterNotNeeded,
       currentExchangeMode,
       exchangeRates,
+      isFrozen,
     } = this.props;
     const { boxIsOpen } = this.state;
     const balances = currentWalletInfo.balances;
@@ -73,7 +74,11 @@ class TradingWidgetInput extends Component {
             }`}
             onClick={this.toggleBox}
           >
-            <div className={styles.widgetInputInner}>
+            <div
+              className={`${styles.widgetInputInner} ${
+                isFrozen ? styles.isFrozen : ''
+              }`}
+            >
               <img
                 className={styles.inputSynthImage}
                 src={`images/synths/${currentSynth}-icon.svg`}
@@ -125,6 +130,7 @@ TradingWidgetInput.propTypes = {
   availableSynths: PropTypes.array,
   currentExchangeMode: PropTypes.string.isRequired,
   exchangeRates: PropTypes.object,
+  frozenSynths: PropTypes.object,
 };
 
 export default connect(

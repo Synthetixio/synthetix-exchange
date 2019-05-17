@@ -14,6 +14,7 @@ import {
   getExchangeRates,
   getCurrentExchangeMode,
   getAvailableSynths,
+  getFrozenSynths,
 } from '../../ducks/';
 import { toggleTransactionStatusPopup } from '../../ducks/ui';
 import {
@@ -224,7 +225,7 @@ class TradingWidget extends Component {
   }
 
   renderInputs() {
-    const { synthToBuy, synthToExchange } = this.props;
+    const { synthToBuy, synthToExchange, frozenSynths } = this.props;
     const { inputValues } = this.state;
     return (
       <div className={styles.widgetInputs}>
@@ -240,6 +241,7 @@ class TradingWidget extends Component {
           currentSynth={synthToBuy.name}
           onSynthSelect={this.setSynthToBuy}
           filterNotNeeded={true}
+          isFrozen={frozenSynths && frozenSynths[synthToBuy.name]}
         />
       </div>
     );
@@ -291,10 +293,16 @@ class TradingWidget extends Component {
   }
 
   render() {
-    const { synthToBuy, synthToExchange, currentWalletInfo } = this.props;
+    const {
+      synthToBuy,
+      synthToExchange,
+      currentWalletInfo,
+      frozenSynths,
+    } = this.props;
     const { selectedWallet, balances } = currentWalletInfo;
     const { inputValues } = this.state;
 
+    const quoteSynthIsFrozen = frozenSynths && frozenSynths[synthToBuy.name];
     const confirmTradeButtonIsEnabled =
       inputValues[synthToBuy.name] &&
       inputValues[synthToExchange.name] &&
@@ -321,7 +329,7 @@ class TradingWidget extends Component {
         {this.renderInputs()}
         <GweiSelector />
         <button
-          disabled={!confirmTradeButtonIsEnabled}
+          disabled={!confirmTradeButtonIsEnabled || quoteSynthIsFrozen}
           onClick={this.confirmTrade}
           className={styles.widgetTradingButton}
         >
@@ -348,6 +356,7 @@ const mapStateToProps = state => {
     exchangeRates: getExchangeRates(state),
     currentExchangeMode: getCurrentExchangeMode(state),
     availableSynths: getAvailableSynths(state),
+    frozenSynths: getFrozenSynths(state),
   };
 };
 
@@ -378,6 +387,7 @@ TradingWidget.propTypes = {
   availableSynths: PropTypes.array,
   setSynthToExchange: PropTypes.func.isRequired,
   setSynthToBuy: PropTypes.func.isRequired,
+  frozenSynths: PropTypes.object,
 };
 
 export default connect(
