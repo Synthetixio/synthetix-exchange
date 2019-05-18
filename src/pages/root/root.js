@@ -59,7 +59,7 @@ class Root extends Component {
       const [synthRates, ethRate] = await Promise.all([
         synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
           availableSynths.map(synth =>
-            synthetixJsTools.utils.toUtf8Bytes(synth.name)
+            synthetixJsTools.utils.toUtf8Bytes4(synth.name)
           )
         ),
         synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
@@ -95,7 +95,7 @@ class Root extends Component {
     const results = await Promise.all(
       inverseSynths.map(synth =>
         synthetixJsTools.synthetixJs.ExchangeRates.rateIsFrozen(
-          synthetixJsTools.utils.toUtf8Bytes(synth)
+          synthetixJsTools.utils.toUtf8Bytes4(synth)
         )
       )
     );

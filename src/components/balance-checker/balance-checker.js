@@ -72,9 +72,9 @@ class BalanceChecker extends Component {
     const totalBalance = await Promise.all(
       balances.map((balance, i) => {
         return synthetixJs.Synthetix.effectiveValue(
-          utils.toUtf8Bytes(availableSynths[i].name),
+          utils.toUtf8Bytes4(availableSynths[i].name),
           balance,
-          utils.toUtf8Bytes('sUSD')
+          utils.toUtf8Bytes4('sUSD')
         );
       })
     );
