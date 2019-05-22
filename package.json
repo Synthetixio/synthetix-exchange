@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
+    "@bugsnag/js": "6.2.0",
+    "@bugsnag/plugin-react": "6.2.0",
     "@svgr/webpack": "2.4.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "23.6.0",
@@ -51,12 +53,12 @@
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
+    "synthetix-js": "2.4.2-beta-1",
     "url-loader": "1.1.1",
     "webpack": "4.19.1",
     "webpack-dev-server": "3.1.9",
     "webpack-manifest-plugin": "2.0.4",
-    "workbox-webpack-plugin": "3.6.3",
-    "synthetix-js": "2.4.2-beta-1"
+    "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
     "clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",
