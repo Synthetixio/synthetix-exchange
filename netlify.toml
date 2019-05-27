@@ -2,5 +2,5 @@
 [context.production.environment]
   NODE_ENV = "production"
 
-[context.staging.environment]
+[context.branch-deploy.environment]
   NODE_ENV = "staging"
