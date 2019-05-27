@@ -13,6 +13,7 @@ const bugsnagClient = bugsnag('5eab4fa004f3869741bb65684d7fb5e3', {
   notifyReleaseStages: ['production', 'staging'],
 });
 
+window.var = process.env;
 console.log('NODE_ENV', process.env.NODE_ENV);
 console.log(bugsnag.releaseStage);
 
