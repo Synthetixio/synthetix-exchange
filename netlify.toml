@@ -1,6 +1,6 @@
 
-[build.environment]
+[context.production]
   NODE_ENV = "production"
 
-[context.staging.environment]
+[context.staging]
   NODE_ENV = "staging"
