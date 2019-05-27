@@ -8,7 +8,14 @@ import Root from './pages/root';
 import bugsnag from '@bugsnag/js';
 import bugsnagReact from '@bugsnag/plugin-react';
 
-const bugsnagClient = bugsnag('5eab4fa004f3869741bb65684d7fb5e3');
+bugsnag.releaseStage = process.env.NODE_ENV;
+const bugsnagClient = bugsnag('5eab4fa004f3869741bb65684d7fb5e3', {
+  notifyReleaseStages: ['production', 'staging'],
+});
+
+console.log('NODE_ENV', process.env.NODE_ENV);
+console.log(bugsnag.releaseStage);
+
 bugsnagClient.use(bugsnagReact, React);
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 
