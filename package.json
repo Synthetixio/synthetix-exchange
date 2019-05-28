@@ -53,6 +53,7 @@
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
+    "synthetix": "^2.5.2-alpha",
     "synthetix-js": "2.4.2-beta-1",
     "url-loader": "1.1.1",
     "webpack": "4.19.1",
