@@ -14,7 +14,7 @@ import { formatBigNumber } from '../../utils/converterUtils';
 
 import styles from './connect-to-wallet.module.scss';
 
-const WALLET_PAGE_SIZE = 5;
+const WALLET_PAGE_SIZE = 15;
 
 class ConnectToWallet extends Component {
   constructor() {
@@ -33,7 +33,10 @@ class ConnectToWallet extends Component {
     const { currentWalletInfo } = this.props;
     let availableWallets;
     try {
-      availableWallets = await synthetixJsTools.signer.getNextAddresses(0);
+      availableWallets = await synthetixJsTools.signer.getNextAddresses(
+        0,
+        WALLET_PAGE_SIZE
+      );
     } catch (e) {
       console.log('error', e);
     }
