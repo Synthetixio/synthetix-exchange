@@ -7,6 +7,7 @@ import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
 import Transactions from '../transactions';
 import Markets from '../markets';
+import AppDown from '../app-down';
 
 import Overlay from '../../components/overlay';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -116,7 +117,9 @@ class Root extends Component {
       toggleLoadingScreen,
       connectToWallet,
       setAvailableSynths,
+      currentScreen,
     } = this.props;
+    if (currentScreen === 'appDown') return;
     toggleLoadingScreen(true);
     setInterval(this.refreshData, 60 * 1000);
     const { networkId } = await getEthereumNetwork();
@@ -143,6 +146,8 @@ class Root extends Component {
         return <Transactions />;
       case 'markets':
         return <Markets />;
+      case 'appDown':
+        return <AppDown />;
       default:
         return <Exchange />;
     }
@@ -177,13 +182,14 @@ class Root extends Component {
       depotPopupIsVisible,
       feedbackPopupIsVisible,
       walkthroughPopupIsVisible,
+      currentScreen,
     } = this.props;
     const overlayIsVisible = this.hasOpenPopup();
     return (
       <div className={styles.root}>
         <Overlay isVisible={overlayIsVisible} />
         <div className={styles.rootInner}>
-          <Header />
+          {currentScreen !== 'appDown' ? <Header /> : null}
           {this.renderScreen()}
         </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
