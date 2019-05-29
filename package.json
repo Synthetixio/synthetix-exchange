@@ -1,6 +1,6 @@
 {
   "name": "synthetix.exchange",
-  "version": "2.5.5-beta",
+  "version": "2.5.5-release-candidate",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
