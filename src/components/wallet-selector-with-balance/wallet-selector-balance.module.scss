@@ -16,7 +16,7 @@
       text-align: right;
     }
     th {
-      color: $color-font-grey;
+      color: #ffffff;
       border-bottom: 1px solid $color-input-border;
       font-family: 'RobotoMono-Regular';
     }
@@ -24,14 +24,34 @@
     th:first-child {
       text-align: left;
     }
-    &:hover {
-      background-color: #19172a;
-    }
   }
   tr + tr {
     td {
       border-top: 1px solid #19172a;
     }
+  }
+  tr:hover {
+    td:first-child {
+      text-decoration: underline;
+    }
+  }
+}
+
+.synthTableHeader {
+  text-decoration: underline;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  &:after {
+    content: '';
+    background: url('/images/angle-down-icon.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 15px;
+    margin-left: 5px;
+    height: 15px;
+    display: inline-block;
   }
 }
 

@@ -5,12 +5,11 @@ import PropTypes from 'prop-types';
 import Spinner from '../../components/spinner';
 import WalletSelectorWithBalance from '../../components/wallet-selector-with-balance';
 
-import { getCurrentWalletInfo } from '../../ducks/';
+import { getCurrentWalletInfo, getAvailableSynths } from '../../ducks/';
 import { connectToWallet } from '../../ducks/wallet';
 import { changeScreen, toggleLoadingScreen } from '../../ducks/ui';
 
 import synthetixJsTools from '../../synthetixJsTool';
-import { formatBigNumber } from '../../utils/converterUtils';
 
 import styles from './connect-to-wallet.module.scss';
 
@@ -28,6 +27,7 @@ class ConnectToWallet extends Component {
     this.onNextPage = this.onNextPage.bind(this);
     this.onPrevPage = this.onPrevPage.bind(this);
     this.onSelectWallet = this.onSelectWallet.bind(this);
+    this.getSynthBalances = this.getSynthBalances.bind(this);
   }
   async componentDidMount() {
     const { currentWalletInfo } = this.props;
@@ -68,18 +68,52 @@ class ConnectToWallet extends Component {
   }
 
   async getWalletsBalances(wallets) {
-    const balancePromises = wallets.map(wallet =>
-      Promise.all([
-        synthetixJsTools.synthetixJs.Synthetix.balanceOf(wallet.address),
+    const { formatEther } = synthetixJsTools.synthetixJs.utils;
+    const balancePromises = wallets.map(wallet => {
+      return Promise.all([
+        synthetixJsTools.synthetixJs.Synthetix.collateral(wallet.address),
         synthetixJsTools.synthetixJs.SynthetixEscrow.balanceOf(wallet.address),
+        synthetixJsTools.synthetixJs.RewardEscrow.balanceOf(wallet.address),
         synthetixJsTools.synthetixJs.sUSD.balanceOf(wallet.address),
         synthetixJsTools.provider.getBalance(wallet.address),
-      ])
-    );
+      ]);
+    });
     let balances = await Promise.all(balancePromises);
-    return balances.map(wallet =>
-      wallet.map(balance => formatBigNumber(balance, 6))
+    return balances.map(wallet => {
+      return {
+        collateral: Number(formatEther(wallet[0])),
+        synthetixEscrow: Number(formatEther(wallet[1])),
+        rewardEscrow: Number(formatEther(wallet[2])),
+        sUSD: Number(formatEther(wallet[3])),
+        eth: Number(formatEther(wallet[4])),
+      };
+    });
+  }
+
+  async getSynthBalances(synth) {
+    const { availableWallets } = this.state;
+    const { formatEther } = synthetixJsTools.synthetixJs.utils;
+    if (
+      availableWallets[0] &&
+      availableWallets[0].balances &&
+      availableWallets[0].balances[synth]
+    )
+      return;
+    const balances = await Promise.all(
+      availableWallets.map(wallet =>
+        synthetixJsTools.synthetixJs[synth].balanceOf(wallet.address)
+      )
     );
+    const wallets = availableWallets.map((wallet, index) => {
+      return {
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          [synth]: Number(formatEther(balances[index])),
+        },
+      };
+    });
+    this.setState({ availableWallets: wallets });
   }
 
   async getNextAddresses(pageSize) {
@@ -94,18 +128,7 @@ class ConnectToWallet extends Component {
     this.setState({
       availableWallets,
     });
-    const balancePromises = nextAddresses.map(wallet =>
-      Promise.all([
-        synthetixJsTools.synthetixJs.Synthetix.balanceOf(wallet.address),
-        synthetixJsTools.synthetixJs.SynthetixEscrow.balanceOf(wallet.address),
-        synthetixJsTools.synthetixJs.sUSD.balanceOf(wallet.address),
-        synthetixJsTools.provider.getBalance(wallet.address),
-      ])
-    );
-    let balances = await Promise.all(balancePromises);
-    balances = balances.map(wallet =>
-      wallet.map(balance => formatBigNumber(balance, 6))
-    );
+    const balances = await this.getWalletsBalances(nextAddresses);
     nextAddresses.forEach((wallet, index) => {
       wallet.balances = balances[index];
     });
@@ -195,7 +218,7 @@ class ConnectToWallet extends Component {
       availableWallets,
       connected,
     } = this.state;
-    const { currentWalletInfo } = this.props;
+    const { currentWalletInfo, availableSynths } = this.props;
     return (
       <div className={styles.connectToWallet}>
         {connected ? (
@@ -208,6 +231,8 @@ class ConnectToWallet extends Component {
             onNextPage={this.onNextPage}
             onPrevPage={this.onPrevPage}
             walletType={currentWalletInfo.walletType}
+            availableSynths={availableSynths}
+            onSynthBalanceRequest={this.getSynthBalances}
           />
         ) : (
           this.renderConnectingScreen()
@@ -220,6 +245,7 @@ class ConnectToWallet extends Component {
 const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
+    availableSynths: getAvailableSynths(state),
   };
 };
 
@@ -233,6 +259,7 @@ ConnectToWallet.propTypes = {
   connectToWallet: PropTypes.func.isRequired,
   changeScreen: PropTypes.func.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
+  availableSynths: PropTypes.array,
 };
 
 export default connect(
