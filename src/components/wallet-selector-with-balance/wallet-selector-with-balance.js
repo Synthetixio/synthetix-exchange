@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import Spinner from '../spinner';
 import numbro from 'numbro';
+import OutsideClickHandler from 'react-outside-click-handler';
+import SynthPickerBox from '../synth-picker/synth-picker-box';
+import Spinner from '../spinner';
 import styles from './wallet-selector-balance.module.scss';
 
 class WalletSelectorWithBalances extends Component {
-  state = {
-    isOpen: false,
-  };
+  constructor() {
+    super();
+    this.state = {
+      synthPickerBoxIsOpen: false,
+      selectedSynth: 'sUSD',
+    };
+    this.onSynthSelect = this.onSynthSelect.bind(this);
+  }
 
   renderTableContent() {
     const {
@@ -17,31 +23,28 @@ class WalletSelectorWithBalances extends Component {
       walletSelectorIndex,
       onSelectWallet,
     } = this.props;
-
+    const { selectedSynth } = this.state;
     return availableWallets
       .slice(walletSelectorIndex, walletSelectorIndex + walletPageSize)
       .map((wallet, index) => {
+        const {
+          collateral = 0,
+          synthetixEscrow = 0,
+          rewardEscrow = 0,
+          eth = 0,
+        } = wallet.balances;
+        const totalEscrow = synthetixEscrow + rewardEscrow;
         return (
           <tr key={index} onClick={onSelectWallet(index)}>
             <td>{wallet.address}</td>
+            <td>{collateral ? numbro(collateral).format('0,0.00') : 0}</td>
+            <td>{totalEscrow ? numbro(totalEscrow).format('0,0.00') : 0}</td>
             <td>
-              {wallet.balances[0] && wallet.balances[1]
-                ? numbro(
-                    Number(wallet.balances[0]) + Number(wallet.balances[1])
-                  ).format('0,0.00')
-                : '0'}
-            </td>
-            <td>
-              {' '}
-              {wallet.balances[2]
-                ? numbro(wallet.balances[2]).format('0,0.00')
+              {wallet.balances && wallet.balances[selectedSynth]
+                ? numbro(wallet.balances[selectedSynth]).format('0,0.00')
                 : 0}
             </td>
-            <td>
-              {wallet.balances[3]
-                ? numbro(wallet.balances[3]).format('0,0.000000')
-                : 0}
-            </td>
+            <td>{eth ? numbro(eth).format('0,0.00') : 0}</td>
           </tr>
         );
       });
@@ -80,6 +83,39 @@ class WalletSelectorWithBalances extends Component {
     );
   }
 
+  onSynthSelect(synth) {
+    const { onSynthBalanceRequest } = this.props;
+    return () => {
+      this.setState({ selectedSynth: synth.name, synthPickerBoxIsOpen: false });
+      onSynthBalanceRequest(synth.name);
+    };
+  }
+
+  renderSynthBalanceHeader() {
+    const { availableSynths } = this.props;
+    const { synthPickerBoxIsOpen, selectedSynth } = this.state;
+    return (
+      <th className={styles.synthTableHeader}>
+        <OutsideClickHandler
+          onOutsideClick={() => this.setState({ synthPickerBoxIsOpen: false })}
+        >
+          <span onClick={() => this.setState({ synthPickerBoxIsOpen: true })}>
+            {selectedSynth} Balance
+          </span>
+          {synthPickerBoxIsOpen ? (
+            <SynthPickerBox
+              synths={availableSynths}
+              position={{ top: 'calc(100% + 10px)', right: 0 }}
+              onSynthSelect={this.onSynthSelect}
+              filterNotNeeded={true}
+              onSynthSelect={this.onSynthSelect}
+            />
+          ) : null}
+        </OutsideClickHandler>
+      </th>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -91,8 +127,9 @@ class WalletSelectorWithBalances extends Component {
           <thead>
             <tr>
               <th>Address</th>
-              <th>SNX Balance</th>
-              <th>sUSD Balance</th>
+              <th>Total SNX Balance</th>
+              <th>Escrowed SNX</th>
+              {this.renderSynthBalanceHeader()}
               <th>ETH Balance</th>
             </tr>
           </thead>
@@ -108,11 +145,13 @@ WalletSelectorWithBalances.propTypes = {
   availableWallets: PropTypes.array.isRequired,
   walletPageSize: PropTypes.number.isRequired,
   walletSelectorIndex: PropTypes.number.isRequired,
+  availableSynths: PropTypes.array,
   onSelectWallet: PropTypes.func.isRequired,
   onNextPage: PropTypes.func.isRequired,
   onPrevPage: PropTypes.func.isRequired,
   showSpinner: PropTypes.bool.isRequired,
   walletType: PropTypes.string.isRequired,
+  onSynthBalanceRequest: PropTypes.func.isRequired,
 };
 
 export default WalletSelectorWithBalances;
