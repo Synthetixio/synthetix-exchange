@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Header from '../../components/header';
+import Footer from '../../components/footer';
 import Exchange from '../exchange';
 import ConnectToWallet from '../connect-to-wallet';
 import Transactions from '../transactions';
@@ -190,7 +191,10 @@ class Root extends Component {
         <Overlay isVisible={overlayIsVisible} />
         <div className={styles.rootInner}>
           {currentScreen !== 'appDown' ? <Header /> : null}
-          {this.renderScreen()}
+          <div className={styles.mainComponentWrapper}>
+            {this.renderScreen()}
+          </div>
+          {currentScreen !== 'appDown' ? <Footer /> : null}
         </div>
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
