@@ -10,9 +10,8 @@ export default combineReducers({
 });
 
 // UI REDUCERS
-export const getCurrentScreen = () => {
-  // TEMP app is down message
-  return 'appDown'; //state.ui.currentScreen;
+export const getCurrentScreen = state => {
+  return state.ui.currentScreen;
 };
 
 export const getCurrentExchangeMode = state => {
