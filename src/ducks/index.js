@@ -58,6 +58,10 @@ export const getTransactionSettings = state => {
   };
 };
 
+export const getExchangeFeeRate = state => {
+  return state.wallet.exchangeFeeRate;
+};
+
 // SYNTHS REDUCERS
 export const getAvailableSynths = state => {
   return state.synths.availableSynths;

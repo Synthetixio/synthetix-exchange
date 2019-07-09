@@ -36,7 +36,11 @@ import {
   updateFrozenSynths,
 } from '../../ducks/synths';
 import { toggleLoadingScreen } from '../../ducks/ui';
-import { connectToWallet, updateGasAndSpeedInfo } from '../../ducks/wallet';
+import {
+  connectToWallet,
+  updateGasAndSpeedInfo,
+  updateExchangeFeeRate,
+} from '../../ducks/wallet';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 import synthetixJsTools from '../../synthetixJsTool';
 import { getGasAndSpeedInfo } from '../../utils/ethUtils';
@@ -87,6 +91,17 @@ class Root extends Component {
     updateGasAndSpeedInfo(gasAndSpeedInfo);
   }
 
+  async updateExchangeFeeRate() {
+    const { updateExchangeFeeRate } = this.props;
+    const { formatEther } = synthetixJsTools.synthetixJs.utils;
+    try {
+      const exchangeFeeRate = await synthetixJsTools.synthetixJs.FeePool.exchangeFeeRate();
+      updateExchangeFeeRate(100 * Number(formatEther(exchangeFeeRate)));
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async getFrozenSynths() {
     const { availableSynths, updateFrozenSynths } = this.props;
     if (!availableSynths) return;
@@ -111,6 +126,7 @@ class Root extends Component {
     this.updateRates();
     this.getFrozenSynths();
     this.updateGasAndSpeedPrices();
+    this.updateExchangeFeeRate();
   }
 
   async componentDidMount() {
@@ -231,6 +247,7 @@ const mapDispatchToProps = {
   connectToWallet,
   updateGasAndSpeedInfo,
   updateFrozenSynths,
+  updateExchangeFeeRate,
 };
 
 Root.propTypes = {
@@ -249,6 +266,7 @@ Root.propTypes = {
   loadingScreenIsVisible: PropTypes.bool.isRequired,
   walletSelectorPopupIsVisible: PropTypes.bool.isRequired,
   updateFrozenSynths: PropTypes.func.isRequired,
+  updateExchangeFeeRate: PropTypes.func.isRequired,
 };
 
 export default connect(
