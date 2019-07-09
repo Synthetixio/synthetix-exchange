@@ -7,7 +7,7 @@ import Popup from '../popup';
 import Spinner from '../spinner';
 
 import { toggleTransactionStatusPopup } from '../../ducks/ui';
-import { getCurrentWalletInfo } from '../../ducks/';
+import { getCurrentWalletInfo, getExchangeFeeRate } from '../../ducks/';
 
 import { SUPPORTED_NETWORKS } from '../../utils/metamaskTools';
 
@@ -37,12 +37,18 @@ class TransactionStatusPopup extends Component {
   }
 
   renderFees() {
-    const { currentWalletInfo } = this.props;
+    const { currentWalletInfo, exchangeFeeRate } = this.props;
     const { gasPriceUsd } = currentWalletInfo;
     return (
-      <div className={styles.feeRow}>
-        <span className={styles.feeRowHeading}>Ethereum Network fees</span>
-        <span className={styles.feeRowValue}>${gasPriceUsd}</span>
+      <div>
+        <div className={styles.feeRow}>
+          <span className={styles.feeRowHeading}>Ethereum Network fees</span>
+          <span className={styles.feeRowValue}>${gasPriceUsd}</span>
+        </div>
+        <div className={styles.feeRow}>
+          <span className={styles.feeRowHeading}>Exchange fee rate</span>
+          <span className={styles.feeRowValue}>{exchangeFeeRate}%</span>
+        </div>
       </div>
     );
   }
@@ -171,22 +177,18 @@ class TransactionStatusPopup extends Component {
 const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
+    exchangeFeeRate: getExchangeFeeRate(state),
   };
 };
 
 const mapDispatchToProps = {
   toggleTransactionStatusPopup,
-  // changeScreen,
-  // connectToWallet,
-  // setSelectedWallet,
 };
 
 TransactionStatusPopup.propTypes = {
   toggleTransactionStatusPopup: PropTypes.func.isRequired,
-  // changeScreen: PropTypes.func.isRequired,
-  // connectToWallet: PropTypes.func.isRequired,
-  // setSelectedWallet: PropTypes.func.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
+  exchangeFeeRate: PropTypes.number,
 };
 
 export default connect(

@@ -16,6 +16,7 @@ const SET_TRANSACTION_STATUS_TO_ERROR =
   'WALLET/SET_TRANSACTION_STATUS_TO_ERROR';
 const UPDATE_GAS_AND_SPEED_INFO = 'WALLET/UPDATE_GAS_AND_SPEED_INFO';
 const SET_TRANSACTION_SPEED = 'WALLET/SET_TRANSACTION_SPEED';
+const UPDATE_EXCHANGE_FEE_RATE = 'WALLET/UPDATE_EXCHANGE_FEE_RATE';
 
 const defaultTransactionState = {
   transactionStatus: null,
@@ -36,6 +37,7 @@ const defaultState = {
   gasAndSpeedInfo: null,
   gasPrice: null,
   gasPriceUsd: null,
+  exchangeFeeRate: null,
   gasLimit: DEFAULT_GAS_LIMIT,
   ...defaultTransactionState,
 };
@@ -108,6 +110,12 @@ const reducer = (state = defaultState, action = {}) => {
         gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
       };
     }
+    case UPDATE_EXCHANGE_FEE_RATE: {
+      return {
+        ...state,
+        exchangeFeeRate: action.payload,
+      };
+    }
     default:
       return state;
   }
@@ -174,6 +182,13 @@ export const updateGasAndSpeedInfo = gasAndSpeedInfo => {
   return {
     type: UPDATE_GAS_AND_SPEED_INFO,
     payload: gasAndSpeedInfo,
+  };
+};
+
+export const updateExchangeFeeRate = exchangeFeeRate => {
+  return {
+    type: UPDATE_EXCHANGE_FEE_RATE,
+    payload: exchangeFeeRate,
   };
 };
 
