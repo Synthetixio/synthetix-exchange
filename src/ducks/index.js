@@ -14,8 +14,9 @@ export const getCurrentScreen = state => {
   return state.ui.currentScreen;
 };
 
-export const getCurrentExchangeMode = state => {
-  return state.ui.exchangeMode;
+export const getCurrentExchangeMode = () => {
+  // return state.ui.exchangeMode;
+  return 'appDown';
 };
 
 export const walletSelectorPopupIsVisible = state => {
