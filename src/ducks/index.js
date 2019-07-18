@@ -10,13 +10,12 @@ export default combineReducers({
 });
 
 // UI REDUCERS
-export const getCurrentScreen = state => {
-  return state.ui.currentScreen;
+export const getCurrentScreen = () => {
+  return 'appDown';
 };
 
-export const getCurrentExchangeMode = () => {
-  // return state.ui.exchangeMode;
-  return 'appDown';
+export const getCurrentExchangeMode = state => {
+  return state.ui.exchangeMode;
 };
 
 export const walletSelectorPopupIsVisible = state => {
