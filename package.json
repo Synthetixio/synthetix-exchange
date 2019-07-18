@@ -1,6 +1,6 @@
 {
   "name": "synthetix.exchange",
-  "version": "2.6.7",
+  "version": "2.7.2-alpha",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
@@ -53,7 +53,7 @@
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
-    "synthetix-js": "git+https://8937e36b8f5e86cfc896d72605759eb34ead185f:x-oauth-basic@github.com/Synthetixio/synthetix-js-private.git#792c8b54b4cef50d302ecbe07c7fead99eafd1e2",
+    "synthetix-js": "2.7.2-alpha",
     "url-loader": "1.1.1",
     "webpack": "4.19.1",
     "webpack-dev-server": "3.1.9",
