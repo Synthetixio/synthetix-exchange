@@ -158,6 +158,10 @@ class BalanceChecker extends Component {
 
   renderTotalBalance() {
     const { totalBalance, ethBalance } = this.state;
+
+    const sETHAddress = synthetixJsTools.synthetixJs
+      ? synthetixJsTools.synthetixJs.contractSettings.addressList.SynthsETH
+      : '';
     return (
       <table cellPadding="0" cellSpacing="0" className={styles.table}>
         <thead>
@@ -201,7 +205,7 @@ class BalanceChecker extends Component {
                 Buy sUSD with ETH
               </button>
               <a
-                href="https://uniswap.exchange/swap"
+                href={`https://uniswap.exchange/swap/${sETHAddress}`}
                 target="_blank"
                 className={`${styles.balanceCheckerButton} ${
                   styles.balanceCheckerButtonWhite
