@@ -1,0 +1,55 @@
+@import '../../styles/variables.scss';
+
+.transactions {
+  padding: 48px;
+}
+
+.tradingCompLayout {
+  width: 100%;
+}
+
+.tableWrapper {
+  height: 600px;
+  flex: 1;
+  overflow-y: scroll;
+  position: relative;
+}
+
+.tradindCompTable {
+  width: 100%;
+  table-layout: fixed;
+  tbody {
+    font-family: 'RobotoMono-Regular';
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  th {
+
+    h3 {
+      font-family: Aeonik-Bold;
+      font-size: 19px;
+      color: #FFFFFF;
+      letter-spacing: -0.2px;
+      text-transform: none; 
+    }
+
+    text-align: left;
+    padding: 0 10px;
+  }
+  td {
+    padding: 8px 10px;
+    text-align: left;
+    font-family: Aeonik-Regular;
+    font-size: 16px;
+    color: #FFFFFF;
+    letter-spacing: -0.17px;
+  }
+}
+
+.walletLink {
+  color: #ffffff;
+  text-decoration: underline;
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
+}

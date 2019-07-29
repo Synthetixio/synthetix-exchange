@@ -124,6 +124,12 @@ class Header extends Component {
         <div className={styles.headerRightArea}>
           <button
             className={styles.headerButton}
+            onClick={this.onPageButtonClick('tradingComp')}
+          >
+            Trading Comp
+          </button>
+          <button
+            className={styles.headerButton}
             onClick={this.onPageButtonClick('markets')}
           >
             Markets
