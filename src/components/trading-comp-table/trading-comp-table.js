@@ -41,9 +41,9 @@ class TradingComp extends Component {
               </a>
           </td>
           <td>{tier || 'shrimp'}</td>
-          <td>{numbro(startingBalance || 0).format('$0,0.00')}</td>
-          <td>{numbro(balance || 0).format('$0,0.00')}</td>
-          <td>{numbro(gain || 0).format({output: 'percent', mantissa: 2})}</td>
+          <td>{startingBalance == 0 ? '–' : numbro(startingBalance || 0).format('$0,0.00')}</td>
+          <td>{startingBalance == 0 ? '–' : numbro(balance || 0).format('$0,0.00')}</td>
+          <td>{startingBalance == 0 ? '–' : numbro(gain || 0).format({output: 'percent', mantissa: 2})}</td>
           <td>{eligible}</td>
         </tr>
       );
