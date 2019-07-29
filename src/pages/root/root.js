@@ -9,6 +9,7 @@ import ConnectToWallet from '../connect-to-wallet';
 import Transactions from '../transactions';
 import Markets from '../markets';
 import AppDown from '../app-down';
+import TradingComp from '../trading-comp';
 
 import Overlay from '../../components/overlay';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -165,6 +166,8 @@ class Root extends Component {
         return <Markets />;
       case 'appDown':
         return <AppDown />;
+      case 'tradingComp':
+        return <TradingComp />
       default:
         return <Exchange />;
     }
