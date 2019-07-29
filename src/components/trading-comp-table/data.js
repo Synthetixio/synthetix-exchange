@@ -1,53 +1,94 @@
 import synthetixJsTools from '../../synthetixJsTool'
 import { formatBigNumber } from '../../utils/converterUtils';
 
-const BLOCK_START = 8242752;
+// const BLOCK_START = 8242752;
 
-export const competitors = [
-  { address: '0x4E60bE84870FE6AE350B563A121042396Abe1eaF', comp: 'perc', title: 'DegenSpartan'},
-  // { address: '0x2e0dAdd0174BB9F4099b3E04e4a2300de2893B0B', comp: 'perc'},
-  // { address: '0x90f9F22DD034da42dEfcB6866B854ecb45Ed6d16', comp: 'abs', title: 'Arthur'},
-  // { address: '0xf60C9808a0205535C6A211f2732c730157F163fc', comp: 'abs', title: 'KB2'},
-  // { address: '0x31b40778AE19220775184E24066899C34B7f0cbE', comp: 'perc'},
-  // { address: '0x679FcCB55Df178679feEFE173cf20e09294A50c2', comp: 'perc', title: 'xastor'},
-  // { address: '0x68575571E75D2CfA4222e0F8E7053F056EB91d6C', comp: 'perc'},
-  // { address: '0x214F7b85a0f0aa067BCC2Ea6263dD4b0Ede8957C', comp: 'perc', title: 'Swampmasher'},
-  // { address: '0xC2B82E7Db33D926eBfc1d92F45a9b234e531B67B', comp: 'perc', title: 'defending r1 champion'},
-  // { address: '0xEe685180aCb7Dd68A6718444B42af9faC99FCcef', comp: 'perc', title: 'kingpower'},
-  // { address: '0x3E55C1C091E3a15CdA8B0526438659974bff9Fcd', comp: 'perc', title: 'Mr Robot'},
-  // { address: '0x9fa6f3c26d31cc488e7a83d84707eef9febf8c13', comp: 'abs', title: 'Amantay'},
-  // { address: '0x31A739B795586810581ACC16FCF9cdA3E7e32813', comp: 'perc', title: 'degengambler'},
-  // { address: '0x6aF3c188CcAc6Bd4EF96aBb06D0C40e6BdCd29ac', comp: 'perc', title: 'onepunchman'},
-  // { address: '0x0b2D13C79761aB6e44537BB88041910507d15B09', comp: 'perc'},
-  // { address: '0xe92c9Ed9e227364De07AC4f0A2F929a0374d6F9D', comp: 'perc', title: 'iki-jima'},
-  // { address: '0x28d6037EDEAf8ec2c91c9b2cF9A1643111d8F198', comp: 'abs', title: 'deltatiger'},
-  // { address: '0xc0d6E904ADf6A55511B67907B0917D769F38c5Dd', comp: 'perc'},
-  // { address: '0x59084EeB94a1e9535877a16D7Ce71ed11b8792Df', comp: 'perc', title: 'Kain'},
-  // { address: '0x706Dda09ED3Df695200FC65eDdC41bB20baBE97E', comp: 'perc', title: 'Crypto Pharaoh'},
-  // { address: '0x87006CAc050F4774Ed5415985D624748DEbe4D24', comp: 'abs', title: 'Brendan(tradeking)'},
-  // { address: '0x12Cd4302eb0911220f9F36e0Ba4f467117f55790', comp: 'perc', title: 'lucky'},
-  // { address: '0xb196b5785f19A0F4de6F91547b656b986119769d', comp: 'perc', title: 'lv'},
-  // { address: '0x12A815D5209622066918CC146f54CD54FA998091', comp: 'perc'},
-  // { address: '0xb28f5f6b0fe455816ade9e73d7f531050601081e', comp: 'perc', title: 'Daryl'},
-  // { address: '0x274cB85e75928CB9a3Ec8cdbdfc57cc786cF8bB9', comp: 'perc'},
-  // { address: '0x6601C7EE44356C88fFE9a39bD01497d1E09Ec1a3', comp: 'perc', title: 'krudus'},
-  // { address: '0xd9ba84b9acdaa7ab4450004dfb98eee4f8a250e5', comp: 'perc', title: 'Tarantulo'},
-  // { address: '0x12AA1d8F4033158B75cac1c7709ECf071Acc6bcb', comp: 'perc'},
-  // { address: '0x2E63E1C7FdF4a69eDBD0a6045180D02faF241D4f', comp: 'perc', title: 'AMCPA'},
-  // { address: '0x16ba56fbcf2017e52f40eced464fff1bd31b8b93', comp: 'perc'},
-  // { address: '0x1456D529AA4B14700acA0aab4B9B819b13bcE08F', comp: 'perc', title: 'Srihari'},
-  // { address: '0x9ff7aCEd7670213499e74b784DB19084dC8DDb3A', comp: 'perc', title: 'farnode'},
-  // { address: '0x3e72E7597A09Bad2A9d0c66d8Ea91513E2445e62', comp: 'perc', title: 'A small shrubbery'},
-  // { address: '0x347397EefF516c7F3809A4c1dadE10D692341d0f', comp: 'perc'},
-  // { address: '0x47067061cc6092454fdc3a43b44f653dcb662de2', comp: 'perc', title: 'Xai'},
-  // { address: '0xCD37Cd2dB1A6b553a58cc5791ee97103dA33dB6F', comp: 'perc', title: 'Paradox'},
-  // { address: '0x8b85F2ED950c15a1470bD6706f2ce3469E028089', comp: 'perc'},
-  // { address: '0x5Dc67417792fB09192Dc9caa1ffE3c7D7c1C1099', comp: 'perc'},
-  // { address: '0x971816919ff761A4B57b6C34C35662C250979a0A', comp: 'perc'},
-  // { address: '0xaD92E09975a6C640016632Ef1CB5e97Dc44c244c', comp: 'perc'},
-  // { address: '0xd369f4e041bd500bdbb5fb09953907033a2c9e20', comp: 'abs'},
-  // { address: '0x6595732468A241312bc307F327bA0D64F02b3c20', comp: 'perc'},
-  // { address: '0x0FeF2F14127A2a290256523905e39DC817c11E42', comp: 'perc', title: 'Warren Buffet'},
+export const competitors =
+ [
+  {
+    'title': 'Srihari',
+    'tier': 'shrimp',
+    'address': '0x1456D529AA4B14700acA0aab4B9B819b13bcE08F',
+    'startingBalance': 0,
+    'notes': 'Added funds',
+  },
+  {
+    'title': 'dingle-berry',
+    'tier': 'whale',
+    'startingBalance': 5000,
+    'address': '0x6595732468A241312bc307F327bA0D64F02b3c20',
+    'notes': '',
+  },
+  {
+    'title': 'Tsarpyth',
+    'tier': 'whale',
+    'startingBalance': 0,
+    'address': '0xa4F6E75def3AeD3627458CA29690DB7a80A04c84',
+    'notes': 'No synths',
+  },
+  {
+    'title': 'David',
+    'tier': 'shrimp',
+    'startingBalance': 200,
+    'address': '0x12A815D5209622066918CC146f54CD54FA998091',
+    'notes': '',
+  },
+  {
+    'title': 'ladidadi',
+    'tier': 'whale',
+    'startingBalance': 5680.26,
+    'address': '0x274cB85e75928CB9a3Ec8cdbdfc57cc786cF8bB9',
+    'notes': '',
+  },
+  {
+    'title': 'neuros',
+    'tier': 'shrimp',
+    'startingBalance': 100,
+    'address': '0x92C0c5F97959fdF79927c1619c1761B7648f9bD1',
+    'notes': '',
+  },
+  {
+    'title': 'Yoyo',
+    'tier': 'whale',
+    'startingBalance': 5000,
+    'address': '0x9Fa6F3c26d31CC488e7A83D84707EEf9FEbf8C13',
+    'notes': '',
+  },
+  {
+    'title': 'deltatiger1000',
+    'tier': 'dolphin',
+    'startingBalance': 1000,
+    'address': '0x28d6037EDEAf8ec2c91c9b2cF9A1643111d8F198',
+    'notes': '',
+  },
+  {
+    'title': 'deltatiger100',
+    'tier': 'shrimp',
+    'startingBalance': 134,
+    'address': '0xc0d6E904ADf6A55511B67907B0917D769F38c5Dd',
+    'notes': '',
+  },
+  {
+    'title': 'Rorschach',
+    'tier': 'dolphin',
+    'startingBalance': 1000,
+    'address': '0xB0F10cBf4Ae7028a456D90d03Ed33368F8c0f46f',
+    'notes': '',
+  },
+  {
+    'title': 'Nairobi',
+    'tier': 'dolphin',
+    'startingBalance': 1000,
+    'address': '0x6aF3c188CcAc6Bd4EF96aBb06D0C40e6BdCd29ac',
+    'notes': '',
+  },
+  {
+    'title': 'ThinkingETH',
+    'tier': 'whale',
+    'startingBalance': 5000,
+    'address': '0xa1cCC796E2B44e80112c065A4d8F05661E685eD8',
+    'notes': '',
+  },
 ];
 
 let synths;
@@ -64,12 +105,12 @@ export async function getCompetitorsData() {
   synths = synthetixJs.contractSettings.synths.filter(({ asset }) => asset);
 
   // get starting balance
-  await Promise.all(competitors.map(competitor => {
-    return getWalletBalance(competitor.address, BLOCK_START)
-      .then(balance => {
-        competitor.startingBalance = balance || '0'
-      })
-  }))
+  // await Promise.all(competitors.map(competitor => {
+  //   return getWalletBalance(competitor.address, BLOCK_START)
+  //     .then(balance => {
+  //       competitor.startingBalance = balance || '0'
+  //     })
+  // }))
 
   //get current balance
   await Promise.all(competitors.map(competitor => {
@@ -85,7 +126,7 @@ export async function getCompetitorsData() {
     const balance = parseFloat(c.balance)
 
     c.gain = startingBalance > 0 ? (balance - startingBalance) / startingBalance : 0
-    c.eligible = true
+    c.eligible = c.notes ? `No (${c.notes})` : 'Yes';
   })
 
   return competitors

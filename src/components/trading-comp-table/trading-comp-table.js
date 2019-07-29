@@ -35,7 +35,8 @@ class TradingComp extends Component {
         <tr key={index}>
           <td>
               <a className={styles.walletLink}
-                href={`https://etherscan.io/address/${address}#tokentxns`}>
+                href={`https://etherscan.io/address/${address}#tokentxns`}
+                target="_blank">
                   {title || address}
               </a>
           </td>
@@ -43,7 +44,7 @@ class TradingComp extends Component {
           <td>{numbro(startingBalance || 0).format('$0,0.00')}</td>
           <td>{numbro(balance || 0).format('$0,0.00')}</td>
           <td>{numbro(gain || 0).format({output: 'percent', mantissa: 2})}</td>
-          <td>{eligible ? 'Yes' : 'No'}</td>
+          <td>{eligible}</td>
         </tr>
       );
     });
