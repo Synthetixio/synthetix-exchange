@@ -1,5 +1,6 @@
 import synthetixJsTools from '../../synthetixJsTool'
 import { formatBigNumber } from '../../utils/converterUtils';
+import { maxBy } from 'lodash'
 
 // const BLOCK_START = 8242752;
 
@@ -89,6 +90,55 @@ export const competitors =
     'address': '0xa1cCC796E2B44e80112c065A4d8F05661E685eD8',
     'notes': '',
   },
+  {
+    'title': '1053r',
+    'tier': 'dolphin',
+    'startingBalance': 0,
+    'address': '0x542a0eaf1358480ec0703f07bc3120a6503ebbc1',
+    'notes': 'No sUSD',
+  },
+  {
+    'title': 'shrimpalooza',
+    'tier': 'shrimp',
+    'startingBalance': 147.72,
+    'address': '0xCFe39E324aDF35C4B2Fe138738B107d6831b9480',
+    'notes': '',
+  },
+    {
+    'title': 'TootsieRoll',
+    'tier': 'dolphin',
+    'startingBalance': 1019.11,
+    'address': '0x973B1E385659E317Dd43B49C29E45e66c0275696',
+    'notes': '',
+  },
+    {
+    'title': 'Danijel',
+    'tier': 'dolphin',
+    'startingBalance': 1358.54,
+    'address': '0x461783A831E6dB52D68Ba2f3194F6fd1E0087E04',
+    'notes': '',
+  },
+    {
+    'title': 'Kain',
+    'tier': 'whale',
+    'startingBalance': 10000,
+    'address': '0x59084EeB94a1e9535877a16D7Ce71ed11b8792Df',
+    'notes': '',
+  },
+    {
+    'title': 'G0ld3nH3ntaiGUY',
+    'tier': 'whale',
+    'startingBalance': 5000,
+    'address': '0xeB8c32865fe19DBbB72e8434e480448941f8F010',
+    'notes': '',
+  },
+    {
+    'title': 'chumplovesucker',
+    'tier': 'dolphin',
+    'startingBalance': 1000,
+    'address': '0xd921BE0A77E0204874C09be7894Ff1b2E83D2dCc',
+    'notes': '',
+  },
 ];
 
 let synths;
@@ -114,9 +164,11 @@ export async function getCompetitorsData() {
 
   //get current balance
   await Promise.all(competitors.map(competitor => {
+    if (competitor.notes) return competitor
     return getWalletBalance(competitor.address)
       .then(balance => {
-        competitor.balance = balance || '0'
+        competitor.balance = balance.total || '0',
+        competitor.primarySynth = balance.primarySynth
       })
   })) 
 
@@ -166,7 +218,10 @@ async function getWalletBalance(wallet, blockNbr) {
           balance,
           utils.toUtf8Bytes4('sUSD'),
           atBlock
-        );
+        ).then(balance => ({
+          key: synths[i].name,
+          value: balance,
+        }));
       })
     );
   } catch (e) {
@@ -178,14 +233,21 @@ async function getWalletBalance(wallet, blockNbr) {
           balance,
           utils.toUtf8Bytes4('sUSD'),
           atBlock
-        );
+        ).then(balance => ({
+          key: synths[i].name,
+          value: balance,
+        }));
       })
     );
   }
 
+  const primarySynth = maxBy(totalBalance, (elem) => parseFloat(synthetixJsTools.utils.formatEther(elem.value)))
 
-  return formatBigNumber(
-    totalBalance.reduce((pre, curr) => pre.add(curr)),
-    2
-   )
+  return { 
+    total: formatBigNumber(
+      totalBalance.map(t => t.value).reduce((pre, curr) => pre.add(curr)),
+      2
+    ),
+    primarySynth: primarySynth.key,
+  }
 }
