@@ -21,7 +21,7 @@ class TradingComp extends Component {
       let competitors = await getCompetitorsData()
       competitors = groupBy(competitors, 'tier') // group by tiers
       competitors = [competitors.whale, competitors.dolphin, competitors.shrimp] // sort by tiers
-      competitors = competitors.map(arr => sortBy(arr, elem => -elem.gain)) // sort every group independently
+      competitors = competitors.map(arr => sortBy(arr, elem => -elem.gain + (elem.notes ? Number.MAX_SAFE_INTEGER : 0))) // sort every group independently
       competitors.forEach(arr => arr.push({})) // dummy elem to render spacer
       competitors = flatten(competitors)
       this.setState({competitors: competitors, loading: false})
