@@ -13,6 +13,29 @@
   flex: 1;
   overflow-y: scroll;
   position: relative;
+  text-align: left;
+}
+
+.refreshButton {
+  cursor: pointer;
+  background-color: $color-background;
+  font-family: 'RobotoMono-Regular';
+  letter-spacing: 1px;
+  font-size: 11px;
+  color: #ffffff;
+  border: 1px solid $color-border;
+  border-radius: 4px;
+  padding: 12px 15px;
+  margin-left: 11px;
+  text-transform: uppercase;
+  &:hover:not(:disabled) {
+    background-color: #fff;
+    color: $color-background;
+    border: 1px solid #ffffff;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 .tradindCompTable {
