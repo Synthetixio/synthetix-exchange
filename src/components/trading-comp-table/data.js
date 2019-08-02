@@ -107,7 +107,7 @@ export const competitors =
     {
     'title': 'TootsieRoll',
     'tier': 'dolphin',
-    'startingBalance': 1019.11,
+    'startingBalance': 1464.12,
     'address': '0x973B1E385659E317Dd43B49C29E45e66c0275696',
     'notes': '',
   },
