@@ -27,7 +27,7 @@ class SynthPickerBox extends Component {
         rate &&
         Number(balances[synth.name]) * rate['sUSD'] <= 0.01;
       return (
-        ['crypto', 'forex', 'commodity'].includes(synth.category) &&
+        ['crypto', 'forex', 'commodity', 'index'].includes(synth.category) &&
         (showAll ? true : !isDust)
       );
     });
