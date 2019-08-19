@@ -167,7 +167,7 @@ class Root extends Component {
       case 'appDown':
         return <AppDown />;
       case 'tradingComp':
-        return <TradingComp />
+        return <TradingComp />;
       default:
         return <Exchange />;
     }
