@@ -10,8 +10,8 @@ export default combineReducers({
 });
 
 // UI REDUCERS
-export const getCurrentScreen = () => {
-  return 'appDown';
+export const getCurrentScreen = state => {
+  return state.ui.currentScreen;
 };
 
 export const getCurrentExchangeMode = state => {
