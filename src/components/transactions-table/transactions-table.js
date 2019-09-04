@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import numbro from 'numbro';
 
-import { getCurrentWalletInfo } from '../../ducks';
+import { getCurrentWalletInfo, getAvailableSynths, loadingScreenIsVisible } from '../../ducks';
 
 import { getTransactions } from '../../utils/synthetixApi';
 import Container from '../container';
@@ -63,6 +63,8 @@ class Transactions extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.availableSynths.length) return 
+
     this.refreshData();
   }
 
@@ -72,8 +74,9 @@ class Transactions extends Component {
     const selectedWallet =
       this.props.currentWalletInfo &&
       this.props.currentWalletInfo.selectedWallet;
-    if (prevSelectedWallet !== selectedWallet) {
-      this.refreshData();
+    if (prevSelectedWallet !== selectedWallet ||
+        !this.state.transactions && !this.props.loadingScreenIsVisible) {
+        this.refreshData();
     }
   }
 
@@ -202,6 +205,8 @@ class Transactions extends Component {
 const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
+    availableSynths: getAvailableSynths(state),
+    loadingScreenIsVisible: loadingScreenIsVisible(state),
   };
 };
 
@@ -209,6 +214,8 @@ const mapDispatchToProps = {};
 
 Transactions.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
+  availableSynths: PropTypes.array.isRequired,
+  loadingScreenIsVisible: PropTypes.bool.isRequired,
 };
 
 export default connect(
