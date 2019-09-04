@@ -264,6 +264,10 @@ class TradingWidget extends Component {
         ? '0,0.00000000'
         : '0,0.00000';
     const rate = exchangeRates[synthToBuy.name][synthToExchange.name];
+    let usdRate
+    if (![synthToBuy.name, synthToExchange.name].includes('sUSD')) {
+      usdRate = exchangeRates[synthToBuy.name]['sUSD']
+    }
     return (
       <div className={styles.pairRateAndBalanceRow}>
         <div className={styles.pairRate}>
@@ -273,6 +277,14 @@ class TradingWidget extends Component {
           {synthToExchange.sign}
           {numbro(rate).format(precision)}
         </div>
+        { usdRate ? (
+          <div className={styles.pairRate}> 
+            <div className={styles.pairRateName}>
+              {`${synthToBuy.name}/sUSD:`}
+            </div>
+            ${numbro(usdRate).format(precision)}
+          </div>
+        ) : null }
         <div className={styles.balance}>
           <div className={styles.pairRateName}>
             {synthToExchange.name} balance:
