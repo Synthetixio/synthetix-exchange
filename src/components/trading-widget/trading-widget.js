@@ -136,9 +136,9 @@ class TradingWidget extends Component {
         toAmount,
       });
       transactionResult = await synthetixJsTools.synthetixJs.Synthetix.exchange(
-        synthetixJsTools.utils.toUtf8Bytes4(synthToExchange.name),
+        synthetixJsTools.getUtf8Bytes(synthToExchange.name),
         synthetixJsTools.utils.parseEther(fromAmount),
-        synthetixJsTools.utils.toUtf8Bytes4(synthToBuy.name),
+        synthetixJsTools.getUtf8Bytes(synthToBuy.name),
         selectedWallet,
         {
           gasPrice,
