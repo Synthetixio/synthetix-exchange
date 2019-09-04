@@ -1,3 +1,5 @@
+import { persistState, getPersistedState } from '../config/store'
+
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 const CHANGE_MODE = 'UI/CHANGE_MODE';
 const TOGGLE_WALLET_SELECTOR_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
@@ -8,7 +10,9 @@ const TOGGLE_TESTNET_POPUP = 'UI/TOGGLE_TESTNET_POPUP';
 const TOGGLE_WALKTHROUGH_POPUP = 'UI/TOGGLE_WALKTHROUGH_POPUP';
 const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
 
-const defaultState = {
+
+const persistedState = getPersistedState('ui')
+const defaultState = Object.assign({
   currentScreen: 'exchange',
   exchangeMode: 'basic',
   walletSelectorPopupIsVisible: false,
@@ -18,7 +22,7 @@ const defaultState = {
   feedbackPopupIsVisible: false,
   testnetPopupIsVisible: false,
   loadingScreenIsVisible: false,
-};
+}, persistedState);
 const reducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case CHANGE_SCREEN:
@@ -28,6 +32,8 @@ const reducer = (state = defaultState, action = {}) => {
         walletSelectorPopupIsVisible: false,
       };
     case CHANGE_MODE:
+      persistState('ui', { exchangeMode: action.payload })
+
       return {
         ...state,
         exchangeMode: action.payload,

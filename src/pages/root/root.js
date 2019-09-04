@@ -9,7 +9,8 @@ import ConnectToWallet from '../connect-to-wallet';
 import Transactions from '../transactions';
 import Markets from '../markets';
 import AppDown from '../app-down';
-import TradingComp from '../trading-comp';
+// Disabled until the next trading comp
+// import TradingComp from '../trading-comp';
 
 import Overlay from '../../components/overlay';
 import WalletSelectorPopup from '../../components/wallet-selector-popup';
@@ -66,7 +67,7 @@ class Root extends Component {
       const [synthRates, ethRate] = await Promise.all([
         synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
           availableSynths.map(synth =>
-            synthetixJsTools.utils.toUtf8Bytes4(synth.name)
+            synthetixJsTools.getUtf8Bytes(synth.name)
           )
         ),
         synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
@@ -113,7 +114,7 @@ class Root extends Component {
     const results = await Promise.all(
       inverseSynths.map(synth =>
         synthetixJsTools.synthetixJs.ExchangeRates.rateIsFrozen(
-          synthetixJsTools.utils.toUtf8Bytes4(synth)
+          synthetixJsTools.getUtf8Bytes(synth)
         )
       )
     );
@@ -166,8 +167,9 @@ class Root extends Component {
         return <Markets />;
       case 'appDown':
         return <AppDown />;
-      case 'tradingComp':
-        return <TradingComp />;
+      // Disabled until the next trading comp
+      // case 'tradingComp':
+      //   return <TradingComp />;
       default:
         return <Exchange />;
     }

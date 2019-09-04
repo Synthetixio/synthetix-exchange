@@ -55,7 +55,7 @@ class BalanceChecker extends Component {
       toggleLoadingScreen,
       ethRate,
     } = this.props;
-    const { synthetixJs, utils, initialized, provider } = synthetixJsTools;
+    const { synthetixJs, initialized, provider, getUtf8Bytes } = synthetixJsTools;
     if (!initialized || !currentWalletInfo || !currentWalletInfo.selectedWallet)
       return;
     const { selectedWallet } = currentWalletInfo;
@@ -72,9 +72,9 @@ class BalanceChecker extends Component {
     const totalBalance = await Promise.all(
       balances.map((balance, i) => {
         return synthetixJs.Synthetix.effectiveValue(
-          utils.toUtf8Bytes4(availableSynths[i].name),
+          getUtf8Bytes(availableSynths[i].name),
           balance,
-          utils.toUtf8Bytes4('sUSD')
+          getUtf8Bytes('sUSD')
         );
       })
     );
