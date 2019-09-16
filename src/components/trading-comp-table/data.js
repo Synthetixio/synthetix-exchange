@@ -185,8 +185,7 @@ export async function getCompetitorsData() {
 }
 
 async function getWalletBalance(wallet, blockNbr) {
-  console.log('GET Wallet balance of', wallet)
-  const { synthetixJs, utils } = synthetixJsTools;
+  const { synthetixJs, getUtf8Bytes } = synthetixJsTools;
 
   let atBlock = {}
   if (blockNbr) {
@@ -214,9 +213,9 @@ async function getWalletBalance(wallet, blockNbr) {
     totalBalance = await Promise.all(
       balances.map((balance, i) => {
         return synthetixJs.Synthetix.effectiveValue(
-          utils.toUtf8Bytes4(synths[i].name),
+          getUtf8Bytes(synths[i].name),
           balance,
-          utils.toUtf8Bytes4('sUSD'),
+          getUtf8Bytes('sUSD'),
           atBlock
         ).then(balance => ({
           key: synths[i].name,
@@ -229,9 +228,9 @@ async function getWalletBalance(wallet, blockNbr) {
     totalBalance = await Promise.all(
       balances.map((balance, i) => {
         return synthetixJs.Synthetix.effectiveValue(
-          utils.toUtf8Bytes4(synths[i].name),
+          getUtf8Bytes(synths[i].name),
           balance,
-          utils.toUtf8Bytes4('sUSD'),
+          getUtf8Bytes('sUSD'),
           atBlock
         ).then(balance => ({
           key: synths[i].name,
