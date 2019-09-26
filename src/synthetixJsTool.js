@@ -12,9 +12,7 @@ let SynthetixJsTools = {
     this.initialized = true;
   },
   getUtf8Bytes: function(str) {
-    return SynthetixJsTools.synthetixJs.network === 'kovan'
-        ? SynthetixJsTools.ethersUtils.formatBytes32String(str)
-        : SynthetixJsTools.utils.toUtf8Bytes4(str);  
+    return SynthetixJsTools.ethersUtils.formatBytes32String(str);
   },
 };
 
