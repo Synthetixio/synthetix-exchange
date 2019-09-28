@@ -55,7 +55,12 @@ class BalanceChecker extends Component {
       toggleLoadingScreen,
       ethRate,
     } = this.props;
-    const { synthetixJs, initialized, provider, getUtf8Bytes } = synthetixJsTools;
+    const {
+      synthetixJs,
+      initialized,
+      provider,
+      getUtf8Bytes,
+    } = synthetixJsTools;
     if (!initialized || !currentWalletInfo || !currentWalletInfo.selectedWallet)
       return;
     const { selectedWallet } = currentWalletInfo;
@@ -159,8 +164,8 @@ class BalanceChecker extends Component {
   renderTotalBalance() {
     const { totalBalance, ethBalance } = this.state;
 
-    const sETHAddress = synthetixJsTools.synthetixJs
-      ? synthetixJsTools.synthetixJs.contractSettings.addressList.SynthsETH
+    const proxyERC20sUSDAddress = synthetixJsTools.synthetixJs
+      ? synthetixJsTools.synthetixJs.contractSettings.addressList.ProxyERC20sUSD
       : '';
     return (
       <table cellPadding="0" cellSpacing="0" className={styles.table}>
@@ -198,18 +203,14 @@ class BalanceChecker extends Component {
               <button
                 disabled={!totalBalance}
                 onClick={this.showDepotPopup}
-                className={`${styles.balanceCheckerButton} ${
-                  styles.balanceCheckerButtonWhite
-                }`}
+                className={`${styles.balanceCheckerButton} ${styles.balanceCheckerButtonWhite}`}
               >
                 Buy sUSD with ETH
               </button>
               <a
-                href={`https://uniswap.exchange/swap/${sETHAddress}`}
+                href={`https://uniswap.exchange/swap/${proxyERC20sUSDAddress}`}
                 target="_blank"
-                className={`${styles.balanceCheckerButton} ${
-                  styles.balanceCheckerButtonWhite
-                } ${styles.balanceCheckerAnchor}`}
+                className={`${styles.balanceCheckerButton} ${styles.balanceCheckerButtonWhite} ${styles.balanceCheckerAnchor}`}
               >
                 Buy with ETH on Uniswap
               </a>
