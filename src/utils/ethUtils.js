@@ -6,21 +6,24 @@ export const GWEI = 1000000000;
 
 export const getGasAndSpeedInfo = async () => {
   const convetorTxGasPrice = DEFAULT_GAS_LIMIT;
+  const getGasPriceLimit =
+    synthetixJsTools.synthetixJs.Synthetix.gasPriceLimit || (() => {});
   let [egsData, ethPrice, gasPriceLimit] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json'),
     synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
-    synthetixJsTools.synthetixJs.Synthetix.gasPriceLimit(),
+    getGasPriceLimit(),
   ]);
   egsData = await egsData.json();
   ethPrice = Number(synthetixJsTools.utils.formatEther(ethPrice));
-  gasPriceLimit = synthetixJsTools.ethersUtils.formatUnits(
-    gasPriceLimit,
-    'gwei'
-  );
+  gasPriceLimit = gasPriceLimit
+    ? synthetixJsTools.ethersUtils.formatUnits(gasPriceLimit, 'gwei')
+    : null;
   return {
     gasPriceLimit,
     fast: {
-      gwei: Math.min(egsData.fast / 10, gasPriceLimit),
+      gwei: gasPriceLimit
+        ? Math.min(egsData.fast / 10, gasPriceLimit)
+        : egsData.fast / 10,
       price:
         Math.round(
           (((egsData.fast / 10) * ethPrice * convetorTxGasPrice) / GWEI) * 1000
