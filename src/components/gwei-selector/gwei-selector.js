@@ -17,10 +17,12 @@ class GweiSelector extends Component {
   render() {
     const { transactionSettings } = this.props;
     const { transactionSpeed, gasAndSpeedInfo } = transactionSettings;
+    const gasPriceLimit = gasAndSpeedInfo && gasAndSpeedInfo.gasPriceLimit;
     return (
       <div className={styles.gweiSelectorWrapper}>
         <div className={styles.gweiSelectorHeading}>
-          Select transaction speed
+          Select transaction speed{' '}
+          {gasPriceLimit ? `(gas price limit: ${gasPriceLimit} gwei)` : null}
         </div>
         <div className={styles.gweiSelectorRow}>
           {['slow', 'average', 'fast'].map((speed, i) => {
