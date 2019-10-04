@@ -2,15 +2,16 @@
 
 .buttonsWrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   padding: 0 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .button {
-  width: 500px;
-  height: 145px;
-  margin-top: 20px;
-  padding: 0 40px;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
   border: 1px solid $color-border;
   border-radius: 4px;
   background-color: $color-background;
@@ -28,13 +29,13 @@
 
 .buttonInner {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .walletDescription {
-  text-align: left;
-  margin-left: 40px;
+  margin-top: 25px;
 }
 
 .walletDescriptionHeading {
