@@ -17,16 +17,6 @@ import synthetixJsTools from '../../synthetixJsTool';
 import styles from './wallet-selector-popup.module.scss';
 
 const WALLET_TYPES = ['Metamask', 'Trezor', 'Ledger', 'Coinbase'];
-const WALLET_DESCRIPTIONS = {
-  Metamask:
-    'MetaMask is a browser extension that allows you to connect directly to decentralised applications.',
-  Trezor:
-    'Connect to Synthetix and use tokens that are stored on a Trezor Hardware Wallet.',
-  Ledger:
-    'Connect to Synthetix and use tokens that are stored on a Ledger Hardware Wallet.',
-  Coinbase:
-    'Connect to Synthetix and use tokens that are stored on Coinbase Wallet.',
-};
 
 class WalletSelectorPopup extends Component {
   constructor() {
@@ -227,9 +217,6 @@ class WalletSelectorPopup extends Component {
                 : walletType === 'Coinbase'
                 ? 'Coinbase Wallet'
                 : walletType}
-            </div>
-            <div className={styles.walletDescriptionText}>
-              {WALLET_DESCRIPTIONS[walletType]}
             </div>
           </div>
         </div>
