@@ -7,3 +7,4 @@
     X-Content-Type-Options = "nosniff"
 [build.environment]
   NODE_OPTIONS = "--max_old_space_size=4096"
+  NODE_VERSION = "10.16.3"
