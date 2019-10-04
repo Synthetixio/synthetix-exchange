@@ -5,7 +5,6 @@ export const DEFAULT_GAS_PRICE = 4000000000;
 export const GWEI = 1000000000;
 
 export const getGasAndSpeedInfo = async () => {
-  const convetorTxGasPrice = DEFAULT_GAS_LIMIT;
   const getGasPriceLimit =
     synthetixJsTools.synthetixJs.Synthetix.gasPriceLimit || (() => {});
   let [egsData, ethPrice, gasPriceLimit] = await Promise.all([
@@ -19,21 +18,34 @@ export const getGasAndSpeedInfo = async () => {
     ? synthetixJsTools.ethersUtils.formatUnits(gasPriceLimit, 'gwei')
     : null;
   return {
-    gasPriceLimit,
+    fastestAllowed: gasPriceLimit
+      ? {
+          gwei: gasPriceLimit,
+          price:
+            Math.round(
+              ((gasPriceLimit * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) * 1000
+            ) / 1000,
+        }
+      : {
+          gwei: egsData.fast / 10,
+          price:
+            Math.round(
+              (((egsData.fast / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) *
+                1000
+            ) / 1000,
+        },
     fast: {
-      gwei: gasPriceLimit
-        ? Math.min(egsData.fast / 10, gasPriceLimit)
-        : egsData.fast / 10,
+      gwei: egsData.fast / 10,
       price:
         Math.round(
-          (((egsData.fast / 10) * ethPrice * convetorTxGasPrice) / GWEI) * 1000
+          (((egsData.fast / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) * 1000
         ) / 1000,
     },
     average: {
       gwei: egsData.average / 10,
       price:
         Math.round(
-          (((egsData.average / 10) * ethPrice * convetorTxGasPrice) / GWEI) *
+          (((egsData.average / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) *
             1000
         ) / 1000,
     },
@@ -41,7 +53,7 @@ export const getGasAndSpeedInfo = async () => {
       gwei: egsData.safeLow / 10,
       price:
         Math.round(
-          (((egsData.safeLow / 10) * ethPrice * convetorTxGasPrice) / GWEI) *
+          (((egsData.safeLow / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) *
             1000
         ) / 1000,
     },

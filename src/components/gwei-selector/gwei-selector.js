@@ -15,32 +15,42 @@ class GweiSelector extends Component {
   }
 
   render() {
-    const { transactionSettings } = this.props;
+    const { transactionSettings, hasGweiLimit } = this.props;
     const { transactionSpeed, gasAndSpeedInfo } = transactionSettings;
-    const gasPriceLimit = gasAndSpeedInfo && gasAndSpeedInfo.gasPriceLimit;
+    const gasPriceLimit =
+      gasAndSpeedInfo && gasAndSpeedInfo.fastestAllowed
+        ? gasAndSpeedInfo.fastestAllowed.gwei
+        : null;
     return (
       <div className={styles.gweiSelectorWrapper}>
         <div className={styles.gweiSelectorHeading}>
-          Select transaction speed{' '}
-          {gasPriceLimit ? `(gas price limit: ${gasPriceLimit} gwei)` : null}
+          Select transaction speed
+          {hasGweiLimit ? (
+            <div className={styles.gweiSelectorHeadingMaxLimit}>
+              (<span>{gasPriceLimit} gwei max</span>)
+            </div>
+          ) : null}
         </div>
         <div className={styles.gweiSelectorRow}>
-          {['slow', 'average', 'fast'].map((speed, i) => {
-            return (
-              <div
-                key={i}
-                onClick={this.onSpeedChange(speed)}
-                className={`${styles.gweiSelector} ${
-                  transactionSpeed === speed ? styles.selected : ''
-                }`}
-              >
-                {speed}
-                <div className={styles.gweiSelectorPrice}>
-                  ${gasAndSpeedInfo ? gasAndSpeedInfo[speed].price : 0}
+          {['slow', 'average', hasGweiLimit ? 'fastestAllowed' : 'fast'].map(
+            (speed, i) => {
+              return (
+                <div
+                  key={i}
+                  onClick={this.onSpeedChange(speed)}
+                  className={`${styles.gweiSelector} ${
+                    transactionSpeed === speed ? styles.selected : ''
+                  }`}
+                >
+                  {speed === 'fastestAllowed' ? 'Fastest Allowed' : speed}
+                  <div className={styles.gweiSelectorPrice}>
+                    ${gasAndSpeedInfo ? gasAndSpeedInfo[speed].price : 0} (
+                    {gasAndSpeedInfo ? gasAndSpeedInfo[speed].gwei : 0} gwei)
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            }
+          )}
         </div>
       </div>
     );
@@ -60,6 +70,7 @@ const mapDispatchToProps = {
 GweiSelector.propTypes = {
   transactionSettings: PropTypes.object.isRequired,
   setTransactionSpeed: PropTypes.func.isRequired,
+  hasGweiLimit: PropTypes.bool,
 };
 
 export default connect(
