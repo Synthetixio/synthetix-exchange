@@ -264,27 +264,27 @@ class TradingWidget extends Component {
         ? '0,0.00000000'
         : '0,0.00000';
     const rate = exchangeRates[synthToBuy.name][synthToExchange.name];
-    let usdRate
+    let usdRate;
     if (![synthToBuy.name, synthToExchange.name].includes('sUSD')) {
-      usdRate = exchangeRates[synthToBuy.name]['sUSD']
+      usdRate = exchangeRates[synthToBuy.name]['sUSD'];
     }
     return (
       <div className={styles.pairRateAndBalanceRow}>
         <div className={styles.pairRate}>
-          <div className={styles.pairRateName}>{`${synthToBuy.name}/${
-            synthToExchange.name
-          }:`}</div>
+          <div
+            className={styles.pairRateName}
+          >{`${synthToBuy.name}/${synthToExchange.name}:`}</div>
           {synthToExchange.sign}
           {numbro(rate).format(precision)}
         </div>
-        { usdRate ? (
-          <div className={styles.pairRate}> 
+        {usdRate ? (
+          <div className={styles.pairRate}>
             <div className={styles.pairRateName}>
               {`${synthToBuy.name}/sUSD:`}
             </div>
             ${numbro(usdRate).format(precision)}
           </div>
-        ) : null }
+        ) : null}
         <div className={styles.balance}>
           <div className={styles.pairRateName}>
             {synthToExchange.name} balance:
@@ -339,7 +339,7 @@ class TradingWidget extends Component {
         </div>
         {this.renderPairRateAndBalance()}
         {this.renderInputs()}
-        <GweiSelector />
+        <GweiSelector hasGweiLimit={true} />
         <button
           disabled={!confirmTradeButtonIsEnabled || quoteSynthIsFrozen}
           onClick={this.confirmTrade}

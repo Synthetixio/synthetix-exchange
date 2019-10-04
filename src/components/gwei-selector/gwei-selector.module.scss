@@ -37,12 +37,21 @@
   font-family: 'RobotoMono-Regular';
   margin-top: 5px;
   color: $color-font-grey;
+  text-transform: none;
 }
 
 .gweiSelectorHeading {
   margin: 10px 0;
   font-size: 14px;
   text-align: left;
-  color: $color-font-grey;
+  color: #ffffff;
   font-family: 'RobotoMono-Regular';
+  display: flex;
+}
+
+.gweiSelectorHeadingMaxLimit {
+  margin-left: 10px;
+  span {
+    text-decoration: underline;
+  }
 }

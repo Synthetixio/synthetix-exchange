@@ -140,7 +140,7 @@ class Root extends Component {
     } = this.props;
     if (currentScreen === 'appDown') return;
     toggleLoadingScreen(true);
-    setInterval(this.refreshData, 60 * 1000);
+    setInterval(this.refreshData, 30 * 1000);
     const { networkId } = await getEthereumNetwork();
     synthetixJsTools.setContractSettings({ networkId });
     // We remove all the synths which aren't considered as assets (eg: XDR)
