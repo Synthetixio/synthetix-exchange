@@ -151,7 +151,7 @@ class ConnectToWallet extends Component {
         toggleLoadingScreen,
       } = this.props;
       const { walletType } = currentWalletInfo;
-      if (walletType === 'Metamask') return;
+      if (walletType === 'Metamask' || walletType === 'Coinbase') return;
 
       const idx = walletSelectorIndex + index;
       const availableWalletsStringArray = availableWallets.map(

@@ -61,6 +61,7 @@ class TransactionStatusPopup extends Component {
     return (
       <div>
         <img
+          className={styles.walletLogo}
           src={`images/wallets/${walletType.toLowerCase()}-big.svg`}
           alt={`${walletType} logo`}
         />

@@ -11,12 +11,12 @@ import { getCurrentWalletInfo } from '../../ducks/';
 
 import { getExtensionUri } from '../../utils/browserUtils';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
-
+import { INFURA_JSON_RPC_URLS } from '../../utils/networkUtils';
 import synthetixJsTools from '../../synthetixJsTool';
 
 import styles from './wallet-selector-popup.module.scss';
 
-const WALLET_TYPES = ['Metamask', 'Trezor', 'Ledger'];
+const WALLET_TYPES = ['Metamask', 'Trezor', 'Ledger', 'Coinbase'];
 const WALLET_DESCRIPTIONS = {
   Metamask:
     'MetaMask is a browser extension that allows you to connect directly to decentralised applications.',
@@ -24,6 +24,8 @@ const WALLET_DESCRIPTIONS = {
     'Connect to Synthetix and use tokens that are stored on a Trezor Hardware Wallet.',
   Ledger:
     'Connect to Synthetix and use tokens that are stored on a Ledger Hardware Wallet.',
+  Coinbase:
+    'Connect to Synthetix and use tokens that are stored on Coinbase Wallet.',
 };
 
 class WalletSelectorPopup extends Component {
@@ -86,7 +88,16 @@ class WalletSelectorPopup extends Component {
       // We define a new signer
       try {
         const { name, networkId } = await getEthereumNetwork();
-        const signer = new synthetixJsTools.signers[walletType]();
+        const signerConfig =
+          walletType === 'Coinbase'
+            ? {
+                appName: 'Synthetix.Exchange',
+                appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.svg`,
+                jsonRpcUrl: INFURA_JSON_RPC_URLS[networkId],
+                networkId,
+              }
+            : {};
+        const signer = new synthetixJsTools.signers[walletType](signerConfig);
         synthetixJsTools.setContractSettings({
           networkId,
           signer,
@@ -141,6 +152,29 @@ class WalletSelectorPopup extends Component {
             }
             break;
 
+          case 'Coinbase': {
+            const accounts = await synthetixJsTools.signer.getNextAddresses();
+            // If we do have a wallet address, we save it
+            if (accounts && accounts.length > 0) {
+              connectToWallet({
+                walletType,
+                availableWallets: accounts,
+                selectedWallet: accounts[0],
+                unlocked: true,
+                networkId,
+              });
+              this.closePopup();
+            } else {
+              // Otherwise we send an unlocked reason
+              connectToWallet({
+                walletType,
+                unlocked: false,
+                unlockReason: 'CoinbaseNoAccounts',
+              });
+            }
+            break;
+          }
+
           // If signer is Trezor
           case 'Trezor':
             connectToWallet({
@@ -190,6 +224,8 @@ class WalletSelectorPopup extends Component {
             <div className={styles.walletDescriptionHeading}>
               {walletType === 'Metamask' && !metamaskInstalled
                 ? 'Metamask (not installed)'
+                : walletType === 'Coinbase'
+                ? 'Coinbase Wallet'
                 : walletType}
             </div>
             <div className={styles.walletDescriptionText}>
