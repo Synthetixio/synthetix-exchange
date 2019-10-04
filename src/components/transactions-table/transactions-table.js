@@ -4,7 +4,11 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import numbro from 'numbro';
 
-import { getCurrentWalletInfo, getAvailableSynths, loadingScreenIsVisible } from '../../ducks';
+import {
+  getCurrentWalletInfo,
+  getAvailableSynths,
+  loadingScreenIsVisible,
+} from '../../ducks';
 
 import { getTransactions } from '../../utils/synthetixApi';
 import Container from '../container';
@@ -63,7 +67,7 @@ class Transactions extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.availableSynths.length) return 
+    if (!this.props.availableSynths.length) return;
 
     this.refreshData();
   }
@@ -74,9 +78,11 @@ class Transactions extends Component {
     const selectedWallet =
       this.props.currentWalletInfo &&
       this.props.currentWalletInfo.selectedWallet;
-    if (prevSelectedWallet !== selectedWallet ||
-        !this.state.transactions && !this.props.loadingScreenIsVisible) {
-        this.refreshData();
+    if (
+      prevSelectedWallet !== selectedWallet ||
+      (!this.state.transactions && !this.props.loadingScreenIsVisible)
+    ) {
+      this.refreshData();
     }
   }
 
@@ -91,7 +97,11 @@ class Transactions extends Component {
   }
 
   renderTransactionSynths(transaction) {
-    const { exchangeFromCurrency, exchangeToCurrency } = transaction;
+    let [exchangeFromCurrency, exchangeToCurrency] = [
+      transaction.exchangeFromCurrency,
+      transaction.exchangeToCurrency,
+    ].map(key => key.replace(/[^\w]/g, ''));
+
     return (
       <div className={styles.transactionTableSynth}>
         <div className={styles.transactionPair}>
@@ -135,9 +145,7 @@ class Transactions extends Component {
           <td className={styles.transactionLinkWrapper}>
             <a
               className={styles.transactionLink}
-              href={`${ETHERSCAN_URLS[networkId]}${
-                transaction.transactionHash
-              }`}
+              href={`${ETHERSCAN_URLS[networkId]}${transaction.transactionHash}`}
               target="_blank"
               rel="noopener noreferrer"
             >
