@@ -4,80 +4,55 @@ export const DEFAULT_GAS_LIMIT = 600000;
 export const DEFAULT_GAS_PRICE = 4000000000;
 export const GWEI = 1000000000;
 
+const getTransactionPrice = (gwei, ethPrice) => {
+  return (
+    Math.round(((gwei * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) * 1000) / 1000
+  );
+};
+
 export const getGasAndSpeedInfo = async () => {
-  const getGasPriceLimit =
-    synthetixJsTools.synthetixJs.Synthetix.gasPriceLimit || (() => {});
   let [egsData, ethPrice, gasPriceLimit] = await Promise.all([
     fetch('https://ethgasstation.info/json/ethgasAPI.json'),
     synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
-    getGasPriceLimit(),
+    synthetixJsTools.synthetixJs.Synthetix.gasPriceLimit(),
   ]);
   egsData = await egsData.json();
   ethPrice = Number(synthetixJsTools.utils.formatEther(ethPrice));
-  gasPriceLimit = gasPriceLimit
-    ? Number(synthetixJsTools.ethersUtils.formatUnits(gasPriceLimit, 'gwei'))
-    : null;
+  gasPriceLimit = Number(
+    synthetixJsTools.ethersUtils.formatUnits(gasPriceLimit, 'gwei')
+  );
+
+  const fastGwei = egsData.fast / 10;
+  const averageGwei = egsData.average / 10;
+  const slowGwei = egsData.safeLow / 10;
+
   return {
-    fastestAllowed: gasPriceLimit
-      ? {
-          gwei: gasPriceLimit,
-          price:
-            Math.round(
-              ((gasPriceLimit * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) * 1000
-            ) / 1000,
-        }
-      : {
-          gwei: egsData.fast / 10,
-          price:
-            Math.round(
-              (((egsData.fast / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) *
-                1000
-            ) / 1000,
-        },
+    fastestAllowed: {
+      gwei: gasPriceLimit,
+      price: getTransactionPrice(gasPriceLimit, ethPrice),
+    },
     averageAllowed: {
-      gwei: Math.min(egsData.average / 10, gasPriceLimit),
-      price:
-        Math.round(
-          ((Math.min(egsData.average / 10, gasPriceLimit) *
-            ethPrice *
-            DEFAULT_GAS_LIMIT) /
-            GWEI) *
-            1000
-        ) / 1000,
+      gwei: Math.min(averageGwei, gasPriceLimit),
+      price: getTransactionPrice(
+        Math.min(averageGwei, gasPriceLimit),
+        ethPrice
+      ),
     },
     slowAllowed: {
-      gwei: Math.min(egsData.safeLow / 10, gasPriceLimit),
-      price:
-        Math.round(
-          ((Math.min(egsData.safeLow / 10, gasPriceLimit) *
-            ethPrice *
-            DEFAULT_GAS_LIMIT) /
-            GWEI) *
-            1000
-        ) / 1000,
+      gwei: Math.min(slowGwei, gasPriceLimit),
+      price: getTransactionPrice(Math.min(slowGwei, gasPriceLimit), ethPrice),
     },
     fast: {
-      gwei: egsData.fast / 10,
-      price:
-        Math.round(
-          (((egsData.fast / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) * 1000
-        ) / 1000,
+      gwei: fastGwei,
+      price: getTransactionPrice(fastGwei, ethPrice),
     },
     average: {
-      gwei: egsData.average / 10,
-      price:
-        Math.round(
-          (((egsData.average / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) *
-            1000
-        ) / 1000,
+      gwei: averageGwei,
+      price: getTransactionPrice(averageGwei, ethPrice),
     },
     slow: {
-      gwei: egsData.safeLow / 10,
-      price:
-        Math.round(
-          (((egsData.safeLow / 10) * ethPrice * DEFAULT_GAS_LIMIT) / GWEI) *
-            1000
-        ) / 1000,
+      gwei: slowGwei,
+      price: getTransactionPrice(slowGwei, ethPrice),
     },
   };
 };
