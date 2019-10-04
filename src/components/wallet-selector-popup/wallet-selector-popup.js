@@ -82,7 +82,7 @@ class WalletSelectorPopup extends Component {
           walletType === 'Coinbase'
             ? {
                 appName: 'Synthetix.Exchange',
-                appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.svg`,
+                appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.png`,
                 jsonRpcUrl: INFURA_JSON_RPC_URLS[networkId],
                 networkId,
               }
