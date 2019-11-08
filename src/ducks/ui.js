@@ -13,7 +13,7 @@ const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
 const persistedState = getPersistedState('ui');
 const defaultState = Object.assign(
   {
-    currentScreen: 'exchange',
+    currentScreen: 'appDown',
     exchangeMode: 'basic',
     walletSelectorPopupIsVisible: false,
     transactionStatusPopupIsVisible: false,
