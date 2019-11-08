@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -274,7 +275,9 @@ Root.propTypes = {
   updateExchangeFeeRate: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Root);
+export default hot(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Root)
+);
