@@ -1,6 +1,6 @@
 {
   "name": "synthetix.exchange",
-  "version": "2.12.2",
+  "version": "2.13.0-gas-opt-1",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
