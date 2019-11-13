@@ -36,9 +36,21 @@ class TransactionStatusPopup extends Component {
     );
   }
 
+  isSwingTrade(fromSynth, toSynth) {
+    if (fromSynth.name === 'sUSD' || toSynth.name === 'sUSD') return false;
+    if (fromSynth.inverted && !toSynth.inverted) return true;
+    if (!fromSynth.inverted && toSynth.inverted) return true;
+  }
+
   renderFees() {
     const { currentWalletInfo, exchangeFeeRate } = this.props;
     const { gasPriceUsd } = currentWalletInfo;
+    const { transactionPair } = currentWalletInfo;
+    const { fromSynth, toSynth } = transactionPair;
+    const feeRate = this.isSwingTrade(fromSynth, toSynth)
+      ? 2 * exchangeFeeRate
+      : exchangeFeeRate;
+
     return (
       <div>
         <div className={styles.feeRow}>
@@ -47,7 +59,7 @@ class TransactionStatusPopup extends Component {
         </div>
         <div className={styles.feeRow}>
           <span className={styles.feeRowHeading}>Exchange fee rate</span>
-          <span className={styles.feeRowValue}>{exchangeFeeRate}%</span>
+          <span className={styles.feeRowValue}>{feeRate}%</span>
         </div>
       </div>
     );
