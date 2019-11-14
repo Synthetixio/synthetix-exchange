@@ -4,85 +4,85 @@ import wallet from './wallet';
 import synths from './synths';
 
 export default combineReducers({
-  wallet,
-  ui,
-  synths,
+	wallet,
+	ui,
+	synths,
 });
 
 // UI REDUCERS
 export const getCurrentScreen = state => {
-  return state.ui.currentScreen;
+	return state.ui.currentScreen;
 };
 
 export const getCurrentExchangeMode = state => {
-  return state.ui.exchangeMode;
+	return state.ui.exchangeMode;
 };
 
 export const walletSelectorPopupIsVisible = state => {
-  return state.ui.walletSelectorPopupIsVisible;
+	return state.ui.walletSelectorPopupIsVisible;
 };
 
 export const transactionStatusPopupIsVisible = state => {
-  return state.ui.transactionStatusPopupIsVisible;
+	return state.ui.transactionStatusPopupIsVisible;
 };
 
 export const testnetPopupIsVisible = state => {
-  return state.ui.testnetPopupIsVisible;
+	return state.ui.testnetPopupIsVisible;
 };
 
 export const depotPopupIsVisible = state => {
-  return state.ui.depotPopupIsVisible;
+	return state.ui.depotPopupIsVisible;
 };
 
 export const feedbackPopupIsVisible = state => {
-  return state.ui.feedbackPopupIsVisible;
+	return state.ui.feedbackPopupIsVisible;
 };
 
 export const walkthroughPopupIsVisible = state => {
-  return state.ui.walkthroughPopupIsVisible;
+	return state.ui.walkthroughPopupIsVisible;
 };
 
 export const loadingScreenIsVisible = state => {
-  return state.ui.loadingScreenIsVisible;
+	return state.ui.loadingScreenIsVisible;
 };
 
 // WALLET REDUCERS
 export const getCurrentWalletInfo = state => {
-  return state.wallet;
+	return state.wallet;
 };
 
 export const getTransactionSettings = state => {
-  return {
-    transactionSpeed: state.wallet.transactionSpeed,
-    gasAndSpeedInfo: state.wallet.gasAndSpeedInfo,
-  };
+	return {
+		transactionSpeed: state.wallet.transactionSpeed,
+		gasAndSpeedInfo: state.wallet.gasAndSpeedInfo,
+	};
 };
 
 export const getExchangeFeeRate = state => {
-  return state.wallet.exchangeFeeRate;
+	return state.wallet.exchangeFeeRate;
 };
 
 // SYNTHS REDUCERS
 export const getAvailableSynths = state => {
-  return state.synths.availableSynths;
+	return state.synths.availableSynths;
 };
 
 export const getSynthToBuy = state => {
-  return state.synths.toSynth;
+	return state.synths.toSynth;
 };
 
 export const getSynthToExchange = state => {
-  return state.synths.fromSynth;
+	return state.synths.fromSynth;
 };
 
 export const getExchangeRates = state => {
-  return state.synths.exchangeRates;
+	return state.synths.exchangeRates;
 };
 
 export const getEthRate = state => {
-  return state.synths.ethRate;
+	return state.synths.ethRate;
 };
 
 export const getFrozenSynths = state => {
-  return state.synths.frozenSynths;
+	return state.synths.frozenSynths;
 };
