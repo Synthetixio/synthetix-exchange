@@ -89,7 +89,7 @@ const convertFromSynth = (synth, rates) => {
   return convertedRates;
 };
 
-export const updateExchangeRates = (synthRates, ethRate) => {
+export const updateExchangeRates = ({ synthRates, ethRate }) => {
   let rateObject = {};
   Object.keys(synthRates).forEach(synth => {
     rateObject[synth] = convertFromSynth(synth, synthRates);
