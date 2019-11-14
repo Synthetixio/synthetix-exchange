@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { getAvailableSynths } from '../../ducks';
 
+import Header from '../../components/Header';
 import PairList from '../../components/PairList';
 import ChartPanel from '../../components/ChartPanel';
 import OrderBook from '../../components/OrderBook';
@@ -14,27 +15,30 @@ import WalletBox from '../../components/WalletBox';
 const Trade = () => {
 	return (
 		<MainContainer>
-			<SideContainer>
-				<BoxContainer height="100%">
-					<PairList />
-				</BoxContainer>
-			</SideContainer>
-			<CentralContainer>
-				<BoxContainer margin="0 0 5px 0" height="700px">
-					<ChartPanel />
-				</BoxContainer>
-				<BoxContainer style={{ flex: 1 }}>
-					<OrderBook />
-				</BoxContainer>
-			</CentralContainer>
-			<SideContainer>
-				<BoxContainer margin="0 0 5px 0" height="600px">
-					<TradeBox />
-				</BoxContainer>
-				<BoxContainer style={{ flex: 1 }}>
-					<WalletBox />
-				</BoxContainer>
-			</SideContainer>
+			<Header />
+			<TradeLayout>
+				<SideContainer>
+					<BoxContainer height="100%">
+						<PairList />
+					</BoxContainer>
+				</SideContainer>
+				<CentralContainer>
+					<BoxContainer margin="0 0 5px 0" height="700px">
+						<ChartPanel />
+					</BoxContainer>
+					<BoxContainer style={{ flex: 1 }}>
+						<OrderBook />
+					</BoxContainer>
+				</CentralContainer>
+				<SideContainer>
+					<BoxContainer margin="0 0 5px 0" height="600px">
+						<TradeBox />
+					</BoxContainer>
+					<BoxContainer style={{ flex: 1 }}>
+						<WalletBox />
+					</BoxContainer>
+				</SideContainer>
+			</TradeLayout>
 		</MainContainer>
 	);
 };
@@ -52,9 +56,16 @@ Trade.propTypes = {
 const MainContainer = styled.div`
 	background-color: black;
 	display: flex;
+	flex-direction: column;
 	width: 100%;
 	color: white;
 	height: 100vh;
+`;
+
+const TradeLayout = styled.div`
+	display: flex;
+	width: 100%;
+	flex: 1;
 `;
 
 const SideContainer = styled.div`
