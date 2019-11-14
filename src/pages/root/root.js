@@ -44,7 +44,7 @@ const Root = ({
 			fetchAndSetData(synths);
 			const intervalId = setInterval(() => {
 				fetchAndSetData(synths);
-			}, 5 * 1000);
+			}, 30 * 1000);
 			setIntervalId(intervalId);
 		};
 		init();
