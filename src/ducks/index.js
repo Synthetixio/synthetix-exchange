@@ -42,6 +42,10 @@ export const walkthroughPopupIsVisible = state => {
 	return state.ui.walkthroughPopupIsVisible;
 };
 
+export const getCurrentTheme = state => {
+	return state.ui.theme;
+};
+
 export const loadingScreenIsVisible = state => {
 	return state.ui.loadingScreenIsVisible;
 };
