@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAvailableSynths, getExchangeRates } from '../../ducks';
 
+import { DataMedium } from '../Typography';
+
 const FILTERS = ['sUSD', 'sETH', 'sBTC', 'sFIAT', 'Synths'];
 
 const PairList = ({ synths, rates }) => {
@@ -31,9 +33,15 @@ const PairList = ({ synths, rates }) => {
 							const rate = rates ? rates[synth.name][quote] : 0;
 							return (
 								<Tr>
-									<Td>{`${synth.name} / ${quote}`}</Td>
-									<Td>{rate}</Td>
-									<Td>+2.34%</Td>
+									<Td>
+										<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
+									</Td>
+									<Td>
+										<DataMedium>{rate}</DataMedium>
+									</Td>
+									<Td>
+										<DataMedium>+2.5%</DataMedium>
+									</Td>
 								</Tr>
 							);
 						})}

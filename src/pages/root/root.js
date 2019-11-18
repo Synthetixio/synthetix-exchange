@@ -1,5 +1,6 @@
 import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useState, useCallback } from 'react';
+import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -62,7 +63,7 @@ const Root = ({
 		<ThemeProvider theme={themeStyle}>
 			<div>
 				<Router>
-					<div>
+					<RootContainer>
 						<Switch>
 							<Route path="/trade">
 								<Trade />
@@ -71,12 +72,16 @@ const Root = ({
 								<Home />
 							</Route>
 						</Switch>
-					</div>
+					</RootContainer>
 				</Router>
 			</div>
 		</ThemeProvider>
 	);
 };
+
+const RootContainer = styled.div`
+	background-color: ${props => props.theme.colors.surfaceL1};
+`;
 
 const mapStateToProps = state => {
 	return {

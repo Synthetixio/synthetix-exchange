@@ -1,13 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Logo from '../Logo';
+
 const Header = () => {
-	return <Container> this is the header</Container>;
+	return (
+		<Container>
+			<Logo />
+			this is the header
+		</Container>
+	);
 };
 
 const Container = styled.div`
-	height: 80px;
-	background: grey;
+	height: 56px;
+	background-color: ${props => props.theme.colors.surfaceL3};
+	display: flex;
+	align-items: center;
+	padding: 0 24px;
 `;
 export default Header;
 // import PropTypes from 'prop-types';

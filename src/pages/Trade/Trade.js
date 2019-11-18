@@ -14,7 +14,7 @@ import WalletBox from '../../components/WalletBox';
 
 const Trade = () => {
 	return (
-		<MainContainer>
+		<MainLayout>
 			<Header />
 			<TradeLayout>
 				<SideContainer>
@@ -23,7 +23,7 @@ const Trade = () => {
 					</BoxContainer>
 				</SideContainer>
 				<CentralContainer>
-					<BoxContainer margin="0 0 5px 0" height="700px">
+					<BoxContainer margin="0 0 8px 0" height="700px">
 						<ChartPanel />
 					</BoxContainer>
 					<BoxContainer style={{ flex: 1 }}>
@@ -31,7 +31,7 @@ const Trade = () => {
 					</BoxContainer>
 				</CentralContainer>
 				<SideContainer>
-					<BoxContainer margin="0 0 5px 0" height="600px">
+					<BoxContainer margin="0 0 8px 0" height="600px">
 						<TradeBox />
 					</BoxContainer>
 					<BoxContainer style={{ flex: 1 }}>
@@ -39,7 +39,7 @@ const Trade = () => {
 					</BoxContainer>
 				</SideContainer>
 			</TradeLayout>
-		</MainContainer>
+		</MainLayout>
 	);
 };
 
@@ -53,8 +53,7 @@ Trade.propTypes = {
 	synths: PropTypes.array.isRequired,
 };
 
-const MainContainer = styled.div`
-	background-color: black;
+const MainLayout = styled.div`
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -68,23 +67,27 @@ const TradeLayout = styled.div`
 	flex: 1;
 `;
 
-const SideContainer = styled.div`
+const Container = styled.div`
+	background-color: ${props => props.theme.colors.surfaceL3};
+`;
+
+const SideContainer = styled(Container)`
 	width: 25%;
 	min-width: 300px;
 	max-width: 400px;
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	margin: 5px;
+	margin: 8px;
 `;
-const CentralContainer = styled.div`
+const CentralContainer = styled(Container)`
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	margin: 5px 0;
+	margin: 8px 0;
 `;
-const BoxContainer = styled.div`
-	background: grey;
+
+const BoxContainer = styled(Container)`
 	margin: ${props => (props.margin ? props.margin : '0')}
 	height: ${props => (props.height ? props.height : 'auto')};
 `;
