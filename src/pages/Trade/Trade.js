@@ -58,7 +58,7 @@ const MainLayout = styled.div`
 	flex-direction: column;
 	width: 100%;
 	color: white;
-	height: 100vh;
+	// height: 100vh;
 `;
 
 const TradeLayout = styled.div`

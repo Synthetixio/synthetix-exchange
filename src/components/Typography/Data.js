@@ -25,7 +25,8 @@ const DataMediumElement = styled.span`
 	color: ${props => props.theme.colors.fontPrimary};
 `;
 const DataSmallElement = styled.span`
-	font-size: 9px;
+	font-size: 12px;
 	text-transform: uppercase;
+	letter-spacing: 0.5px;
 	color: ${props => props.theme.colors.fontPrimary};
 `;
