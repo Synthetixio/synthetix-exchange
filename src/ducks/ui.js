@@ -9,6 +9,7 @@ const TOGGLE_FEEDBACK_POPUP = 'UI/TOGGLE_FEEDBACK_POPUP';
 const TOGGLE_TESTNET_POPUP = 'UI/TOGGLE_TESTNET_POPUP';
 const TOGGLE_WALKTHROUGH_POPUP = 'UI/TOGGLE_WALKTHROUGH_POPUP';
 const TOGGLE_LOADING_SCREEN = 'UI/TOGGLE_LOADING_SCREEN';
+const TOGGLE_THEME = 'UI/TOGGLE_THEME';
 
 const persistedState = getPersistedState('ui');
 const defaultState = Object.assign(
@@ -76,6 +77,13 @@ const reducer = (state = defaultState, action = {}) => {
 				...state,
 				loadingScreenIsVisible: action.payload,
 			};
+		case TOGGLE_THEME: {
+			const theme = state.theme === 'light' ? 'dark' : 'light';
+			return {
+				...state,
+				theme,
+			};
+		}
 		default:
 			return state;
 	}
@@ -115,6 +123,10 @@ export const toggleFeedbackPopup = isVisible => {
 
 export const toggleWalkthroughPopup = isVisible => {
 	return { type: TOGGLE_WALKTHROUGH_POPUP, payload: isVisible };
+};
+
+export const toggleTheme = () => {
+	return { type: TOGGLE_THEME };
 };
 
 export default reducer;

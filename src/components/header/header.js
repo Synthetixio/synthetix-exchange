@@ -1,13 +1,32 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Logo from '../Logo';
+import ThemeSwitcher from '../ThemeSwitcher';
 
 const Header = () => {
 	return (
 		<Container>
-			<Logo />
-			this is the header
+			<HeaderBlock>
+				<Logo />
+				<Network>
+					<HeaderFont>mainnet</HeaderFont>
+				</Network>
+			</HeaderBlock>
+			<HeaderBlock>
+				<HeaderLink to={'/'}>
+					<HeaderFont>Markets</HeaderFont>
+				</HeaderLink>
+				<HeaderLink to={'/'}>
+					<HeaderFont>Tokens</HeaderFont>
+				</HeaderLink>
+				<HeaderFont style={{ margin: '0 24px' }}>A / 诶</HeaderFont>
+				<HeaderLink to={'/'}>
+					<HeaderFont>Support</HeaderFont>
+				</HeaderLink>
+				<ThemeSwitcher />
+			</HeaderBlock>
 		</Container>
 	);
 };
@@ -18,7 +37,36 @@ const Container = styled.div`
 	display: flex;
 	align-items: center;
 	padding: 0 24px;
+	justify-content: space-between;
 `;
+
+const Network = styled.div`
+	display: flex;
+	align-items: center;
+	padding: 5px 10px;
+	background-color: ${props => props.theme.colors.accentDark};
+	margin-left: 26px;
+`;
+
+const HeaderBlock = styled.div`
+	display: flex;
+	align-items: center;
+`;
+
+const HeaderFont = styled.span`
+	font-size: 14px;
+	text-transform: uppercase;
+	color: ${props => props.theme.colors.fontTertiary};
+`;
+
+const HeaderLink = styled(Link)`
+	text-decoration: none;
+	margin: 0 24px;
+	&:hover {
+		text-decoration: underline;
+	}
+`;
+
 export default Header;
 // import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
