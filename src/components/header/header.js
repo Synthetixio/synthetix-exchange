@@ -75,6 +75,8 @@ class Header extends Component {
         return 'MAINNET';
       case '3':
         return 'ROPSTEN';
+      case '4':
+        return 'RINKEBY';
       case '42':
         return 'KOVAN';
       default:
@@ -200,7 +202,4 @@ Header.propTypes = {
   toggleWalletSelectorPopup: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
