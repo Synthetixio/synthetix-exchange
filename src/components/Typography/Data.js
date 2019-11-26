@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { color, typography } from 'styled-system';
 
 export const DataLarge = styled.span`
 	font-size: 18px;
@@ -17,4 +18,6 @@ export const DataSmall = styled.span`
 	letter-spacing: 0.5px;
 	font-family: 'apercu-medium';
 	color: ${props => props.theme.colors.fontPrimary};
+	${color};
+	${typography}
 `;
