@@ -5,25 +5,30 @@ import styled from 'styled-components';
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
 
+import { LabelMedium, DataMedium } from '../Typography';
+
 const Header = () => {
 	return (
 		<Container>
 			<HeaderBlock>
 				<Logo />
 				<Network>
-					<HeaderFont>mainnet</HeaderFont>
+					<NetworkLabel>mainnet</NetworkLabel>
 				</Network>
 			</HeaderBlock>
 			<HeaderBlock>
-				<HeaderLink to={'/'}>
-					<HeaderFont>Markets</HeaderFont>
+				<HeaderLink to={'/trade'}>
+					<HeaderLabel>Trade</HeaderLabel>
 				</HeaderLink>
 				<HeaderLink to={'/'}>
-					<HeaderFont>Tokens</HeaderFont>
+					<HeaderLabel>Markets</HeaderLabel>
 				</HeaderLink>
-				<HeaderFont style={{ margin: '0 24px' }}>A / 诶</HeaderFont>
 				<HeaderLink to={'/'}>
-					<HeaderFont>Support</HeaderFont>
+					<HeaderLabel>Tokens</HeaderLabel>
+				</HeaderLink>
+				<HeaderLabel style={{ margin: '0 24px' }}>A / 诶</HeaderLabel>
+				<HeaderLink to={'/'}>
+					<HeaderLabel>Support</HeaderLabel>
 				</HeaderLink>
 				<ThemeSwitcher />
 			</HeaderBlock>
@@ -53,10 +58,12 @@ const HeaderBlock = styled.div`
 	align-items: center;
 `;
 
-const HeaderFont = styled.span`
-	font-size: 14px;
+const HeaderLabel = styled(LabelMedium)`
 	text-transform: uppercase;
 	color: ${props => props.theme.colors.fontTertiary};
+	&:hover {
+		color: ${props => props.theme.colors.fontSecondary};
+	}
 `;
 
 const HeaderLink = styled(Link)`
@@ -65,6 +72,11 @@ const HeaderLink = styled(Link)`
 	&:hover {
 		text-decoration: underline;
 	}
+`;
+
+const NetworkLabel = styled(DataMedium)`
+	text-transform: uppercase;
+	color: ${props => props.theme.colors.fontTertiary};
 `;
 
 export default Header;

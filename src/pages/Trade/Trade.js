@@ -23,7 +23,7 @@ const Trade = () => {
 					</BoxContainer>
 				</SideContainer>
 				<CentralContainer>
-					<BoxContainer margin="0 0 8px 0" height="700px">
+					<BoxContainer margin="0 0 8px 0">
 						<ChartPanel />
 					</BoxContainer>
 					<BoxContainer style={{ flex: 1 }}>
@@ -67,9 +67,7 @@ const TradeLayout = styled.div`
 	flex: 1;
 `;
 
-const Container = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
-`;
+const Container = styled.div``;
 
 const SideContainer = styled(Container)`
 	width: 25%;

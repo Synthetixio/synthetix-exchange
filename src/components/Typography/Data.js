@@ -1,32 +1,20 @@
-import React from 'react';
 import styled from 'styled-components';
 
-// import { pxToRem } from '../../styles';
-
-export const DataLarge = ({ children, weight }) => {
-	return <DataLargeElement weight={weight}>{children}</DataLargeElement>;
-};
-
-export const DataMedium = ({ children, weight }) => {
-	return <DataMediumElement weight={weight}>{children}</DataMediumElement>;
-};
-
-export const DataSmall = ({ children, weight }) => {
-	return <DataSmallElement weight={weight}>{children}</DataSmallElement>;
-};
-
-const DataLargeElement = styled.span`
-	font-size: 12px;
+export const DataLarge = styled.span`
+	font-size: 18px;
 	text-transform: uppercase;
 	color: ${props => props.theme.colors.fontPrimary};
 `;
-const DataMediumElement = styled.span`
+
+export const DataMedium = styled.span`
 	font-size: 14px;
 	color: ${props => props.theme.colors.fontPrimary};
 `;
-const DataSmallElement = styled.span`
+
+export const DataSmall = styled.span`
 	font-size: 12px;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
+	font-family: 'apercu-medium';
 	color: ${props => props.theme.colors.fontPrimary};
 `;
