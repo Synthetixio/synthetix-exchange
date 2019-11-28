@@ -129,6 +129,7 @@ const LinkInner = styled.div`
 	display: flex;
 	align-items: center;
 `;
+
 const LinkLabel = styled(LabelSmall)`
 	margin-left: 10px;
 	color: ${props => props.theme.colors.hyperLink};
@@ -136,6 +137,7 @@ const LinkLabel = styled(LabelSmall)`
 		text-decoration: underline;
 	}
 `;
+
 const LinkIcon = styled.img`
 	width: 8px;
 	height: 8px;

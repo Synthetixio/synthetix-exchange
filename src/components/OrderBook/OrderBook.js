@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled, { withTheme } from 'styled-components';
 
 import { DataSmall } from '../Typography';
+import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 
 const OrderBook = ({ theme: { colors } }) => {
 	const [activeTab, setActiveTab] = useState('Your orders');
@@ -39,25 +40,25 @@ const OrderBook = ({ theme: { colors } }) => {
 							return (
 								<Tr>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 									<Td>
-										<TableData>blh fsdf fdsd</TableData>
+										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>
 								</Tr>
 							);
@@ -106,38 +107,6 @@ const Tab = styled.button`
 `;
 
 const Book = styled.div``;
-
-const Table = styled.table`
-	width: 100%;
-`;
-
-const Thead = styled.thead`
-	background-color: ${props => props.theme.colors.surfaceL3};
-`;
-
-const Tbody = styled.tbody`
-	background-color: ${props => props.theme.colors.surfaceL2};
-`;
-
-const Tr = styled.tr``;
-
-const Th = styled.th`
-	height: 42px;
-	line-height: 12px;
-	text-align: left;
-	padding: 0 18px;
-`;
-
-const Td = styled.td`
-	text-align: left;
-	padding: 6px 18px;
-`;
-
-const TableData = styled(DataSmall)`
-	text-transform: none;
-	color: ${props => props.theme.colors.fontPrimary};
-	font-family: 'apercu-regular';
-`;
 
 const SortIcon = styled.img`
 	width: 6.5px;
