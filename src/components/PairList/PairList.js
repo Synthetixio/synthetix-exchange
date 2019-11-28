@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import SearchInput from '../SearchInput';
+import { SearchInput } from '../Input';
 
 import { getAvailableSynths, getExchangeRates } from '../../ducks';
 

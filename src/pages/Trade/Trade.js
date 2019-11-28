@@ -31,7 +31,7 @@ const Trade = () => {
 					</BoxContainer>
 				</CentralContainer>
 				<SideContainer>
-					<BoxContainer margin="0 0 8px 0" height="600px">
+					<BoxContainer margin="0 0 8px 0">
 						<TradeBox />
 					</BoxContainer>
 					<BoxContainer style={{ flex: 1 }}>

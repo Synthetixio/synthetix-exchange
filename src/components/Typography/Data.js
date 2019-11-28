@@ -10,6 +10,10 @@ export const DataLarge = styled.span`
 export const DataMedium = styled.span`
 	font-size: 14px;
 	color: ${props => props.theme.colors.fontPrimary};
+	font-family: 'apercu-regular';
+	text-transform: uppercase;
+	${typography};
+	${color};
 `;
 
 export const DataSmall = styled.span`
@@ -19,5 +23,5 @@ export const DataSmall = styled.span`
 	font-family: 'apercu-medium';
 	color: ${props => props.theme.colors.fontPrimary};
 	${color};
-	${typography}
+	${typography};
 `;

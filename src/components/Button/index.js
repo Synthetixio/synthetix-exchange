@@ -1,3 +1,4 @@
 import ButtonFilter from './ButtonFilter';
+import ButtonPrimary from './ButtonPrimary';
 
-export { ButtonFilter };
+export { ButtonFilter, ButtonPrimary };
