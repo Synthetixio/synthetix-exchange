@@ -17,11 +17,11 @@ const Trade = () => {
 		<MainLayout>
 			<Header />
 			<TradeLayout>
-				<SideContainer>
-					<BoxContainer height="100%">
+				<Container>
+					<BoxContainer>
 						<PairList />
 					</BoxContainer>
-				</SideContainer>
+				</Container>
 				<CentralContainer>
 					<BoxContainer margin="0 0 8px 0">
 						<ChartPanel />
@@ -30,14 +30,14 @@ const Trade = () => {
 						<OrderBook />
 					</BoxContainer>
 				</CentralContainer>
-				<SideContainer>
+				<SmallContainer>
 					<BoxContainer margin="0 0 8px 0">
 						<TradeBox />
 					</BoxContainer>
 					<BoxContainer style={{ flex: 1 }}>
 						<WalletBox />
 					</BoxContainer>
-				</SideContainer>
+				</SmallContainer>
 			</TradeLayout>
 		</MainLayout>
 	);
@@ -55,10 +55,10 @@ Trade.propTypes = {
 
 const MainLayout = styled.div`
 	display: flex;
-	flex-direction: column;
+	flex-flow: column;
 	width: 100%;
+	height: 100%;
 	color: white;
-	// height: 100vh;
 `;
 
 const TradeLayout = styled.div`
@@ -67,25 +67,28 @@ const TradeLayout = styled.div`
 	flex: 1;
 `;
 
-const Container = styled.div``;
-
-const SideContainer = styled(Container)`
+const Container = styled.div`
 	width: 25%;
 	min-width: 300px;
 	max-width: 400px;
 	display: flex;
 	flex-direction: column;
-	flex: 1;
 	margin: 8px;
 `;
-const CentralContainer = styled(Container)`
+
+const SmallContainer = styled(Container)`
+	width: 15%;
+	min-width: 300px;
+`;
+
+const CentralContainer = styled.div`
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	margin: 8px 0;
 `;
 
-const BoxContainer = styled(Container)`
+const BoxContainer = styled.div`
 	margin: ${props => (props.margin ? props.margin : '0')}
 	height: ${props => (props.height ? props.height : 'auto')};
 `;

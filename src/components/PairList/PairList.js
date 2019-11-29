@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -8,20 +8,52 @@ import { SearchInput } from '../Input';
 import { getAvailableSynths, getExchangeRates } from '../../ducks';
 
 import { DataMedium, DataSmall } from '../Typography';
-import { ButtonFilter } from '../Button';
+import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 
-const FILTERS = ['sUSD', 'sETH', 'sBTC', 'sFIAT', 'Synths'];
+const FILTERS = ['sUSD', 'sETH', 'sBTC', 'sFIAT', 'Other'];
+
+const useFilterSynths = (synths, search, quote) => {
+	const [list, setList] = useState(synths);
+	useEffect(() => {
+		if (!synths || synths.lenght === 0) return;
+		const filteredList = synths.filter(synth => {
+			return synth.name.toLowerCase().includes(search.toLowerCase()) && synth.name !== quote;
+		});
+		setList(filteredList);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [synths, search, quote]);
+
+	return list;
+};
 
 const PairList = ({ synths, rates }) => {
 	const [quote, setQuote] = useState('sUSD');
+	const [search, setSearch] = useState('');
+	const synthList = useFilterSynths(synths, search, quote);
 	return (
 		<Container>
 			<ContainerHeader>
-				<SearchInput />
+				<SearchInput onChange={e => setSearch(e.target.value)} />
 				<ButtonRow>
-					{FILTERS.map(filter => (
-						<ButtonFilter onClick={() => setQuote(filter)}>{filter}</ButtonFilter>
-					))}
+					{FILTERS.map(filter => {
+						return ['sFIAT', 'Other'].includes(filter) ? (
+							<ButtonFilterWithDropdown
+								quote={quote}
+								onClick={synth => setQuote(synth.name)}
+								synths={
+									filter === 'sFIAT'
+										? synths.filter(synth => synth.category === 'forex')
+										: synths.filter(synth => synth.category !== 'forex')
+								}
+							>
+								{filter}
+							</ButtonFilterWithDropdown>
+						) : (
+							<ButtonFilter active={filter === quote} onClick={() => setQuote(filter)}>
+								{filter}
+							</ButtonFilter>
+						);
+					})}
 				</ButtonRow>
 				<ListHeader>
 					<ListHeaderElement>
@@ -46,24 +78,22 @@ const PairList = ({ synths, rates }) => {
 			</ContainerHeader>
 
 			<List>
-				{synths
-					.filter(synth => synth.name !== quote)
-					.map((synth, i) => {
-						const rate = rates ? rates[synth.name][quote] : 0;
-						return (
-							<Pair>
-								<PairElement>
-									<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
-								</PairElement>
-								<PairElement>
-									<DataMedium>{rate}</DataMedium>
-								</PairElement>
-								<PairElement>
-									<DataChange color={i % 2 === 0 ? 'green' : 'red'}>+2.5%</DataChange>
-								</PairElement>
-							</Pair>
-						);
-					})}
+				{synthList.map((synth, i) => {
+					const rate = rates ? rates[synth.name][quote] : 0;
+					return (
+						<Pair>
+							<PairElement>
+								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
+							</PairElement>
+							<PairElement>
+								<DataMedium>{rate}</DataMedium>
+							</PairElement>
+							<PairElement>
+								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>+2.5%</DataChange>
+							</PairElement>
+						</Pair>
+					);
+				})}
 			</List>
 		</Container>
 	);
@@ -82,6 +112,7 @@ const ButtonRow = styled.div`
 	margin: 10px 0;
 	& > * {
 		margin: 0 5px;
+		flex: 1;
 		&:first-child {
 			margin-left: 0;
 		}
@@ -95,6 +126,7 @@ const List = styled.ul`
 	margin: 0 10px;
 	padding: 0;
 `;
+
 const Pair = styled.li`
 	background: ${props => props.theme.colors.surfaceL3};
 	cursor: pointer;
