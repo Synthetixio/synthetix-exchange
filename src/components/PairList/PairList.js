@@ -6,30 +6,50 @@ import PropTypes from 'prop-types';
 import { SearchInput } from '../Input';
 
 import { getAvailableSynths, getExchangeRates } from '../../ducks';
+import { formatCurrency } from '../../utils/formatters';
 
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 
+import orderBy from 'lodash/orderBy';
+import { setSynthPair } from '../../ducks/synths';
+
 const FILTERS = ['sUSD', 'sETH', 'sBTC', 'sFIAT', 'Other'];
 
-const useFilterSynths = (synths, search, quote) => {
+const useFilterSynths = (synths, search, quote, rates) => {
 	const [list, setList] = useState(synths);
 	useEffect(() => {
 		if (!synths || synths.lenght === 0) return;
-		const filteredList = synths.filter(synth => {
-			return synth.name.toLowerCase().includes(search.toLowerCase()) && synth.name !== quote;
-		});
+		const filteredList = synths
+			.filter(synth => {
+				return synth.name.toLowerCase().includes(search.toLowerCase()) && synth.name !== quote;
+			})
+			.map(synth => {
+				const rate = rates ? rates[synth.name][quote] : 0;
+				return {
+					name: synth.name,
+					rate,
+					change: Math.random(),
+				};
+			});
 		setList(filteredList);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synths, search, quote]);
+	}, [synths, search, quote, rates]);
 
 	return list;
 };
 
-const PairList = ({ synths, rates }) => {
+const sortPairsBy = (pairs, sort) => {
+	if (!sort) return pairs;
+	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
+};
+
+const PairList = ({ synths, rates, setSynthPair }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
-	const synthList = useFilterSynths(synths, search, quote);
+	const [sort, setSort] = useState({ column: 'name', isAscending: true });
+	const synthList = useFilterSynths(synths, search, quote, rates);
+
 	return (
 		<Container>
 			<ContainerHeader>
@@ -56,40 +76,46 @@ const PairList = ({ synths, rates }) => {
 					})}
 				</ButtonRow>
 				<ListHeader>
-					<ListHeaderElement>
-						<ButtonSort>
-							<ListHeaderLabel>Pair</ListHeaderLabel>
-							<SortIcon src="/images/sort-arrows.svg" />
-						</ButtonSort>
-					</ListHeaderElement>
-					<ListHeaderElement>
-						<ButtonSort>
-							<ListHeaderLabel>Price</ListHeaderLabel>
-							<SortIcon src="/images/sort-arrows.svg" />
-						</ButtonSort>
-					</ListHeaderElement>
-					<ListHeaderElement>
-						<ButtonSort>
-							<ListHeaderLabel>Change</ListHeaderLabel>
-							<SortIcon src="/images/sort-arrows.svg" />
-						</ButtonSort>
-					</ListHeaderElement>
+					{[
+						{ label: 'Pair', value: 'name' },
+						{ label: 'Price', value: 'rate' },
+						{ label: 'Change', value: 'change' },
+					].map(column => {
+						return (
+							<ListHeaderElement>
+								<ButtonSort
+									onClick={() =>
+										setSort(() => {
+											if (sort && sort.column === column.value) {
+												return { ...sort, isAscending: !sort.isAscending };
+											} else return { column: column.value, isAscending: true };
+										})
+									}
+								>
+									<ListHeaderLabel>{column.label}</ListHeaderLabel>
+									<SortIcon src="/images/sort-arrows.svg" />
+								</ButtonSort>
+							</ListHeaderElement>
+						);
+					})}
 				</ListHeader>
 			</ContainerHeader>
 
 			<List>
-				{synthList.map((synth, i) => {
-					const rate = rates ? rates[synth.name][quote] : 0;
+				{sortPairsBy(synthList, sort).map((synth, i) => {
 					return (
-						<Pair>
+						<Pair onClick={() => setSynthPair({ base: synth.name, quote })}>
 							<PairElement>
+								<SynthIcon src={`/images/synths/${synth.name}.svg`} />
 								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
 							</PairElement>
 							<PairElement>
-								<DataMedium>{rate}</DataMedium>
+								<DataMedium>{formatCurrency(synth.rate, 6)}</DataMedium>
 							</PairElement>
 							<PairElement>
-								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>+2.5%</DataChange>
+								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>
+									{formatCurrency(synth.change, 2)}%
+								</DataChange>
 							</PairElement>
 						</Pair>
 					);
@@ -146,10 +172,18 @@ const Pair = styled.li`
 
 const PairElement = styled.div`
 	flex: 1;
-	text-align: right;
+	justify-content: flex-end;
+	display: flex;
+	align-items: center;
 	&:first-child {
-		text-align: left;
+		justify-content: flex-start;
 	}
+`;
+
+const SynthIcon = styled.img`
+	width: 22px;
+	height: 22px;
+	margin-right: 6px;
 `;
 
 const ListHeader = styled.div`
@@ -195,9 +229,13 @@ const mapStateToProps = state => {
 	};
 };
 
+const mapDispatchToProps = {
+	setSynthPair,
+};
+
 PairList.propTypes = {
 	synths: PropTypes.array.isRequired,
 	rates: PropTypes.array.isRequired,
 };
 
-export default connect(mapStateToProps, null)(PairList);
+export default connect(mapStateToProps, mapDispatchToProps)(PairList);

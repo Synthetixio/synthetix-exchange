@@ -31,7 +31,7 @@ export const ButtonFilterWithDropdown = ({ children, active, synths = [], onClic
 										onClick(synth);
 									}}
 								>
-									<SynthIcon src={`/images/synths/${synth.name}-icon.svg`}></SynthIcon>
+									<SynthIcon src={`/images/synths/${synth.name}.svg`}></SynthIcon>
 									<SynthLabel>{synth.name}</SynthLabel>
 								</Synth>
 							);
@@ -89,8 +89,8 @@ const Synth = styled.li`
 `;
 
 const SynthIcon = styled.img`
-	width: 18px;
-	height: 18px;
+	width: 22px;
+	height: 22px;
 	margin-right: 8px;
 `;
 
