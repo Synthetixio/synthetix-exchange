@@ -19,11 +19,11 @@
 		"redux-thunk": "~2.3.0",
 		"styled-components": "^4.4.1",
 		"styled-system": "^5.1.2",
-		"synthetix-js": "2.13.0-gas-opt-2"
+		"synthetix-js": "2.14.0"
 	},
 	"scripts": {
 		"clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",
-		"start": "node scripts/start.js",
+		"start": "node --max-old-space-size=4096 scripts/start.js",
 		"build": "node scripts/build.js",
 		"test": "node scripts/test.js",
 		"lint": "eslint .",

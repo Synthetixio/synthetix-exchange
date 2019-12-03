@@ -4,14 +4,19 @@ import styled, { withTheme } from 'styled-components';
 import GenericInput from './Input';
 import { DataMedium } from '../Typography';
 
-const Input = ({ synth = 'sBTC', theme: { colors } }) => {
+const Input = ({ synth = 'sUSD', theme: { colors }, onAmountChange, amount }) => {
 	return (
 		<Container>
 			<Synth>
-				<SynthIcon src={`/images/synths/${synth}-icon.svg`}></SynthIcon>
+				<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
 				<SynthName>{synth}</SynthName>
 			</Synth>
-			<GenericInput placeholder="0" color={colors.fontPrimary}></GenericInput>
+			<GenericInput
+				value={amount}
+				placeholder="0"
+				color={colors.fontPrimary}
+				onChange={e => onAmountChange(e.target.value)}
+			></GenericInput>
 		</Container>
 	);
 };
@@ -31,8 +36,8 @@ const Synth = styled.div`
 `;
 
 const SynthIcon = styled.img`
-	width: 16px;
-	height: 16px;
+	width: 22px;
+	height: 22px;
 	margin-right: 6px;
 `;
 

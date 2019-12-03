@@ -10,44 +10,16 @@ export default combineReducers({
 });
 
 // UI REDUCERS
-export const getCurrentScreen = state => {
-	return state.ui.currentScreen;
-};
-
-export const getCurrentExchangeMode = state => {
-	return state.ui.exchangeMode;
-};
-
-export const walletSelectorPopupIsVisible = state => {
-	return state.ui.walletSelectorPopupIsVisible;
-};
-
-export const transactionStatusPopupIsVisible = state => {
-	return state.ui.transactionStatusPopupIsVisible;
-};
-
-export const testnetPopupIsVisible = state => {
-	return state.ui.testnetPopupIsVisible;
+export const walletPopupIsVisible = state => {
+	return state.ui.walletPopupIsVisible;
 };
 
 export const depotPopupIsVisible = state => {
 	return state.ui.depotPopupIsVisible;
 };
 
-export const feedbackPopupIsVisible = state => {
-	return state.ui.feedbackPopupIsVisible;
-};
-
-export const walkthroughPopupIsVisible = state => {
-	return state.ui.walkthroughPopupIsVisible;
-};
-
 export const getCurrentTheme = state => {
 	return state.ui.theme;
-};
-
-export const loadingScreenIsVisible = state => {
-	return state.ui.loadingScreenIsVisible;
 };
 
 // WALLET REDUCERS
@@ -71,12 +43,8 @@ export const getAvailableSynths = state => {
 	return state.synths.availableSynths;
 };
 
-export const getSynthToBuy = state => {
-	return state.synths.toSynth;
-};
-
-export const getSynthToExchange = state => {
-	return state.synths.fromSynth;
+export const getSynthPair = state => {
+	return { base: state.synths.baseSynth, quote: state.synths.quoteSynth };
 };
 
 export const getExchangeRates = state => {

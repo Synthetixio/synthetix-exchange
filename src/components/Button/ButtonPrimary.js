@@ -19,4 +19,12 @@ const ButtonPrimary = styled.button`
 	line-height: 44px;
 `;
 
+export const ButtonPrimarySmall = styled(ButtonPrimary)`
+	height: 32px;
+	font-size: 14px;
+	padding: 0 12px;
+	width: auto;
+	line-height: 34px;
+`;
+
 export default ButtonPrimary;

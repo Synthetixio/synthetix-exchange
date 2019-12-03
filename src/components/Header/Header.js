@@ -1,13 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
 
+import { ButtonPrimarySmall } from '../Button';
 import { LabelMedium, DataMedium } from '../Typography';
+import { toggleWalletPopup } from '../../ducks/ui';
 
-const Header = () => {
+const Header = ({ toggleWalletPopup }) => {
 	return (
 		<Container>
 			<HeaderBlock>
@@ -31,6 +34,9 @@ const Header = () => {
 					<HeaderLabel>Support</HeaderLabel>
 				</HeaderLink>
 				<ThemeSwitcher />
+				<ButtonPrimarySmall onClick={() => toggleWalletPopup(true)}>
+					Connect wallet
+				</ButtonPrimarySmall>
 			</HeaderBlock>
 		</Container>
 	);
@@ -56,6 +62,9 @@ const Network = styled.div`
 const HeaderBlock = styled.div`
 	display: flex;
 	align-items: center;
+	& > * {
+		margin: 0 12px;
+	}
 `;
 
 const HeaderLabel = styled(LabelMedium)`
@@ -68,7 +77,6 @@ const HeaderLabel = styled(LabelMedium)`
 
 const HeaderLink = styled(Link)`
 	text-decoration: none;
-	margin: 0 24px;
 	&:hover {
 		text-decoration: underline;
 	}
@@ -79,7 +87,16 @@ const NetworkLabel = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontTertiary};
 `;
 
-export default Header;
+const mapStateToProps = () => {
+	return {};
+};
+
+const mapDispatchToProps = {
+	toggleWalletPopup,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
+
 // import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
 

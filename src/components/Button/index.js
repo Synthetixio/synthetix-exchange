@@ -1,4 +1,4 @@
 import { ButtonFilter, ButtonFilterWithDropdown } from './ButtonFilter';
-import ButtonPrimary from './ButtonPrimary';
+import ButtonPrimary, { ButtonPrimarySmall } from './ButtonPrimary';
 
-export { ButtonFilter, ButtonPrimary, ButtonFilterWithDropdown };
+export { ButtonFilter, ButtonPrimary, ButtonPrimarySmall, ButtonFilterWithDropdown };

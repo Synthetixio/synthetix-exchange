@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import styled, { withTheme } from 'styled-components';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
+import { getSynthPair, getExchangeRates } from '../../ducks';
+import { setSynthPair } from '../../ducks/synths';
 
-const TradeBox = ({ theme: { colors } }) => {
+/* eslint-disable */
+const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
+	const { base, quote } = synthPair;
+	const [baseAmount, setBaseAmount] = useState('');
+	const [quoteAmount, setQuoteAmount] = useState('');
 	return (
 		<Container>
 			<Header>
-				<HeadingSmall>sBTC/sETH</HeadingSmall>
-				<ButtonFilter height={'22px'}>
+				<HeadingSmall>{`${base}/${quote}`}</HeadingSmall>
+				<ButtonFilter
+					height={'22px'}
+					onClick={() => {
+						setBaseAmount(0);
+						setQuoteAmount(0);
+						setSynthPair({ quote: base, base: quote });
+					}}
+				>
 					<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 				</ButtonFilter>
 			</Header>
@@ -22,7 +36,15 @@ const TradeBox = ({ theme: { colors } }) => {
 						</DataMedium>
 						<Balance>Balance: 0.14 sETH</Balance>
 					</InputInfo>
-					<TradeInput></TradeInput>
+					<TradeInput
+						synth={base}
+						amount={baseAmount}
+						onAmountChange={value => {
+							const convertedRate = value * rates[base][quote];
+							setBaseAmount(value);
+							setQuoteAmount(convertedRate);
+						}}
+					/>
 				</InputBlock>
 				<InputBlock>
 					<InputInfo>
@@ -31,7 +53,15 @@ const TradeBox = ({ theme: { colors } }) => {
 						</DataMedium>
 						<Balance>Balance: 0.14 sETH</Balance>
 					</InputInfo>
-					<TradeInput></TradeInput>
+					<TradeInput
+						synth={quote}
+						amount={quoteAmount}
+						onAmountChange={value => {
+							const convertedRate = value * rates[quote][base];
+							setQuoteAmount(value);
+							setBaseAmount(convertedRate);
+						}}
+					/>
 				</InputBlock>
 				<ButtonRow>
 					{['25', '50', '75', '100'].map(amount => {
@@ -138,4 +168,16 @@ const NetworkDataRow = styled.div`
 const NetworkData = styled(DataSmall)`
 	color: ${props => props.theme.colors.fontTertiary};
 `;
-export default withTheme(TradeBox);
+
+const mapStateToProps = state => {
+	return {
+		synthPair: getSynthPair(state),
+		rates: getExchangeRates(state),
+	};
+};
+
+const mapDispatchToProps = {
+	setSynthPair,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(TradeBox));

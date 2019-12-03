@@ -12,9 +12,12 @@ import OrderBook from '../../components/OrderBook';
 import TradeBox from '../../components/TradeBox';
 import WalletBox from '../../components/WalletBox';
 
+import WalletPopup from '../../components/WalletPopup';
+
 const Trade = () => {
 	return (
 		<MainLayout>
+			<WalletPopup />
 			<Header />
 			<TradeLayout>
 				<Container>
@@ -59,6 +62,7 @@ const MainLayout = styled.div`
 	width: 100%;
 	height: 100%;
 	color: white;
+	position: relative;
 `;
 
 const TradeLayout = styled.div`
