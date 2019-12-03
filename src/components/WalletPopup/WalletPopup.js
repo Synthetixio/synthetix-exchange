@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { connect } from 'react-redux';
 
@@ -6,15 +6,17 @@ import { walletPopupIsVisible } from '../../ducks';
 import { toggleWalletPopup } from '../../ducks/ui';
 
 import WalletTypeSelector from './WalletTypeSelector';
+import WalletAddressSelector from './WalletAddressSelector';
 
 const WalletPopup = ({ popupIsVisible, toggleWalletPopup }) => {
+	const [CurrentScreen, setCurrentScreen] = useState(WalletTypeSelector);
 	return (
 		<Popup isVisible={popupIsVisible}>
 			<Container>
 				<CloseButton onClick={() => toggleWalletPopup(false)}>
 					<CloseIcon src="/images/close-cross.svg" />
 				</CloseButton>
-				<WalletTypeSelector />
+				<CurrentScreen selectAddressScreen={() => setCurrentScreen(WalletAddressSelector)} />
 			</Container>
 		</Popup>
 	);
@@ -42,14 +44,13 @@ const Popup = styled.div`
 	z-index: 1;
 	background-color: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
-	display: ${props => (props.isVisible ? 'block' : 'none')}
-	animation: ${props => (props.isVisible ? fadeIn : fadeOut)} .2s ease-in;
+	display: ${props => (props.isVisible ? 'block' : 'none')};
+	animation: ${props => (props.isVisible ? fadeIn : fadeOut)} 0.2s ease-in;
 	width: 100%;
 	height: 100vh;
 	top: 0;
 	left: 0;
 	position: relative;
-
 `;
 
 const Container = styled.div`

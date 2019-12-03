@@ -23,7 +23,7 @@ export const getCurrentTheme = state => {
 };
 
 // WALLET REDUCERS
-export const getCurrentWalletInfo = state => {
+export const getWalletInfo = state => {
 	return state.wallet;
 };
 

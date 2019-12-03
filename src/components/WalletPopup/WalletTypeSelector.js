@@ -1,18 +1,49 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
+
+import snxJSConnector, { connectToWallet } from '../../utils/snxJSConnector';
+import { hasWeb3, SUPPORTED_WALLETS, onMetamaskAccountChange } from '../../utils/networkUtils';
+import { updateWalletStatus } from '../../ducks/wallet';
+import { toggleWalletPopup } from '../../ducks/ui';
+import { getWalletInfo } from '../../ducks';
 
 import { HeadingMedium } from '../Typography';
 
-const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger', 'Coinbase'];
-
-const WalletTypeSelector = () => {
+const WalletTypeSelector = ({
+	updateWalletStatus,
+	toggleWalletPopup,
+	selectAddressScreen,
+	walletInfo: { derivationPath },
+}) => {
+	const onWalletClick = async ({ wallet, derivationPath }) => {
+		const walletStatus = await connectToWallet({ wallet, derivationPath });
+		updateWalletStatus({ ...walletStatus, availableWallets: [] });
+		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
+			if (walletStatus.walletType === 'Metamask') {
+				onMetamaskAccountChange(async () => {
+					const address = await snxJSConnector.signer.getNextAddresses();
+					const signer = new snxJSConnector.signers['Metamask']({});
+					snxJSConnector.setContractSettings({
+						networkId: walletStatus.networkId,
+						signer,
+					});
+					if (address && address[0]) {
+						updateWalletStatus({ currentWallet: address[0] });
+					}
+				});
+			}
+			toggleWalletPopup(false);
+		} else selectAddressScreen();
+	};
 	return (
 		<Container>
 			<HeadingMedium>Connect your wallet</HeadingMedium>
 			<Wallets>
 				{SUPPORTED_WALLETS.map(wallet => {
+					const noMetamask = wallet === 'Metamask' && !hasWeb3();
 					return (
-						<Wallet onClick={() => null}>
+						<Wallet disabled={noMetamask} onClick={() => onWalletClick({ wallet, derivationPath })}>
 							<WalletIcon src={`/images/wallets/${wallet.toLowerCase()}.svg`} />
 							<WalletLabel>{wallet}</WalletLabel>
 						</Wallet>
@@ -48,6 +79,10 @@ const Wallet = styled.button`
 	&:hover {
 		transform: scale(1.1);
 	}
+	&:disabled {
+		opacity: 0.5;
+		transform: none;
+	}
 	transition: transform 0.2s ease-in-out;
 `;
 
@@ -64,4 +99,15 @@ const WalletLabel = styled.h3`
 	font-size: 24px;
 `;
 
-export default WalletTypeSelector;
+const mapStateToProps = state => {
+	return {
+		walletInfo: getWalletInfo(state),
+	};
+};
+
+const mapDispatchToProps = {
+	updateWalletStatus,
+	toggleWalletPopup,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletTypeSelector);

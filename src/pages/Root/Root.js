@@ -1,10 +1,10 @@
+/* eslint-disable */
 import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import synthetixJsTools from '../../synthetixJsTool';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
@@ -12,7 +12,7 @@ import { getExchangeData } from '../../dataFetcher';
 
 import { getAvailableSynths, getCurrentTheme } from '../../ducks';
 import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { connectToWallet, updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
+// import { updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
 
 import Trade from '../Trade';
 import Home from '../Home';
@@ -33,8 +33,8 @@ const Root = ({
 			synths
 		);
 		updateExchangeRates(exchangeRates);
-		updateExchangeFeeRate(exchangeFeeRate);
-		updateGasAndSpeedInfo(networkPrices);
+		// updateExchangeFeeRate(exchangeFeeRate);
+		// updateGasAndSpeedInfo(networkPrices);
 		updateFrozenSynths(frozenSynths);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -93,21 +93,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 	updateExchangeRates,
 	setAvailableSynths,
-	connectToWallet,
-	updateGasAndSpeedInfo,
+	// updateGasAndSpeedInfo,
 	updateFrozenSynths,
-	updateExchangeFeeRate,
-};
-
-Root.propTypes = {
-	updateExchangeRates: PropTypes.func.isRequired,
-	setAvailableSynths: PropTypes.func.isRequired,
-	availableSynths: PropTypes.array.isRequired,
-	connectToWallet: PropTypes.func.isRequired,
-	updateGasAndSpeedInfo: PropTypes.func.isRequired,
-	updateFrozenSynths: PropTypes.func.isRequired,
-	updateExchangeFeeRate: PropTypes.func.isRequired,
-	currentTheme: PropTypes.string.isRequired,
+	// updateExchangeFeeRate,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));
