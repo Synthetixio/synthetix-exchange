@@ -53,6 +53,9 @@ import styles from './root.module.scss';
 class Root extends Component {
   constructor() {
     super();
+    this.state = {
+      isOnMaintenance: false,
+    };
     this.refreshData = this.refreshData.bind(this);
   }
 
@@ -125,11 +128,23 @@ class Root extends Component {
     updateFrozenSynths(frozenSynths);
   }
 
+  async getAppState() {
+    if (process.env.REACT_APP_CONTEXT !== 'production') return;
+    try {
+      const isOnMaintenance = await synthetixJsTools.synthetixJs.DappMaintenance.isPausedSX();
+      this.setState({ isOnMaintenance });
+    } catch (e) {
+      console.log(e);
+      this.setState({ isOnMaintenance: false });
+    }
+  }
+
   refreshData() {
     this.updateRates();
     this.getFrozenSynths();
     this.updateGasAndSpeedPrices();
     this.updateExchangeFeeRate();
+    this.getAppState();
   }
 
   async componentDidMount() {
@@ -166,8 +181,6 @@ class Root extends Component {
         return <Transactions />;
       case 'markets':
         return <Markets />;
-      case 'appDown':
-        return <AppDown />;
       // Disabled until the next trading comp
       // case 'tradingComp':
       //   return <TradingComp />;
@@ -205,19 +218,23 @@ class Root extends Component {
       depotPopupIsVisible,
       feedbackPopupIsVisible,
       walkthroughPopupIsVisible,
-      currentScreen,
     } = this.props;
+    const { isOnMaintenance } = this.state;
     const overlayIsVisible = this.hasOpenPopup();
     return (
       <div className={styles.root}>
         <Overlay isVisible={overlayIsVisible} />
-        <div className={styles.rootInner}>
-          {currentScreen !== 'appDown' ? <Header /> : null}
-          <div className={styles.mainComponentWrapper}>
-            {this.renderScreen()}
+        {!isOnMaintenance ? (
+          <div className={styles.rootInner}>
+            <Header />
+            <div className={styles.mainComponentWrapper}>
+              {this.renderScreen()}
+            </div>
+            <Footer />
           </div>
-          {currentScreen !== 'appDown' ? <Footer /> : null}
-        </div>
+        ) : (
+          <AppDown />
+        )}
         <WalletSelectorPopup isVisible={walletSelectorPopupIsVisible} />
         <TransactionStatusPopup isVisible={transactionStatusPopupIsVisible} />
         <TestnetPopup isVisible={testnetPopupIsVisible} />
@@ -275,9 +292,4 @@ Root.propTypes = {
   updateExchangeFeeRate: PropTypes.func.isRequired,
 };
 
-export default hot(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Root)
-);
+export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));
