@@ -72,7 +72,7 @@ const Root = ({
 								<Trade />
 							</Route>
 							<Route path="/">
-								<Home />
+								<Trade />
 							</Route>
 						</Switch>
 					</RootContainer>

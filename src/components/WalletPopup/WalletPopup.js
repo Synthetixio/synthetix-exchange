@@ -59,7 +59,6 @@ const Popup = styled.div`
 	height: 100vh;
 	top: 0;
 	left: 0;
-	position: relative;
 `;
 
 const Container = styled.div`
