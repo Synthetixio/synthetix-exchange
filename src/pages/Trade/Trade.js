@@ -20,7 +20,7 @@ const Trade = () => {
 			<Header />
 			<TradeLayout>
 				<Container>
-					<BoxContainer>
+					<BoxContainer height={'100%'}>
 						<PairList />
 					</BoxContainer>
 				</Container>
@@ -28,7 +28,7 @@ const Trade = () => {
 					<BoxContainer margin="0 0 8px 0">
 						<ChartPanel />
 					</BoxContainer>
-					<BoxContainer style={{ flex: 1 }}>
+					<BoxContainer height={'100%'}>
 						<OrderBook />
 					</BoxContainer>
 				</CentralContainer>
@@ -36,7 +36,7 @@ const Trade = () => {
 					<BoxContainer margin="0 0 8px 0">
 						<TradeBox />
 					</BoxContainer>
-					<BoxContainer style={{ flex: 1 }}>
+					<BoxContainer height={'100%'}>
 						<WalletBox />
 					</BoxContainer>
 				</SmallContainer>
@@ -55,7 +55,7 @@ const MainLayout = styled.div`
 	display: flex;
 	flex-flow: column;
 	width: 100%;
-	height: 100%;
+	height: 100vh;
 	color: white;
 	position: relative;
 `;
@@ -64,6 +64,7 @@ const TradeLayout = styled.div`
 	display: flex;
 	width: 100%;
 	flex: 1;
+	height: 100%;
 `;
 
 const Container = styled.div`
@@ -73,6 +74,7 @@ const Container = styled.div`
 	display: flex;
 	flex-direction: column;
 	margin: 8px;
+	height: calc(100% - 16px);
 `;
 
 const SmallContainer = styled(Container)`
@@ -88,7 +90,7 @@ const CentralContainer = styled.div`
 `;
 
 const BoxContainer = styled.div`
-	margin: ${props => (props.margin ? props.margin : '0')}
+	margin: ${props => (props.margin ? props.margin : '0')};
 	height: ${props => (props.height ? props.height : 'auto')};
 `;
 

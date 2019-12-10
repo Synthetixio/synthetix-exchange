@@ -127,6 +127,9 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 
 const Container = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL2};
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 `;
 const ContainerHeader = styled.div`
 	padding: 12px;
@@ -151,6 +154,7 @@ const ButtonRow = styled.div`
 const List = styled.ul`
 	margin: 0 10px;
 	padding: 0;
+	overflow: auto;
 `;
 
 const Pair = styled.li`

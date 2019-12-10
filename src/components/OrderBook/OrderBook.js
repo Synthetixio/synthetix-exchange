@@ -77,7 +77,10 @@ const OrderBook = ({ theme: { colors } }) => {
 };
 
 const Container = styled.div`
+	height: 100%;
 	background-color: ${props => props.theme.colors.surfaceL1};
+	display: flex;
+	flex-direction: column;
 `;
 
 const Tabs = styled.div`
@@ -111,7 +114,9 @@ const Tab = styled.button`
 	}
 `;
 
-const Book = styled.div``;
+const Book = styled.div`
+	height: 100%;
+`;
 
 const SortIcon = styled.img`
 	width: 6.5px;
