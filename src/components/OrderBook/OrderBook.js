@@ -11,7 +11,12 @@ const OrderBook = ({ theme: { colors } }) => {
 			<Tabs>
 				{['Your orders', 'Your trades', 'Recent trades', '', 'Show all trades'].map(tab => {
 					return (
-						<Tab onClick={() => setActiveTab(tab)} hidden={!tab} active={tab === activeTab}>
+						<Tab
+							key={tab}
+							onClick={() => setActiveTab(tab)}
+							hidden={!tab}
+							active={tab === activeTab}
+						>
 							<DataSmall color={tab === activeTab ? colors.fontPrimary : colors.fontTertiary}>
 								{tab}
 							</DataSmall>
@@ -23,9 +28,9 @@ const OrderBook = ({ theme: { colors } }) => {
 				<Table cellSpacing="0">
 					<Thead>
 						<Tr>
-							{[1, 2, 3, 4, 5, 6, 7].map(() => {
+							{[1, 2, 3, 4, 5, 6, 7].map(i => {
 								return (
-									<Th>
+									<Th key={i}>
 										<ButtonSort>
 											<DataSmall color={colors.fontTertiary}>Date Time</DataSmall>
 											<SortIcon src={'/images/sort-arrows.svg'} />
@@ -36,9 +41,9 @@ const OrderBook = ({ theme: { colors } }) => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{[1, 2, 3, 4, 5, 6, 7].map(() => {
+						{[1, 2, 3, 4, 5, 6, 7].map(i => {
 							return (
-								<Tr>
+								<Tr key={i}>
 									<Td>
 										<DataLabel>blh fsdf fdsd</DataLabel>
 									</Td>

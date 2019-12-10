@@ -22,9 +22,10 @@ export const ButtonFilterWithDropdown = ({ children, active, synths = [], onClic
 				</Button>
 				<DropDown isVisible={isVisible}>
 					<List>
-						{synths.map(synth => {
+						{synths.map((synth, i) => {
 							return (
 								<Synth
+									key={i}
 									isActive={synth.name === quote}
 									onClick={() => {
 										setIsVisible(false);

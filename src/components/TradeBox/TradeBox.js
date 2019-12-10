@@ -64,18 +64,18 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
 					/>
 				</InputBlock>
 				<ButtonRow>
-					{['25', '50', '75', '100'].map(amount => {
+					{['25', '50', '75', '100'].map((amount, i) => {
 						return (
-							<ButtonAmount>
+							<ButtonAmount key={i}>
 								<DataSmall color={colors.fontTertiary}>{amount}%</DataSmall>
 							</ButtonAmount>
 						);
 					})}
 				</ButtonRow>
 				<NetworkInfo>
-					{['Price', '$USD Value', 'Volume', 'Fee', 'Gas'].map(data => {
+					{['Price', '$USD Value', 'Volume', 'Fee', 'Gas'].map((data, i) => {
 						return (
-							<NetworkDataRow>
+							<NetworkDataRow key={i}>
 								<NetworkData>{data}</NetworkData>
 								<NetworkData>$100,000,000</NetworkData>
 							</NetworkDataRow>

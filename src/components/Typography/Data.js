@@ -5,6 +5,7 @@ export const DataLarge = styled.span`
 	font-size: 18px;
 	text-transform: uppercase;
 	color: ${props => props.theme.colors.fontPrimary};
+	${typography}
 `;
 
 export const DataMedium = styled.span`

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { SearchInput } from '../Input';
 
@@ -55,9 +54,10 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 			<ContainerHeader>
 				<SearchInput onChange={e => setSearch(e.target.value)} />
 				<ButtonRow>
-					{FILTERS.map(filter => {
+					{FILTERS.map((filter, i) => {
 						return ['sFIAT', 'Other'].includes(filter) ? (
 							<ButtonFilterWithDropdown
+								key={i}
 								quote={quote}
 								onClick={synth => setQuote(synth.name)}
 								synths={
@@ -69,7 +69,7 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 								{filter}
 							</ButtonFilterWithDropdown>
 						) : (
-							<ButtonFilter active={filter === quote} onClick={() => setQuote(filter)}>
+							<ButtonFilter key={i} active={filter === quote} onClick={() => setQuote(filter)}>
 								{filter}
 							</ButtonFilter>
 						);
@@ -80,9 +80,9 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 						{ label: 'Pair', value: 'name' },
 						{ label: 'Price', value: 'rate' },
 						{ label: 'Change', value: 'change' },
-					].map(column => {
+					].map((column, i) => {
 						return (
-							<ListHeaderElement>
+							<ListHeaderElement key={i}>
 								<ButtonSort
 									onClick={() =>
 										setSort(() => {
@@ -104,7 +104,7 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 			<List>
 				{sortPairsBy(synthList, sort).map((synth, i) => {
 					return (
-						<Pair onClick={() => setSynthPair({ base: synth.name, quote })}>
+						<Pair key={i} onClick={() => setSynthPair({ base: synth.name, quote })}>
 							<PairElement>
 								<SynthIcon src={`/images/synths/${synth.name}.svg`} />
 								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
@@ -231,11 +231,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
 	setSynthPair,
-};
-
-PairList.propTypes = {
-	synths: PropTypes.array.isRequired,
-	rates: PropTypes.array.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PairList);

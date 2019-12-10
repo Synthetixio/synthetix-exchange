@@ -9,6 +9,7 @@ const defaultState = {
 	unlocked: false,
 	walletPaginatorIndex: 0,
 	availableWallets: [],
+	currentWallet: null,
 	derivationPath: localStorage.getItem('derivationPath'),
 };
 
@@ -48,12 +49,15 @@ export const derivationPathChange = (signerOptions, derivationPath) => {
 	return setDerivationPath(derivationPath);
 };
 export const updateWalletStatus = walletStatus => {
+	const payload = walletStatus.currentWallet
+		? {
+				...walletStatus,
+				currentWallet: walletStatus.currentWallet ? getAddress(walletStatus.currentWallet) : null,
+		  }
+		: { ...walletStatus };
 	return {
 		type: UPDATE_WALLET_STATUS,
-		payload: {
-			...walletStatus,
-			currentWallet: walletStatus.currentWallet ? getAddress(walletStatus.currentWallet) : null,
-		},
+		payload,
 	};
 };
 

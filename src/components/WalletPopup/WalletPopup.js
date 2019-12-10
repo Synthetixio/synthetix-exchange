@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { connect } from 'react-redux';
 
-import { walletPopupIsVisible } from '../../ducks';
+import { walletPopupIsVisible, getWalletInfo } from '../../ducks';
 import { toggleWalletPopup } from '../../ducks/ui';
 
 import WalletTypeSelector from './WalletTypeSelector';
 import WalletAddressSelector from './WalletAddressSelector';
 
-const WalletPopup = ({ popupIsVisible, toggleWalletPopup }) => {
+const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
+	const { currentWallet } = walletInfo;
 	const [CurrentScreen, setCurrentScreen] = useState(WalletTypeSelector);
+
+	useEffect(() => {
+		if (popupIsVisible) {
+			setCurrentScreen(currentWallet ? WalletAddressSelector : WalletTypeSelector);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [popupIsVisible]);
+
 	return (
 		<Popup isVisible={popupIsVisible}>
 			<Container>
@@ -81,6 +90,7 @@ const CloseIcon = styled.img`
 const mapStateToProps = state => {
 	return {
 		popupIsVisible: walletPopupIsVisible(state),
+		walletInfo: getWalletInfo(state),
 	};
 };
 

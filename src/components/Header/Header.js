@@ -5,18 +5,21 @@ import styled from 'styled-components';
 
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
+import WalletAddressWidget from '../WalletAddressWidget';
 
 import { ButtonPrimarySmall } from '../Button';
 import { LabelMedium, DataMedium } from '../Typography';
 import { toggleWalletPopup } from '../../ducks/ui';
+import { getWalletInfo } from '../../ducks';
 
-const Header = ({ toggleWalletPopup }) => {
+const Header = ({ toggleWalletPopup, walletInfo }) => {
+	const { currentWallet, networkName } = walletInfo;
 	return (
 		<Container>
 			<HeaderBlock>
 				<Logo />
 				<Network>
-					<NetworkLabel>mainnet</NetworkLabel>
+					<NetworkLabel>{networkName || 'mainnet'}</NetworkLabel>
 				</Network>
 			</HeaderBlock>
 			<HeaderBlock>
@@ -34,16 +37,20 @@ const Header = ({ toggleWalletPopup }) => {
 					<HeaderLabel>Support</HeaderLabel>
 				</HeaderLink>
 				<ThemeSwitcher />
-				<ButtonPrimarySmall onClick={() => toggleWalletPopup(true)}>
-					Connect wallet
-				</ButtonPrimarySmall>
+				{currentWallet ? (
+					<WalletAddressWidget />
+				) : (
+					<ButtonPrimarySmall onClick={() => toggleWalletPopup(true)}>
+						Connect wallet
+					</ButtonPrimarySmall>
+				)}
 			</HeaderBlock>
 		</Container>
 	);
 };
 
 const Container = styled.div`
-	height: 56px;
+	height: 74px;
 	background-color: ${props => props.theme.colors.surfaceL3};
 	display: flex;
 	align-items: center;
@@ -87,8 +94,10 @@ const NetworkLabel = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontTertiary};
 `;
 
-const mapStateToProps = () => {
-	return {};
+const mapStateToProps = state => {
+	return {
+		walletInfo: getWalletInfo(state),
+	};
 };
 
 const mapDispatchToProps = {

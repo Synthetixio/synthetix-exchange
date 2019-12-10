@@ -23,8 +23,12 @@ const ChartPanel = ({ theme }) => {
 					</Link>
 				</HeaderBlock>
 				<HeaderBlock>
-					{['1W', '1D', '4H', '1H'].map(time => {
-						return <ButtonFilter height={'22px'}>{time}</ButtonFilter>;
+					{['1W', '1D', '4H', '1H'].map((time, i) => {
+						return (
+							<ButtonFilter key={i} height={'22px'}>
+								{time}
+							</ButtonFilter>
+						);
 					})}
 				</HeaderBlock>
 			</Header>

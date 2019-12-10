@@ -24,12 +24,12 @@ const ThemeSwitcher = ({ currentTheme, toggleTheme }) => {
 };
 
 const ThemeSwitcherButton = styled.button`
-	width: 48px;
-	height: 24px;
+	width: 62px;
+	height: 32px;
 	background-color: ${props => props.theme.colors.accentDark};
 	display: flex;
 	align-items: center;
-	padding: 0 6px;
+	padding: 0 8px;
 	borde-radius: 1px;
 	justify-content: space-between;
 	border-radius: 1px;

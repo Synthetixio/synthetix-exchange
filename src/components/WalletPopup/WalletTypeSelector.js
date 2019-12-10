@@ -40,10 +40,14 @@ const WalletTypeSelector = ({
 		<Container>
 			<HeadingMedium>Connect your wallet</HeadingMedium>
 			<Wallets>
-				{SUPPORTED_WALLETS.map(wallet => {
+				{SUPPORTED_WALLETS.map((wallet, i) => {
 					const noMetamask = wallet === 'Metamask' && !hasWeb3();
 					return (
-						<Wallet disabled={noMetamask} onClick={() => onWalletClick({ wallet, derivationPath })}>
+						<Wallet
+							key={i}
+							disabled={noMetamask}
+							onClick={() => onWalletClick({ wallet, derivationPath })}
+						>
 							<WalletIcon src={`/images/wallets/${wallet.toLowerCase()}.svg`} />
 							<WalletLabel>{wallet}</WalletLabel>
 						</Wallet>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { getAvailableSynths } from '../../ducks';
@@ -50,10 +49,6 @@ const mapStateToProps = state => {
 	return {
 		synths: getAvailableSynths(state),
 	};
-};
-
-Trade.propTypes = {
-	synths: PropTypes.array.isRequired,
 };
 
 const MainLayout = styled.div`

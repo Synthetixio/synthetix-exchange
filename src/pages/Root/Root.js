@@ -12,6 +12,7 @@ import { getExchangeData } from '../../dataFetcher';
 
 import { getAvailableSynths, getCurrentTheme } from '../../ducks';
 import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import { updateWalletStatus } from '../../ducks/wallet';
 // import { updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
 
 import Trade from '../Trade';
@@ -25,6 +26,7 @@ const Root = ({
 	updateGasAndSpeedInfo,
 	updateExchangeFeeRate,
 	updateFrozenSynths,
+	updateWalletStatus,
 	currentTheme,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
@@ -40,8 +42,9 @@ const Root = ({
 	}, []);
 	useEffect(() => {
 		const init = async () => {
-			const { networkId } = await getEthereumNetwork();
+			const { networkId, name } = await getEthereumNetwork();
 			synthetixJsTools.setContractSettings({ networkId });
+			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
 			const synths = synthetixJsTools.synthetixJs.contractSettings.synths.filter(
 				synth => synth.asset
 			);
@@ -95,6 +98,7 @@ const mapDispatchToProps = {
 	setAvailableSynths,
 	// updateGasAndSpeedInfo,
 	updateFrozenSynths,
+	updateWalletStatus,
 	// updateExchangeFeeRate,
 };
 
