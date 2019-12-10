@@ -43,13 +43,13 @@ const WalletBox = ({ theme: { colors } }) => {
 							return (
 								<Tr key={i}>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>100,000</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>100,000</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>100,000</DataLabel>
 									</Td>
 								</Tr>
 							);

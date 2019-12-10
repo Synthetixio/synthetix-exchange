@@ -7,6 +7,7 @@ export const Table = styled.table`
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	background-color: ${props => props.theme.colors.surfaceL2};
 `;
 
 export const Thead = styled.thead`
@@ -14,7 +15,6 @@ export const Thead = styled.thead`
 `;
 
 export const Tbody = styled.tbody`
-	background-color: ${props => props.theme.colors.surfaceL2};
 	overflow: auto;
 `;
 
