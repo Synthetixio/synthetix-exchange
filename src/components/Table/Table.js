@@ -4,6 +4,9 @@ import { DataSmall } from '../Typography';
 
 export const Table = styled.table`
 	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 `;
 
 export const Thead = styled.thead`
@@ -12,6 +15,7 @@ export const Thead = styled.thead`
 
 export const Tbody = styled.tbody`
 	background-color: ${props => props.theme.colors.surfaceL2};
+	overflow: auto;
 `;
 
 export const Tr = styled.tr``;

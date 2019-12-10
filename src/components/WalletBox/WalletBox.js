@@ -67,6 +67,7 @@ const Container = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL2};
 	display: flex;
 	flex-direction: column;
+	height: 100%;
 `;
 
 const Header = styled.div`
@@ -77,7 +78,9 @@ const Header = styled.div`
 	text-transform: uppercase;
 `;
 
-const Body = styled.div``;
+const Body = styled.div`
+	height: 100%;
+`;
 
 const HeaderBlock = styled.div`
 	width: 100%;
