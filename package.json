@@ -20,7 +20,7 @@
 		"redux-thunk": "~2.3.0",
 		"styled-components": "^4.4.1",
 		"styled-system": "^5.1.2",
-		"synthetix-data": "^2.0.0",
+		"synthetix-data": "^2.0.1",
 		"synthetix-js": "^2.15.0"
 	},
 	"scripts": {
