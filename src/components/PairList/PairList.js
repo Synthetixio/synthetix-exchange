@@ -175,6 +175,7 @@ const Pair = styled.li`
 `;
 
 const PairElement = styled.div`
+	white-space: nowrap;
 	flex: 1;
 	justify-content: flex-end;
 	display: flex;

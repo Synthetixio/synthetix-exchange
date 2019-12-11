@@ -1,12 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { format, subHours } from 'date-fns';
 import styled, { withTheme } from 'styled-components';
+import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
+import snxData from 'synthetix-data';
+
+import { getSynthPair } from '../../ducks';
 
 import { HeadingSmall, LabelSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
+import Spinner from '../Spinner';
 
-const ChartPanel = ({ theme }) => {
+import './chart.scss';
+
+const PERIODS = [
+	{ value: 168, label: '1W' },
+	{ value: 24, label: '1D' },
+	{ value: 4, label: '4H' },
+	{ value: 1, label: '1H' },
+];
+
+const ChartPanel = ({ theme, synthPair: { base } }) => {
 	const colors = theme.colors;
+	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [period, setPeriod] = useState({ value: 24, label: '1D' });
+	useEffect(() => {
+		const fetchData = async () => {
+			if (!base) return;
+			setIsLoading(true);
+			const now = new Date().getTime();
+			const results = await snxData.rate.updates({
+				synth: base,
+				maxTimestamp: Math.trunc(now / 1000),
+				minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
+				max: 1000,
+			});
+			setData(results);
+			setIsLoading(false);
+		};
+		fetchData();
+	}, [period, base]);
 	return (
 		<Container>
 			<Header>
@@ -23,17 +58,58 @@ const ChartPanel = ({ theme }) => {
 					</Link>
 				</HeaderBlock>
 				<HeaderBlock>
-					{['1W', '1D', '4H', '1H'].map((time, i) => {
+					{PERIODS.map((time, i) => {
 						return (
-							<ButtonFilter key={i} height={'22px'}>
-								{time}
+							<ButtonFilter
+								active={time.value === period.value}
+								onClick={() => setPeriod(time)}
+								key={i}
+								height={'22px'}
+							>
+								{time.label}
 							</ButtonFilter>
 						);
 					})}
 				</HeaderBlock>
 			</Header>
 			<Body>
-				<Chart></Chart>
+				{isLoading ? (
+					<SpinnerContainer>
+						<Spinner small={true} />
+					</SpinnerContainer>
+				) : (
+					<ResponsiveContainer height={250}>
+						<AreaChart data={data} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
+							<defs>
+								<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+									<stop offset="5%" stopColor={colors.hyperLink} stopOpacity={0.5} />
+									<stop offset="95%" stopColor={colors.hyperLink} stopOpacity={0} />
+								</linearGradient>
+							</defs>
+							<XAxis
+								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+								dataKey="timestamp"
+								tickFormatter={val =>
+									period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
+								}
+								reversed={true}
+							/>
+							<YAxis
+								type="number"
+								domain={['auto', 'auto']}
+								tickFormatter={val => `$${val}`}
+								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+								orientation="right"
+							/>
+							<Area
+								dataKey="rate"
+								stroke={colors.hyperLink}
+								fillOpacity={0.5}
+								fill="url(#colorUv)"
+							/>
+						</AreaChart>
+					</ResponsiveContainer>
+				)}
 				<DataRow>
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
@@ -63,6 +139,7 @@ const ChartPanel = ({ theme }) => {
 
 const Container = styled.div`
 	width: 100%;
+
 	background-color: ${props => props.theme.colors.surfaceL2};
 `;
 
@@ -80,9 +157,6 @@ const Body = styled.div`
 	padding: 18px;
 `;
 
-const Chart = styled.div`
-	height: 400px;
-`;
 const DataRow = styled.div`
 	display: flex;
 	& > * {
@@ -152,4 +226,18 @@ const ButtonIcon = styled.img`
 	height: 12px;
 `;
 
-export default withTheme(ChartPanel);
+const SpinnerContainer = styled.div`
+	width: 100%;
+	height: 250px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+const mapStateToProps = state => {
+	return {
+		synthPair: getSynthPair(state),
+	};
+};
+
+export default connect(mapStateToProps, null)(withTheme(ChartPanel));

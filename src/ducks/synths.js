@@ -28,8 +28,8 @@ const sortSynths = (a, b) => {
 const reducer = (state = defaultState, action = {}) => {
 	switch (action.type) {
 		case SET_AVAILABLE_SYNTHS: {
-			const baseSynth = action.payload.find(synth => synth.name === 'sUSD').name;
-			const quoteSynth = action.payload.find(synth => synth.name === 'sBTC').name;
+			const baseSynth = action.payload.find(synth => synth.name === 'sBTC').name;
+			const quoteSynth = action.payload.find(synth => synth.name === 'sUSD').name;
 			const availableSynths = action.payload.sort(sortSynths);
 			return { ...state, availableSynths: availableSynths, baseSynth, quoteSynth };
 		}

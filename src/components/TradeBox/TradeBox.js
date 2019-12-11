@@ -37,7 +37,7 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
 						<Balance>Balance: 0.14 sETH</Balance>
 					</InputInfo>
 					<TradeInput
-						synth={base}
+						synth={quote}
 						amount={baseAmount}
 						onAmountChange={value => {
 							const convertedRate = value * rates[base][quote];
@@ -54,7 +54,7 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
 						<Balance>Balance: 0.14 sETH</Balance>
 					</InputInfo>
 					<TradeInput
-						synth={quote}
+						synth={base}
 						amount={quoteAmount}
 						onAmountChange={value => {
 							const convertedRate = value * rates[quote][base];
