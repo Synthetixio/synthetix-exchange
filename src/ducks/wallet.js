@@ -48,6 +48,7 @@ export const derivationPathChange = (signerOptions, derivationPath) => {
 	localStorage.setItem('derivationPath', derivationPath);
 	return setDerivationPath(derivationPath);
 };
+
 export const updateWalletStatus = walletStatus => {
 	const payload = walletStatus.currentWallet
 		? {

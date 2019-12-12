@@ -4,7 +4,11 @@ import styled from 'styled-components';
 
 import snxJSConnector from '../../utils/snxJSConnector';
 // import { hasWeb3, SUPPORTED_WALLETS, onMetamaskAccountChange } from '../../utils/networkUtils';
-import { updateWalletStatus, updateWalletPaginatorIndex } from '../../ducks/wallet';
+import {
+	updateWalletStatus,
+	updateWalletPaginatorIndex,
+	derivationPathChange,
+} from '../../ducks/wallet';
 import { toggleWalletPopup } from '../../ducks/ui';
 import { getWalletInfo } from '../../ducks';
 
@@ -93,13 +97,13 @@ const WalletAddressSelector = ({
 	toggleWalletPopup,
 	updateWalletStatus,
 	updateWalletPaginatorIndex,
+	derivationPathChange,
 	walletInfo: {
 		derivationPath,
 		walletType,
 		walletPaginatorIndex,
 		availableWallets = [],
-		// networkName,
-		// networkId,
+		networkId,
 	},
 }) => {
 	const { isLoading, error } = useGetWallets(walletPaginatorIndex, derivationPath);
@@ -115,7 +119,7 @@ const WalletAddressSelector = ({
 				{isLedger && (
 					<SelectWrapper>
 						<Select
-							// isDisabled={isLoading}
+							isDisabled={isLoading}
 							searchable={false}
 							options={LEDGER_DERIVATION_PATHS}
 							value={selectedDerivationPath}
@@ -126,7 +130,7 @@ const WalletAddressSelector = ({
 									networkId,
 									derivationPath: option.value,
 								};
-								derivationPathChange(signerOptions, option.value, dispatch);
+								derivationPathChange(signerOptions, option.value);
 							}}
 						></Select>
 					</SelectWrapper>
@@ -193,6 +197,7 @@ const mapDispatchToProps = {
 	updateWalletStatus,
 	toggleWalletPopup,
 	updateWalletPaginatorIndex,
+	derivationPathChange,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletAddressSelector);
