@@ -12,7 +12,7 @@ import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
 import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { updateWalletStatus } from '../../ducks/wallet';
+import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
 // import { updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
 
 import Trade from '../Trade';
@@ -27,6 +27,7 @@ const Root = ({
 	updateExchangeFeeRate,
 	updateFrozenSynths,
 	updateWalletStatus,
+	updateWalletBalances,
 	currentTheme,
 	walletInfo: { currentWallet },
 }) => {
@@ -45,8 +46,7 @@ const Root = ({
 	const fetchAndSetWalletBalances = useCallback(
 		async synths => {
 			if (!currentWallet) return;
-			const balances = await getWalletBalances(currentWallet, synths);
-			console.log(balances);
+			updateWalletBalances(await getWalletBalances(currentWallet, synths));
 		},
 		[currentWallet]
 	);
@@ -111,6 +111,7 @@ const mapDispatchToProps = {
 	// updateGasAndSpeedInfo,
 	updateFrozenSynths,
 	updateWalletStatus,
+	updateWalletBalances,
 	// updateExchangeFeeRate,
 };
 

@@ -132,7 +132,7 @@ export const getWalletBalances = async (walletAddress, synths) => {
 			getSnxBalance(walletAddress),
 			getEthBalance(walletAddress),
 		]);
-		return { synthsBalance, snxBalance, ethBalance };
+		return { synths: synthsBalance, snx: snxBalance, eth: ethBalance };
 	} catch (e) {
 		console.log(e);
 	}

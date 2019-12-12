@@ -4,6 +4,7 @@ import { getAddress } from '../utils/formatters';
 const UPDATE_WALLET_STATUS = 'WALLET/UPDATE_WALLET_STATUS';
 const UPDATE_WALLET_PAGINATOR_INDEX = 'WALLET/UPDATE_WALLET_PAGINATOR_INDEX';
 const SET_DERIVATION_PATH = 'WALLET/SET_DERIVATION_PATH';
+const UPDATE_WALLET_BALANCES = 'WALLET/UPDATE_BALANCES';
 
 const defaultState = {
 	unlocked: false,
@@ -11,6 +12,7 @@ const defaultState = {
 	availableWallets: [],
 	currentWallet: null,
 	derivationPath: localStorage.getItem('derivationPath'),
+	balances: null,
 };
 
 // Reducer
@@ -28,6 +30,12 @@ const reducer = (state = defaultState, action = {}) => {
 				derivationPath: action.payload,
 				availableWallets: [],
 				walletPaginatorIndex: 0,
+			};
+		}
+		case UPDATE_WALLET_BALANCES: {
+			return {
+				...state,
+				balances: action.payload,
 			};
 		}
 		default:
@@ -66,6 +74,13 @@ export const updateWalletPaginatorIndex = index => {
 	return {
 		type: UPDATE_WALLET_PAGINATOR_INDEX,
 		payload: index,
+	};
+};
+
+export const updateWalletBalances = ({ synths, eth, snx }) => {
+	return {
+		type: UPDATE_WALLET_BALANCES,
+		payload: { synths, eth, snx },
 	};
 };
 
