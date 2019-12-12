@@ -31,7 +31,10 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 				<CloseButton onClick={() => toggleWalletPopup(false)}>
 					<CloseIcon src="/images/close-cross.svg" />
 				</CloseButton>
-				<CurrentScreen selectAddressScreen={() => setCurrentScreen(WalletAddressSelector)} />
+				<CurrentScreen
+					selectAddressScreen={() => setCurrentScreen(WalletAddressSelector)}
+					goBack={() => setCurrentScreen(WalletTypeSelector)}
+				/>
 			</Container>
 		</Popup>
 	);

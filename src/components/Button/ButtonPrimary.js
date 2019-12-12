@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { width } from 'styled-system';
 
 const ButtonPrimary = styled.button`
 	border-radius: 1px;
@@ -17,6 +18,7 @@ const ButtonPrimary = styled.button`
 	border: none;
 	text-transform: uppercase;
 	line-height: 44px;
+	${width}
 `;
 
 export const ButtonPrimarySmall = styled(ButtonPrimary)`

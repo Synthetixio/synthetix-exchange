@@ -17,6 +17,7 @@ import WalletAddressTable from '../WalletAddressTable';
 import WalletPaginator from '../WalletPaginator';
 import Spinner from '../Spinner';
 import Select from '../Select';
+import { ButtonPrimary } from '../Button';
 
 import { bigNumberFormatter } from '../../utils/formatters';
 
@@ -92,12 +93,33 @@ const useGetWallets = () => {
 	return { isLoading, error };
 };
 
-/* eslint-disable */
+const ErrorMessage = ({ error, isLedger, goBack }) => {
+	return (
+		<ErrorContainer>
+			<HeadingMedium>Error</HeadingMedium>
+			<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
+				{error}
+			</HeadingMedium>
+			{isLedger ? (
+				<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
+					Please make sure your Ledger is unlocked, on Ethereum app with contract data setting
+					allowed
+				</HeadingMedium>
+			) : null}
+
+			<ButtonPrimary onClick={goBack} width="250px">
+				Retry
+			</ButtonPrimary>
+		</ErrorContainer>
+	);
+};
+
 const WalletAddressSelector = ({
 	toggleWalletPopup,
 	updateWalletStatus,
 	updateWalletPaginatorIndex,
 	derivationPathChange,
+	goBack,
 	walletInfo: {
 		derivationPath,
 		walletType,
@@ -112,6 +134,8 @@ const WalletAddressSelector = ({
 	const selectedDerivationPath = derivationPath
 		? LEDGER_DERIVATION_PATHS.find(path => path.value === derivationPath)
 		: LEDGER_DERIVATION_PATHS[0];
+
+	if (error) return <ErrorMessage error={error} isLedger={isLedger} goBack={goBack} />;
 	return (
 		<Container>
 			<HeadingMedium>Select your wallet</HeadingMedium>
@@ -177,6 +201,13 @@ const SelectWrapper = styled.div`
 const Container = styled.div`
 	text-align: center;
 	width: 100%;
+`;
+
+const ErrorContainer = styled.div`
+	text-align: center;
+	& > * {
+		margin-bottom: 20px;
+	}
 `;
 
 const AddressesContainer = styled.div`

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { typography } from 'styled-system';
 
 export const HeadingMedium = styled.h2`
 	font-family: 'apercu-regular';
@@ -7,6 +8,7 @@ export const HeadingMedium = styled.h2`
 	color: ${props => props.theme.colors.fontPrimary};
 	letter-spacing: 1.5px;
 	margin: 0;
+	${typography}
 `;
 
 export const HeadingSmall = styled.h3`
