@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { DataLarge } from '../Typography';
-import { formatCurrency } from '../../utils/formatters';
+import Spinner from '../Spinner';
 
+import { formatCurrency } from '../../utils/formatters';
 import { getWalletInfo } from '../../ducks';
 
 const HEADER_LABELS = ['Wallet Address', 'SNX', 'sUSD', 'ETH', ''];
 
 const Balance = ({ value }) => {
-	if (value === undefined) return 0;
+	if (value === undefined) return <Spinner size="tiny" />;
 	return <DataLabel>{formatCurrency(value)}</DataLabel>;
 };
 

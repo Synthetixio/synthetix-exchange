@@ -21,7 +21,7 @@ const PERIODS = [
 	{ value: 1, label: '1H' },
 ];
 
-const ChartPanel = ({ theme, synthPair: { base } }) => {
+const ChartPanel = ({ theme, synthPair: { base, quote } }) => {
 	const colors = theme.colors;
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +46,7 @@ const ChartPanel = ({ theme, synthPair: { base } }) => {
 		<Container>
 			<Header>
 				<HeaderBlock>
-					<HeadingSmall>sBTC/sETH</HeadingSmall>
+					<HeadingSmall>{`${base} / ${quote}`}</HeadingSmall>
 					<ButtonFilter height={'22px'}>
 						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 					</ButtonFilter>
@@ -75,7 +75,7 @@ const ChartPanel = ({ theme, synthPair: { base } }) => {
 			<Body>
 				{isLoading ? (
 					<SpinnerContainer>
-						<Spinner small={true} />
+						<Spinner size="small" />
 					</SpinnerContainer>
 				) : (
 					<ResponsiveContainer height={250}>

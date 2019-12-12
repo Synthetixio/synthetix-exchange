@@ -4,13 +4,15 @@ import styled from 'styled-components';
 
 import snxJSConnector from '../../utils/snxJSConnector';
 // import { hasWeb3, SUPPORTED_WALLETS, onMetamaskAccountChange } from '../../utils/networkUtils';
-import { updateWalletStatus } from '../../ducks/wallet';
+import { updateWalletStatus, updateWalletPaginatorIndex } from '../../ducks/wallet';
 import { toggleWalletPopup } from '../../ducks/ui';
 import { getWalletInfo } from '../../ducks';
 
 import { HeadingMedium } from '../Typography';
 import WalletAddressTable from '../WalletAddressTable';
 import WalletPaginator from '../WalletPaginator';
+import Spinner from '../Spinner';
+import Select from '../Select';
 
 import { bigNumberFormatter } from '../../utils/formatters';
 
@@ -90,6 +92,7 @@ const useGetWallets = () => {
 const WalletAddressSelector = ({
 	toggleWalletPopup,
 	updateWalletStatus,
+	updateWalletPaginatorIndex,
 	walletInfo: {
 		derivationPath,
 		walletType,
@@ -109,10 +112,10 @@ const WalletAddressSelector = ({
 		<Container>
 			<HeadingMedium>Select your wallet</HeadingMedium>
 			<Body>
-				{/* {isLedger && (
+				{isLedger && (
 					<SelectWrapper>
-						<SimpleSelect
-							isDisabled={isLoading}
+						<Select
+							// isDisabled={isLoading}
 							searchable={false}
 							options={LEDGER_DERIVATION_PATHS}
 							value={selectedDerivationPath}
@@ -125,32 +128,48 @@ const WalletAddressSelector = ({
 								};
 								derivationPathChange(signerOptions, option.value, dispatch);
 							}}
-						></SimpleSelect>
+						></Select>
 					</SelectWrapper>
-				)} */}
+				)}
 				<AddressesContainer>
-					<WalletAddressTable
-						data={availableWallets.slice(
-							walletPaginatorIndex * WALLET_PAGE_SIZE,
-							walletPaginatorIndex * WALLET_PAGE_SIZE + WALLET_PAGE_SIZE
-						)}
-						onWalletSelection={(wallet, index) => {
-							const walletIndex = walletPaginatorIndex * WALLET_PAGE_SIZE + index;
-							if (isHardwareWallet) {
-								snxJSConnector.signer.setAddressIndex(walletIndex);
-							}
-							updateWalletStatus({ currentWallet: wallet.address });
-							toggleWalletPopup(false);
-						}}
-					/>
-					<WalletPaginator />
+					{isLoading ? (
+						<Spinner />
+					) : (
+						<WalletAddressTable
+							data={availableWallets.slice(
+								walletPaginatorIndex * WALLET_PAGE_SIZE,
+								walletPaginatorIndex * WALLET_PAGE_SIZE + WALLET_PAGE_SIZE
+							)}
+							onWalletSelection={(wallet, index) => {
+								const walletIndex = walletPaginatorIndex * WALLET_PAGE_SIZE + index;
+								if (isHardwareWallet) {
+									snxJSConnector.signer.setAddressIndex(walletIndex);
+								}
+								updateWalletStatus({ currentWallet: wallet.address });
+								toggleWalletPopup(false);
+							}}
+						/>
+					)}
 				</AddressesContainer>
+				{availableWallets && availableWallets.length > 0 ? (
+					<WalletPaginator
+						disabled={isLoading || !isHardwareWallet}
+						currentIndex={walletPaginatorIndex}
+						onIndexChange={index => updateWalletPaginatorIndex(index)}
+					/>
+				) : null}
 			</Body>
 		</Container>
 	);
 };
 
 const Body = styled.div``;
+
+const SelectWrapper = styled.div`
+	width: 400px;
+	margin: 30px auto 20px auto;
+`;
+
 const Container = styled.div`
 	text-align: center;
 	width: 100%;
@@ -158,6 +177,10 @@ const Container = styled.div`
 
 const AddressesContainer = styled.div`
 	margin-top: 50px;
+	min-height: 350px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `;
 
 const mapStateToProps = state => {
@@ -169,6 +192,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 	updateWalletStatus,
 	toggleWalletPopup,
+	updateWalletPaginatorIndex,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletAddressSelector);

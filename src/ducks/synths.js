@@ -8,10 +8,10 @@ const defaultState = {
 	synthTypes: [],
 	defaultSynth: null,
 	frozenSynths: null,
-	baseSynth: null,
-	quoteSynth: null,
 	exchangeRates: null,
 	ethRate: null,
+	baseSynth: 'sBTC',
+	quoteSynth: 'sUSD',
 };
 
 const sortSynths = (a, b) => {

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { walletPopupIsVisible, getWalletInfo } from '../../ducks';
 import { toggleWalletPopup } from '../../ducks/ui';
 
+import { LabelMedium } from '../Typography';
 import WalletTypeSelector from './WalletTypeSelector';
 import WalletAddressSelector from './WalletAddressSelector';
 
@@ -22,6 +23,11 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 	return (
 		<Popup isVisible={popupIsVisible}>
 			<Container>
+				{CurrentScreen === WalletAddressSelector ? (
+					<BackButton onClick={() => setCurrentScreen(WalletTypeSelector)}>
+						<LabelMedium>Back to wallet selection</LabelMedium>
+					</BackButton>
+				) : null}
 				<CloseButton onClick={() => toggleWalletPopup(false)}>
 					<CloseIcon src="/images/close-cross.svg" />
 				</CloseButton>
@@ -70,6 +76,22 @@ const Container = styled.div`
 	align-items: center;
 	flex-direction: column;
 	justify-content: center;
+`;
+
+const BackButton = styled.button`
+	border: none;
+	background: none;
+	cursor: pointer;
+	position: absolute;
+	left: 5%;
+	top: 5%;
+	span {
+		color: ${props => props.theme.colors.fontTertiary};
+		font-size: 18px;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 `;
 
 const CloseButton = styled.button`

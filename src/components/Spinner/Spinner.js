@@ -1,10 +1,14 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-const Spinner = ({ small }) => {
+const Spinner = ({ size = 'big' }) => {
 	return (
 		<Container>
-			<Img src={small ? 'images/spinner-small.png' : 'images/spinner.png'} alt="spinner" />
+			{size === 'tiny' ? (
+				<TinyImg src={`images/spinner-small.png`} alt="spinner" />
+			) : (
+				<Img src={`images/spinner-${size}.png`} alt="spinner" />
+			)}
 		</Container>
 	);
 };
@@ -24,6 +28,11 @@ const Container = styled.div`
 
 const Img = styled.img`
 	animation: ${imageRotation} 2s infinite linear;
+`;
+
+const TinyImg = styled(Img)`
+	width: 20px;
+	height: 20px;
 `;
 
 export default Spinner;
