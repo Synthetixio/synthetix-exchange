@@ -28,7 +28,7 @@ const Trade = () => {
 					<BoxContainer margin="0 0 8px 0">
 						<ChartPanel />
 					</BoxContainer>
-					<BoxContainer height={'100%'}>
+					<BoxContainer style={{ minHeight: 0 }} height={'100%'}>
 						<OrderBook />
 					</BoxContainer>
 				</CentralContainer>
@@ -36,7 +36,7 @@ const Trade = () => {
 					<BoxContainer margin="0 0 8px 0">
 						<TradeBox />
 					</BoxContainer>
-					<BoxContainer height={'100%'}>
+					<BoxContainer style={{ minHeight: 0 }} height={'100%'}>
 						<WalletBox />
 					</BoxContainer>
 				</SmallContainer>
@@ -65,6 +65,7 @@ const TradeLayout = styled.div`
 	width: 100%;
 	flex: 1;
 	height: 100%;
+	min-height: 0;
 `;
 
 const Container = styled.div`

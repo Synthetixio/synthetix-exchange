@@ -80,6 +80,7 @@ const Header = styled.div`
 
 const Body = styled.div`
 	height: 100%;
+	min-height: 0;
 `;
 
 const HeaderBlock = styled.div`
