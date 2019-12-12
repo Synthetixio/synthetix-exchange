@@ -16,6 +16,7 @@ export const Thead = styled.thead`
 
 export const Tbody = styled.tbody`
 	overflow: auto;
+	min-height: 0;
 `;
 
 export const Tr = styled.tr`

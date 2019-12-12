@@ -113,6 +113,7 @@ const Tab = styled.button`
 
 const Book = styled.div`
 	height: 100%;
+	min-height: 0;
 `;
 
 const SortIcon = styled.img`
