@@ -1,4 +1,4 @@
-import synthetixJsTools from '../synthetixJsTool';
+import snxJSConnector from './snxJSConnector';
 
 export const DEFAULT_GAS_LIMIT = 600000;
 export const DEFAULT_GAS_PRICE = 4000000000;
@@ -11,12 +11,12 @@ const getTransactionPrice = (gwei, ethPrice) => {
 export const getGasAndSpeedInfo = async () => {
 	let [egsData, ethPrice, gasPriceLimit] = await Promise.all([
 		fetch('https://ethgasstation.info/json/ethgasAPI.json'),
-		synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
-		synthetixJsTools.synthetixJs.Synthetix.gasPriceLimit(),
+		snxJSConnector.snxJS.Depot.usdToEthPrice(),
+		snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
 	]);
 	egsData = await egsData.json();
-	ethPrice = Number(synthetixJsTools.utils.formatEther(ethPrice));
-	gasPriceLimit = Number(synthetixJsTools.ethersUtils.formatUnits(gasPriceLimit, 'gwei'));
+	ethPrice = Number(snxJSConnector.utils.formatEther(ethPrice));
+	gasPriceLimit = Number(snxJSConnector.ethersUtils.formatUnits(gasPriceLimit, 'gwei'));
 
 	const fastGwei = egsData.fast / 10;
 	const averageGwei = egsData.average / 10;

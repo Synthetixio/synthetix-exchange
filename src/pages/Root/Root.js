@@ -6,11 +6,11 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import synthetixJsTools from '../../synthetixJsTool';
+import snxJSConnector from '../../utils/snxJSConnector';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
-import { getExchangeData } from '../../dataFetcher';
+import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 
-import { getAvailableSynths, getCurrentTheme } from '../../ducks';
+import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
 import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { updateWalletStatus } from '../../ducks/wallet';
 // import { updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
@@ -28,9 +28,10 @@ const Root = ({
 	updateFrozenSynths,
 	updateWalletStatus,
 	currentTheme,
+	walletInfo: { currentWallet },
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
-	const fetchAndSetData = useCallback(async synths => {
+	const fetchAndSetExchangeData = useCallback(async synths => {
 		const { exchangeRates, exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(
 			synths
 		);
@@ -40,18 +41,28 @@ const Root = ({
 		updateFrozenSynths(frozenSynths);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	const fetchAndSetWalletBalances = useCallback(
+		async synths => {
+			if (!currentWallet) return;
+			const balances = await getWalletBalances(currentWallet, synths);
+			console.log(balances);
+		},
+		[currentWallet]
+	);
+
 	useEffect(() => {
 		const init = async () => {
 			const { networkId, name } = await getEthereumNetwork();
-			synthetixJsTools.setContractSettings({ networkId });
+			snxJSConnector.setContractSettings({ networkId });
 			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
-			const synths = synthetixJsTools.synthetixJs.contractSettings.synths.filter(
-				synth => synth.asset
-			);
+			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 			setAvailableSynths(synths);
-			fetchAndSetData(synths);
+			fetchAndSetExchangeData(synths);
+			fetchAndSetWalletBalances(synths);
 			const intervalId = setInterval(() => {
-				fetchAndSetData(synths);
+				fetchAndSetExchangeData(synths);
+				fetchAndSetWalletBalances(synths);
 			}, 30 * 1000);
 			setIntervalId(intervalId);
 		};
@@ -60,7 +71,7 @@ const Root = ({
 			clearInterval(intervalId);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [fetchAndSetData]);
+	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
 	const themeStyle = currentTheme ? Theme(currentTheme) : Theme('light');
 	return (
 		<ThemeProvider theme={themeStyle}>
@@ -89,6 +100,7 @@ const RootContainer = styled.div`
 const mapStateToProps = state => {
 	return {
 		availableSynths: getAvailableSynths(state),
+		walletInfo: getWalletInfo(state),
 		currentTheme: getCurrentTheme(state),
 	};
 };

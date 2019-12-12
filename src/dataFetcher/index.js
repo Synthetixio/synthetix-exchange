@@ -1,22 +1,21 @@
 import { getGasAndSpeedInfo } from '../utils/ethUtils';
-import synthetixJsTools from '../synthetixJsTool';
+import snxJSConnector from '../utils/snxJSConnector';
+import { bytesFormatter, bigNumberFormatter } from '../utils/formatters';
 
 const getExchangeRates = async synths => {
 	if (!synths) return;
 	let formattedSynthRates = {};
 	try {
 		const [synthRates, ethRate] = await Promise.all([
-			synthetixJsTools.synthetixJs.ExchangeRates.ratesForCurrencies(
-				synths.map(synth => synthetixJsTools.getUtf8Bytes(synth.name))
+			snxJSConnector.snxJS.ExchangeRates.ratesForCurrencies(
+				synths.map(synth => bytesFormatter(synth.name))
 			),
-			synthetixJsTools.synthetixJs.Depot.usdToEthPrice(),
+			snxJSConnector.snxJS.Depot.usdToEthPrice(),
 		]);
 		synthRates.forEach((rate, i) => {
-			formattedSynthRates[synths[i].name] = Number(
-				synthetixJsTools.synthetixJs.utils.formatEther(rate)
-			);
+			formattedSynthRates[synths[i].name] = Number(snxJSConnector.snxJS.utils.formatEther(rate));
 		});
-		const formattedEthRate = synthetixJsTools.synthetixJs.utils.formatEther(ethRate);
+		const formattedEthRate = snxJSConnector.snxJS.utils.formatEther(ethRate);
 		return { synthRates: formattedSynthRates, ethRate: formattedEthRate };
 	} catch (e) {
 		console.log(e);
@@ -24,9 +23,9 @@ const getExchangeRates = async synths => {
 };
 
 const getExchangeFeeRate = async () => {
-	const { formatEther } = synthetixJsTools.synthetixJs.utils;
+	const { formatEther } = snxJSConnector.snxJS.utils;
 	try {
-		const exchangeFeeRate = await synthetixJsTools.synthetixJs.FeePool.exchangeFeeRate();
+		const exchangeFeeRate = await snxJSConnector.snxJS.FeePool.exchangeFeeRate();
 		return 100 * Number(formatEther(exchangeFeeRate));
 	} catch (e) {
 		console.log(e);
@@ -44,7 +43,7 @@ const getFrozenSynths = async synths => {
 		.map(synth => synth.name);
 	const results = await Promise.all(
 		inverseSynths.map(synth =>
-			synthetixJsTools.synthetixJs.ExchangeRates.rateIsFrozen(synthetixJsTools.getUtf8Bytes(synth))
+			snxJSConnector.snxJS.ExchangeRates.rateIsFrozen(bytesFormatter(synth))
 		)
 	);
 	results.forEach((isFrozen, index) => {
@@ -66,4 +65,75 @@ export const getExchangeData = async synths => {
 		networkPrices,
 		frozenSynths,
 	};
+};
+
+const getSynthsBalance = async (walletAddress, synths) => {
+	const results = await Promise.all(
+		synths.map(synth => snxJSConnector.snxJS[synth.name].balanceOf(walletAddress))
+	);
+	const walletBalances = await Promise.all(
+		results.map(async (balance, i) => {
+			const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
+				bytesFormatter(synths[i].name),
+				balance,
+				bytesFormatter('sUSD')
+			);
+			return {
+				balance: bigNumberFormatter(balance),
+				usdBalance: bigNumberFormatter(usdBalance),
+			};
+		})
+	);
+	let total = 0;
+	let balances = {};
+	walletBalances.forEach((balance, i) => {
+		const synthName = synths[i].name;
+		if (balance.balance > 0) {
+			total += balance.usdBalance;
+			balances[synthName] = balance;
+		}
+	});
+	return {
+		balances,
+		total,
+	};
+};
+
+const getSnxBalance = async walletAddress => {
+	const balance = await snxJSConnector.snxJS.Synthetix.collateral(walletAddress);
+	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
+		bytesFormatter('SNX'),
+		balance,
+		bytesFormatter('sUSD')
+	);
+	return {
+		balance: bigNumberFormatter(balance),
+		usdBalance: bigNumberFormatter(usdBalance),
+	};
+};
+
+const getEthBalance = async walletAddress => {
+	const balance = await snxJSConnector.provider.getBalance(walletAddress);
+	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
+		bytesFormatter('sETH'),
+		balance,
+		bytesFormatter('sUSD')
+	);
+	return {
+		balance: bigNumberFormatter(balance),
+		usdBalance: bigNumberFormatter(usdBalance),
+	};
+};
+
+export const getWalletBalances = async (walletAddress, synths) => {
+	try {
+		const [synthsBalance, snxBalance, ethBalance] = await Promise.all([
+			getSynthsBalance(walletAddress, synths),
+			getSnxBalance(walletAddress),
+			getEthBalance(walletAddress),
+		]);
+		return { synthsBalance, snxBalance, ethBalance };
+	} catch (e) {
+		console.log(e);
+	}
 };

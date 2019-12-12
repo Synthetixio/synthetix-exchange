@@ -1,5 +1,5 @@
 import numbro from 'numbro';
-import synthetixJsTool from '../synthetixJsTool';
+import snxJSConnector from './snxJSConnector';
 
 export const formatCurrency = (value, decimals = 2) => {
 	if (!value) return 0;
@@ -12,8 +12,8 @@ export const shortenAddress = address => {
 	return address.slice(0, 6) + '...' + address.slice(-4, address.length);
 };
 
-export const bytesFormatter = input => synthetixJsTool.ethersUtils.formatBytes32String(input);
+export const bytesFormatter = input => snxJSConnector.ethersUtils.formatBytes32String(input);
 
-export const bigNumberFormatter = value => Number(synthetixJsTool.utils.formatEther(value));
+export const bigNumberFormatter = value => Number(snxJSConnector.utils.formatEther(value));
 
-export const getAddress = addr => synthetixJsTool.ethersUtils.getAddress(addr);
+export const getAddress = addr => snxJSConnector.ethersUtils.getAddress(addr);
