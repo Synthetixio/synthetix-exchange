@@ -90,9 +90,6 @@ const Tabs = styled.div`
 		&:first-child {
 			margin-left: 0;
 		}
-		&:last-child {
-			margin-right: 0;
-		}
 	}
 `;
 
@@ -116,6 +113,7 @@ const Tab = styled.button`
 
 const Book = styled.div`
 	height: 100%;
+	min-height: 0;
 `;
 
 const SortIcon = styled.img`
@@ -125,6 +123,9 @@ const SortIcon = styled.img`
 `;
 
 const ButtonSort = styled.button`
+	text-align: left;
+	display: flex;
+	align-items: center;
 	border: none;
 	outline: none;
 	cursor: pointer;

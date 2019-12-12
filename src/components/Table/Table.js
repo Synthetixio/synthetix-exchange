@@ -16,26 +16,30 @@ export const Thead = styled.thead`
 
 export const Tbody = styled.tbody`
 	overflow: auto;
+	min-height: 0;
 `;
 
-export const Tr = styled.tr``;
+export const Tr = styled.tr`
+	display: flex;
+`;
 
 export const Th = styled.th`
+	display: flex;
+	flex-direction: column;
+	flex-basis: 100%;
+	justify-content: center;
 	height: 42px;
 	line-height: 12px;
 	text-align: left;
 	padding: 0 18px;
-	&:last-child {
-		text-align: right;
-	}
 `;
 
 export const Td = styled.td`
+	display: flex;
+	flex-direction: column;
+	flex-basis: 100%;
 	text-align: left;
 	padding: 6px 18px;
-	&:last-child {
-		text-align: right;
-	}
 `;
 
 export const DataLabel = styled(DataSmall)`
