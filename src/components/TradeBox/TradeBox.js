@@ -95,14 +95,35 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates, balances 
 					})}
 				</ButtonRow>
 				<NetworkInfo>
-					{['Price', '$USD Value', 'Volume', 'Fee', 'Gas'].map((data, i) => {
-						return (
-							<NetworkDataRow key={i}>
-								<NetworkData>{data}</NetworkData>
-								<NetworkData>$100,000,000</NetworkData>
-							</NetworkDataRow>
-						);
-					})}
+					<NetworkDataRow>
+						<NetworkData>Price</NetworkData>
+						<NetworkData>
+							1 {base} = {rates ? formatCurrency(rates[base][quote]) : 0} {quote}
+						</NetworkData>
+					</NetworkDataRow>
+					<NetworkDataRow>
+						<NetworkData>$USD Value</NetworkData>
+						<NetworkData>
+							${rates ? formatCurrency(baseAmount * rates[base][quote]) : 0}
+						</NetworkData>
+					</NetworkDataRow>
+					<NetworkDataRow>
+						<NetworkData>Fee</NetworkData>
+						<NetworkData>0</NetworkData>
+					</NetworkDataRow>
+					<NetworkDataRow>
+						<NetworkData>Gas</NetworkData>
+						<NetworkData>0</NetworkData>
+					</NetworkDataRow>
+					<NetworkDataRow>
+						<NetworkData>Gas Price (gwei)</NetworkData>
+						<NetworkData>
+							0
+							<ButtonEdit>
+								<DataSmall color={colors.hyperLink}>Edit</DataSmall>
+							</ButtonEdit>
+						</NetworkData>
+					</NetworkDataRow>
 				</NetworkInfo>
 				<ButtonPrimary>Confirm Trade</ButtonPrimary>
 			</Body>
@@ -193,6 +214,14 @@ const NetworkDataRow = styled.div`
 
 const NetworkData = styled(DataSmall)`
 	color: ${props => props.theme.colors.fontTertiary};
+`;
+
+const ButtonEdit = styled.button`
+	border: none;
+	background: transparent;
+	padding: 0;
+	margin-left: 10px;
+	cursor: pointer;
 `;
 
 const mapStateToProps = state => {
