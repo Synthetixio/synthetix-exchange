@@ -30,7 +30,12 @@ export const Th = styled.th`
 	justify-content: center;
 	height: 42px;
 	line-height: 12px;
-	text-align: left;
+	text-align: right;
+	align-items: flex-end;
+	&:first-child {
+		text-align: left;
+		align-items: flex-start;
+	}
 	padding: 0 18px;
 `;
 
@@ -38,7 +43,10 @@ export const Td = styled.td`
 	display: flex;
 	flex-direction: column;
 	flex-basis: 100%;
-	text-align: left;
+	text-align: right;
+	&:first-child {
+		text-align: left;
+	}
 	padding: 6px 18px;
 `;
 

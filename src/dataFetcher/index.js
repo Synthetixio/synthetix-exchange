@@ -1,6 +1,7 @@
 import { getGasAndSpeedInfo } from '../utils/ethUtils';
 import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter } from '../utils/formatters';
+import isEmpty from 'lodash/isEmpty';
 
 const getExchangeRates = async synths => {
 	if (!synths) return;
@@ -94,23 +95,23 @@ const getSynthsBalance = async (walletAddress, synths) => {
 		}
 	});
 	return {
-		balances,
-		total,
+		balances: isEmpty(balances) ? 0 : balances,
+		usdBalance: total,
 	};
 };
 
-const getSnxBalance = async walletAddress => {
-	const balance = await snxJSConnector.snxJS.Synthetix.collateral(walletAddress);
-	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
-		bytesFormatter('SNX'),
-		balance,
-		bytesFormatter('sUSD')
-	);
-	return {
-		balance: bigNumberFormatter(balance),
-		usdBalance: bigNumberFormatter(usdBalance),
-	};
-};
+// const getSnxBalance = async walletAddress => {
+// 	const balance = await snxJSConnector.snxJS.Synthetix.collateral(walletAddress);
+// 	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
+// 		bytesFormatter('SNX'),
+// 		balance,
+// 		bytesFormatter('sUSD')
+// 	);
+// 	return {
+// 		balance: bigNumberFormatter(balance),
+// 		usdBalance: bigNumberFormatter(usdBalance),
+// 	};
+// };
 
 const getEthBalance = async walletAddress => {
 	const balance = await snxJSConnector.provider.getBalance(walletAddress);
@@ -127,12 +128,12 @@ const getEthBalance = async walletAddress => {
 
 export const getWalletBalances = async (walletAddress, synths) => {
 	try {
-		const [synthsBalance, snxBalance, ethBalance] = await Promise.all([
+		const [synthsBalance, ethBalance] = await Promise.all([
 			getSynthsBalance(walletAddress, synths),
-			getSnxBalance(walletAddress),
+			// getSnxBalance(walletAddress),
 			getEthBalance(walletAddress),
 		]);
-		return { synths: synthsBalance, snx: snxBalance, eth: ethBalance };
+		return { synths: synthsBalance, eth: ethBalance };
 	} catch (e) {
 		console.log(e);
 	}

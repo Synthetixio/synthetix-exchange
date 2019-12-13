@@ -77,10 +77,10 @@ export const updateWalletPaginatorIndex = index => {
 	};
 };
 
-export const updateWalletBalances = ({ synths, eth, snx }) => {
+export const updateWalletBalances = ({ synths, eth }) => {
 	return {
 		type: UPDATE_WALLET_BALANCES,
-		payload: { synths, eth, snx },
+		payload: { synths, eth },
 	};
 };
 

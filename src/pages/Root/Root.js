@@ -54,7 +54,9 @@ const Root = ({
 	useEffect(() => {
 		const init = async () => {
 			const { networkId, name } = await getEthereumNetwork();
-			snxJSConnector.setContractSettings({ networkId });
+			if (!snxJSConnector.initialized) {
+				snxJSConnector.setContractSettings({ networkId });
+			}
 			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 			setAvailableSynths(synths);
