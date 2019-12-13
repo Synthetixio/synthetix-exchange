@@ -53,8 +53,7 @@
 		"redux-thunk": "~2.3.0",
 		"resolve": "1.8.1",
 		"sass-loader": "7.1.0",
-		"style-loader": "0.23.1",
-		"synthetix-js": "2.16.4",
+		"synthetix-js": "file:./../synthetix-js",
 		"url-loader": "1.1.1",
 		"webpack": "4.19.1",
 		"webpack-dev-server": "3.8.0",
@@ -63,7 +62,7 @@
 	},
 	"scripts": {
 		"clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",
-		"start": "node scripts/start.js",
+		"start": "node --max-old-space-size=4096 scripts/start.js",
 		"build": "node scripts/build.js",
 		"test": "node scripts/test.js",
 		"lint": "eslint ."

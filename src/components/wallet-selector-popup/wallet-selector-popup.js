@@ -11,12 +11,12 @@ import { getCurrentWalletInfo } from '../../ducks/';
 
 import { getExtensionUri } from '../../utils/browserUtils';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
-import { INFURA_JSON_RPC_URLS } from '../../utils/networkUtils';
+import { INFURA_JSON_RPC_URLS, INFURA_PROJECT_ID } from '../../utils/networkUtils';
 import synthetixJsTools from '../../synthetixJsTool';
 
 import styles from './wallet-selector-popup.module.scss';
 
-const WALLET_TYPES = ['Metamask', 'Trezor', 'Ledger'];
+const WALLET_TYPES = ['Metamask', 'WalletConnect', 'Trezor', 'Ledger'];
 
 class WalletSelectorPopup extends Component {
   constructor() {
@@ -86,7 +86,9 @@ class WalletSelectorPopup extends Component {
                 jsonRpcUrl: INFURA_JSON_RPC_URLS[networkId],
                 networkId,
               }
-            : {};
+            : walletType === 'WalletConnect'
+            ? { infuraId: INFURA_PROJECT_ID }
+            : {}
         const signer = new synthetixJsTools.signers[walletType](signerConfig);
         synthetixJsTools.setContractSettings({
           networkId,
@@ -175,6 +177,7 @@ class WalletSelectorPopup extends Component {
             changeScreen('connectToWallet');
             break;
 
+
           // If signer is Ledger
           case 'Ledger':
             connectToWallet({
@@ -184,6 +187,19 @@ class WalletSelectorPopup extends Component {
             });
             changeScreen('connectToWallet');
             break;
+
+          case 'WalletConnect': {
+            await signer.provider._web3Provider.enable()
+            const accounts = await synthetixJsTools.signer.getNextAddresses();
+            connectToWallet({
+              walletType,
+              availableWallets: accounts,
+              selectedWallet: accounts[0],
+              unlocked: true,
+              networkId,
+            })
+            break
+          }
           default:
             connectToWallet({
               unlocked: false,

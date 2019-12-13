@@ -1,4 +1,4 @@
-const INFURA_PROJECT_ID =
+export const INFURA_PROJECT_ID =
   process.env.NODE_ENV === 'development'
     ? '5d18f48c9ee0457e9ac5d487d67bc84c'
     : '8c6bfe963db94518b16b17114e29e628';
