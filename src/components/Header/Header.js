@@ -50,7 +50,7 @@ const Header = ({ toggleWalletPopup, walletInfo }) => {
 };
 
 const Container = styled.div`
-	height: 74px;
+	height: 56px;
 	background-color: ${props => props.theme.colors.surfaceL3};
 	display: flex;
 	align-items: center;
@@ -61,9 +61,10 @@ const Container = styled.div`
 const Network = styled.div`
 	display: flex;
 	align-items: center;
-	padding: 5px 10px;
+	height: 32px;
 	background-color: ${props => props.theme.colors.accentDark};
 	margin-left: 26px;
+	padding: 0 12px;
 `;
 
 const HeaderBlock = styled.div`

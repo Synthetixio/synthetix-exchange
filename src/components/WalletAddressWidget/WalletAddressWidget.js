@@ -22,8 +22,8 @@ const WalletAddressWidget = ({ walletInfo, toggleWalletPopup }) => {
 const Container = styled.div`
 	display: flex;
 	height: 32px;
-	padding: 0 8px;
-	borde-radius: 1px;
+	padding: 8px;
+	border-radius: 1px;
 	justify-content: space-between;
 	align-items: center;
 	border-radius: 1px;

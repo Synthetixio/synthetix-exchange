@@ -146,7 +146,7 @@ const Container = styled.div`
 const Header = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL3};
 	width: 100%;
-	height: 54px;
+	height: 40px;
 	display: flex;
 	align-items: center;
 	padding: 0 18px;
