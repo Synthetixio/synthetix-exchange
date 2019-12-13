@@ -9,7 +9,7 @@ const OrderBook = ({ theme: { colors } }) => {
 	return (
 		<Container>
 			<Tabs>
-				{['Your orders', 'Your trades', 'Recent trades', '', 'Show all trades'].map(tab => {
+				{['Your orders', 'Your trades', 'Show all trades'].map(tab => {
 					return (
 						<Tab
 							key={tab}
@@ -86,7 +86,7 @@ const Container = styled.div`
 const Tabs = styled.div`
 	display: flex;
 	& > * {
-		margin: 0 6px;
+		margin: 0 4px;
 		&:first-child {
 			margin-left: 0;
 		}

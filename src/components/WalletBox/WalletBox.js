@@ -101,9 +101,7 @@ const WalletBox = ({ theme: { colors }, balances, walletInfo: { currentWallet } 
 										<DataLabel>{formatCurrency(asset.balance)}</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel style={{ color: colors.green }}>
-											${formatCurrency(asset.usdBalance)}
-										</DataLabel>
+										<DataLabel>${formatCurrency(asset.usdBalance)}</DataLabel>
 									</Td>
 								</Tr>
 							);
