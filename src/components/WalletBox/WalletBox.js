@@ -10,7 +10,7 @@ import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
 
-import { getWalletBalances, getWalletInfo } from '../../ducks';
+import { getWalletInfo } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
 
 const getTotal = balances => {
@@ -33,7 +33,7 @@ const sortBy = (assets, column, isAscending) => {
 	return orderBy(assets, column, [isAscending ? 'asc' : 'desc']);
 };
 
-const WalletBox = ({ theme: { colors }, balances, walletInfo: { currentWallet } }) => {
+const WalletBox = ({ theme: { colors }, walletInfo: { currentWallet, balances } }) => {
 	const [assets, setAssets] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [sortIsAcending, setSortIsAscending] = useState(true);
@@ -184,7 +184,6 @@ const HeadingAndSpinner = styled.div`
 
 const mapStateToProps = state => {
 	return {
-		balances: getWalletBalances(state),
 		walletInfo: getWalletInfo(state),
 	};
 };

@@ -5,6 +5,11 @@ import GenericInput from './Input';
 import { DataMedium } from '../Typography';
 
 const Input = ({ synth = 'sUSD', theme: { colors }, onAmountChange, amount }) => {
+	const onChange = e => {
+		var regExp = /^\d*\.?\d*$/;
+		if (!e.target.value.match(regExp)) return;
+		return onAmountChange(e.target.value);
+	};
 	return (
 		<Container>
 			<Synth>
@@ -15,7 +20,7 @@ const Input = ({ synth = 'sUSD', theme: { colors }, onAmountChange, amount }) =>
 				value={amount}
 				placeholder="0"
 				color={colors.fontPrimary}
-				onChange={e => onAmountChange(e.target.value)}
+				onChange={onChange}
 			></GenericInput>
 		</Container>
 	);

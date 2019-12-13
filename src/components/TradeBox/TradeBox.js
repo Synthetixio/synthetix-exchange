@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled, { withTheme } from 'styled-components';
+import isEmpty from 'lodash/isEmpty';
+import isNan from 'lodash/isNaN';
+
+import { formatCurrency } from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
-import { getSynthPair, getExchangeRates } from '../../ducks';
+import { getSynthPair, getExchangeRates, getWalletBalances } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
 
 /* eslint-disable */
-const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
+const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates, balances }) => {
 	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
+	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
+
+	useEffect(() => {
+		setBaseAmount('');
+		setQuoteAmount('');
+	}, [base, quote]);
+
 	return (
 		<Container>
 			<Header>
 				<HeadingSmall>{`${base}/${quote}`}</HeadingSmall>
-				<ButtonFilter
-					height={'22px'}
-					onClick={() => {
-						setBaseAmount(0);
-						setQuoteAmount(0);
-						setSynthPair({ quote: base, base: quote });
-					}}
-				>
+				<ButtonFilter height={'22px'} onClick={() => setSynthPair({ quote: base, base: quote })}>
 					<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 				</ButtonFilter>
 			</Header>
@@ -34,15 +38,19 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
 							Sell:
 						</DataMedium>
-						<Balance>Balance: 0.14 sETH</Balance>
+						{!isEmpty(synthsBalances) && synthsBalances[quote] ? (
+							<Balance>
+								Balance: {formatCurrency(synthsBalances[quote].balance)} {quote}
+							</Balance>
+						) : null}
 					</InputInfo>
 					<TradeInput
 						synth={quote}
-						amount={baseAmount}
+						amount={quoteAmount}
 						onAmountChange={value => {
-							const convertedRate = value * rates[base][quote];
-							setBaseAmount(value);
-							setQuoteAmount(convertedRate);
+							const convertedRate = rates ? value * rates[quote][base] : 0;
+							setBaseAmount(isNan(convertedRate) ? 0 : convertedRate);
+							setQuoteAmount(value);
 						}}
 					/>
 				</InputBlock>
@@ -51,23 +59,37 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates }) => {
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
 							Buy:
 						</DataMedium>
-						<Balance>Balance: 0.14 sETH</Balance>
+						{!isEmpty(synthsBalances) && synthsBalances[base] ? (
+							<Balance>
+								Balance: {formatCurrency(synthsBalances[base].balance)} {base}
+							</Balance>
+						) : null}
 					</InputInfo>
 					<TradeInput
 						synth={base}
-						amount={quoteAmount}
+						amount={baseAmount}
 						onAmountChange={value => {
-							const convertedRate = value * rates[quote][base];
-							setQuoteAmount(value);
-							setBaseAmount(convertedRate);
+							const convertedRate = rates ? value * rates[base][quote] : 0;
+							setQuoteAmount(isNan(convertedRate) ? 0 : convertedRate);
+							setBaseAmount(value);
 						}}
 					/>
 				</InputBlock>
 				<ButtonRow>
-					{['25', '50', '75', '100'].map((amount, i) => {
+					{[25, 50, 75, 100].map((fraction, i) => {
 						return (
-							<ButtonAmount key={i}>
-								<DataSmall color={colors.fontTertiary}>{amount}%</DataSmall>
+							<ButtonAmount
+								disabled={isEmpty(synthsBalances) || !synthsBalances[quote]}
+								key={i}
+								onClick={() => {
+									const balance = synthsBalances[quote].balance;
+									const amount = (balance * Number(fraction)) / 100;
+									setQuoteAmount(amount);
+									const convertedRate = rates ? amount * rates[quote][base] : 0;
+									setBaseAmount(convertedRate);
+								}}
+							>
+								<DataSmall color={colors.fontTertiary}>{fraction}%</DataSmall>
 							</ButtonAmount>
 						);
 					})}
@@ -97,7 +119,7 @@ const Container = styled.div`
 const Header = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL3};
 	width: 100%;
-	height: 54px;
+	height: 40px;
 	display: flex;
 	align-items: center;
 	padding: 0 18px;
@@ -118,7 +140,7 @@ const Body = styled.div`
 
 const InputBlock = styled.div`
 	width: 100%;
-	margin-top: 24px;
+	margin-top: 16px;
 `;
 
 const InputInfo = styled.div`
@@ -136,7 +158,7 @@ const Balance = styled(DataSmall)`
 
 const ButtonRow = styled.div`
 	display: flex;
-	margin: 24px 0;
+	margin: 18px 0;
 	& > :first-child {
 		margin-left: 0;
 	}
@@ -146,23 +168,27 @@ const ButtonRow = styled.div`
 `;
 
 const ButtonAmount = styled.button`
+	&:disabled {
+		pointer-events: none;
+		opacity: 0.5;
+	}
 	border-radius: 1px;
 	cursor: pointer;
 	flex: 1;
 	margin: 0 8px;
 	border: none;
 	background-color: ${props => props.theme.colors.accentLight};
-	height: 32px;
+	height: 24px;
 `;
 
 const NetworkInfo = styled.div`
-	margin: 32px 0;
+	margin: 18px 0;
 `;
 
 const NetworkDataRow = styled.div`
 	display: flex;
 	justify-content: space-between;
-	margin-bottom: 18px;
+	margin-bottom: 8px;
 `;
 
 const NetworkData = styled(DataSmall)`
@@ -173,6 +199,7 @@ const mapStateToProps = state => {
 	return {
 		synthPair: getSynthPair(state),
 		rates: getExchangeRates(state),
+		balances: getWalletBalances(state),
 	};
 };
 
