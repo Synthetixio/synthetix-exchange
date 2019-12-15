@@ -18,6 +18,9 @@ const ButtonPrimary = styled.button`
 	border: none;
 	text-transform: uppercase;
 	line-height: 44px;
+	&:disabled {
+		opacity: 0.5;
+	}
 	${width}
 `;
 

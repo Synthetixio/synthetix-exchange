@@ -4,25 +4,74 @@ import styled, { withTheme } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
 
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, bytesFormatter } from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
-import { getSynthPair, getExchangeRates, getWalletBalances } from '../../ducks';
+import { getSynthPair, getExchangeRates, getWalletInfo } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
+import snxJSConnector from '../../utils/snxJSConnector';
 
 /* eslint-disable */
-const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates, balances }) => {
+const TradeBox = ({
+	theme: { colors },
+	synthPair,
+	setSynthPair,
+	rates,
+	walletInfo: { balances, currentWallet },
+}) => {
 	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
+	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
+
+	const onConfirmTrade = async () => {
+		const {
+			snxJS: { Synthetix },
+			utils,
+		} = snxJSConnector;
+		try {
+			const transaction = await Synthetix.exchange(
+				bytesFormatter(quote),
+				utils.parseEther(quoteAmount.toString()),
+				bytesFormatter(base)
+			);
+			console.log(transaction);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	useEffect(() => {
 		setBaseAmount('');
 		setQuoteAmount('');
 	}, [base, quote]);
+
+	useEffect(() => {
+		const getGasEstimate = async () => {
+			if (!quoteAmount || !baseAmount) return;
+			if (!currentWallet) return;
+			try {
+				const {
+					snxJS: { Synthetix },
+					utils,
+				} = snxJSConnector;
+				setError(null);
+				const transaction = await Synthetix.contract.estimate.exchange(
+					bytesFormatter(quote),
+					utils.parseEther(quoteAmount.toString()),
+					bytesFormatter(base)
+				);
+				console.log(transaction);
+			} catch (e) {
+				console.log(e);
+				setError(e.message);
+			}
+		};
+		getGasEstimate();
+	}, [quoteAmount, baseAmount]);
 
 	return (
 		<Container>
@@ -53,6 +102,9 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates, balances 
 							setQuoteAmount(value);
 						}}
 					/>
+					<InputPopup isVisible={error}>
+						<DataMedium>{error}</DataMedium>
+					</InputPopup>
 				</InputBlock>
 				<InputBlock>
 					<InputInfo>
@@ -125,7 +177,9 @@ const TradeBox = ({ theme: { colors }, synthPair, setSynthPair, rates, balances 
 						</NetworkData>
 					</NetworkDataRow>
 				</NetworkInfo>
-				<ButtonPrimary>Confirm Trade</ButtonPrimary>
+				<ButtonPrimary disabled={!currentWallet || error} onClick={onConfirmTrade}>
+					Confirm Trade
+				</ButtonPrimary>
 			</Body>
 		</Container>
 	);
@@ -162,6 +216,7 @@ const Body = styled.div`
 const InputBlock = styled.div`
 	width: 100%;
 	margin-top: 16px;
+	position: relative;
 `;
 
 const InputInfo = styled.div`
@@ -169,6 +224,21 @@ const InputInfo = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 6px;
+`;
+
+const InputPopup = styled.div`
+	position: absolute;
+	transition: opacity 0.2s ease-out;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: ${props => props.theme.colors.red};
+	padding: 8px 10px;
+	border-radius: 1px;
+	transform: translateY(calc(100% + 6px));
+	z-index: 100;
+	opacity: ${props => (props.isVisible ? 1 : 0)};
+	height: ${props => (props.isVisible ? 'auto' : 0)};
 `;
 
 const Balance = styled(DataSmall)`
@@ -228,7 +298,7 @@ const mapStateToProps = state => {
 	return {
 		synthPair: getSynthPair(state),
 		rates: getExchangeRates(state),
-		balances: getWalletBalances(state),
+		walletInfo: getWalletInfo(state),
 	};
 };
 

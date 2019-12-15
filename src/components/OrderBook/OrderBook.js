@@ -12,8 +12,12 @@ const OrderBook = ({ theme: { colors } }) => {
 				{['Your orders', 'Your trades', 'Show all trades'].map(tab => {
 					return (
 						<Tab
+							isDisabled={['Your trades', 'Show all trades'].includes(tab)}
 							key={tab}
-							onClick={() => setActiveTab(tab)}
+							onClick={() => {
+								if (['Your trades', 'Show all trades'].includes(tab)) return;
+								setActiveTab(tab);
+							}}
 							hidden={!tab}
 							active={tab === activeTab}
 						>
@@ -98,7 +102,7 @@ const Tab = styled.button`
 	outline: none;
 	border: none;
 	visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
-	cursor: pointer;
+
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -109,6 +113,8 @@ const Tab = styled.button`
 	&:hover {
 		background-color: ${props => props.theme.colors.surfaceL3};
 	}
+	opacity: ${props => (props.isDisabled ? 0.2 : 1)};
+	cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
 `;
 
 const Book = styled.div`
