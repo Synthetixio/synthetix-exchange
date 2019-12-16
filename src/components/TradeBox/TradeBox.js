@@ -51,7 +51,11 @@ const TradeBox = ({
 			const transaction = await Synthetix.exchange(
 				bytesFormatter(quote),
 				utils.parseEther(quoteAmount.toString()),
-				bytesFormatter(base)
+				bytesFormatter(base),
+				{
+					gasPrice,
+					gasLimit,
+				}
 			);
 			console.log(transaction);
 		} catch (e) {

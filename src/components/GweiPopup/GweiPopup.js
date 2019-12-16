@@ -139,7 +139,7 @@ const WalletPopup = ({
 						></Input> */}
 						<ButtonPrimary
 							width={'auto'}
-							style={{ flex: 1, marginLeft: '22px' }}
+							style={{ flex: 1 }}
 							onClick={() => {
 								setGasPrice(gasSettings.gasPrice);
 								toggleGweiPopup(false);
