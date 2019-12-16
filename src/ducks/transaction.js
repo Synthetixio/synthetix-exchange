@@ -1,8 +1,5 @@
 // import { DEFAULT_GAS_LIMIT, GWEI } from '../utils/ethUtils';
 
-// const CONNECT_WALLET = 'WALLET/CONNECT_WALLET';
-// const SET_SELECTED_WALLET = 'WALLET/SET_SELECTED_WALLET';
-// const SET_BALANCES = 'WALLET/SET_BALANCES';
 // const SET_TRANSACTION_STATUS_TO_CONFIRM = 'WALLET/SET_TRANSACTION_STATUS_TO_CONFIRM';
 // const SET_TRANSACTION_STATUS_TO_PROGRESS = 'WALLET/SET_TRANSACTION_STATUS_TO_PROGRESS';
 // const SET_TRANSACTION_PAIR = 'WALLET/SET_TRANSACTION_PAIR';
@@ -20,119 +17,138 @@
 // 	transactionPair: null,
 // };
 
-// const defaultState = {
-// 	walletType: null,
-// 	availableWallets: null,
-// 	unlocked: false,
-// 	selectedWallet: null,
-// 	walletSelectorIndex: 0,
-// 	networkId: '1',
-// 	balances: null,
-// 	transactionSpeed: 'averageAllowed',
-// 	gasAndSpeedInfo: null,
-// 	gasPrice: null,
-// 	gasPriceUsd: null,
-// 	exchangeFeeRate: null,
-// 	gasLimit: DEFAULT_GAS_LIMIT,
-// 	...defaultTransactionState,
-// };
-// const reducer = (state = defaultState, action = {}) => {
-// 	switch (action.type) {
-// 		case CONNECT_WALLET: {
-// 			return { ...state, ...action.payload };
-// 		}
-// 		case SET_SELECTED_WALLET: {
-// 			const { availableWallets, selectedWallet } = action.payload;
-// 			return { ...state, availableWallets, selectedWallet };
-// 		}
-// 		case SET_BALANCES: {
-// 			return { ...state, balances: action.payload };
-// 		}
-// 		case SET_TRANSACTION_STATUS_TO_CONFIRM: {
-// 			return {
-// 				...state,
-// 				...defaultTransactionState,
-// 				transactionStatus: 'confirm',
-// 			};
-// 		}
-// 		case SET_TRANSACTION_STATUS_TO_PROGRESS: {
-// 			return {
-// 				...state,
-// 				transactionStatus: 'progress',
-// 				transactionHash: action.payload,
-// 			};
-// 		}
-// 		case SET_TRANSACTION_STATUS_TO_SUCCESS: {
-// 			return { ...state, transactionStatus: 'success' };
-// 		}
-// 		case SET_TRANSACTION_STATUS_TO_CLEARED: {
-// 			return {
-// 				...state,
-// 				transactionHash: null,
-// 				transactionPair: null,
-// 				transactionStatus: 'cleared',
-// 			};
-// 		}
-// 		case SET_TRANSACTION_STATUS_TO_ERROR: {
-// 			return {
-// 				...state,
-// 				transactionStatus: 'error',
-// 				transactionErrorType: action.payload,
-// 			};
-// 		}
-// 		case SET_TRANSACTION_PAIR: {
-// 			const { fromSynth, fromAmount, toSynth, toAmount } = action.payload;
-// 			const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
-// 			return { ...state, transactionPair };
-// 		}
-// 		case UPDATE_GAS_AND_SPEED_INFO: {
-// 			const gasAndSpeedInfo = action.payload;
-// 			const transactionSpeed = state.transactionSpeed;
-// 			return {
-// 				...state,
-// 				gasAndSpeedInfo,
-// 				gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
-// 				gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
-// 			};
-// 		}
-// 		case SET_TRANSACTION_SPEED: {
-// 			const gasAndSpeedInfo = state.gasAndSpeedInfo;
-// 			const transactionSpeed = action.payload;
-// 			return {
-// 				...state,
-// 				transactionSpeed,
-// 				gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
-// 				gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
-// 			};
-// 		}
-// 		case UPDATE_EXCHANGE_FEE_RATE: {
-// 			return {
-// 				...state,
-// 				exchangeFeeRate: action.payload,
-// 			};
-// 		}
-// 		default:
-// 			return state;
-// 	}
-// };
+const SET_GAS_PRICE = 'TRANSACTION/SET_GAS_PRICE';
+const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';
+const SET_EXCHANGE_FEE_RATE = 'TRANSACTION/SET_FEE_RATE';
+const SET_NETWORK_GAS_INFO = 'TRANSACTION/NETWORK_GAS_INFO';
 
-// export const connectToWallet = walletType => {
-// 	return { type: CONNECT_WALLET, payload: walletType };
-// };
+const GAS_LIMIT_BUFFER = 5000;
+const DEFAULT_GAS_LIMIT = 300000;
 
-// export const setSelectedWallet = ({ availableWallets, selectedWallet }) => {
-// 	return {
-// 		type: SET_SELECTED_WALLET,
-// 		payload: { availableWallets, selectedWallet },
-// 	};
-// };
+const defaultState = {
+	gasPrice: null,
+	gasLimit: DEFAULT_GAS_LIMIT,
+	gasSpeed: {},
+	// transactionSpeed: 'averageAllowed',
+	// gasAndSpeedInfo: null\
+	// gasPriceUsd: null,
+	// exchangeFeeRate: null,
+	// ...defaultTransactionState,
+};
 
-// export const setWalletBalances = balances => {
-// 	return {
-// 		type: SET_BALANCES,
-// 		payload: balances,
-// 	};
-// };
+const reducer = (state = defaultState, action = {}) => {
+	switch (action.type) {
+		case SET_GAS_PRICE: {
+			return {
+				...state,
+				gasPrice: action.payload,
+			};
+		}
+		case SET_GAS_LIMIT: {
+			return {
+				...state,
+				gasLimit: action.payload,
+			};
+		}
+		case SET_EXCHANGE_FEE_RATE: {
+			return {
+				...state,
+				exchangeFeeRate: action.payload,
+			};
+		}
+		case SET_NETWORK_GAS_INFO: {
+			const gasSpeed = action.payload;
+			const currentGasPrice = state.gasPrice || gasSpeed['slowAllowed'];
+			return {
+				...state,
+				gasSpeed,
+				gasPrice:
+					currentGasPrice > gasSpeed['fastestAllowed']
+						? gasSpeed['fastestAllowed']
+						: currentGasPrice,
+			};
+		}
+		// case SET_TRANSACTION_STATUS_TO_CONFIRM: {
+		// 	return {
+		// 		...state,
+		// 		...defaultTransactionState,
+		// 		transactionStatus: 'confirm',
+		// 	};
+		// }
+		// case SET_TRANSACTION_STATUS_TO_PROGRESS: {
+		// 	return {
+		// 		...state,
+		// 		transactionStatus: 'progress',
+		// 		transactionHash: action.payload,
+		// 	};
+		// }
+		// case SET_TRANSACTION_STATUS_TO_SUCCESS: {
+		// 	return { ...state, transactionStatus: 'success' };
+		// }
+		// case SET_TRANSACTION_STATUS_TO_CLEARED: {
+		// 	return {
+		// 		...state,
+		// 		transactionHash: null,
+		// 		transactionPair: null,
+		// 		transactionStatus: 'cleared',
+		// 	};
+		// }
+		// case SET_TRANSACTION_STATUS_TO_ERROR: {
+		// 	return {
+		// 		...state,
+		// 		transactionStatus: 'error',
+		// 		transactionErrorType: action.payload,
+		// 	};
+		// }
+		// case SET_TRANSACTION_PAIR: {
+		// 	const { fromSynth, fromAmount, toSynth, toAmount } = action.payload;
+		// 	const transactionPair = { fromSynth, fromAmount, toSynth, toAmount };
+		// 	return { ...state, transactionPair };
+		// }
+
+		// case SET_TRANSACTION_SPEED: {
+		// 	const gasAndSpeedInfo = state.gasAndSpeedInfo;
+		// 	const transactionSpeed = action.payload;
+		// 	return {
+		// 		...state,
+		// 		transactionSpeed,
+		// 		gasPrice: gasAndSpeedInfo[transactionSpeed].gwei * GWEI,
+		// 		gasPriceUsd: gasAndSpeedInfo[transactionSpeed].price,
+		// 	};
+		// }
+
+		default:
+			return state;
+	}
+};
+
+export const setGasPrice = gasPrice => {
+	return {
+		type: SET_GAS_PRICE,
+		payload: gasPrice,
+	};
+};
+
+export const setGasLimit = gasLimit => {
+	return {
+		type: SET_GAS_LIMIT,
+		payload: gasLimit + GAS_LIMIT_BUFFER,
+	};
+};
+
+export const setExchangeFeeRate = feeRate => {
+	return {
+		type: SET_EXCHANGE_FEE_RATE,
+		payload: feeRate,
+	};
+};
+
+export const setNetworkGasInfo = gasInfo => {
+	return {
+		type: SET_NETWORK_GAS_INFO,
+		payload: gasInfo,
+	};
+};
 
 // export const setTransactionStatusToConfirm = () => {
 // 	return {
@@ -173,13 +189,6 @@
 // 	};
 // };
 
-// export const updateGasAndSpeedInfo = gasAndSpeedInfo => {
-// 	return {
-// 		type: UPDATE_GAS_AND_SPEED_INFO,
-// 		payload: gasAndSpeedInfo,
-// 	};
-// };
-
 // export const updateExchangeFeeRate = exchangeFeeRate => {
 // 	return {
 // 		type: UPDATE_EXCHANGE_FEE_RATE,
@@ -194,4 +203,4 @@
 // 	};
 // };
 
-// export default reducer;
+export default reducer;

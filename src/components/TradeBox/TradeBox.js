@@ -4,14 +4,24 @@ import styled, { withTheme } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
 
+import { getTransactionPrice } from '../../utils/networkUtils';
 import { formatCurrency, bytesFormatter } from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
-import { getSynthPair, getExchangeRates, getWalletInfo } from '../../ducks';
+import {
+	getSynthPair,
+	getExchangeRates,
+	getWalletInfo,
+	getGasInfo,
+	getExchangeFeeRate,
+	getEthRate,
+} from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
+import { toggleGweiPopup } from '../../ducks/ui';
 import snxJSConnector from '../../utils/snxJSConnector';
+import { setGasLimit } from '../../ducks/transaction';
 
 /* eslint-disable */
 const TradeBox = ({
@@ -20,6 +30,11 @@ const TradeBox = ({
 	setSynthPair,
 	rates,
 	walletInfo: { balances, currentWallet },
+	setGasLimit,
+	toggleGweiPopup,
+	gasInfo: { gasLimit, gasPrice, gasSpeed },
+	exchangeFeeRate,
+	ethRate,
 }) => {
 	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
@@ -51,7 +66,10 @@ const TradeBox = ({
 
 	useEffect(() => {
 		const getGasEstimate = async () => {
-			if (!quoteAmount || !baseAmount) return;
+			if (!quoteAmount || !baseAmount) {
+				setError(null);
+				return;
+			}
 			if (!currentWallet) return;
 			try {
 				const {
@@ -59,12 +77,12 @@ const TradeBox = ({
 					utils,
 				} = snxJSConnector;
 				setError(null);
-				const transaction = await Synthetix.contract.estimate.exchange(
+				const gasEstimate = await Synthetix.contract.estimate.exchange(
 					bytesFormatter(quote),
 					utils.parseEther(quoteAmount.toString()),
 					bytesFormatter(base)
 				);
-				console.log(transaction);
+				setGasLimit(Number(gasEstimate));
 			} catch (e) {
 				console.log(e);
 				setError(e.message);
@@ -156,22 +174,25 @@ const TradeBox = ({
 					<NetworkDataRow>
 						<NetworkData>$USD Value</NetworkData>
 						<NetworkData>
-							${rates ? formatCurrency(baseAmount * rates[base][quote]) : 0}
+							${rates ? formatCurrency(baseAmount * rates[base]['sUSD']) : 0}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Fee</NetworkData>
-						<NetworkData>0</NetworkData>
+						<NetworkData>%{exchangeFeeRate || 0}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>Gas</NetworkData>
-						<NetworkData>0</NetworkData>
+						<NetworkData>Gas limit</NetworkData>
+						<NetworkData>
+							{formatCurrency(gasLimit, 0) || 0} ($
+							{formatCurrency(getTransactionPrice(gasPrice, gasLimit, ethRate))})
+						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Gas Price (gwei)</NetworkData>
 						<NetworkData>
-							0
-							<ButtonEdit>
+							{gasPrice || 0}
+							<ButtonEdit onClick={() => toggleGweiPopup(true)}>
 								<DataSmall color={colors.hyperLink}>Edit</DataSmall>
 							</ButtonEdit>
 						</NetworkData>
@@ -299,11 +320,16 @@ const mapStateToProps = state => {
 		synthPair: getSynthPair(state),
 		rates: getExchangeRates(state),
 		walletInfo: getWalletInfo(state),
+		gasInfo: getGasInfo(state),
+		exchangeFeeRate: getExchangeFeeRate(state),
+		ethRate: getEthRate(state),
 	};
 };
 
 const mapDispatchToProps = {
 	setSynthPair,
+	setGasLimit,
+	toggleGweiPopup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(TradeBox));

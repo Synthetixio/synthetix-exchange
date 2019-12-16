@@ -1,4 +1,4 @@
-import { getGasAndSpeedInfo } from '../utils/ethUtils';
+import { getGasInfo } from '../utils/networkUtils';
 import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter } from '../utils/formatters';
 import isEmpty from 'lodash/isEmpty';
@@ -7,17 +7,13 @@ const getExchangeRates = async synths => {
 	if (!synths) return;
 	let formattedSynthRates = {};
 	try {
-		const [synthRates, ethRate] = await Promise.all([
-			snxJSConnector.snxJS.ExchangeRates.ratesForCurrencies(
-				synths.map(synth => bytesFormatter(synth.name))
-			),
-			snxJSConnector.snxJS.Depot.usdToEthPrice(),
-		]);
+		const synthRates = await snxJSConnector.snxJS.ExchangeRates.ratesForCurrencies(
+			synths.map(synth => bytesFormatter(synth.name))
+		);
 		synthRates.forEach((rate, i) => {
 			formattedSynthRates[synths[i].name] = Number(snxJSConnector.snxJS.utils.formatEther(rate));
 		});
-		const formattedEthRate = snxJSConnector.snxJS.utils.formatEther(ethRate);
-		return { synthRates: formattedSynthRates, ethRate: formattedEthRate };
+		return { synthRates: formattedSynthRates, ethRate: formattedSynthRates['sETH'] };
 	} catch (e) {
 		console.log(e);
 	}
@@ -34,7 +30,7 @@ const getExchangeFeeRate = async () => {
 };
 
 const getNetworkPrices = async () => {
-	return await getGasAndSpeedInfo();
+	return await getGasInfo();
 };
 
 const getFrozenSynths = async synths => {

@@ -4,7 +4,7 @@ import { DataSmall } from '../Typography';
 
 export const Table = styled.table`
 	width: 100%;
-	height: 100%;
+	height: ${props => (props.height ? props.height : '100%')};
 	display: flex;
 	flex-direction: column;
 	background-color: ${props => props.theme.colors.surfaceL2};

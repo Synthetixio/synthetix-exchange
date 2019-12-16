@@ -13,7 +13,7 @@ import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
 import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
-// import { updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
+import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import Trade from '../Trade';
 import Home from '../Home';
@@ -23,8 +23,8 @@ import Theme from '../../styles/theme';
 const Root = ({
 	setAvailableSynths,
 	updateExchangeRates,
-	updateGasAndSpeedInfo,
-	updateExchangeFeeRate,
+	setNetworkGasInfo,
+	setExchangeFeeRate,
 	updateFrozenSynths,
 	updateWalletStatus,
 	updateWalletBalances,
@@ -37,8 +37,8 @@ const Root = ({
 			synths
 		);
 		updateExchangeRates(exchangeRates);
-		// updateExchangeFeeRate(exchangeFeeRate);
-		// updateGasAndSpeedInfo(networkPrices);
+		setExchangeFeeRate(exchangeFeeRate);
+		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths(frozenSynths);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -110,11 +110,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 	updateExchangeRates,
 	setAvailableSynths,
-	// updateGasAndSpeedInfo,
+	setNetworkGasInfo,
 	updateFrozenSynths,
 	updateWalletStatus,
 	updateWalletBalances,
-	// updateExchangeFeeRate,
+	setExchangeFeeRate,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));

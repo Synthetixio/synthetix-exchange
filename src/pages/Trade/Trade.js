@@ -12,11 +12,13 @@ import TradeBox from '../../components/TradeBox';
 import WalletBox from '../../components/WalletBox';
 
 import WalletPopup from '../../components/WalletPopup';
+import GweiPopup from '../../components/GweiPopup';
 
 const Trade = () => {
 	return (
 		<MainLayout>
 			<WalletPopup />
+			<GweiPopup />
 			<Header />
 			<TradeLayout>
 				<Container>

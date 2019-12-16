@@ -2,16 +2,22 @@ import { combineReducers } from 'redux';
 import ui from './ui';
 import wallet from './wallet';
 import synths from './synths';
+import transaction from './transaction';
 
 export default combineReducers({
 	wallet,
 	ui,
 	synths,
+	transaction,
 });
 
 // UI REDUCERS
 export const walletPopupIsVisible = state => {
 	return state.ui.walletPopupIsVisible;
+};
+
+export const gweiPopupIsVisible = state => {
+	return state.ui.gweiPopupIsVisible;
 };
 
 export const depotPopupIsVisible = state => {
@@ -32,10 +38,6 @@ export const getTransactionSettings = state => {
 		transactionSpeed: state.wallet.transactionSpeed,
 		gasAndSpeedInfo: state.wallet.gasAndSpeedInfo,
 	};
-};
-
-export const getExchangeFeeRate = state => {
-	return state.wallet.exchangeFeeRate;
 };
 
 export const getWalletBalances = state => {
@@ -61,4 +63,14 @@ export const getEthRate = state => {
 
 export const getFrozenSynths = state => {
 	return state.synths.frozenSynths;
+};
+
+// TRANSACTION REDUCERS
+export const getGasInfo = state => {
+	const { gasPrice, gasLimit, gasSpeed } = state.transaction;
+	return { gasPrice, gasLimit, gasSpeed };
+};
+
+export const getExchangeFeeRate = state => {
+	return state.transaction.exchangeFeeRate;
 };

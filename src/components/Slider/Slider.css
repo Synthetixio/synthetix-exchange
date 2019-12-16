@@ -1,0 +1,51 @@
+.rc-slider .rc-slider-rail {
+	position: absolute;
+	width: 100%;
+	background-image: linear-gradient(to right, #f4c14d, #d94454);
+	height: 16px;
+	border-radius: 2px;
+}
+.rc-slider .rc-slider-track {
+	background-color: transparent;
+	height: 8px;
+}
+.rc-slider .rc-slider-step {
+	background-color: transparent;
+	height: 8px;
+}
+.rc-slider .rc-slider-handle {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
+	cursor: -webkit-grab;
+	margin-top: -8px;
+	cursor: grab;
+	border-radius: 50%;
+	border: solid 8px #ffffff;
+	background-color: transparent;
+	touch-action: pan-x;
+	box-shadow: 0px 0px 6px 4px rgba(119, 119, 119, 0.2);
+}
+
+.rc-slider-tooltip {
+	z-index: 10001;
+}
+
+.rc-slider-tooltip-hidden {
+	display: block !important;
+}
+
+.rc-slider-tooltip-inner {
+	width: 128px;
+	font-size: 14px;
+	background-color: transparent;
+	height: auto;
+	padding: 0;
+	box-shadow: none;
+}
+
+.rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
+	border-top-color: white;
+	color: black;
+}

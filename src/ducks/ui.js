@@ -2,6 +2,7 @@ import { persistState, getPersistedState } from '../config/store';
 
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 const TOGGLE_WALLET_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
+const TOGGLE_GWEI_POPUP = 'UI/TOGGLE_GWEI_SELECTOR_POPUP';
 const TOGGLE_DEPOT_POPUP = 'UI/TOGGLE_DEPOT_POPUP';
 const TOGGLE_THEME = 'UI/TOGGLE_THEME';
 
@@ -10,6 +11,7 @@ const defaultState = Object.assign(
 	{
 		theme: 'light',
 		walletPopupIsVisible: false,
+		gweiPopupIsVisibile: false,
 		depotPopupIsVisible: false,
 	},
 	persistedState
@@ -26,6 +28,11 @@ const reducer = (state = defaultState, action = {}) => {
 			return {
 				...state,
 				walletPopupIsVisible: action.payload,
+			};
+		case TOGGLE_GWEI_POPUP:
+			return {
+				...state,
+				gweiPopupIsVisible: action.payload,
 			};
 		case TOGGLE_DEPOT_POPUP:
 			return {
@@ -51,6 +58,10 @@ export const changeScreen = screen => {
 
 export const toggleWalletPopup = isVisible => {
 	return { type: TOGGLE_WALLET_POPUP, payload: isVisible };
+};
+
+export const toggleGweiPopup = isVisible => {
+	return { type: TOGGLE_GWEI_POPUP, payload: isVisible };
 };
 
 export const toggleTheme = () => {

@@ -3,7 +3,7 @@ import { width } from 'styled-system';
 
 const ButtonPrimary = styled.button`
 	border-radius: 1px;
-	height: 42px;
+	height: 48px;
 	width: 100%;
 	font-size: 16px;
 	letter-spacing: 0.5px;
