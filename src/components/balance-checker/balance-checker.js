@@ -201,7 +201,7 @@ class BalanceChecker extends Component {
           <tr>
             <td colSpan="2" className={styles.tableBodyButtonRow}>
               <button
-                disabled={!totalBalance}
+                disabled={true}
                 onClick={this.showDepotPopup}
                 className={`${styles.balanceCheckerButton} ${styles.balanceCheckerButtonWhite}`}
               >
@@ -272,7 +272,4 @@ BalanceChecker.propTypes = {
   currentExchangeMode: PropTypes.string.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BalanceChecker);
+export default connect(mapStateToProps, mapDispatchToProps)(BalanceChecker);

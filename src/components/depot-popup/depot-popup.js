@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import Popup from '../popup';
 import GweiSelector from '../gwei-selector';
-import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
+// import { TRANSACTION_REJECTED } from '../../utils/walletErrors';
 
 import { toggleDepotPopup, toggleTransactionStatusPopup } from '../../ducks/ui';
 import {
@@ -35,7 +35,7 @@ class DepotPopup extends Component {
     this.onBuyMaxClick = this.onBuyMaxClick.bind(this);
     this.onEthInputChange = this.onEthInputChange.bind(this);
     this.onSynthInputChange = this.onSynthInputChange.bind(this);
-    this.buyFromDepot = this.buyFromDepot.bind(this);
+    // this.buyFromDepot = this.buyFromDepot.bind(this);
   }
 
   closePopup() {
@@ -43,59 +43,59 @@ class DepotPopup extends Component {
     toggleDepotPopup(false);
   }
 
-  async buyFromDepot() {
-    const { ethInputValue, synthInputValue } = this.state;
-    const {
-      currentWalletInfo,
-      toggleDepotPopup,
-      toggleTransactionStatusPopup,
-      setTransactionStatusToConfirm,
-      setTransactionStatusToProgress,
-      setTransactionStatusToSuccess,
-      setTransactionStatusToCleared,
-      setTransactionStatusToError,
-      setTransactionPair,
-    } = this.props;
-    const { gasPrice, gasLimit, walletType } = currentWalletInfo;
-    let transactionResult;
-    try {
-      toggleDepotPopup(false);
-      toggleTransactionStatusPopup(true);
-      setTransactionStatusToConfirm();
-      setTransactionPair({
-        fromSynth: 'ETH',
-        toSynth: 'sUSD',
-        fromAmount: ethInputValue,
-        toAmount: synthInputValue,
-      });
-      transactionResult = await synthetixJsTools.synthetixJs.Depot.exchangeEtherForSynths(
-        {
-          gasPrice,
-          gasLimit,
-          value: synthetixJsTools.utils.parseEther(ethInputValue),
-        }
-      );
-    } catch (e) {
-      const transactionRejected =
-        e.message && e.message.includes(TRANSACTION_REJECTED[walletType]);
-      setTransactionStatusToError(transactionRejected ? 'rejected' : 'failed');
-      console.log('Error during the exchange transaction', e);
-    }
-    if (transactionResult) {
-      const hash = transactionResult.hash || transactionResult;
-      setTransactionStatusToProgress(hash);
-      try {
-        await synthetixJsTools.util.waitForTransaction(hash);
-        setTransactionStatusToSuccess();
-        setTimeout(() => {
-          toggleTransactionStatusPopup(false);
-          setTransactionStatusToCleared();
-        }, 2000);
-      } catch (e) {
-        console.log('Could not get transaction confirmation', e);
-      }
-    }
-  }
+  // async buyFromDepot() {
+  //   const { ethInputValue, synthInputValue } = this.state;
+  //   const {
+  //     currentWalletInfo,
+  //     toggleDepotPopup,
+  //     toggleTransactionStatusPopup,
+  //     setTransactionStatusToConfirm,
+  //     setTransactionStatusToProgress,
+  //     setTransactionStatusToSuccess,
+  //     setTransactionStatusToCleared,
+  //     setTransactionStatusToError,
+  //     setTransactionPair,
+  //   } = this.props;
+  //   const { gasPrice, gasLimit, walletType } = currentWalletInfo;
+  //   let transactionResult;
+  //   try {
+  //     toggleDepotPopup(false);
+  //     toggleTransactionStatusPopup(true);
+  //     setTransactionStatusToConfirm();
+  //     setTransactionPair({
+  //       fromSynth: 'ETH',
+  //       toSynth: 'sUSD',
+  //       fromAmount: ethInputValue,
+  //       toAmount: synthInputValue,
+  //     });
+  //     transactionResult = await synthetixJsTools.synthetixJs.Depot.exchangeEtherForSynths(
+  //       {
+  //         gasPrice,
+  //         gasLimit,
+  //         value: synthetixJsTools.utils.parseEther(ethInputValue),
+  //       }
+  //     );
+  //   } catch (e) {
+  //     const transactionRejected =
+  //       e.message && e.message.includes(TRANSACTION_REJECTED[walletType]);
+  //     setTransactionStatusToError(transactionRejected ? 'rejected' : 'failed');
+  //     console.log('Error during the exchange transaction', e);
+  //   }
+  //   if (transactionResult) {
+  //     const hash = transactionResult.hash || transactionResult;
+  //     setTransactionStatusToProgress(hash);
+  //     try {
+  //       await synthetixJsTools.util.waitForTransaction(hash);
+  //       setTransactionStatusToSuccess();
+  //       setTimeout(() => {
+  //         toggleTransactionStatusPopup(false);
+  //         setTransactionStatusToCleared();
+  //       }, 2000);
+  //     } catch (e) {
+  //       console.log('Could not get transaction confirmation', e);
+  //     }
+  //   }
+  // }
 
   async componentDidUpdate(prevProps) {
     if (!prevProps.isVisible && this.props.isVisible) {
@@ -204,7 +204,7 @@ class DepotPopup extends Component {
           <button
             className={styles.buyButton}
             type="button"
-            onClick={this.buyFromDepot}
+            onClick={() => null}
           >
             Buy
           </button>
@@ -245,7 +245,4 @@ DepotPopup.propTypes = {
   setTransactionPair: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DepotPopup);
+export default connect(mapStateToProps, mapDispatchToProps)(DepotPopup);
