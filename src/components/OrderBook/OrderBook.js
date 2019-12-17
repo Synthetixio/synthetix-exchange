@@ -1,11 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import styled, { withTheme } from 'styled-components';
+import { format } from 'date-fns';
 
 import { DataSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 
-const OrderBook = ({ theme: { colors } }) => {
+import { getTransactions, getPendingTransactions } from '../../ducks/';
+import { updateTransaction, removePendingTransaction } from '../../ducks/transaction';
+
+import snxJSConnector from '../../utils/snxJSConnector';
+
+const StatusLabel = ({ status, colors }) => {
+	let color = '';
+	switch (status) {
+		case 'Cancelled':
+		case 'Failed':
+			color = colors.red;
+			break;
+		case 'Confirmed':
+			color = colors.green;
+			break;
+		default:
+			color = '';
+			break;
+	}
+	return <DataLabel color={color}>{status}</DataLabel>;
+};
+
+const OrderBook = ({
+	theme: { colors },
+	transactions,
+	pendingTransactions,
+	updateTransaction,
+	removePendingTransaction,
+}) => {
 	const [activeTab, setActiveTab] = useState('Your orders');
+
+	useEffect(() => {
+		const fetchTransactionResult = async () => {
+			try {
+				if (pendingTransactions.length === 0) return;
+				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
+				removePendingTransaction(latestTransactionHash);
+				const status = await snxJSConnector.utils.waitForTransaction(latestTransactionHash);
+				const matchingTransaction = transactions.find(tx => tx.hash === latestTransactionHash);
+				if (status) {
+					updateTransaction({ status: 'Confirmed' }, matchingTransaction.id);
+				} else {
+					updateTransaction(
+						{ status: 'Failed', error: 'Transaction failed' },
+						matchingTransaction.id
+					);
+				}
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		fetchTransactionResult();
+	}, [pendingTransactions.length]);
+
 	return (
 		<Container>
 			<Tabs>
@@ -32,12 +86,12 @@ const OrderBook = ({ theme: { colors } }) => {
 				<Table cellSpacing="0">
 					<Thead>
 						<Tr>
-							{[1, 2, 3, 4, 5, 6, 7].map(i => {
+							{['Date | Time', 'Pair', 'Price', 'Amount', 'Total', 'Status'].map((label, i) => {
 								return (
 									<Th key={i}>
 										<ButtonSort>
-											<DataSmall color={colors.fontTertiary}>Date Time</DataSmall>
-											<SortIcon src={'/images/sort-arrows.svg'} />
+											<DataSmall color={colors.fontTertiary}>{label}</DataSmall>
+											{/* <SortIcon src={'/images/sort-arrows.svg'} /> */}
 										</ButtonSort>
 									</Th>
 								);
@@ -45,31 +99,29 @@ const OrderBook = ({ theme: { colors } }) => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{[1, 2, 3, 4, 5, 6, 7].map(i => {
+						{transactions.map((transaction, i) => {
+							const { date, pair, price, amount, totalUSD, status } = transaction;
 							return (
-								<Tr key={i}>
+								<TransactionRow isPending={['Pending', 'Waiting'].includes(status)} key={i}>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>{format(date, 'DD-MM-YY')}</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>{pair}</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>{price}</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>{amount}</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<DataLabel>${totalUSD}</DataLabel>
 									</Td>
 									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
+										<StatusLabel status={status} colors={colors} />
 									</Td>
-									<Td>
-										<DataLabel>blh fsdf fdsd</DataLabel>
-									</Td>
-								</Tr>
+								</TransactionRow>
 							);
 						})}
 						<Tr></Tr>
@@ -122,11 +174,11 @@ const Book = styled.div`
 	min-height: 0;
 `;
 
-const SortIcon = styled.img`
-	width: 6.5px;
-	height: 8px;
-	margin-left: 5px;
-`;
+// const SortIcon = styled.img`
+// 	width: 6.5px;
+// 	height: 8px;
+// 	margin-left: 5px;
+// `;
 
 const ButtonSort = styled.button`
 	text-align: left;
@@ -138,4 +190,23 @@ const ButtonSort = styled.button`
 	background-color: transparent;
 	padding: 0;
 `;
-export default withTheme(OrderBook);
+
+const TransactionRow = styled(Tr)`
+	& span {
+		color: ${props => (props.isPending ? props.theme.colors.fontTertiary : '')};
+	}
+`;
+
+const mapStateToProps = state => {
+	return {
+		transactions: getTransactions(state),
+		pendingTransactions: getPendingTransactions(state),
+	};
+};
+
+const mapDispatchToProps = {
+	updateTransaction,
+	removePendingTransaction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(OrderBook));

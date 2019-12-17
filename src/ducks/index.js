@@ -74,3 +74,11 @@ export const getGasInfo = state => {
 export const getExchangeFeeRate = state => {
 	return state.transaction.exchangeFeeRate;
 };
+
+export const getTransactions = state => {
+	return state.transaction.transactions;
+};
+
+export const getPendingTransactions = state => {
+	return state.transaction.pendingTransactions;
+};

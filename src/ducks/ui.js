@@ -9,7 +9,7 @@ const TOGGLE_THEME = 'UI/TOGGLE_THEME';
 const persistedState = getPersistedState('ui');
 const defaultState = Object.assign(
 	{
-		theme: 'light',
+		theme: 'dark',
 		walletPopupIsVisible: false,
 		gweiPopupIsVisibile: false,
 		depotPopupIsVisible: false,

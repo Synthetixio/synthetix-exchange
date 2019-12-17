@@ -4,7 +4,7 @@ import styled, { withTheme } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
 
-import { getTransactionPrice } from '../../utils/networkUtils';
+import { getTransactionPrice, GWEI_UNIT } from '../../utils/networkUtils';
 import { formatCurrency, bytesFormatter } from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
@@ -17,28 +17,33 @@ import {
 	getGasInfo,
 	getExchangeFeeRate,
 	getEthRate,
+	getTransactions,
 } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
 import { toggleGweiPopup } from '../../ducks/ui';
 import snxJSConnector from '../../utils/snxJSConnector';
-import { setGasLimit } from '../../ducks/transaction';
+import errorMessages from '../../utils/errorMessages';
+import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
 
-/* eslint-disable */
 const TradeBox = ({
 	theme: { colors },
 	synthPair,
 	setSynthPair,
 	rates,
-	walletInfo: { balances, currentWallet },
+	walletInfo: { balances, currentWallet, walletType },
 	setGasLimit,
 	toggleGweiPopup,
-	gasInfo: { gasLimit, gasPrice, gasSpeed },
+	gasInfo: { gasLimit, gasPrice },
 	exchangeFeeRate,
 	ethRate,
+	createTransaction,
+	updateTransaction,
+	transactions,
 }) => {
 	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
+	// const [nounce, setNounce] = useState(undefined);
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
 
@@ -47,19 +52,38 @@ const TradeBox = ({
 			snxJS: { Synthetix },
 			utils,
 		} = snxJSConnector;
+		const id = transactions.length;
 		try {
+			createTransaction({
+				// nounce,
+				id,
+				date: new Date(),
+				pair: `${base} / ${quote}`,
+				price: formatCurrency(rates[base][quote]),
+				amount: formatCurrency(baseAmount),
+				totalUSD: formatCurrency(baseAmount * rates[base]['sUSD']),
+				status: 'Waiting',
+			});
 			const transaction = await Synthetix.exchange(
 				bytesFormatter(quote),
 				utils.parseEther(quoteAmount.toString()),
 				bytesFormatter(base),
 				{
-					gasPrice,
+					gasPrice: gasPrice * GWEI_UNIT,
 					gasLimit,
+					// nounce,
 				}
 			);
-			console.log(transaction);
+			updateTransaction({ status: 'Pending', ...transaction }, id);
 		} catch (e) {
-			console.log(e);
+			const error = errorMessages(e, walletType);
+			updateTransaction(
+				{
+					status: error.type === 'cancelled' ? 'Cancelled' : 'Failed',
+					error: error.message,
+				},
+				id
+			);
 		}
 	};
 
@@ -94,6 +118,20 @@ const TradeBox = ({
 		};
 		getGasEstimate();
 	}, [quoteAmount, baseAmount]);
+
+	// useEffect(() => {
+	// 	const getTransactionCount = async () => {
+	// 		if (!currentWallet) return;
+	// 		try {
+	// 			const transactionCount = await snxJSConnector.provider.getTransactionCount(currentWallet);
+	// 			setNounce(transactionCount + 1);
+	// 			console.log('NOUNCE', nounce);
+	// 		} catch (e) {
+	// 			console.log(e);
+	// 		}
+	// 	};
+	// 	getTransactionCount();
+	// }, [transactions.length, currentWallet]);
 
 	return (
 		<Container>
@@ -327,6 +365,7 @@ const mapStateToProps = state => {
 		gasInfo: getGasInfo(state),
 		exchangeFeeRate: getExchangeFeeRate(state),
 		ethRate: getEthRate(state),
+		transactions: getTransactions(state),
 	};
 };
 
@@ -334,6 +373,8 @@ const mapDispatchToProps = {
 	setSynthPair,
 	setGasLimit,
 	toggleGweiPopup,
+	createTransaction,
+	updateTransaction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(TradeBox));

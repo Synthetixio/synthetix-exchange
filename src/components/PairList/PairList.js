@@ -79,7 +79,7 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 					{[
 						{ label: 'Pair', value: 'name' },
 						{ label: 'Price', value: 'rate' },
-						{ label: 'Change', value: 'change' },
+						// { label: 'Change', value: 'change' },
 					].map((column, i) => {
 						return (
 							<ListHeaderElement key={i}>
@@ -112,11 +112,11 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 							<PairElement>
 								<DataMedium>{formatCurrency(synth.rate, 6)}</DataMedium>
 							</PairElement>
-							<PairElement>
+							{/* <PairElement>
 								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>
 									{formatCurrency(synth.change, 2)}%
 								</DataChange>
-							</PairElement>
+							</PairElement> */}
 						</Pair>
 					);
 				})}
@@ -223,9 +223,9 @@ const SortIcon = styled.img`
 	margin-left: 5px;
 `;
 
-const DataChange = styled(DataMedium)`
-	color: ${props => (props.color === 'red' ? props.theme.colors.red : props.theme.colors.green)};
-`;
+// const DataChange = styled(DataMedium)`
+// 	color: ${props => (props.color === 'red' ? props.theme.colors.red : props.theme.colors.green)};
+// `;
 
 const mapStateToProps = state => {
 	return {
