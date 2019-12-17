@@ -52,6 +52,7 @@ const Root = ({
 	);
 
 	useEffect(() => {
+		let intervalId;
 		const init = async () => {
 			const { networkId, name } = await getEthereumNetwork();
 			if (!snxJSConnector.initialized) {
@@ -62,10 +63,11 @@ const Root = ({
 			setAvailableSynths(synths);
 			fetchAndSetExchangeData(synths);
 			fetchAndSetWalletBalances(synths);
-			const intervalId = setInterval(() => {
+			clearInterval(intervalId);
+			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
 				fetchAndSetWalletBalances(synths);
-			}, 30 * 1000);
+			}, 5 * 1000);
 			setIntervalId(intervalId);
 		};
 		init();

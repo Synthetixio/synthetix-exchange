@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import { getAvailableSynths, getExchangeRates } from '../../ducks';
+import { getAvailableSynths, getExchangeRates, getFrozenSynths } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
 
 import { DataMedium, DataSmall } from '../Typography';
@@ -43,7 +43,7 @@ const sortPairsBy = (pairs, sort) => {
 	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
 };
 
-const PairList = ({ synths, rates, setSynthPair }) => {
+const PairList = ({ synths, rates, setSynthPair, frozenSynths }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
 	const [sort, setSort] = useState({ column: 'name', isAscending: true });
@@ -104,7 +104,11 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 			<List>
 				{sortPairsBy(synthList, sort).map((synth, i) => {
 					return (
-						<Pair key={i} onClick={() => setSynthPair({ base: synth.name, quote })}>
+						<Pair
+							isDisabled={frozenSynths && frozenSynths[synth.name]}
+							key={i}
+							onClick={() => setSynthPair({ base: synth.name, quote })}
+						>
 							<PairElement>
 								<SynthIcon src={`/images/synths/${synth.name}.svg`} />
 								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
@@ -172,6 +176,8 @@ const Pair = styled.li`
 		background-color: ${props => props.theme.colors.accentDark};
 		transform: scale(1.02);
 	}
+	opacity: ${props => (props.isDisabled ? 0.5 : 1)};
+	pointer-events: ${props => (props.isDisabled ? 'none' : 'auto')};
 `;
 
 const PairElement = styled.div`
@@ -231,6 +237,7 @@ const mapStateToProps = state => {
 	return {
 		synths: getAvailableSynths(state),
 		rates: getExchangeRates(state),
+		frozenSynths: getFrozenSynths(state),
 	};
 };
 

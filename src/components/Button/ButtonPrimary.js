@@ -13,7 +13,9 @@ const ButtonPrimary = styled.button`
 	padding: 0 6px;
 	background-color: ${props => props.theme.colors.buttonDefault};
 	&:hover {
-		background-color: ${props => props.theme.colors.buttonHover};
+		&:not(:disabled) {
+			background-color: ${props => props.theme.colors.buttonHover};
+		}
 	}
 	border: none;
 	text-transform: uppercase;

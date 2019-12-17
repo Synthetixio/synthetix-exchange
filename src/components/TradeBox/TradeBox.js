@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
 
 import { getTransactionPrice, GWEI_UNIT } from '../../utils/networkUtils';
-import { formatCurrency, bytesFormatter } from '../../utils/formatters';
+import { formatCurrency, bytesFormatter, bigNumberFormatter } from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
@@ -43,6 +43,7 @@ const TradeBox = ({
 	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
+	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
 	// const [nounce, setNounce] = useState(undefined);
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
@@ -88,9 +89,23 @@ const TradeBox = ({
 	};
 
 	useEffect(() => {
+		const getFeeRateForExchange = async () => {
+			try {
+				if (!snxJSConnector.initialized) return;
+				const feeRateForExchange = await snxJSConnector.snxJS.Synthetix.feeRateForExchange(
+					bytesFormatter(quote),
+					bytesFormatter(base)
+				);
+				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
+			} catch (e) {
+				setFeeRate(exchangeFeeRate);
+				console.log(e);
+			}
+		};
 		setBaseAmount('');
 		setQuoteAmount('');
-	}, [base, quote]);
+		getFeeRateForExchange();
+	}, [base, quote, snxJSConnector.initialized]);
 
 	useEffect(() => {
 		const getGasEstimate = async () => {
@@ -222,7 +237,7 @@ const TradeBox = ({
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Fee</NetworkData>
-						<NetworkData>%{exchangeFeeRate || 0}</NetworkData>
+						<NetworkData>%{feeRate || 0}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Gas limit</NetworkData>
