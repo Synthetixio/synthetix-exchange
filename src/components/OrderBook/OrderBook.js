@@ -31,7 +31,7 @@ const StatusLabel = ({ transaction: { status, hash }, colors, network, hasHash }
 	return hasHash ? (
 		<Link
 			color={color}
-			href={`https://${network === 'mainnet' ? '' : network + '.'}etherscan.io/address/${hash}`}
+			href={`https://${network === 'mainnet' ? '' : network + '.'}etherscan.io/tx/${hash}`}
 			target="_blank"
 		>
 			<DataLabel color={color}>{status}</DataLabel>
