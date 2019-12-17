@@ -51,7 +51,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote } }) => {
 		<Container>
 			<Header>
 				<HeaderBlock>
-					<HeadingSmall>{`${base} / ${quote}`}</HeadingSmall>
+					<HeadingSmall>{`${base}/${quote}`}</HeadingSmall>
 					<ButtonFilter height={'22px'}>
 						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 					</ButtonFilter>
