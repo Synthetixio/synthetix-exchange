@@ -102,7 +102,6 @@ const getSignerConfig = ({ type, networkId, derivationPath }) => {
 			networkId,
 		};
 	}
-
 	return {};
 };
 
@@ -110,12 +109,10 @@ export const setSigner = ({ type, networkId, derivationPath }) => {
 	const signer = new snxJSConnector.signers[type](
 		getSignerConfig({ type, networkId, derivationPath })
 	);
-
 	snxJSConnector.setContractSettings({
 		networkId,
 		signer,
 	});
-	console.log(snxJSConnector.snxJS);
 };
 
 export const connectToWallet = async ({ wallet, derivationPath }) => {

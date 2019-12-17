@@ -6,12 +6,12 @@ import { format } from 'date-fns';
 import { DataSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 
-import { getTransactions, getPendingTransactions } from '../../ducks/';
+import { getTransactions, getPendingTransactions, getWalletInfo } from '../../ducks/';
 import { updateTransaction, removePendingTransaction } from '../../ducks/transaction';
 
 import snxJSConnector from '../../utils/snxJSConnector';
 
-const StatusLabel = ({ status, colors }) => {
+const StatusLabel = ({ transaction: { status, hash }, colors, network, hasHash }) => {
 	let color = '';
 	switch (status) {
 		case 'Cancelled':
@@ -21,11 +21,24 @@ const StatusLabel = ({ status, colors }) => {
 		case 'Confirmed':
 			color = colors.green;
 			break;
+		case 'Pending':
+			color = colors.fontTertiary;
+			break;
 		default:
 			color = '';
 			break;
 	}
-	return <DataLabel color={color}>{status}</DataLabel>;
+	return hasHash ? (
+		<Link
+			color={color}
+			href={`https://${network === 'mainnet' ? '' : network + '.'}etherscan.io/address/${hash}`}
+			target="_blank"
+		>
+			<DataLabel color={color}>{status}</DataLabel>
+		</Link>
+	) : (
+		<DataLabel color={color}>{status}</DataLabel>
+	);
 };
 
 const OrderBook = ({
@@ -34,6 +47,7 @@ const OrderBook = ({
 	pendingTransactions,
 	updateTransaction,
 	removePendingTransaction,
+	walletInfo: { networkName },
 }) => {
 	const [activeTab, setActiveTab] = useState('Your orders');
 
@@ -58,6 +72,7 @@ const OrderBook = ({
 			}
 		};
 		fetchTransactionResult();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pendingTransactions.length]);
 
 	return (
@@ -101,8 +116,10 @@ const OrderBook = ({
 					<Tbody>
 						{transactions.map((transaction, i) => {
 							const { date, pair, price, amount, totalUSD, status } = transaction;
+							const isPending = ['Pending', 'Waiting'].includes(status);
+							const hasHash = !!transaction.hash;
 							return (
-								<TransactionRow isPending={['Pending', 'Waiting'].includes(status)} key={i}>
+								<TransactionRow isPending={isPending} key={i}>
 									<Td>
 										<DataLabel>{format(date, 'DD-MM-YY')}</DataLabel>
 									</Td>
@@ -119,7 +136,12 @@ const OrderBook = ({
 										<DataLabel>${totalUSD}</DataLabel>
 									</Td>
 									<Td>
-										<StatusLabel status={status} colors={colors} />
+										<StatusLabel
+											transaction={transaction}
+											colors={colors}
+											network={networkName}
+											hasHash={hasHash}
+										/>
 									</Td>
 								</TransactionRow>
 							);
@@ -191,6 +213,15 @@ const ButtonSort = styled.button`
 	padding: 0;
 `;
 
+const Link = styled.a`
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	text-decoration: underline;
+	color: ${props => props.color};
+`;
+
 const TransactionRow = styled(Tr)`
 	& span {
 		color: ${props => (props.isPending ? props.theme.colors.fontTertiary : '')};
@@ -201,6 +232,7 @@ const mapStateToProps = state => {
 	return {
 		transactions: getTransactions(state),
 		pendingTransactions: getPendingTransactions(state),
+		walletInfo: getWalletInfo(state),
 	};
 };
 

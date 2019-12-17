@@ -58,7 +58,7 @@ const TradeBox = ({
 				// nounce,
 				id,
 				date: new Date(),
-				pair: `${base} / ${quote}`,
+				pair: `${base}/${quote}`,
 				price: formatCurrency(rates[base][quote]),
 				amount: formatCurrency(baseAmount),
 				totalUSD: formatCurrency(baseAmount * rates[base]['sUSD']),
@@ -117,6 +117,7 @@ const TradeBox = ({
 			}
 		};
 		getGasEstimate();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [quoteAmount, baseAmount]);
 
 	// useEffect(() => {
@@ -240,7 +241,7 @@ const TradeBox = ({
 						</NetworkData>
 					</NetworkDataRow>
 				</NetworkInfo>
-				<ButtonPrimary disabled={!currentWallet || error} onClick={onConfirmTrade}>
+				<ButtonPrimary disabled={!baseAmount || !currentWallet || error} onClick={onConfirmTrade}>
 					Confirm Trade
 				</ButtonPrimary>
 			</Body>
