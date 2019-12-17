@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import { getAvailableSynths, getExchangeRates, getFrozenSynths } from '../../ducks';
+import { getAvailableSynths, getExchangeRates, getFrozenSynths, getSynthsSigns } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
 
 import { DataMedium, DataSmall } from '../Typography';
@@ -43,7 +43,7 @@ const sortPairsBy = (pairs, sort) => {
 	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
 };
 
-const PairList = ({ synths, rates, setSynthPair, frozenSynths }) => {
+const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
 	const [sort, setSort] = useState({ column: 'name', isAscending: true });
@@ -114,7 +114,10 @@ const PairList = ({ synths, rates, setSynthPair, frozenSynths }) => {
 								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
 							</PairElement>
 							<PairElement>
-								<DataMedium>{formatCurrency(synth.rate, 6)}</DataMedium>
+								<DataMedium>
+									{synthsSigns[quote]}
+									{formatCurrency(synth.rate, 6)}
+								</DataMedium>
 							</PairElement>
 							{/* <PairElement>
 								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>
@@ -238,6 +241,7 @@ const mapStateToProps = state => {
 		synths: getAvailableSynths(state),
 		rates: getExchangeRates(state),
 		frozenSynths: getFrozenSynths(state),
+		synthsSigns: getSynthsSigns(state),
 	};
 };
 

@@ -49,6 +49,10 @@ export const getAvailableSynths = state => {
 	return state.synths.availableSynths;
 };
 
+export const getSynthsSigns = state => {
+	return state.synths.synthsSigns;
+};
+
 export const getSynthPair = state => {
 	return { base: state.synths.baseSynth, quote: state.synths.quoteSynth };
 };

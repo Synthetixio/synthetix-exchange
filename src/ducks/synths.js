@@ -5,6 +5,7 @@ const SET_FROZEN_SYNTHS = 'SYNTHS/SET_FROZEN_SYNTHS';
 
 const defaultState = {
 	availableSynths: [],
+	synthsSigns: {},
 	synthTypes: [],
 	defaultSynth: null,
 	frozenSynths: null,
@@ -31,7 +32,17 @@ const reducer = (state = defaultState, action = {}) => {
 			const baseSynth = action.payload.find(synth => synth.name === 'sBTC').name;
 			const quoteSynth = action.payload.find(synth => synth.name === 'sUSD').name;
 			const availableSynths = action.payload.sort(sortSynths);
-			return { ...state, availableSynths: availableSynths, baseSynth, quoteSynth };
+			const signs = {};
+			availableSynths.forEach(synth => {
+				signs[synth.name] = synth.sign;
+			});
+			return {
+				...state,
+				availableSynths: availableSynths,
+				baseSynth,
+				quoteSynth,
+				synthsSigns: signs,
+			};
 		}
 		case SET_SYNTH_PAIR: {
 			const { quote, base } = action.payload;
