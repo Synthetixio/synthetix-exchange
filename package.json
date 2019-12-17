@@ -21,7 +21,7 @@
 		"redux-thunk": "~2.3.0",
 		"styled-components": "^4.4.1",
 		"styled-system": "^5.1.2",
-		"synthetix-data": "^2.0.1",
+		"synthetix-data": "^2.0.2",
 		"synthetix-js": "^2.16.4"
 	},
 	"scripts": {

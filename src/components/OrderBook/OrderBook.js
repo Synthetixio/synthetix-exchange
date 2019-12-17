@@ -1,42 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { withTheme } from 'styled-components';
 import { connect } from 'react-redux';
 import { getWalletInfo } from '../../ducks';
-import { subHours, format } from 'date-fns';
+import { format } from 'date-fns';
+import { last, debounce } from 'lodash';
 import snxData from 'synthetix-data';
 
 import { DataSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import Spinner from '../Spinner';
 
-const useOrderBookTab = (tab, walletInfo, setIsLoading, setList) => {
+const SCROLL_THRESHOLD = 0.8;
+
+const useOrderBookTab = (walletInfo, isLoading, setIsLoading, listData, setListData) => {
 	useEffect(() => {
 		const fetchData = async () => {
+			const { tab, list, maxBlock } = listData;
+
+			if (isLoading) return;
 			setIsLoading(true);
-			const now = new Date().getTime();
-			let results = [];
+
+			let results;
 			if (tab === 'Your trades') {
 				const { currentWallet } = walletInfo;
 				results = await snxData.exchanges.since({
 					fromAddress: currentWallet,
-					maxTimestamp: Math.trunc(now / 1000),
-					minTimestamp: Math.trunc(subHours(now, 168).getTime() / 1000), // last week
-					max: 50,
+					maxBlock: maxBlock,
+					max: 100,
 				});
 			} else if (tab === 'Show all trades') {
 				results = await snxData.exchanges.since({
-					maxTimestamp: Math.trunc(now / 1000),
-					minTimestamp: Math.trunc(subHours(now, 168).getTime() / 1000),
-					max: 50,
+					maxBlock: maxBlock,
+					max: 100,
 				});
 			}
 
-			console.log(results);
-			setList(results);
+			if (results && results.length) {
+				const hashMap = {};
+				list.forEach(l => {
+					hashMap[l.hash] = true;
+				});
+				results = results.filter(r => !hashMap[r.hash]);
+				results = [...list, ...results];
+
+				setListData({ ...listData, list: results });
+			}
+
 			setIsLoading(false);
 		};
 		fetchData();
-	}, [tab]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [listData.tab, listData.maxBlock]);
 };
 
 const getPrice = (fromSynth, toSynth, fromAmount, toAmount) => {
@@ -56,10 +70,34 @@ const formatAmount = amount => {
 };
 
 const OrderBook = ({ theme: { colors }, walletInfo }) => {
-	const [activeTab, setActiveTab] = useState('Your orders');
-	const [list, setList] = useState([]);
+	const [listData, setListData] = useState({
+		tab: 'Your orders',
+		list: [],
+		maxBlock: Number.MAX_SAFE_INTEGER, // now
+	});
+	const { list } = listData;
+
 	const [isLoading, setIsLoading] = useState(false);
-	useOrderBookTab(activeTab, walletInfo, setIsLoading, setList);
+	const tbodyEl = useRef(null);
+
+	const onTableScroll = () => {
+		if (isLoading) return;
+		checkScroll();
+	};
+
+	const checkScroll = debounce(() => {
+		if (!tbodyEl.current) return;
+
+		const { scrollTop, scrollHeight, clientHeight } = tbodyEl.current;
+		if (scrollTop + clientHeight > SCROLL_THRESHOLD * scrollHeight) {
+			const lastRow = last(list);
+			if (lastRow) {
+				setListData({ ...listData, maxBlock: lastRow.block });
+			}
+		}
+	}, 200);
+
+	useOrderBookTab(walletInfo, isLoading, setIsLoading, listData, setListData);
 	return (
 		<Container>
 			<Tabs>
@@ -70,12 +108,16 @@ const OrderBook = ({ theme: { colors }, walletInfo }) => {
 							isDisabled={tab === 'Your trades' && !walletInfo.currentWallet}
 							onClick={() => {
 								if (tab === 'Your trades' && !walletInfo.currentWallet) return;
-								setActiveTab(tab);
+								setListData({
+									tab: tab,
+									list: [],
+									maxBlock: Number.MAX_SAFE_INTEGER,
+								});
 							}}
 							hidden={!tab}
-							active={tab === activeTab}
+							active={tab === listData.tab}
 						>
-							<DataSmall color={tab === activeTab ? colors.fontPrimary : colors.fontTertiary}>
+							<DataSmall color={tab === listData.tab ? colors.fontPrimary : colors.fontTertiary}>
 								{tab}
 							</DataSmall>
 						</Tab>
@@ -98,45 +140,43 @@ const OrderBook = ({ theme: { colors }, walletInfo }) => {
 							})}
 						</Tr>
 					</Thead>
-					{isLoading ? null : (
-						<Tbody>
-							{list.map(t => {
-								return (
-									<Tr key={t.hash}>
-										<Td>
-											<DataLabel>{format(t.timestamp, 'DD-MM-YY | HH:mmA')}</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>
-												{t.fromCurrencyKey} / {t.toCurrencyKey}
-											</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>
-												{getPrice(t.fromCurrencyKey, t.toCurrencyKey, t.fromAmount, t.toAmount)}
-											</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>{formatAmount(t.fromAmount)}</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>{formatAmount(t.toAmount)}</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>COMPLETE</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>
-												<Link href={`https://etherscan.io/tx/${t.hash}`} target="_blank">
-													VIEW
-												</Link>
-											</DataLabel>
-										</Td>
-									</Tr>
-								);
-							})}
-						</Tbody>
-					)}
+					<Tbody ref={tbodyEl} onScroll={onTableScroll}>
+						{list.map(t => {
+							return (
+								<Tr key={t.hash}>
+									<Td>
+										<DataLabel>{format(t.timestamp, 'DD-MM-YY | HH:mmA')}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>
+											{t.fromCurrencyKey}/{t.toCurrencyKey}
+										</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>
+											{getPrice(t.fromCurrencyKey, t.toCurrencyKey, t.fromAmount, t.toAmount)}
+										</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatAmount(t.fromAmount)}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatAmount(t.toAmount)}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>COMPLETE</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>
+											<Link href={`https://etherscan.io/tx/${t.hash}`} target="_blank">
+												VIEW
+											</Link>
+										</DataLabel>
+									</Td>
+								</Tr>
+							);
+						})}
+					</Tbody>
 				</Table>
 				{isLoading ? <CenteredSpinner size="big" /> : null}
 			</Book>
