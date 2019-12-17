@@ -29,6 +29,10 @@ const ChartPanel = ({ theme, synthPair: { base, quote } }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			if (!base) return;
+			if (quote !== 'sUSD') {
+				setData([]);
+				return;
+			}
 			setIsLoading(true);
 			const now = new Date().getTime();
 			const results = await snxData.rate.updates({
@@ -73,43 +77,44 @@ const ChartPanel = ({ theme, synthPair: { base, quote } }) => {
 				</HeaderBlock>
 			</Header>
 			<Body>
-				{isLoading ? (
-					<SpinnerContainer>
-						<Spinner size="small" />
-					</SpinnerContainer>
-				) : (
-					<ResponsiveContainer height={250}>
-						<AreaChart data={data} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
-							<defs>
-								<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-									<stop offset="5%" stopColor={colors.hyperLink} stopOpacity={0.5} />
-									<stop offset="95%" stopColor={colors.hyperLink} stopOpacity={0} />
-								</linearGradient>
-							</defs>
-							<XAxis
-								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
-								dataKey="timestamp"
-								tickFormatter={val =>
-									period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
-								}
-								reversed={true}
-							/>
-							<YAxis
-								type="number"
-								domain={['auto', 'auto']}
-								tickFormatter={val => `$${val}`}
-								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
-								orientation="right"
-							/>
-							<Area
-								dataKey="rate"
-								stroke={colors.hyperLink}
-								fillOpacity={0.5}
-								fill="url(#colorUv)"
-							/>
-						</AreaChart>
-					</ResponsiveContainer>
-				)}
+				<ChartContainer>
+					{isLoading ? <Spinner size="small" /> : null}
+					{!isLoading && data.length === 0 ? <DataLarge>Data available soon</DataLarge> : null}
+					{!isLoading && data && data.length > 0 ? (
+						<ResponsiveContainer height={250}>
+							<AreaChart data={data} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
+								<defs>
+									<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+										<stop offset="5%" stopColor={colors.hyperLink} stopOpacity={0.5} />
+										<stop offset="95%" stopColor={colors.hyperLink} stopOpacity={0} />
+									</linearGradient>
+								</defs>
+								<XAxis
+									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+									dataKey="timestamp"
+									tickFormatter={val =>
+										period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
+									}
+									reversed={true}
+								/>
+								<YAxis
+									type="number"
+									domain={['auto', 'auto']}
+									tickFormatter={val => `$${val}`}
+									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+									orientation="right"
+								/>
+								<Area
+									dataKey="rate"
+									stroke={colors.hyperLink}
+									fillOpacity={0.5}
+									fill="url(#colorUv)"
+								/>
+							</AreaChart>
+						</ResponsiveContainer>
+					) : null}
+				</ChartContainer>
+
 				<DataRow>
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
@@ -226,7 +231,7 @@ const ButtonIcon = styled.img`
 	height: 12px;
 `;
 
-const SpinnerContainer = styled.div`
+const ChartContainer = styled.div`
 	width: 100%;
 	height: 250px;
 	display: flex;
