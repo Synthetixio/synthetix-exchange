@@ -6,11 +6,13 @@ import styled, { withTheme } from 'styled-components';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
 import snxData from 'synthetix-data';
 
-import { getSynthPair } from '../../ducks';
+import { getSynthPair, getExchangeRates, getSynthsSigns } from '../../ducks';
 
 import { HeadingSmall, LabelSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
 import Spinner from '../Spinner';
+
+import { formatCurrency } from '../../utils/formatters';
 
 import './chart.scss';
 
@@ -21,7 +23,7 @@ const PERIODS = [
 	{ value: 1, label: '1H' },
 ];
 
-const ChartPanel = ({ theme, synthPair: { base, quote } }) => {
+const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) => {
 	const colors = theme.colors;
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -119,23 +121,26 @@ const ChartPanel = ({ theme, synthPair: { base, quote } }) => {
 				<DataRow>
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue>$1,000</DataBlockValue>
+						<DataBlockValue>
+							{synthsSigns[quote]}
+							{rates ? formatCurrency(rates[base][quote]) : 0}
+						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue color={colors.green}>$1,000</DataBlockValue>
+						<DataBlockLabel>24h change</DataBlockLabel>
+						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue>$1,000</DataBlockValue>
+						<DataBlockLabel>24h high</DataBlockLabel>
+						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue>$1,000</DataBlockValue>
+						<DataBlockLabel>24h low</DataBlockLabel>
+						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue>$1,000</DataBlockValue>
+						<DataBlockLabel>24h volume</DataBlockLabel>
+						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
 					</DataBlock>
 				</DataRow>
 			</Body>
@@ -243,6 +248,8 @@ const ChartContainer = styled.div`
 const mapStateToProps = state => {
 	return {
 		synthPair: getSynthPair(state),
+		rates: getExchangeRates(state),
+		synthsSigns: getSynthsSigns(state),
 	};
 };
 
