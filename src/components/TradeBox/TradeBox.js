@@ -105,6 +105,7 @@ const TradeBox = ({
 		setBaseAmount('');
 		setQuoteAmount('');
 		getFeeRateForExchange();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [base, quote, snxJSConnector.initialized]);
 
 	useEffect(() => {
