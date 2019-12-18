@@ -7,8 +7,9 @@ import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
 import snxData from 'synthetix-data';
 
 import { getSynthPair, getExchangeRates, getSynthsSigns } from '../../ducks';
+import { setSynthPair } from '../../ducks/synths';
 
-import { HeadingSmall, LabelSmall, DataSmall, DataLarge } from '../Typography';
+import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
 import Spinner from '../Spinner';
 
@@ -23,16 +24,17 @@ const PERIODS = [
 	{ value: 1, label: '1H' },
 ];
 
-const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) => {
+const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
 	const colors = theme.colors;
-	const [data, setData] = useState([]);
+	const [chartData, setChartData] = useState([]);
+	const [volumeData, setVolumeData] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [period, setPeriod] = useState({ value: 24, label: '1D' });
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchChartData = async () => {
 			if (!base) return;
 			if (quote !== 'sUSD') {
-				setData([]);
+				setChartData([]);
 				return;
 			}
 			setIsLoading(true);
@@ -43,25 +45,38 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) =
 				minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
 				max: 1000,
 			});
-			setData(results);
+			setChartData(results);
 			setIsLoading(false);
 		};
-		fetchData();
+		const fetchVolumeData = async () => {
+			const yesterday = Math.trunc(subHours(new Date(), 24).getTime() / 1000);
+			const results = await snxData.exchanges.since({ timestampInSecs: yesterday });
+			setVolumeData(
+				results.reduce((acc, next) => {
+					if (next.fromCurrencyKey === quote && next.toCurrencyKey === base) {
+						acc += next.fromAmountInUSD;
+					}
+					return acc;
+				}, 0)
+			);
+		};
+		fetchChartData();
+		fetchVolumeData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [period, base]);
+	}, [period, base, quote]);
 	return (
 		<Container>
 			<Header>
 				<HeaderBlock>
 					<HeadingSmall>{`${base}/${quote}`}</HeadingSmall>
-					<ButtonFilter height={'22px'}>
+					<ButtonFilter height={'22px'} onClick={() => setSynthPair({ quote: base, base: quote })}>
 						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 					</ButtonFilter>
 					<Link style={{ textDecoration: 'none' }} to={'/'}>
-						<LinkInner>
+						{/* <LinkInner>
 							<LinkLabel>Market Info</LinkLabel>
 							<LinkIcon src="/images/link-arrow.svg" />
-						</LinkInner>
+						</LinkInner> */}
 					</Link>
 				</HeaderBlock>
 				<HeaderBlock>
@@ -82,10 +97,10 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) =
 			<Body>
 				<ChartContainer>
 					{isLoading ? <Spinner size="small" /> : null}
-					{!isLoading && data.length === 0 ? <DataLarge>Data available soon</DataLarge> : null}
-					{!isLoading && data && data.length > 0 ? (
+					{!isLoading && chartData.length === 0 ? <DataLarge>Data available soon</DataLarge> : null}
+					{!isLoading && chartData && chartData.length > 0 ? (
 						<ResponsiveContainer height={250}>
-							<AreaChart data={data} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
+							<AreaChart data={chartData} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
 								<defs>
 									<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
 										<stop offset="5%" stopColor={colors.hyperLink} stopOpacity={0.5} />
@@ -140,7 +155,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) =
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h volume</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
+						<DataBlockValue>${formatCurrency(volumeData)}</DataBlockValue>
 					</DataBlock>
 				</DataRow>
 			</Body>
@@ -213,24 +228,24 @@ const HeaderBlock = styled.div`
 	}
 `;
 
-const LinkInner = styled.div`
-	display: flex;
-	align-items: center;
-`;
+// const LinkInner = styled.div`
+// 	display: flex;
+// 	align-items: center;
+// `;
 
-const LinkLabel = styled(LabelSmall)`
-	margin-left: 10px;
-	color: ${props => props.theme.colors.hyperLink};
-	&:hover {
-		text-decoration: underline;
-	}
-`;
+// const LinkLabel = styled(LabelSmall)`
+// 	margin-left: 10px;
+// 	color: ${props => props.theme.colors.hyperLink};
+// 	&:hover {
+// 		text-decoration: underline;
+// 	}
+// `;
 
-const LinkIcon = styled.img`
-	width: 8px;
-	height: 8px;
-	margin-left: 5px;
-`;
+// const LinkIcon = styled.img`
+// 	width: 8px;
+// 	height: 8px;
+// 	margin-left: 5px;
+// `;
 
 const ButtonIcon = styled.img`
 	width: 16px;
@@ -253,4 +268,8 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, null)(withTheme(ChartPanel));
+const mapDispatchToProps = {
+	setSynthPair,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ChartPanel));

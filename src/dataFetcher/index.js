@@ -59,6 +59,9 @@ const getTopSynthByVolume = async () => {
 			if (acc[next.toCurrencyKey]) {
 				acc[next.toCurrencyKey] += next.toAmountInUSD;
 			} else acc[next.toCurrencyKey] = next.toAmountInUSD;
+			if (acc[next.fromCurrency]) {
+				acc[next.fromCurrency] += next.fromAmountInUSD;
+			} else acc[next.fromCurrency] = next.fromAmountInUSD;
 			return acc;
 		}, {});
 	} catch (e) {
