@@ -46,7 +46,7 @@ const sortPairsBy = (pairs, sort) => {
 const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
-	const [sort, setSort] = useState({ column: 'name', isAscending: true });
+	const [sort, setSort] = useState({});
 	const synthList = useFilterSynths(synths, search, quote, rates);
 
 	return (
@@ -105,7 +105,7 @@ const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns }) =>
 				{sortPairsBy(synthList, sort).map((synth, i) => {
 					return (
 						<Pair
-							isDisabled={frozenSynths && frozenSynths[synth.name]}
+							isDisabled={(frozenSynths && frozenSynths[synth.name]) || !rates}
 							key={i}
 							onClick={() => setSynthPair({ base: synth.name, quote })}
 						>

@@ -11,7 +11,12 @@ import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
-import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import {
+	updateExchangeRates,
+	setAvailableSynths,
+	updateFrozenSynths,
+	updateTopSynthByVolume,
+} from '../../ducks/synths';
 import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
@@ -28,18 +33,24 @@ const Root = ({
 	updateFrozenSynths,
 	updateWalletStatus,
 	updateWalletBalances,
+	updateTopSynthByVolume,
 	currentTheme,
 	walletInfo: { currentWallet },
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const fetchAndSetExchangeData = useCallback(async synths => {
-		const { exchangeRates, exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(
-			synths
-		);
+		const {
+			exchangeRates,
+			exchangeFeeRate,
+			networkPrices,
+			frozenSynths,
+			topSynthByVolume,
+		} = await getExchangeData(synths);
 		updateExchangeRates(exchangeRates);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths(frozenSynths);
+		updateTopSynthByVolume(topSynthByVolume);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -67,7 +78,7 @@ const Root = ({
 			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
 				fetchAndSetWalletBalances(synths);
-			}, 5 * 1000);
+			}, 30 * 1000);
 			setIntervalId(intervalId);
 		};
 		init();
@@ -117,6 +128,7 @@ const mapDispatchToProps = {
 	updateWalletStatus,
 	updateWalletBalances,
 	setExchangeFeeRate,
+	updateTopSynthByVolume,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));

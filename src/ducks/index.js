@@ -69,6 +69,10 @@ export const getFrozenSynths = state => {
 	return state.synths.frozenSynths;
 };
 
+export const getTopSynthByVolume = state => {
+	return state.synths.topSynthByVolume;
+};
+
 // TRANSACTION REDUCERS
 export const getGasInfo = state => {
 	const { gasPrice, gasLimit, gasSpeed } = state.transaction;

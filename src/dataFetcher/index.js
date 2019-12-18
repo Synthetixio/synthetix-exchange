@@ -1,7 +1,9 @@
+import snxData from 'synthetix-data';
 import { getGasInfo } from '../utils/networkUtils';
 import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter } from '../utils/formatters';
 import isEmpty from 'lodash/isEmpty';
+import { subDays } from 'date-fns';
 
 const getExchangeRates = async synths => {
 	if (!synths) return;
@@ -49,18 +51,41 @@ const getFrozenSynths = async synths => {
 	return frozenSynths;
 };
 
+const getTopSynthByVolume = async () => {
+	const yesterday = Math.trunc(subDays(new Date(), 1).getTime() / 1000);
+	try {
+		const volume = await snxData.exchanges.since({ timestampInSecs: yesterday });
+		return volume.reduce((acc, next) => {
+			if (acc[next.toCurrencyKey]) {
+				acc[next.toCurrencyKey] += next.toAmountInUSD;
+			} else acc[next.toCurrencyKey] = next.toAmountInUSD;
+			return acc;
+		}, {});
+	} catch (e) {
+		console.log(e);
+	}
+};
+
 export const getExchangeData = async synths => {
-	const [exchangeRates, exchangeFeeRate, networkPrices, frozenSynths] = await Promise.all([
+	const [
+		exchangeRates,
+		exchangeFeeRate,
+		networkPrices,
+		frozenSynths,
+		topSynthByVolume,
+	] = await Promise.all([
 		getExchangeRates(synths),
 		getExchangeFeeRate(),
 		getNetworkPrices(),
 		getFrozenSynths(synths),
+		getTopSynthByVolume(),
 	]);
 	return {
 		exchangeRates,
 		exchangeFeeRate,
 		networkPrices,
 		frozenSynths,
+		topSynthByVolume,
 	};
 };
 
