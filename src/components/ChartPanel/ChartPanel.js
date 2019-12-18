@@ -167,12 +167,12 @@ const DataRow = styled.div`
 	display: flex;
 	& > * {
 		margin: 0 12px;
-		&:first-child {
-			margin-left: 0;
-		}
-		&:last-child {
-			margin-right: 0;
-		}
+	}
+	& > :first-child {
+		margin-left: 0;
+	}
+	& > &:last-child {
+		margin-right: 0;
 	}
 `;
 const DataBlock = styled.div`
@@ -199,12 +199,12 @@ const HeaderBlock = styled.div`
 	align-items: baseline;
 	& > * {
 		margin: 0 6px;
-		&:first-child {
-			margin-left: 0;
-		}
-		&:last-child {
-			margin-right: 0;
-		}
+	}
+	& > :first-child {
+		margin-left: 0;
+	}
+	& > &:last-child {
+		margin-right: 0;
 	}
 `;
 

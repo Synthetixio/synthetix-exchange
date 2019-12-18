@@ -55,6 +55,6 @@ export const Td = styled.td`
 export const DataLabel = styled(DataSmall)`
 	text-transform: none;
 	color: ${props => props.theme.colors.fontPrimary};
-	font-family: 'apercu-regular';
+	font-family: 'apercu-regular', sans-serif;
 	${color};
 `;

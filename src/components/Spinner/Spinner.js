@@ -23,7 +23,7 @@ const imageRotation = keyframes`
 `;
 
 const Container = styled.div`
-	padding: 30x 0;
+	padding: 30px 0;
 `;
 
 const Img = styled.img`

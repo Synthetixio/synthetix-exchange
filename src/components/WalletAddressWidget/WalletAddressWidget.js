@@ -26,7 +26,6 @@ const Container = styled.div`
 	border-radius: 1px;
 	justify-content: space-between;
 	align-items: center;
-	border-radius: 1px;
 	cursor: pointer;
 	border: none;
 	background-color: ${props => props.theme.colors.accentDark};

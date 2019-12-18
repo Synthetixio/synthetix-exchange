@@ -3,7 +3,7 @@ import { color } from 'styled-system';
 
 const Input = styled.input`
 	width: 100%;
-	font-family: 'apercu-regular';
+	font-family: 'apercu-regular', sans-serif;
 	background-color: ${props => props.theme.colors.surfaceL3};
 	border: 1px solid ${props => props.theme.colors.accentLight};
 	height: 42px;

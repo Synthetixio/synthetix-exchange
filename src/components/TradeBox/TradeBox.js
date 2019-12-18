@@ -324,7 +324,7 @@ const InputPopup = styled.div`
 const Balance = styled(DataSmall)`
 	text-transform: none;
 	color: ${props => props.theme.colors.fontTertiary};
-	font-family: 'apercu-light';
+	font-family: 'apercu-light', sans-serif;
 `;
 
 const ButtonRow = styled.div`

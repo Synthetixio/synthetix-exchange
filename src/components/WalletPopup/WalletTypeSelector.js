@@ -98,7 +98,7 @@ const WalletIcon = styled.img`
 
 const WalletLabel = styled.h3`
 	color: ${props => props.theme.colors.fontPrimary};
-	font-family: 'apercu-light';
+	font-family: 'apercu-light', sans-serif;
 	letter-spacing: 1px;
 	font-size: 24px;
 `;

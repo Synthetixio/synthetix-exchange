@@ -207,7 +207,7 @@ const ListHeader = styled.div`
 `;
 
 const ListHeaderLabel = styled(DataSmall)`
-	font-family: 'apercu-medium';
+	font-family: 'apercu-medium', sans-serif;
 	color: ${props => props.theme.colors.fontTertiary};
 `;
 
