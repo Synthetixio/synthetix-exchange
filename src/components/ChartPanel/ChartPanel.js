@@ -136,7 +136,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 				<DataRow>
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue>
+						<DataBlockValue style={{ fontSize: '16px' }}>
 							{synthsSigns[quote]}
 							{rates ? formatCurrency(rates[base][quote]) : 0}
 						</DataBlockValue>
@@ -155,7 +155,9 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h volume</DataBlockLabel>
-						<DataBlockValue>${formatCurrency(volumeData)}</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '16px' }}>
+							${formatCurrency(volumeData)}
+						</DataBlockValue>
 					</DataBlock>
 				</DataRow>
 			</Body>
