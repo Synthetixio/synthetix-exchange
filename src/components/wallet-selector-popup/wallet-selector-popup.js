@@ -1,49 +1,52 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import throttle from 'lodash/throttle';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import throttle from 'lodash/throttle'
 
-import Popup from '../popup';
+import Popup from '../popup'
 
-import { toggleWalletSelectorPopup, changeScreen } from '../../ducks/ui';
-import { connectToWallet, setSelectedWallet } from '../../ducks/wallet';
-import { getCurrentWalletInfo } from '../../ducks/';
+import { toggleWalletSelectorPopup, changeScreen } from '../../ducks/ui'
+import { connectToWallet, setSelectedWallet } from '../../ducks/wallet'
+import { getCurrentWalletInfo } from '../../ducks/'
 
-import { getExtensionUri } from '../../utils/browserUtils';
-import { getEthereumNetwork } from '../../utils/metamaskTools';
-import { INFURA_JSON_RPC_URLS, INFURA_PROJECT_ID } from '../../utils/networkUtils';
-import synthetixJsTools from '../../synthetixJsTool';
+import { getExtensionUri } from '../../utils/browserUtils'
+import { getEthereumNetwork } from '../../utils/metamaskTools'
+import {
+  INFURA_JSON_RPC_URLS,
+  INFURA_PROJECT_ID,
+} from '../../utils/networkUtils'
+import synthetixJsTools from '../../synthetixJsTool'
 
-import styles from './wallet-selector-popup.module.scss';
+import styles from './wallet-selector-popup.module.scss'
 
-const WALLET_TYPES = ['Metamask', 'WalletConnect', 'Trezor', 'Ledger'];
+const WALLET_TYPES = ['Metamask', 'WalletConnect', 'Trezor', 'Ledger']
 
 class WalletSelectorPopup extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
       extensionUri: '',
       metamaskInstalled: false,
-    };
-    this.closePopup = this.closePopup.bind(this);
-    this.goToWalletConnector = this.goToWalletConnector.bind(this);
-    this.renderButton = this.renderButton.bind(this);
+    }
+    this.closePopup = this.closePopup.bind(this)
+    this.goToWalletConnector = this.goToWalletConnector.bind(this)
+    this.renderButton = this.renderButton.bind(this)
   }
 
   componentDidMount() {
     if (window.web3) {
-      this.setState({ metamaskInstalled: true });
+      this.setState({ metamaskInstalled: true })
     }
-    this.setState({ extensionUri: getExtensionUri() });
+    this.setState({ extensionUri: getExtensionUri() })
   }
 
   closePopup() {
-    const { toggleWalletSelectorPopup } = this.props;
-    toggleWalletSelectorPopup(false);
+    const { toggleWalletSelectorPopup } = this.props
+    toggleWalletSelectorPopup(false)
   }
 
   registerMetamaskAddressListener = () => {
-    const listener = throttle(this.onMetamaskAddressChange, 2000);
+    const listener = throttle(this.onMetamaskAddressChange, 2000)
     if (
       synthetixJsTools.signer &&
       synthetixJsTools.signer.provider &&
@@ -52,32 +55,32 @@ class WalletSelectorPopup extends Component {
       synthetixJsTools.signer.provider._web3Provider.publicConfigStore.on(
         'update',
         listener
-      );
+      )
     }
-  };
+  }
 
   onMetamaskAddressChange = async data => {
-    const { currentWalletInfo, setSelectedWallet } = this.props;
+    const { currentWalletInfo, setSelectedWallet } = this.props
     if (
       currentWalletInfo.selectedWallet.toLocaleLowerCase() ===
       data.selectedAddress.toLowerCase()
     ) {
-      return;
+      return
     }
-    const newSelectedAddress = await synthetixJsTools.signer.getNextAddresses();
+    const newSelectedAddress = await synthetixJsTools.signer.getNextAddresses()
     setSelectedWallet({
       availableWallets: newSelectedAddress,
       selectedWallet: newSelectedAddress[0],
-    });
-  };
+    })
+  }
 
   goToWalletConnector(walletType) {
     return async () => {
-      const { changeScreen, connectToWallet } = this.props;
-      const { extensionUri } = this.state;
+      const { changeScreen, connectToWallet } = this.props
+      const { extensionUri } = this.state
       // We define a new signer
       try {
-        const { name, networkId } = await getEthereumNetwork();
+        const { name, networkId } = await getEthereumNetwork()
         const signerConfig =
           walletType === 'Coinbase'
             ? {
@@ -89,16 +92,16 @@ class WalletSelectorPopup extends Component {
             : walletType === 'WalletConnect'
             ? { infuraId: INFURA_PROJECT_ID }
             : {}
-        const signer = new synthetixJsTools.signers[walletType](signerConfig);
+        const signer = new synthetixJsTools.signers[walletType](signerConfig)
         synthetixJsTools.setContractSettings({
           networkId,
           signer,
-        });
+        })
         switch (walletType) {
           // If signer is Metamask
           case 'Metamask':
             if (!window.web3 && extensionUri) {
-              window.open(extensionUri);
+              window.open(extensionUri)
             } else {
               // If Metamask is not set on supported network, we send an unlocked reason
               if (!name) {
@@ -106,11 +109,11 @@ class WalletSelectorPopup extends Component {
                   walletType,
                   unlocked: false,
                   unlockReason: 'MetamaskNotMainNet',
-                });
+                })
                 //Otherwise we get the current wallet address
               } else {
                 if (window.ethereum) {
-                  await window.ethereum.enable();
+                  await window.ethereum.enable()
                 }
                 synthetixJsTools.setContractSettings({
                   signer,
@@ -118,8 +121,8 @@ class WalletSelectorPopup extends Component {
                   provider: synthetixJsTools.synthetixJs.ethers.getDefaultProvider(
                     name && name.toLowerCase()
                   ),
-                });
-                const accounts = await synthetixJsTools.signer.getNextAddresses();
+                })
+                const accounts = await synthetixJsTools.signer.getNextAddresses()
 
                 // If we do have a wallet address, we save it
                 if (accounts.length > 0) {
@@ -129,23 +132,23 @@ class WalletSelectorPopup extends Component {
                     selectedWallet: accounts[0],
                     unlocked: true,
                     networkId,
-                  });
-                  this.closePopup();
-                  this.registerMetamaskAddressListener();
+                  })
+                  this.closePopup()
+                  this.registerMetamaskAddressListener()
                 } else {
                   // Otherwise we send an unlocked reason
                   connectToWallet({
                     walletType,
                     unlocked: false,
                     unlockReason: 'MetamaskNoAccounts',
-                  });
+                  })
                 }
               }
             }
-            break;
+            break
 
           case 'Coinbase': {
-            const accounts = await synthetixJsTools.signer.getNextAddresses();
+            const accounts = await synthetixJsTools.signer.getNextAddresses()
             // If we do have a wallet address, we save it
             if (accounts && accounts.length > 0) {
               connectToWallet({
@@ -154,17 +157,17 @@ class WalletSelectorPopup extends Component {
                 selectedWallet: accounts[0],
                 unlocked: true,
                 networkId,
-              });
-              this.closePopup();
+              })
+              this.closePopup()
             } else {
               // Otherwise we send an unlocked reason
               connectToWallet({
                 walletType,
                 unlocked: false,
                 unlockReason: 'CoinbaseNoAccounts',
-              });
+              })
             }
-            break;
+            break
           }
 
           // If signer is Trezor
@@ -173,10 +176,9 @@ class WalletSelectorPopup extends Component {
               walletType,
               unlocked: true,
               walletSelected: false,
-            });
-            changeScreen('connectToWallet');
-            break;
-
+            })
+            changeScreen('connectToWallet')
+            break
 
           // If signer is Ledger
           case 'Ledger':
@@ -184,35 +186,51 @@ class WalletSelectorPopup extends Component {
               walletType,
               unlocked: true,
               walletSelected: false,
-            });
-            changeScreen('connectToWallet');
-            break;
+            })
+            changeScreen('connectToWallet')
+            break
 
           case 'WalletConnect': {
-            await signer.provider._web3Provider.enable()
-            const accounts = await synthetixJsTools.signer.getNextAddresses();
-            connectToWallet({
-              walletType,
-              availableWallets: accounts,
-              selectedWallet: accounts[0],
-              unlocked: true,
-              networkId,
-            })
+            try {
+              await signer.provider._web3Provider.enable()
+              synthetixJsTools.setContractSettings({
+                signer,
+                networkId,
+                provider: synthetixJsTools.synthetixJs.ethers.getDefaultProvider(
+                  name && name.toLowerCase()
+                ),
+              })
+              const accounts = await synthetixJsTools.signer.getNextAddresses()
+              connectToWallet({
+                walletType,
+                availableWallets: accounts,
+                selectedWallet: accounts[0],
+                unlocked: true,
+                networkId,
+              })
+              this.closePopup()
+            } catch (err) {
+              connectToWallet({
+                walletType,
+                unlocked: false,
+                unlockReason: 'WalletConnectError',
+              })
+            }
             break
           }
           default:
             connectToWallet({
               unlocked: false,
-            });
+            })
         }
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
-    };
+    }
   }
 
   renderButton(walletType) {
-    const { metamaskInstalled } = this.state;
+    const { metamaskInstalled } = this.state
     return (
       <button
         onClick={this.goToWalletConnector(walletType)}
@@ -237,11 +255,11 @@ class WalletSelectorPopup extends Component {
           </div>
         </div>
       </button>
-    );
+    )
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible } = this.props
     return (
       <Popup isVisible={isVisible} closePopup={this.closePopup}>
         <div>
@@ -251,22 +269,22 @@ class WalletSelectorPopup extends Component {
           </div>
         </div>
       </Popup>
-    );
+    )
   }
 }
 
 const mapStateToProps = state => {
   return {
     currentWalletInfo: getCurrentWalletInfo(state),
-  };
-};
+  }
+}
 
 const mapDispatchToProps = {
   toggleWalletSelectorPopup,
   changeScreen,
   connectToWallet,
   setSelectedWallet,
-};
+}
 
 WalletSelectorPopup.propTypes = {
   toggleWalletSelectorPopup: PropTypes.func.isRequired,
@@ -274,9 +292,6 @@ WalletSelectorPopup.propTypes = {
   connectToWallet: PropTypes.func.isRequired,
   setSelectedWallet: PropTypes.func.isRequired,
   currentWalletInfo: PropTypes.object.isRequired,
-};
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WalletSelectorPopup);
+export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectorPopup)
