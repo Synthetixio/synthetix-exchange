@@ -6,7 +6,7 @@ import throttle from 'lodash/throttle';
 import Popup from '../popup';
 
 import { toggleWalletSelectorPopup, changeScreen } from '../../ducks/ui';
-import { connectToWallet, setSelectedWallet } from '../../ducks/wallet';
+import { connectToWallet, setSelectedWallet, defaultState as defaultWalletState } from '../../ducks/wallet';
 import { getCurrentWalletInfo } from '../../ducks/';
 
 import { getExtensionUri } from '../../utils/browserUtils';
@@ -192,7 +192,8 @@ class WalletSelectorPopup extends Component {
 
           case 'WalletConnect': {
             try {
-              await signer.provider._web3Provider.enable();
+              const wcProvider = signer.provider._web3Provider
+              await wcProvider.enable();
               synthetixJsTools.setContractSettings({
                 signer,
                 networkId,
@@ -208,6 +209,11 @@ class WalletSelectorPopup extends Component {
                 unlocked: true,
                 networkId,
               });
+
+              wcProvider.wc.on('disconnect', async () => {
+                connectToWallet(defaultWalletState);
+              });
+
               this.closePopup();
             } catch (err) {
               connectToWallet({
@@ -294,4 +300,7 @@ WalletSelectorPopup.propTypes = {
   currentWalletInfo: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectorPopup);
+export default connect(
+  mapStateToProps,	
+  mapDispatchToProps	
+)(WalletSelectorPopup);

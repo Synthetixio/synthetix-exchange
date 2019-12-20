@@ -25,7 +25,7 @@ const defaultTransactionState = {
   transactionPair: null,
 };
 
-const defaultState = {
+export const defaultState = {
   walletType: null,
   availableWallets: null,
   unlocked: false,

@@ -53,7 +53,7 @@
 		"redux-thunk": "~2.3.0",
 		"resolve": "1.8.1",
 		"sass-loader": "7.1.0",
-		"synthetix-js": "file:./../synthetix-js",
+		"synthetix-js": "2.16.4",
 		"url-loader": "1.1.1",
 		"webpack": "4.19.1",
 		"webpack-dev-server": "3.8.0",

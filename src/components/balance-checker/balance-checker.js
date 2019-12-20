@@ -133,10 +133,10 @@ class BalanceChecker extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { toggleLoadingScreen } = this.props;
+    const { toggleLoadingScreen, currentWalletInfo } = this.props;
     if (
       this.transactionWentThrough(prevProps) ||
-      this.walletHasChanged(prevProps)
+      (this.walletHasChanged(prevProps) && !!currentWalletInfo.selectedWallet)
     ) {
       toggleLoadingScreen(true);
       this.refreshData();
