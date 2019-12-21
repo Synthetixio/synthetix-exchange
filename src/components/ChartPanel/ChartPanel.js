@@ -13,7 +13,7 @@ import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
 import Spinner from '../Spinner';
 
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, formatPercentage } from '../../utils/formatters';
 
 import './chart.scss';
 
@@ -24,12 +24,36 @@ const PERIODS = [
 	{ value: 1, label: '1H' },
 ];
 
+const getMinAndMaxRate = data => {
+	if (data.length === 0) return [0, 0];
+	return data.reduce(
+		([min, max], val) => {
+			const { rate } = val;
+			const newMax = rate > max ? rate : max;
+			const newMin = rate < min ? rate : min;
+
+			return [newMin, newMax];
+		},
+		[Number.MAX_SAFE_INTEGER, 0]
+	);
+};
+const calculateRateChange = data => {
+	if (data.length < 2) return 0;
+	const oldPrice = data[0].rate;
+	const newPrice = data[data.length - 1].rate;
+	const positiveOrNegative = oldPrice - newPrice < 0 ? -1 : 0;
+	const percentageChange = (newPrice - oldPrice) / oldPrice;
+	return positiveOrNegative * percentageChange;
+};
+
 const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
+	const [lastDayData, setLastDayData] = useState([]);
 	const [volumeData, setVolumeData] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [period, setPeriod] = useState({ value: 24, label: '1D' });
+
 	useEffect(() => {
 		const fetchChartData = async () => {
 			if (!base) return;
@@ -45,6 +69,11 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 				minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
 				max: 1000,
 			});
+			// store the first result seperately
+			// for the 24h aggregation
+			if (!lastDayData) {
+				setLastDayData(results);
+			}
 			setChartData(results);
 			setIsLoading(false);
 		};
@@ -64,6 +93,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		fetchVolumeData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [period, base, quote]);
+
+	const [min, max] = getMinAndMaxRate(chartData);
 	return (
 		<Container>
 			<Header>
@@ -143,15 +174,17 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h change</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '12px' }}>
+							{formatPercentage(calculateRateChange(chartData))}
+						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '12px' }}>{formatCurrency(max)}</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>Available soon</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '12px' }}>{formatCurrency(min)}</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h volume</DataBlockLabel>
