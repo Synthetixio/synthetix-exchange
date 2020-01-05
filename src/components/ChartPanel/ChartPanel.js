@@ -91,10 +91,10 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		};
 		fetchChartData();
 		fetchVolumeData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [period, base, quote]);
+	}, [period, base, quote, lastDayData]);
 
 	const [min, max] = getMinAndMaxRate(chartData);
+	const lastDayChange = calculateRateChange(chartData);
 	return (
 		<Container>
 			<Header>
@@ -174,8 +174,14 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h change</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>
-							{formatPercentage(calculateRateChange(chartData))}
+						<DataBlockValue
+							style={{
+								fontSize: '12px',
+								color:
+									lastDayChange === 0 ? 'inherit' : lastDayChange >= 0 ? colors.green : colors.red,
+							}}
+						>
+							{formatPercentage(lastDayChange)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
@@ -184,7 +190,9 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>{formatCurrency(min)}</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '12px' }} style={{ fontSize: '12px' }}>
+							{formatCurrency(min)}
+						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h volume</DataBlockLabel>
