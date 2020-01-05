@@ -90,6 +90,7 @@ const CentralContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	margin: 8px 0;
+	min-width: 0;
 `;
 
 const BoxContainer = styled.div`

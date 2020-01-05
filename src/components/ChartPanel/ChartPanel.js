@@ -130,7 +130,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					{isLoading ? <Spinner size="small" /> : null}
 					{!isLoading && chartData.length === 0 ? <DataLarge>Data available soon</DataLarge> : null}
 					{!isLoading && chartData && chartData.length > 0 ? (
-						<ResponsiveContainer height={250}>
+						<ResponsiveContainer width="100%" height={250}>
 							<AreaChart data={chartData} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
 								<defs>
 									<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
