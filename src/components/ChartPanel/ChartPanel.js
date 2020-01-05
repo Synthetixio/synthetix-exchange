@@ -228,25 +228,21 @@ const Body = styled.div`
 
 const DataRow = styled.div`
 	display: flex;
-	& > * {
-		margin: 0 12px;
-	}
-	& > :first-child {
-		margin-left: 0;
-	}
-	& > &:last-child {
-		margin-right: 0;
-	}
+	flex-wrap: wrap;
 `;
 const DataBlock = styled.div`
 	flex: 1;
 	height: 72px;
+	max-width: 20%;
+	min-width: 115px;
+	margin-top: 6px;
 	background-color: ${props => props.theme.colors.surfaceL3};
 	justify-content: center;
 	align-items: flex-start;
 	display: flex;
 	flex-direction: column;
 	padding: 0 22px;
+	margin-right: 24px;
 `;
 
 const DataBlockLabel = styled(DataSmall)`
