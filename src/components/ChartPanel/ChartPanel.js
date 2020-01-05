@@ -178,7 +178,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 							style={{
 								fontSize: '12px',
 								color:
-									lastDayChange === 0 ? 'inherit' : lastDayChange >= 0 ? colors.green : colors.red,
+									lastDayChange === 0 ? undefined : lastDayChange >= 0 ? colors.green : colors.red,
 							}}
 						>
 							{formatPercentage(lastDayChange)}
