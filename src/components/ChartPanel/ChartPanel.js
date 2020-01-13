@@ -39,11 +39,10 @@ const getMinAndMaxRate = data => {
 };
 const calculateRateChange = data => {
 	if (data.length < 2) return 0;
-	const oldPrice = data[0].rate;
-	const newPrice = data[data.length - 1].rate;
-	const positiveOrNegative = oldPrice - newPrice < 0 ? -1 : 0;
-	const percentageChange = (newPrice - oldPrice) / oldPrice;
-	return positiveOrNegative * percentageChange;
+	const newPrice = data[0].rate;
+	const oldPrice = data[data.length - 1].rate;
+	const percentageChange = (newPrice - oldPrice) / Math.abs(oldPrice);
+	return percentageChange;
 };
 
 const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
@@ -53,6 +52,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 	const [volumeData, setVolumeData] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [period, setPeriod] = useState({ value: 24, label: '1D' });
+	const [currentPair, setCurrentPair] = useState({ base, quote });
 
 	useEffect(() => {
 		const fetchChartData = async () => {
@@ -69,13 +69,14 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 				minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
 				max: 1000,
 			});
-			// store the first result seperately
+			// store the first result separately
 			// for the 24h aggregation
-			if (!lastDayData) {
+			if (lastDayData.length === 0 || currentPair.base !== base || currentPair.quote !== quote) {
 				setLastDayData(results);
 			}
 			setChartData(results);
 			setIsLoading(false);
+			setCurrentPair({ base, quote });
 		};
 		const fetchVolumeData = async () => {
 			const yesterday = Math.trunc(subHours(new Date(), 24).getTime() / 1000);
@@ -93,8 +94,9 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		fetchVolumeData();
 	}, [period, base, quote, lastDayData]);
 
-	const [min, max] = getMinAndMaxRate(chartData);
-	const lastDayChange = calculateRateChange(chartData);
+	const [min, max] = getMinAndMaxRate(lastDayData);
+	const lastDayChange = calculateRateChange(lastDayData);
+
 	return (
 		<Container>
 			<Header>
@@ -167,7 +169,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 				<DataRow>
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '16px' }}>
+						<DataBlockValue style={{ fontSize: '14px' }}>
 							{synthsSigns[quote]}
 							{rates ? formatCurrency(rates[base][quote]) : 0}
 						</DataBlockValue>
@@ -176,7 +178,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 						<DataBlockLabel>24h change</DataBlockLabel>
 						<DataBlockValue
 							style={{
-								fontSize: '12px',
+								fontSize: '14px',
 								color:
 									lastDayChange === 0 ? undefined : lastDayChange >= 0 ? colors.green : colors.red,
 							}}
@@ -186,17 +188,17 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }}>{formatCurrency(max)}</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '14px' }}>{formatCurrency(max)}</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '12px' }} style={{ fontSize: '12px' }}>
+						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
 							{formatCurrency(min)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h volume</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '16px' }}>
+						<DataBlockValue style={{ fontSize: '14px' }}>
 							${formatCurrency(volumeData)}
 						</DataBlockValue>
 					</DataBlock>
@@ -246,6 +248,7 @@ const DataBlock = styled.div`
 `;
 
 const DataBlockLabel = styled(DataSmall)`
+	white-space: nowrap;
 	color: ${props => props.theme.colors.fontTertiary};
 `;
 
