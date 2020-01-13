@@ -14,7 +14,7 @@ import { ButtonFilter } from '../Button';
 import Spinner from '../Spinner';
 
 import { formatCurrency, formatPercentage } from '../../utils/formatters';
-
+import { calculateRateChange } from './calculateRateChange';
 import './chart.scss';
 
 const PERIODS = [
@@ -36,13 +36,6 @@ const getMinAndMaxRate = data => {
 		},
 		[Number.MAX_SAFE_INTEGER, 0]
 	);
-};
-const calculateRateChange = data => {
-	if (data.length < 2) return 0;
-	const newPrice = data[0].rate;
-	const oldPrice = data[data.length - 1].rate;
-	const percentageChange = (newPrice - oldPrice) / Math.abs(oldPrice);
-	return percentageChange;
 };
 
 const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
