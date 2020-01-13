@@ -50,7 +50,7 @@
 		"@svgr/webpack": "2.4.1",
 		"babel-core": "7.0.0-bridge.0",
 		"babel-eslint": "~10.0.1",
-		"babel-jest": "23.6.0",
+		"babel-jest": "^24.9.0",
 		"babel-loader": "8.0.4",
 		"babel-plugin-named-asset-import": "~0.2.3",
 		"babel-plugin-styled-components": "^1.10.6",
@@ -75,9 +75,11 @@
 		"fs-extra": "7.0.0",
 		"html-webpack-plugin": "4.0.0-alpha.2",
 		"identity-obj-proxy": "3.0.0",
-		"jest": "23.6.0",
+		"jest": "^24.9.0",
+		"jest-environment-jsdom-fourteen": "^1.0.1",
 		"jest-pnp-resolver": "1.0.1",
 		"jest-resolve": "23.6.0",
+		"jest-watch-typeahead": "^0.4.2",
 		"mini-css-extract-plugin": "0.4.3",
 		"node-sass": "~4.10.0",
 		"optimize-css-assets-webpack-plugin": "5.0.1",
@@ -107,28 +109,28 @@
 			"src/**/*.{js,jsx,ts,tsx}",
 			"!src/**/*.d.ts"
 		],
-		"resolver": "jest-pnp-resolver",
 		"setupFiles": [
 			"react-app-polyfill/jsdom"
 		],
+		"setupFilesAfterEnv": [],
 		"testMatch": [
 			"<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
-			"<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}"
+			"<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
 		],
-		"testEnvironment": "jsdom",
-		"testURL": "http://localhost",
+		"testEnvironment": "jest-environment-jsdom-fourteen",
 		"transform": {
-			"~.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-			"~.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-			"~(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+			"^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+			"^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+			"^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
 		},
 		"transformIgnorePatterns": [
 			"[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
-			"~.+\\.module\\.(css|sass|scss)$"
+			"^.+\\.module\\.(css|sass|scss)$"
 		],
+		"modulePaths": [],
 		"moduleNameMapper": {
-			"~react-native$": "react-native-web",
-			"~.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+			"^react-native$": "react-native-web",
+			"^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
 		},
 		"moduleFileExtensions": [
 			"web.js",
@@ -141,6 +143,10 @@
 			"web.jsx",
 			"jsx",
 			"node"
+		],
+		"watchPlugins": [
+			"jest-watch-typeahead/filename",
+			"jest-watch-typeahead/testname"
 		]
 	}
 }
