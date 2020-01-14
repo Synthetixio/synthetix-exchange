@@ -3,11 +3,11 @@ import { connect, useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import snxJSConnector from '../../utils/snxJSConnector';
-// import { hasWeb3, SUPPORTED_WALLETS, onMetamaskAccountChange } from '../../utils/networkUtils';
 import {
 	updateWalletStatus,
 	updateWalletPaginatorIndex,
 	derivationPathChange,
+	resetWalletStatus,
 } from '../../ducks/wallet';
 import { toggleWalletPopup } from '../../ducks/ui';
 import { getWalletInfo } from '../../ducks';
@@ -90,10 +90,10 @@ const useGetWallets = () => {
 		getWallets();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [walletPaginatorIndex, derivationPath]);
-	return { isLoading, error };
+	return { isLoading, getAddressError: error };
 };
 
-const ErrorMessage = ({ error, isLedger, goBack }) => {
+const ErrorMessage = ({ error, isLedger, onRetry }) => {
 	return (
 		<ErrorContainer>
 			<HeadingMedium>Error</HeadingMedium>
@@ -107,7 +107,7 @@ const ErrorMessage = ({ error, isLedger, goBack }) => {
 				</HeadingMedium>
 			) : null}
 
-			<ButtonPrimary onClick={goBack} width="250px">
+			<ButtonPrimary onClick={() => onRetry()} width="250px">
 				Retry
 			</ButtonPrimary>
 		</ErrorContainer>
@@ -117,6 +117,7 @@ const ErrorMessage = ({ error, isLedger, goBack }) => {
 const WalletAddressSelector = ({
 	toggleWalletPopup,
 	updateWalletStatus,
+	resetWalletStatus,
 	updateWalletPaginatorIndex,
 	derivationPathChange,
 	goBack,
@@ -126,16 +127,22 @@ const WalletAddressSelector = ({
 		walletPaginatorIndex,
 		availableWallets = [],
 		networkId,
+		unlockError,
 	},
 }) => {
-	const { isLoading, error } = useGetWallets(walletPaginatorIndex, derivationPath);
+	const { isLoading, getAddressError } = useGetWallets(walletPaginatorIndex, derivationPath);
 	const isHardwareWallet = ['Ledger', 'Trezor'].includes(walletType);
 	const isLedger = walletType === 'Ledger';
 	const selectedDerivationPath = derivationPath
 		? LEDGER_DERIVATION_PATHS.find(path => path.value === derivationPath)
 		: LEDGER_DERIVATION_PATHS[0];
+	const onRetry = () => {
+		resetWalletStatus();
+		goBack();
+	};
+	const error = unlockError || getAddressError;
 
-	if (error) return <ErrorMessage error={error} isLedger={isLedger} goBack={goBack} />;
+	if (error) return <ErrorMessage error={error} isLedger={isLedger} onRetry={onRetry} />;
 	return (
 		<Container>
 			<HeadingMedium>Select your wallet</HeadingMedium>
@@ -229,6 +236,7 @@ const mapDispatchToProps = {
 	toggleWalletPopup,
 	updateWalletPaginatorIndex,
 	derivationPathChange,
+	resetWalletStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletAddressSelector);

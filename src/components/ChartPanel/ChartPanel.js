@@ -85,6 +85,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		};
 		fetchChartData();
 		fetchVolumeData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [period, base, quote, lastDayData]);
 
 	const [min, max] = getMinAndMaxRate(lastDayData);

@@ -20,7 +20,7 @@ export const DEFAULT_GAS_LIMIT = {
 	sendSynth: 150000,
 };
 
-const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
+export const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
 
 export const INFURA_JSON_RPC_URLS = {
 	1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
@@ -29,7 +29,7 @@ export const INFURA_JSON_RPC_URLS = {
 	42: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
-export const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger'];
+export const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger', 'Coinbase', 'WalletConnect'];
 
 export const hasWeb3 = () => {
 	return window.web3;

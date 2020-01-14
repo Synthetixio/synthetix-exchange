@@ -1,5 +1,5 @@
 import { SynthetixJs } from 'synthetix-js';
-import { getEthereumNetwork, INFURA_JSON_RPC_URLS } from './networkUtils';
+import { getEthereumNetwork, INFURA_JSON_RPC_URLS, INFURA_PROJECT_ID } from './networkUtils';
 
 let snxJSConnector = {
 	initialized: false,
@@ -74,8 +74,7 @@ const connectToCoinbase = async (networkId, networkName) => {
 		return {
 			walletType: 'Coinbase',
 			unlocked: false,
-			unlockReason: 'ErrorWhileConnectingToCoinbase',
-			unlockMessage: e,
+			unlockError: e.message,
 		};
 	}
 };
@@ -89,6 +88,29 @@ const connectToHardwareWallet = (networkId, networkName, walletType) => {
 	};
 };
 
+const connectToWalletConnect = async (networkId, networkName) => {
+	try {
+		await snxJSConnector.signer.provider._web3Provider.enable();
+		const accounts = await snxJSConnector.signer.getNextAddresses();
+		if (accounts && accounts.length > 0) {
+			return {
+				currentWallet: accounts[0],
+				walletType: 'WalletConnect',
+				unlocked: true,
+				networkId,
+				networkName: networkName.toLowerCase(),
+			};
+		}
+	} catch (e) {
+		console.log(e);
+		return {
+			walletType: 'WalletConnect',
+			unlocked: false,
+			unlockError: e.message,
+		};
+	}
+};
+
 const getSignerConfig = ({ type, networkId, derivationPath }) => {
 	if (type === 'Ledger') {
 		const DEFAULT_LEDGER_DERIVATION_PATH = "44'/60'/0'/";
@@ -96,10 +118,15 @@ const getSignerConfig = ({ type, networkId, derivationPath }) => {
 	}
 	if (type === 'Coinbase') {
 		return {
-			appName: 'Mintr',
-			appLogoUrl: `${window.location.origin}/images/mintr-leaf-logo.png`,
+			appName: 'Synthetix Exchange',
+			appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.png`,
 			jsonRpcUrl: INFURA_JSON_RPC_URLS[networkId],
 			networkId,
+		};
+	}
+	if (type === 'WalletConnect') {
+		return {
+			infuraId: INFURA_PROJECT_ID,
 		};
 	}
 	return {};
@@ -131,6 +158,8 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 			return connectToMetamask(networkId, name);
 		case 'Coinbase':
 			return connectToCoinbase(networkId, name);
+		case 'WalletConnect':
+			return connectToWalletConnect(networkId, name);
 		case 'Trezor':
 		case 'Ledger':
 			return connectToHardwareWallet(networkId, name, wallet);

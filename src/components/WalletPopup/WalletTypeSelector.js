@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import snxJSConnector, { connectToWallet } from '../../utils/snxJSConnector';
 import { hasWeb3, SUPPORTED_WALLETS, onMetamaskAccountChange } from '../../utils/networkUtils';
-import { updateWalletStatus } from '../../ducks/wallet';
+import { updateWalletStatus, resetWalletStatus } from '../../ducks/wallet';
 import { toggleWalletPopup } from '../../ducks/ui';
 import { getWalletInfo } from '../../ducks';
 
@@ -17,6 +17,7 @@ const WalletTypeSelector = ({
 	walletInfo: { derivationPath },
 }) => {
 	const onWalletClick = async ({ wallet, derivationPath }) => {
+		resetWalletStatus();
 		const walletStatus = await connectToWallet({ wallet, derivationPath });
 		updateWalletStatus({ ...walletStatus, availableWallets: [] });
 		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
@@ -81,7 +82,7 @@ const Wallet = styled.button`
 	width: 200px;
 	height: 260px;
 	&:hover {
-		transform: scale(1.1);
+		transform: scale(1.04);
 	}
 	&:disabled {
 		opacity: 0.5;
@@ -112,6 +113,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 	updateWalletStatus,
 	toggleWalletPopup,
+	resetWalletStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletTypeSelector);
