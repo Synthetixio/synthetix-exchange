@@ -22,10 +22,10 @@ const connectToMetamask = async (networkId, networkName) => {
 	};
 	try {
 		const accounts = await snxJSConnector.signer.getNextAddresses();
-		if (accounts && accounts.result && accounts.result.length > 0) {
+		if (accounts && accounts.length > 0) {
 			return {
 				...walletState,
-				currentWallet: accounts.result[0],
+				currentWallet: accounts[0],
 				unlocked: true,
 				networkId,
 				networkName: networkName.toLowerCase(),
