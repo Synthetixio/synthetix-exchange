@@ -22,15 +22,14 @@ const WalletTypeSelector = ({
 		updateWalletStatus({ ...walletStatus, availableWallets: [] });
 		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
 			if (walletStatus.walletType === 'Metamask') {
-				onMetamaskAccountChange(async () => {
-					const address = await snxJSConnector.signer.getNextAddresses();
-					const signer = new snxJSConnector.signers['Metamask']({});
-					snxJSConnector.setContractSettings({
-						networkId: walletStatus.networkId,
-						signer,
-					});
-					if (address && address[0]) {
-						updateWalletStatus({ currentWallet: address[0] });
+				onMetamaskAccountChange(async accounts => {
+					if (accounts && accounts.length > 0) {
+						const signer = new snxJSConnector.signers['Metamask']({});
+						snxJSConnector.setContractSettings({
+							networkId: walletStatus.networkId,
+							signer,
+						});
+						updateWalletStatus({ currentWallet: accounts[0] });
 					}
 				});
 			}

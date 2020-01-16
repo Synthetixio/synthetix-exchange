@@ -35,17 +35,14 @@ export const hasWeb3 = () => {
 	return window.web3;
 };
 
+const defaultNetwork = { name: 'MAINNET', networkId: '1' };
+
 export async function getEthereumNetwork() {
-	return await new Promise(function(resolve, reject) {
-		if (!window.web3) resolve({ name: 'MAINNET', networkId: '1' });
-		window.web3.version.getNetwork((err, networkId) => {
-			if (err) {
-				reject(err);
-			} else {
-				const name = SUPPORTED_NETWORKS[networkId];
-				resolve({ name, networkId });
-			}
-		});
+	return await new Promise(function(resolve) {
+		if (!window.ethereum) resolve(defaultNetwork);
+		const networkId = window.ethereum.networkVersion;
+		const name = SUPPORTED_NETWORKS[parseInt(networkId)];
+		resolve(networkId && name ? { name, networkId } : defaultNetwork);
 	});
 }
 

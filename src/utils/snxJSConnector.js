@@ -16,64 +16,62 @@ let snxJSConnector = {
 };
 
 const connectToMetamask = async (networkId, networkName) => {
+	const walletState = {
+		walletType: 'Metamask',
+		unlocked: false,
+	};
 	try {
-		// Otherwise we enable ethereum if needed (modern browsers)
-		if (window.ethereum) {
-			window.ethereum.autoRefreshOnNetworkChange = true;
-			await window.ethereum.enable();
-		}
 		const accounts = await snxJSConnector.signer.getNextAddresses();
-		if (accounts && accounts.length > 0) {
+		if (accounts && accounts.result && accounts.result.length > 0) {
 			return {
-				currentWallet: accounts[0],
-				walletType: 'Metamask',
+				...walletState,
+				currentWallet: accounts.result[0],
 				unlocked: true,
 				networkId,
 				networkName: networkName.toLowerCase(),
 			};
 		} else {
 			return {
-				walletType: 'Metamask',
-				unlocked: false,
-				unlockReason: 'MetamaskNoAccounts',
+				...walletState,
+				unlockError: 'Please connect to Metamask',
 			};
 		}
 		// We updateWalletStatus with all the infos
 	} catch (e) {
 		console.log(e);
 		return {
-			walletType: 'Metamask',
-			unlocked: false,
-			unlockReason: 'ErrorWhileConnectingToMetamask',
-			unlockMessage: e,
+			...walletState,
+			unlockError: e.message,
 		};
 	}
 };
 
 const connectToCoinbase = async (networkId, networkName) => {
+	const walletState = {
+		walletType: 'Coinbase',
+		unlocked: false,
+	};
 	try {
 		const accounts = await snxJSConnector.signer.getNextAddresses();
 		if (accounts && accounts.length > 0) {
 			return {
+				...walletState,
 				currentWallet: accounts[0],
-				walletType: 'Coinbase',
 				unlocked: true,
 				networkId: 1,
 				networkName: networkName.toLowerCase(),
 			};
 		} else {
 			return {
-				walletType: 'Coinbase',
-				unlocked: false,
-				unlockReason: 'CoinbaseNoAccounts',
+				...walletState,
+				unlockError: 'Please connect to Coinbase Wallet',
 			};
 		}
 		// We updateWalletStatus with all the infos
 	} catch (e) {
 		console.log(e);
 		return {
-			walletType: 'Coinbase',
-			unlocked: false,
+			...walletState,
 			unlockError: e.message,
 		};
 	}
@@ -89,13 +87,17 @@ const connectToHardwareWallet = (networkId, networkName, walletType) => {
 };
 
 const connectToWalletConnect = async (networkId, networkName) => {
+	const walletState = {
+		walletType: 'WalletConnect',
+		unlocked: false,
+	};
 	try {
 		await snxJSConnector.signer.provider._web3Provider.enable();
 		const accounts = await snxJSConnector.signer.getNextAddresses();
 		if (accounts && accounts.length > 0) {
 			return {
+				...walletState,
 				currentWallet: accounts[0],
-				walletType: 'WalletConnect',
 				unlocked: true,
 				networkId,
 				networkName: networkName.toLowerCase(),
@@ -104,8 +106,7 @@ const connectToWalletConnect = async (networkId, networkName) => {
 	} catch (e) {
 		console.log(e);
 		return {
-			walletType: 'WalletConnect',
-			unlocked: false,
+			...walletState,
 			unlockError: e.message,
 		};
 	}
@@ -148,7 +149,7 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 		return {
 			walletType: '',
 			unlocked: false,
-			unlockReason: 'NetworkNotSupported',
+			unlockError: 'Network not supported',
 		};
 	}
 	setSigner({ type: wallet, networkId, derivationPath });
