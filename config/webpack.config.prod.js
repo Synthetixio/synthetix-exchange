@@ -130,7 +130,13 @@ module.exports = {
 	},
 	optimization: {
 		minimizer: [
-			new UglifyJsPlugin(),
+			new UglifyJsPlugin({
+				uglifyOptions: {
+					compress: {
+						keep_fnames: true,
+					},
+				},
+			}),
 			new OptimizeCSSAssetsPlugin({
 				cssProcessorOptions: {
 					parser: safePostCssParser,
