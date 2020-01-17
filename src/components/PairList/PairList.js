@@ -21,7 +21,11 @@ const useFilterSynths = (synths, search, quote, rates) => {
 		if (!synths || synths.lenght === 0) return;
 		const filteredList = synths
 			.filter(synth => {
-				return synth.name.toLowerCase().includes(search.toLowerCase()) && synth.name !== quote;
+				return (
+					(synth.name.toLowerCase().includes(search.toLowerCase()) ||
+						synth.desc.toLowerCase().includes(search.toLowerCase())) &&
+					synth.name !== quote
+				);
 			})
 			.map(synth => {
 				const rate = rates ? rates[synth.name][quote] : 0;
