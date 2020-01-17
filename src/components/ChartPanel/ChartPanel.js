@@ -238,7 +238,10 @@ const DataBlock = styled.div`
 	display: flex;
 	flex-direction: column;
 	padding: 0 22px;
-	margin-right: 24px;
+	margin-right: 6px;
+	&:last-child {
+		margin-right: 0;
+	}
 `;
 
 const DataBlockLabel = styled(DataSmall)`
