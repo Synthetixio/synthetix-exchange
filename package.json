@@ -22,7 +22,7 @@
 		"styled-components": "^4.4.1",
 		"styled-system": "^5.1.2",
 		"synthetix-data": "^2.0.1",
-		"synthetix-js": "github:Synthetixio/synthetix-js#trezorConnect",
+		"synthetix-js": "github:Synthetixio/synthetix-js#trezorConnect"
 	},
 	"scripts": {
 		"clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",
