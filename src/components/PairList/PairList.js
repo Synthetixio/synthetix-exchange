@@ -163,9 +163,10 @@ const ButtonRow = styled.div`
 `;
 
 const List = styled.ul`
-	margin: 0 10px;
+	margin: 0 0 0 10px;
 	padding: 0;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 `;
 
 const Pair = styled.li`
