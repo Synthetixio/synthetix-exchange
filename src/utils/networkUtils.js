@@ -1,4 +1,6 @@
 import throttle from 'lodash/throttle';
+import snxJSConnector from './snxJSConnector';
+
 export const GWEI_UNIT = 1000000000;
 
 export const SUPPORTED_NETWORKS = {
@@ -18,7 +20,7 @@ export const DEFAULT_GAS_LIMIT = {
 	sendSynth: 150000,
 };
 
-const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
+export const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
 
 export const INFURA_JSON_RPC_URLS = {
 	1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
@@ -27,54 +29,52 @@ export const INFURA_JSON_RPC_URLS = {
 	42: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
-export const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger'];
+export const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger', 'Coinbase', 'WalletConnect'];
 
 export const hasWeb3 = () => {
 	return window.web3;
 };
 
+const defaultNetwork = { name: 'MAINNET', networkId: '1' };
+
 export async function getEthereumNetwork() {
-	return await new Promise(function(resolve, reject) {
-		if (!window.web3) resolve({ name: 'MAINNET', networkId: '1' });
-		window.web3.version.getNetwork((err, networkId) => {
-			if (err) {
-				reject(err);
-			} else {
-				const name = SUPPORTED_NETWORKS[networkId];
-				resolve({ name, networkId });
-			}
-		});
+	return await new Promise(function(resolve) {
+		if (!window.ethereum) resolve(defaultNetwork);
+		const networkId = window.ethereum.networkVersion;
+		const name = SUPPORTED_NETWORKS[parseInt(networkId)];
+		resolve(networkId && name ? { name, networkId } : defaultNetwork);
 	});
 }
 
-export const getNetworkInfo = async () => {
-	const result = await fetch('https://ethgasstation.info/json/ethgasAPI.json');
-	const networkInfo = await result.json();
-	return {
-		slow: {
-			gwei: networkInfo.safeLow / 10,
-			time: networkInfo.safeLowWait,
-			getPrice: (ethPrice, gasLimit) =>
-				getTransactionPrice(networkInfo.safeLow / 10, gasLimit, ethPrice),
-		},
-		average: {
-			gwei: networkInfo.average / 10,
-			time: networkInfo.avgWait,
-			getPrice: (ethPrice, gasLimit) =>
-				getTransactionPrice(networkInfo.average / 10, gasLimit, ethPrice),
-		},
-		fast: {
-			gwei: networkInfo.fast / 10,
-			time: networkInfo.fastWait,
-			getPrice: (ethPrice, gasLimit) =>
-				getTransactionPrice(networkInfo.fast / 10, gasLimit, ethPrice),
-		},
-	};
+export const getTransactionPrice = (gasPrice, gasLimit, ethPrice) => {
+	if (!gasPrice || !gasLimit || !ethPrice) return 0;
+	return (gasPrice * ethPrice * gasLimit) / GWEI_UNIT;
 };
 
-export const getTransactionPrice = (gasPrice, gasLimit, ethPrice) => {
-	if (!gasPrice || !gasLimit) return 0;
-	return (gasPrice * ethPrice * gasLimit) / GWEI_UNIT;
+export const getGasInfo = async () => {
+	const results = await Promise.all([
+		fetch('https://ethgasstation.info/json/ethgasAPI.json'),
+		snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
+	]);
+	const networkInfo = await results[0].json();
+	const gasPriceLimit = Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
+
+	const fast = networkInfo.fast / 10;
+	const average = networkInfo.average / 10;
+	const slow = networkInfo.safeLow / 10;
+
+	const fastestAllowed = gasPriceLimit;
+	const averageAllowed = Math.min(average, gasPriceLimit);
+	const slowAllowed = Math.min(slow, gasPriceLimit);
+
+	return {
+		fastestAllowed,
+		averageAllowed,
+		slowAllowed,
+		fast,
+		average,
+		slow,
+	};
 };
 
 export function onMetamaskAccountChange(cb) {

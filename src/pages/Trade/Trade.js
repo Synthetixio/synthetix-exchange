@@ -12,11 +12,13 @@ import TradeBox from '../../components/TradeBox';
 import WalletBox from '../../components/WalletBox';
 
 import WalletPopup from '../../components/WalletPopup';
+import GweiPopup from '../../components/GweiPopup';
 
 const Trade = () => {
 	return (
 		<MainLayout>
 			<WalletPopup />
+			<GweiPopup />
 			<Header />
 			<TradeLayout>
 				<Container>
@@ -88,6 +90,7 @@ const CentralContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	margin: 8px 0;
+	min-width: 0;
 `;
 
 const BoxContainer = styled.div`

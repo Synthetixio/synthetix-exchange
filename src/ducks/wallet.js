@@ -2,12 +2,14 @@ import { setSigner } from '../utils/snxJSConnector';
 import { getAddress } from '../utils/formatters';
 
 const UPDATE_WALLET_STATUS = 'WALLET/UPDATE_WALLET_STATUS';
+const RESET_WALLET_STATUS = 'WALLET/RESET_WALLET_STATUS';
 const UPDATE_WALLET_PAGINATOR_INDEX = 'WALLET/UPDATE_WALLET_PAGINATOR_INDEX';
 const SET_DERIVATION_PATH = 'WALLET/SET_DERIVATION_PATH';
 const UPDATE_WALLET_BALANCES = 'WALLET/UPDATE_BALANCES';
 
 const defaultState = {
 	unlocked: false,
+	unlockError: null,
 	walletPaginatorIndex: 0,
 	availableWallets: [],
 	currentWallet: null,
@@ -18,6 +20,9 @@ const defaultState = {
 // Reducer
 const reducer = (state = defaultState, action = {}) => {
 	switch (action.type) {
+		case RESET_WALLET_STATUS: {
+			return defaultState;
+		}
 		case UPDATE_WALLET_STATUS: {
 			return { ...state, ...action.payload };
 		}
@@ -55,6 +60,12 @@ export const derivationPathChange = (signerOptions, derivationPath) => {
 	setSigner(signerOptions);
 	localStorage.setItem('derivationPath', derivationPath);
 	return setDerivationPath(derivationPath);
+};
+
+export const resetWalletStatus = () => {
+	return {
+		type: RESET_WALLET_STATUS,
+	};
 };
 
 export const updateWalletStatus = walletStatus => {

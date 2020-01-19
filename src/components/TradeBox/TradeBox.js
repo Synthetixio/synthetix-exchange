@@ -4,26 +4,47 @@ import styled, { withTheme } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
 
-import { formatCurrency, bytesFormatter } from '../../utils/formatters';
+import { getTransactionPrice, GWEI_UNIT } from '../../utils/networkUtils';
+import { formatCurrency, bytesFormatter, bigNumberFormatter } from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
-import { getSynthPair, getExchangeRates, getWalletInfo } from '../../ducks';
+import {
+	getSynthPair,
+	getExchangeRates,
+	getWalletInfo,
+	getGasInfo,
+	getExchangeFeeRate,
+	getEthRate,
+	getTransactions,
+} from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
+import { toggleGweiPopup } from '../../ducks/ui';
 import snxJSConnector from '../../utils/snxJSConnector';
+import errorMessages from '../../utils/errorMessages';
+import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
 
-/* eslint-disable */
 const TradeBox = ({
 	theme: { colors },
 	synthPair,
 	setSynthPair,
 	rates,
-	walletInfo: { balances, currentWallet },
+	walletInfo: { balances, currentWallet, walletType },
+	setGasLimit,
+	toggleGweiPopup,
+	gasInfo: { gasLimit, gasPrice },
+	exchangeFeeRate,
+	ethRate,
+	createTransaction,
+	updateTransaction,
+	transactions,
 }) => {
 	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
+	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
+	// const [nounce, setNounce] = useState(undefined);
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
 
@@ -32,26 +53,67 @@ const TradeBox = ({
 			snxJS: { Synthetix },
 			utils,
 		} = snxJSConnector;
+		const id = transactions.length;
 		try {
+			createTransaction({
+				// nounce,
+				id,
+				date: new Date(),
+				pair: `${base}/${quote}`,
+				price: formatCurrency(rates[base][quote]),
+				amount: formatCurrency(baseAmount),
+				totalUSD: formatCurrency(baseAmount * rates[base]['sUSD']),
+				status: 'Waiting',
+			});
 			const transaction = await Synthetix.exchange(
 				bytesFormatter(quote),
 				utils.parseEther(quoteAmount.toString()),
-				bytesFormatter(base)
+				bytesFormatter(base),
+				{
+					gasPrice: gasPrice * GWEI_UNIT,
+					gasLimit,
+					// nounce,
+				}
 			);
-			console.log(transaction);
+			updateTransaction({ status: 'Pending', ...transaction }, id);
 		} catch (e) {
-			console.log(e);
+			const error = errorMessages(e, walletType);
+			updateTransaction(
+				{
+					status: error.type === 'cancelled' ? 'Cancelled' : 'Failed',
+					error: error.message,
+				},
+				id
+			);
 		}
 	};
 
 	useEffect(() => {
+		const getFeeRateForExchange = async () => {
+			try {
+				if (!snxJSConnector.initialized) return;
+				const feeRateForExchange = await snxJSConnector.snxJS.Synthetix.feeRateForExchange(
+					bytesFormatter(quote),
+					bytesFormatter(base)
+				);
+				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
+			} catch (e) {
+				setFeeRate(exchangeFeeRate);
+				console.log(e);
+			}
+		};
 		setBaseAmount('');
 		setQuoteAmount('');
-	}, [base, quote]);
+		getFeeRateForExchange();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [base, quote, snxJSConnector.initialized]);
 
 	useEffect(() => {
 		const getGasEstimate = async () => {
-			if (!quoteAmount || !baseAmount) return;
+			if (!quoteAmount || !baseAmount) {
+				setError(null);
+				return;
+			}
 			if (!currentWallet) return;
 			try {
 				const {
@@ -59,19 +121,34 @@ const TradeBox = ({
 					utils,
 				} = snxJSConnector;
 				setError(null);
-				const transaction = await Synthetix.contract.estimate.exchange(
+				const gasEstimate = await Synthetix.contract.estimate.exchange(
 					bytesFormatter(quote),
 					utils.parseEther(quoteAmount.toString()),
 					bytesFormatter(base)
 				);
-				console.log(transaction);
+				setGasLimit(Number(gasEstimate));
 			} catch (e) {
 				console.log(e);
 				setError(e.message);
 			}
 		};
 		getGasEstimate();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [quoteAmount, baseAmount]);
+
+	// useEffect(() => {
+	// 	const getTransactionCount = async () => {
+	// 		if (!currentWallet) return;
+	// 		try {
+	// 			const transactionCount = await snxJSConnector.provider.getTransactionCount(currentWallet);
+	// 			setNounce(transactionCount + 1);
+	// 			console.log('NOUNCE', nounce);
+	// 		} catch (e) {
+	// 			console.log(e);
+	// 		}
+	// 	};
+	// 	getTransactionCount();
+	// }, [transactions.length, currentWallet]);
 
 	return (
 		<Container>
@@ -156,28 +233,31 @@ const TradeBox = ({
 					<NetworkDataRow>
 						<NetworkData>$USD Value</NetworkData>
 						<NetworkData>
-							${rates ? formatCurrency(baseAmount * rates[base][quote]) : 0}
+							${rates ? formatCurrency(baseAmount * rates[base]['sUSD']) : 0}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Fee</NetworkData>
-						<NetworkData>0</NetworkData>
+						<NetworkData>%{feeRate || 0}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>Gas</NetworkData>
-						<NetworkData>0</NetworkData>
+						<NetworkData>Gas limit</NetworkData>
+						<NetworkData>
+							{formatCurrency(gasLimit, 0) || 0} ($
+							{formatCurrency(getTransactionPrice(gasPrice, gasLimit, ethRate))})
+						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Gas Price (gwei)</NetworkData>
 						<NetworkData>
-							0
-							<ButtonEdit>
+							{gasPrice || 0}
+							<ButtonEdit onClick={() => toggleGweiPopup(true)}>
 								<DataSmall color={colors.hyperLink}>Edit</DataSmall>
 							</ButtonEdit>
 						</NetworkData>
 					</NetworkDataRow>
 				</NetworkInfo>
-				<ButtonPrimary disabled={!currentWallet || error} onClick={onConfirmTrade}>
+				<ButtonPrimary disabled={!baseAmount || !currentWallet || error} onClick={onConfirmTrade}>
 					Confirm Trade
 				</ButtonPrimary>
 			</Body>
@@ -244,7 +324,7 @@ const InputPopup = styled.div`
 const Balance = styled(DataSmall)`
 	text-transform: none;
 	color: ${props => props.theme.colors.fontTertiary};
-	font-family: 'apercu-light';
+	font-family: 'apercu-light', sans-serif;
 `;
 
 const ButtonRow = styled.div`
@@ -299,11 +379,19 @@ const mapStateToProps = state => {
 		synthPair: getSynthPair(state),
 		rates: getExchangeRates(state),
 		walletInfo: getWalletInfo(state),
+		gasInfo: getGasInfo(state),
+		exchangeFeeRate: getExchangeFeeRate(state),
+		ethRate: getEthRate(state),
+		transactions: getTransactions(state),
 	};
 };
 
 const mapDispatchToProps = {
 	setSynthPair,
+	setGasLimit,
+	toggleGweiPopup,
+	createTransaction,
+	updateTransaction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(TradeBox));

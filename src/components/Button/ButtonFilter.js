@@ -121,5 +121,5 @@ const Button = styled.button`
 const ButtonLabel = styled(DataSmall)`
 	text-transform: none;
 	color: ${props => props.theme.colors.fontTertiary};
-	font-family: 'apercu-medium';
+	font-family: 'apercu-medium', sans-serif;
 `;

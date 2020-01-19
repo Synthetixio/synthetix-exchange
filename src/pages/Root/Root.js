@@ -11,9 +11,14 @@ import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
-import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import {
+	updateExchangeRates,
+	setAvailableSynths,
+	updateFrozenSynths,
+	updateTopSynthByVolume,
+} from '../../ducks/synths';
 import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
-// import { updateGasAndSpeedInfo, updateExchangeFeeRate } from '../../ducks/wallet';
+import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import Trade from '../Trade';
 import Home from '../Home';
@@ -23,23 +28,29 @@ import Theme from '../../styles/theme';
 const Root = ({
 	setAvailableSynths,
 	updateExchangeRates,
-	updateGasAndSpeedInfo,
-	updateExchangeFeeRate,
+	setNetworkGasInfo,
+	setExchangeFeeRate,
 	updateFrozenSynths,
 	updateWalletStatus,
 	updateWalletBalances,
+	updateTopSynthByVolume,
 	currentTheme,
 	walletInfo: { currentWallet },
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const fetchAndSetExchangeData = useCallback(async synths => {
-		const { exchangeRates, exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(
-			synths
-		);
+		const {
+			exchangeRates,
+			exchangeFeeRate,
+			networkPrices,
+			frozenSynths,
+			topSynthByVolume,
+		} = await getExchangeData(synths);
 		updateExchangeRates(exchangeRates);
-		// updateExchangeFeeRate(exchangeFeeRate);
-		// updateGasAndSpeedInfo(networkPrices);
+		setExchangeFeeRate(exchangeFeeRate);
+		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths(frozenSynths);
+		updateTopSynthByVolume(topSynthByVolume);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -52,6 +63,7 @@ const Root = ({
 	);
 
 	useEffect(() => {
+		let intervalId;
 		const init = async () => {
 			const { networkId, name } = await getEthereumNetwork();
 			if (!snxJSConnector.initialized) {
@@ -62,7 +74,8 @@ const Root = ({
 			setAvailableSynths(synths);
 			fetchAndSetExchangeData(synths);
 			fetchAndSetWalletBalances(synths);
-			const intervalId = setInterval(() => {
+			clearInterval(intervalId);
+			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
 				fetchAndSetWalletBalances(synths);
 			}, 30 * 1000);
@@ -110,11 +123,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 	updateExchangeRates,
 	setAvailableSynths,
-	// updateGasAndSpeedInfo,
+	setNetworkGasInfo,
 	updateFrozenSynths,
 	updateWalletStatus,
 	updateWalletBalances,
-	// updateExchangeFeeRate,
+	setExchangeFeeRate,
+	updateTopSynthByVolume,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));

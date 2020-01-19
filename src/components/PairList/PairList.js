@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import { getAvailableSynths, getExchangeRates } from '../../ducks';
+import { getAvailableSynths, getExchangeRates, getFrozenSynths, getSynthsSigns } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
 
 import { DataMedium, DataSmall } from '../Typography';
@@ -21,7 +21,11 @@ const useFilterSynths = (synths, search, quote, rates) => {
 		if (!synths || synths.lenght === 0) return;
 		const filteredList = synths
 			.filter(synth => {
-				return synth.name.toLowerCase().includes(search.toLowerCase()) && synth.name !== quote;
+				return (
+					(synth.name.toLowerCase().includes(search.toLowerCase()) ||
+						synth.desc.toLowerCase().includes(search.toLowerCase())) &&
+					synth.name !== quote
+				);
 			})
 			.map(synth => {
 				const rate = rates ? rates[synth.name][quote] : 0;
@@ -43,10 +47,10 @@ const sortPairsBy = (pairs, sort) => {
 	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
 };
 
-const PairList = ({ synths, rates, setSynthPair }) => {
+const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
-	const [sort, setSort] = useState({ column: 'name', isAscending: true });
+	const [sort, setSort] = useState({});
 	const synthList = useFilterSynths(synths, search, quote, rates);
 
 	return (
@@ -79,7 +83,7 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 					{[
 						{ label: 'Pair', value: 'name' },
 						{ label: 'Price', value: 'rate' },
-						{ label: 'Change', value: 'change' },
+						// { label: 'Change', value: 'change' },
 					].map((column, i) => {
 						return (
 							<ListHeaderElement key={i}>
@@ -104,19 +108,26 @@ const PairList = ({ synths, rates, setSynthPair }) => {
 			<List>
 				{sortPairsBy(synthList, sort).map((synth, i) => {
 					return (
-						<Pair key={i} onClick={() => setSynthPair({ base: synth.name, quote })}>
+						<Pair
+							isDisabled={(frozenSynths && frozenSynths[synth.name]) || !rates}
+							key={i}
+							onClick={() => setSynthPair({ base: synth.name, quote })}
+						>
 							<PairElement>
 								<SynthIcon src={`/images/synths/${synth.name}.svg`} />
 								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
 							</PairElement>
 							<PairElement>
-								<DataMedium>{formatCurrency(synth.rate, 6)}</DataMedium>
+								<DataMedium>
+									{synthsSigns[quote]}
+									{formatCurrency(synth.rate, 6)}
+								</DataMedium>
 							</PairElement>
-							<PairElement>
+							{/* <PairElement>
 								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>
 									{formatCurrency(synth.change, 2)}%
 								</DataChange>
-							</PairElement>
+							</PairElement> */}
 						</Pair>
 					);
 				})}
@@ -152,9 +163,10 @@ const ButtonRow = styled.div`
 `;
 
 const List = styled.ul`
-	margin: 0 10px;
+	margin: 0 0 0 10px;
 	padding: 0;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 `;
 
 const Pair = styled.li`
@@ -172,6 +184,8 @@ const Pair = styled.li`
 		background-color: ${props => props.theme.colors.accentDark};
 		transform: scale(1.02);
 	}
+	opacity: ${props => (props.isDisabled ? 0.5 : 1)};
+	pointer-events: ${props => (props.isDisabled ? 'none' : 'auto')};
 `;
 
 const PairElement = styled.div`
@@ -198,7 +212,7 @@ const ListHeader = styled.div`
 `;
 
 const ListHeaderLabel = styled(DataSmall)`
-	font-family: 'apercu-medium';
+	font-family: 'apercu-medium', sans-serif;
 	color: ${props => props.theme.colors.fontTertiary};
 `;
 
@@ -223,14 +237,16 @@ const SortIcon = styled.img`
 	margin-left: 5px;
 `;
 
-const DataChange = styled(DataMedium)`
-	color: ${props => (props.color === 'red' ? props.theme.colors.red : props.theme.colors.green)};
-`;
+// const DataChange = styled(DataMedium)`
+// 	color: ${props => (props.color === 'red' ? props.theme.colors.red : props.theme.colors.green)};
+// `;
 
 const mapStateToProps = state => {
 	return {
 		synths: getAvailableSynths(state),
 		rates: getExchangeRates(state),
+		frozenSynths: getFrozenSynths(state),
+		synthsSigns: getSynthsSigns(state),
 	};
 };
 

@@ -22,9 +22,7 @@ const imageRotation = keyframes`
   }
 `;
 
-const Container = styled.div`
-	padding: 30x 0;
-`;
+const Container = styled.div``;
 
 const Img = styled.img`
 	animation: ${imageRotation} 2s infinite linear;

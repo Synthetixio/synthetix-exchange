@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import { color } from 'styled-system';
 
 import { DataSmall } from '../Typography';
 
 export const Table = styled.table`
 	width: 100%;
-	height: 100%;
+	height: ${props => (props.height ? props.height : '100%')};
 	display: flex;
 	flex-direction: column;
 	background-color: ${props => props.theme.colors.surfaceL2};
@@ -42,6 +43,7 @@ export const Th = styled.th`
 export const Td = styled.td`
 	display: flex;
 	flex-direction: column;
+	/* white-space: nowrap; */
 	flex-basis: 100%;
 	text-align: right;
 	&:first-child {
@@ -53,5 +55,6 @@ export const Td = styled.td`
 export const DataLabel = styled(DataSmall)`
 	text-transform: none;
 	color: ${props => props.theme.colors.fontPrimary};
-	font-family: 'apercu-regular';
+	font-family: 'apercu-regular', sans-serif;
+	${color};
 `;

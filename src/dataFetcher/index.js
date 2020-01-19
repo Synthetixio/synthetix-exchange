@@ -1,23 +1,21 @@
-import { getGasAndSpeedInfo } from '../utils/ethUtils';
+import snxData from 'synthetix-data';
+import { getGasInfo } from '../utils/networkUtils';
 import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter } from '../utils/formatters';
 import isEmpty from 'lodash/isEmpty';
+import { subDays } from 'date-fns';
 
 const getExchangeRates = async synths => {
 	if (!synths) return;
 	let formattedSynthRates = {};
 	try {
-		const [synthRates, ethRate] = await Promise.all([
-			snxJSConnector.snxJS.ExchangeRates.ratesForCurrencies(
-				synths.map(synth => bytesFormatter(synth.name))
-			),
-			snxJSConnector.snxJS.Depot.usdToEthPrice(),
-		]);
+		const synthRates = await snxJSConnector.snxJS.ExchangeRates.ratesForCurrencies(
+			synths.map(synth => bytesFormatter(synth.name))
+		);
 		synthRates.forEach((rate, i) => {
 			formattedSynthRates[synths[i].name] = Number(snxJSConnector.snxJS.utils.formatEther(rate));
 		});
-		const formattedEthRate = snxJSConnector.snxJS.utils.formatEther(ethRate);
-		return { synthRates: formattedSynthRates, ethRate: formattedEthRate };
+		return { synthRates: formattedSynthRates, ethRate: formattedSynthRates['sETH'] };
 	} catch (e) {
 		console.log(e);
 	}
@@ -34,7 +32,7 @@ const getExchangeFeeRate = async () => {
 };
 
 const getNetworkPrices = async () => {
-	return await getGasAndSpeedInfo();
+	return await getGasInfo();
 };
 
 const getFrozenSynths = async synths => {
@@ -53,18 +51,44 @@ const getFrozenSynths = async synths => {
 	return frozenSynths;
 };
 
+const getTopSynthByVolume = async () => {
+	const yesterday = Math.trunc(subDays(new Date(), 1).getTime() / 1000);
+	try {
+		const volume = await snxData.exchanges.since({ timestampInSecs: yesterday });
+		return volume.reduce((acc, next) => {
+			if (acc[next.toCurrencyKey]) {
+				acc[next.toCurrencyKey] += next.toAmountInUSD;
+			} else acc[next.toCurrencyKey] = next.toAmountInUSD;
+			if (acc[next.fromCurrency]) {
+				acc[next.fromCurrency] += next.fromAmountInUSD;
+			} else acc[next.fromCurrency] = next.fromAmountInUSD;
+			return acc;
+		}, {});
+	} catch (e) {
+		console.log(e);
+	}
+};
+
 export const getExchangeData = async synths => {
-	const [exchangeRates, exchangeFeeRate, networkPrices, frozenSynths] = await Promise.all([
+	const [
+		exchangeRates,
+		exchangeFeeRate,
+		networkPrices,
+		frozenSynths,
+		topSynthByVolume,
+	] = await Promise.all([
 		getExchangeRates(synths),
 		getExchangeFeeRate(),
 		getNetworkPrices(),
 		getFrozenSynths(synths),
+		getTopSynthByVolume(),
 	]);
 	return {
 		exchangeRates,
 		exchangeFeeRate,
 		networkPrices,
 		frozenSynths,
+		topSynthByVolume,
 	};
 };
 

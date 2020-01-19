@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { typography } from 'styled-system';
 
 export const HeadingMedium = styled.h2`
-	font-family: 'apercu-regular';
+	font-family: 'apercu-regular', sans-serif;
 	line-height: 32px;
 	font-size: 32px;
 	color: ${props => props.theme.colors.fontPrimary};
@@ -12,7 +12,7 @@ export const HeadingMedium = styled.h2`
 `;
 
 export const HeadingSmall = styled.h3`
-	font-family: 'apercu-regular';
+	font-family: 'apercu-regular', sans-serif;
 	line-height: 14px;
 	font-size: 14px;
 	color: ${props => props.theme.colors.fontPrimary};

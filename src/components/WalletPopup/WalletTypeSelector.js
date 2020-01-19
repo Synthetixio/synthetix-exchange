@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import snxJSConnector, { connectToWallet } from '../../utils/snxJSConnector';
 import { hasWeb3, SUPPORTED_WALLETS, onMetamaskAccountChange } from '../../utils/networkUtils';
-import { updateWalletStatus } from '../../ducks/wallet';
+import { updateWalletStatus, resetWalletStatus } from '../../ducks/wallet';
 import { toggleWalletPopup } from '../../ducks/ui';
 import { getWalletInfo } from '../../ducks';
 
@@ -17,19 +17,19 @@ const WalletTypeSelector = ({
 	walletInfo: { derivationPath },
 }) => {
 	const onWalletClick = async ({ wallet, derivationPath }) => {
+		resetWalletStatus();
 		const walletStatus = await connectToWallet({ wallet, derivationPath });
 		updateWalletStatus({ ...walletStatus, availableWallets: [] });
 		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
 			if (walletStatus.walletType === 'Metamask') {
-				onMetamaskAccountChange(async () => {
-					const address = await snxJSConnector.signer.getNextAddresses();
-					const signer = new snxJSConnector.signers['Metamask']({});
-					snxJSConnector.setContractSettings({
-						networkId: walletStatus.networkId,
-						signer,
-					});
-					if (address && address[0]) {
-						updateWalletStatus({ currentWallet: address[0] });
+				onMetamaskAccountChange(async accounts => {
+					if (accounts && accounts.length > 0) {
+						const signer = new snxJSConnector.signers['Metamask']({});
+						snxJSConnector.setContractSettings({
+							networkId: walletStatus.networkId,
+							signer,
+						});
+						updateWalletStatus({ currentWallet: accounts[0] });
 					}
 				});
 			}
@@ -81,7 +81,7 @@ const Wallet = styled.button`
 	width: 200px;
 	height: 260px;
 	&:hover {
-		transform: scale(1.1);
+		transform: scale(1.04);
 	}
 	&:disabled {
 		opacity: 0.5;
@@ -98,7 +98,7 @@ const WalletIcon = styled.img`
 
 const WalletLabel = styled.h3`
 	color: ${props => props.theme.colors.fontPrimary};
-	font-family: 'apercu-light';
+	font-family: 'apercu-light', sans-serif;
 	letter-spacing: 1px;
 	font-size: 24px;
 `;
@@ -112,6 +112,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
 	updateWalletStatus,
 	toggleWalletPopup,
+	resetWalletStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletTypeSelector);

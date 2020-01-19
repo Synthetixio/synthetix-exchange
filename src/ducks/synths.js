@@ -1,11 +1,15 @@
+import orderBy from 'lodash/orderBy';
 const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
 const SET_SYNTH_PAIR = 'SYNTHS/SET_SYNTH_PAIR';
 const SET_EXCHANGE_RATES = 'SYNTHS/SET_EXCHANGE_RATES';
 const SET_FROZEN_SYNTHS = 'SYNTHS/SET_FROZEN_SYNTHS';
+const SET_TOP_SYNTH_BY_VOLUME = 'SYNTHS/SET_TOP_SYNTH_BY_VOLUME';
 
 const defaultState = {
 	availableSynths: [],
+	synthsSigns: {},
 	synthTypes: [],
+	topSynthByVolume: [],
 	defaultSynth: null,
 	frozenSynths: null,
 	exchangeRates: null,
@@ -31,7 +35,17 @@ const reducer = (state = defaultState, action = {}) => {
 			const baseSynth = action.payload.find(synth => synth.name === 'sBTC').name;
 			const quoteSynth = action.payload.find(synth => synth.name === 'sUSD').name;
 			const availableSynths = action.payload.sort(sortSynths);
-			return { ...state, availableSynths: availableSynths, baseSynth, quoteSynth };
+			const signs = {};
+			availableSynths.forEach(synth => {
+				signs[synth.name] = synth.sign;
+			});
+			return {
+				...state,
+				availableSynths: availableSynths,
+				baseSynth,
+				quoteSynth,
+				synthsSigns: signs,
+			};
 		}
 		case SET_SYNTH_PAIR: {
 			const { quote, base } = action.payload;
@@ -43,6 +57,20 @@ const reducer = (state = defaultState, action = {}) => {
 		}
 		case SET_FROZEN_SYNTHS: {
 			return { ...state, frozenSynths: action.payload };
+		}
+		case SET_TOP_SYNTH_BY_VOLUME: {
+			const volume = action.payload;
+			let synths = orderBy(
+				state.availableSynths.map(synth => {
+					return {
+						...synth,
+						volume: volume[synth.name] || 0,
+					};
+				}),
+				'volume',
+				['desc']
+			);
+			return { ...state, topSynthByVolume: volume, availableSynths: synths };
 		}
 		default:
 			return state;
@@ -59,6 +87,10 @@ export const setSynthPair = pair => {
 
 export const updateFrozenSynths = synths => {
 	return { type: SET_FROZEN_SYNTHS, payload: synths };
+};
+
+export const updateTopSynthByVolume = synths => {
+	return { type: SET_TOP_SYNTH_BY_VOLUME, payload: synths };
 };
 
 const convertBaseSynth = (synth, rates) => {

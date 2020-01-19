@@ -3,24 +3,26 @@ import { width } from 'styled-system';
 
 const ButtonPrimary = styled.button`
 	border-radius: 1px;
-	height: 42px;
+	height: 48px;
 	width: 100%;
 	font-size: 16px;
 	letter-spacing: 0.5px;
-	font-family: 'apercu-medium';
+	font-family: 'apercu-medium', sans-serif;
 	color: ${props => props.theme.colors.white};
 	cursor: pointer;
 	padding: 0 6px;
 	background-color: ${props => props.theme.colors.buttonDefault};
+	&:disabled {
+		opacity: 0.5;
+	}
 	&:hover {
-		background-color: ${props => props.theme.colors.buttonHover};
+		&:not(:disabled) {
+			background-color: ${props => props.theme.colors.buttonHover};
+		}
 	}
 	border: none;
 	text-transform: uppercase;
 	line-height: 44px;
-	&:disabled {
-		opacity: 0.5;
-	}
 	${width}
 `;
 

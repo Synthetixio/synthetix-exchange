@@ -30,9 +30,8 @@ const ThemeSwitcherButton = styled.button`
 	display: flex;
 	align-items: center;
 	padding: 0 8px;
-	borde-radius: 1px;
-	justify-content: space-between;
 	border-radius: 1px;
+	justify-content: space-between;
 	cursor: pointer;
 	border: none;
 `;

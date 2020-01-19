@@ -1,11 +1,10 @@
 import { SynthetixJs } from 'synthetix-js';
-import { getEthereumNetwork, INFURA_JSON_RPC_URLS } from './networkUtils';
+import { getEthereumNetwork, INFURA_JSON_RPC_URLS, INFURA_PROJECT_ID } from './networkUtils';
 
 let snxJSConnector = {
 	initialized: false,
 	signers: SynthetixJs.signers,
 	setContractSettings: function(contractSettings) {
-		console.log('heeeere', contractSettings);
 		this.initialized = true;
 		this.snxJS = new SynthetixJs(contractSettings);
 		this.synths = this.snxJS.contractSettings.synths;
@@ -17,66 +16,63 @@ let snxJSConnector = {
 };
 
 const connectToMetamask = async (networkId, networkName) => {
+	const walletState = {
+		walletType: 'Metamask',
+		unlocked: false,
+	};
 	try {
-		// Otherwise we enable ethereum if needed (modern browsers)
-		if (window.ethereum) {
-			window.ethereum.autoRefreshOnNetworkChange = true;
-			await window.ethereum.enable();
-		}
 		const accounts = await snxJSConnector.signer.getNextAddresses();
 		if (accounts && accounts.length > 0) {
 			return {
+				...walletState,
 				currentWallet: accounts[0],
-				walletType: 'Metamask',
 				unlocked: true,
 				networkId,
 				networkName: networkName.toLowerCase(),
 			};
 		} else {
 			return {
-				walletType: 'Metamask',
-				unlocked: false,
-				unlockReason: 'MetamaskNoAccounts',
+				...walletState,
+				unlockError: 'Please connect to Metamask',
 			};
 		}
 		// We updateWalletStatus with all the infos
 	} catch (e) {
 		console.log(e);
 		return {
-			walletType: 'Metamask',
-			unlocked: false,
-			unlockReason: 'ErrorWhileConnectingToMetamask',
-			unlockMessage: e,
+			...walletState,
+			unlockError: e.message,
 		};
 	}
 };
 
 const connectToCoinbase = async (networkId, networkName) => {
+	const walletState = {
+		walletType: 'Coinbase',
+		unlocked: false,
+	};
 	try {
 		const accounts = await snxJSConnector.signer.getNextAddresses();
 		if (accounts && accounts.length > 0) {
 			return {
+				...walletState,
 				currentWallet: accounts[0],
-				walletType: 'Coinbase',
 				unlocked: true,
 				networkId: 1,
 				networkName: networkName.toLowerCase(),
 			};
 		} else {
 			return {
-				walletType: 'Coinbase',
-				unlocked: false,
-				unlockReason: 'CoinbaseNoAccounts',
+				...walletState,
+				unlockError: 'Please connect to Coinbase Wallet',
 			};
 		}
 		// We updateWalletStatus with all the infos
 	} catch (e) {
 		console.log(e);
 		return {
-			walletType: 'Coinbase',
-			unlocked: false,
-			unlockReason: 'ErrorWhileConnectingToCoinbase',
-			unlockMessage: e,
+			...walletState,
+			unlockError: e.message,
 		};
 	}
 };
@@ -90,6 +86,32 @@ const connectToHardwareWallet = (networkId, networkName, walletType) => {
 	};
 };
 
+const connectToWalletConnect = async (networkId, networkName) => {
+	const walletState = {
+		walletType: 'WalletConnect',
+		unlocked: false,
+	};
+	try {
+		await snxJSConnector.signer.provider._web3Provider.enable();
+		const accounts = await snxJSConnector.signer.getNextAddresses();
+		if (accounts && accounts.length > 0) {
+			return {
+				...walletState,
+				currentWallet: accounts[0],
+				unlocked: true,
+				networkId,
+				networkName: networkName.toLowerCase(),
+			};
+		}
+	} catch (e) {
+		console.log(e);
+		return {
+			...walletState,
+			unlockError: e.message,
+		};
+	}
+};
+
 const getSignerConfig = ({ type, networkId, derivationPath }) => {
 	if (type === 'Ledger') {
 		const DEFAULT_LEDGER_DERIVATION_PATH = "44'/60'/0'/";
@@ -97,13 +119,17 @@ const getSignerConfig = ({ type, networkId, derivationPath }) => {
 	}
 	if (type === 'Coinbase') {
 		return {
-			appName: 'Mintr',
-			appLogoUrl: `${window.location.origin}/images/mintr-leaf-logo.png`,
+			appName: 'Synthetix Exchange',
+			appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.png`,
 			jsonRpcUrl: INFURA_JSON_RPC_URLS[networkId],
 			networkId,
 		};
 	}
-
+	if (type === 'WalletConnect') {
+		return {
+			infuraId: INFURA_PROJECT_ID,
+		};
+	}
 	return {};
 };
 
@@ -111,12 +137,10 @@ export const setSigner = ({ type, networkId, derivationPath }) => {
 	const signer = new snxJSConnector.signers[type](
 		getSignerConfig({ type, networkId, derivationPath })
 	);
-
 	snxJSConnector.setContractSettings({
 		networkId,
 		signer,
 	});
-	console.log(snxJSConnector.snxJS);
 };
 
 export const connectToWallet = async ({ wallet, derivationPath }) => {
@@ -125,7 +149,7 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 		return {
 			walletType: '',
 			unlocked: false,
-			unlockReason: 'NetworkNotSupported',
+			unlockError: 'Network not supported',
 		};
 	}
 	setSigner({ type: wallet, networkId, derivationPath });
@@ -135,6 +159,8 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 			return connectToMetamask(networkId, name);
 		case 'Coinbase':
 			return connectToCoinbase(networkId, name);
+		case 'WalletConnect':
+			return connectToWalletConnect(networkId, name);
 		case 'Trezor':
 		case 'Ledger':
 			return connectToHardwareWallet(networkId, name, wallet);
