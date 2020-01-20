@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import snxData from 'synthetix-data';
 import styled, { withTheme } from 'styled-components';
 
 import { DataSmall } from '../Typography';
@@ -11,14 +12,13 @@ import { updateTransaction, removePendingTransaction } from '../../ducks/transac
 import snxJSConnector from '../../utils/snxJSConnector';
 import PastTransactions from './PastTransactions';
 
-const BookContent = ({ tab, transactions }) => {
+const BookContent = ({ tab, transactions, pastTransactions, onScrollPaging }) => {
 	switch (tab) {
 		case 'Your orders':
 			return <CurrentOrders transactions={transactions} />;
 		case 'Your trades':
-			return <PastTransactions />;
 		case 'All trades':
-			return <PastTransactions />;
+			return <PastTransactions transactions={pastTransactions} onScrollPaging={onScrollPaging} />;
 	}
 };
 
@@ -28,8 +28,14 @@ const OrderBook = ({
 	pendingTransactions,
 	updateTransaction,
 	removePendingTransaction,
+	walletInfo,
 }) => {
 	const [activeTab, setActiveTab] = useState('Your orders');
+	const [pastTransactions, setPastTransactions] = useState({
+		list: [],
+		loading: false,
+		maxBlock: Number.MAX_SAFE_INTEGER, // paging
+	});
 
 	useEffect(() => {
 		const fetchTransactionResult = async () => {
@@ -55,6 +61,58 @@ const OrderBook = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pendingTransactions.length]);
 
+	useEffect(() => {
+		const fetchData = async () => {
+			const { loading, list, maxBlock } = pastTransactions;
+
+			if (activeTab === 'Your orders') return;
+			if (loading) return;
+			setPastTransactions({
+				...pastTransactions,
+				loading: true,
+			});
+
+			let results;
+			if (activeTab === 'Your trades') {
+				const { currentWallet } = walletInfo;
+				results = await snxData.exchanges.since({
+					fromAddress: currentWallet,
+					maxBlock: maxBlock,
+					max: 100,
+				});
+			} else if (activeTab === 'All trades') {
+				results = await snxData.exchanges.since({
+					maxBlock: maxBlock,
+					max: 100,
+				});
+			}
+
+			if (results && results.length) {
+				const hashMap = {};
+				list.forEach(l => {
+					hashMap[l.hash] = true;
+				});
+				results = results.filter(r => !hashMap[r.hash]);
+				results = [...list, ...results];
+
+				setPastTransactions({ ...pastTransactions, list: results, loading: false });
+			}
+		};
+
+		fetchData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pastTransactions.maxBlock, activeTab]);
+
+	const onScrollPaging = () => {
+		const lastRow = pastTransactions.list[pastTransactions.list.length - 1];
+		if (lastRow) {
+			setPastTransactions({
+				...pastTransactions,
+				maxBlock: lastRow.block,
+			});
+		}
+	};
+
 	return (
 		<Container>
 			<Tabs>
@@ -62,7 +120,15 @@ const OrderBook = ({
 					return (
 						<Tab
 							key={tab}
+							isDisabled={tab === 'Your trades' && !walletInfo.currentWallet}
 							onClick={() => {
+								if (tab === 'Your trades' && !walletInfo.currentWallet) return;
+								if (tab !== 'Your orders') {
+									setPastTransactions({
+										list: [],
+										maxBlock: Number.MAX_SAFE_INTEGER,
+									});
+								}
 								setActiveTab(tab);
 							}}
 							hidden={!tab}
@@ -76,7 +142,12 @@ const OrderBook = ({
 				})}
 			</Tabs>
 			<Book>
-				<BookContent tab={activeTab} transactions={transactions} />
+				<BookContent
+					tab={activeTab}
+					transactions={transactions}
+					pastTransactions={pastTransactions}
+					onScrollPaging={onScrollPaging}
+				/>
 			</Book>
 		</Container>
 	);
@@ -122,6 +193,7 @@ const Tab = styled.button`
 const Book = styled.div`
 	height: 100%;
 	min-height: 0;
+	position: relative;
 `;
 
 // const SortIcon = styled.img`

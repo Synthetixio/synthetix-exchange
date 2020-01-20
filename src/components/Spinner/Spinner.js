@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-const Spinner = ({ size = 'big' }) => {
+const Spinner = ({ size = 'big', className }) => {
 	return (
-		<Container>
+		<Container className={className}>
 			{size === 'tiny' ? (
 				<TinyImg src={`images/spinner-small.png`} alt="spinner" />
 			) : (
