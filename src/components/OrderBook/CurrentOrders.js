@@ -46,7 +46,9 @@ const CurrentOrders = ({ theme: { colors }, transactions, walletInfo: { networkN
 						return (
 							<Th key={i}>
 								<ButtonSort>
-									<DataSmall color={colors.fontTertiary}>{label}</DataSmall>
+									<DataSmall style={{ whiteSpace: 'nowrap' }} color={colors.fontTertiary}>
+										{label}
+									</DataSmall>
 									{/* <SortIcon src={'/images/sort-arrows.svg'} /> */}
 								</ButtonSort>
 							</Th>
@@ -62,7 +64,9 @@ const CurrentOrders = ({ theme: { colors }, transactions, walletInfo: { networkN
 					return (
 						<TransactionRow isPending={isPending} key={i}>
 							<Td>
-								<DataLabel>{format(date, 'DD-MM-YY')}</DataLabel>
+								<DataLabel style={{ whiteSpace: 'nowrap' }}>
+									{format(date, 'DD-MM-YY | HH:mmA')}
+								</DataLabel>
 							</Td>
 							<Td>
 								<DataLabel>{pair}</DataLabel>

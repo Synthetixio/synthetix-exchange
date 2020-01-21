@@ -6,24 +6,30 @@ import { debounce } from 'lodash';
 
 import { DataSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
+import { formatCurrency } from '../../utils/formatters';
 import Spinner from '../Spinner';
 
 const SCROLL_THRESHOLD = 0.8;
 
-const getPrice = (fromSynth, toSynth, fromAmount, toAmount) => {
-	if (toSynth === 'sUSD') return (toAmount / fromAmount).toFixed(4);
-
-	return (fromAmount / toAmount).toFixed(4);
+const getPrecision = amount => {
+	if (amount >= 1) {
+		return 2;
+	} else return 4;
 };
 
-const formatAmount = amount => {
-	if (amount > 1) {
-		return amount.toFixed(2);
-	} else if (amount > 0.001) {
-		return amount.toFixed(4);
-	} else if (amount) {
-		return amount.toFixed(8);
-	}
+const getPrice = (toAmountInUSD, toAmount, toCurrencyKey, fromAmountInUSD, fromAmount) => {
+	const price = toCurrencyKey === 'sUSD' ? fromAmountInUSD / fromAmount : toAmountInUSD / toAmount;
+	return formatCurrency(price, getPrecision(price));
+};
+
+const getAmount = (toAmount, toCurrencyKey, fromAmount) => {
+	const amount = toCurrencyKey === 'sUSD' ? fromAmount : toAmount;
+	return formatCurrency(amount, getPrecision(amount));
+};
+
+const getTotal = (toAmountInUSD, toCurrencyKey, fromAmountInUSD) => {
+	const amount = toCurrencyKey === 'sUSD' ? fromAmountInUSD : toAmountInUSD;
+	return formatCurrency(amount, getPrecision(amount));
 };
 
 const PastTransactions = ({
@@ -52,46 +58,57 @@ const PastTransactions = ({
 			<Table cellSpacing="0">
 				<Thead>
 					<Tr>
-						{['Date | Time', 'Pair', 'Price', 'Amount', 'Total', 'Status', 'View'].map(
-							(label, i) => {
-								return (
-									<Th key={i}>
-										<ButtonSort>
-											<DataSmall color={colors.fontTertiary}>{label}</DataSmall>
-											{/* <SortIcon src={'/images/sort-arrows.svg'} /> */}
-										</ButtonSort>
-									</Th>
-								);
-							}
-						)}
+						{['Date | Time', 'Pair', 'Price', 'Amount', 'Total', 'View'].map((label, i) => {
+							return (
+								<Th key={i}>
+									<ButtonSort>
+										<DataSmall color={colors.fontTertiary}>{label}</DataSmall>
+										{/* <SortIcon src={'/images/sort-arrows.svg'} /> */}
+									</ButtonSort>
+								</Th>
+							);
+						})}
 					</Tr>
 				</Thead>
-				<Tbody ref={tbodyEl} onScroll={onTableScroll}>
+				<Tbody
+					style={{ transition: 'opacity ease-in-out .1s', opacity: loading ? 0.25 : 1 }}
+					ref={tbodyEl}
+					onScroll={onTableScroll}
+				>
 					{list.map(t => {
 						return (
 							<Tr key={t.hash}>
 								<Td>
-									<DataLabel>{format(t.timestamp, 'DD-MM-YY | HH:mmA')}</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>
-										{t.fromCurrencyKey}/{t.toCurrencyKey}
+									<DataLabel style={{ whiteSpace: 'nowrap' }}>
+										{format(t.timestamp, 'DD-MM-YY | HH:mm')}
 									</DataLabel>
 								</Td>
 								<Td>
 									<DataLabel>
-										{getPrice(t.fromCurrencyKey, t.toCurrencyKey, t.fromAmount, t.toAmount)}
+										{t.toCurrencyKey}/{t.fromCurrencyKey}
 									</DataLabel>
 								</Td>
 								<Td>
-									<DataLabel>{formatAmount(t.fromAmount)}</DataLabel>
+									<DataLabel>
+										$
+										{getPrice(
+											t.toAmountInUSD,
+											t.toAmount,
+											t.toCurrencyKey,
+											t.fromAmountInUSD,
+											t.fromAmount
+										)}
+									</DataLabel>
 								</Td>
 								<Td>
-									<DataLabel>{formatAmount(t.toAmount)}</DataLabel>
+									<DataLabel>{getAmount(t.toAmount, t.toCurrencyKey, t.fromAmount)}</DataLabel>
 								</Td>
 								<Td>
-									<DataLabel>COMPLETE</DataLabel>
+									<DataLabel>
+										${getTotal(t.toAmountInUSD, t.toCurrencyKey, t.fromAmountInUSD)}
+									</DataLabel>
 								</Td>
+
 								<Td>
 									<DataLabel>
 										<Link href={`https://etherscan.io/tx/${t.hash}`} target="_blank">

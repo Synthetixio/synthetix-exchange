@@ -32,10 +32,18 @@ const OrderBook = ({
 }) => {
 	const [activeTab, setActiveTab] = useState('Your orders');
 	const [pastTransactions, setPastTransactions] = useState({
-		list: [],
-		loading: false,
-		maxBlock: Number.MAX_SAFE_INTEGER, // paging
+		all: {
+			list: [],
+			loading: false,
+			maxBlock: Number.MAX_SAFE_INTEGER, // paging
+		},
+		wallet: {
+			list: [],
+			loading: false,
+			maxBlock: Number.MAX_SAFE_INTEGER, // paging
+		},
 	});
+	const [currentPastTransactions, setCurrentPastTransactions] = useState('wallet');
 
 	useEffect(() => {
 		const fetchTransactionResult = async () => {
@@ -61,54 +69,67 @@ const OrderBook = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pendingTransactions.length]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const { loading, list, maxBlock } = pastTransactions;
+	const fetchData = async () => {
+		const { loading, list, maxBlock } = pastTransactions[currentPastTransactions];
 
-			if (activeTab === 'Your orders') return;
-			if (loading) return;
+		if (activeTab === 'Your orders') return;
+		if (loading) return;
+		setPastTransactions({
+			...pastTransactions,
+			[currentPastTransactions]: { ...pastTransactions[currentPastTransactions], loading: true },
+		});
+
+		let results;
+		if (activeTab === 'Your trades') {
+			const { currentWallet } = walletInfo;
+			results = await snxData.exchanges.since({
+				fromAddress: currentWallet,
+				maxBlock: maxBlock,
+				max: 100,
+			});
+		} else if (activeTab === 'All trades') {
+			results = await snxData.exchanges.since({
+				maxBlock: maxBlock,
+				max: 100,
+			});
+		}
+		if (results && results.length) {
+			const hashMap = {};
+			list.forEach(l => {
+				hashMap[l.hash] = true;
+			});
+			results = results.filter(r => !hashMap[r.hash]);
+			results = [...list, ...results];
+
 			setPastTransactions({
 				...pastTransactions,
-				loading: true,
+				[currentPastTransactions]: { list: results, loading: false },
 			});
+		}
+	};
 
-			let results;
-			if (activeTab === 'Your trades') {
-				const { currentWallet } = walletInfo;
-				results = await snxData.exchanges.since({
-					fromAddress: currentWallet,
-					maxBlock: maxBlock,
-					max: 100,
-				});
-			} else if (activeTab === 'All trades') {
-				results = await snxData.exchanges.since({
-					maxBlock: maxBlock,
-					max: 100,
-				});
-			}
-
-			if (results && results.length) {
-				const hashMap = {};
-				list.forEach(l => {
-					hashMap[l.hash] = true;
-				});
-				results = results.filter(r => !hashMap[r.hash]);
-				results = [...list, ...results];
-
-				setPastTransactions({ ...pastTransactions, list: results, loading: false });
-			}
-		};
-
+	useEffect(() => {
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pastTransactions.maxBlock, activeTab]);
+	}, [pastTransactions.wallet.maxBlock, pastTransactions.all.maxBlock]);
+
+	useEffect(() => {
+		const { list } = pastTransactions[currentPastTransactions];
+		if (list.length > 0) return;
+		fetchData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [activeTab]);
 
 	const onScrollPaging = () => {
-		const lastRow = pastTransactions.list[pastTransactions.list.length - 1];
+		const transactions = pastTransactions[currentPastTransactions];
+		const lastRow = transactions.list[transactions.list.length - 1];
 		if (lastRow) {
 			setPastTransactions({
 				...pastTransactions,
-				maxBlock: lastRow.block,
+				[currentPastTransactions]: {
+					...pastTransactions[currentPastTransactions],
+					maxBlock: lastRow.block,
+				},
 			});
 		}
 	};
@@ -124,17 +145,17 @@ const OrderBook = ({
 							onClick={() => {
 								if (tab === 'Your trades' && !walletInfo.currentWallet) return;
 								if (tab !== 'Your orders') {
-									setPastTransactions({
-										list: [],
-										maxBlock: Number.MAX_SAFE_INTEGER,
-									});
+									setCurrentPastTransactions(tab === 'Your trades' ? 'wallet' : 'all');
 								}
 								setActiveTab(tab);
 							}}
 							hidden={!tab}
 							active={tab === activeTab}
 						>
-							<DataSmall color={tab === activeTab ? colors.fontPrimary : colors.fontTertiary}>
+							<DataSmall
+								style={{ whiteSpace: 'nowrap' }}
+								color={tab === activeTab ? colors.fontPrimary : colors.fontTertiary}
+							>
 								{tab}
 							</DataSmall>
 						</Tab>
@@ -145,7 +166,7 @@ const OrderBook = ({
 				<BookContent
 					tab={activeTab}
 					transactions={transactions}
-					pastTransactions={pastTransactions}
+					pastTransactions={pastTransactions[currentPastTransactions]}
 					onScrollPaging={onScrollPaging}
 				/>
 			</Book>
@@ -166,6 +187,9 @@ const Tabs = styled.div`
 		margin: 0 4px;
 		&:first-child {
 			margin-left: 0;
+		}
+		&:last-child {
+			margin-right: 0;
 		}
 	}
 `;

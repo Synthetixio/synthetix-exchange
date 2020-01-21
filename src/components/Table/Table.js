@@ -38,6 +38,9 @@ export const Th = styled.th`
 		align-items: flex-start;
 	}
 	padding: 0 18px;
+	@media screen and (max-width: 1440px) {
+		padding: 6px 8px;
+	}
 `;
 
 export const Td = styled.td`
@@ -50,6 +53,9 @@ export const Td = styled.td`
 		text-align: left;
 	}
 	padding: 6px 18px;
+	@media screen and (max-width: 1440px) {
+		padding: 6px 8px;
+	}
 `;
 
 export const DataLabel = styled(DataSmall)`
