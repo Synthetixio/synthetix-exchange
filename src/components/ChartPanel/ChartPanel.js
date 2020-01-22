@@ -42,6 +42,16 @@ const getMinAndMaxRate = data => {
 	);
 };
 
+const getCurrentPairPrice = (base, quote, rates) => {
+	if (base === 'sUSD') return rates[quote][base];
+	return rates[base][quote];
+};
+
+const getPairSign = (base, quote, signs) => {
+	if (base === 'sUSD' || quote === 'sUSD') return '$';
+	return signs[quote];
+};
+
 const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
@@ -66,7 +76,14 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					});
 				})
 			);
-			const dataResults = quote === 'sUSD' ? baseRates : matchPairRates(baseRates, quoteRates);
+			// If quote or rate is sUSD then we just get
+			// the base or quote rates as they're already in sUSD
+			const dataResults =
+				quote === 'sUSD'
+					? baseRates
+					: base === 'sUSD'
+					? quoteRates
+					: matchPairRates(baseRates, quoteRates);
 			// store the first result separately
 			// for the 24h aggregation
 			if (lastDayData.length === 0 || currentPair.base !== base || currentPair.quote !== quote) {
@@ -169,8 +186,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							{synthsSigns[quote]}
-							{rates ? formatCurrencyWithPrecision(rates[base][quote]) : 0}
+							{getPairSign(base, quote, synthsSigns)}
+							{rates ? formatCurrencyWithPrecision(getCurrentPairPrice(base, quote, rates)) : 0}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
@@ -187,12 +204,16 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '14px' }}>{formatCurrency(max)}</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '14px' }}>
+							{getPairSign(base, quote, synthsSigns)}
+							{formatCurrencyWithPrecision(max)}
+						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
-							{formatCurrency(min)}
+							{getPairSign(base, quote, synthsSigns)}
+							{formatCurrencyWithPrecision(min)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
