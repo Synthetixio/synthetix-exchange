@@ -4,6 +4,7 @@ import snxJSConnector from './snxJSConnector';
 export const formatCurrency = (value, decimals = 2) => {
 	if (!value) return 0;
 	if (!Number(value)) return 0;
+	if (Number.isInteger(value)) return numbro(value).format('0,0');
 	return numbro(value).format('0,0.' + '0'.repeat(decimals));
 };
 
@@ -12,15 +13,15 @@ export const formatCurrencyWithPrecision = value => {
 };
 
 const getPrecision = amount => {
-	if (amount >= 1000) {
-		return 0;
-	} else if (amount >= 1) {
+	if (amount >= 1) {
 		return 2;
 	} else if (amount > 0.01) {
 		return 4;
 	} else return 6;
 };
 
+window.formatCurrencyWithPrecision = formatCurrencyWithPrecision;
+window.getPrecision = getPrecision;
 export const formatPercentage = (value, decimals = 2) => {
 	return numbro(value).format({
 		output: 'percent',

@@ -16,7 +16,7 @@ test('calculate positive rate change', () => {
 	expect(calculateRateChange(data)).toBe(4);
 });
 
-test.only('match pair rates regarding timestamp', () => {
+test('return pair rates regarding timestamp', () => {
 	const ETH_RATES = [
 		{ rate: 1, timestamp: 32 },
 		{ rate: 10, timestamp: 30 },
@@ -48,4 +48,16 @@ test.only('match pair rates regarding timestamp', () => {
 		{ rate: 650, timestamp: 2 },
 		{ rate: 600, timestamp: 1 },
 	]);
+});
+
+test('returns [] if one of the rate array is empty or null', () => {
+	const ETH_RATES = [{ rate: 1, timestamp: 32 }];
+	const rates1 = matchPairRates([], ETH_RATES);
+	const rates2 = matchPairRates(null, ETH_RATES);
+	const rates3 = matchPairRates(ETH_RATES, []);
+	const rates4 = matchPairRates(ETH_RATES, null);
+	expect(rates1).toEqual([]);
+	expect(rates2).toEqual([]);
+	expect(rates3).toEqual([]);
+	expect(rates4).toEqual([]);
 });

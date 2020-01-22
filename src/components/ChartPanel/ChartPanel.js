@@ -66,12 +66,12 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					});
 				})
 			);
+			const dataResults = quote === 'sUSD' ? baseRates : matchPairRates(baseRates, quoteRates);
 			// store the first result separately
 			// for the 24h aggregation
 			if (lastDayData.length === 0 || currentPair.base !== base || currentPair.quote !== quote) {
-				setLastDayData([]);
+				setLastDayData(dataResults);
 			}
-			const dataResults = quote === 'sUSD' ? baseRates : matchPairRates(baseRates, quoteRates);
 			setChartData(dataResults);
 			setIsLoading(false);
 			setCurrentPair({ base, quote });
@@ -170,7 +170,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 						<DataBlockLabel>Price</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
 							{synthsSigns[quote]}
-							{rates ? formatCurrency(rates[base][quote]) : 0}
+							{rates ? formatCurrencyWithPrecision(rates[base][quote]) : 0}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
