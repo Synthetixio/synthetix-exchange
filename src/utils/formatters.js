@@ -7,6 +7,20 @@ export const formatCurrency = (value, decimals = 2) => {
 	return numbro(value).format('0,0.' + '0'.repeat(decimals));
 };
 
+export const formatCurrencyWithPrecision = value => {
+	return formatCurrency(value, getPrecision(value));
+};
+
+const getPrecision = amount => {
+	if (amount >= 1000) {
+		return 0;
+	} else if (amount >= 1) {
+		return 2;
+	} else if (amount > 0.01) {
+		return 4;
+	} else return 6;
+};
+
 export const formatPercentage = (value, decimals = 2) => {
 	return numbro(value).format({
 		output: 'percent',
