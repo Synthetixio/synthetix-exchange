@@ -13,8 +13,12 @@ import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
 import Spinner from '../Spinner';
 
-import { formatCurrency, formatPercentage } from '../../utils/formatters';
-import { calculateRateChange } from './calculateRateChange';
+import {
+	formatCurrency,
+	formatPercentage,
+	formatCurrencyWithPrecision,
+} from '../../utils/formatters';
+import { calculateRateChange, matchPairRates } from './chartCalculations';
 import './chart.scss';
 
 const PERIODS = [
@@ -38,6 +42,16 @@ const getMinAndMaxRate = data => {
 	);
 };
 
+const getCurrentPairPrice = (base, quote, rates) => {
+	if (base === 'sUSD') return rates[quote][base];
+	return rates[base][quote];
+};
+
+const getPairSign = (base, quote, signs) => {
+	if (base === 'sUSD' || quote === 'sUSD') return '$';
+	return signs[quote];
+};
+
 const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
@@ -49,25 +63,33 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 
 	useEffect(() => {
 		const fetchChartData = async () => {
-			if (!base) return;
-			if (quote !== 'sUSD') {
-				setChartData([]);
-				return;
-			}
+			if (!base || !quote) return;
 			setIsLoading(true);
 			const now = new Date().getTime();
-			const results = await snxData.rate.updates({
-				synth: base,
-				maxTimestamp: Math.trunc(now / 1000),
-				minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
-				max: 1000,
-			});
+			const [baseRates, quoteRates] = await Promise.all(
+				[base, quote].map(synth => {
+					return snxData.rate.updates({
+						synth,
+						maxTimestamp: Math.trunc(now / 1000),
+						minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
+						max: 1000,
+					});
+				})
+			);
+			// If quote or rate is sUSD then we just get
+			// the base or quote rates as they're already in sUSD
+			const dataResults =
+				quote === 'sUSD'
+					? baseRates
+					: base === 'sUSD'
+					? quoteRates
+					: matchPairRates(baseRates, quoteRates);
 			// store the first result separately
 			// for the 24h aggregation
 			if (lastDayData.length === 0 || currentPair.base !== base || currentPair.quote !== quote) {
-				setLastDayData(results);
+				setLastDayData(dataResults);
 			}
-			setChartData(results);
+			setChartData(dataResults);
 			setIsLoading(false);
 			setCurrentPair({ base, quote });
 		};
@@ -86,7 +108,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		fetchChartData();
 		fetchVolumeData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [period, base, quote, lastDayData]);
+	}, [period, base, quote]);
 
 	const [min, max] = getMinAndMaxRate(lastDayData);
 	const lastDayChange = calculateRateChange(lastDayData);
@@ -124,10 +146,10 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 			<Body>
 				<ChartContainer>
 					{isLoading ? <Spinner size="small" /> : null}
-					{!isLoading && chartData.length === 0 ? <DataLarge>Data available soon</DataLarge> : null}
+					{!isLoading && chartData.length === 0 ? <DataLarge>No data available</DataLarge> : null}
 					{!isLoading && chartData && chartData.length > 0 ? (
 						<ResponsiveContainer width="100%" height={250}>
-							<AreaChart data={chartData} margin={{ top: 0, right: -10, left: 10, bottom: 0 }}>
+							<AreaChart data={chartData} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
 								<defs>
 									<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
 										<stop offset="5%" stopColor={colors.hyperLink} stopOpacity={0.5} />
@@ -145,7 +167,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 								<YAxis
 									type="number"
 									domain={['auto', 'auto']}
-									tickFormatter={val => `$${val}`}
+									tickFormatter={val => `${synthsSigns[quote]}${formatCurrencyWithPrecision(val)}`}
 									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 									orientation="right"
 								/>
@@ -164,8 +186,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							{synthsSigns[quote]}
-							{rates ? formatCurrency(rates[base][quote]) : 0}
+							{getPairSign(base, quote, synthsSigns)}
+							{rates ? formatCurrencyWithPrecision(getCurrentPairPrice(base, quote, rates)) : 0}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
@@ -182,12 +204,16 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
-						<DataBlockValue style={{ fontSize: '14px' }}>{formatCurrency(max)}</DataBlockValue>
+						<DataBlockValue style={{ fontSize: '14px' }}>
+							{getPairSign(base, quote, synthsSigns)}
+							{formatCurrencyWithPrecision(max)}
+						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
-							{formatCurrency(min)}
+							{getPairSign(base, quote, synthsSigns)}
+							{formatCurrencyWithPrecision(min)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
