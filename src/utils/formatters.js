@@ -20,8 +20,6 @@ const getPrecision = amount => {
 	} else return 6;
 };
 
-window.formatCurrencyWithPrecision = formatCurrencyWithPrecision;
-window.getPrecision = getPrecision;
 export const formatPercentage = (value, decimals = 2) => {
 	return numbro(value).format({
 		output: 'percent',
