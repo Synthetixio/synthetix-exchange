@@ -11,6 +11,7 @@ import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
 
 import { getWalletInfo } from '../../ducks';
+import { setSynthPair } from '../../ducks/synths';
 import { formatCurrency } from '../../utils/formatters';
 
 const getTotal = balances => {
@@ -33,7 +34,11 @@ const sortBy = (assets, column, isAscending) => {
 	return orderBy(assets, column, [isAscending ? 'asc' : 'desc']);
 };
 
-const WalletBox = ({ theme: { colors }, walletInfo: { currentWallet, balances } }) => {
+const WalletBox = ({
+	setSynthPair,
+	theme: { colors },
+	walletInfo: { currentWallet, balances },
+}) => {
 	const [assets, setAssets] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [sortIsAcending, setSortIsAscending] = useState(true);
@@ -93,9 +98,18 @@ const WalletBox = ({ theme: { colors }, walletInfo: { currentWallet, balances } 
 						{assets.map((asset, i) => {
 							return (
 								<Tr key={i}>
-									<Td style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+									<Td
+										style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
+										onClick={() => {
+											if (asset.name === 'ETH') return;
+											const base = asset.name === 'sUSD' ? 'sETH' : 'sUSD';
+											setSynthPair({ quote: asset.name, base });
+										}}
+									>
 										<SynthIcon src={`/images/synths/${asset.name}.svg`} />
-										<DataLabel>{asset.name}</DataLabel>
+										<DataLabelHoverable isHoverable={asset.name !== 'ETH'}>
+											{asset.name}
+										</DataLabelHoverable>
 									</Td>
 									<Td>
 										<DataLabel>{formatCurrency(asset.balance)}</DataLabel>
@@ -182,10 +196,22 @@ const HeadingAndSpinner = styled.div`
 	}
 `;
 
+const DataLabelHoverable = styled(DataLabel)`
+	cursor: ${props => (props.isHoverable ? 'pointer' : 'not-allowed')};
+	pointer-events: ${props => (props.isHoverable ? 'auto' : 'none')};
+	&:hover {
+		text-decoration: underline;
+	}
+`;
+
 const mapStateToProps = state => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};
 };
 
-export default connect(mapStateToProps, null)(withTheme(WalletBox));
+const mapDispatchToProps = {
+	setSynthPair,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(WalletBox));

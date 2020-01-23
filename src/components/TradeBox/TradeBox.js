@@ -212,7 +212,7 @@ const TradeBox = ({
 								key={i}
 								onClick={() => {
 									const balance = synthsBalances[quote].balance;
-									const amount = (balance * Number(fraction)) / 100;
+									const amount = fraction === 100 ? balance : (balance * Number(fraction)) / 100;
 									setQuoteAmount(amount);
 									const convertedRate = rates ? amount * rates[quote][base] : 0;
 									setBaseAmount(convertedRate);

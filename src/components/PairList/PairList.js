@@ -4,7 +4,13 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import { getAvailableSynths, getExchangeRates, getFrozenSynths, getSynthsSigns } from '../../ducks';
+import {
+	getAvailableSynths,
+	getExchangeRates,
+	getFrozenSynths,
+	getSynthsSigns,
+	getSynthPair,
+} from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
 
 import { DataMedium, DataSmall } from '../Typography';
@@ -47,11 +53,18 @@ const sortPairsBy = (pairs, sort) => {
 	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
 };
 
-const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns }) => {
+const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synthPair }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
 	const [sort, setSort] = useState({});
 	const synthList = useFilterSynths(synths, search, quote, rates);
+
+	useEffect(() => {
+		if (synthPair.quote !== quote) {
+			setQuote(synthPair.quote);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [synthPair.quote]);
 
 	return (
 		<Container>
@@ -247,6 +260,7 @@ const mapStateToProps = state => {
 		rates: getExchangeRates(state),
 		frozenSynths: getFrozenSynths(state),
 		synthsSigns: getSynthsSigns(state),
+		synthPair: getSynthPair(state),
 	};
 };
 
