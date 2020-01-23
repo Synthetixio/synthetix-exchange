@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.13.0-gas-opt-2",
+	"version": "2.19.0-alpha-1",
 	"private": true,
 	"dependencies": {
 		"date-fns": "~1.30.1",
