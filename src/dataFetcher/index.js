@@ -105,6 +105,7 @@ const getSynthsBalance = async (walletAddress, synths) => {
 			);
 			return {
 				balance: bigNumberFormatter(balance),
+				balanceBN: balance,
 				usdBalance: bigNumberFormatter(usdBalance),
 			};
 		})
@@ -124,19 +125,6 @@ const getSynthsBalance = async (walletAddress, synths) => {
 	};
 };
 
-// const getSnxBalance = async walletAddress => {
-// 	const balance = await snxJSConnector.snxJS.Synthetix.collateral(walletAddress);
-// 	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
-// 		bytesFormatter('SNX'),
-// 		balance,
-// 		bytesFormatter('sUSD')
-// 	);
-// 	return {
-// 		balance: bigNumberFormatter(balance),
-// 		usdBalance: bigNumberFormatter(usdBalance),
-// 	};
-// };
-
 const getEthBalance = async walletAddress => {
 	const balance = await snxJSConnector.provider.getBalance(walletAddress);
 	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
@@ -154,7 +142,6 @@ export const getWalletBalances = async (walletAddress, synths) => {
 	try {
 		const [synthsBalance, ethBalance] = await Promise.all([
 			getSynthsBalance(walletAddress, synths),
-			// getSnxBalance(walletAddress),
 			getEthBalance(walletAddress),
 		]);
 		return { synths: synthsBalance, eth: ethBalance };

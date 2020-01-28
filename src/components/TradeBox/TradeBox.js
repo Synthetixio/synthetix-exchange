@@ -44,6 +44,7 @@ const TradeBox = ({
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
 	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
+	const [tradeAllBalance, setTradeAllBalance] = useState(false);
 	// const [nounce, setNounce] = useState(undefined);
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
@@ -65,9 +66,13 @@ const TradeBox = ({
 				totalUSD: formatCurrency(baseAmount * rates[base]['sUSD']),
 				status: 'Waiting',
 			});
+
+			const amountToExchange = tradeAllBalance
+				? synthsBalances[quote].balanceBN
+				: utils.parseEther(quoteAmount.toString());
 			const transaction = await Synthetix.exchange(
 				bytesFormatter(quote),
-				utils.parseEther(quoteAmount.toString()),
+				amountToExchange,
 				bytesFormatter(base),
 				{
 					gasPrice: gasPrice * GWEI_UNIT,
@@ -121,9 +126,12 @@ const TradeBox = ({
 					utils,
 				} = snxJSConnector;
 				setError(null);
+				const amountToExchange = tradeAllBalance
+					? synthsBalances[quote].balanceBN
+					: utils.parseEther(quoteAmount.toString());
 				const gasEstimate = await Synthetix.contract.estimate.exchange(
 					bytesFormatter(quote),
-					utils.parseEther(quoteAmount.toString()),
+					amountToExchange,
 					bytesFormatter(base)
 				);
 				setGasLimit(Number(gasEstimate));
@@ -213,6 +221,7 @@ const TradeBox = ({
 								onClick={() => {
 									const balance = synthsBalances[quote].balance;
 									const amount = fraction === 100 ? balance : (balance * Number(fraction)) / 100;
+									setTradeAllBalance(fraction === 100);
 									setQuoteAmount(amount);
 									const convertedRate = rates ? amount * rates[quote][base] : 0;
 									setBaseAmount(convertedRate);
