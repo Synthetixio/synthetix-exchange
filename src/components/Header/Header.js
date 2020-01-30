@@ -10,14 +10,14 @@ import WalletAddressWidget from '../WalletAddressWidget';
 import { ButtonPrimarySmall } from '../Button';
 import { LabelMedium, DataMedium } from '../Typography';
 import { toggleWalletPopup } from '../../ducks/ui';
-import { getWalletInfo } from '../../ducks';
+import { getWalletInfo, getCurrentTheme } from '../../ducks';
 
-const Header = ({ toggleWalletPopup, walletInfo }) => {
+const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 	const { currentWallet, networkName } = walletInfo;
 	return (
 		<Container>
 			<HeaderBlock>
-				<Logo />
+				<Logo theme={theme} />
 				<Network>
 					<NetworkLabel>{networkName || 'mainnet'}</NetworkLabel>
 				</Network>
@@ -102,6 +102,7 @@ const NetworkLabel = styled(DataMedium)`
 const mapStateToProps = state => {
 	return {
 		walletInfo: getWalletInfo(state),
+		theme: getCurrentTheme(state),
 	};
 };
 

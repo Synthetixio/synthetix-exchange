@@ -23,7 +23,7 @@ import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 import Trade from '../Trade';
 import Home from '../Home';
 
-import Theme from '../../styles/theme';
+import { lightTheme, darkTheme } from '../../styles/theme';
 
 const Root = ({
 	setAvailableSynths,
@@ -87,7 +87,8 @@ const Root = ({
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
-	const themeStyle = currentTheme ? Theme(currentTheme) : Theme('light');
+	const themeStyle = currentTheme === 'dark' ? darkTheme : lightTheme;
+
 	return (
 		<ThemeProvider theme={themeStyle}>
 			<div>
