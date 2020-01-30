@@ -46,7 +46,6 @@ export const Th = styled.th`
 export const Td = styled.td`
 	display: flex;
 	flex-direction: column;
-	/* white-space: nowrap; */
 	flex-basis: 100%;
 	text-align: right;
 	&:first-child {
