@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { walletPopupIsVisible, getWalletInfo } from '../../ducks';
@@ -40,30 +40,11 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 	);
 };
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const fadeOut = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
 const Popup = styled.div`
 	z-index: 1;
 	background-color: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
 	display: ${props => (props.isVisible ? 'block' : 'none')};
-	animation: ${props => (props.isVisible ? fadeIn : fadeOut)} 0.2s ease-in;
 	width: 100%;
 	height: 100vh;
 	top: 0;

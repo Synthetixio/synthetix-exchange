@@ -3,6 +3,7 @@ import styled, { withTheme } from 'styled-components';
 import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { debounce } from 'lodash';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { DataSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
@@ -12,24 +13,31 @@ import Spinner from '../Spinner';
 const SCROLL_THRESHOLD = 0.8;
 
 const getPrecision = amount => {
-	if (amount >= 1) {
-		return 2;
-	} else return 4;
+	if (amount >= 1) return 2;
+	return 4;
 };
 
-const getPrice = (toAmountInUSD, toAmount, toCurrencyKey, fromAmountInUSD, fromAmount) => {
-	const price = toCurrencyKey === 'sUSD' ? fromAmountInUSD / fromAmount : toAmountInUSD / toAmount;
-	return formatCurrency(price, getPrecision(price));
+const getAmountPrecision = amount => {
+	if (amount >= 1000) return 0;
+	return 2;
 };
 
-const getAmount = (toAmount, toCurrencyKey, fromAmount) => {
-	const amount = toCurrencyKey === 'sUSD' ? fromAmount : toAmount;
-	return formatCurrency(amount, getPrecision(amount));
+const getPrice = ({ toAmountInUSD, toAmount, toCurrencyKey, fromAmountInUSD, fromAmount }) => {
+	return toCurrencyKey === 'sUSD' ? fromAmountInUSD / fromAmount : toAmountInUSD / toAmount;
 };
 
 const getTotal = (toAmountInUSD, toCurrencyKey, fromAmountInUSD) => {
 	const amount = toCurrencyKey === 'sUSD' ? fromAmountInUSD : toAmountInUSD;
 	return formatCurrency(amount, getPrecision(amount));
+};
+
+const getTradeAmount = (key, amount) => {
+	return `${formatCurrency(amount, getAmountPrecision(amount))} ${key}`;
+};
+
+const getRatio = ({ toAmount, toCurrencyKey, fromAmount }) => {
+	const ratio = toCurrencyKey === 'sUSD' ? toAmount / fromAmount : fromAmount / toAmount;
+	return formatCurrency(ratio, 8);
 };
 
 const PastTransactions = ({
@@ -52,18 +60,16 @@ const PastTransactions = ({
 			onScrollPaging();
 		}
 	}, 200);
-
 	return (
 		<>
 			<Table cellSpacing="0">
 				<Thead>
 					<Tr>
-						{['Date | Time', 'Pair', 'Price', 'Amount', 'Total', 'View'].map((label, i) => {
+						{['Date | Time', 'Pair', 'Bought', 'Sold', 'Price', 'Total', ''].map((label, i) => {
 							return (
-								<Th key={i}>
+								<Th key={i} align={i >= 2 ? 'right' : 'left'}>
 									<ButtonSort>
 										<DataSmall color={colors.fontTertiary}>{label}</DataSmall>
-										{/* <SortIcon src={'/images/sort-arrows.svg'} /> */}
 									</ButtonSort>
 								</Th>
 							);
@@ -75,46 +81,45 @@ const PastTransactions = ({
 					ref={tbodyEl}
 					onScroll={onTableScroll}
 				>
-					{list.map(t => {
+					{list.map((t, i) => {
+						const price = getPrice(t);
 						return (
-							<Tr key={t.hash}>
+							<Tr key={`${t.hash}-${i}`}>
 								<Td>
-									<DataLabel style={{ whiteSpace: 'nowrap' }}>
-										{format(t.timestamp, 'DD-MM-YY | HH:mm')}
-									</DataLabel>
+									<TradeLabel>{format(t.timestamp, 'DD-MM-YY | HH:mm')}</TradeLabel>
 								</Td>
 								<Td>
-									<DataLabel>
-										{t.toCurrencyKey}/{t.fromCurrencyKey}
-									</DataLabel>
+									<Tooltip title={`Ratio: ${getRatio(t)}`} placement="top">
+										<TradeLabel style={{ cursor: 'pointer' }}>
+											{t.toCurrencyKey}/{t.fromCurrencyKey}
+										</TradeLabel>
+									</Tooltip>
 								</Td>
 								<Td>
-									<DataLabel>
-										$
-										{getPrice(
-											t.toAmountInUSD,
-											t.toAmount,
-											t.toCurrencyKey,
-											t.fromAmountInUSD,
-											t.fromAmount
-										)}
-									</DataLabel>
+									<TradeLabel>{getTradeAmount(t.toCurrencyKey, t.toAmount)}</TradeLabel>
 								</Td>
 								<Td>
-									<DataLabel>{getAmount(t.toAmount, t.toCurrencyKey, t.fromAmount)}</DataLabel>
+									<TradeLabel>{getTradeAmount(t.fromCurrencyKey, t.fromAmount)}</TradeLabel>
 								</Td>
 								<Td>
-									<DataLabel>
+									<Tooltip title={formatCurrency(price, 8)} placement="top">
+										<TradeLabel style={{ cursor: 'pointer' }}>
+											${formatCurrency(price, getPrecision(price))}
+										</TradeLabel>
+									</Tooltip>
+								</Td>
+								<Td>
+									<TradeLabel>
 										${getTotal(t.toAmountInUSD, t.toCurrencyKey, t.fromAmountInUSD)}
-									</DataLabel>
+									</TradeLabel>
 								</Td>
 
 								<Td>
-									<DataLabel>
+									<TradeLabel>
 										<Link href={`https://etherscan.io/tx/${t.hash}`} target="_blank">
 											VIEW
 										</Link>
-									</DataLabel>
+									</TradeLabel>
 								</Td>
 							</Tr>
 						);
@@ -156,6 +161,10 @@ const Link = styled.a`
 	}
 
 	text-decoration: none;
+`;
+
+const TradeLabel = styled(DataLabel)`
+	white-space: nowrap;
 `;
 
 const mapStateToProps = () => {
