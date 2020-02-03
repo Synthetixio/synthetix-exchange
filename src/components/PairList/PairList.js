@@ -4,13 +4,7 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import {
-	getAvailableSynths,
-	getExchangeRates,
-	getFrozenSynths,
-	getSynthsSigns,
-	getSynthPair,
-} from '../../ducks';
+import { getAvailableSynths, getExchangeRates, getSynthsSigns, getSynthPair } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
 
 import { DataMedium, DataSmall } from '../Typography';
@@ -53,7 +47,7 @@ const sortPairsBy = (pairs, sort) => {
 	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
 };
 
-const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synthPair }) => {
+const PairList = ({ synths, rates, setSynthPair, synthsSigns, synthPair }) => {
 	const [quote, setQuote] = useState('sUSD');
 	const [search, setSearch] = useState('');
 	const [sort, setSort] = useState({});
@@ -122,7 +116,7 @@ const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synt
 				{sortPairsBy(synthList, sort).map((synth, i) => {
 					return (
 						<Pair
-							isDisabled={(frozenSynths && frozenSynths[synth.name]) || !rates}
+							isDisabled={!rates}
 							key={i}
 							onClick={() => setSynthPair({ base: synth.name, quote })}
 						>
@@ -136,11 +130,6 @@ const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synt
 									{formatCurrency(synth.rate, 6)}
 								</DataMedium>
 							</PairElement>
-							{/* <PairElement>
-								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>
-									{formatCurrency(synth.change, 2)}%
-								</DataChange>
-							</PairElement> */}
 						</Pair>
 					);
 				})}
@@ -250,15 +239,10 @@ const SortIcon = styled.img`
 	margin-left: 5px;
 `;
 
-// const DataChange = styled(DataMedium)`
-// 	color: ${props => (props.color === 'red' ? props.theme.colors.red : props.theme.colors.green)};
-// `;
-
 const mapStateToProps = state => {
 	return {
 		synths: getAvailableSynths(state),
 		rates: getExchangeRates(state),
-		frozenSynths: getFrozenSynths(state),
 		synthsSigns: getSynthsSigns(state),
 		synthPair: getSynthPair(state),
 	};

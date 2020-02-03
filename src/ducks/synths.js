@@ -56,7 +56,12 @@ const reducer = (state = defaultState, action = {}) => {
 			return { ...state, exchangeRates: synthRates, ethRate };
 		}
 		case SET_FROZEN_SYNTHS: {
-			return { ...state, frozenSynths: action.payload };
+			const frozenSynths = action.payload;
+			return {
+				...state,
+				frozenSynths: action.payload,
+				availableSynths: state.availableSynths.filter(synth => !frozenSynths[synth.name]),
+			};
 		}
 		case SET_TOP_SYNTH_BY_VOLUME: {
 			const volume = action.payload;
