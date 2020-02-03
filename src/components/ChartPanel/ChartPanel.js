@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { format, subHours } from 'date-fns';
 import styled, { withTheme } from 'styled-components';
-import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
+import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
+
 import snxData from 'synthetix-data';
 
 import { getSynthPair, getExchangeRates, getSynthsSigns } from '../../ducks';
@@ -121,12 +122,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					<ButtonFilter height={'22px'} onClick={() => setSynthPair({ quote: base, base: quote })}>
 						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 					</ButtonFilter>
-					<Link style={{ textDecoration: 'none' }} to={'/'}>
-						{/* <LinkInner>
-							<LinkLabel>Market Info</LinkLabel>
-							<LinkIcon src="/images/link-arrow.svg" />
-						</LinkInner> */}
-					</Link>
+					<Link style={{ textDecoration: 'none' }} to={'/'}></Link>
 				</HeaderBlock>
 				<HeaderBlock>
 					{PERIODS.map((time, i) => {
@@ -176,6 +172,25 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 									stroke={colors.hyperLink}
 									fillOpacity={0.5}
 									fill="url(#colorUv)"
+								/>
+								<Tooltip
+									cursor={{ strokeWidth: 1, stroke: colors.fontTertiary }}
+									contentStyle={{
+										border: `none`,
+										borderRadius: '3px',
+										backgroundColor: colors.surfaceL1,
+									}}
+									itemStyle={{
+										color: colors.fontTertiary,
+										fontSize: '12px',
+										textTransform: 'capitalize',
+									}}
+									labelStyle={{
+										color: colors.fontTertiary,
+										fontSize: '12px',
+									}}
+									formatter={value => `${synthsSigns[quote]}${formatCurrencyWithPrecision(value)}`}
+									labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
 								/>
 							</AreaChart>
 						</ResponsiveContainer>
@@ -292,25 +307,6 @@ const HeaderBlock = styled.div`
 		margin-right: 0;
 	}
 `;
-
-// const LinkInner = styled.div`
-// 	display: flex;
-// 	align-items: center;
-// `;
-
-// const LinkLabel = styled(LabelSmall)`
-// 	margin-left: 10px;
-// 	color: ${props => props.theme.colors.hyperLink};
-// 	&:hover {
-// 		text-decoration: underline;
-// 	}
-// `;
-
-// const LinkIcon = styled.img`
-// 	width: 8px;
-// 	height: 8px;
-// 	margin-left: 5px;
-// `;
 
 const ButtonIcon = styled.img`
 	width: 16px;
