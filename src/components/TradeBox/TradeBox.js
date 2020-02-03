@@ -244,14 +244,16 @@ const TradeBox = ({
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>$USD Value</NetworkData>
+						<NetworkData>USD Value</NetworkData>
 						<NetworkData>
 							${rates ? formatCurrency(baseAmount * rates[base]['sUSD']) : 0}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Fee</NetworkData>
-						<NetworkData>%{feeRate || 0}</NetworkData>
+						<NetworkData>{`${
+							baseAmount && feeRate ? formatCurrency((baseAmount * feeRate) / 100, 4) : 0
+						} ${base} ${feeRate ? `(${feeRate}%)` : ''}`}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Gas limit</NetworkData>
