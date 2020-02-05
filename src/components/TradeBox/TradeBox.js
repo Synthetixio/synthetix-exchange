@@ -49,6 +49,8 @@ const TradeBox = ({
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
 
+	const FROZEN_SYNTHS = ['sLTC', 'sXTZ', 'sBNB', 'sMKR', 'iLTC', 'iXTZ', 'iBNB', 'iMKR'];
+
 	const onConfirmTrade = async () => {
 		const {
 			snxJS: { Synthetix },
@@ -130,6 +132,7 @@ const TradeBox = ({
 					utils,
 				} = snxJSConnector;
 				setError(null);
+				if (FROZEN_SYNTHS.includes(base)) throw new Error('This synth cannot be bought');
 				const amountToExchange = tradeAllBalance
 					? synthsBalances[quote].balanceBN
 					: utils.parseEther(quoteAmount.toString());
