@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
 
+import { getAvailableSynths } from '../../ducks';
+
 import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { ButtonSort } from '../Button';
@@ -12,6 +14,7 @@ import Spinner from '../Spinner';
 
 import { getWalletInfo } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
+import { setSynthSearch } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
 
 const getTotal = balances => {
@@ -35,9 +38,11 @@ const sortBy = (assets, column, isAscending) => {
 };
 
 const WalletBox = ({
+	synths,
 	setSynthPair,
 	theme: { colors },
 	walletInfo: { currentWallet, balances },
+	setSynthSearch,
 }) => {
 	const [assets, setAssets] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -96,14 +101,22 @@ const WalletBox = ({
 					</Thead>
 					<Tbody>
 						{assets.map((asset, i) => {
+							const currentSynth = synths.find(synth => asset.name === synth.name);
 							return (
 								<Tr key={i}>
 									<Td
 										style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
 										onClick={() => {
-											if (asset.name === 'ETH') return;
-											const base = asset.name === 'sUSD' ? 'sETH' : 'sUSD';
-											setSynthPair({ quote: asset.name, base });
+											setSynthSearch(asset.name);
+											// if (asset.name === 'ETH') return;
+											// const base = asset.name === 'sUSD' ? 'sBTC' : 'sUSD';
+											// setSynthPair({
+											// 	quote: currentSynth,
+											// 	base: {
+											// 		name: asset.name === 'sUSD' ? 'sBTC' : 'sUSD',
+											// 		category: asset.name === 'sUSD' ? 'forex' : 'crypto',
+											// 	},
+											// });
 										}}
 									>
 										<SynthIcon src={`/images/synths/${asset.name}.svg`} />
@@ -207,11 +220,13 @@ const DataLabelHoverable = styled(DataLabel)`
 const mapStateToProps = state => {
 	return {
 		walletInfo: getWalletInfo(state),
+		synths: getAvailableSynths(state),
 	};
 };
 
 const mapDispatchToProps = {
 	setSynthPair,
+	setSynthSearch,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(WalletBox));

@@ -28,6 +28,10 @@ export const getCurrentTheme = state => {
 	return state.ui.theme;
 };
 
+export const getSynthSearch = state => {
+	return state.ui.synthSearch;
+};
+
 // WALLET REDUCERS
 export const getWalletInfo = state => {
 	return state.wallet;
@@ -47,6 +51,10 @@ export const getWalletBalances = state => {
 // SYNTHS REDUCERS
 export const getAvailableSynths = state => {
 	return state.synths.availableSynths;
+};
+
+export const getAvailablePairs = state => {
+	return state.synths.availablePairs;
 };
 
 export const getSynthsSigns = state => {

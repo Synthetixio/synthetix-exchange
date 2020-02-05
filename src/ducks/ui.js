@@ -5,6 +5,7 @@ const TOGGLE_WALLET_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
 const TOGGLE_GWEI_POPUP = 'UI/TOGGLE_GWEI_SELECTOR_POPUP';
 const TOGGLE_DEPOT_POPUP = 'UI/TOGGLE_DEPOT_POPUP';
 const TOGGLE_THEME = 'UI/TOGGLE_THEME';
+const SET_SYNTH_SEARCH = 'UI/SET_SYNTH_SEARCH';
 
 const persistedState = getPersistedState('ui');
 const defaultState = Object.assign(
@@ -13,6 +14,7 @@ const defaultState = Object.assign(
 		walletPopupIsVisible: false,
 		gweiPopupIsVisibile: false,
 		depotPopupIsVisible: false,
+		synthSearch: '',
 	},
 	persistedState
 );
@@ -47,6 +49,12 @@ const reducer = (state = defaultState, action = {}) => {
 				theme,
 			};
 		}
+		case SET_SYNTH_SEARCH: {
+			return {
+				...state,
+				synthSearch: action.payload,
+			};
+		}
 		default:
 			return state;
 	}
@@ -66,6 +74,10 @@ export const toggleGweiPopup = isVisible => {
 
 export const toggleTheme = () => {
 	return { type: TOGGLE_THEME };
+};
+
+export const setSynthSearch = search => {
+	return { type: SET_SYNTH_SEARCH, payload: search };
 };
 
 export default reducer;

@@ -60,8 +60,8 @@ const TradeBox = ({
 				// nounce,
 				id,
 				date: new Date(),
-				base,
-				quote,
+				base: base.name,
+				quote: quote.name,
 				fromAmount: quoteAmount,
 				toAmount: baseAmount,
 				price: base === 'sUSD' ? rates[quote][base] : rates[base][quote],
@@ -72,12 +72,12 @@ const TradeBox = ({
 			});
 
 			const amountToExchange = tradeAllBalance
-				? synthsBalances[quote].balanceBN
+				? synthsBalances[quote.name].balanceBN
 				: utils.parseEther(quoteAmount.toString());
 			const transaction = await Synthetix.exchange(
-				bytesFormatter(quote),
+				bytesFormatter(quote.name),
 				amountToExchange,
-				bytesFormatter(base),
+				bytesFormatter(base.name),
 				{
 					gasPrice: gasPrice * GWEI_UNIT,
 					gasLimit,
@@ -162,10 +162,12 @@ const TradeBox = ({
 	// 	getTransactionCount();
 	// }, [transactions.length, currentWallet]);
 
+	const baseBalance = (synthsBalances && synthsBalances[base.name]) || 0;
+	const quoteBalance = (synthsBalances && synthsBalances[quote.name]) || 0;
 	return (
 		<Container>
 			<Header>
-				<HeadingSmall>{`${base}/${quote}`}</HeadingSmall>
+				<HeadingSmall>{`${base.name}/${quote.name}`}</HeadingSmall>
 				<ButtonFilter height={'22px'} onClick={() => setSynthPair({ quote: base, base: quote })}>
 					<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
 				</ButtonFilter>
@@ -176,17 +178,15 @@ const TradeBox = ({
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
 							Sell:
 						</DataMedium>
-						{!isEmpty(synthsBalances) && synthsBalances[quote] ? (
-							<Balance>
-								Balance: {formatCurrency(synthsBalances[quote].balance)} {quote}
-							</Balance>
-						) : null}
+						<Balance>
+							Balance: {quoteBalance ? formatCurrency(quoteBalance.balance) : 0} {quote.name}
+						</Balance>
 					</InputInfo>
 					<TradeInput
-						synth={quote}
+						synth={quote.name}
 						amount={quoteAmount}
 						onAmountChange={value => {
-							const convertedRate = rates ? value * rates[quote][base] : 0;
+							const convertedRate = rates ? value * rates[quote.name][base.name] : 0;
 							setBaseAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setQuoteAmount(value);
 						}}
@@ -200,14 +200,12 @@ const TradeBox = ({
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
 							Buy:
 						</DataMedium>
-						{!isEmpty(synthsBalances) && synthsBalances[base] ? (
-							<Balance>
-								Balance: {formatCurrency(synthsBalances[base].balance)} {base}
-							</Balance>
-						) : null}
+						<Balance>
+							Balance: {baseBalance ? formatCurrency(baseBalance.balance) : 0} {base.name}
+						</Balance>
 					</InputInfo>
 					<TradeInput
-						synth={base}
+						synth={base.name}
 						amount={baseAmount}
 						onAmountChange={value => {
 							const convertedRate = rates ? value * rates[base][quote] : 0;
@@ -240,20 +238,21 @@ const TradeBox = ({
 					<NetworkDataRow>
 						<NetworkData>Price</NetworkData>
 						<NetworkData>
-							1 {base} = {rates ? formatCurrency(rates[base][quote]) : 0} {quote}
+							1 {base.name} = {rates ? formatCurrency(rates[base.name][quote.name]) : 0}{' '}
+							{quote.name}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>USD Value</NetworkData>
 						<NetworkData>
-							${rates ? formatCurrency(baseAmount * rates[base]['sUSD']) : 0}
+							${rates ? formatCurrency(baseAmount * rates[base.name]['sUSD']) : 0}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Fee</NetworkData>
 						<NetworkData>{`${
 							baseAmount && feeRate ? formatCurrency((baseAmount * feeRate) / 100, 4) : 0
-						} ${base} ${feeRate ? `(${feeRate}%)` : ''}`}</NetworkData>
+						} ${base.name} ${feeRate ? `(${feeRate}%)` : ''}`}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Gas limit</NetworkData>

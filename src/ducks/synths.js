@@ -1,4 +1,3 @@
-import orderBy from 'lodash/orderBy';
 const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
 const SET_SYNTH_PAIR = 'SYNTHS/SET_SYNTH_PAIR';
 const SET_EXCHANGE_RATES = 'SYNTHS/SET_EXCHANGE_RATES';
@@ -14,26 +13,41 @@ const defaultState = {
 	frozenSynths: null,
 	exchangeRates: null,
 	ethRate: null,
-	baseSynth: 'sBTC',
-	quoteSynth: 'sUSD',
+	baseSynth: { name: 'sBTC', category: 'crypto' },
+	quoteSynth: { name: 'sUSD', category: 'forex' },
+};
+
+const synthOrderWeight = {
+	BTC: 1,
+	ETH: 2,
+	XRP: 3,
+	LTC: 4,
+	BNB: 5,
+	XTZ: 6,
+	TRX: 7,
+	LINK: 8,
+	MKR: 9,
 };
 
 const sortSynths = (a, b) => {
-	if (a.category === 'crypto') return -1;
-	if (a.category === 'commodity' && !['crypto', 'commodity'].includes(b.category)) {
+	if (a.category === 'crypto' && b.category === 'crypto') {
+		const nameOrder = synthOrderWeight[a.name.slice(1)] - synthOrderWeight[b.name.slice(1)];
+		if (!a.inverted && b.inverted) {
+			return nameOrder - 1;
+		} else if ((a.inverted && b.inverted) || (!a.inverted && !b.inverted)) {
+			return nameOrder;
+		} else return 0;
+	}
+	if (a.category === 'crypto' && b.category !== 'crypto') {
 		return -1;
 	}
-	if (a.category === 'forex' && b.category === 'forex' && a.name === 'sUSD') {
-		return -1;
-	}
-	return 0;
 };
 
 const reducer = (state = defaultState, action = {}) => {
 	switch (action.type) {
 		case SET_AVAILABLE_SYNTHS: {
-			const baseSynth = action.payload.find(synth => synth.name === 'sBTC').name;
-			const quoteSynth = action.payload.find(synth => synth.name === 'sUSD').name;
+			const baseSynth = action.payload.find(synth => synth.name === 'sBTC');
+			const quoteSynth = action.payload.find(synth => synth.name === 'sUSD');
 			const availableSynths = action.payload.sort(sortSynths);
 			const signs = {};
 			availableSynths.forEach(synth => {
@@ -64,18 +78,7 @@ const reducer = (state = defaultState, action = {}) => {
 			};
 		}
 		case SET_TOP_SYNTH_BY_VOLUME: {
-			const volume = action.payload;
-			let synths = orderBy(
-				state.availableSynths.map(synth => {
-					return {
-						...synth,
-						volume: volume[synth.name] || 0,
-					};
-				}),
-				'volume',
-				['desc']
-			);
-			return { ...state, topSynthByVolume: volume, availableSynths: synths };
+			return { ...state, topSynthByVolume: action.payload };
 		}
 		default:
 			return state;
