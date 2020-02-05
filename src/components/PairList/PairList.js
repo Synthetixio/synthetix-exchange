@@ -173,7 +173,7 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 						<Pair
 							isDisabled={!rates}
 							key={i}
-							onClick={() => setSynthPair({ base: pair.base, quote })}
+							onClick={() => setSynthPair({ base: pair.base, quote: pair.quote })}
 						>
 							<PairElement>
 								<SynthIcon src={`/images/synths/${pair.base.name}.svg`} />

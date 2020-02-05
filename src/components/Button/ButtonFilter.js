@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { DataSmall } from '../Typography';
 
-export const ButtonFilter = ({ children, onClick, height, active }) => {
+export const ButtonFilter = ({ children, onClick, height, active, style }) => {
 	return (
-		<Button onClick={onClick} height={height} active={active}>
+		<Button onClick={onClick} height={height} active={active} style={style}>
 			<ButtonLabel>{children}</ButtonLabel>
 		</Button>
 	);

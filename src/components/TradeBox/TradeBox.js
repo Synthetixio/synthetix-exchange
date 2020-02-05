@@ -19,7 +19,6 @@ import {
 	getEthRate,
 	getTransactions,
 } from '../../ducks';
-import { setSynthPair } from '../../ducks/synths';
 import { toggleGweiPopup } from '../../ducks/ui';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';
@@ -28,7 +27,6 @@ import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/t
 const TradeBox = ({
 	theme: { colors },
 	synthPair,
-	setSynthPair,
 	rates,
 	walletInfo: { balances, currentWallet, walletType },
 	setGasLimit,
@@ -40,14 +38,19 @@ const TradeBox = ({
 	updateTransaction,
 	transactions,
 }) => {
-	const { base, quote } = synthPair;
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
 	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
 	const [tradeAllBalance, setTradeAllBalance] = useState(false);
+	const [{ base, quote }, setPair] = useState(synthPair);
 	// const [nounce, setNounce] = useState(undefined);
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
+
+	useEffect(() => {
+		setPair(synthPair);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [synthPair.base.name, synthPair.quote.name]);
 
 	const onConfirmTrade = async () => {
 		const {
@@ -64,10 +67,10 @@ const TradeBox = ({
 				quote: quote.name,
 				fromAmount: quoteAmount,
 				toAmount: baseAmount,
-				price: base === 'sUSD' ? rates[quote][base] : rates[base][quote],
+				price: base.name === 'sUSD' ? rates[quote.name][base.name] : rates[base.name][quote.name],
 				amount: formatCurrency(baseAmount),
-				priceUSD: base === 'sUSD' ? rates[quote]['sUSD'] : rates[base]['sUSD'],
-				totalUSD: formatCurrency(baseAmount * rates[base]['sUSD']),
+				priceUSD: base.name === 'sUSD' ? rates[quote.name]['sUSD'] : rates[base.name]['sUSD'],
+				totalUSD: formatCurrency(baseAmount * rates[base.name]['sUSD']),
 				status: 'Waiting',
 			});
 
@@ -102,8 +105,8 @@ const TradeBox = ({
 			try {
 				if (!snxJSConnector.initialized) return;
 				const feeRateForExchange = await snxJSConnector.snxJS.Synthetix.feeRateForExchange(
-					bytesFormatter(quote),
-					bytesFormatter(base)
+					bytesFormatter(quote.name),
+					bytesFormatter(base.name)
 				);
 				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
 			} catch (e) {
@@ -115,7 +118,7 @@ const TradeBox = ({
 		setQuoteAmount('');
 		getFeeRateForExchange();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [base, quote, snxJSConnector.initialized]);
+	}, [base.name, quote.name, snxJSConnector.initialized]);
 
 	useEffect(() => {
 		const getGasEstimate = async () => {
@@ -131,12 +134,12 @@ const TradeBox = ({
 				} = snxJSConnector;
 				setError(null);
 				const amountToExchange = tradeAllBalance
-					? synthsBalances[quote].balanceBN
+					? synthsBalances[quote.name].balanceBN
 					: utils.parseEther(quoteAmount.toString());
 				const gasEstimate = await Synthetix.contract.estimate.exchange(
-					bytesFormatter(quote),
+					bytesFormatter(quote.name),
 					amountToExchange,
-					bytesFormatter(base)
+					bytesFormatter(base.name)
 				);
 				setGasLimit(Number(gasEstimate));
 			} catch (e) {
@@ -167,10 +170,7 @@ const TradeBox = ({
 	return (
 		<Container>
 			<Header>
-				<HeadingSmall>{`${base.name}/${quote.name}`}</HeadingSmall>
-				<ButtonFilter height={'22px'} onClick={() => setSynthPair({ quote: base, base: quote })}>
-					<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
-				</ButtonFilter>
+				<HeadingSmall>{`${synthPair.base.name}/${synthPair.quote.name}`}</HeadingSmall>
 			</Header>
 			<Body>
 				<InputBlock>
@@ -195,6 +195,15 @@ const TradeBox = ({
 						<DataMedium>{error}</DataMedium>
 					</InputPopup>
 				</InputBlock>
+				<ButtonFilterRow>
+					<ButtonFilter
+						height={'22px'}
+						style={{ background: 'transparent' }}
+						onClick={() => setPair({ quote: base, base: quote })}
+					>
+						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
+					</ButtonFilter>
+				</ButtonFilterRow>
 				<InputBlock>
 					<InputInfo>
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
@@ -208,7 +217,7 @@ const TradeBox = ({
 						synth={base.name}
 						amount={baseAmount}
 						onAmountChange={value => {
-							const convertedRate = rates ? value * rates[base][quote] : 0;
+							const convertedRate = rates ? value * rates[base.name][quote.name] : 0;
 							setQuoteAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setBaseAmount(value);
 						}}
@@ -218,14 +227,14 @@ const TradeBox = ({
 					{[25, 50, 75, 100].map((fraction, i) => {
 						return (
 							<ButtonAmount
-								disabled={isEmpty(synthsBalances) || !synthsBalances[quote]}
+								disabled={isEmpty(synthsBalances) || !synthsBalances[quote.name]}
 								key={i}
 								onClick={() => {
-									const balance = synthsBalances[quote].balance;
+									const balance = synthsBalances[quote.name].balance;
 									const amount = fraction === 100 ? balance : (balance * Number(fraction)) / 100;
 									setTradeAllBalance(fraction === 100);
 									setQuoteAmount(amount);
-									const convertedRate = rates ? amount * rates[quote][base] : 0;
+									const convertedRate = rates ? amount * rates[quote.name][base.name] : 0;
 									setBaseAmount(convertedRate);
 								}}
 							>
@@ -309,7 +318,10 @@ const Body = styled.div`
 
 const InputBlock = styled.div`
 	width: 100%;
-	margin-top: 16px;
+	/* margin-top: 6px; */
+	&:first-child {
+		margin-top: 16px;
+	}
 	position: relative;
 `;
 
@@ -323,6 +335,7 @@ const InputInfo = styled.div`
 const InputPopup = styled.div`
 	position: absolute;
 	transition: opacity 0.2s ease-out;
+	pointer-events: none;
 	bottom: 0;
 	left: 0;
 	width: 100%;
@@ -350,6 +363,12 @@ const ButtonRow = styled.div`
 	& > :last-child {
 		margin-right: 0;
 	}
+`;
+
+const ButtonFilterRow = styled.div`
+	display: flex;
+	margin-top: 6px;
+	justify-content: center;
 `;
 
 const ButtonAmount = styled.button`
@@ -401,7 +420,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-	setSynthPair,
 	setGasLimit,
 	toggleGweiPopup,
 	createTransaction,
