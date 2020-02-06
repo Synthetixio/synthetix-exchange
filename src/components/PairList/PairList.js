@@ -12,6 +12,7 @@ import {
 	getSynthSearch,
 } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
+import { pairWeight } from '../../utils/synthOrdering';
 
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
@@ -20,32 +21,6 @@ import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 
 const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT', 'Other'];
-
-// Ugly. Needs to find a better solution.
-const getWeight = synth => {
-	if (synth.category === 'forex') return 1;
-	if (synth.name === 'sBTC') return 2;
-	if (synth.name === 'sETH') return 3;
-	if (synth.category === 'commodity') return 4;
-	if (synth.name === 'sXRP') return 5;
-	if (synth.name === 'sLTC') return 6;
-	if (synth.name === 'sBNB') return 7;
-	if (synth.name === 'sXTZ') return 8;
-	if (synth.name === 'sTRX') return 9;
-	if (synth.name === 'sLINK') return 10;
-	if (synth.name === 'sMKR') return 11;
-	if (synth.name === 'iBTC') return 12;
-	if (synth.name === 'iETH') return 13;
-	if (synth.name === 'iXRP') return 14;
-	if (synth.name === 'iLTC') return 15;
-	if (synth.name === 'iBNB') return 16;
-	if (synth.name === 'iXTZ') return 17;
-	if (synth.name === 'iTRX') return 18;
-	if (synth.name === 'iLINK') return 19;
-	if (synth.name === 'iMKR') return 20;
-	if (synth.category === 'index') return 21;
-	return 22;
-};
 
 const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, search }) => {
 	const [quote, setQuote] = useState({ name: 'sUSD', category: 'forex' });
@@ -60,13 +35,13 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 		synths.forEach(a => {
 			listToCompare.forEach(b => {
 				if (a.name !== b.name) {
-					if (getWeight(b) > getWeight(a)) {
+					if (pairWeight(b) > pairWeight(a)) {
 						list.push({
 							base: b,
 							quote: a,
 							rate: rates ? rates[b.name][a.name] : 0,
 						});
-					} else if (getWeight(b) === getWeight(a)) {
+					} else if (pairWeight(b) === pairWeight(a)) {
 						list = list.concat([
 							{
 								base: a,
@@ -100,14 +75,17 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 		if (!search) {
 			list = synthList.filter(synth => synth.quote.name === quote.name);
 		} else {
-			list = synthList.filter(synth => {
-				return (
-					synth.base.name.toLowerCase().includes(search.toLowerCase()) ||
-					synth.quote.name.toLowerCase().includes(search.toLowerCase()) ||
-					synth.base.desc.toLowerCase().includes(search.toLowerCase()) ||
-					synth.quote.desc.toLowerCase().includes(search.toLowerCase())
-				);
-			});
+			list = synthList
+				.filter(synth => {
+					return (
+						synth.base.name.toLowerCase().includes(search.toLowerCase()) ||
+						synth.quote.name.toLowerCase().includes(search.toLowerCase()) ||
+						synth.base.desc.toLowerCase().includes(search.toLowerCase()) ||
+						synth.quote.desc.toLowerCase().includes(search.toLowerCase())
+					);
+				})
+				// we want to put sBASE/sUSD at the top when a search occurs
+				.sort(a => (a.quote.name === 'sUSD' && !a.base.inverted ? -1 : 0));
 		}
 		setFilteredSynths(list);
 		// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,3 +1,4 @@
+import { synthWeight } from '../utils/synthOrdering';
 const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
 const SET_SYNTH_PAIR = 'SYNTHS/SET_SYNTH_PAIR';
 const SET_EXCHANGE_RATES = 'SYNTHS/SET_EXCHANGE_RATES';
@@ -17,21 +18,9 @@ const defaultState = {
 	quoteSynth: { name: 'sUSD', category: 'forex' },
 };
 
-const synthOrderWeight = {
-	BTC: 1,
-	ETH: 2,
-	XRP: 3,
-	LTC: 4,
-	BNB: 5,
-	XTZ: 6,
-	TRX: 7,
-	LINK: 8,
-	MKR: 9,
-};
-
 const sortSynths = (a, b) => {
 	if (a.category === 'crypto' && b.category === 'crypto') {
-		const nameOrder = synthOrderWeight[a.name.slice(1)] - synthOrderWeight[b.name.slice(1)];
+		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
 		if (!a.inverted && b.inverted) {
 			return nameOrder - 1;
 		} else if ((a.inverted && b.inverted) || (!a.inverted && !b.inverted)) {
