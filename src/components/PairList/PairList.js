@@ -72,20 +72,29 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 
 	useEffect(() => {
 		let list = [];
+		let usdPairCount = 0;
 		if (!search) {
 			list = synthList.filter(synth => synth.quote.name === quote.name);
 		} else {
 			list = synthList
 				.filter(synth => {
-					return (
+					const hasMatch =
 						synth.base.name.toLowerCase().includes(search.toLowerCase()) ||
 						synth.quote.name.toLowerCase().includes(search.toLowerCase()) ||
 						synth.base.desc.toLowerCase().includes(search.toLowerCase()) ||
-						synth.quote.desc.toLowerCase().includes(search.toLowerCase())
-					);
+						synth.quote.desc.toLowerCase().includes(search.toLowerCase());
+					if (hasMatch && synth.quote.name === 'sUSD') usdPairCount += 1;
+					return hasMatch;
 				})
-				// we want to put sBASE/sUSD at the top when a search occurs
-				.sort(a => (a.quote.name === 'sUSD' && !a.base.inverted ? -1 : 0));
+				// we want to put sBASE/sUSD at the top when a search different than
+				// sUSD occurs
+				.sort(a => {
+					if (usdPairCount <= 2 && a.quote.name === 'sUSD') {
+						if (!a.base.inverted) return -2;
+						return -1;
+					}
+					return 0;
+				});
 		}
 		setFilteredSynths(list);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
