@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import GenericInput from './Input';
 
-const Input = ({ onChange }) => {
+const Input = ({ onChange, value }) => {
 	return (
 		<Container>
 			<Icon src="/images/search.svg" />
@@ -11,6 +11,7 @@ const Input = ({ onChange }) => {
 				padding={'0 10px 0 25px'}
 				placeholder="SEARCH"
 				onChange={onChange}
+				value={value}
 			></GenericInput>
 		</Container>
 	);

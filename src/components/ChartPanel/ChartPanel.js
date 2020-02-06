@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { format, subHours } from 'date-fns';
 import styled, { withTheme } from 'styled-components';
-import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area } from 'recharts';
+import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
+
 import snxData from 'synthetix-data';
 
 import { getSynthPair, getExchangeRates, getSynthsSigns } from '../../ducks';
-import { setSynthPair } from '../../ducks/synths';
 
 import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
@@ -43,16 +43,10 @@ const getMinAndMaxRate = data => {
 };
 
 const getCurrentPairPrice = (base, quote, rates) => {
-	if (base === 'sUSD') return rates[quote][base];
-	return rates[base][quote];
+	return rates[base.name][quote.name];
 };
 
-const getPairSign = (base, quote, signs) => {
-	if (base === 'sUSD' || quote === 'sUSD') return '$';
-	return signs[quote];
-};
-
-const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, setSynthPair }) => {
+const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
 	const [lastDayData, setLastDayData] = useState([]);
@@ -69,7 +63,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 			const [baseRates, quoteRates] = await Promise.all(
 				[base, quote].map(synth => {
 					return snxData.rate.updates({
-						synth,
+						synth: synth.name,
 						maxTimestamp: Math.trunc(now / 1000),
 						minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
 						max: 1000,
@@ -79,14 +73,18 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 			// If quote or rate is sUSD then we just get
 			// the base or quote rates as they're already in sUSD
 			const dataResults =
-				quote === 'sUSD'
+				quote.name === 'sUSD'
 					? baseRates
-					: base === 'sUSD'
+					: base.name === 'sUSD'
 					? quoteRates
 					: matchPairRates(baseRates, quoteRates);
 			// store the first result separately
 			// for the 24h aggregation
-			if (lastDayData.length === 0 || currentPair.base !== base || currentPair.quote !== quote) {
+			if (
+				lastDayData.length === 0 ||
+				currentPair.base.name !== base.name ||
+				currentPair.quote.name !== quote.name
+			) {
 				setLastDayData(dataResults);
 			}
 			setChartData(dataResults);
@@ -98,7 +96,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 			const results = await snxData.exchanges.since({ timestampInSecs: yesterday });
 			setVolumeData(
 				results.reduce((acc, next) => {
-					if (next.fromCurrencyKey === quote && next.toCurrencyKey === base) {
+					if (next.fromCurrencyKey === quote.name && next.toCurrencyKey === base.name) {
 						acc += next.fromAmountInUSD;
 					}
 					return acc;
@@ -108,7 +106,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		fetchChartData();
 		fetchVolumeData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [period, base, quote]);
+	}, [period, base.name, quote.name]);
 
 	const [min, max] = getMinAndMaxRate(lastDayData);
 	const lastDayChange = calculateRateChange(lastDayData);
@@ -117,16 +115,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 		<Container>
 			<Header>
 				<HeaderBlock>
-					<HeadingSmall>{`${base}/${quote}`}</HeadingSmall>
-					<ButtonFilter height={'22px'} onClick={() => setSynthPair({ quote: base, base: quote })}>
-						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
-					</ButtonFilter>
-					<Link style={{ textDecoration: 'none' }} to={'/'}>
-						{/* <LinkInner>
-							<LinkLabel>Market Info</LinkLabel>
-							<LinkIcon src="/images/link-arrow.svg" />
-						</LinkInner> */}
-					</Link>
+					<HeadingSmall>{`${base.name}/${quote.name}`}</HeadingSmall>
+					<Link style={{ textDecoration: 'none' }} to={'/'}></Link>
 				</HeaderBlock>
 				<HeaderBlock>
 					{PERIODS.map((time, i) => {
@@ -167,7 +157,9 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 								<YAxis
 									type="number"
 									domain={['auto', 'auto']}
-									tickFormatter={val => `${synthsSigns[quote]}${formatCurrencyWithPrecision(val)}`}
+									tickFormatter={val =>
+										`${synthsSigns[quote.name]}${formatCurrencyWithPrecision(val)}`
+									}
 									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 									orientation="right"
 								/>
@@ -176,6 +168,27 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 									stroke={colors.hyperLink}
 									fillOpacity={0.5}
 									fill="url(#colorUv)"
+								/>
+								<Tooltip
+									cursor={{ strokeWidth: 1, stroke: colors.fontTertiary }}
+									contentStyle={{
+										border: `none`,
+										borderRadius: '3px',
+										backgroundColor: colors.surfaceL1,
+									}}
+									itemStyle={{
+										color: colors.fontTertiary,
+										fontSize: '12px',
+										textTransform: 'capitalize',
+									}}
+									labelStyle={{
+										color: colors.fontTertiary,
+										fontSize: '12px',
+									}}
+									formatter={value =>
+										`${synthsSigns[quote.name]}${formatCurrencyWithPrecision(value)}`
+									}
+									labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
 								/>
 							</AreaChart>
 						</ResponsiveContainer>
@@ -186,7 +199,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							{getPairSign(base, quote, synthsSigns)}
+							{synthsSigns[quote.name]}
 							{rates ? formatCurrencyWithPrecision(getCurrentPairPrice(base, quote, rates)) : 0}
 						</DataBlockValue>
 					</DataBlock>
@@ -205,14 +218,14 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns, set
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							{getPairSign(base, quote, synthsSigns)}
+							{synthsSigns[quote.name]}
 							{formatCurrencyWithPrecision(max)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
-							{getPairSign(base, quote, synthsSigns)}
+							{synthsSigns[quote.name]}
 							{formatCurrencyWithPrecision(min)}
 						</DataBlockValue>
 					</DataBlock>
@@ -293,30 +306,6 @@ const HeaderBlock = styled.div`
 	}
 `;
 
-// const LinkInner = styled.div`
-// 	display: flex;
-// 	align-items: center;
-// `;
-
-// const LinkLabel = styled(LabelSmall)`
-// 	margin-left: 10px;
-// 	color: ${props => props.theme.colors.hyperLink};
-// 	&:hover {
-// 		text-decoration: underline;
-// 	}
-// `;
-
-// const LinkIcon = styled.img`
-// 	width: 8px;
-// 	height: 8px;
-// 	margin-left: 5px;
-// `;
-
-const ButtonIcon = styled.img`
-	width: 16px;
-	height: 12px;
-`;
-
 const ChartContainer = styled.div`
 	width: 100%;
 	height: 250px;
@@ -333,8 +322,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = {
-	setSynthPair,
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ChartPanel));

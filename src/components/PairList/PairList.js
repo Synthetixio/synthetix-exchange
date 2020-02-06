@@ -7,76 +7,110 @@ import { SearchInput } from '../Input';
 import {
 	getAvailableSynths,
 	getExchangeRates,
-	getFrozenSynths,
 	getSynthsSigns,
 	getSynthPair,
+	getSynthSearch,
 } from '../../ducks';
 import { formatCurrency } from '../../utils/formatters';
+import { pairWeight } from '../../utils/synthOrdering';
 
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 
-import orderBy from 'lodash/orderBy';
 import { setSynthPair } from '../../ducks/synths';
+import { setSynthSearch } from '../../ducks/ui';
 
-const FILTERS = ['sUSD', 'sETH', 'sBTC', 'sFIAT', 'Other'];
+const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT', 'Other'];
 
-const useFilterSynths = (synths, search, quote, rates) => {
-	const [list, setList] = useState(synths);
+const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, search }) => {
+	const [quote, setQuote] = useState({ name: 'sUSD', category: 'forex' });
+	// const [sort, setSort] = useState({});
+	const [synthList, setSynthList] = useState([]);
+	const [filteredSynths, setFilteredSynths] = useState([]);
+
 	useEffect(() => {
-		if (!synths || synths.lenght === 0) return;
-		const filteredList = synths
-			.filter(synth => {
-				return (
-					(synth.name.toLowerCase().includes(search.toLowerCase()) ||
-						synth.desc.toLowerCase().includes(search.toLowerCase())) &&
-					synth.name !== quote
-				);
-			})
-			.map(synth => {
-				const rate = rates ? rates[synth.name][quote] : 0;
-				return {
-					name: synth.name,
-					rate,
-					change: Math.random(),
-				};
+		if (!synths || synths.length === 0) return;
+		let listToCompare = synths;
+		let list = [];
+		synths.forEach(a => {
+			listToCompare.forEach(b => {
+				if (a.name !== b.name) {
+					if (pairWeight(b) > pairWeight(a)) {
+						list.push({
+							base: b,
+							quote: a,
+							rate: rates ? rates[b.name][a.name] : 0,
+						});
+					} else if (pairWeight(b) === pairWeight(a)) {
+						list = list.concat([
+							{
+								base: a,
+								quote: b,
+								rate: rates ? rates[a.name][b.name] : 0,
+							},
+							{ base: b, quote: a, rate: rates ? rates[b.name][a.name] : 0 },
+						]);
+					} else {
+						list.push({
+							base: a,
+							quote: b,
+							rate: rates ? rates[a.name][b.name] : 0,
+						});
+					}
+				}
 			});
-		setList(filteredList);
+			listToCompare = listToCompare.filter(s => s.name !== a.name);
+		});
+		setSynthList(list);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synths, search, quote, rates]);
-
-	return list;
-};
-
-const sortPairsBy = (pairs, sort) => {
-	if (!sort) return pairs;
-	return orderBy(pairs, sort.column, [sort.isAscending ? 'asc' : 'desc']);
-};
-
-const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synthPair }) => {
-	const [quote, setQuote] = useState('sUSD');
-	const [search, setSearch] = useState('');
-	const [sort, setSort] = useState({});
-	const synthList = useFilterSynths(synths, search, quote, rates);
+	}, [synths.length, rates]);
 
 	useEffect(() => {
-		if (synthPair.quote !== quote) {
-			setQuote(synthPair.quote);
+		setSynthSearch('');
+		setFilteredSynths(synthList.filter(synth => synth.quote.name === quote.name));
+	}, [quote.name]);
+
+	useEffect(() => {
+		let list = [];
+		let usdPairCount = 0;
+		if (!search) {
+			list = synthList.filter(synth => synth.quote.name === quote.name);
+		} else {
+			list = synthList
+				.filter(synth => {
+					const hasMatch =
+						synth.base.name.toLowerCase().includes(search.toLowerCase()) ||
+						synth.quote.name.toLowerCase().includes(search.toLowerCase()) ||
+						synth.base.desc.toLowerCase().includes(search.toLowerCase()) ||
+						synth.quote.desc.toLowerCase().includes(search.toLowerCase());
+					if (hasMatch && synth.quote.name === 'sUSD') usdPairCount += 1;
+					return hasMatch;
+				})
+				// we want to put sBASE/sUSD at the top when a search different than
+				// sUSD occurs
+				.sort(a => {
+					if (usdPairCount <= 2 && a.quote.name === 'sUSD') {
+						if (!a.base.inverted) return -2;
+						return -1;
+					}
+					return 0;
+				});
 		}
+		setFilteredSynths(list);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synthPair.quote]);
+	}, [synthList, search]);
 
 	return (
 		<Container>
 			<ContainerHeader>
-				<SearchInput onChange={e => setSearch(e.target.value)} />
+				<SearchInput value={search} onChange={e => setSynthSearch(e.target.value)} />
 				<ButtonRow>
 					{FILTERS.map((filter, i) => {
 						return ['sFIAT', 'Other'].includes(filter) ? (
 							<ButtonFilterWithDropdown
 								key={i}
 								quote={quote}
-								onClick={synth => setQuote(synth.name)}
+								onClick={synth => setQuote(synth)}
 								synths={
 									filter === 'sFIAT'
 										? synths.filter(synth => synth.category === 'forex')
@@ -86,7 +120,11 @@ const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synt
 								{filter}
 							</ButtonFilterWithDropdown>
 						) : (
-							<ButtonFilter key={i} active={filter === quote} onClick={() => setQuote(filter)}>
+							<ButtonFilter
+								key={i}
+								active={filter === quote.name}
+								onClick={() => setQuote(synths.find(synth => synth.name === filter))}
+							>
 								{filter}
 							</ButtonFilter>
 						);
@@ -96,51 +134,44 @@ const PairList = ({ synths, rates, setSynthPair, frozenSynths, synthsSigns, synt
 					{[
 						{ label: 'Pair', value: 'name' },
 						{ label: 'Price', value: 'rate' },
-						// { label: 'Change', value: 'change' },
 					].map((column, i) => {
 						return (
 							<ListHeaderElement key={i}>
 								<ButtonSort
-									onClick={() =>
-										setSort(() => {
-											if (sort && sort.column === column.value) {
-												return { ...sort, isAscending: !sort.isAscending };
-											} else return { column: column.value, isAscending: true };
-										})
-									}
+								// onClick={() =>
+								// 	setSort(() => {
+								// 		if (sort && sort.column === column.value) {
+								// 			return { ...sort, isAscending: !sort.isAscending };
+								// 		} else return { column: column.value, isAscending: true };
+								// 	})
+								// }
 								>
 									<ListHeaderLabel>{column.label}</ListHeaderLabel>
-									<SortIcon src="/images/sort-arrows.svg" />
+									{/* <SortIcon src="/images/sort-arrows.svg" /> */}
 								</ButtonSort>
 							</ListHeaderElement>
 						);
 					})}
 				</ListHeader>
 			</ContainerHeader>
-
 			<List>
-				{sortPairsBy(synthList, sort).map((synth, i) => {
+				{filteredSynths.map((pair, i) => {
 					return (
 						<Pair
-							isDisabled={(frozenSynths && frozenSynths[synth.name]) || !rates}
+							isDisabled={!rates}
 							key={i}
-							onClick={() => setSynthPair({ base: synth.name, quote })}
+							onClick={() => setSynthPair({ base: pair.base, quote: pair.quote })}
 						>
 							<PairElement>
-								<SynthIcon src={`/images/synths/${synth.name}.svg`} />
-								<DataMedium>{`${synth.name} / ${quote}`}</DataMedium>
+								<SynthIcon src={`/images/synths/${pair.base.name}.svg`} />
+								<DataMedium>{`${pair.base.name} / ${pair.quote.name}`}</DataMedium>
 							</PairElement>
 							<PairElement>
 								<DataMedium>
-									{synthsSigns[quote]}
-									{formatCurrency(synth.rate, 6)}
+									{synthsSigns[quote.name]}
+									{formatCurrency(pair.rate, 6)}
 								</DataMedium>
 							</PairElement>
-							{/* <PairElement>
-								<DataChange color={i % 2 === 0 ? 'green' : 'red'}>
-									{formatCurrency(synth.change, 2)}%
-								</DataChange>
-							</PairElement> */}
 						</Pair>
 					);
 				})}
@@ -244,28 +275,25 @@ const ButtonSort = styled.button`
 	background: transparent;
 `;
 
-const SortIcon = styled.img`
-	width: 6.5px;
-	height: 8px;
-	margin-left: 5px;
-`;
-
-// const DataChange = styled(DataMedium)`
-// 	color: ${props => (props.color === 'red' ? props.theme.colors.red : props.theme.colors.green)};
+// const SortIcon = styled.img`
+// 	width: 6.5px;
+// 	height: 8px;
+// 	margin-left: 5px;
 // `;
 
 const mapStateToProps = state => {
 	return {
 		synths: getAvailableSynths(state),
 		rates: getExchangeRates(state),
-		frozenSynths: getFrozenSynths(state),
 		synthsSigns: getSynthsSigns(state),
 		synthPair: getSynthPair(state),
+		search: getSynthSearch(state),
 	};
 };
 
 const mapDispatchToProps = {
 	setSynthPair,
+	setSynthSearch,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PairList);
