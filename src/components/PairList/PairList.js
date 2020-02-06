@@ -20,7 +20,7 @@ import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 
-const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT', 'Other'];
+const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT'];
 
 const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, search }) => {
 	const [quote, setQuote] = useState({ name: 'sUSD', category: 'forex' });
@@ -106,7 +106,7 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 				<SearchInput value={search} onChange={e => setSynthSearch(e.target.value)} />
 				<ButtonRow>
 					{FILTERS.map((filter, i) => {
-						return ['sFIAT', 'Other'].includes(filter) ? (
+						return ['sFIAT'].includes(filter) ? (
 							<ButtonFilterWithDropdown
 								key={i}
 								quote={quote}
