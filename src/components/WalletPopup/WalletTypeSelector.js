@@ -8,7 +8,7 @@ import { updateWalletStatus, resetWalletStatus } from '../../ducks/wallet';
 import { toggleWalletPopup } from '../../ducks/ui';
 import { getWalletInfo } from '../../ducks';
 
-import { HeadingMedium } from '../Typography';
+import { Typography } from '../Typography';
 
 const WalletTypeSelector = ({
 	updateWalletStatus,
@@ -38,7 +38,9 @@ const WalletTypeSelector = ({
 	};
 	return (
 		<Container>
-			<HeadingMedium>Connect your wallet</HeadingMedium>
+			<Typography variant="heading" size="md">
+				Connect your wallet
+			</Typography>
 			<Wallets>
 				{SUPPORTED_WALLETS.map((wallet, i) => {
 					const noMetamask = wallet === 'Metamask' && !hasWeb3();
