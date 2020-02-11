@@ -15,6 +15,8 @@ const defaultState = {
 	currentWallet: null,
 	derivationPath: localStorage.getItem('derivationPath'),
 	balances: null,
+	networkId: null,
+	networkName: null,
 };
 
 // Reducer

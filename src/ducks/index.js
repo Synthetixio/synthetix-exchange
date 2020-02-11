@@ -33,6 +33,11 @@ export const getSynthSearch = state => {
 };
 
 // WALLET REDUCERS
+
+export const getNetworkId = state => {
+	return state.wallet.networkId;
+};
+
 export const getWalletInfo = state => {
 	return state.wallet;
 };

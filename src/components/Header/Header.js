@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 // import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
@@ -10,14 +11,16 @@ import WalletAddressWidget from '../WalletAddressWidget';
 import { ButtonPrimarySmall } from '../Button';
 import { LabelMedium, DataMedium } from '../Typography';
 import { toggleWalletPopup } from '../../ducks/ui';
-import { getWalletInfo } from '../../ducks';
+import { getWalletInfo, getCurrentTheme } from '../../ducks';
 
-const Header = ({ toggleWalletPopup, walletInfo }) => {
+const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 	const { currentWallet, networkName } = walletInfo;
+	const { t } = useTranslation();
+
 	return (
 		<Container>
 			<HeaderBlock>
-				<Logo />
+				<Logo theme={theme} />
 				<Network>
 					<NetworkLabel>{networkName || 'mainnet'}</NetworkLabel>
 				</Network>
@@ -41,7 +44,7 @@ const Header = ({ toggleWalletPopup, walletInfo }) => {
 					<WalletAddressWidget />
 				) : (
 					<ButtonPrimarySmall onClick={() => toggleWalletPopup(true)}>
-						Connect wallet
+						{t('header.connect-wallet')}
 					</ButtonPrimarySmall>
 				)}
 			</HeaderBlock>
@@ -102,6 +105,7 @@ const NetworkLabel = styled(DataMedium)`
 const mapStateToProps = state => {
 	return {
 		walletInfo: getWalletInfo(state),
+		theme: getCurrentTheme(state),
 	};
 };
 

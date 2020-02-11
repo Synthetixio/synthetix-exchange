@@ -19,7 +19,12 @@ const fonts = {
 
 const theme = mode => {
 	const colorStyle = mode === 'dark' ? ThemeDark : ThemeLight;
-	return { colors: { ...colorStyle, ...sharedColors }, fonts };
+	return { name: mode, colors: { ...colorStyle, ...sharedColors }, fonts };
 };
+
+export const darkTheme = theme('dark');
+export const lightTheme = theme('light');
+
+export const themes = [darkTheme, lightTheme];
 
 export default theme;
