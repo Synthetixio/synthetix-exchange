@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
 import store from './config/store';
 import './index.css';
 import Root from './pages/Root';
+import './i18n';
 
 import bugsnag from '@bugsnag/js';
 import bugsnagReact from '@bugsnag/plugin-react';
@@ -22,9 +23,11 @@ bugsnagClient.use(bugsnagReact, React);
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 const App = () => {
 	return (
-		<Provider store={store}>
-			<Root />
-		</Provider>
+		<Suspense fallback={<div />}>
+			<Provider store={store}>
+				<Root />
+			</Provider>
+		</Suspense>
 	);
 };
 ReactDOM.render(

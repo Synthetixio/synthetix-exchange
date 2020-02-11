@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 // import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
@@ -14,6 +15,8 @@ import { getWalletInfo, getCurrentTheme } from '../../ducks';
 
 const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 	const { currentWallet, networkName } = walletInfo;
+	const { t } = useTranslation();
+
 	return (
 		<Container>
 			<HeaderBlock>
@@ -41,7 +44,7 @@ const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 					<WalletAddressWidget />
 				) : (
 					<ButtonPrimarySmall onClick={() => toggleWalletPopup(true)}>
-						Connect wallet
+						{t('header.connect-wallet')}
 					</ButtonPrimarySmall>
 				)}
 			</HeaderBlock>
