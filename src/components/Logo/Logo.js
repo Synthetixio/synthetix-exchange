@@ -1,20 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { ReactComponent as LogoLight } from '../../images/synthetix-logo-light.svg';
+import { ReactComponent as LogoDark } from '../../images/synthetix-logo-dark.svg';
 
-import { getCurrentTheme } from '../../ducks';
+const Logo = ({ theme }) => (theme === 'light' ? <LogoDark /> : <LogoLight />);
 
-const Logo = ({ theme }) => {
-	const logoColor = theme === 'light' ? 'dark' : 'light';
-	return <LogoImg src={`/images/synthetix-logo-${logoColor}.svg`} />;
-};
-
-const LogoImg = styled.img``;
-
-const mapStateToProps = state => {
-	return {
-		theme: getCurrentTheme(state),
-	};
-};
-
-export default connect(mapStateToProps, null)(Logo);
+export default Logo;
