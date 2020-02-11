@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import snxJSConnector from '../../utils/snxJSConnector';
@@ -20,10 +20,16 @@ import {
 import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
+import { MainLayout } from '../../shared/commonStyles';
+import Header from '../../components/Header';
+import WalletPopup from '../../components/WalletPopup';
+import GweiPopup from '../../components/GweiPopup';
+
 import Trade from '../Trade';
-import Home from '../Home';
+import Loans from '../Loans';
 
 import { lightTheme, darkTheme } from '../../styles/theme';
+import { ROUTES } from '../../constants/routes';
 
 const Root = ({
 	setAvailableSynths,
@@ -91,20 +97,20 @@ const Root = ({
 
 	return (
 		<ThemeProvider theme={themeStyle}>
-			<div>
-				<Router>
-					<RootContainer>
+			<Router history={history}>
+				<RootContainer>
+					<MainLayout>
+						<Header />
+						<WalletPopup />
+						<GweiPopup />
 						<Switch>
-							<Route path="/trade">
-								<Trade />
-							</Route>
-							<Route path="/">
-								<Trade />
-							</Route>
+							<Route path={ROUTES.Trade} component={Trade} />
+							<Route path={ROUTES.Loans} component={Loans} />
+							<Redirect to={ROUTES.Trade} />
 						</Switch>
-					</RootContainer>
-				</Router>
-			</div>
+					</MainLayout>
+				</RootContainer>
+			</Router>
 		</ThemeProvider>
 	);
 };

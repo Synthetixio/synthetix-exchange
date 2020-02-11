@@ -1,5 +1,10 @@
 {
 	"header": {
-		"connect-wallet": "Connect wallet"
+		"connect-wallet": "Connect wallet",
+		"links": {
+			"exchange": "EXCHANGE",
+			"loans": "LOANS",
+			"support": "SUPPORT"
+		}
 	}
 }
