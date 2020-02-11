@@ -1,4 +1,5 @@
 import throttle from 'lodash/throttle';
+import invert from 'lodash/invert';
 import snxJSConnector from './snxJSConnector';
 
 export const GWEI_UNIT = 1000000000;
@@ -9,6 +10,8 @@ export const SUPPORTED_NETWORKS = {
 	4: 'RINKEBY',
 	42: 'KOVAN',
 };
+
+export const SUPPORTED_NETWORKS_MAP = invert(SUPPORTED_NETWORKS);
 
 export const DEFAULT_GAS_LIMIT = {
 	mint: 2200000,
@@ -35,7 +38,7 @@ export const hasWeb3 = () => {
 	return window.web3;
 };
 
-const defaultNetwork = { name: 'MAINNET', networkId: '1' };
+export const defaultNetwork = { name: 'MAINNET', networkId: '1' };
 
 export async function getEthereumNetwork() {
 	return await new Promise(function(resolve) {
@@ -88,3 +91,5 @@ export function onMetamaskNetworkChange(cb) {
 	const listener = throttle(cb, 1000);
 	window.ethereum.on('networkChanged', listener);
 }
+
+export const isMainNet = networkId => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;

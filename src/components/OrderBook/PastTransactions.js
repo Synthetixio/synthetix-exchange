@@ -6,10 +6,12 @@ import { debounce } from 'lodash';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { DataSmall } from '../Typography';
+import { getNetworkId } from '../../ducks';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { formatCurrency } from '../../utils/formatters';
-import Spinner from '../Spinner';
+import { getEtherscanTxLink } from '../../utils/explorers';
 
+import Spinner from '../Spinner';
 const SCROLL_THRESHOLD = 0.8;
 
 const getPrecision = amount => {
@@ -44,6 +46,7 @@ const PastTransactions = ({
 	theme: { colors },
 	transactions: { list, loading },
 	onScrollPaging,
+	networkId,
 }) => {
 	const tbodyEl = useRef(null);
 
@@ -116,7 +119,7 @@ const PastTransactions = ({
 
 								<Td>
 									<TradeLabel>
-										<Link href={`https://etherscan.io/tx/${t.hash}`} target="_blank">
+										<Link href={getEtherscanTxLink(networkId, t.hash)} target="_blank">
 											VIEW
 										</Link>
 									</TradeLabel>
@@ -167,8 +170,10 @@ const TradeLabel = styled(DataLabel)`
 	white-space: nowrap;
 `;
 
-const mapStateToProps = () => {
-	return {};
+const mapStateToProps = state => {
+	return {
+		networkId: getNetworkId(state),
+	};
 };
 
 const mapDispatchToProps = {};

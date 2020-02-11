@@ -6,6 +6,7 @@ import { DataLarge } from '../Typography';
 import Spinner from '../Spinner';
 
 import { formatCurrency } from '../../utils/formatters';
+import { getEtherscanAddressLink } from '../../utils/explorers';
 import { getWalletInfo } from '../../ducks';
 
 const HEADER_LABELS = ['Wallet Address', 'SNX', 'sUSD', 'ETH', ''];
@@ -16,7 +17,7 @@ const Balance = ({ value }) => {
 };
 
 const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
-	const { networkName } = walletInfo;
+	const { networkId } = walletInfo;
 	return (
 		<Table cellSpacing="0">
 			<Thead>
@@ -51,12 +52,7 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 									e.stopPropagation();
 								}}
 							>
-								<Link
-									href={`https://${
-										networkName === 'mainnet' ? '' : networkName + '.'
-									}etherscan.io/address/${wallet.address}`}
-									target="_blank"
-								>
+								<Link href={getEtherscanAddressLink(networkId, wallet.address)} target="_blank">
 									<LinkImg width="20" src="/images/etherscan-logo.png" />
 								</Link>
 							</Td>
