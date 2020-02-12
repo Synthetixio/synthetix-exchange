@@ -48,3 +48,10 @@ export const Link = styled(NavLink).attrs({
 })`
 	${linkCSS};
 `;
+
+export const Dot = styled.div`
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background-color: ${props => props.theme.colors.accentLight};
+`;

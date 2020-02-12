@@ -6,9 +6,9 @@ export default {
 	title: 'Header',
 };
 
-export const themeSwitcherDark = () => (
-	<ThemeSwitcher currentTheme="dark" toggleTheme={() => action('toggle theme')()} />
-);
-export const themeSwitcherLight = () => (
-	<ThemeSwitcher currentTheme="light" toggleTheme={() => action('toggle theme')()} />
-);
+const sharedProps = {
+	toggleTheme: () => action('toggle theme')(),
+};
+
+export const themeSwitcherDark = () => <ThemeSwitcher {...sharedProps} currentTheme="dark" />;
+export const themeSwitcherLight = () => <ThemeSwitcher {...sharedProps} currentTheme="light" />;
