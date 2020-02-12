@@ -1,26 +1,29 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+
+import { ReactComponent as Sun } from '../../images/sun.svg';
+import { ReactComponent as Moon } from '../../images/moon.svg';
+
 import { getCurrentTheme } from '../../ducks';
 import { toggleTheme } from '../../ducks/ui';
+import { isLightTheme } from '../../styles/theme';
 
-const ThemeSwitcher = ({ currentTheme, toggleTheme }) => {
-	return (
-		<ThemeSwitcherButton onClick={toggleTheme}>
-			{currentTheme === 'light' ? (
-				<Fragment>
-					<Dot></Dot>
-					<Icon src={'/images/sun.svg'}></Icon>
-				</Fragment>
-			) : (
-				<Fragment>
-					<Icon src={'/images/moon.svg'}></Icon>
-					<Dot></Dot>
-				</Fragment>
-			)}
-		</ThemeSwitcherButton>
-	);
+export const ThemeSwitcher = ({ currentTheme, toggleTheme }) => (
+	<ThemeSwitcherButton onClick={toggleTheme}>
+		<Dot />
+		{isLightTheme(currentTheme) ? (
+			<Sun width="16px" height="16px" />
+		) : (
+			<Moon width="16px" height="16px" />
+		)}
+	</ThemeSwitcherButton>
+);
+
+ThemeSwitcher.propTypes = {
+	currentTheme: PropTypes.string.isRequired,
+	toggleTheme: PropTypes.func.isRequired,
 };
 
 const ThemeSwitcherButton = styled.button`
@@ -43,24 +46,12 @@ const Dot = styled.div`
 	background-color: ${props => props.theme.colors.accentLight};
 `;
 
-const Icon = styled.img`
-	width: 16px;
-	height: 16px;
-`;
-
-const mapStateToProps = state => {
-	return {
-		currentTheme: getCurrentTheme(state),
-	};
-};
+const mapStateToProps = state => ({
+	currentTheme: getCurrentTheme(state),
+});
 
 const mapDispatchToProps = {
 	toggleTheme,
-};
-
-ThemeSwitcher.propTypes = {
-	currentTheme: PropTypes.string.isRequired,
-	toggleTheme: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ThemeSwitcher);
