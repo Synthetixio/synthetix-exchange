@@ -9,6 +9,7 @@ i18n
 	.use(initReactI18next)
 	.init({
 		fallbackLng: 'en',
+		whitelist: ['en'],
 		nonExplicitWhitelist: true,
 		detection: {
 			order: ['localStorage', 'navigator'],
