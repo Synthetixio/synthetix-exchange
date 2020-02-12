@@ -7,5 +7,5 @@ export default {
 	title: 'Typography/Heading',
 };
 
-export const Medium = () => <HeadingMedium>{text('Text', 'Lorem ipsum')}</HeadingMedium>;
-export const Small = () => <HeadingSmall>{text('Text', 'Lorem ipsum')}</HeadingSmall>;
+export const medium = () => <HeadingMedium>{text('Text', 'Lorem ipsum')}</HeadingMedium>;
+export const small = () => <HeadingSmall>{text('Text', 'Lorem ipsum')}</HeadingSmall>;

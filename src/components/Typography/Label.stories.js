@@ -7,5 +7,5 @@ export default {
 	title: 'Typography/Label',
 };
 
-export const Medium = () => <LabelMedium>{text('Text', 'Lorem ipsum')}</LabelMedium>;
-export const Small = () => <LabelSmall>{text('Text', 'Lorem ipsum')}</LabelSmall>;
+export const medium = () => <LabelMedium>{text('Text', 'Lorem ipsum')}</LabelMedium>;
+export const small = () => <LabelSmall>{text('Text', 'Lorem ipsum')}</LabelSmall>;
