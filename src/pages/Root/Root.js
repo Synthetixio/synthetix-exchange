@@ -78,7 +78,7 @@ const Root = ({
 			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
 				fetchAndSetWalletBalances(synths);
-			}, 30 * 1000);
+			}, 3 * 60 * 1000);
 			setIntervalId(intervalId);
 		};
 		init();
