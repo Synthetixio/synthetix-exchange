@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-// import { formatCurrency } from '../../../../utils/formatters';
-// import { getTransactionPrice } from '../../../../utils/networkUtils';
-
 import Card from '../../../../components/Card';
 import { DataSmall, HeadingSmall, DataLarge } from '../../../../components/Typography';
 import { getWalletInfo } from '../../../../ducks';
@@ -147,6 +144,7 @@ const Table = styled.table`
 	tr {
 		text-align: left;
 		> * {
+			color: ${props => props.theme.colors.fontTertiary};
 			height: ${CARD_HEIGHT};
 			text-align: left;
 			&:first-child {
