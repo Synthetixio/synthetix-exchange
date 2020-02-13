@@ -8,16 +8,16 @@
 		}
 	},
 	"loans": {
-		"collateral-overview": {
-			"title": "{{currency}} AS COLLATERAL",
-			"cards": {
+		"dashboard": {
+			"title": "{{currencyKey}} AS COLLATERAL",
+			"loan-info": {
 				"interest-rate": "INTEREST RATE",
 				"minting-fee": "MINTING FEE",
 				"number-of-loans": "# OF LOANS",
-				"currency-limit": "{{currency}} LIMIT",
-				"currency-supply": "{{currency}} SUPPLY",
+				"currency-limit": "{{currencyKey}} LIMIT",
+				"currency-supply": "{{currencyKey}} SUPPLY",
 				"min-loan-size": "MIN. LOAN SIZE",
-				"collaboration-size": "COLLAT RATIO"
+				"collateral-size": "COLLAT. RATIO"
 			}
 		},
 		"my-loans": {
@@ -34,13 +34,13 @@
 		"loan-card": {
 			"create-loan": {
 				"title": "CREATE A LOAN",
-				"currency-locked": "{{currency}} being locked:",
-				"currency-borrowed": "{{currency}} being borrowed:"
+				"currency-locked": "{{currencyKey}} being locked:",
+				"currency-borrowed": "{{currencyKey}} being borrowed:"
 			},
 			"close-loan": {
 				"title": "CLOSE LOAN",
-				"currency-unlocked": "{{currency}} being unlocked:",
-				"currency-burned": "{{currency}} being burned:"
+				"currency-unlocked": "{{currencyKey}} being unlocked:",
+				"currency-burned": "{{currencyKey}} being burned:"
 			}
 		}
 	},
@@ -59,9 +59,9 @@
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
-			"currency-balance": "{{currency}} BALANCE",
+			"currency-balance": "{{currencyKey}} BALANCE",
 			"balance-currency": "Balance: {{balance}}",
-			"locked-currency": "LOCKED {{currency}}"
+			"locked-currency": "LOCKED {{currencyKey}}"
 		}
 	}
 }
