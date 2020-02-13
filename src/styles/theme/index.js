@@ -12,6 +12,7 @@ const sharedColors = {
 };
 
 const fonts = {
+	light: 'apercu-light',
 	regular: 'apercu-regular',
 	medium: 'apercu-medium',
 	bold: 'apercu-bold',

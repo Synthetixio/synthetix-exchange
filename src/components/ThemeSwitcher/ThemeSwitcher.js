@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { ReactComponent as Sun } from '../../images/sun.svg';
-import { ReactComponent as Moon } from '../../images/moon.svg';
+import { ReactComponent as Sun } from '../../assets/images/sun.svg';
+import { ReactComponent as Moon } from '../../assets/images/moon.svg';
 
 import { getCurrentTheme } from '../../ducks';
 import { toggleTheme } from '../../ducks/ui';
