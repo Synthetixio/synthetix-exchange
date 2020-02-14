@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -24,12 +24,7 @@ import {
 import { toggleGweiPopup } from '../../../../ducks/ui';
 import { getCurrencyKeyBalance } from '../../../../utils/balances';
 
-import { COLLATERAL_PAIR } from '../../constants';
-
-const LOAN_TYPES = {
-	CREATE: 'create',
-	CLOSE: 'close',
-};
+import { COLLATERAL_PAIR, LOAN_TYPES } from '../../constants';
 
 const { ISSUANCE_RATIO, LOCKED_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
 
@@ -39,16 +34,28 @@ const QUOTE_CURRENCY = BORROWED_CURRENCY_KEY;
 export const LoanCard = ({
 	type,
 	toggleGweiPopup,
-	gasInfo: { gasLimit, gasPrice, currentWallet },
+	gasInfo: { gasLimit, gasPrice },
 	ethRate,
-	walletInfo: { balances },
+	walletInfo: { balances, currentWallet },
 	isInteractive = true,
+	selectedLoan,
 }) => {
 	const { t } = useTranslation();
-	const [baseAmount, setBaseAmount] = useState('');
-	const [quoteAmount, setQuoteAmount] = useState('');
-
 	const isCreateLoan = type === LOAN_TYPES.CREATE;
+
+	const [baseAmount, setBaseAmount] = useState(
+		selectedLoan != null ? selectedLoan.collateralValue : ''
+	);
+	const [quoteAmount, setQuoteAmount] = useState(
+		selectedLoan != null ? selectedLoan.amountBorrowed : ''
+	);
+
+	useEffect(() => {
+		if (selectedLoan != null) {
+			setBaseAmount(selectedLoan.collateralValue);
+			setQuoteAmount(selectedLoan.amountBorrowed);
+		}
+	}, [selectedLoan]);
 
 	const showGweiPopup = () => toggleGweiPopup(true);
 
@@ -68,7 +75,7 @@ export const LoanCard = ({
 				<FormInputRow>
 					<TradeInput
 						synth={BASE_CURRENCY}
-						amount={baseAmount}
+						amount={`${baseAmount}`}
 						label={
 							<>
 								<FormInputLabel>
@@ -143,12 +150,13 @@ export const LoanCard = ({
 	);
 };
 
-LoanCard.defaultProps = {
-	type: PropTypes.oneOf([Object.keys(LOAN_TYPES)]).isRequired,
+LoanCard.propTypes = {
+	type: PropTypes.string.isRequired,
 	toggleGweiPopup: PropTypes.func.isRequired,
 	gasInfo: PropTypes.object,
-	ethRate: PropTypes.string,
+	ethRate: PropTypes.number,
 	isInteractive: PropTypes.bool,
+	selectedLoan: PropTypes.object,
 };
 
 const StyledCard = styled(Card)`
