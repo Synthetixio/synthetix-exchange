@@ -55,8 +55,8 @@ const reducer = (state = defaultState, action = {}) => {
 			return { ...state, baseSynth: base, quoteSynth: quote };
 		}
 		case SET_EXCHANGE_RATES: {
-			const { synthRates, ethRate } = action.payload;
-			return { ...state, exchangeRates: synthRates, ethRate };
+			const { synthsRates, ethRate } = action.payload;
+			return { ...state, exchangeRates: synthsRates, ethRate };
 		}
 		case SET_FROZEN_SYNTHS: {
 			const frozenSynths = action.payload;
@@ -99,14 +99,14 @@ const convertBaseSynth = (synth, rates) => {
 	return convertedRates;
 };
 
-export const updateExchangeRates = ({ synthRates, ethRate }) => {
+export const updateExchangeRates = ({ synthsRates, ethRate }) => {
 	let rateObject = {};
-	Object.keys(synthRates).forEach(synth => {
-		rateObject[synth] = convertBaseSynth(synth, synthRates);
+	Object.keys(synthsRates).forEach(synth => {
+		rateObject[synth] = convertBaseSynth(synth, synthsRates);
 	});
 	return {
 		type: SET_EXCHANGE_RATES,
-		payload: { synthRates: rateObject, ethRate },
+		payload: { synthsRates: rateObject, ethRate },
 	};
 };
 
