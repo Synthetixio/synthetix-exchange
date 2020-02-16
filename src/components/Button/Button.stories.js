@@ -7,8 +7,8 @@ export default {
 	title: 'Buttons',
 };
 
-export const Primary = () => <ButtonPrimary onClick={action('clicked')}>primary</ButtonPrimary>;
+export const primary = () => <ButtonPrimary onClick={action('clicked')}>primary</ButtonPrimary>;
 
-export const PrimarySmall = () => (
+export const primarySmall = () => (
 	<ButtonPrimarySmall onClick={action('clicked')}>primary small</ButtonPrimarySmall>
 );

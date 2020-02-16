@@ -28,7 +28,7 @@ import GweiPopup from '../../components/GweiPopup';
 import Trade from '../Trade';
 import Loans from '../Loans';
 
-import { lightTheme, darkTheme } from '../../styles/theme';
+import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
 import { ROUTES } from '../../constants/routes';
 
 const Root = ({
@@ -93,7 +93,7 @@ const Root = ({
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
-	const themeStyle = currentTheme === 'dark' ? darkTheme : lightTheme;
+	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
 		<ThemeProvider theme={themeStyle}>

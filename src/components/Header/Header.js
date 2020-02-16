@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
@@ -19,7 +20,7 @@ import { HEADER_HEIGHT } from '../../constants/ui';
 
 import { FlexDivCentered, ExternalLink, Link } from '../../shared/commonStyles';
 
-const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
+export const Header = ({ toggleWalletPopup, walletInfo, currentTheme }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const { t } = useTranslation();
 
@@ -29,7 +30,7 @@ const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 		<Container>
 			<HeaderSection>
 				<Link to={ROUTES.Root}>
-					<Logo theme={theme} />
+					<Logo theme={currentTheme} />
 				</Link>
 				<Network>
 					<NetworkLabel>{networkName}</NetworkLabel>
@@ -41,7 +42,7 @@ const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 				<ExternalMenuLink href={LINKS.Support}>{t('header.links.support')}</ExternalMenuLink>
 				<ThemeSwitcher />
 				{currentWallet != null ? (
-					<WalletAddressWidget />
+					<WalletAddressWidget walletInfo={walletInfo} />
 				) : (
 					<ButtonPrimarySmall onClick={showWalletPopup}>
 						{t('header.connect-wallet')}
@@ -50,6 +51,12 @@ const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 			</HeaderSection>
 		</Container>
 	);
+};
+
+Header.propTypes = {
+	currentTheme: PropTypes.string.isRequired,
+	walletInfo: PropTypes.object.isRequired,
+	toggleWalletPopup: PropTypes.func.isRequired,
 };
 
 const Container = styled(FlexDivCentered)`
@@ -101,7 +108,7 @@ const NetworkLabel = styled(DataMedium)`
 
 const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
-	theme: getCurrentTheme(state),
+	currentTheme: getCurrentTheme(state),
 });
 
 const mapDispatchToProps = {
