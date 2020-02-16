@@ -4,16 +4,13 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useTable, useSortBy } from 'react-table';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Card from '../../../../components/Card';
 import { ButtonPrimarySmall } from '../../../../components/Button';
 import { HeadingSmall } from '../../../../components/Typography';
 
 import { formatTxTimestamp, formatCurrencyWithKey } from '../../../../utils/formatters';
-
-import { ReactComponent as SortIconUp } from '../../../../assets/images/icon-sort-up.svg';
-import { ReactComponent as SortIconDown } from '../../../../assets/images/icon-sort-down.svg';
-import { ReactComponent as SortIconNeutral } from '../../../../assets/images/icon-sort-neutral.svg';
 
 import { CARD_HEIGHT } from '../../../../constants/ui';
 import { COLLATERAL_PAIR, LOAN_STATUS } from '../../constants';
@@ -120,12 +117,12 @@ export const MyLoans = ({ onCloseButtonClick }) => {
 											<span style={{ marginLeft: '5px' }}>
 												{column.isSorted ? (
 													column.isSortedDesc ? (
-														<SortIconDown />
+														<FontAwesomeIcon icon="sort-down" />
 													) : (
-														<SortIconUp />
+														<FontAwesomeIcon icon="sort-up" />
 													)
 												) : (
-													<SortIconNeutral />
+													<FontAwesomeIcon icon="sort" />
 												)}
 											</span>
 										)}
