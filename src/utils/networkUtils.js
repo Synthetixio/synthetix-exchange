@@ -82,16 +82,20 @@ const getPriceLimit = (networkInfo, gasPriceLimit) => {
 };
 
 export const getGasInfo = async () => {
-	const isKovan = snxJSConnector.snxJS.contractSettings.networkId === '42';
-	const results = await Promise.all([
-		fetch('https://ethgasstation.info/json/ethgasAPI.json'),
-		isKovan ? null : snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
-	]);
-	const networkInfo = await results[0].json();
-	const gasPriceLimit = isKovan
-		? 0
-		: Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
-	return getPriceLimit(networkInfo, gasPriceLimit);
+	try {
+		const isKovan = snxJSConnector.snxJS.contractSettings.networkId === '42';
+		const results = await Promise.all([
+			fetch('https://ethgasstation.info/json/ethgasAPI.json'),
+			isKovan ? null : snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
+		]);
+		const networkInfo = await results[0].json();
+		const gasPriceLimit = isKovan
+			? 0
+			: Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
+		return getPriceLimit(networkInfo, gasPriceLimit);
+	} catch (e) {
+		console.log('Error while getting gas info', e);
+	}
 };
 
 export function onMetamaskAccountChange(cb) {
