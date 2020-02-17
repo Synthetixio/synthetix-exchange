@@ -24,6 +24,8 @@ const Header = ({ toggleWalletPopup, walletInfo, theme }) => {
 				<Network>
 					<NetworkLabel>{networkName || 'mainnet'}</NetworkLabel>
 				</Network>
+
+				<NetworkLabel style={{ fontStyle: 'italic' }}>{'[Beta version]'}</NetworkLabel>
 			</HeaderBlock>
 			<HeaderBlock>
 				{/* <HeaderLink to={'/trade'}>

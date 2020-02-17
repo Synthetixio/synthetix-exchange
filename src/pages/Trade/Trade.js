@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { getAvailableSynths } from '../../ducks';
 
 import Header from '../../components/Header';
+import Banner from '../../components/Banner';
 import PairList from '../../components/PairList';
 import ChartPanel from '../../components/ChartPanel';
 import OrderBook from '../../components/OrderBook';
@@ -19,6 +20,7 @@ const Trade = () => {
 		<MainLayout>
 			<WalletPopup />
 			<GweiPopup />
+			<Banner />
 			<Header />
 			<TradeLayout>
 				<Container>
