@@ -54,30 +54,48 @@ export const getTransactionPrice = (gasPrice, gasLimit, ethPrice) => {
 	return (gasPrice * ethPrice * gasLimit) / GWEI_UNIT;
 };
 
-export const getGasInfo = async () => {
-	const results = await Promise.all([
-		fetch('https://ethgasstation.info/json/ethgasAPI.json'),
-		snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
-	]);
-	const networkInfo = await results[0].json();
-	const gasPriceLimit = Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
-
+const getPriceLimit = (networkInfo, gasPriceLimit) => {
 	const fast = networkInfo.fast / 10;
 	const average = networkInfo.average / 10;
 	const slow = networkInfo.safeLow / 10;
 
-	const fastestAllowed = gasPriceLimit;
-	const averageAllowed = Math.min(average, gasPriceLimit);
-	const slowAllowed = Math.min(slow, gasPriceLimit);
-
-	return {
-		fastestAllowed,
-		averageAllowed,
-		slowAllowed,
+	const speed = {
 		fast,
 		average,
 		slow,
 	};
+
+	if (gasPriceLimit) {
+		return {
+			...speed,
+			fastestAllowed: gasPriceLimit,
+			averageAllowed: Math.min(average, gasPriceLimit),
+			slowAllowed: Math.min(slow, gasPriceLimit),
+		};
+	}
+	return {
+		...speed,
+		fastestAllowed: fast,
+		averageAllowed: average,
+		slowAllowed: slow,
+	};
+};
+
+export const getGasInfo = async () => {
+	try {
+		const isKovan = snxJSConnector.snxJS.contractSettings.networkId === '42';
+		const results = await Promise.all([
+			fetch('https://ethgasstation.info/json/ethgasAPI.json'),
+			isKovan ? null : snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
+		]);
+		const networkInfo = await results[0].json();
+		const gasPriceLimit = isKovan
+			? 0
+			: Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
+		return getPriceLimit(networkInfo, gasPriceLimit);
+	} catch (e) {
+		console.log('Error while getting gas info', e);
+	}
 };
 
 export function onMetamaskAccountChange(cb) {
