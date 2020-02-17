@@ -17,7 +17,7 @@ const Loans = () => {
 			<OverviewContainer>
 				<Dashboard />
 				<SectionVerticalSpacer />
-				<MyLoans onCloseButtonClick={handleCloseLoan} />
+				<MyLoans onSelectLoan={handleCloseLoan} selectedLoan={selectedLoan} />
 			</OverviewContainer>
 			<LoanCardsContainer>
 				<LoanCard type="create" isInteractive={true} />

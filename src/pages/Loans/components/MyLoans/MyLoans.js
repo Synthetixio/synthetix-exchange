@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { useTable, useSortBy } from 'react-table';
+import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Card from '../../../../components/Card';
@@ -12,8 +12,8 @@ import { HeadingSmall } from '../../../../components/Typography';
 
 import { formatTxTimestamp, formatCurrencyWithKey } from '../../../../utils/formatters';
 
-import { CARD_HEIGHT } from '../../../../constants/ui';
 import { COLLATERAL_PAIR, LOAN_STATUS } from '../../constants';
+import { CARD_HEIGHT } from '../../../../constants/ui';
 
 const { LOCKED_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
 
@@ -38,7 +38,7 @@ const data = [
 	},
 ];
 
-export const MyLoans = ({ onCloseButtonClick }) => {
+export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
 	const { t } = useTranslation();
 
 	const columns = useMemo(
@@ -47,6 +47,7 @@ export const MyLoans = ({ onCloseButtonClick }) => {
 				Header: t('loans.my-loans.table.amount-borrowed-col'),
 				accessor: 'amountBorrowed',
 				Cell: cellProps => formatCurrencyWithKey(BORROWED_CURRENCY_KEY, cellProps.cell.value),
+				width: 200,
 				sortable: true,
 			},
 			{
@@ -82,7 +83,10 @@ export const MyLoans = ({ onCloseButtonClick }) => {
 			{
 				id: 'close',
 				Cell: cellProps => (
-					<ButtonPrimarySmall onClick={() => onCloseButtonClick(cellProps.row.values)}>
+					<ButtonPrimarySmall
+						onClick={() => onSelectLoan(cellProps.row.values)}
+						disabled={cellProps.row.values.status === LOAN_STATUS.CLOSED}
+					>
 						{t('common.actions.close')}
 					</ButtonPrimarySmall>
 				),
@@ -97,7 +101,8 @@ export const MyLoans = ({ onCloseButtonClick }) => {
 			columns,
 			data,
 		},
-		useSortBy
+		useSortBy,
+		useFlexLayout
 	);
 
 	return (
@@ -107,43 +112,54 @@ export const MyLoans = ({ onCloseButtonClick }) => {
 			</Card.Header>
 			<StyledCardBody>
 				<Table {...getTableProps()}>
-					<thead>
-						{headerGroups.map(headerGroup => (
-							<tr {...headerGroup.getHeaderGroupProps()}>
-								{headerGroup.headers.map(column => (
-									<th {...column.getHeaderProps(column.getSortByToggleProps())}>
-										{column.render('Header')}
-										{column.sortable && (
-											<span style={{ marginLeft: '5px' }}>
-												{column.isSorted ? (
-													column.isSortedDesc ? (
-														<FontAwesomeIcon icon="sort-down" />
-													) : (
-														<FontAwesomeIcon icon="sort-up" />
-													)
+					{headerGroups.map(headerGroup => (
+						<TableRow {...headerGroup.getHeaderGroupProps()}>
+							{headerGroup.headers.map(column => (
+								<TableCellHead
+									{...column.getHeaderProps(column.getSortByToggleProps())}
+									className="th"
+								>
+									{column.render('Header')}
+									{column.sortable && (
+										<span style={{ marginLeft: '5px' }}>
+											{column.isSorted ? (
+												column.isSortedDesc ? (
+													<FontAwesomeIcon icon="sort-down" />
 												) : (
-													<FontAwesomeIcon icon="sort" />
-												)}
-											</span>
-										)}
-									</th>
-								))}
-							</tr>
-						))}
-					</thead>
-					<tbody {...getTableBodyProps()}>
+													<FontAwesomeIcon icon="sort-up" />
+												)
+											) : (
+												<FontAwesomeIcon icon="sort" />
+											)}
+										</span>
+									)}
+								</TableCellHead>
+							))}
+						</TableRow>
+					))}
+					<TableBody {...getTableBodyProps()}>
 						{rows.map(row => {
 							prepareRow(row);
 
+							const isLoanClosed = row.original.status === LOAN_STATUS.CLOSED;
+
 							return (
-								<tr {...row.getRowProps()}>
+								<TableBodyRow
+									{...row.getRowProps()}
+									className="tr"
+									onClick={isLoanClosed ? undefined : () => onSelectLoan(row.original)}
+									isLoanClosed={isLoanClosed}
+									isSelectedLoan={
+										selectedLoan != null && selectedLoan.loanId === row.original.loanId
+									}
+								>
 									{row.cells.map(cell => (
-										<td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
 									))}
-								</tr>
+								</TableBodyRow>
 							);
 						})}
-					</tbody>
+					</TableBody>
 				</Table>
 			</StyledCardBody>
 		</Card>
@@ -154,34 +170,60 @@ const StyledCardBody = styled(Card.Body)`
 	padding: 0;
 `;
 
-const Table = styled.table`
-	border-collapse: collapse;
+const Table = styled.div`
 	width: 100%;
-	tr {
+`;
+
+const TableRow = styled.div`
+	background-color: ${props => props.theme.colors.surfaceL3};
+	margin-bottom: 8px;
+`;
+
+const TableBody = styled.div`
+	/* TODO: this is temporary to make sure scrolling looks good with multiple rows - it needs to stretch to the height of the remaining space. */
+	max-height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+`;
+
+const TableBodyRow = styled(TableRow)`
+	background-color: ${props =>
+		props.isSelectedLoan ? props.theme.colors.accentDark : props.theme.colors.surfaceL3};
+	&:hover {
+		background-color: ${props => props.theme.colors.accentDark};
 		> * {
-			color: ${props => props.theme.colors.fontPrimary};
-			height: ${CARD_HEIGHT};
-			text-align: left;
-			font-size: 12px;
-			padding: 10px 0;
-			&:first-child {
-				padding-left: 18px;
-			}
-			&:last-child {
-				text-align: right;
-				padding-right: 18px;
-			}
+			transition: transform 0.2s ease-out;
+			transform: scale(1.02);
 		}
-		> th {
-			background-color: ${props => props.theme.colors.surfaceL3};
-			color: ${props => props.theme.colors.fontTertiary};
-			user-select: none;
-		}
+	}
+	cursor: ${props => (props.isLoanClosed ? 'default' : 'pointer')};
+`;
+
+const TableCell = styled.div`
+	display: flex;
+	align-items: center;
+	color: ${props => props.theme.colors.fontPrimary};
+	font-size: 12px;
+	padding: 10px 0;
+	height: ${CARD_HEIGHT};
+	box-sizing: border-box;
+	&:first-child {
+		padding-left: 18px;
+	}
+	&:last-child {
+		justify-content: flex-end;
+		padding-right: 18px;
 	}
 `;
 
+const TableCellHead = styled(TableCell)`
+	color: ${props => props.theme.colors.fontTertiary};
+	user-select: none;
+`;
+
 MyLoans.propTypes = {
-	onCloseButtonClick: PropTypes.func.isRequired,
+	onSelectLoan: PropTypes.func.isRequired,
+	selectedLoan: PropTypes.object,
 };
 
 export default connect(null, null)(MyLoans);
