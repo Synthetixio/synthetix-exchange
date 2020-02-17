@@ -1,4 +1,5 @@
 import { persistState, getPersistedState } from '../config/store';
+import { isLightTheme } from '../styles/theme';
 
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 const TOGGLE_WALLET_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
@@ -42,7 +43,7 @@ const reducer = (state = defaultState, action = {}) => {
 				depotPopupIsVisible: action.payload,
 			};
 		case TOGGLE_THEME: {
-			const theme = state.theme === 'light' ? 'dark' : 'light';
+			const theme = isLightTheme(state.theme) ? 'dark' : 'light';
 			persistState('ui', { theme });
 			return {
 				...state,

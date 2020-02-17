@@ -1,16 +1,26 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { color } from 'styled-system';
 
-export const LabelMedium = styled.span`
-	${color}
-	font-size: 14px;
+export const labelCSS = css`
+	${color};
 	font-family: 'apercu-medium', sans-serif;
-	color: ${props => (props.color ? props.color : props.theme.colors.fontPrimary)};
+	color: ${props => props.color || props.theme.colors.fontPrimary};
+`;
+
+export const labelMediumCSS = css`
+	${labelCSS};
+	font-size: 14px;
+`;
+
+export const labelSmallCSS = css`
+	${labelCSS}
+	font-size: 12px;
+`;
+
+export const LabelMedium = styled.span`
+	${labelMediumCSS}
 `;
 
 export const LabelSmall = styled.span`
-	${color}
-	font-size: 12px;
-	font-family: 'apercu-medium', sans-serif;
-	color: ${props => (props.color ? props.color : props.theme.colors.fontPrimary)};
+	${labelSmallCSS}
 `;

@@ -1,5 +1,6 @@
 import { setSigner } from '../utils/snxJSConnector';
 import { getAddress } from '../utils/formatters';
+import { defaultNetwork } from '../utils/networkUtils';
 
 const UPDATE_WALLET_STATUS = 'WALLET/UPDATE_WALLET_STATUS';
 const RESET_WALLET_STATUS = 'WALLET/RESET_WALLET_STATUS';
@@ -15,8 +16,8 @@ const defaultState = {
 	currentWallet: null,
 	derivationPath: localStorage.getItem('derivationPath'),
 	balances: null,
-	networkId: null,
-	networkName: null,
+	networkId: defaultNetwork.networkId,
+	networkName: defaultNetwork.networkName,
 };
 
 // Reducer

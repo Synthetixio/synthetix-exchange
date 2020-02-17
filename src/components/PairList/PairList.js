@@ -68,6 +68,7 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 	useEffect(() => {
 		setSynthSearch('');
 		setFilteredSynths(synthList.filter(synth => synth.quote.name === quote.name));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [quote.name]);
 
 	useEffect(() => {

@@ -7,6 +7,6 @@ export default {
 	title: 'Typography/Data',
 };
 
-export const Large = () => <DataLarge>{text('Text', 'Lorem ipsum')}</DataLarge>;
-export const Medium = () => <DataMedium>{text('Text', 'Lorem ipsum')}</DataMedium>;
-export const Small = () => <DataSmall>{text('Text', 'Lorem ipsum')}</DataSmall>;
+export const large = () => <DataLarge>{text('Text', 'Lorem ipsum')}</DataLarge>;
+export const medium = () => <DataMedium>{text('Text', 'Lorem ipsum')}</DataMedium>;
+export const small = () => <DataSmall>{text('Text', 'Lorem ipsum')}</DataSmall>;

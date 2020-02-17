@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import snxJSConnector from '../../utils/snxJSConnector';
@@ -20,10 +20,17 @@ import {
 import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
-import Trade from '../Trade';
-import Home from '../Home';
+import { MainLayout } from '../../shared/commonStyles';
+import Banner from '../../components/Banner';
+import Header from '../../components/Header';
+import WalletPopup from '../../components/WalletPopup';
+import GweiPopup from '../../components/GweiPopup';
 
-import { lightTheme, darkTheme } from '../../styles/theme';
+import Trade from '../Trade';
+import Loans from '../Loans';
+
+import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
+import { ROUTES } from '../../constants/routes';
 
 const Root = ({
 	setAvailableSynths,
@@ -87,24 +94,25 @@ const Root = ({
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
-	const themeStyle = currentTheme === 'dark' ? darkTheme : lightTheme;
+	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
 		<ThemeProvider theme={themeStyle}>
-			<div>
-				<Router>
-					<RootContainer>
+			<Router history={history}>
+				<RootContainer>
+					<MainLayout>
+						<Banner />
+						<Header />
+						<WalletPopup />
+						<GweiPopup />
 						<Switch>
-							<Route path="/trade">
-								<Trade />
-							</Route>
-							<Route path="/">
-								<Trade />
-							</Route>
+							<Route path={ROUTES.Trade} component={Trade} />
+							<Route path={ROUTES.Loans} component={Loans} />
+							<Redirect to={ROUTES.Trade} />
 						</Switch>
-					</RootContainer>
-				</Router>
-			</div>
+					</MainLayout>
+				</RootContainer>
+			</Router>
 		</ThemeProvider>
 	);
 };
