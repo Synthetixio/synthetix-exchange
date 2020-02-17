@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { formatCurrency } from '../../../utils/formatters';
-import { getTransactionPrice } from '../../../utils/networkUtils';
+import { formatCurrency } from '../../../../utils/formatters';
+import { getTransactionPrice } from '../../../../utils/networkUtils';
 
-import { ButtonPrimary } from '../../../components/Button';
-import Card from '../../../components/Card';
-import { TradeInput } from '../../../components/Input';
-import { DataSmall, HeadingSmall } from '../../../components/Typography';
-import { getGasInfo, getEthRate, getWalletInfo } from '../../../ducks';
+import { ButtonPrimary } from '../../../../components/Button';
+import Card from '../../../../components/Card';
+import { TradeInput } from '../../../../components/Input';
+import { DataSmall, HeadingSmall } from '../../../../components/Typography';
+import { getGasInfo, getEthRate, getWalletInfo } from '../../../../ducks';
 import {
 	TextButton,
 	FlexDivRow,
@@ -19,22 +19,22 @@ import {
 	FormInputLabel,
 	FormInputLabelSmall,
 	LinkTextSmall,
-} from '../../../shared/commonStyles';
+} from '../../../../shared/commonStyles';
 
-import { toggleGweiPopup } from '../../../ducks/ui';
-import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from '../../../constants/currency';
-import { getCurrencyKeyBalance } from '../../../utils/balances';
+import { toggleGweiPopup } from '../../../../ducks/ui';
+import { getCurrencyKeyBalance } from '../../../../utils/balances';
+
+import { COLLATERAL_PAIR } from '../../constants';
 
 const LOAN_TYPES = {
 	CREATE: 'create',
 	CLOSE: 'close',
 };
 
-const BASE_CURRENCY = CRYPTO_CURRENCY_MAP.ETH;
-const QUOTE_CURRENCY = SYNTHS_MAP.sETH;
+const { ISSUANCE_RATIO, LOCKED_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
 
-// TODO: get from the smart contract
-const ISSUANCE_RATIO = 1.5;
+const BASE_CURRENCY = LOCKED_CURRENCY_KEY;
+const QUOTE_CURRENCY = BORROWED_CURRENCY_KEY;
 
 export const LoanCard = ({
 	type,

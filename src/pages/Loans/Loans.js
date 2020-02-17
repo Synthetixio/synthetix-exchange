@@ -4,10 +4,13 @@ import styled from 'styled-components';
 import { CenteredPageLayout, SectionVerticalSpacer } from '../../shared/commonStyles';
 
 import LoanCard from './components/LoanCard';
+import Dashboard from './components/Dashboard';
 
 const Loans = () => (
 	<CenteredPageLayout>
-		<OverviewContainer>test</OverviewContainer>
+		<OverviewContainer>
+			<Dashboard />
+		</OverviewContainer>
 		<LoanCardsContainer>
 			<LoanCard type="create" isInteractive={true} />
 			<SectionVerticalSpacer />

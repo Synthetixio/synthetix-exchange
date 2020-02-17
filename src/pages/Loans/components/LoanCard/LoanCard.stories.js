@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoanCard } from './LoanCard';
-import { loggedInUserWithBalances } from '../../../../.storybook/mocks/reducers/wallet';
+import { loggedInUserWithBalances } from '../../../../../.storybook/mocks/reducers/wallet';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 
