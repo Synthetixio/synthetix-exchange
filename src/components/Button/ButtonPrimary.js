@@ -14,6 +14,7 @@ const ButtonPrimary = styled.button`
 	background-color: ${props => props.theme.colors.buttonDefault};
 	&:disabled {
 		opacity: 0.5;
+		cursor: default;
 	}
 	&:hover {
 		&:not(:disabled) {

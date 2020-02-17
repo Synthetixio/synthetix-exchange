@@ -1,40 +1,54 @@
 import React from 'react';
 import styled, { withTheme } from 'styled-components';
 
+import PropTypes from 'prop-types';
 import GenericInput from './Input';
 import { DataMedium } from '../Typography';
+import { FlexDivCentered, FlexDiv } from '../../shared/commonStyles';
 
-const Input = ({ synth = 'sUSD', theme: { colors }, onAmountChange, amount }) => {
-	const onChange = e => {
-		var regExp = /^\d*\.?\d*$/;
-		if (!e.target.value.match(regExp)) return;
-		return onAmountChange(e.target.value);
-	};
+const TradeInput = ({ label, synth = 'sUSD', theme: { colors }, onChange, amount, inputProps }) => {
+	const handleOnChange = e => onChange(e, e.target.value);
+
 	return (
-		<Container>
-			<Synth>
-				<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
-				<SynthName>{synth}</SynthName>
-			</Synth>
-			<GenericInput
-				value={amount}
-				placeholder="0"
-				color={colors.fontPrimary}
-				onChange={onChange}
-			></GenericInput>
-		</Container>
+		<>
+			{label != null && <Label>{label}</Label>}
+			<Container>
+				<Synth>
+					<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
+					<SynthName>{synth}</SynthName>
+				</Synth>
+				<GenericInput
+					type="number"
+					value={amount}
+					placeholder="0"
+					color={colors.fontPrimary}
+					onChange={handleOnChange}
+					{...inputProps}
+				></GenericInput>
+			</Container>
+		</>
 	);
 };
 
-const Container = styled.div`
+TradeInput.defaultProps = {
+	label: PropTypes.oneOf([PropTypes.string, PropTypes.node]),
+	synth: PropTypes.string.isRequired,
+	theme: PropTypes.object.isRequired,
+	onAmountChange: PropTypes.func.isRequired,
+	amount: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
+};
+
+const Label = styled(FlexDivCentered)`
+	justify-content: space-between;
+	margin-bottom: 6px;
+`;
+
+const Container = styled(FlexDiv)`
 	width: 100%;
-	display: flex;
 	background-color: ${props => props.theme.colors.surfaceL3};
 `;
 
-const Synth = styled.div`
-	display: flex;
-	align-items: center;
+const Synth = styled(FlexDivCentered)`
 	border: 1px solid ${props => props.theme.colors.accentLight};
 	border-right: none;
 	padding: 0 10px;
@@ -51,4 +65,4 @@ const SynthName = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontSecondary};
 `;
 
-export default withTheme(Input);
+export default withTheme(TradeInput);

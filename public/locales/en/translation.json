@@ -6,5 +6,62 @@
 			"loans": "LOANS",
 			"support": "SUPPORT"
 		}
+	},
+	"loans": {
+		"collateral-overview": {
+			"title": "{{currency}} AS COLLATERAL",
+			"cards": {
+				"interest-rate": "INTEREST RATE",
+				"minting-fee": "MINTING FEE",
+				"number-of-loans": "# OF LOANS",
+				"currency-limit": "{{currency}} LIMIT",
+				"currency-supply": "{{currency}} SUPPLY",
+				"min-loan-size": "MIN. LOAN SIZE",
+				"collaboration-size": "COLLAT RATIO"
+			}
+		},
+		"my-loans": {
+			"title": "MY LOANS",
+			"table": {
+				"amount-borrowed-col": "AMOUNT BORROWED",
+				"collateral-col": "COLLATERAL",
+				"time-opened-col": "TIME OPENED",
+				"current-interest-col": "CURRENT INTEREST",
+				"fees-payable-col": "FEES PAYABLE",
+				"status-payable-col": "STATUS"
+			}
+		},
+		"loan-card": {
+			"create-loan": {
+				"title": "CREATE A LOAN",
+				"currency-locked": "{{currency}} being locked:",
+				"currency-borrowed": "{{currency}} being borrowed:"
+			},
+			"close-loan": {
+				"title": "CLOSE LOAN",
+				"currency-unlocked": "{{currency}} being unlocked:",
+				"currency-burned": "{{currency}} being burned:"
+			}
+		}
+	},
+	"common": {
+		"gas-limit": "GAS LIMIT",
+		"gas-price-gwei": "GAS PRICE (GWEI)",
+		"actions": {
+			"submit": "SUBMIT",
+			"close": "CLOSE",
+			"edit": "EDIT"
+		},
+		"tx-status": {
+			"waiting": "Waiting",
+			"open": "Open",
+			"closed": "Closed"
+		},
+		"wallet": {
+			"your-wallet": "YOUR WALLET",
+			"currency-balance": "{{currency}} BALANCE",
+			"balance-currency": "Balance: {{balance}}",
+			"locked-currency": "LOCKED {{currency}}"
+		}
 	}
 }

@@ -23,12 +23,23 @@ export const loggedInUser = {
 	walletType: 'Metamask',
 };
 
+export const balances = {
+	synths: {
+		balances: {
+			sBTC: {
+				balance: 0.000628320060412509,
+				usdBalance: 6.50700536879026,
+			},
+		},
+		usdBalance: 6.50700536879026,
+	},
+	eth: {
+		balance: 0.04243316499453552,
+		usdBalance: 11.380247270217652,
+	},
+};
+
 export const loggedInUserWithBalances = {
 	...loggedInUser,
-	balances: {
-		eth: {
-			balance: 0.04243316499453552,
-			usdBalance: 10.121873108624278,
-		},
-	},
+	balances,
 };

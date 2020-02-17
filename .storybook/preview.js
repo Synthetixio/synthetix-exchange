@@ -9,6 +9,7 @@ import withReactRouterProvider from './providers/withReactRouterProvider';
 import { themes, lightTheme, darkTheme } from '../src/styles/theme';
 
 import './libs/i18n';
+import '../src/index.css';
 
 addDecorator(withReduxProvider);
 addDecorator(withReactRouterProvider);
