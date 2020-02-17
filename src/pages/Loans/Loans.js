@@ -1,23 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { CenteredPageLayout, SectionVerticalSpacer } from '../../shared/commonStyles';
 
 import LoanCard from './components/LoanCard';
 import Dashboard from './components/Dashboard';
+import MyLoans from './components/MyLoans';
 
-const Loans = () => (
-	<CenteredPageLayout>
-		<OverviewContainer>
-			<Dashboard />
-		</OverviewContainer>
-		<LoanCardsContainer>
-			<LoanCard type="create" isInteractive={true} />
-			<SectionVerticalSpacer />
-			<LoanCard type="close" isInteractive={false} />
-		</LoanCardsContainer>
-	</CenteredPageLayout>
-);
+const Loans = () => {
+	const [selectedLoan, setSelectedLoan] = useState(null);
+
+	const handleCloseLoan = loanInfo => setSelectedLoan(loanInfo);
+
+	return (
+		<CenteredPageLayout>
+			<OverviewContainer>
+				<Dashboard />
+				<SectionVerticalSpacer />
+				<MyLoans onSelectLoan={handleCloseLoan} selectedLoan={selectedLoan} />
+			</OverviewContainer>
+			<LoanCardsContainer>
+				<LoanCard type="create" isInteractive={true} />
+				<SectionVerticalSpacer />
+				<LoanCard type="close" isInteractive={selectedLoan != null} selectedLoan={selectedLoan} />
+			</LoanCardsContainer>
+		</CenteredPageLayout>
+	);
+};
 
 const OverviewContainer = styled.div`
 	flex: 1;

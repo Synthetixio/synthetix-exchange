@@ -30,12 +30,12 @@ const TradeInput = ({ label, synth = 'sUSD', theme: { colors }, onChange, amount
 	);
 };
 
-TradeInput.defaultProps = {
-	label: PropTypes.oneOf([PropTypes.string, PropTypes.node]),
+TradeInput.propTypes = {
+	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 	synth: PropTypes.string.isRequired,
 	theme: PropTypes.object.isRequired,
-	onAmountChange: PropTypes.func.isRequired,
-	amount: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
+	onChange: PropTypes.func.isRequired,
+	amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 const Label = styled(FlexDivCentered)`

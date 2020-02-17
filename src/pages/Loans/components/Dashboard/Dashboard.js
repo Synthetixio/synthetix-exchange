@@ -9,7 +9,11 @@ import { DataSmall, HeadingSmall, DataLarge } from '../../../../components/Typog
 import { getWalletInfo } from '../../../../ducks';
 
 import { getCurrencyKeyBalance } from '../../../../utils/balances';
-import { formatPercentage, formatCurrency } from '../../../../utils/formatters';
+import {
+	formatPercentage,
+	formatCurrency,
+	formatCurrencyWithKey,
+} from '../../../../utils/formatters';
 
 import { COLLATERAL_PAIR } from '../../constants';
 import { CARD_HEIGHT } from '../../../../constants/ui';
@@ -57,7 +61,7 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 		},
 		{
 			label: t('loans.dashboard.loan-info.min-loan-size'),
-			value: `${formatCurrency(MIN_LOAN_SIZE)} ${BORROWED_CURRENCY_KEY}`,
+			value: formatCurrencyWithKey(BORROWED_CURRENCY_KEY, MIN_LOAN_SIZE),
 		},
 		{
 			label: t('loans.dashboard.loan-info.collateral-size'),
@@ -106,7 +110,7 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 	);
 };
 
-Dashboard.defaultProps = {
+Dashboard.propTypes = {
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.string,
 	isInteractive: PropTypes.bool,
@@ -144,7 +148,7 @@ const Table = styled.table`
 	tr {
 		text-align: left;
 		> * {
-			color: ${props => props.theme.colors.fontTertiary};
+			color: ${props => props.theme.colors.fontPrimary};
 			height: ${CARD_HEIGHT};
 			text-align: left;
 			&:first-child {

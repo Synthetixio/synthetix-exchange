@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
 import store from './config/store';
-import './index.css';
 import Root from './pages/Root';
+
 import './i18n';
+import './fontAwesome';
+import './index.css';
 
 import bugsnag from '@bugsnag/js';
 import bugsnagReact from '@bugsnag/plugin-react';
