@@ -23,6 +23,7 @@ import { toggleGweiPopup } from '../../ducks/ui';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';
 import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
+import { Z_INDEX } from '../../constants/ui';
 
 const TradeBox = ({
 	theme: { colors },
@@ -351,7 +352,7 @@ const InputPopup = styled.div`
 	padding: 8px 10px;
 	border-radius: 1px;
 	transform: translateY(calc(100% + 6px));
-	z-index: 100;
+	z-index: ${Z_INDEX.TOOLTIP};
 	opacity: ${props => (props.isVisible ? 1 : 0)};
 	height: ${props => (props.isVisible ? 'auto' : 0)};
 `;

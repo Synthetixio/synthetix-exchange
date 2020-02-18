@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { DataSmall, DataMedium } from '../components/Typography';
+import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
+
+import { Z_INDEX } from '../constants/ui';
 
 export const FlexDiv = styled.div`
 	display: flex;
@@ -82,6 +84,7 @@ export const FormInputRow = styled.div`
 export const FormInputLabel = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontTertiary};
 	font-family: ${props => props.theme.fonts.medium};
+	text-transform: uppercase;
 `;
 
 export const FormInputLabelSmall = styled(DataSmall)`
@@ -99,4 +102,67 @@ export const TextButton = styled.button`
 
 export const LinkTextSmall = styled(DataSmall)`
 	color: ${props => props.theme.colors.hyperLink};
+`;
+
+export const Message = styled(FlexDivCentered)`
+	border-radius: 1px;
+	transition: opacity 0.2s ease-out;
+	width: 100%;
+	
+	${props =>
+		props.size === 'sm'
+			? css`
+					font-size: 11px;
+					padding: 5px 10px;
+			  `
+			: css`
+					font-size: 13px;
+					padding: 11px 10px;
+			  `}		
+
+	${props =>
+		props.floating &&
+		css`
+			z-index: ${Z_INDEX.TOOLTIP};
+			position: absolute;
+		`}
+
+	${props => {
+		switch (props.type) {
+			case 'error': {
+				return css`
+					background-color: ${props => props.theme.colors.red};
+				`;
+			}
+			case 'success': {
+				return css`
+					background-color: ${props => props.theme.colors.green};
+				`;
+			}
+			default:
+		}
+	}}
+`;
+
+export const InfoBox = styled.div`
+	display: grid;
+	grid-row-gap: 10px;
+	background-color: ${props => props.theme.colors.surfaceL3};
+	padding: 13px;
+`;
+
+export const InfoBoxLabel = styled(DataSmall)`
+	white-space: nowrap;
+	text-transform: none;
+	color: ${props => props.theme.colors.fontTertiary};
+	text-transform: uppercase;
+`;
+
+export const InfoBoxValue = styled(DataLarge)`
+	text-transform: none;
+	font-size: 14px;
+`;
+
+export const CurrencyKey = styled.span`
+	text-transform: none;
 `;

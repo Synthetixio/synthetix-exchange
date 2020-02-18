@@ -15,6 +15,7 @@ import { setGasPrice } from '../../ducks/transaction';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../Table';
 import { ButtonPrimary } from '../Button';
+import { Z_INDEX } from '../../constants/ui';
 
 const renderTooltipContent = ({ gasPrice, usdPrice }) => {
 	return (
@@ -173,7 +174,7 @@ const fadeOut = keyframes`
 `;
 
 const Popup = styled.div`
-	z-index: 1;
+	z-index: ${Z_INDEX.MODAL};
 	background-color: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
 	display: ${props => (props.isVisible ? 'block' : 'none')};

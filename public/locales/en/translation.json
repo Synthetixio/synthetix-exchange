@@ -9,7 +9,7 @@
 	},
 	"loans": {
 		"dashboard": {
-			"title": "{{currencyKey}} AS COLLATERAL",
+			"title": "{{currencyKey}} as collateral",
 			"loan-info": {
 				"interest-rate": "INTEREST RATE",
 				"minting-fee": "MINTING FEE",
@@ -21,7 +21,7 @@
 			}
 		},
 		"my-loans": {
-			"title": "MY LOANS",
+			"title": "my loans",
 			"table": {
 				"amount-borrowed-col": "AMOUNT BORROWED",
 				"collateral-col": "COLLATERAL",
@@ -33,24 +33,28 @@
 		},
 		"loan-card": {
 			"create-loan": {
-				"title": "CREATE A LOAN",
-				"currency-locked": "{{currencyKey}} being locked:",
-				"currency-borrowed": "{{currencyKey}} being borrowed:"
+				"title": "create a loan",
+				"currency-locked": "<0>{{currencyKey}}</0> being locked:",
+				"currency-borrowed": "<0>{{currencyKey}}</0> being borrowed:"
 			},
 			"close-loan": {
-				"title": "CLOSE LOAN",
-				"currency-unlocked": "{{currencyKey}} being unlocked:",
-				"currency-burned": "{{currencyKey}} being burned:"
+				"title": "close loan",
+				"currency-unlocked": "<0>{{currencyKey}}</0> being unlocked:",
+				"currency-burned": "<0>{{currencyKey}}</0> being burned:"
+			},
+			"errors": {
+				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
 			}
 		}
 	},
 	"common": {
-		"gas-limit": "GAS LIMIT",
-		"gas-price-gwei": "GAS PRICE (GWEI)",
+		"gas-limit": "gas limit",
+		"gas-price-gwei": "gas price (gwei)",
 		"actions": {
-			"submit": "SUBMIT",
-			"close": "CLOSE",
-			"edit": "EDIT"
+			"submit": "submit",
+			"close": "close",
+			"edit": "edit",
+			"confirm": "confirm"
 		},
 		"tx-status": {
 			"waiting": "Waiting",
@@ -62,6 +66,10 @@
 			"currency-balance": "{{currencyKey}} BALANCE",
 			"balance-currency": "Balance: {{balance}}",
 			"locked-currency": "LOCKED {{currencyKey}}"
+		},
+		"errors": {
+			"amount-exceeds-balance": "Amount exceeds balance",
+			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again"
 		}
 	}
 }

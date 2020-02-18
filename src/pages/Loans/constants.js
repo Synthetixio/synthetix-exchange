@@ -1,7 +1,7 @@
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from '../../constants/currency';
 
 export const COLLATERAL_PAIR = {
-	LOCKED_CURRENCY_KEY: CRYPTO_CURRENCY_MAP.ETH,
+	COLLATERAL_CURRENCY_KEY: CRYPTO_CURRENCY_MAP.ETH,
 	BORROWED_CURRENCY_KEY: SYNTHS_MAP.sETH,
 	MIN_LOAN_SIZE: 1,
 	ISSUANCE_RATIO: 1.5,
@@ -14,9 +14,4 @@ export const LOAN_STATUS = {
 	OPEN: 'open',
 	WAITING: 'waiting',
 	CLOSED: 'closed',
-};
-
-export const LOAN_TYPES = {
-	CREATE: 'create',
-	CLOSE: 'close',
 };

@@ -1,4 +1,4 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faSortUp, faSortDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faSort, faSortUp, faSortDown);
+library.add(faSort, faSortUp, faSortDown, faTimes);
