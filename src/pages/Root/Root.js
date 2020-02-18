@@ -64,7 +64,6 @@ const Root = ({
 	const fetchAndSetWalletBalances = useCallback(
 		async synths => {
 			if (!currentWallet) return;
-			console.log(await getWalletBalances(currentWallet, synths));
 			updateWalletBalances(await getWalletBalances(currentWallet, synths));
 		},
 		[currentWallet]
