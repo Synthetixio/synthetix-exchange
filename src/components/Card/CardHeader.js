@@ -17,6 +17,7 @@ const Container = styled(FlexDivCentered)`
 	height: ${CARD_HEIGHT};
 	padding: 0 18px;
 	justify-content: flex-start;
+	text-transform: uppercase;
 `;
 
 export default CardHeader;

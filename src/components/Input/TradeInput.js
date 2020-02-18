@@ -4,9 +4,18 @@ import styled, { withTheme } from 'styled-components';
 import PropTypes from 'prop-types';
 import GenericInput from './Input';
 import { DataMedium } from '../Typography';
-import { FlexDivCentered, FlexDiv } from '../../shared/commonStyles';
+import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
+import { SYNTHS_MAP } from '../../constants/currency';
 
-const TradeInput = ({ label, synth = 'sUSD', theme: { colors }, onChange, amount, inputProps }) => {
+const TradeInput = ({
+	label,
+	synth = SYNTHS_MAP.sUSD,
+	theme: { colors },
+	onChange,
+	amount,
+	inputProps,
+	errorMessage,
+}) => {
 	const handleOnChange = e => onChange(e, e.target.value);
 
 	return (
@@ -24,7 +33,12 @@ const TradeInput = ({ label, synth = 'sUSD', theme: { colors }, onChange, amount
 					color={colors.fontPrimary}
 					onChange={handleOnChange}
 					{...inputProps}
-				></GenericInput>
+				/>
+				{errorMessage && (
+					<StyledMessage type="error" floating={true}>
+						{errorMessage}
+					</StyledMessage>
+				)}
 			</Container>
 		</>
 	);
@@ -36,6 +50,7 @@ TradeInput.propTypes = {
 	theme: PropTypes.object.isRequired,
 	onChange: PropTypes.func.isRequired,
 	amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	errorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 };
 
 const Label = styled(FlexDivCentered)`
@@ -46,6 +61,7 @@ const Label = styled(FlexDivCentered)`
 const Container = styled(FlexDiv)`
 	width: 100%;
 	background-color: ${props => props.theme.colors.surfaceL3};
+	position: relative;
 `;
 
 const Synth = styled(FlexDivCentered)`
@@ -63,6 +79,10 @@ const SynthIcon = styled.img`
 const SynthName = styled(DataMedium)`
 	text-transform: none;
 	color: ${props => props.theme.colors.fontSecondary};
+`;
+
+export const StyledMessage = styled(Message)`
+	transform: translateY(calc(100% + 10px));
 `;
 
 export default withTheme(TradeInput);

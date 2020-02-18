@@ -1,31 +1,38 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { CenteredPageLayout, SectionVerticalSpacer } from '../../shared/commonStyles';
 
-import LoanCard from './components/LoanCard';
+import CreateLoanCard from './components/LoanCards/CreateLoanCard';
+import CloseLoanCard from './components/LoanCards/CloseLoanCard';
+
 import Dashboard from './components/Dashboard';
 import MyLoans from './components/MyLoans';
 
 const Loans = () => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 
-	const handleCloseLoan = loanInfo => setSelectedLoan(loanInfo);
+	const handleSelectLoan = loanInfo => setSelectedLoan(loanInfo);
 
 	return (
 		<CenteredPageLayout>
 			<OverviewContainer>
 				<Dashboard />
 				<SectionVerticalSpacer />
-				<MyLoans onSelectLoan={handleCloseLoan} selectedLoan={selectedLoan} />
+				<MyLoans onSelectLoan={handleSelectLoan} selectedLoan={selectedLoan} />
 			</OverviewContainer>
 			<LoanCardsContainer>
-				<LoanCard type="create" isInteractive={true} />
+				<CreateLoanCard />
 				<SectionVerticalSpacer />
-				<LoanCard type="close" isInteractive={selectedLoan != null} selectedLoan={selectedLoan} />
+				<CloseLoanCard isInteractive={selectedLoan != null} selectedLoan={selectedLoan} />
 			</LoanCardsContainer>
 		</CenteredPageLayout>
 	);
+};
+
+Loans.propTypes = {
+	createLoan: PropTypes.func,
 };
 
 const OverviewContainer = styled.div`

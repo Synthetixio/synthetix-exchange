@@ -15,26 +15,26 @@ import { formatTxTimestamp, formatCurrencyWithKey } from '../../../../utils/form
 import { COLLATERAL_PAIR, LOAN_STATUS } from '../../constants';
 import { CARD_HEIGHT } from '../../../../constants/ui';
 
-const { LOCKED_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
+const { COLLATERAL_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
 
 const data = [
 	{
-		loanId: '1',
+		loanId: 16,
 		amountBorrowed: 100,
 		collateralValue: 150,
 		timeOpened: Date.now(),
 		currentInterest: 20,
 		feesPayable: 10,
-		status: LOAN_STATUS.WAITING,
+		status: LOAN_STATUS.OPEN,
 	},
 	{
-		loanId: '2',
+		loanId: 18,
 		amountBorrowed: 1000,
 		collateralValue: 1500,
 		timeOpened: Date.now(),
 		currentInterest: 30,
 		feesPayable: 5,
-		status: LOAN_STATUS.CLOSED,
+		status: LOAN_STATUS.OPEN,
 	},
 ];
 
@@ -53,7 +53,7 @@ export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
 			{
 				Header: t('loans.my-loans.table.collateral-col'),
 				accessor: 'collateralValue',
-				Cell: cellProps => formatCurrencyWithKey(LOCKED_CURRENCY_KEY, cellProps.cell.value),
+				Cell: cellProps => formatCurrencyWithKey(COLLATERAL_CURRENCY_KEY, cellProps.cell.value),
 				sortable: true,
 			},
 			{

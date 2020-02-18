@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import Card from '../../../../components/Card';
-import { DataSmall, HeadingSmall, DataLarge } from '../../../../components/Typography';
+import { HeadingSmall } from '../../../../components/Typography';
 import { getWalletInfo } from '../../../../ducks';
 
 import { getCurrencyKeyBalance } from '../../../../utils/balances';
@@ -18,9 +18,11 @@ import {
 import { COLLATERAL_PAIR } from '../../constants';
 import { CARD_HEIGHT } from '../../../../constants/ui';
 
+import { InfoBox, InfoBoxLabel, InfoBoxValue } from '../../../../shared/commonStyles';
+
 const {
 	INTEREST_RATE_PERCENT,
-	LOCKED_CURRENCY_KEY,
+	COLLATERAL_CURRENCY_KEY,
 	BORROWED_CURRENCY_KEY,
 	MINTING_FEE_PERCENT,
 	MIN_LOAN_SIZE,
@@ -30,7 +32,7 @@ const {
 export const Dashboard = ({ walletInfo: { balances } }) => {
 	const { t } = useTranslation();
 
-	const lockedCurrencyBalance = getCurrencyKeyBalance(balances, LOCKED_CURRENCY_KEY);
+	const lockedCurrencyBalance = getCurrencyKeyBalance(balances, COLLATERAL_CURRENCY_KEY);
 	const borrowedCurrencyBalance = getCurrencyKeyBalance(balances, BORROWED_CURRENCY_KEY);
 	const lockedCurrencyLoanSize = 1000;
 
@@ -74,16 +76,16 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 			<Card>
 				<Card.Header>
 					<HeadingSmall>
-						{t('loans.dashboard.title', { currencyKey: LOCKED_CURRENCY_KEY })}
+						{t('loans.dashboard.title', { currencyKey: COLLATERAL_CURRENCY_KEY })}
 					</HeadingSmall>
 				</Card.Header>
 				<Card.Body>
 					<LoanInfoRow>
 						{loanInfoItems.map(infoItem => (
-							<LoanInfoBox key={infoItem.label}>
-								<LoanInfoBoxLabel>{infoItem.label}</LoanInfoBoxLabel>
-								<LoanInfoBoxValue>{infoItem.value}</LoanInfoBoxValue>
-							</LoanInfoBox>
+							<InfoBox key={infoItem.label}>
+								<InfoBoxLabel>{infoItem.label}</InfoBoxLabel>
+								<InfoBoxValue>{infoItem.value}</InfoBoxValue>
+							</InfoBox>
 						))}
 					</LoanInfoRow>
 				</Card.Body>
@@ -93,8 +95,8 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 					<TableRowHeader>
 						<th>{t('common.wallet.your-wallet')}</th>
 						<th>{t('common.wallet.currency-balance', { currencyKey: BORROWED_CURRENCY_KEY })}</th>
-						<th>{t('common.wallet.currency-balance', { currencyKey: LOCKED_CURRENCY_KEY })}</th>
-						<th>{t('common.wallet.locked-currency', { currencyKey: LOCKED_CURRENCY_KEY })}</th>
+						<th>{t('common.wallet.currency-balance', { currencyKey: COLLATERAL_CURRENCY_KEY })}</th>
+						<th>{t('common.wallet.locked-currency', { currencyKey: COLLATERAL_CURRENCY_KEY })}</th>
 					</TableRowHeader>
 				</thead>
 				<tbody>
@@ -112,7 +114,7 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 
 Dashboard.propTypes = {
 	gasInfo: PropTypes.object,
-	ethRate: PropTypes.string,
+	ethRate: PropTypes.number,
 	isInteractive: PropTypes.bool,
 };
 
@@ -120,24 +122,6 @@ const LoanInfoRow = styled.div`
 	display: grid;
 	grid-column-gap: 12px;
 	grid-auto-flow: column;
-`;
-
-const LoanInfoBox = styled.div`
-	display: grid;
-	grid-row-gap: 10px;
-	background-color: ${props => props.theme.colors.surfaceL3};
-	padding: 13px;
-`;
-
-const LoanInfoBoxLabel = styled(DataSmall)`
-	white-space: nowrap;
-	text-transform: none;
-	color: ${props => props.theme.colors.fontTertiary};
-`;
-
-const LoanInfoBoxValue = styled(DataLarge)`
-	text-transform: none;
-	font-size: 14px;
 `;
 
 const Table = styled.table`

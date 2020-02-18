@@ -3,12 +3,14 @@ import ui from './ui';
 import wallet from './wallet';
 import synths from './synths';
 import transaction from './transaction';
+import loans from './loans';
 
 export default combineReducers({
 	wallet,
 	ui,
 	synths,
 	transaction,
+	loans,
 });
 
 // UI REDUCERS

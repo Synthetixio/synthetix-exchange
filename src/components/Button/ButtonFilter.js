@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { DataSmall } from '../Typography';
+import { Z_INDEX } from '../../constants/ui';
 
 export const ButtonFilter = ({ children, onClick, height, active, style }) => {
 	return (
@@ -65,7 +66,7 @@ const DropDown = styled.div`
 	background-color: ${props => props.theme.colors.accentDark};
 	border: 1px solid ${props => props.theme.colors.accentLight};
 	visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
-	z-index: 100;
+	z-index: ${Z_INDEX.DROPDOWN};
 `;
 
 const List = styled.ul`
