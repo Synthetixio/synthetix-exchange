@@ -1,5 +1,7 @@
 /* eslint-disable */
 import { hot } from 'react-hot-loader/root';
+import { createGlobalStyle } from 'styled-components';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
@@ -101,26 +103,27 @@ const Root = ({
 	return (
 		<ThemeProvider theme={themeStyle}>
 			<Router history={history}>
-				<RootContainer>
-					<MainLayout>
-						<Banner />
-						<Header />
-						<WalletPopup />
-						<GweiPopup />
-						<Switch>
-							<Route path={ROUTES.Trade} component={Trade} />
-							<Route path={ROUTES.Loans} component={Loans} />
-							<Redirect to={ROUTES.Trade} />
-						</Switch>
-					</MainLayout>
-				</RootContainer>
+				<GlobalStyle />
+				<MainLayout>
+					<Banner />
+					<Header />
+					<WalletPopup />
+					<GweiPopup />
+					<Switch>
+						<Route path={ROUTES.Trade} component={Trade} />
+						<Route path={ROUTES.Loans} component={Loans} />
+						<Redirect to={ROUTES.Trade} />
+					</Switch>
+				</MainLayout>
 			</Router>
 		</ThemeProvider>
 	);
 };
 
-const RootContainer = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL1};
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: ${props => props.theme.colors.surfaceL1};
+  }
 `;
 
 const mapStateToProps = state => {
