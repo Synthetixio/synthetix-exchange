@@ -4,6 +4,18 @@ import snxJSConnector from './snxJSConnector';
 
 const DEFAULT_CURRENCY_DECIMALS = 2;
 
+const getPrecision = amount => {
+	if (amount >= 1) {
+		return 2;
+	} else if (amount > 0.01) {
+		return 4;
+	} else return 6;
+};
+
+const str_pad_left = (string, pad, length) => {
+	return (new Array(length + 1).join(pad) + string).slice(-length);
+};
+
 export const formatCurrency = (value, decimals = DEFAULT_CURRENCY_DECIMALS) => {
 	if (!value) return 0;
 	if (!Number(value)) return 0;
@@ -14,14 +26,6 @@ export const formatCurrency = (value, decimals = DEFAULT_CURRENCY_DECIMALS) => {
 
 export const formatCurrencyWithPrecision = value => {
 	return formatCurrency(value, getPrecision(value));
-};
-
-const getPrecision = amount => {
-	if (amount >= 1) {
-		return 2;
-	} else if (amount > 0.01) {
-		return 4;
-	} else return 6;
 };
 
 export const formatPercentage = (value, decimals = DEFAULT_CURRENCY_DECIMALS) => {
@@ -47,9 +51,7 @@ export const getAddress = addr => snxJSConnector.ethersUtils.getAddress(addr);
 
 export const formatTxTimestamp = timestamp => format(timestamp, 'DD-MM-YY | HH:mm');
 
-const str_pad_left = (string, pad, length) => {
-	return (new Array(length + 1).join(pad) + string).slice(-length);
-};
+export const toJSTimestamp = timestamp => timestamp * 1000;
 
 export const secondsToTime = seconds => {
 	const minutes = Math.floor(seconds / 60);

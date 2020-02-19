@@ -166,3 +166,10 @@ export const InfoBoxValue = styled(DataLarge)`
 export const CurrencyKey = styled.span`
 	text-transform: none;
 `;
+
+export const fullScreenCSS = css`
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+`;
