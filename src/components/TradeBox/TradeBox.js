@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import styled, { withTheme } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
 
 import { getTransactionPrice, GWEI_UNIT } from '../../utils/networkUtils';
-import { formatCurrency, bytesFormatter, bigNumberFormatter } from '../../utils/formatters';
+import {
+	formatCurrency,
+	bytesFormatter,
+	bigNumberFormatter,
+	secondsToTime,
+} from '../../utils/formatters';
 
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
@@ -23,7 +28,6 @@ import { toggleGweiPopup } from '../../ducks/ui';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';
 import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
-import { Z_INDEX } from '../../constants/ui';
 
 const TradeBox = ({
 	theme: { colors },
@@ -44,7 +48,7 @@ const TradeBox = ({
 	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
 	const [tradeAllBalance, setTradeAllBalance] = useState(false);
 	const [{ base, quote }, setPair] = useState(synthPair);
-	// const [nounce, setNounce] = useState(undefined);
+	const [waitingPeriod, setWaitingPeriod] = useState(null);
 	const [error, setError] = useState(null);
 	const synthsBalances = (balances && balances.synths && balances.synths.balances) || {};
 
@@ -76,6 +80,13 @@ const TradeBox = ({
 				totalUSD: formatCurrency(baseAmount * rates[base.name]['sUSD']),
 				status: 'Waiting',
 			});
+
+			if (await snxJSConnector.snxJS.Synthetix.isWaitingPeriod(bytesFormatter(quote.name))) {
+				setBaseAmount('');
+				setQuoteAmount('');
+				getMaxSecsLeftInWaitingPeriod();
+				throw new Error(`Waiting period for ${quote.name} is still ongoing`);
+			}
 
 			const amountToExchange = tradeAllBalance
 				? synthsBalances[quote.name].balanceBN
@@ -153,29 +164,43 @@ const TradeBox = ({
 				setGasLimit(Number(gasEstimate));
 			} catch (e) {
 				console.log(e);
+				getMaxSecsLeftInWaitingPeriod();
 				setError(e.message);
 			}
 		};
 		getGasEstimate();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [quoteAmount, baseAmount]);
+	}, [quoteAmount, baseAmount, base]);
 
-	// useEffect(() => {
-	// 	const getTransactionCount = async () => {
-	// 		if (!currentWallet) return;
-	// 		try {
-	// 			const transactionCount = await snxJSConnector.provider.getTransactionCount(currentWallet);
-	// 			setNounce(transactionCount + 1);
-	// 			console.log('NOUNCE', nounce);
-	// 		} catch (e) {
-	// 			console.log(e);
-	// 		}
-	// 	};
-	// 	getTransactionCount();
-	// }, [transactions.length, currentWallet]);
+	const getMaxSecsLeftInWaitingPeriod = useCallback(async () => {
+		try {
+			if (!snxJSConnector.initialized || !currentWallet) return;
+			const maxSecsLeftInWaitingPeriod = await snxJSConnector.snxJS.Exchanger.maxSecsLeftInWaitingPeriod(
+				currentWallet,
+				bytesFormatter(quote.name)
+			);
+			const waitingPeriodInSecs = Number(maxSecsLeftInWaitingPeriod);
+			setWaitingPeriod(waitingPeriodInSecs);
+			if (waitingPeriodInSecs) {
+				setError(
+					`There is a waiting period after completing a trade. Please wait approximately ${secondsToTime(
+						waitingPeriodInSecs
+					)} minutes before attempting to exchange ${quote.name}`
+				);
+			} else setError(null);
+		} catch (e) {
+			console.log(e);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [quote.name, snxJSConnector.initialized, currentWallet]);
+
+	useEffect(() => {
+		getMaxSecsLeftInWaitingPeriod();
+	}, [getMaxSecsLeftInWaitingPeriod]);
 
 	const baseBalance = (synthsBalances && synthsBalances[base.name]) || 0;
 	const quoteBalance = (synthsBalances && synthsBalances[quote.name]) || 0;
+
 	return (
 		<Container>
 			<Header>
@@ -199,10 +224,8 @@ const TradeBox = ({
 							setBaseAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setQuoteAmount(value);
 						}}
+						errorMessage={error}
 					/>
-					<InputPopup isVisible={error}>
-						<DataMedium>{error}</DataMedium>
-					</InputPopup>
 				</InputBlock>
 				<ButtonFilterRow>
 					<ButtonFilter
@@ -289,9 +312,13 @@ const TradeBox = ({
 						</NetworkData>
 					</NetworkDataRow>
 				</NetworkInfo>
-				<ButtonPrimary disabled={!baseAmount || !currentWallet || error} onClick={onConfirmTrade}>
-					Confirm Trade
-				</ButtonPrimary>
+				{waitingPeriod ? (
+					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>Retry</ButtonPrimary>
+				) : (
+					<ButtonPrimary disabled={!baseAmount || !currentWallet || error} onClick={onConfirmTrade}>
+						Confirm Trade
+					</ButtonPrimary>
+				)}
 			</Body>
 		</Container>
 	);
@@ -339,22 +366,6 @@ const InputInfo = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 6px;
-`;
-
-const InputPopup = styled.div`
-	position: absolute;
-	transition: opacity 0.2s ease-out;
-	pointer-events: none;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	background-color: ${props => props.theme.colors.red};
-	padding: 8px 10px;
-	border-radius: 1px;
-	transform: translateY(calc(100% + 6px));
-	z-index: ${Z_INDEX.TOOLTIP};
-	opacity: ${props => (props.isVisible ? 1 : 0)};
-	height: ${props => (props.isVisible ? 'auto' : 0)};
 `;
 
 const Balance = styled(DataSmall)`

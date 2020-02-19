@@ -46,3 +46,13 @@ export const bigNumberFormatter = value => Number(snxJSConnector.utils.formatEth
 export const getAddress = addr => snxJSConnector.ethersUtils.getAddress(addr);
 
 export const formatTxTimestamp = timestamp => format(timestamp, 'DD-MM-YY | HH:mm');
+
+const str_pad_left = (string, pad, length) => {
+	return (new Array(length + 1).join(pad) + string).slice(-length);
+};
+
+export const secondsToTime = seconds => {
+	const minutes = Math.floor(seconds / 60);
+	const secondsLeft = seconds - minutes * 60;
+	return str_pad_left(minutes, '0', 2) + ':' + str_pad_left(secondsLeft, '0', 2);
+};
