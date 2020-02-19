@@ -7,6 +7,11 @@
 			"support": "SUPPORT"
 		}
 	},
+	"exchange": {
+		"errors": {
+			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
+		}
+	},
 	"loans": {
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",

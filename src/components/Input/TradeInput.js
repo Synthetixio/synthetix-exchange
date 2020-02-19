@@ -17,7 +17,6 @@ const TradeInput = ({
 	errorMessage,
 }) => {
 	const handleOnChange = e => onChange(e, e.target.value);
-
 	return (
 		<>
 			{label != null && <Label>{label}</Label>}
@@ -82,7 +81,7 @@ const SynthName = styled(DataMedium)`
 `;
 
 export const StyledMessage = styled(Message)`
-	transform: translateY(calc(100% + 10px));
+	top: calc(100% + 10px);
 `;
 
 export default withTheme(TradeInput);
