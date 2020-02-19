@@ -22,7 +22,8 @@
 				"currency-limit": "<0>{{currencyKey}}</0> limit",
 				"currency-supply": "<0>{{currencyKey}}</0> supply",
 				"min-loan-size": "min. loan size",
-				"collateral-size": "collat. ratio"
+				"collateral-size": "collat. ratio",
+				"locked-currency": "LOCKED {{currencyKey}}"
 			}
 		},
 		"my-loans": {
@@ -71,8 +72,7 @@
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
 			"currency-balance": "{{currencyKey}} BALANCE",
-			"balance-currency": "Balance: {{balance}}",
-			"locked-currency": "LOCKED {{currencyKey}}"
+			"balance-currency": "Balance: {{balance}}"
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
