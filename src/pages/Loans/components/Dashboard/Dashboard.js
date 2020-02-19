@@ -133,12 +133,12 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 						<td />
 						<td>
 							{currentWallet
-								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
+								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
 								: EMPTY_BALANCE}
 						</td>
 						<td>
 							{currentWallet
-								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
+								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
 								: EMPTY_BALANCE}
 						</td>
 						<td>
