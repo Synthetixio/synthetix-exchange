@@ -11,24 +11,25 @@
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",
 			"loan-info": {
-				"interest-rate": "INTEREST RATE",
-				"minting-fee": "MINTING FEE",
-				"number-of-loans": "# OF LOANS",
-				"currency-limit": "{{currencyKey}} LIMIT",
-				"currency-supply": "{{currencyKey}} SUPPLY",
-				"min-loan-size": "MIN. LOAN SIZE",
-				"collateral-size": "COLLAT. RATIO"
+				"interest-rate": "interest rate",
+				"minting-fee": "minting fee",
+				"number-of-open-loans": "# of open loans",
+				"currency-limit": "<0>{{currencyKey}}</0> limit",
+				"currency-supply": "<0>{{currencyKey}}</0> supply",
+				"min-loan-size": "min. loan size",
+				"collateral-size": "collat. ratio"
 			}
 		},
 		"my-loans": {
 			"title": "my loans",
 			"table": {
-				"amount-borrowed-col": "AMOUNT BORROWED",
-				"collateral-col": "COLLATERAL",
-				"time-opened-col": "TIME OPENED",
-				"current-interest-col": "CURRENT INTEREST",
-				"fees-payable-col": "FEES PAYABLE",
-				"status-col": "STATUS"
+				"amount-borrowed-col": "amount borrowed",
+				"collateral-col": "collateral",
+				"time-opened-col": "time opened",
+				"current-interest-col": "current interest",
+				"fees-payable-col": "fees payable",
+				"status-col": "status",
+				"no-results": "No loans associated with this wallet."
 			}
 		},
 		"loan-card": {
@@ -59,7 +60,8 @@
 		"tx-status": {
 			"waiting": "Waiting",
 			"open": "Open",
-			"closed": "Closed"
+			"closed": "Closed",
+			"closing": "Closing"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",

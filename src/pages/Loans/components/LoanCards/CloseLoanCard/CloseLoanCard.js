@@ -9,7 +9,7 @@ import { GWEI_UNIT } from '../../../../../utils/networkUtils';
 
 import { getGasInfo, getEthRate, getWalletInfo } from '../../../../../ducks';
 import { toggleGweiPopup } from '../../../../../ducks/ui';
-import { closeLoan } from '../../../../../ducks/loans';
+import { updateLoan, LOAN_STATUS } from '../../../../../ducks/loans';
 
 import { ButtonPrimary } from '../../../../../components/Button';
 import Card from '../../../../../components/Card';
@@ -22,13 +22,9 @@ import {
 	CurrencyKey,
 } from '../../../../../shared/commonStyles';
 
-import { COLLATERAL_PAIR } from '../../../constants';
-
 import NetworkInfo from '../NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
-
-const { COLLATERAL_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
 
 export const CloseLoanCard = ({
 	toggleGweiPopup,
@@ -37,22 +33,26 @@ export const CloseLoanCard = ({
 	isInteractive = true,
 	selectedLoan,
 	walletInfo: { currentWallet },
-	closeLoan,
+	updateLoan,
+	collateralPair,
+	onLoanClosed,
 }) => {
 	const { t } = useTranslation();
 
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 
-	let collateralValue = null;
-	let amountBorrowed = null;
-	let loanId = null;
+	let collateralAmount = null;
+	let loanAmount = null;
+	let loanID = null;
 
 	if (selectedLoan != null) {
-		collateralValue = selectedLoan.collateralValue;
-		amountBorrowed = selectedLoan.amountBorrowed;
-		loanId = selectedLoan.loanId;
+		collateralAmount = selectedLoan.collateralAmount;
+		loanAmount = selectedLoan.loanAmount;
+		loanID = selectedLoan.loanID;
 	}
+
+	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 
 	const handleSubmit = async () => {
 		const {
@@ -62,22 +62,25 @@ export const CloseLoanCard = ({
 		setTxErrorMessage(null);
 
 		try {
-			const loanIdStr = loanId.toString();
+			const loanIDStr = loanID.toString();
 
-			const gasEstimate = await EtherCollateral.contract.estimate.closeLoan(loanIdStr);
+			const gasEstimate = await EtherCollateral.contract.estimate.closeLoan(loanIDStr);
 			const updatedGasEstimate = Number(gasEstimate);
 			setLocalGasLimit(updatedGasEstimate);
 
-			const tx = await EtherCollateral.closeLoan(loanIdStr, {
+			await EtherCollateral.closeLoan(loanIDStr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
 
-			console.log(tx);
-
-			closeLoan({
-				loanId,
+			updateLoan({
+				loanID,
+				loanInfo: {
+					status: LOAN_STATUS.CLOSING,
+				},
 			});
+
+			onLoanClosed();
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
@@ -96,24 +99,24 @@ export const CloseLoanCard = ({
 						<InfoBoxLabel>
 							<Trans
 								i18nKey="loans.loan-card.close-loan.currency-unlocked"
-								values={{ currencyKey: COLLATERAL_CURRENCY_KEY }}
+								values={{ currencyKey: collateralCurrencyKey }}
 								components={[<CurrencyKey />]}
 							/>
 						</InfoBoxLabel>
 						<InfoBoxValue>
-							{t('common.wallet.balance-currency', { balance: collateralValue })}
+							{t('common.wallet.balance-currency', { balance: collateralAmount })}
 						</InfoBoxValue>
 					</InfoBox>
 					<InfoBox>
 						<InfoBoxLabel>
 							<Trans
 								i18nKey="loans.loan-card.close-loan.currency-burned"
-								values={{ currencyKey: BORROWED_CURRENCY_KEY }}
+								values={{ currencyKey: loanCurrencyKey }}
 								components={[<CurrencyKey />]}
 							/>
 						</InfoBoxLabel>
 						<InfoBoxValue>
-							{t('common.wallet.balance-currency', { balance: amountBorrowed })}
+							{t('common.wallet.balance-currency', { balance: loanAmount })}
 						</InfoBoxValue>
 					</InfoBox>
 				</LoanInfoContainer>
@@ -148,6 +151,9 @@ CloseLoanCard.propTypes = {
 	isInteractive: PropTypes.bool,
 	selectedLoan: PropTypes.object,
 	walletInfo: PropTypes.object,
+	onLoanClosed: PropTypes.func,
+	updateLoan: PropTypes.func,
+	collateralPair: PropTypes.object,
 };
 
 const StyledCard = styled(Card)`
@@ -172,7 +178,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
 	toggleGweiPopup,
-	closeLoan,
+	updateLoan,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CloseLoanCard);

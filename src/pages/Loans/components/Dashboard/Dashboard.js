@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+
+import snxJSConnector from '../../../../utils/snxJSConnector';
 
 import Card from '../../../../components/Card';
 import { HeadingSmall } from '../../../../components/Typography';
@@ -13,76 +15,99 @@ import {
 	formatPercentage,
 	formatCurrency,
 	formatCurrencyWithKey,
+	bigNumberFormatter,
 } from '../../../../utils/formatters';
 
-import { COLLATERAL_PAIR } from '../../constants';
 import { CARD_HEIGHT } from '../../../../constants/ui';
 
-import { InfoBox, InfoBoxLabel, InfoBoxValue } from '../../../../shared/commonStyles';
+import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from '../../../../shared/commonStyles';
+import { EMPTY_BALANCE } from '../../../../constants/placeholder';
 
-const {
-	INTEREST_RATE_PERCENT,
-	COLLATERAL_CURRENCY_KEY,
-	BORROWED_CURRENCY_KEY,
-	MINTING_FEE_PERCENT,
-	MIN_LOAN_SIZE,
-	COLLAT_RATIO_PERCENT,
-} = COLLATERAL_PAIR;
+export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralPair }) => {
+	const [lockedCollateralAmount, setLockedCollateralAmount] = useState(null);
 
-export const Dashboard = ({ walletInfo: { balances } }) => {
 	const { t } = useTranslation();
 
-	const lockedCurrencyBalance = getCurrencyKeyBalance(balances, COLLATERAL_CURRENCY_KEY);
-	const borrowedCurrencyBalance = getCurrencyKeyBalance(balances, BORROWED_CURRENCY_KEY);
-	const lockedCurrencyLoanSize = 1000;
-
-	const numberOfLoans = 0;
-	const borrowedCurrencyLimit = 2500;
-	const borrowedCurrencySupply = 5000;
+	const {
+		collateralCurrencyKey,
+		loanCurrencyKey,
+		interestRatePercent,
+		issueFeeRatePercent,
+		totalOpenLoanCount,
+		minLoanSize,
+		collateralizationRatioPercent,
+		issueLimit,
+		totalIssuedSynths,
+	} = collateralPair;
 
 	const loanInfoItems = [
 		{
 			label: t('loans.dashboard.loan-info.interest-rate'),
-			value: formatPercentage(INTEREST_RATE_PERCENT),
+			value: formatPercentage(interestRatePercent),
 		},
 		{
 			label: t('loans.dashboard.loan-info.minting-fee'),
-			value: formatPercentage(MINTING_FEE_PERCENT),
+			value: formatPercentage(issueFeeRatePercent),
 		},
 		{
-			label: t('loans.dashboard.loan-info.number-of-loans'),
-			value: numberOfLoans,
+			label: t('loans.dashboard.loan-info.number-of-open-loans'),
+			value: totalOpenLoanCount,
 		},
 		{
-			label: t('loans.dashboard.loan-info.currency-limit', { currencyKey: BORROWED_CURRENCY_KEY }),
-			value: formatCurrency(borrowedCurrencySupply),
+			label: (
+				<Trans
+					i18nKey="loans.dashboard.loan-info.currency-limit"
+					values={{ currencyKey: loanCurrencyKey }}
+					components={[<CurrencyKey />]}
+				/>
+			),
+			value: formatCurrency(issueLimit),
 		},
 		{
-			label: t('loans.dashboard.loan-info.currency-supply', { currencyKey: BORROWED_CURRENCY_KEY }),
-			value: formatCurrency(borrowedCurrencyLimit),
+			label: (
+				<Trans
+					i18nKey="loans.dashboard.loan-info.currency-supply"
+					values={{ currencyKey: loanCurrencyKey }}
+					components={[<CurrencyKey />]}
+				/>
+			),
+
+			value: formatCurrency(totalIssuedSynths),
 		},
 		{
 			label: t('loans.dashboard.loan-info.min-loan-size'),
-			value: formatCurrencyWithKey(BORROWED_CURRENCY_KEY, MIN_LOAN_SIZE),
+			value: formatCurrencyWithKey(loanCurrencyKey, minLoanSize),
 		},
 		{
 			label: t('loans.dashboard.loan-info.collateral-size'),
-			value: formatPercentage(COLLAT_RATIO_PERCENT, 0),
+			value: formatPercentage(collateralizationRatioPercent, 0),
 		},
 	];
+
+	useEffect(() => {
+		const getLockedETHBalance = async () => {
+			if (currentWallet) {
+				const balance = await snxJSConnector.provider.getBalance(
+					await snxJSConnector.snxJS.EtherCollateral.contract.address
+				);
+				setLockedCollateralAmount(bigNumberFormatter(balance));
+			}
+		};
+		getLockedETHBalance();
+	}, [currentWallet]);
 
 	return (
 		<>
 			<Card>
 				<Card.Header>
 					<HeadingSmall>
-						{t('loans.dashboard.title', { currencyKey: COLLATERAL_CURRENCY_KEY })}
+						{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
 					</HeadingSmall>
 				</Card.Header>
 				<Card.Body>
 					<LoanInfoRow>
-						{loanInfoItems.map(infoItem => (
-							<InfoBox key={infoItem.label}>
+						{loanInfoItems.map((infoItem, idx) => (
+							<InfoBox key={`loanInfo${idx}`}>
 								<InfoBoxLabel>{infoItem.label}</InfoBoxLabel>
 								<InfoBoxValue>{infoItem.value}</InfoBoxValue>
 							</InfoBox>
@@ -94,17 +119,33 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 				<thead>
 					<TableRowHeader>
 						<th>{t('common.wallet.your-wallet')}</th>
-						<th>{t('common.wallet.currency-balance', { currencyKey: BORROWED_CURRENCY_KEY })}</th>
-						<th>{t('common.wallet.currency-balance', { currencyKey: COLLATERAL_CURRENCY_KEY })}</th>
-						<th>{t('common.wallet.locked-currency', { currencyKey: COLLATERAL_CURRENCY_KEY })}</th>
+						<th>{t('common.wallet.currency-balance', { currencyKey: loanCurrencyKey })}</th>
+						<th>
+							{t('common.wallet.currency-balance', {
+								currencyKey: collateralCurrencyKey,
+							})}
+						</th>
+						<th>{t('common.wallet.locked-currency', { currencyKey: collateralCurrencyKey })}</th>
 					</TableRowHeader>
 				</thead>
 				<tbody>
 					<tr>
 						<td />
-						<td>{formatCurrency(borrowedCurrencyBalance)}</td>
-						<td>{formatCurrency(lockedCurrencyBalance)}</td>
-						<td>{formatCurrency(lockedCurrencyLoanSize)}</td>
+						<td>
+							{currentWallet
+								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
+								: EMPTY_BALANCE}
+						</td>
+						<td>
+							{currentWallet
+								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
+								: EMPTY_BALANCE}
+						</td>
+						<td>
+							{lockedCollateralAmount != null
+								? formatCurrency(lockedCollateralAmount)
+								: EMPTY_BALANCE}
+						</td>
 					</tr>
 				</tbody>
 			</Table>
@@ -113,9 +154,8 @@ export const Dashboard = ({ walletInfo: { balances } }) => {
 };
 
 Dashboard.propTypes = {
-	gasInfo: PropTypes.object,
-	ethRate: PropTypes.number,
-	isInteractive: PropTypes.bool,
+	walletInfo: PropTypes.object,
+	collateralPair: PropTypes.object,
 };
 
 const LoanInfoRow = styled.div`

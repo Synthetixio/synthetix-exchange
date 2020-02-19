@@ -7,12 +7,15 @@ import snxJSConnector from '../../../../../utils/snxJSConnector';
 import { GWEI_UNIT } from '../../../../../utils/networkUtils';
 import { getCurrencyKeyBalance } from '../../../../../utils/balances';
 
+import { EMPTY_BALANCE } from '../../../../../constants/placeholder';
+
 import { ButtonPrimary } from '../../../../../components/Button';
 import Card from '../../../../../components/Card';
 import { TradeInput } from '../../../../../components/Input';
 import { HeadingSmall } from '../../../../../components/Typography';
 import { getGasInfo, getEthRate, getWalletInfo } from '../../../../../ducks';
-import { createLoan } from '../../../../../ducks/loans';
+import { createLoan, LOAN_STATUS } from '../../../../../ducks/loans';
+
 import { toggleGweiPopup } from '../../../../../ducks/ui';
 
 import {
@@ -22,16 +25,7 @@ import {
 	CurrencyKey,
 } from '../../../../../shared/commonStyles';
 
-import { COLLATERAL_PAIR } from '../../../constants';
-
 import NetworkInfo from '../NetworkInfo';
-
-const {
-	ISSUANCE_RATIO,
-	COLLATERAL_CURRENCY_KEY,
-	BORROWED_CURRENCY_KEY,
-	MIN_LOAN_SIZE,
-} = COLLATERAL_PAIR;
 
 import { TxErrorMessage } from '../commonStyles';
 
@@ -41,15 +35,18 @@ export const CreateLoanCard = ({
 	ethRate,
 	walletInfo: { balances, currentWallet },
 	createLoan,
+	collateralPair,
 }) => {
 	const { t } = useTranslation();
 
 	const [collateralAmount, setCollateralAmount] = useState('');
-	const [borrowedAmount, setBorrowedAmount] = useState('');
+	const [loanAmount, setLoanAmount] = useState('');
 
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+
+	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
 
 	const handleSubmit = async () => {
 		const {
@@ -70,13 +67,26 @@ export const CreateLoanCard = ({
 			const updatedGasEstimate = Number(gasEstimate);
 			setLocalGasLimit(updatedGasEstimate);
 
-			const tx = await EtherCollateral.openLoan({ ...openLoanArgs, gasLimit: updatedGasEstimate });
-
-			console.log(tx);
+			const tx = await EtherCollateral.openLoan({
+				...openLoanArgs,
+				gasLimit: updatedGasEstimate,
+			});
 
 			createLoan({
-				collateralAmount,
+				loan: {
+					collateralAmount: Number(collateralAmount),
+					loanAmount: Number(loanAmount),
+					timeCreated: Date.now(),
+					timeClosed: 0,
+					feesPayable: 0,
+					currentInterest: 0,
+					status: LOAN_STATUS.WAITING,
+					loanID: null,
+					transactionHash: tx.hash,
+				},
 			});
+			setCollateralAmount('');
+			setLoanAmount('');
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
@@ -84,24 +94,32 @@ export const CreateLoanCard = ({
 
 	const showGweiPopup = () => toggleGweiPopup(true);
 
-	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, COLLATERAL_CURRENCY_KEY);
-	const borrowedCurrencyBalance = getCurrencyKeyBalance(balances, BORROWED_CURRENCY_KEY);
+	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, collateralCurrencyKey);
+	const loanCurrencyBalance = getCurrencyKeyBalance(balances, loanCurrencyKey);
 
 	useEffect(() => {
 		setCollateralAmountErrorMessage(null);
 		if (collateralAmount != '') {
 			if (currentWallet && collateralAmount > collateralCurrencyBalance) {
 				setCollateralAmountErrorMessage(t('common.errors.amount-exceeds-balance'));
-			} else if (collateralAmount < MIN_LOAN_SIZE) {
+			} else if (collateralAmount < minLoanSize) {
 				setCollateralAmountErrorMessage(
 					t('loans.loan-card.errors.min-loan-size', {
-						currencyKey: COLLATERAL_CURRENCY_KEY,
-						minLoanSize: MIN_LOAN_SIZE,
+						currencyKey: collateralCurrencyKey,
+						minLoanSize: minLoanSize,
 					})
 				);
 			}
 		}
-	}, [collateralAmount, collateralCurrencyBalance, t, currentWallet]);
+	}, [
+		collateralAmount,
+		collateralCurrencyBalance,
+		t,
+		currentWallet,
+		collateralCurrencyKey,
+		loanCurrencyKey,
+		minLoanSize,
+	]);
 
 	const hasError = !!collateralAmountErrorMessage;
 
@@ -113,50 +131,54 @@ export const CreateLoanCard = ({
 			<Card.Body>
 				<FormInputRow>
 					<TradeInput
-						synth={COLLATERAL_CURRENCY_KEY}
+						synth={collateralCurrencyKey}
 						amount={`${collateralAmount}`}
 						label={
 							<>
 								<FormInputLabel>
 									<Trans
 										i18nKey="loans.loan-card.create-loan.currency-locked"
-										values={{ currencyKey: COLLATERAL_CURRENCY_KEY }}
+										values={{ currencyKey: collateralCurrencyKey }}
 										components={[<CurrencyKey />]}
 									/>
 								</FormInputLabel>
 								<FormInputLabelSmall>
-									{t('common.wallet.balance-currency', { balance: collateralCurrencyBalance })}
+									{t('common.wallet.balance-currency', {
+										balance: currentWallet ? collateralCurrencyBalance : EMPTY_BALANCE,
+									})}
 								</FormInputLabelSmall>
 							</>
 						}
 						onChange={(_, val) => {
 							setCollateralAmount(val);
-							setBorrowedAmount(val / ISSUANCE_RATIO);
+							setLoanAmount(val * issuanceRatio);
 						}}
 						errorMessage={collateralAmountErrorMessage}
 					/>
 				</FormInputRow>
 				<FormInputRow>
 					<TradeInput
-						synth={BORROWED_CURRENCY_KEY}
-						amount={borrowedAmount}
+						synth={loanCurrencyKey}
+						amount={loanAmount}
 						label={
 							<>
 								<FormInputLabel>
 									<Trans
 										i18nKey="loans.loan-card.create-loan.currency-borrowed"
-										values={{ currencyKey: BORROWED_CURRENCY_KEY }}
+										values={{ currencyKey: loanCurrencyKey }}
 										components={[<CurrencyKey />]}
 									/>
 								</FormInputLabel>
 								<FormInputLabelSmall>
-									{t('common.wallet.balance-currency', { balance: borrowedCurrencyBalance })}
+									{t('common.wallet.balance-currency', {
+										balance: currentWallet ? loanCurrencyBalance : EMPTY_BALANCE,
+									})}
 								</FormInputLabelSmall>
 							</>
 						}
 						onChange={(_, val) => {
-							setBorrowedAmount(val);
-							setCollateralAmount(val * ISSUANCE_RATIO);
+							setLoanAmount(val);
+							setCollateralAmount(val / issuanceRatio);
 						}}
 					/>
 				</FormInputRow>
@@ -168,7 +190,7 @@ export const CreateLoanCard = ({
 				/>
 				<ButtonPrimary
 					onClick={handleSubmit}
-					disabled={!collateralAmount || !borrowedAmount || !currentWallet || hasError}
+					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
 				>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
@@ -192,6 +214,7 @@ CreateLoanCard.propTypes = {
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
+	collateralPair: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
