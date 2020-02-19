@@ -3,12 +3,14 @@ import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import snxJSConnector from '../../utils/snxJSConnector';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData, getWalletBalances } from '../../dataFetcher';
+
+import history from '../../utils/history';
 
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
 import {

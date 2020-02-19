@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -9,69 +9,60 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Card from '../../../../components/Card';
 import { ButtonPrimarySmall } from '../../../../components/Button';
 import { HeadingSmall } from '../../../../components/Typography';
+import Spinner from '../../../../components/Spinner';
+
+import { fetchLoans, LOAN_STATUS } from '../../../../ducks/loans';
 
 import { formatTxTimestamp, formatCurrencyWithKey } from '../../../../utils/formatters';
 
-import { COLLATERAL_PAIR, LOAN_STATUS } from '../../constants';
 import { CARD_HEIGHT } from '../../../../constants/ui';
+import { getWalletInfo, getLoans, getIsFetchingLoans } from '../../../../ducks';
 
-const { COLLATERAL_CURRENCY_KEY, BORROWED_CURRENCY_KEY } = COLLATERAL_PAIR;
-
-const data = [
-	{
-		loanId: 16,
-		amountBorrowed: 100,
-		collateralValue: 150,
-		timeOpened: Date.now(),
-		currentInterest: 20,
-		feesPayable: 10,
-		status: LOAN_STATUS.OPEN,
-	},
-	{
-		loanId: 18,
-		amountBorrowed: 1000,
-		collateralValue: 1500,
-		timeOpened: Date.now(),
-		currentInterest: 30,
-		feesPayable: 5,
-		status: LOAN_STATUS.OPEN,
-	},
-];
-
-export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
+export const MyLoans = ({
+	onSelectLoan,
+	selectedLoan,
+	fetchLoans,
+	walletInfo: { currentWallet },
+	loans,
+	collateralPair,
+	isFetchingLoans,
+}) => {
 	const { t } = useTranslation();
+	const [hasFetchError, setHasFetchError] = useState(false);
+	const [isLoansFetched, setIsLoansFetched] = useState(false);
+	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 
 	const columns = useMemo(
 		() => [
 			{
 				Header: t('loans.my-loans.table.amount-borrowed-col'),
-				accessor: 'amountBorrowed',
-				Cell: cellProps => formatCurrencyWithKey(BORROWED_CURRENCY_KEY, cellProps.cell.value),
+				accessor: 'loanAmount',
+				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				width: 200,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.collateral-col'),
-				accessor: 'collateralValue',
-				Cell: cellProps => formatCurrencyWithKey(COLLATERAL_CURRENCY_KEY, cellProps.cell.value),
+				accessor: 'collateralAmount',
+				Cell: cellProps => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.time-opened-col'),
-				accessor: 'timeOpened',
+				accessor: 'timeCreated',
 				Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.current-interest-col'),
 				accessor: 'currentInterest',
-				Cell: cellProps => formatCurrencyWithKey(BORROWED_CURRENCY_KEY, cellProps.cell.value),
+				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.fees-payable-col'),
 				accessor: 'feesPayable',
-				Cell: cellProps => formatCurrencyWithKey(BORROWED_CURRENCY_KEY, cellProps.cell.value),
+				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				sortable: true,
 			},
 			{
@@ -85,7 +76,7 @@ export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
 				Cell: cellProps => (
 					<ButtonPrimarySmall
 						onClick={() => onSelectLoan(cellProps.row.values)}
-						disabled={cellProps.row.values.status === LOAN_STATUS.CLOSED}
+						disabled={cellProps.row.values.status !== LOAN_STATUS.OPEN}
 					>
 						{t('common.actions.close')}
 					</ButtonPrimarySmall>
@@ -99,16 +90,39 @@ export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
 		{
 			columns,
-			data,
+			data: loans,
+			initialState: {
+				sortBy: [{ id: 'timeCreated', desc: true }],
+			},
 		},
 		useSortBy,
 		useFlexLayout
+	);
+
+	const fetchMyLoans = async () => {
+		setHasFetchError(false);
+
+		const result = await fetchLoans();
+		if (result) {
+			setIsLoansFetched(true);
+		} else {
+			setHasFetchError(true);
+		}
+	};
+
+	useEffect(
+		() => {
+			fetchMyLoans();
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[fetchLoans, currentWallet, setHasFetchError]
 	);
 
 	return (
 		<Card>
 			<Card.Header>
 				<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
+				{isFetchingLoans && !isLoansFetched && <HeaderSpinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
 				<Table {...getTableProps()}>
@@ -138,27 +152,37 @@ export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
 						</TableRow>
 					))}
 					<TableBody {...getTableBodyProps()}>
-						{rows.map(row => {
-							prepareRow(row);
+						{currentWallet &&
+							isLoansFetched &&
+							rows.length > 0 &&
+							rows.map(row => {
+								prepareRow(row);
 
-							const isLoanClosed = row.original.status === LOAN_STATUS.CLOSED;
+								const isLoanClosed = row.original.status === LOAN_STATUS.CLOSED;
+								const isLoanOpened = row.original.status === LOAN_STATUS.OPEN;
 
-							return (
-								<TableBodyRow
-									{...row.getRowProps()}
-									className="tr"
-									onClick={isLoanClosed ? undefined : () => onSelectLoan(row.original)}
-									isLoanClosed={isLoanClosed}
-									isSelectedLoan={
-										selectedLoan != null && selectedLoan.loanId === row.original.loanId
-									}
-								>
-									{row.cells.map(cell => (
-										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-									))}
-								</TableBodyRow>
-							);
-						})}
+								return (
+									<TableBodyRow
+										{...row.getRowProps()}
+										className="tr"
+										onClick={isLoanOpened ? () => onSelectLoan(row.original) : undefined}
+										isLoanClosed={isLoanClosed}
+										isSelectedLoan={
+											selectedLoan != null && selectedLoan.loanID === row.original.loanID
+										}
+									>
+										{row.cells.map(cell => (
+											<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+										))}
+									</TableBodyRow>
+								);
+							})}
+						{currentWallet && isLoansFetched && rows.length === 0 && (
+							<NoResults>{t('loans.my-loans.table.no-results')}</NoResults>
+						)}
+						{/* {currentWallet && !isLoansFetched && !hasFetchError && <Spinner size="sm" />} */}
+						{!currentWallet && <ButtonPrimarySmall>Connect</ButtonPrimarySmall>}
+						{hasFetchError && <ButtonPrimarySmall onClick={fetchMyLoans}>Retry</ButtonPrimarySmall>}
 					</TableBody>
 				</Table>
 			</StyledCardBody>
@@ -168,6 +192,10 @@ export const MyLoans = ({ onSelectLoan, selectedLoan }) => {
 
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
+`;
+
+const HeaderSpinner = styled(Spinner)`
+	margin-left: 10px;
 `;
 
 const Table = styled.div`
@@ -182,6 +210,7 @@ const TableRow = styled.div`
 const TableBody = styled.div`
 	/* TODO: this is temporary to make sure scrolling looks good with multiple rows - it needs to stretch to the height of the remaining space. */
 	max-height: 500px;
+	min-height: 500px;
 	overflow-y: auto;
 	overflow-x: hidden;
 `;
@@ -219,11 +248,31 @@ const TableCell = styled.div`
 const TableCellHead = styled(TableCell)`
 	color: ${props => props.theme.colors.fontTertiary};
 	user-select: none;
+	text-transform: uppercase;
+`;
+
+const NoResults = styled.div`
+	margin-top: 20px;
+	color: ${props => props.theme.colors.fontPrimary};
+	font-size: 13px;
+	padding: 0 18px;
 `;
 
 MyLoans.propTypes = {
 	onSelectLoan: PropTypes.func.isRequired,
 	selectedLoan: PropTypes.object,
+	collateralPair: PropTypes.object,
+	isFetchingLoans: PropTypes.bool,
 };
 
-export default connect(null, null)(MyLoans);
+const mapStateToProps = state => ({
+	walletInfo: getWalletInfo(state),
+	loans: getLoans(state),
+	isFetchingLoans: getIsFetchingLoans(state),
+});
+
+const mapDispatchToProps = {
+	fetchLoans,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyLoans);

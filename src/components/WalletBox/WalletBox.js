@@ -61,7 +61,7 @@ const WalletBox = ({
 				<HeaderBlock>
 					<HeadingAndSpinner>
 						<HeadingSmall>Wallet Balance</HeadingSmall>
-						{isLoading ? <Spinner size="tiny"></Spinner> : null}
+						{isLoading ? <Spinner size="sm"></Spinner> : null}
 					</HeadingAndSpinner>
 					{/* <Link style={{ textDecoration: 'none' }} to={'/'}>
 						<LinkInner>

@@ -105,3 +105,9 @@ export const getTransactions = state => {
 export const getPendingTransactions = state => {
 	return state.transaction.pendingTransactions;
 };
+
+// LOANS REDUCERS
+
+export const getLoans = state => state.loans.loans;
+
+export const getIsFetchingLoans = state => state.loans.isFetchingLoans;

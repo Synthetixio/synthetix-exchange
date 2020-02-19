@@ -12,7 +12,7 @@ import { getWalletInfo } from '../../ducks';
 const HEADER_LABELS = ['Wallet Address', 'SNX', 'sUSD', 'ETH', ''];
 
 const Balance = ({ value }) => {
-	if (value === undefined) return <Spinner size="tiny" />;
+	if (value === undefined) return <Spinner size="sm" />;
 	return <DataLabel>{formatCurrency(value)}</DataLabel>;
 };
 
