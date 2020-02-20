@@ -167,7 +167,7 @@ export const CurrencyKey = styled.span`
 	text-transform: none;
 `;
 
-export const fullScreenCSS = css`
+export const absoluteCenteredCSS = css`
 	position: absolute;
 	left: 50%;
 	top: 50%;

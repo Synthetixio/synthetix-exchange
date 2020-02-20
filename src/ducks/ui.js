@@ -69,6 +69,11 @@ export const toggleWalletPopup = isVisible => {
 	return { type: TOGGLE_WALLET_POPUP, payload: isVisible };
 };
 
+export const showWalletPopup = () => ({
+	type: TOGGLE_WALLET_POPUP,
+	payload: true,
+});
+
 export const toggleGweiPopup = isVisible => {
 	return { type: TOGGLE_GWEI_POPUP, payload: isVisible };
 };

@@ -72,7 +72,7 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 		},
 		{
 			label: t('loans.dashboard.loan-info.min-loan-size'),
-			value: formatCurrencyWithKey(loanCurrencyKey, minLoanSize),
+			value: formatCurrencyWithKey(collateralCurrencyKey, minLoanSize),
 		},
 		{
 			label: t('loans.dashboard.loan-info.collateral-size'),

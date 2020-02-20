@@ -21,7 +21,7 @@
 				"number-of-open-loans": "# of open loans",
 				"currency-limit": "<0>{{currencyKey}}</0> limit",
 				"currency-supply": "<0>{{currencyKey}}</0> supply",
-				"min-loan-size": "min. loan size",
+				"min-loan-size": "min. collat. size",
 				"collateral-size": "collat. ratio",
 				"locked-currency": "LOCKED {{currencyKey}}"
 			}
@@ -61,7 +61,8 @@
 			"submit": "submit",
 			"close": "close",
 			"edit": "edit",
-			"confirm": "confirm"
+			"confirm": "confirm",
+			"click-to-retry": "click to retry"
 		},
 		"tx-status": {
 			"waiting": "Waiting",
@@ -72,11 +73,14 @@
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
 			"currency-balance": "{{currencyKey}} BALANCE",
-			"balance-currency": "Balance: {{balance}}"
+			"balance-currency": "Balance: {{balance}}",
+			"no-wallet-connected": "No wallet currently connected",
+			"connect-currency-wallet": "connect {{currencyKey}} wallet to start"
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
-			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again"
+			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
+			"error-loading": "An error occurred trying to load"
 		}
 	}
 }
