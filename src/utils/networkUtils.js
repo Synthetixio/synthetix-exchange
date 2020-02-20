@@ -83,7 +83,7 @@ const getPriceLimit = (networkInfo, gasPriceLimit) => {
 export const getGasInfo = async () => {
 	try {
 		const results = await fetch('https://ethgasstation.info/json/ethgasAPI.json');
-		const networkInfo = await results[0].json();
+		const networkInfo = await results.json();
 		return getPriceLimit(networkInfo, 0);
 	} catch (e) {
 		console.log('Error while getting gas info', e);
