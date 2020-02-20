@@ -75,6 +75,7 @@ const Loans = ({ updateLoan }) => {
 			} = snxJSConnector;
 
 			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
+				console.log(_account, loanID, _amount, tx);
 				fetchContractData();
 				updateLoan({
 					transactionHash: tx.transactionHash,
@@ -86,6 +87,7 @@ const Loans = ({ updateLoan }) => {
 			});
 
 			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
+				console.log(loanID);
 				fetchContractData();
 				updateLoan({
 					loanID: Number(loanID),
