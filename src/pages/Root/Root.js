@@ -25,7 +25,6 @@ import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import { MainLayout } from '../../shared/commonStyles';
-import Banner from '../../components/Banner';
 import Header from '../../components/Header';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
@@ -105,7 +104,6 @@ const Root = ({
 			<Router history={history}>
 				<GlobalStyle />
 				<MainLayout>
-					<Banner />
 					<Header />
 					<WalletPopup />
 					<GweiPopup />
