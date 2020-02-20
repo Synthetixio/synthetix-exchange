@@ -118,12 +118,7 @@ const TradeBox = ({
 		const getFeeRateForExchange = async () => {
 			try {
 				if (!snxJSConnector.initialized) return;
-				const isKovan = snxJSConnector.snxJS.contractSettings.networkId === '42';
-				const feeRateForExchangeFunction = isKovan
-					? snxJSConnector.snxJS.Exchanger.feeRateForExchange
-					: snxJSConnector.snxJS.Synthetix.feeRateForExchange;
-
-				const feeRateForExchange = await feeRateForExchangeFunction(
+				const feeRateForExchange = await snxJSConnector.snxJS.Exchanger.feeRateForExchange(
 					bytesFormatter(quote.name),
 					bytesFormatter(base.name)
 				);

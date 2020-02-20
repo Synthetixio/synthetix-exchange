@@ -83,16 +83,9 @@ const getPriceLimit = (networkInfo, gasPriceLimit) => {
 
 export const getGasInfo = async () => {
 	try {
-		const isKovan = snxJSConnector.snxJS.contractSettings.networkId === '42';
-		const results = await Promise.all([
-			fetch('https://ethgasstation.info/json/ethgasAPI.json'),
-			isKovan ? null : snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
-		]);
+		const results = await fetch('https://ethgasstation.info/json/ethgasAPI.json');
 		const networkInfo = await results[0].json();
-		const gasPriceLimit = isKovan
-			? 0
-			: Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
-		return getPriceLimit(networkInfo, gasPriceLimit);
+		return getPriceLimit(networkInfo, 0);
 	} catch (e) {
 		console.log('Error while getting gas info', e);
 	}
