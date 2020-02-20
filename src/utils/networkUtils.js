@@ -1,6 +1,5 @@
 import throttle from 'lodash/throttle';
 import invert from 'lodash/invert';
-import snxJSConnector from './snxJSConnector';
 
 export const GWEI_UNIT = 1000000000;
 
