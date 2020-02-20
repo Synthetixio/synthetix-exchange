@@ -17,9 +17,14 @@ import Spinner from '../../components/Spinner';
 
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from '../../constants/currency';
 import { bigNumberFormatter } from '../../utils/formatters';
-import { updateLoan, removeLoan, LOAN_STATUS } from '../../ducks/loans';
+import { updateLoan, LOAN_STATUS } from '../../ducks/loans';
 
-const Loans = ({ updateLoan, removeLoan }) => {
+const LOAN_EVENTS = {
+	LOAN_CREATED: 'LoanCreated',
+	LOAN_CLOSED: 'LoanClosed',
+};
+
+const Loans = ({ updateLoan }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 	const [collateralPair, setCollateralPair] = useState(null);
 	const [initialized, setInitialized] = useState(false);
@@ -69,7 +74,7 @@ const Loans = ({ updateLoan, removeLoan }) => {
 				snxJS: { EtherCollateral },
 			} = snxJSConnector;
 
-			EtherCollateral.contract.on('LoanCreated', (_account, loanID, _amount, tx) => {
+			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
 				fetchContractData();
 				updateLoan({
 					transactionHash: tx.transactionHash,
@@ -80,11 +85,27 @@ const Loans = ({ updateLoan, removeLoan }) => {
 				});
 			});
 
-			EtherCollateral.contract.on('LoanClosed', (_, loanID) => {
+			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
 				fetchContractData();
-				removeLoan({ loanID: Number(loanID) });
+				updateLoan({
+					loanID: Number(loanID),
+					loanInfo: {
+						status: LOAN_STATUS.CLOSED,
+					},
+				});
 			});
 		}
+		return () => {
+			if (snxJSConnector.initialized) {
+				const {
+					snxJS: { EtherCollateral },
+				} = snxJSConnector;
+
+				Object.values(LOAN_EVENTS).forEach(event =>
+					EtherCollateral.contract.removeAllListeners(event)
+				);
+			}
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [snxJSConnector.initialized]);
 
@@ -118,12 +139,14 @@ const Loans = ({ updateLoan, removeLoan }) => {
 };
 
 Loans.propTypes = {
-	removeLoan: PropTypes.func,
 	updateLoan: PropTypes.func,
 };
 
 const OverviewContainer = styled.div`
 	flex: 1;
+	overflow-x: auto;
+	display: flex;
+	flex-direction: column;
 `;
 
 const LoanCardsContainer = styled.div`
@@ -133,7 +156,6 @@ const LoanCardsContainer = styled.div`
 
 const mapDispatchToProps = {
 	updateLoan,
-	removeLoan,
 };
 
 export default connect(null, mapDispatchToProps)(Loans);

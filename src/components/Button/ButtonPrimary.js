@@ -24,6 +24,7 @@ const ButtonPrimary = styled.button`
 	border: none;
 	text-transform: uppercase;
 	line-height: 44px;
+	white-space: nowrap;
 	${width}
 `;
 

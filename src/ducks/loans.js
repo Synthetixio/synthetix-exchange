@@ -9,10 +9,8 @@ const FETCH_LOANS_SUCCESS = 'LOAN/FETCH_LOANS_SUCCESS';
 const FETCH_LOANS_FAILURE = 'LOAN/FETCH_LOANS_FAILURE';
 
 const CREATE_LOAN = 'LOAN/CREATE_LOAN';
-const CLOSE_LOAN = 'LOAN/CLOSE_LOAN';
 const UPDATE_LOAN = 'LOAN/UPDATE_LOAN';
 const SET_LOANS = 'LOAN/SET_LOANS';
-const REMOVE_LOAN = 'LOAN/REMOVE_LOAN';
 
 export const LOAN_STATUS = {
 	OPEN: 'open',
@@ -58,29 +56,15 @@ const reducer = (state = defaultState, action = {}) => {
 				loans: [action.payload.loan, ...state.loans],
 			};
 		}
-		case CLOSE_LOAN: {
-			const { loanID, transactionHash } = action.payload;
-
-			const loanIDIndex = state.loans.findIndex(
-				loan => loan.loanID === loanID || loan.transactionHash === transactionHash
-			);
-
-			return {
-				...state,
-				loans: update(state.loans, {
-					[loanIDIndex]: {
-						status: {
-							$set: LOAN_STATUS.CLOSING,
-						},
-					},
-				}),
-			};
-		}
 		case UPDATE_LOAN: {
 			const { loanID, transactionHash, loanInfo } = action.payload;
 			const loanIDIndex = state.loans.findIndex(
 				loan => loan.loanID === loanID || loan.transactionHash === transactionHash
 			);
+
+			if (loanIDIndex === -1) {
+				return state;
+			}
 
 			return {
 				...state,
@@ -91,15 +75,6 @@ const reducer = (state = defaultState, action = {}) => {
 				}),
 			};
 		}
-		case REMOVE_LOAN: {
-			const { loanID } = action.payload;
-
-			return {
-				...state,
-				loans: state.loans.filter(loan => loan.loanID !== loanID),
-			};
-		}
-
 		default:
 			return state;
 	}
@@ -115,18 +90,8 @@ export const updateLoan = payload => ({
 	payload,
 });
 
-export const removeLoan = payload => ({
-	type: REMOVE_LOAN,
-	payload,
-});
-
 export const createLoan = payload => ({
 	type: CREATE_LOAN,
-	payload,
-});
-
-export const closeLoan = payload => ({
-	type: CLOSE_LOAN,
 	payload,
 });
 
