@@ -82,6 +82,7 @@ export const CloseLoanCard = ({
 
 			onLoanClosed();
 		} catch (e) {
+			console.log(e);
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
 	};

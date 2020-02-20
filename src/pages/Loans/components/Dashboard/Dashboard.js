@@ -106,7 +106,7 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 			<Table cellPadding="0" cellPadding="0">
 				<thead>
 					<TableRowHeader>
-						<th>{t('common.wallet.your-wallet')}</th>
+						<th style={{ width: '60%' }}>{t('common.wallet.your-wallet')}</th>
 						<th>{t('common.wallet.currency-balance', { currencyKey: loanCurrencyKey })}</th>
 						<th>
 							{t('common.wallet.currency-balance', {
@@ -117,7 +117,7 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 				</thead>
 				<tbody>
 					<tr>
-						<td />
+						<td style={{ width: '60%' }} />
 						<td>
 							{currentWallet
 								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
@@ -144,6 +144,10 @@ const LoanInfoRow = styled.div`
 	display: grid;
 	grid-column-gap: 12px;
 	grid-auto-flow: column;
+	@media (max-width: 1480px) {
+		grid-template-rows: auto auto;
+		grid-row-gap: 10px;
+	}
 `;
 
 const Table = styled.table`

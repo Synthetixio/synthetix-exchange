@@ -39,7 +39,7 @@ export const PageLayout = styled(FlexDiv)`
 export const CenteredPageLayout = styled(PageLayout)`
 	max-width: 1600px;
 	margin: 0 auto;
-	padding-top: 8px;
+	padding: 8px;
 
 	> * + * {
 		margin-left: 8px;

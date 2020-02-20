@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -38,49 +38,59 @@ export const MyLoans = ({
 				Header: t('loans.my-loans.table.amount-borrowed-col'),
 				accessor: 'loanAmount',
 				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
-				width: 200,
+				width: 150,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.collateral-col'),
 				accessor: 'collateralAmount',
 				Cell: cellProps => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
+				width: 150,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.time-opened-col'),
 				accessor: 'timeCreated',
 				Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+				width: 150,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.current-interest-col'),
 				accessor: 'currentInterest',
 				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				width: 150,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.fees-payable-col'),
 				accessor: 'feesPayable',
 				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				width: 150,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.status-col'),
 				accessor: 'status',
 				Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
+				width: 100,
 				sortable: true,
 			},
 			{
 				id: 'close',
-				Cell: cellProps => (
-					<ButtonPrimarySmall
-						onClick={() => onSelectLoan(cellProps.row.values)}
-						disabled={cellProps.row.values.status !== LOAN_STATUS.OPEN}
-					>
-						{t('common.actions.close')}
-					</ButtonPrimarySmall>
-				),
+				Cell: cellProps => {
+					const loanData = cellProps.row.original;
+					const isLoanClosed = loanData.status === LOAN_STATUS.CLOSED;
+
+					return isLoanClosed ? null : (
+						<ButtonPrimarySmall
+							onClick={() => onSelectLoan(loanData)}
+							disabled={loanData.status !== LOAN_STATUS.OPEN}
+						>
+							{t('common.actions.close')}
+						</ButtonPrimarySmall>
+					);
+				},
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +109,7 @@ export const MyLoans = ({
 		useFlexLayout
 	);
 
-	const fetchMyLoans = async () => {
+	const fetchMyLoans = useCallback(async () => {
 		setHasFetchError(false);
 
 		const result = await fetchLoans();
@@ -108,18 +118,16 @@ export const MyLoans = ({
 		} else {
 			setHasFetchError(true);
 		}
-	};
+	}, [fetchLoans, setIsLoansFetched, setHasFetchError]);
 
-	useEffect(
-		() => {
+	useEffect(() => {
+		if (currentWallet) {
 			fetchMyLoans();
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[fetchLoans, currentWallet, setHasFetchError]
-	);
+		}
+	}, [fetchMyLoans, currentWallet]);
 
 	return (
-		<Card>
+		<StyledCard>
 			<Card.Header>
 				<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
 				{isFetchingLoans && !isLoansFetched && <HeaderSpinner size="sm" />}
@@ -158,15 +166,10 @@ export const MyLoans = ({
 							rows.map(row => {
 								prepareRow(row);
 
-								const isLoanClosed = row.original.status === LOAN_STATUS.CLOSED;
-								const isLoanOpened = row.original.status === LOAN_STATUS.OPEN;
-
 								return (
 									<TableBodyRow
 										{...row.getRowProps()}
 										className="tr"
-										onClick={isLoanOpened ? () => onSelectLoan(row.original) : undefined}
-										isLoanClosed={isLoanClosed}
 										isSelectedLoan={
 											selectedLoan != null && selectedLoan.loanID === row.original.loanID
 										}
@@ -186,12 +189,19 @@ export const MyLoans = ({
 					</TableBody>
 				</Table>
 			</StyledCardBody>
-		</Card>
+		</StyledCard>
 	);
 };
 
+const StyledCard = styled(Card)`
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+`;
+
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
+	flex-grow: 1;
 `;
 
 const HeaderSpinner = styled(Spinner)`
@@ -200,6 +210,8 @@ const HeaderSpinner = styled(Spinner)`
 
 const Table = styled.div`
 	width: 100%;
+	height: 100%;
+	overflow-x: auto;
 `;
 
 const TableRow = styled.div`
@@ -208,9 +220,7 @@ const TableRow = styled.div`
 `;
 
 const TableBody = styled.div`
-	/* TODO: this is temporary to make sure scrolling looks good with multiple rows - it needs to stretch to the height of the remaining space. */
-	max-height: 500px;
-	min-height: 500px;
+	max-height: calc(100% - 40px);
 	overflow-y: auto;
 	overflow-x: hidden;
 `;
@@ -225,7 +235,6 @@ const TableBodyRow = styled(TableRow)`
 			transform: scale(1.02);
 		}
 	}
-	cursor: ${props => (props.isLoanClosed ? 'default' : 'pointer')};
 `;
 
 const TableCell = styled.div`
@@ -249,6 +258,7 @@ const TableCellHead = styled(TableCell)`
 	color: ${props => props.theme.colors.fontTertiary};
 	user-select: none;
 	text-transform: uppercase;
+	background-color: ${props => props.theme.colors.surfaceL3};
 `;
 
 const NoResults = styled.div`
