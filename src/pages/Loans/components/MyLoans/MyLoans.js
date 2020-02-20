@@ -1,22 +1,33 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
+import Tooltip from '@material-ui/core/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { ReactComponent as NoWalletIcon } from '../../../../assets/images/no-wallet.svg';
+import { ReactComponent as ErrorCircleIcon } from '../../../../assets/images/error-circle.svg';
 
 import Card from '../../../../components/Card';
 import { ButtonPrimarySmall } from '../../../../components/Button';
 import { HeadingSmall } from '../../../../components/Typography';
 import Spinner from '../../../../components/Spinner';
 
-import { fetchLoans, LOAN_STATUS } from '../../../../ducks/loans';
+import { absoluteCenteredCSS } from '../../../../shared/commonStyles';
 
-import { formatTxTimestamp, formatCurrencyWithKey } from '../../../../utils/formatters';
+import { fetchLoans, LOAN_STATUS } from '../../../../ducks/loans';
+import { getWalletInfo, getLoans, getIsFetchingLoans } from '../../../../ducks';
+import { showWalletPopup } from '../../../../ducks/ui';
+
+import {
+	formatTxTimestamp,
+	formatCurrencyWithKey,
+	formatCurrency,
+} from '../../../../utils/formatters';
 
 import { CARD_HEIGHT } from '../../../../constants/ui';
-import { getWalletInfo, getLoans, getIsFetchingLoans } from '../../../../ducks';
 
 export const MyLoans = ({
 	onSelectLoan,
@@ -26,6 +37,7 @@ export const MyLoans = ({
 	loans,
 	collateralPair,
 	isFetchingLoans,
+	showWalletPopup,
 }) => {
 	const { t } = useTranslation();
 	const [hasFetchError, setHasFetchError] = useState(false);
@@ -58,14 +70,22 @@ export const MyLoans = ({
 			{
 				Header: t('loans.my-loans.table.current-interest-col'),
 				accessor: 'currentInterest',
-				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				Cell: cellProps => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value, 4)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
 			{
 				Header: t('loans.my-loans.table.fees-payable-col'),
 				accessor: 'feesPayable',
-				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				Cell: cellProps => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value, 4)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
@@ -126,11 +146,45 @@ export const MyLoans = ({
 		}
 	}, [fetchMyLoans, currentWallet]);
 
+	const renderTableMessage = () => {
+		if (!currentWallet) {
+			return (
+				<MessageContainer>
+					<NoWalletIcon />
+					<MessageLabel>{t('common.wallet.no-wallet-connected')}</MessageLabel>
+					<ButtonPrimarySmall onClick={showWalletPopup}>
+						{t('common.wallet.connect-currency-wallet', {
+							currencyKey: collateralCurrencyKey,
+						})}
+					</ButtonPrimarySmall>
+				</MessageContainer>
+			);
+		} else {
+			if (hasFetchError) {
+				return (
+					<MessageContainer>
+						<ErrorCircleIcon />
+						<MessageLabel>{t('common.errors.error-loading')}</MessageLabel>
+						<ButtonPrimarySmall onClick={fetchMyLoans}>
+							{t('common.actions.click-to-retry')}
+						</ButtonPrimarySmall>
+					</MessageContainer>
+				);
+			} else {
+				if (isFetchingLoans && !isLoansFetched) {
+					return <HeaderSpinner size="sm" centered={true} />;
+				}
+				if (rows.length === 0 && isLoansFetched) {
+					return <NoResults>{t('loans.my-loans.table.no-results')}</NoResults>;
+				}
+			}
+		}
+	};
+
 	return (
 		<StyledCard>
 			<Card.Header>
 				<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
-				{isFetchingLoans && !isLoansFetched && <HeaderSpinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
 				<Table {...getTableProps()}>
@@ -159,11 +213,10 @@ export const MyLoans = ({
 							))}
 						</TableRow>
 					))}
-					<TableBody {...getTableBodyProps()}>
-						{currentWallet &&
-							isLoansFetched &&
-							rows.length > 0 &&
-							rows.map(row => {
+					{renderTableMessage()}
+					{isLoansFetched && (
+						<TableBody {...getTableBodyProps()}>
+							{rows.map(row => {
 								prepareRow(row);
 
 								return (
@@ -180,13 +233,8 @@ export const MyLoans = ({
 									</TableBodyRow>
 								);
 							})}
-						{currentWallet && isLoansFetched && rows.length === 0 && (
-							<NoResults>{t('loans.my-loans.table.no-results')}</NoResults>
-						)}
-						{/* {currentWallet && !isLoansFetched && !hasFetchError && <Spinner size="sm" />} */}
-						{!currentWallet && <ButtonPrimarySmall>Connect</ButtonPrimarySmall>}
-						{hasFetchError && <ButtonPrimarySmall onClick={fetchMyLoans}>Retry</ButtonPrimarySmall>}
-					</TableBody>
+						</TableBody>
+					)}
 				</Table>
 			</StyledCardBody>
 		</StyledCard>
@@ -205,13 +253,19 @@ const StyledCardBody = styled(Card.Body)`
 `;
 
 const HeaderSpinner = styled(Spinner)`
-	margin-left: 10px;
+	${props =>
+		props.centered
+			? absoluteCenteredCSS
+			: css`
+					margin-left: 10px;
+			  `};
 `;
 
 const Table = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow-x: auto;
+	position: relative;
 `;
 
 const TableRow = styled.div`
@@ -268,6 +322,22 @@ const NoResults = styled.div`
 	padding: 0 18px;
 `;
 
+const MessageContainer = styled.div`
+	display: grid;
+	grid-auto-flow: row;
+	grid-gap: 20px;
+	width: 300px;
+	justify-items: center;
+	padding: 30px;
+	background-color: ${props => props.theme.colors.surfaceL3};
+	${absoluteCenteredCSS};
+`;
+
+const MessageLabel = styled.div`
+	font-size: 15px;
+	color: ${props => props.theme.colors.fontPrimary};
+`;
+
 MyLoans.propTypes = {
 	onSelectLoan: PropTypes.func.isRequired,
 	selectedLoan: PropTypes.object,
@@ -283,6 +353,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
 	fetchLoans,
+	showWalletPopup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyLoans);

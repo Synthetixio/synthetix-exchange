@@ -4,7 +4,7 @@ import styled, { keyframes, css } from 'styled-components';
 import spinnerBig from '../../assets/images/spinner-big.png';
 import spinnerSmall from '../../assets/images/spinner-small.png';
 
-import { fullScreenCSS } from '../../shared/commonStyles';
+import { absoluteCenteredCSS } from '../../shared/commonStyles';
 
 const Spinner = ({ size = 'lg', className, fullscreen = false, ...rest }) => (
 	<Container className={className} fullscreen={fullscreen} {...rest}>
@@ -13,7 +13,7 @@ const Spinner = ({ size = 'lg', className, fullscreen = false, ...rest }) => (
 );
 
 const Container = styled.div`
-	${props => props.fullscreen && fullScreenCSS}
+	${props => props.fullscreen && absoluteCenteredCSS}
 `;
 
 const imageRotation = keyframes`

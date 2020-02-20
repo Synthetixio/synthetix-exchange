@@ -11,7 +11,7 @@ import WalletAddressWidget from '../WalletAddressWidget';
 import { ButtonPrimarySmall } from '../Button';
 import { DataMedium } from '../Typography';
 import { labelMediumCSS } from '../Typography/Label';
-import { toggleWalletPopup } from '../../ducks/ui';
+import { showWalletPopup } from '../../ducks/ui';
 import { getWalletInfo, getCurrentTheme } from '../../ducks';
 
 import { ROUTES } from '../../constants/routes';
@@ -20,11 +20,9 @@ import { HEADER_HEIGHT } from '../../constants/ui';
 
 import { FlexDivCentered, ExternalLink, Link } from '../../shared/commonStyles';
 
-export const Header = ({ toggleWalletPopup, walletInfo, currentTheme }) => {
+export const Header = ({ showWalletPopup, walletInfo, currentTheme }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const { t } = useTranslation();
-
-	const showWalletPopup = () => toggleWalletPopup(true);
 
 	return (
 		<Container>
@@ -56,7 +54,7 @@ export const Header = ({ toggleWalletPopup, walletInfo, currentTheme }) => {
 Header.propTypes = {
 	currentTheme: PropTypes.string.isRequired,
 	walletInfo: PropTypes.object.isRequired,
-	toggleWalletPopup: PropTypes.func.isRequired,
+	showWalletPopup: PropTypes.func.isRequired,
 };
 
 const Container = styled(FlexDivCentered)`
@@ -112,7 +110,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-	toggleWalletPopup,
+	showWalletPopup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
