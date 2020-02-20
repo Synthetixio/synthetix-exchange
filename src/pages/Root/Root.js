@@ -20,6 +20,7 @@ import {
 import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
+import { HeadingMedium, HeadingSmall } from '../../components/Typography';
 import Trade from '../Trade';
 import Home from '../Home';
 
@@ -38,6 +39,7 @@ const Root = ({
 	walletInfo: { currentWallet },
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
+	const [isOnMaintenance, setIsOnMaintenance] = useState(false);
 	const fetchAndSetExchangeData = useCallback(async synths => {
 		const {
 			exchangeRates,
@@ -62,6 +64,15 @@ const Root = ({
 		[currentWallet]
 	);
 
+	const getAppState = useCallback(async () => {
+		try {
+			setIsOnMaintenance(await snxJSConnector.snxJS.DappMaintenance.isPausedSX());
+		} catch (err) {
+			console.log('Could not get DappMaintenance contract data', err);
+			setIsOnMaintenance(false);
+		}
+	}, []);
+
 	useEffect(() => {
 		let intervalId;
 		const init = async () => {
@@ -75,9 +86,11 @@ const Root = ({
 			fetchAndSetExchangeData(synths);
 			fetchAndSetWalletBalances(synths);
 			clearInterval(intervalId);
+			getAppState();
 			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
 				fetchAndSetWalletBalances(synths);
+				getAppState();
 			}, 3 * 60 * 1000);
 			setIntervalId(intervalId);
 		};
@@ -94,14 +107,23 @@ const Root = ({
 			<div>
 				<Router>
 					<RootContainer>
-						<Switch>
-							<Route path="/trade">
-								<Trade />
-							</Route>
-							<Route path="/">
-								<Trade />
-							</Route>
-						</Switch>
+						{isOnMaintenance ? (
+							<MaintenanceMessage>
+								<HeadingMedium>sX is currently unavailable due to upgrades.</HeadingMedium>
+								<HeadingSmall style={{ marginTop: '40px', fontSize: '18px' }}>
+									Sorry for the inconvenience, it will be back shortly.
+								</HeadingSmall>
+							</MaintenanceMessage>
+						) : (
+							<Switch>
+								<Route path="/trade">
+									<Trade />
+								</Route>
+								<Route path="/">
+									<Trade />
+								</Route>
+							</Switch>
+						)}
 					</RootContainer>
 				</Router>
 			</div>
@@ -111,6 +133,14 @@ const Root = ({
 
 const RootContainer = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL1};
+`;
+
+const MaintenanceMessage = styled.div`
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
 `;
 
 const mapStateToProps = state => {
