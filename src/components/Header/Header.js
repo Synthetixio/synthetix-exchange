@@ -35,7 +35,6 @@ export const Header = ({ toggleWalletPopup, walletInfo, currentTheme }) => {
 				<Network>
 					<NetworkLabel>{networkName}</NetworkLabel>
 				</Network>
-				<NetworkLabel style={{ fontStyle: 'italic' }}>[Beta version]</NetworkLabel>
 			</HeaderSection>
 			<HeaderSection>
 				<MenuLink to={ROUTES.Trade}>{t('header.links.exchange')}</MenuLink>
