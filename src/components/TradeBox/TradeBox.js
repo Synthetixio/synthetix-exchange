@@ -57,7 +57,7 @@ const TradeBox = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [synthPair.base.name, synthPair.quote.name]);
 
-	const FROZEN_SYNTHS = ['sLTC', 'sXTZ', 'sBNB', 'sMKR', 'iLTC', 'iXTZ', 'iBNB', 'iMKR'];
+	const FROZEN_SYNTHS = ['sMKR', 'iMKR'];
 
 	const onConfirmTrade = async () => {
 		const {
