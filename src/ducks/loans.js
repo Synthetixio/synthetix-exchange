@@ -109,20 +109,28 @@ export const fetchLoansSuccess = () => ({
 
 export const fetchLoans = () => async (dispatch, getState) => {
 	const {
-		snxJS: { EtherCollateral },
+		snxJS: { EtherCollateral, contractSettings },
 	} = snxJSConnector;
 
 	const state = getState();
 	const walletInfo = getWalletInfo(state);
-	// const loansFromState = getLoans(state);
 
 	dispatch(fetchLoansRequest());
 
 	try {
-		const loanIDs = await EtherCollateral.openLoanIDsByAccount(walletInfo.currentWallet);
+		const filter = {
+			fromBlock: 0,
+			toBlock: 9e9,
+			...EtherCollateral.contract.filters.LoanCreated(walletInfo.currentWallet),
+		};
+		const events = await contractSettings.provider.getLogs(filter);
+		const loanIDs = events
+			.map(log => EtherCollateral.contract.interface.parseLog(log))
+			.map(event => Number(event.values.loanID));
+
 		const loans = [];
 
-		for (const loanID of loanIDs.map(Number)) {
+		for (const loanID of loanIDs) {
 			const loan = await EtherCollateral.getLoan(walletInfo.currentWallet, loanID);
 			const timeClosed = toJSTimestamp(loan.timeClosed);
 
