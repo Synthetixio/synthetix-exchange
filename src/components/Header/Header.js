@@ -2,13 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Logo from '../Logo';
 import ThemeSwitcher from '../ThemeSwitcher';
 import WalletAddressWidget from '../WalletAddressWidget';
 
-import { ButtonPrimarySmall } from '../Button';
+import history from '../../utils/history';
+
+import { ButtonPrimary } from '../Button';
 import { DataMedium } from '../Typography';
 import { labelMediumCSS } from '../Typography/Label';
 import { showWalletPopup } from '../../ducks/ui';
@@ -33,6 +36,23 @@ export const Header = ({ showWalletPopup, walletInfo, currentTheme }) => {
 				<Network>
 					<NetworkLabel>{networkName}</NetworkLabel>
 				</Network>
+				<Switch>
+					<Route
+						path={ROUTES.Loans}
+						render={() => (
+							<StyledButton size="sm" disabled={true}>
+								{t('header.announcements.ether-collateral')}
+							</StyledButton>
+						)}
+					/>
+					<Route
+						render={() => (
+							<StyledButton size="sm" onClick={() => history.push(ROUTES.Loans)}>
+								{t('header.announcements.ether-collateral')}
+							</StyledButton>
+						)}
+					/>
+				</Switch>
 			</HeaderSection>
 			<HeaderSection>
 				<MenuLink to={ROUTES.Trade}>{t('header.links.exchange')}</MenuLink>
@@ -42,9 +62,9 @@ export const Header = ({ showWalletPopup, walletInfo, currentTheme }) => {
 				{currentWallet != null ? (
 					<WalletAddressWidget walletInfo={walletInfo} />
 				) : (
-					<ButtonPrimarySmall onClick={showWalletPopup}>
+					<ButtonPrimary size="sm" onClick={showWalletPopup}>
 						{t('header.connect-wallet')}
-					</ButtonPrimarySmall>
+					</ButtonPrimary>
 				)}
 			</HeaderSection>
 		</Container>
@@ -85,6 +105,7 @@ const menuLinkCSS = css`
 		background-color: ${props => props.theme.colors.accentLight};
 		color: ${props => props.theme.colors.fontSecondary};
 	}
+	text-transform: uppercase;
 `;
 
 const MenuLink = styled(Link)`
@@ -96,12 +117,16 @@ const MenuLink = styled(Link)`
 `;
 
 const ExternalMenuLink = styled(ExternalLink)`
-	${menuLinkCSS}
+	${menuLinkCSS};
 `;
 
 const NetworkLabel = styled(DataMedium)`
 	text-transform: uppercase;
 	color: ${props => props.theme.colors.fontTertiary};
+`;
+
+const StyledButton = styled(ButtonPrimary)`
+	text-transform: none;
 `;
 
 const mapStateToProps = state => ({
