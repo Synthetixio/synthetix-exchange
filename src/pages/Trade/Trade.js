@@ -9,11 +9,14 @@ import WalletBox from '../../components/WalletBox';
 
 import { PageLayout, FlexDivCol } from '../../shared/commonStyles';
 
+import EtherPromoCard from './components/EtherPromoCard';
+
 const Trade = () => (
 	<PageLayout>
 		<Container>
 			<BoxContainer height="100%">
 				<PairList />
+				<EtherPromoCard />
 			</BoxContainer>
 		</Container>
 		<CentralContainer>
@@ -55,6 +58,7 @@ const CentralContainer = styled(FlexDivCol)`
 `;
 
 const BoxContainer = styled.div`
+	position: relative;
 	margin: ${props => props.margin || '0'};
 	height: ${props => props.height || 'auto'};
 `;
