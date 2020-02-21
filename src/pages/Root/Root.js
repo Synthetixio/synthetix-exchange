@@ -21,7 +21,7 @@ import {
 	updateFrozenSynths,
 	updateTopSynthByVolume,
 } from '../../ducks/synths';
-import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
+import { updateWalletStatus, updateWalletBalances, fetchWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import { MainLayout } from '../../shared/commonStyles';
@@ -46,6 +46,7 @@ const Root = ({
 	updateTopSynthByVolume,
 	currentTheme,
 	walletInfo: { currentWallet },
+	fetchWalletBalances,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const fetchAndSetExchangeData = useCallback(async synths => {
@@ -64,13 +65,11 @@ const Root = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const fetchAndSetWalletBalances = useCallback(
-		async synths => {
-			if (!currentWallet) return;
-			updateWalletBalances(await getWalletBalances(currentWallet, synths));
-		},
-		[currentWallet]
-	);
+	useEffect(() => {
+		if (currentWallet != null) {
+			fetchWalletBalances();
+		}
+	}, [currentWallet, fetchWalletBalances]);
 
 	useEffect(() => {
 		let intervalId;
@@ -83,11 +82,10 @@ const Root = ({
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 			setAvailableSynths(synths);
 			fetchAndSetExchangeData(synths);
-			fetchAndSetWalletBalances(synths);
 			clearInterval(intervalId);
 			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
-				fetchAndSetWalletBalances(synths);
+				fetchWalletBalances();
 			}, 3 * 60 * 1000);
 			setIntervalId(intervalId);
 		};
@@ -96,7 +94,7 @@ const Root = ({
 			clearInterval(intervalId);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
+	}, [fetchAndSetExchangeData, fetchWalletBalances]);
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
@@ -141,6 +139,7 @@ const mapDispatchToProps = {
 	updateWalletBalances,
 	setExchangeFeeRate,
 	updateTopSynthByVolume,
+	fetchWalletBalances,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));

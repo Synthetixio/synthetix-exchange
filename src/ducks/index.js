@@ -55,6 +55,8 @@ export const getWalletBalances = state => {
 	return state.wallet.balances;
 };
 
+export const getIsFetchingWalletBalances = state => state.wallet.isFetchingWalletBalances;
+
 // SYNTHS REDUCERS
 export const getAvailableSynths = state => {
 	return state.synths.availableSynths;
