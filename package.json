@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.19.6",
+	"version": "2.19.7",
 	"private": true,
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^1.2.27",
