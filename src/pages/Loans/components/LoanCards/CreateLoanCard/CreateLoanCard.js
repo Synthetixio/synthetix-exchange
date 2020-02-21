@@ -154,6 +154,13 @@ export const CreateLoanCard = ({
 							setLoanAmount(val * issuanceRatio);
 						}}
 						errorMessage={collateralAmountErrorMessage}
+						onMaxButtonClick={
+							currentWallet
+								? () => {
+										setCollateralAmount(collateralCurrencyBalance);
+								  }
+								: undefined
+						}
 					/>
 				</FormInputRow>
 				<FormInputRow>

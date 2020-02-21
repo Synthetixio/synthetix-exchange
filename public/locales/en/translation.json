@@ -58,6 +58,7 @@
 		}
 	},
 	"common": {
+		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
 		"actions": {
