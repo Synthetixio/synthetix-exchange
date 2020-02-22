@@ -57,8 +57,6 @@ const TradeBox = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [synthPair.base.name, synthPair.quote.name]);
 
-	const FROZEN_SYNTHS = ['sMKR', 'iMKR'];
-
 	const onConfirmTrade = async () => {
 		const {
 			snxJS: { Synthetix },
@@ -147,7 +145,6 @@ const TradeBox = ({
 					utils,
 				} = snxJSConnector;
 				setError(null);
-				if (FROZEN_SYNTHS.includes(base.name)) throw new Error('This synth cannot be bought');
 				const amountToExchange = tradeAllBalance
 					? synthsBalances[quote.name].balanceBN
 					: utils.parseEther(quoteAmount.toString());
