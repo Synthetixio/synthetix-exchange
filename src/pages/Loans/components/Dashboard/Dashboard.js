@@ -38,7 +38,7 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 
 	const loanInfoItems = [
 		{
-			label: t('loans.dashboard.loan-info.interest-rate'),
+			label: t('loans.dashboard.loan-info.interest-fee'),
 			value: formatPercentage(interestRatePercent),
 		},
 		{

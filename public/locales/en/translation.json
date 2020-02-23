@@ -19,7 +19,7 @@
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",
 			"loan-info": {
-				"interest-rate": "interest rate",
+				"interest-fee": "interest fee",
 				"minting-fee": "minting fee",
 				"number-of-open-loans": "# of open loans",
 				"currency-limit": "<0>{{currencyKey}}</0> limit",
@@ -35,7 +35,7 @@
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
 				"time-opened-col": "time opened",
-				"current-interest-col": "current interest",
+				"current-interest-fee-col": "current interest fee",
 				"fees-payable-col": "fees payable",
 				"status-col": "status",
 				"no-results": "No loans associated with this wallet."

@@ -68,7 +68,7 @@ export const MyLoans = ({
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.current-interest-col'),
+				Header: t('loans.my-loans.table.current-interest-fee-col'),
 				accessor: 'currentInterest',
 				Cell: cellProps => (
 					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
