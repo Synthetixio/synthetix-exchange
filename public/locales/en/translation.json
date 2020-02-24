@@ -15,6 +15,13 @@
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
 		}
 	},
+	"trade": {
+		"promo": {
+			"ether-promo-card": {
+				"title": "get synths to start trading:"
+			}
+		}
+	},
 	"loans": {
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",
@@ -84,6 +91,10 @@
 			"amount-exceeds-balance": "Amount exceeds balance",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
 			"error-loading": "An error occurred trying to load"
+		},
+		"currency": {
+			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
+			"borrow-currency": "Borrow {{currencyKey}}"
 		}
 	}
 }
