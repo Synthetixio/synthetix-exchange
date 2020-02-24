@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import Card from '../../../../components/Card';
 import { HeadingSmall } from '../../../../components/Typography';
+import { getIsRefreshingLoansContractInfo } from '../../../../ducks/loans/contractInfo';
 import { getWalletInfo, getIsFetchingWalletBalances } from '../../../../ducks';
 
 import { getCurrencyKeyBalance } from '../../../../utils/balances';
@@ -25,6 +26,7 @@ export const Dashboard = ({
 	walletInfo: { balances, currentWallet },
 	collateralPair,
 	isFetchingWalletBalances,
+	isRefreshingLoansContractInfo,
 }) => {
 	const { t } = useTranslation();
 
@@ -96,6 +98,7 @@ export const Dashboard = ({
 					<HeadingSmall>
 						{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
 					</HeadingSmall>
+					{isRefreshingLoansContractInfo && <Spinner size="sm" />}
 				</Card.Header>
 				<Card.Body>
 					<LoanInfoRow>
@@ -146,6 +149,7 @@ export const Dashboard = ({
 Dashboard.propTypes = {
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
+	isRefreshingLoansContractInfo: PropTypes.bool,
 };
 
 const WalletBalancesHeading = styled.th`
@@ -202,6 +206,7 @@ const TableRowHeader = styled.tr`
 const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
+	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),
 });
 
 export default connect(mapStateToProps, null)(Dashboard);
