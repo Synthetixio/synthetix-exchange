@@ -212,6 +212,7 @@ const TradeBox = ({
 						synth={quote.name}
 						amount={quoteAmount}
 						onChange={(_, value) => {
+							setTradeAllBalance(false);
 							const convertedRate = rates ? value * rates[quote.name][base.name] : 0;
 							setBaseAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setQuoteAmount(value);
@@ -241,6 +242,7 @@ const TradeBox = ({
 						synth={base.name}
 						amount={baseAmount}
 						onChange={(_, value) => {
+							setTradeAllBalance(false);
 							const convertedRate = rates ? value * rates[base.name][quote.name] : 0;
 							setQuoteAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setBaseAmount(value);
