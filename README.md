@@ -4,7 +4,7 @@
 # Synthetix.Exchange
 
 The code that powers [https://synthetix.exchange](https://synthetix.exchange).<br />
-It is powered by [https://github.com/Synthetixio/synthetix-data][synthetix-data] and [https://github.com/Synthetixio/synthetix-js][synthetix-js].
+It is powered by [synthetix-data](https://github.com/Synthetixio/synthetix-data) and [synthetix-js](https://github.com/Synthetixio/synthetix-js).
 
 ## Available Scripts
 
