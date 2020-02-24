@@ -25,9 +25,11 @@ import {
 	getTransactions,
 } from '../../ducks';
 import { toggleGweiPopup } from '../../ducks/ui';
+import { fetchWalletBalances } from '../../ducks/wallet';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';
 import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
+import { EXCHANGE_EVENTS } from '../../constants/events';
 
 const TradeBox = ({
 	theme: { colors },
@@ -42,6 +44,7 @@ const TradeBox = ({
 	createTransaction,
 	updateTransaction,
 	transactions,
+	fetchWalletBalances,
 }) => {
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
@@ -189,6 +192,24 @@ const TradeBox = ({
 	useEffect(() => {
 		getMaxSecsLeftInWaitingPeriod();
 	}, [getMaxSecsLeftInWaitingPeriod]);
+
+	useEffect(() => {
+		if (snxJSConnector.initialized) {
+			const {
+				snxJS: { Synthetix },
+			} = snxJSConnector;
+			Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, fetchWalletBalances);
+		}
+		return () => {
+			if (snxJSConnector.initialized) {
+				const {
+					snxJS: { Synthetix },
+				} = snxJSConnector;
+				Synthetix.contract.removeAllListeners(EXCHANGE_EVENTS.SYNTH_EXCHANGE);
+			}
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [snxJSConnector.initialized]);
 
 	const baseBalance = (synthsBalances && synthsBalances[base.name]) || 0;
 	const quoteBalance = (synthsBalances && synthsBalances[quote.name]) || 0;
@@ -438,6 +459,7 @@ const mapDispatchToProps = {
 	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
+	fetchWalletBalances,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(TradeBox));
