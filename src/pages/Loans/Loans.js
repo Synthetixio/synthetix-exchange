@@ -16,15 +16,11 @@ import MyLoans from './components/MyLoans';
 import Spinner from '../../components/Spinner';
 
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from '../../constants/currency';
+import { LOAN_EVENTS } from '../../constants/events';
 import { bigNumberFormatter } from '../../utils/formatters';
 
 import { updateLoan, LOAN_STATUS } from '../../ducks/loans';
 import { fetchWalletBalances } from '../../ducks/wallet';
-
-const LOAN_EVENTS = {
-	LOAN_CREATED: 'LoanCreated',
-	LOAN_CLOSED: 'LoanClosed',
-};
 
 const Loans = ({ updateLoan, fetchWalletBalances }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
