@@ -6,7 +6,6 @@ import store from './config/store';
 import Root from './pages/Root';
 
 import './i18n';
-import './fontAwesome';
 import './index.css';
 
 import bugsnag from '@bugsnag/js';

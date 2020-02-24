@@ -5,10 +5,12 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import Tooltip from '@material-ui/core/Tooltip';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ReactComponent as NoWalletIcon } from '../../../../assets/images/no-wallet.svg';
 import { ReactComponent as ErrorCircleIcon } from '../../../../assets/images/error-circle.svg';
+import { ReactComponent as SortDownIcon } from '../../../../assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from '../../../../assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from '../../../../assets/images/sort.svg';
 
 import Card from '../../../../components/Card';
 import { ButtonPrimarySmall } from '../../../../components/Button';
@@ -197,17 +199,17 @@ export const MyLoans = ({
 								>
 									{column.render('Header')}
 									{column.sortable && (
-										<span style={{ marginLeft: '5px' }}>
+										<SortIconContainer>
 											{column.isSorted ? (
 												column.isSortedDesc ? (
-													<FontAwesomeIcon icon="sort-down" />
+													<SortDownIcon />
 												) : (
-													<FontAwesomeIcon icon="sort-up" />
+													<SortUpIcon />
 												)
 											) : (
-												<FontAwesomeIcon icon="sort" />
+												<SortIcon />
 											)}
-										</span>
+										</SortIconContainer>
 									)}
 								</TableCellHead>
 							))}
@@ -336,6 +338,12 @@ const MessageContainer = styled.div`
 const MessageLabel = styled.div`
 	font-size: 15px;
 	color: ${props => props.theme.colors.fontPrimary};
+`;
+
+const SortIconContainer = styled.span`
+	display: flex;
+	align-items: center;
+	margin-left: 5px;
 `;
 
 MyLoans.propTypes = {
