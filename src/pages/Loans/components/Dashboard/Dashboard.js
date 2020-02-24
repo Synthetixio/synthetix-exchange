@@ -43,7 +43,7 @@ export const Dashboard = ({
 
 	const loanInfoItems = [
 		{
-			label: t('loans.dashboard.loan-info.interest-rate'),
+			label: t('loans.dashboard.loan-info.interest-fee'),
 			value: formatPercentage(interestRatePercent),
 		},
 		{
