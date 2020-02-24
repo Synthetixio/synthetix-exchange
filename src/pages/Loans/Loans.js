@@ -17,14 +17,16 @@ import Spinner from '../../components/Spinner';
 
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from '../../constants/currency';
 import { bigNumberFormatter } from '../../utils/formatters';
+
 import { updateLoan, LOAN_STATUS } from '../../ducks/loans';
+import { fetchWalletBalances } from '../../ducks/wallet';
 
 const LOAN_EVENTS = {
 	LOAN_CREATED: 'LoanCreated',
 	LOAN_CLOSED: 'LoanClosed',
 };
 
-const Loans = ({ updateLoan }) => {
+const Loans = ({ updateLoan, fetchWalletBalances }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 	const [collateralPair, setCollateralPair] = useState(null);
 	const [initialized, setInitialized] = useState(false);
@@ -75,8 +77,8 @@ const Loans = ({ updateLoan }) => {
 			} = snxJSConnector;
 
 			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
-				console.log(_account, loanID, _amount, tx);
 				fetchContractData();
+				fetchWalletBalances();
 				updateLoan({
 					transactionHash: tx.transactionHash,
 					loanInfo: {
@@ -87,8 +89,8 @@ const Loans = ({ updateLoan }) => {
 			});
 
 			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
-				console.log(loanID);
 				fetchContractData();
+				fetchWalletBalances();
 				updateLoan({
 					loanID: Number(loanID),
 					loanInfo: {
@@ -158,6 +160,7 @@ const LoanCardsContainer = styled.div`
 
 const mapDispatchToProps = {
 	updateLoan,
+	fetchWalletBalances,
 };
 
 export default connect(null, mapDispatchToProps)(Loans);

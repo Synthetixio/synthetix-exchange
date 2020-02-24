@@ -8,6 +8,13 @@ const UPDATE_WALLET_PAGINATOR_INDEX = 'WALLET/UPDATE_WALLET_PAGINATOR_INDEX';
 const SET_DERIVATION_PATH = 'WALLET/SET_DERIVATION_PATH';
 const UPDATE_WALLET_BALANCES = 'WALLET/UPDATE_BALANCES';
 
+const FETCH_WALLET_BALANCES_REQUEST = 'WALLET/FETCH_WALLET_BALANCES_REQUEST';
+const FETCH_WALLET_BALANCES_SUCCESS = 'WALLET/FETCH_WALLET_BALANCES_SUCCESS';
+const FETCH_WALLET_BALANCES_FAILURE = 'WALLET/FETCH_WALLET_BALANCES_FAILURE';
+
+import { getWalletBalances } from '../dataFetcher';
+import { getWalletInfo, getAvailableSynths } from './index';
+
 const defaultState = {
 	unlocked: false,
 	unlockError: null,
@@ -18,6 +25,7 @@ const defaultState = {
 	balances: null,
 	networkId: defaultNetwork.networkId,
 	networkName: defaultNetwork.networkName,
+	isFetchingWalletBalances: false,
 };
 
 // Reducer
@@ -44,6 +52,24 @@ const reducer = (state = defaultState, action = {}) => {
 			return {
 				...state,
 				balances: action.payload,
+			};
+		}
+		case FETCH_WALLET_BALANCES_REQUEST: {
+			return {
+				...state,
+				isFetchingWalletBalances: true,
+			};
+		}
+		case FETCH_WALLET_BALANCES_SUCCESS: {
+			return {
+				...state,
+				isFetchingWalletBalances: false,
+			};
+		}
+		case FETCH_WALLET_BALANCES_FAILURE: {
+			return {
+				...state,
+				isFetchingWalletBalances: false,
 			};
 		}
 		default:
@@ -96,6 +122,43 @@ export const updateWalletBalances = ({ synths, eth }) => {
 		type: UPDATE_WALLET_BALANCES,
 		payload: { synths, eth },
 	};
+};
+
+export const fetchWalletBalancesRequest = () => ({
+	type: FETCH_WALLET_BALANCES_REQUEST,
+});
+
+export const fetchWalletBalancesSuccess = () => ({
+	type: FETCH_WALLET_BALANCES_SUCCESS,
+});
+
+export const fetchWalletBalancesFailure = () => ({
+	type: FETCH_WALLET_BALANCES_FAILURE,
+});
+
+export const fetchWalletBalances = () => async (dispatch, getState) => {
+	const state = getState();
+	const walletInfo = getWalletInfo(state);
+	const synths = getAvailableSynths(state);
+
+	const currentWallet = walletInfo.currentWallet;
+
+	if (currentWallet != null) {
+		dispatch(fetchWalletBalancesRequest());
+		try {
+			const balances = await getWalletBalances(currentWallet, synths);
+
+			dispatch(updateWalletBalances(balances));
+			dispatch(fetchWalletBalancesSuccess());
+
+			return true;
+		} catch (e) {
+			dispatch(fetchWalletBalancesFailure());
+
+			return false;
+		}
+	}
+	return false;
 };
 
 export default reducer;
