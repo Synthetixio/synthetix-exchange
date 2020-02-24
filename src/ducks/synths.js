@@ -18,6 +18,8 @@ const defaultState = {
 	quoteSynth: { name: 'sUSD', category: 'forex' },
 };
 
+const FROZEN_SYNTHS = ['sMKR', 'iMKR'];
+
 const sortSynths = (a, b) => {
 	if (a.category === 'crypto' && b.category === 'crypto') {
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
@@ -75,7 +77,10 @@ const reducer = (state = defaultState, action = {}) => {
 };
 
 export const setAvailableSynths = synths => {
-	return { type: SET_AVAILABLE_SYNTHS, payload: synths };
+	return {
+		type: SET_AVAILABLE_SYNTHS,
+		payload: synths.filter(synth => !FROZEN_SYNTHS.includes(synth.name)),
+	};
 };
 
 export const setSynthPair = pair => {

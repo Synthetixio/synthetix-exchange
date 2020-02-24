@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.19.6",
+	"version": "2.19.8",
 	"private": true,
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^1.2.27",
@@ -33,7 +33,7 @@
 		"styled-components": "^4.4.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.0.1",
-		"synthetix-js": "2.19.6"
+		"synthetix-js": "2.19.8"
 	},
 	"scripts": {
 		"clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",
