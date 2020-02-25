@@ -8,6 +8,13 @@ module.exports = {
 	parser: 'babel-eslint',
 	extends: 'eslint:recommended',
 	plugins: ['react', 'react-hooks', 'import', 'prettier'],
+	settings: {
+		'import/resolver': {
+			node: {
+				moduleDirectory: ['node_modules', 'src/'],
+			},
+		},
+	},
 	parserOptions: {
 		sourceType: 'module',
 	},
@@ -24,5 +31,6 @@ module.exports = {
 		'react/jsx-uses-vars': 2,
 		'react-hooks/rules-of-hooks': 'error',
 		'react-hooks/exhaustive-deps': 'warn',
+		'no-useless-catch': 'off',
 	},
 };
