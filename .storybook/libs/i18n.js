@@ -8,6 +8,7 @@ i18n.use(initReactI18next).init({
 		en: { translation: enTranslation },
 	},
 	fallbackLng: 'en',
+	lng: 'en',
 	react: {
 		useSuspense: false,
 		wait: true,
