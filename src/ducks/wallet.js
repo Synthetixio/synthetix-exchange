@@ -24,7 +24,7 @@ const defaultState = {
 	derivationPath: localStorage.getItem('derivationPath'),
 	balances: null,
 	networkId: defaultNetwork.networkId,
-	networkName: defaultNetwork.networkName,
+	networkName: defaultNetwork.name,
 	isFetchingWalletBalances: false,
 };
 
