@@ -18,6 +18,10 @@ const Container = styled(FlexDivCentered)`
 	padding: 0 18px;
 	justify-content: flex-start;
 	text-transform: uppercase;
+
+	> * + * {
+		margin-left: 10px;
+	}
 `;
 
 export default CardHeader;

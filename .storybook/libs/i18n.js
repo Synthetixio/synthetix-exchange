@@ -7,6 +7,7 @@ i18n.use(initReactI18next).init({
 	resources: {
 		en: { translation: enTranslation },
 	},
+	lng: 'en',
 	fallbackLng: 'en',
 	react: {
 		useSuspense: false,

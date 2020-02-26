@@ -1,3 +1,7 @@
+import { DEFAULT_GAS_LIMIT } from '../constants/transaction';
+
+import { normalizeGasLimit } from '../utils/transactions';
+
 const SET_GAS_PRICE = 'TRANSACTION/SET_GAS_PRICE';
 const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';
 const SET_EXCHANGE_FEE_RATE = 'TRANSACTION/SET_FEE_RATE';
@@ -6,9 +10,6 @@ const CREATE_TRANSACTION = 'TRANSACTION/CREATE';
 const UPDATE_TRANSACTION = 'TRANSACTION/UPDATE';
 const ADD_PENDING_TRANSACTION = 'TRANSACTION/ADD_PENDING_TRANSACTION';
 const REMOVE_PENDING_TRANSACTION = 'TRANSACTION/REMOVE_PENDING_TRANSACTION';
-
-const GAS_LIMIT_BUFFER = 5000;
-const DEFAULT_GAS_LIMIT = 1500000;
 
 const defaultState = {
 	gasPrice: null,
@@ -108,7 +109,7 @@ export const setGasPrice = gasPrice => {
 export const setGasLimit = gasLimit => {
 	return {
 		type: SET_GAS_LIMIT,
-		payload: gasLimit + GAS_LIMIT_BUFFER,
+		payload: normalizeGasLimit(gasLimit),
 	};
 };
 

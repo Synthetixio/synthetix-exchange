@@ -36,6 +36,8 @@ import Loans from '../Loans';
 import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
 import { ROUTES } from '../../constants/routes';
 
+import GlobalEventsGate from '../../gates/GlobalEventsGate';
+
 const Root = ({
 	setAvailableSynths,
 	updateExchangeRates,
@@ -98,6 +100,7 @@ const Root = ({
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetchAndSetExchangeData, fetchWalletBalances]);
+
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
@@ -110,6 +113,7 @@ const Root = ({
 							<Header />
 							<WalletPopup />
 							<GweiPopup />
+							<GlobalEventsGate />
 							<Switch>
 								<Route path={ROUTES.Trade} component={Trade} />
 								<Route path={ROUTES.Loans} component={Loans} />
