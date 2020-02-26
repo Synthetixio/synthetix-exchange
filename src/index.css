@@ -11,36 +11,38 @@ body {
 
 @font-face {
 	font-family: 'apercu-bold';
-	src: url('/fonts/apercu-bold.eot');
-	src: url('/fonts/apercu-bold.eot?#iefix') format('embedded-opentype'),
-		url('/fonts/apercu-bold.woff2') format('woff2'), url('/fonts/apercu-bold.woff') format('woff'),
-		url('/fonts/apercu-bold.ttf') format('truetype');
+	src: url('./assets/fonts/apercu-bold.eot');
+	src: url('./assets/fonts/apercu-bold.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-bold.woff2') format('woff2'),
+		url('./assets/fonts/apercu-bold.woff') format('woff'),
+		url('./assets/fonts/apercu-bold.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'apercu-medium';
-	src: url('/fonts/apercu-medium.eot');
-	src: url('/fonts/apercu-medium.eot?#iefix') format('embedded-opentype'),
-		url('/fonts/apercu-medium.woff2') format('woff2'),
-		url('/fonts/apercu-medium.woff') format('woff'),
-		url('/fonts/apercu-medium.ttf') format('truetype');
+	src: url('./assets/fonts/apercu-medium.eot');
+	src: url('./assets/fonts/apercu-medium.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-medium.woff2') format('woff2'),
+		url('./assets/fonts/apercu-medium.woff') format('woff'),
+		url('./assets/fonts/apercu-medium.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'apercu-regular';
-	src: url('/fonts/apercu-regular.eot');
-	src: url('/fonts/apercu-regular.eot?#iefix') format('embedded-opentype'),
-		url('/fonts/apercu-regular.woff2') format('woff2'),
-		url('/fonts/apercu-regular.woff') format('woff'),
-		url('/fonts/apercu-regular.ttf') format('truetype');
+	src: url('./assets/fonts/apercu-regular.eot');
+	src: url('./assets/fonts/apercu-regular.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-regular.woff2') format('woff2'),
+		url('./assets/fonts/apercu-regular.woff') format('woff'),
+		url('./assets/fonts/apercu-regular.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'apercu-light';
-	src: url('/fonts/apercu-light.eot');
-	src: url('/fonts/apercu-light.eot?#iefix') format('embedded-opentype'),
-		url('/fonts/apercu-light.woff2') format('woff2'), url('/fonts/apercu-light.woff') format('woff'),
-		url('/fonts/apercu-light.ttf') format('truetype');
+	src: url('./assets/fonts/apercu-light.eot');
+	src: url('./assets/fonts/apercu-light.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-light.woff2') format('woff2'),
+		url('./assets/fonts/apercu-light.woff') format('woff'),
+		url('./assets/fonts/apercu-light.ttf') format('truetype');
 }
 /* Customize website's scrollbar like Mac OS
 /* total width */
@@ -69,4 +71,12 @@ body {
 /* set button(top and bottom of the scrollbar) */
 *::-webkit-scrollbar-button {
 	display: none;
+}
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
 }

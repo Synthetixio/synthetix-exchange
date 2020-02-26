@@ -4,7 +4,7 @@ export const synthSummaryUtilContract = {
 		1: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
 		3: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
 		4: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
-		42: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
+		42: '0x7Ce89dF3D8736c62F256224941F5F811D29d01Bf',
 	},
 	abi: [
 		{

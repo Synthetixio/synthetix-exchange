@@ -35,41 +35,19 @@ const getFrozenSynths = async () => {
 	return frozenSynths;
 };
 
-const getTopSynthByVolume = async () => {
-	const yesterday = Math.trunc(subDays(new Date(), 1).getTime() / 1000);
-	const volume = await snxData.exchanges.since({ timestampInSecs: yesterday });
-	return volume.reduce((acc, next) => {
-		if (acc[next.toCurrencyKey]) {
-			acc[next.toCurrencyKey] += next.toAmountInUSD;
-		} else acc[next.toCurrencyKey] = next.toAmountInUSD;
-		if (acc[next.fromCurrency]) {
-			acc[next.fromCurrency] += next.fromAmountInUSD;
-		} else acc[next.fromCurrency] = next.fromAmountInUSD;
-		return acc;
-	}, {});
-};
-
 export const getExchangeData = async synths => {
 	try {
-		const [
-			exchangeRates,
-			exchangeFeeRate,
-			networkPrices,
-			frozenSynths,
-			topSynthByVolume,
-		] = await Promise.all([
+		const [exchangeRates, exchangeFeeRate, networkPrices, frozenSynths] = await Promise.all([
 			getExchangeRates(synths),
 			getExchangeFeeRate(),
 			getNetworkPrices(),
 			getFrozenSynths(synths),
-			getTopSynthByVolume(),
 		]);
 		return {
 			exchangeRates,
 			exchangeFeeRate,
 			networkPrices,
 			frozenSynths,
-			topSynthByVolume,
 		};
 	} catch (e) {
 		console.log('Error while fetching exchange data', e);
@@ -101,7 +79,7 @@ const getSynthsBalance = async walletAddress => {
 
 const getEthBalance = async walletAddress => {
 	const balance = await snxJSConnector.provider.getBalance(walletAddress);
-	const usdBalance = await snxJSConnector.snxJS.Synthetix.effectiveValue(
+	const usdBalance = await snxJSConnector.snxJS.ExchangeRates.effectiveValue(
 		bytesFormatter('sETH'),
 		balance,
 		bytesFormatter('sUSD')

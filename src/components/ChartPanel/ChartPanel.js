@@ -135,7 +135,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) =
 			</Header>
 			<Body>
 				<ChartContainer>
-					{isLoading ? <Spinner size="small" /> : null}
+					{isLoading ? <Spinner size="sm" /> : null}
 					{!isLoading && chartData.length === 0 ? <DataLarge>No data available</DataLarge> : null}
 					{!isLoading && chartData && chartData.length > 0 ? (
 						<ResponsiveContainer width="100%" height={250}>

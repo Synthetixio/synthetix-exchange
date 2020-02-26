@@ -1,29 +1,37 @@
 /* eslint-disable */
 import { hot } from 'react-hot-loader/root';
+import { createGlobalStyle } from 'styled-components';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import snxJSConnector from '../../utils/snxJSConnector';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 
+import history from '../../utils/history';
+
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
-import {
-	updateExchangeRates,
-	setAvailableSynths,
-	updateFrozenSynths,
-	updateTopSynthByVolume,
-} from '../../ducks/synths';
-import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
+import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import { updateWalletStatus, updateWalletBalances, fetchWalletBalances } from '../../ducks/wallet';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
-import Trade from '../Trade';
-import Home from '../Home';
+import { MainLayout } from '../../shared/commonStyles';
+import Header from '../../components/Header';
+import WalletPopup from '../../components/WalletPopup';
+import GweiPopup from '../../components/GweiPopup';
+import Spinner from '../../components/Spinner';
 
-import { lightTheme, darkTheme } from '../../styles/theme';
+import Trade from '../Trade';
+import Loans from '../Loans';
+
+import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
+import { ROUTES } from '../../constants/routes';
+
+import GlobalEventsGate from '../../gates/GlobalEventsGate';
 
 const Root = ({
 	setAvailableSynths,
@@ -33,34 +41,29 @@ const Root = ({
 	updateFrozenSynths,
 	updateWalletStatus,
 	updateWalletBalances,
-	updateTopSynthByVolume,
 	currentTheme,
 	walletInfo: { currentWallet },
+	fetchWalletBalances,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
+	const [appReady, setAppReady] = useState(false);
 	const fetchAndSetExchangeData = useCallback(async synths => {
-		const {
-			exchangeRates,
-			exchangeFeeRate,
-			networkPrices,
-			frozenSynths,
-			topSynthByVolume,
-		} = await getExchangeData(synths);
+		const { exchangeRates, exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(
+			synths
+		);
 		updateExchangeRates(exchangeRates);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths(frozenSynths);
-		updateTopSynthByVolume(topSynthByVolume);
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const fetchAndSetWalletBalances = useCallback(
-		async synths => {
-			if (!currentWallet) return;
-			updateWalletBalances(await getWalletBalances(currentWallet, synths));
-		},
-		[currentWallet]
-	);
+	useEffect(() => {
+		if (currentWallet != null) {
+			fetchWalletBalances();
+		}
+	}, [currentWallet, fetchWalletBalances]);
 
 	useEffect(() => {
 		let intervalId;
@@ -68,16 +71,16 @@ const Root = ({
 			const { networkId, name } = await getEthereumNetwork();
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({ networkId });
+				setAppReady(true);
 			}
 			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 			setAvailableSynths(synths);
 			fetchAndSetExchangeData(synths);
-			fetchAndSetWalletBalances(synths);
 			clearInterval(intervalId);
 			intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
-				fetchAndSetWalletBalances(synths);
+				fetchWalletBalances();
 			}, 3 * 60 * 1000);
 			setIntervalId(intervalId);
 		};
@@ -86,31 +89,42 @@ const Root = ({
 			clearInterval(intervalId);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
-	const themeStyle = currentTheme === 'dark' ? darkTheme : lightTheme;
+	}, [fetchAndSetExchangeData, fetchWalletBalances]);
+
+	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
 		<ThemeProvider theme={themeStyle}>
-			<div>
-				<Router>
-					<RootContainer>
-						<Switch>
-							<Route path="/trade">
-								<Trade />
-							</Route>
-							<Route path="/">
-								<Trade />
-							</Route>
-						</Switch>
-					</RootContainer>
-				</Router>
-			</div>
+			<Router history={history}>
+				<GlobalStyle />
+				<MainLayout>
+					{appReady ? (
+						<>
+							<Header />
+							<WalletPopup />
+							<GweiPopup />
+							<GlobalEventsGate />
+							<Switch>
+								<Route path={ROUTES.Trade} component={Trade} />
+								<Route path={ROUTES.Loans} component={Loans} />
+								<Redirect to={ROUTES.Trade} />
+							</Switch>
+						</>
+					) : (
+						<>
+							<Spinner fullscreen={true} size="sm" />
+						</>
+					)}
+				</MainLayout>
+			</Router>
 		</ThemeProvider>
 	);
 };
 
-const RootContainer = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL1};
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: ${props => props.theme.colors.surfaceL1};
+  }
 `;
 
 const mapStateToProps = state => {
@@ -129,7 +143,7 @@ const mapDispatchToProps = {
 	updateWalletStatus,
 	updateWalletBalances,
 	setExchangeFeeRate,
-	updateTopSynthByVolume,
+	fetchWalletBalances,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));

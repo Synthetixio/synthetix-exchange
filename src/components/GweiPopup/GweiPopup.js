@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes, withTheme } from 'styled-components';
+import styled, { keyframes, withTheme, createGlobalStyle } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { gweiPopupIsVisible } from '../../ducks';
@@ -15,6 +15,7 @@ import { setGasPrice } from '../../ducks/transaction';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../Table';
 import { ButtonPrimary } from '../Button';
+import { Z_INDEX } from '../../constants/ui';
 
 const renderTooltipContent = ({ gasPrice, usdPrice }) => {
 	return (
@@ -47,88 +48,90 @@ const WalletPopup = ({
 		});
 	}, [gasPrice, gasLimit, ethRate]);
 	return (
-		<Popup isVisible={popupIsVisible}>
-			<Container>
-				<CloseButton onClick={() => toggleGweiPopup(false)}>
-					<CloseIcon src="/images/close-cross.svg" />
-				</CloseButton>
-				<Body>
-					<HeadingMedium style={{ marginBottom: '18px' }}>
-						Set transaction speed & price
-					</HeadingMedium>
-					<BodyMedium>
-						Adjust the slider below, or use the input field to set the transaction speed.
-					</BodyMedium>
-					<SliderContainer>
-						<Slider
-							min={0}
-							max={fastestAllowed}
-							defaultValue={gasSettings.gasPrice}
-							tooltipRenderer={() => renderTooltipContent(gasSettings)}
-							onChange={newPrice => {
-								setGasSettings({
-									gasPrice: newPrice,
-									usdPrice: getTransactionPrice(newPrice, gasLimit, ethRate),
-								});
-							}}
-						/>
-					</SliderContainer>
-					<Table height={'auto'}>
-						<Thead>
-							<Tr>
-								<Th>
-									<DataSmall color={colors.fontTertiary}>Speed (allowed)</DataSmall>
-								</Th>
-								<Th>
-									<DataSmall color={colors.fontTertiary}>Slow</DataSmall>
-								</Th>
-								<Th>
-									<DataSmall color={colors.fontTertiary}>Average</DataSmall>
-								</Th>
-								<Th>
-									<DataSmall color={colors.fontTertiary}>Fast</DataSmall>
-								</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							<Tr>
-								<Td>
-									<DataLabel>PRICE</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>
-										${formatCurrency(getTransactionPrice(slowAllowed, gasLimit, ethRate))}
-									</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>
-										${formatCurrency(getTransactionPrice(averageAllowed, gasLimit, ethRate))}
-									</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>
-										${formatCurrency(getTransactionPrice(fastestAllowed, gasLimit, ethRate))}
-									</DataLabel>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>
-									<DataLabel>GWEI</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>{formatCurrency(slowAllowed)}</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>{formatCurrency(averageAllowed)}</DataLabel>
-								</Td>
-								<Td>
-									<DataLabel>{formatCurrency(fastestAllowed)}</DataLabel>
-								</Td>
-							</Tr>
-						</Tbody>
-					</Table>
-					<InputRow>
-						{/* <Input
+		<>
+			<GlobalStyle />
+			<Popup isVisible={popupIsVisible}>
+				<Container>
+					<CloseButton onClick={() => toggleGweiPopup(false)}>
+						<CloseIcon src="/images/close-cross.svg" />
+					</CloseButton>
+					<Body>
+						<HeadingMedium style={{ marginBottom: '18px' }}>
+							Set transaction speed & price
+						</HeadingMedium>
+						<BodyMedium>
+							Adjust the slider below, or use the input field to set the transaction speed.
+						</BodyMedium>
+						<SliderContainer>
+							<Slider
+								min={0}
+								max={fastestAllowed}
+								defaultValue={gasSettings.gasPrice}
+								tooltipRenderer={() => renderTooltipContent(gasSettings)}
+								onChange={newPrice => {
+									setGasSettings({
+										gasPrice: newPrice,
+										usdPrice: getTransactionPrice(newPrice, gasLimit, ethRate),
+									});
+								}}
+							/>
+						</SliderContainer>
+						<Table height={'auto'}>
+							<Thead>
+								<Tr>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>Speed (allowed)</DataSmall>
+									</Th>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>Slow</DataSmall>
+									</Th>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>Average</DataSmall>
+									</Th>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>Fast</DataSmall>
+									</Th>
+								</Tr>
+							</Thead>
+							<Tbody>
+								<Tr>
+									<Td>
+										<DataLabel>PRICE</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>
+											${formatCurrency(getTransactionPrice(slowAllowed, gasLimit, ethRate))}
+										</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>
+											${formatCurrency(getTransactionPrice(averageAllowed, gasLimit, ethRate))}
+										</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>
+											${formatCurrency(getTransactionPrice(fastestAllowed, gasLimit, ethRate))}
+										</DataLabel>
+									</Td>
+								</Tr>
+								<Tr>
+									<Td>
+										<DataLabel>GWEI</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatCurrency(slowAllowed)}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatCurrency(averageAllowed)}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatCurrency(fastestAllowed)}</DataLabel>
+									</Td>
+								</Tr>
+							</Tbody>
+						</Table>
+						<InputRow>
+							{/* <Input
 							value={gasSettings.gasPrice}
 							onChange={e => {
 								setGasSettings({
@@ -137,20 +140,21 @@ const WalletPopup = ({
 								});
 							}}
 						></Input> */}
-						<ButtonPrimary
-							width={'auto'}
-							style={{ flex: 1 }}
-							onClick={() => {
-								setGasPrice(gasSettings.gasPrice);
-								toggleGweiPopup(false);
-							}}
-						>
-							Submit changes
-						</ButtonPrimary>
-					</InputRow>
-				</Body>
-			</Container>
-		</Popup>
+							<ButtonPrimary
+								width={'auto'}
+								style={{ flex: 1 }}
+								onClick={() => {
+									setGasPrice(gasSettings.gasPrice);
+									toggleGweiPopup(false);
+								}}
+							>
+								Submit changes
+							</ButtonPrimary>
+						</InputRow>
+					</Body>
+				</Container>
+			</Popup>
+		</>
 	);
 };
 
@@ -173,7 +177,7 @@ const fadeOut = keyframes`
 `;
 
 const Popup = styled.div`
-	z-index: 1;
+	z-index: ${Z_INDEX.MODAL};
 	background-color: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
 	display: ${props => (props.isVisible ? 'block' : 'none')};
@@ -220,6 +224,12 @@ const CloseIcon = styled.img`
 const InputRow = styled.div`
 	margin: 40px 0;
 	display: flex;
+`;
+
+const GlobalStyle = createGlobalStyle`
+	.rc-slider-tooltip {
+		z-index: ${Z_INDEX.MODAL};
+	}
 `;
 
 // const Input = styled.input`

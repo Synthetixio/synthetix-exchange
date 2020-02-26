@@ -3,12 +3,14 @@ import ui from './ui';
 import wallet from './wallet';
 import synths from './synths';
 import transaction from './transaction';
+import loans from './loans';
 
 export default combineReducers({
 	wallet,
 	ui,
 	synths,
 	transaction,
+	loans,
 });
 
 // UI REDUCERS
@@ -53,6 +55,8 @@ export const getWalletBalances = state => {
 	return state.wallet.balances;
 };
 
+export const getIsFetchingWalletBalances = state => state.wallet.isFetchingWalletBalances;
+
 // SYNTHS REDUCERS
 export const getAvailableSynths = state => {
 	return state.synths.availableSynths;
@@ -80,10 +84,6 @@ export const getEthRate = state => {
 
 export const getFrozenSynths = state => {
 	return state.synths.frozenSynths;
-};
-
-export const getTopSynthByVolume = state => {
-	return state.synths.topSynthByVolume;
 };
 
 // TRANSACTION REDUCERS

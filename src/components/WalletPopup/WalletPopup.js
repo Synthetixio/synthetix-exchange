@@ -8,6 +8,7 @@ import { toggleWalletPopup } from '../../ducks/ui';
 import { LabelMedium } from '../Typography';
 import WalletTypeSelector from './WalletTypeSelector';
 import WalletAddressSelector from './WalletAddressSelector';
+import { Z_INDEX } from '../../constants/ui';
 
 const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 	const { currentWallet } = walletInfo;
@@ -41,7 +42,7 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 };
 
 const Popup = styled.div`
-	z-index: 1;
+	z-index: ${Z_INDEX.MODAL};
 	background-color: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
 	display: ${props => (props.isVisible ? 'block' : 'none')};

@@ -3,7 +3,6 @@ const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
 const SET_SYNTH_PAIR = 'SYNTHS/SET_SYNTH_PAIR';
 const SET_EXCHANGE_RATES = 'SYNTHS/SET_EXCHANGE_RATES';
 const SET_FROZEN_SYNTHS = 'SYNTHS/SET_FROZEN_SYNTHS';
-const SET_TOP_SYNTH_BY_VOLUME = 'SYNTHS/SET_TOP_SYNTH_BY_VOLUME';
 
 const defaultState = {
 	availableSynths: [],
@@ -17,6 +16,8 @@ const defaultState = {
 	baseSynth: { name: 'sBTC', category: 'crypto' },
 	quoteSynth: { name: 'sUSD', category: 'forex' },
 };
+
+const FROZEN_SYNTHS = ['sMKR', 'iMKR'];
 
 const sortSynths = (a, b) => {
 	if (a.category === 'crypto' && b.category === 'crypto') {
@@ -66,16 +67,16 @@ const reducer = (state = defaultState, action = {}) => {
 				availableSynths: state.availableSynths.filter(synth => !frozenSynths[synth.name]),
 			};
 		}
-		case SET_TOP_SYNTH_BY_VOLUME: {
-			return { ...state, topSynthByVolume: action.payload };
-		}
 		default:
 			return state;
 	}
 };
 
 export const setAvailableSynths = synths => {
-	return { type: SET_AVAILABLE_SYNTHS, payload: synths };
+	return {
+		type: SET_AVAILABLE_SYNTHS,
+		payload: synths.filter(synth => !FROZEN_SYNTHS.includes(synth.name)),
+	};
 };
 
 export const setSynthPair = pair => {
@@ -84,10 +85,6 @@ export const setSynthPair = pair => {
 
 export const updateFrozenSynths = synths => {
 	return { type: SET_FROZEN_SYNTHS, payload: synths };
-};
-
-export const updateTopSynthByVolume = synths => {
-	return { type: SET_TOP_SYNTH_BY_VOLUME, payload: synths };
 };
 
 const convertBaseSynth = (synth, rates) => {

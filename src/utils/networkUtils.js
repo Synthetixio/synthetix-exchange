@@ -1,6 +1,5 @@
 import throttle from 'lodash/throttle';
 import invert from 'lodash/invert';
-import snxJSConnector from './snxJSConnector';
 
 export const GWEI_UNIT = 1000000000;
 
@@ -32,7 +31,14 @@ export const INFURA_JSON_RPC_URLS = {
 	42: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
-export const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger', 'Coinbase', 'WalletConnect'];
+export const SUPPORTED_WALLETS_MAP = {
+	METAMASK: 'Metamask',
+	TREZOR: 'Trezor',
+	LEDGER: 'Ledger',
+	COINBASE: 'Coinbase',
+	WALLET_CONNECT: 'WalletConnect',
+};
+export const SUPPORTED_WALLETS = Object.values(SUPPORTED_WALLETS_MAP);
 
 export const hasWeb3 = () => {
 	return window.web3;
@@ -82,16 +88,13 @@ const getPriceLimit = (networkInfo, gasPriceLimit) => {
 };
 
 export const getGasInfo = async () => {
-	const isKovan = snxJSConnector.snxJS.contractSettings.networkId === '42';
-	const results = await Promise.all([
-		fetch('https://ethgasstation.info/json/ethgasAPI.json'),
-		isKovan ? null : snxJSConnector.snxJS.Synthetix.gasPriceLimit(),
-	]);
-	const networkInfo = await results[0].json();
-	const gasPriceLimit = isKovan
-		? 0
-		: Number(snxJSConnector.ethersUtils.formatUnits(results[1], 'gwei'));
-	return getPriceLimit(networkInfo, gasPriceLimit);
+	try {
+		const results = await fetch('https://ethgasstation.info/json/ethgasAPI.json');
+		const networkInfo = await results.json();
+		return getPriceLimit(networkInfo, 0);
+	} catch (e) {
+		console.log('Error while getting gas info', e);
+	}
 };
 
 export function onMetamaskAccountChange(cb) {

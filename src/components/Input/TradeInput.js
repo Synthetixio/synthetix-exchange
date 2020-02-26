@@ -1,40 +1,96 @@
 import React from 'react';
-import styled, { withTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+
+import { SYNTHS_MAP } from '../../constants/currency';
+
+import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
+
+import { DataMedium } from '../Typography';
+import { ButtonPrimary } from '../Button';
 
 import GenericInput from './Input';
-import { DataMedium } from '../Typography';
 
-const Input = ({ synth = 'sUSD', theme: { colors }, onAmountChange, amount }) => {
-	const onChange = e => {
-		var regExp = /^\d*\.?\d*$/;
-		if (!e.target.value.match(regExp)) return;
-		return onAmountChange(e.target.value);
-	};
+const TradeInput = ({
+	label,
+	synth = SYNTHS_MAP.sUSD,
+	onChange,
+	amount,
+	inputProps,
+	errorMessage,
+	onMaxButtonClick,
+}) => {
+	const { t } = useTranslation();
+	const handleOnChange = e => onChange(e, e.target.value);
+	const hasMaxButton = onMaxButtonClick != null;
+
 	return (
-		<Container>
-			<Synth>
-				<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
-				<SynthName>{synth}</SynthName>
-			</Synth>
-			<GenericInput
-				value={amount}
-				placeholder="0"
-				color={colors.fontPrimary}
-				onChange={onChange}
-			></GenericInput>
-		</Container>
+		<>
+			{label != null && <Label>{label}</Label>}
+			<Container>
+				<Synth>
+					<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
+					<SynthName>{synth}</SynthName>
+				</Synth>
+				<StyledGenericInput
+					type="number"
+					value={amount}
+					placeholder="0"
+					onChange={handleOnChange}
+					{...inputProps}
+					hasMaxButton={hasMaxButton}
+				/>
+				{errorMessage && (
+					<StyledMessage type="error" floating={true}>
+						{errorMessage}
+					</StyledMessage>
+				)}
+				{hasMaxButton && <MaxButton onClick={onMaxButtonClick}>{t('common.max')}</MaxButton>}
+			</Container>
+		</>
 	);
 };
 
-const Container = styled.div`
-	width: 100%;
-	display: flex;
-	background-color: ${props => props.theme.colors.surfaceL3};
+TradeInput.propTypes = {
+	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+	synth: PropTypes.string.isRequired,
+	onChange: PropTypes.func.isRequired,
+	amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	errorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+	onMaxButtonClick: PropTypes.func,
+};
+
+const MaxButton = styled(ButtonPrimary).attrs({ size: 'sm' })`
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 25px;
+	line-height: unset;
 `;
 
-const Synth = styled.div`
-	display: flex;
-	align-items: center;
+const StyledGenericInput = styled(GenericInput)`
+	${props =>
+		props.hasMaxButton &&
+		css`
+			padding-right: 72px;
+		`};
+	color: ${props => props.theme.colors.fontPrimary};
+`;
+
+const Label = styled(FlexDivCentered)`
+	justify-content: space-between;
+	margin-bottom: 6px;
+`;
+
+const Container = styled(FlexDiv)`
+	width: 100%;
+	background-color: ${props => props.theme.colors.surfaceL3};
+	position: relative;
+`;
+
+const Synth = styled(FlexDivCentered)`
 	border: 1px solid ${props => props.theme.colors.accentLight};
 	border-right: none;
 	padding: 0 10px;
@@ -51,4 +107,8 @@ const SynthName = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontSecondary};
 `;
 
-export default withTheme(Input);
+export const StyledMessage = styled(Message)`
+	top: calc(100% + 10px);
+`;
+
+export default TradeInput;
