@@ -3,7 +3,7 @@
 
 # Synthetix.Exchange
 
-The code that powers [https://synthetix.exchange](https://synthetix.exchange).<br />
+The code for the [Synthetix.Exchange](https://synthetix.exchange) dApp.<br />
 It is powered by [synthetix-data](https://github.com/Synthetixio/synthetix-data) and [synthetix-js](https://github.com/Synthetixio/synthetix-js).
 
 ## Available Scripts
