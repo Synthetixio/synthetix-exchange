@@ -28,6 +28,7 @@ import { MainLayout } from '../../shared/commonStyles';
 import Header from '../../components/Header';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
+import Spinner from '../../components/Spinner';
 
 import Trade from '../Trade';
 import Loans from '../Loans';
@@ -49,6 +50,7 @@ const Root = ({
 	fetchWalletBalances,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
+	const [appReady, setAppReady] = useState(false);
 	const fetchAndSetExchangeData = useCallback(async synths => {
 		const {
 			exchangeRates,
@@ -77,6 +79,7 @@ const Root = ({
 			const { networkId, name } = await getEthereumNetwork();
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({ networkId });
+				setAppReady(true);
 			}
 			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
@@ -102,14 +105,22 @@ const Root = ({
 			<Router history={history}>
 				<GlobalStyle />
 				<MainLayout>
-					<Header />
-					<WalletPopup />
-					<GweiPopup />
-					<Switch>
-						<Route path={ROUTES.Trade} component={Trade} />
-						<Route path={ROUTES.Loans} component={Loans} />
-						<Redirect to={ROUTES.Trade} />
-					</Switch>
+					{appReady ? (
+						<>
+							<Header />
+							<WalletPopup />
+							<GweiPopup />
+							<Switch>
+								<Route path={ROUTES.Trade} component={Trade} />
+								<Route path={ROUTES.Loans} component={Loans} />
+								<Redirect to={ROUTES.Trade} />
+							</Switch>
+						</>
+					) : (
+						<>
+							<Spinner fullscreen={true} size="sm" />
+						</>
+					)}
 				</MainLayout>
 			</Router>
 		</ThemeProvider>

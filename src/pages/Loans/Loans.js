@@ -31,83 +31,71 @@ const Loans = ({ updateLoan, fetchWalletBalances }) => {
 	const clearSelectedLoan = () => {
 		setSelectedLoan(null);
 	};
-
 	const fetchContractData = useCallback(async () => {
-		if (snxJSConnector.initialized) {
-			const {
-				snxJS: { EtherCollateral },
-			} = snxJSConnector;
+		const {
+			snxJS: { EtherCollateral },
+		} = snxJSConnector;
 
-			const [contractInfo, lockedETHBalance] = await Promise.all([
-				EtherCollateral.getContractInfo(),
-				snxJSConnector.provider.getBalance(snxJSConnector.snxJS.EtherCollateral.contract.address),
-			]);
+		const [contractInfo, lockedETHBalance] = await Promise.all([
+			EtherCollateral.getContractInfo(),
+			snxJSConnector.provider.getBalance(snxJSConnector.snxJS.EtherCollateral.contract.address),
+		]);
 
-			setCollateralPair({
-				collateralCurrencyKey: CRYPTO_CURRENCY_MAP.ETH,
-				loanCurrencyKey: SYNTHS_MAP.sETH,
-				minLoanSize: bigNumberFormatter(contractInfo._minLoanSize),
-				issuanceRatio: 100 / bigNumberFormatter(contractInfo._collateralizationRatio),
-				issueFeeRatePercent: bigNumberFormatter(contractInfo._issueFeeRate),
-				collateralizationRatioPercent:
-					bigNumberFormatter(contractInfo._collateralizationRatio) / 100,
-				interestRatePercent: bigNumberFormatter(contractInfo._interestRate),
-				totalOpenLoanCount: Number(contractInfo._totalOpenLoanCount),
-				issueLimit: bigNumberFormatter(contractInfo._issueLimit),
-				totalIssuedSynths: bigNumberFormatter(contractInfo._totalIssuedSynths),
-				lockedCollateralAmount: bigNumberFormatter(lockedETHBalance),
-			});
-			setInitialized(true);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [snxJSConnector.initialized]);
+		setCollateralPair({
+			collateralCurrencyKey: CRYPTO_CURRENCY_MAP.ETH,
+			loanCurrencyKey: SYNTHS_MAP.sETH,
+			minLoanSize: bigNumberFormatter(contractInfo._minLoanSize),
+			issuanceRatio: 100 / bigNumberFormatter(contractInfo._collateralizationRatio),
+			issueFeeRatePercent: bigNumberFormatter(contractInfo._issueFeeRate),
+			collateralizationRatioPercent: bigNumberFormatter(contractInfo._collateralizationRatio) / 100,
+			interestRatePercent: bigNumberFormatter(contractInfo._interestRate),
+			totalOpenLoanCount: Number(contractInfo._totalOpenLoanCount),
+			issueLimit: bigNumberFormatter(contractInfo._issueLimit),
+			totalIssuedSynths: bigNumberFormatter(contractInfo._totalIssuedSynths),
+			lockedCollateralAmount: bigNumberFormatter(lockedETHBalance),
+		});
+		setInitialized(true);
+	}, []);
 
 	useEffect(() => {
 		fetchContractData();
 	}, [fetchContractData]);
 
 	useEffect(() => {
-		if (snxJSConnector.initialized) {
-			const {
-				snxJS: { EtherCollateral },
-			} = snxJSConnector;
+		const {
+			snxJS: { EtherCollateral },
+		} = snxJSConnector;
 
-			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
-				fetchContractData();
-				fetchWalletBalances();
-				updateLoan({
-					transactionHash: tx.transactionHash,
-					loanInfo: {
-						loanID: Number(loanID),
-						status: LOAN_STATUS.OPEN,
-					},
-				});
-			});
-
-			EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
-				fetchContractData();
-				fetchWalletBalances();
-				updateLoan({
+		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
+			fetchContractData();
+			fetchWalletBalances();
+			updateLoan({
+				transactionHash: tx.transactionHash,
+				loanInfo: {
 					loanID: Number(loanID),
-					loanInfo: {
-						status: LOAN_STATUS.CLOSED,
-					},
-				});
+					status: LOAN_STATUS.OPEN,
+				},
 			});
-		}
-		return () => {
-			if (snxJSConnector.initialized) {
-				const {
-					snxJS: { EtherCollateral },
-				} = snxJSConnector;
+		});
 
-				Object.values(LOAN_EVENTS).forEach(event =>
-					EtherCollateral.contract.removeAllListeners(event)
-				);
-			}
+		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
+			fetchContractData();
+			fetchWalletBalances();
+			updateLoan({
+				loanID: Number(loanID),
+				loanInfo: {
+					status: LOAN_STATUS.CLOSED,
+				},
+			});
+		});
+
+		return () => {
+			Object.values(LOAN_EVENTS).forEach(event =>
+				EtherCollateral.contract.removeAllListeners(event)
+			);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [snxJSConnector.initialized]);
+	}, []);
 
 	if (!initialized || collateralPair == null) {
 		return <Spinner fullscreen={true} size="sm" />;

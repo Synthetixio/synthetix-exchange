@@ -118,7 +118,6 @@ const TradeBox = ({
 	useEffect(() => {
 		const getFeeRateForExchange = async () => {
 			try {
-				if (!snxJSConnector.initialized) return;
 				const feeRateForExchange = await snxJSConnector.snxJS.Exchanger.feeRateForExchange(
 					bytesFormatter(quote.name),
 					bytesFormatter(base.name)
@@ -133,7 +132,7 @@ const TradeBox = ({
 		setQuoteAmount('');
 		getFeeRateForExchange();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [base.name, quote.name, snxJSConnector.initialized]);
+	}, [base.name, quote.name]);
 
 	useEffect(() => {
 		const getGasEstimate = async () => {
@@ -169,7 +168,7 @@ const TradeBox = ({
 
 	const getMaxSecsLeftInWaitingPeriod = useCallback(async () => {
 		try {
-			if (!snxJSConnector.initialized || !currentWallet) return;
+			if (!currentWallet) return;
 			const maxSecsLeftInWaitingPeriod = await snxJSConnector.snxJS.Exchanger.maxSecsLeftInWaitingPeriod(
 				currentWallet,
 				bytesFormatter(quote.name)
@@ -187,29 +186,23 @@ const TradeBox = ({
 			console.log(e);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [quote.name, snxJSConnector.initialized, currentWallet]);
+	}, [quote.name, currentWallet]);
 
 	useEffect(() => {
 		getMaxSecsLeftInWaitingPeriod();
 	}, [getMaxSecsLeftInWaitingPeriod]);
 
 	useEffect(() => {
-		if (snxJSConnector.initialized) {
-			const {
-				snxJS: { Synthetix },
-			} = snxJSConnector;
-			Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, fetchWalletBalances);
-		}
+		const {
+			snxJS: { Synthetix },
+		} = snxJSConnector;
+		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, fetchWalletBalances);
+
 		return () => {
-			if (snxJSConnector.initialized) {
-				const {
-					snxJS: { Synthetix },
-				} = snxJSConnector;
-				Synthetix.contract.removeAllListeners(EXCHANGE_EVENTS.SYNTH_EXCHANGE);
-			}
+			Synthetix.contract.removeAllListeners(EXCHANGE_EVENTS.SYNTH_EXCHANGE);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [snxJSConnector.initialized]);
+	}, []);
 
 	const baseBalance = (synthsBalances && synthsBalances[base.name]) || 0;
 	const quoteBalance = (synthsBalances && synthsBalances[quote.name]) || 0;
