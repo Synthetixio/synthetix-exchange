@@ -1,6 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import get from 'lodash/get';
+
 import snxJSConnector from '../utils/snxJSConnector';
 import { bigNumberFormatter, parseBytes32String } from '../utils/formatters';
+import { SYNTHS_MAP } from '../constants/currency';
 
 export const ratesSlice = createSlice({
 	name: 'rates',
@@ -40,11 +43,9 @@ export const getIsRefreshingRates = state => getRatesState(state).isRefreshing;
 export const getIsLoadedRates = state => getRatesState(state).isLoaded;
 export const getRatesLoadingError = state => getRatesState(state).loadingError;
 export const getRatesExchangeRates = state => getRatesState(state).exchangeRates;
-export const getEthRate = state => {
-	const exchangeRates = getRatesState(state).exchangeRates;
-	if (!exchangeRates) return null;
-	return exchangeRates['sETH'];
-};
+export const getEthRate = createSelector(getRatesExchangeRates, exchangeRates =>
+	get(exchangeRates, SYNTHS_MAP.sETH, null)
+);
 
 const { fetchRatesRequest, fetchRatesSuccess, fetchRatesFailure } = ratesSlice.actions;
 

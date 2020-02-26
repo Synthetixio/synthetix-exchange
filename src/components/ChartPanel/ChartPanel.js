@@ -44,10 +44,6 @@ const getMinAndMaxRate = data => {
 	);
 };
 
-const getCurrentPairPrice = (base, quote, rates) => {
-	return rates[base.name][quote.name];
-};
-
 const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSigns }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);

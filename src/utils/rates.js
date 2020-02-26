@@ -1,4 +1,2 @@
-export const getExchangeRatesForCurrencies = (rates, base, quote) => {
-	if (!rates) return 0;
-	return rates[base] * (1 / rates[quote]);
-};
+export const getExchangeRatesForCurrencies = (rates, base, quote) =>
+	rates === null ? 0 : rates[base] * (1 / rates[quote]);

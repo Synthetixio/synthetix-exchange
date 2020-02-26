@@ -1,4 +1,3 @@
-// To be added to SynthetixJS
 export const synthSummaryUtilContract = {
 	addresses: {
 		1: '0x95A6a3f44a70172E7d50a9e28c85Dfd712756B8C',

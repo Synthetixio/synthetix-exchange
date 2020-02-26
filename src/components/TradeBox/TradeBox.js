@@ -12,6 +12,8 @@ import {
 	secondsToTime,
 } from '../../utils/formatters';
 
+import { SYNTHS_MAP } from '../../constants/currency';
+
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
@@ -77,16 +79,16 @@ const TradeBox = ({
 				fromAmount: quoteAmount,
 				toAmount: baseAmount,
 				price:
-					base.name === 'sUSD'
+					base.name === SYNTHS_MAP.sUSD
 						? getExchangeRatesForCurrencies(exchangeRates, quote.name, base.name)
 						: getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name),
 				amount: formatCurrency(baseAmount),
 				priceUSD:
-					base.name === 'sUSD'
-						? getExchangeRatesForCurrencies(exchangeRates, quote.name, 'sUSD')
-						: getExchangeRatesForCurrencies(exchangeRates, base.name, 'sUSD'),
+					base.name === SYNTHS_MAP.sUSD
+						? getExchangeRatesForCurrencies(exchangeRates, quote.name, SYNTHS_MAP.sUSD)
+						: getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD),
 				totalUSD: formatCurrency(
-					baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, 'sUSD')
+					baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)
 				),
 				status: 'Waiting',
 			});
@@ -307,7 +309,8 @@ const TradeBox = ({
 						<NetworkData>
 							$
 							{formatCurrency(
-								baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, 'sUSD')
+								baseAmount *
+									getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)
 							)}
 						</NetworkData>
 					</NetworkDataRow>

@@ -9,7 +9,7 @@ import { fetchLoansContractInfo } from '../ducks/loans/contractInfo';
 
 import snxJSConnector from '../utils/snxJSConnector';
 
-import { LOAN_EVENTS, RATES_EVENTS } from '../constants/events';
+import { LOAN_EVENTS, EXCHANGE_RATES_EVENTS } from '../constants/events';
 
 const GlobalEventsGate = ({
 	updateLoan,
@@ -56,13 +56,13 @@ const GlobalEventsGate = ({
 			});
 		});
 
-		ExchangeRates.contract.on(RATES_EVENTS.RATES_UPDATED, fetchRates);
+		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRates);
 
 		return () => {
 			Object.values(LOAN_EVENTS).forEach(event =>
 				EtherCollateral.contract.removeAllListeners(event)
 			);
-			Object.values(RATES_EVENTS).forEach(event =>
+			Object.values(EXCHANGE_RATES_EVENTS).forEach(event =>
 				ExchangeRates.contract.removeAllListeners(event)
 			);
 		};

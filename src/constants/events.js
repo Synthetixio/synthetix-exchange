@@ -7,6 +7,6 @@ export const LOAN_EVENTS = {
 	LOAN_CLOSED: 'LoanClosed',
 };
 
-export const RATES_EVENTS = {
+export const EXCHANGE_RATES_EVENTS = {
 	RATES_UPDATED: 'RatesUpdated',
 };
