@@ -15,8 +15,9 @@ import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 import history from '../../utils/history';
 
 import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
-import { updateExchangeRates, setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { updateWalletStatus, updateWalletBalances, fetchWalletBalances } from '../../ducks/wallet';
+import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import { MainLayout } from '../../shared/commonStyles';
@@ -35,7 +36,6 @@ import GlobalEventsGate from '../../gates/GlobalEventsGate';
 
 const Root = ({
 	setAvailableSynths,
-	updateExchangeRates,
 	setNetworkGasInfo,
 	setExchangeFeeRate,
 	updateFrozenSynths,
@@ -44,18 +44,15 @@ const Root = ({
 	currentTheme,
 	walletInfo: { currentWallet },
 	fetchWalletBalances,
+	fetchRates,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const [appReady, setAppReady] = useState(false);
 	const fetchAndSetExchangeData = useCallback(async synths => {
-		const { exchangeRates, exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(
-			synths
-		);
-		updateExchangeRates(exchangeRates);
+		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths(frozenSynths);
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -64,6 +61,11 @@ const Root = ({
 			fetchWalletBalances();
 		}
 	}, [currentWallet, fetchWalletBalances]);
+
+	useEffect(() => {
+		if (!appReady) return;
+		fetchRates();
+	}, [appReady]);
 
 	useEffect(() => {
 		let intervalId;
@@ -136,7 +138,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-	updateExchangeRates,
 	setAvailableSynths,
 	setNetworkGasInfo,
 	updateFrozenSynths,
@@ -144,6 +145,7 @@ const mapDispatchToProps = {
 	updateWalletBalances,
 	setExchangeFeeRate,
 	fetchWalletBalances,
+	fetchRates,
 };
 
 export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));

@@ -4,6 +4,7 @@ import wallet from './wallet';
 import synths from './synths';
 import transaction from './transaction';
 import loans from './loans';
+import rates from './rates';
 
 export default combineReducers({
 	wallet,
@@ -11,6 +12,7 @@ export default combineReducers({
 	synths,
 	transaction,
 	loans,
+	rates,
 });
 
 // UI REDUCERS
@@ -72,14 +74,6 @@ export const getSynthsSigns = state => {
 
 export const getSynthPair = state => {
 	return { base: state.synths.baseSynth, quote: state.synths.quoteSynth };
-};
-
-export const getExchangeRates = state => {
-	return state.synths.exchangeRates;
-};
-
-export const getEthRate = state => {
-	return state.synths.ethRate;
 };
 
 export const getFrozenSynths = state => {

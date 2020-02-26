@@ -3,16 +3,6 @@ import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter, parseBytes32String } from '../utils/formatters';
 import isEmpty from 'lodash/isEmpty';
 
-const getExchangeRates = async () => {
-	let synthsRates = {};
-	const [keys, rates] = await snxJSConnector.synthSummaryUtilContract.synthsRates();
-	keys.forEach((key, i) => {
-		const synthName = parseBytes32String(key);
-		synthsRates[synthName] = Number(bigNumberFormatter(rates[i]));
-	});
-	return { synthsRates, ethRate: synthsRates['sETH'] };
-};
-
 const getExchangeFeeRate = async () => {
 	const { formatEther } = snxJSConnector.snxJS.utils;
 	const exchangeFeeRate = await snxJSConnector.snxJS.FeePool.exchangeFeeRate();
@@ -35,14 +25,12 @@ const getFrozenSynths = async () => {
 
 export const getExchangeData = async synths => {
 	try {
-		const [exchangeRates, exchangeFeeRate, networkPrices, frozenSynths] = await Promise.all([
-			getExchangeRates(synths),
+		const [exchangeFeeRate, networkPrices, frozenSynths] = await Promise.all([
 			getExchangeFeeRate(),
 			getNetworkPrices(),
 			getFrozenSynths(synths),
 		]);
 		return {
-			exchangeRates,
 			exchangeFeeRate,
 			networkPrices,
 			frozenSynths,

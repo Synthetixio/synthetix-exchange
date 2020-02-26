@@ -1,7 +1,6 @@
 import { synthWeight } from '../utils/synthOrdering';
 const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
 const SET_SYNTH_PAIR = 'SYNTHS/SET_SYNTH_PAIR';
-const SET_EXCHANGE_RATES = 'SYNTHS/SET_EXCHANGE_RATES';
 const SET_FROZEN_SYNTHS = 'SYNTHS/SET_FROZEN_SYNTHS';
 
 const defaultState = {
@@ -11,8 +10,6 @@ const defaultState = {
 	topSynthByVolume: [],
 	defaultSynth: null,
 	frozenSynths: null,
-	exchangeRates: null,
-	ethRate: null,
 	baseSynth: { name: 'sBTC', category: 'crypto' },
 	quoteSynth: { name: 'sUSD', category: 'forex' },
 };
@@ -55,10 +52,6 @@ const reducer = (state = defaultState, action = {}) => {
 			const { quote, base } = action.payload;
 			return { ...state, baseSynth: base, quoteSynth: quote };
 		}
-		case SET_EXCHANGE_RATES: {
-			const { synthsRates, ethRate } = action.payload;
-			return { ...state, exchangeRates: synthsRates, ethRate };
-		}
 		case SET_FROZEN_SYNTHS: {
 			const frozenSynths = action.payload;
 			return {
@@ -85,26 +78,6 @@ export const setSynthPair = pair => {
 
 export const updateFrozenSynths = synths => {
 	return { type: SET_FROZEN_SYNTHS, payload: synths };
-};
-
-const convertBaseSynth = (synth, rates) => {
-	let convertedRates = {};
-	Object.keys(rates).forEach(r => {
-		const conversion = rates[synth] * (1 / rates[r]);
-		convertedRates[r] = conversion;
-	});
-	return convertedRates;
-};
-
-export const updateExchangeRates = ({ synthsRates, ethRate }) => {
-	let rateObject = {};
-	Object.keys(synthsRates).forEach(synth => {
-		rateObject[synth] = convertBaseSynth(synth, synthsRates);
-	});
-	return {
-		type: SET_EXCHANGE_RATES,
-		payload: { synthsRates: rateObject, ethRate },
-	};
 };
 
 export default reducer;

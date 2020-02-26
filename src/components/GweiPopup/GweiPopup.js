@@ -10,8 +10,9 @@ import { getTransactionPrice } from '../../utils/networkUtils';
 import { HeadingMedium, BodyMedium, DataSmall } from '../Typography';
 import Slider from '../Slider';
 
-import { getGasInfo, getEthRate } from '../../ducks/';
+import { getGasInfo } from '../../ducks/';
 import { setGasPrice } from '../../ducks/transaction';
+import { getEthRate } from '../../ducks/rates';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../Table';
 import { ButtonPrimary } from '../Button';
@@ -46,6 +47,7 @@ const WalletPopup = ({
 			gasPrice,
 			usdPrice: getTransactionPrice(gasPrice, gasLimit, ethRate),
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gasPrice, gasLimit, ethRate]);
 	return (
 		<>

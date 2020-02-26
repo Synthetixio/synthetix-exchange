@@ -17,24 +17,25 @@ import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
 import {
 	getSynthPair,
-	getExchangeRates,
 	getWalletInfo,
 	getGasInfo,
 	getExchangeFeeRate,
-	getEthRate,
 	getTransactions,
 } from '../../ducks';
+import { getRatesExchangeRates } from '../../ducks/rates';
 import { toggleGweiPopup } from '../../ducks/ui';
 import { fetchWalletBalances } from '../../ducks/wallet';
+import { getEthRate } from '../../ducks/rates';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';
+import { getExchangeRatesForCurrencies } from '../../utils/rates';
 import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
 import { EXCHANGE_EVENTS } from '../../constants/events';
 
 const TradeBox = ({
 	theme: { colors },
 	synthPair,
-	rates,
+	exchangeRates,
 	walletInfo: { balances, currentWallet, walletType },
 	setGasLimit,
 	toggleGweiPopup,
@@ -75,10 +76,18 @@ const TradeBox = ({
 				quote: quote.name,
 				fromAmount: quoteAmount,
 				toAmount: baseAmount,
-				price: base.name === 'sUSD' ? rates[quote.name][base.name] : rates[base.name][quote.name],
+				price:
+					base.name === 'sUSD'
+						? getExchangeRatesForCurrencies(exchangeRates, quote.name, base.name)
+						: getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name),
 				amount: formatCurrency(baseAmount),
-				priceUSD: base.name === 'sUSD' ? rates[quote.name]['sUSD'] : rates[base.name]['sUSD'],
-				totalUSD: formatCurrency(baseAmount * rates[base.name]['sUSD']),
+				priceUSD:
+					base.name === 'sUSD'
+						? getExchangeRatesForCurrencies(exchangeRates, quote.name, 'sUSD')
+						: getExchangeRatesForCurrencies(exchangeRates, base.name, 'sUSD'),
+				totalUSD: formatCurrency(
+					baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, 'sUSD')
+				),
 				status: 'Waiting',
 			});
 
@@ -207,6 +216,9 @@ const TradeBox = ({
 	const baseBalance = (synthsBalances && synthsBalances[base.name]) || 0;
 	const quoteBalance = (synthsBalances && synthsBalances[quote.name]) || 0;
 
+	const rate = getExchangeRatesForCurrencies(exchangeRates, quote.name, base.name);
+	const inverseRate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name);
+
 	return (
 		<Container>
 			<Header>
@@ -227,7 +239,7 @@ const TradeBox = ({
 						amount={quoteAmount}
 						onChange={(_, value) => {
 							setTradeAllBalance(false);
-							const convertedRate = rates ? value * rates[quote.name][base.name] : 0;
+							const convertedRate = value * rate;
 							setBaseAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setQuoteAmount(value);
 						}}
@@ -257,7 +269,7 @@ const TradeBox = ({
 						amount={baseAmount}
 						onChange={(_, value) => {
 							setTradeAllBalance(false);
-							const convertedRate = rates ? value * rates[base.name][quote.name] : 0;
+							const convertedRate = value * inverseRate;
 							setQuoteAmount(isNan(convertedRate) ? 0 : convertedRate);
 							setBaseAmount(value);
 						}}
@@ -274,7 +286,7 @@ const TradeBox = ({
 									const amount = fraction === 100 ? balance : (balance * Number(fraction)) / 100;
 									setTradeAllBalance(fraction === 100);
 									setQuoteAmount(amount);
-									const convertedRate = rates ? amount * rates[quote.name][base.name] : 0;
+									const convertedRate = amount * rate;
 									setBaseAmount(convertedRate);
 								}}
 							>
@@ -287,14 +299,16 @@ const TradeBox = ({
 					<NetworkDataRow>
 						<NetworkData>Price</NetworkData>
 						<NetworkData>
-							1 {base.name} = {rates ? formatCurrency(rates[base.name][quote.name]) : 0}{' '}
-							{quote.name}
+							1 {base.name} = {formatCurrency(inverseRate)} {quote.name}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>USD Value</NetworkData>
 						<NetworkData>
-							${rates ? formatCurrency(baseAmount * rates[base.name]['sUSD']) : 0}
+							$
+							{formatCurrency(
+								baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, 'sUSD')
+							)}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
@@ -438,7 +452,7 @@ const ButtonEdit = styled.button`
 const mapStateToProps = state => {
 	return {
 		synthPair: getSynthPair(state),
-		rates: getExchangeRates(state),
+		exchangeRates: getRatesExchangeRates(state),
 		walletInfo: getWalletInfo(state),
 		gasInfo: getGasInfo(state),
 		exchangeFeeRate: getExchangeFeeRate(state),
