@@ -31,7 +31,14 @@ export const INFURA_JSON_RPC_URLS = {
 	42: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
-export const SUPPORTED_WALLETS = ['Metamask', 'Trezor', 'Ledger', 'Coinbase', 'WalletConnect'];
+export const SUPPORTED_WALLETS_MAP = {
+	METAMASK: 'Metamask',
+	TREZOR: 'Trezor',
+	LEDGER: 'Ledger',
+	COINBASE: 'Coinbase',
+	WALLET_CONNECT: 'WalletConnect',
+};
+export const SUPPORTED_WALLETS = Object.values(SUPPORTED_WALLETS_MAP);
 
 export const hasWeb3 = () => {
 	return window.web3;

@@ -10,6 +10,13 @@
 			"ether-collateral": "NEW: ETH Collateral is live!"
 		}
 	},
+	"modals": {
+		"wallet": {
+			"wallet-selector": {
+				"title": "Connect your wallet"
+			}
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
