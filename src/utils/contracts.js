@@ -1,9 +1,9 @@
 // To be added to SynthetixJS
 export const synthSummaryUtilContract = {
 	addresses: {
-		1: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
-		3: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
-		4: '0xfB7ea8C81BE072cdCA3f90c17f6776f11ef5d0cE',
+		1: '0x95A6a3f44a70172E7d50a9e28c85Dfd712756B8C',
+		3: '0x15dfbBE6Ae0BA2B27d2E9Adb54C014C388255BE9',
+		4: '0x4ec3cb1d571Cd3B7A3B3C99EC6dCa02610bd6f1e',
 		42: '0x7Ce89dF3D8736c62F256224941F5F811D29d01Bf',
 	},
 	abi: [

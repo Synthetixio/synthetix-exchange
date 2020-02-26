@@ -1,9 +1,7 @@
-import snxData from 'synthetix-data';
 import { getGasInfo } from '../utils/networkUtils';
 import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter, parseBytes32String } from '../utils/formatters';
 import isEmpty from 'lodash/isEmpty';
-import { subDays } from 'date-fns';
 
 const getExchangeRates = async () => {
 	let synthsRates = {};
