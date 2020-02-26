@@ -32,7 +32,6 @@ const walletTypeToIconMap = {
 	[WALLET_CONNECT]: WalletConnect,
 };
 
-console.log(walletTypeToIconMap);
 const WalletTypeSelector = ({
 	updateWalletStatus,
 	toggleWalletPopup,
