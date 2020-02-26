@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+
+import { ReactComponent as CloseIcon } from '../../assets/images/close.svg';
 
 import { Message } from '../../shared/commonStyles';
 
@@ -27,7 +28,7 @@ const StyledMessage = styled(Message)`
 	justify-content: space-between;
 `;
 
-const StyledCloseButton = styled(FontAwesomeIcon)`
+const StyledCloseButton = styled(CloseIcon)`
 	cursor: pointer;
 `;
 
