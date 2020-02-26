@@ -4,15 +4,11 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import {
-	getAvailableSynths,
-	getExchangeRates,
-	getSynthsSigns,
-	getSynthPair,
-	getSynthSearch,
-} from '../../ducks';
+import { getAvailableSynths, getSynthsSigns, getSynthPair, getSynthSearch } from '../../ducks';
+import { getRatesExchangeRates, getIsLoadedRates } from '../../ducks/rates';
 import { formatCurrency } from '../../utils/formatters';
 import { pairWeight } from '../../utils/synthOrdering';
+import { getExchangeRatesForCurrencies } from '../../utils/rates';
 
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
@@ -22,7 +18,15 @@ import { setSynthSearch } from '../../ducks/ui';
 
 const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT'];
 
-const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, search }) => {
+const PairList = ({
+	synths,
+	exchangeRates,
+	setSynthPair,
+	synthsSigns,
+	setSynthSearch,
+	search,
+	isLoadedRates,
+}) => {
 	const [quote, setQuote] = useState({ name: 'sUSD', category: 'forex' });
 	// const [sort, setSort] = useState({});
 	const [synthList, setSynthList] = useState([]);
@@ -34,27 +38,33 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 		let list = [];
 		synths.forEach(a => {
 			listToCompare.forEach(b => {
+				const rate = getExchangeRatesForCurrencies(exchangeRates, a.name, b.name) || 0;
+				const inverseRate = getExchangeRatesForCurrencies(exchangeRates, b.name, a.name) || 0;
 				if (a.name !== b.name) {
 					if (pairWeight(b) > pairWeight(a)) {
 						list.push({
 							base: b,
 							quote: a,
-							rate: rates ? rates[b.name][a.name] : 0,
+							rate: inverseRate,
 						});
 					} else if (pairWeight(b) === pairWeight(a)) {
 						list = list.concat([
 							{
 								base: a,
 								quote: b,
-								rate: rates ? rates[a.name][b.name] : 0,
+								rate,
 							},
-							{ base: b, quote: a, rate: rates ? rates[b.name][a.name] : 0 },
+							{
+								base: b,
+								quote: a,
+								rate: inverseRate,
+							},
 						]);
 					} else {
 						list.push({
 							base: a,
 							quote: b,
-							rate: rates ? rates[a.name][b.name] : 0,
+							rate,
 						});
 					}
 				}
@@ -63,7 +73,7 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 		});
 		setSynthList(list);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synths.length, rates]);
+	}, [synths.length, exchangeRates]);
 
 	useEffect(() => {
 		setSynthSearch('');
@@ -159,7 +169,7 @@ const PairList = ({ synths, rates, setSynthPair, synthsSigns, setSynthSearch, se
 				{filteredSynths.map((pair, i) => {
 					return (
 						<Pair
-							isDisabled={!rates}
+							isDisabled={!isLoadedRates}
 							key={i}
 							onClick={() => setSynthPair({ base: pair.base, quote: pair.quote })}
 						>
@@ -285,10 +295,11 @@ const ButtonSort = styled.button`
 const mapStateToProps = state => {
 	return {
 		synths: getAvailableSynths(state),
-		rates: getExchangeRates(state),
+		exchangeRates: getRatesExchangeRates(state),
 		synthsSigns: getSynthsSigns(state),
 		synthPair: getSynthPair(state),
 		search: getSynthSearch(state),
+		isLoadedRates: getIsLoadedRates(state),
 	};
 };
 

@@ -7,7 +7,8 @@ import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'rec
 
 import snxData from 'synthetix-data';
 
-import { getSynthPair, getExchangeRates, getSynthsSigns } from '../../ducks';
+import { getSynthPair, getSynthsSigns } from '../../ducks';
+import { getRatesExchangeRates } from '../../ducks/rates';
 
 import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
@@ -18,6 +19,7 @@ import {
 	formatPercentage,
 	formatCurrencyWithPrecision,
 } from '../../utils/formatters';
+import { getExchangeRatesForCurrencies } from '../../utils/rates';
 import { calculateRateChange, matchPairRates } from './chartCalculations';
 import './chart.scss';
 
@@ -42,11 +44,7 @@ const getMinAndMaxRate = data => {
 	);
 };
 
-const getCurrentPairPrice = (base, quote, rates) => {
-	return rates[base.name][quote.name];
-};
-
-const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) => {
+const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSigns }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
 	const [lastDayData, setLastDayData] = useState([]);
@@ -110,6 +108,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) =
 
 	const [min, max] = getMinAndMaxRate(lastDayData);
 	const lastDayChange = calculateRateChange(lastDayData);
+	const rate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name) || 0;
 
 	return (
 		<Container>
@@ -200,7 +199,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, rates, synthsSigns }) =
 						<DataBlockLabel>Price</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
 							{synthsSigns[quote.name]}
-							{rates ? formatCurrencyWithPrecision(getCurrentPairPrice(base, quote, rates)) : 0}
+							{formatCurrencyWithPrecision(rate)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
@@ -317,7 +316,7 @@ const ChartContainer = styled.div`
 const mapStateToProps = state => {
 	return {
 		synthPair: getSynthPair(state),
-		rates: getExchangeRates(state),
+		exchangeRates: getRatesExchangeRates(state),
 		synthsSigns: getSynthsSigns(state),
 	};
 };
