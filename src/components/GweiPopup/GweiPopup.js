@@ -10,6 +10,8 @@ import { getTransactionPrice } from '../../utils/networkUtils';
 import { HeadingMedium, BodyMedium, DataSmall } from '../Typography';
 import Slider from '../Slider';
 
+import { ReactComponent as CloseCrossIcon } from '../../assets/images/close-cross.svg';
+
 import { getGasInfo } from '../../ducks/';
 import { setGasPrice } from '../../ducks/transaction';
 import { getEthRate } from '../../ducks/rates';
@@ -55,7 +57,7 @@ const WalletPopup = ({
 			<Popup isVisible={popupIsVisible}>
 				<Container>
 					<CloseButton onClick={() => toggleGweiPopup(false)}>
-						<CloseIcon src="/images/close-cross.svg" />
+						<CloseCrossIcon />
 					</CloseButton>
 					<Body>
 						<HeadingMedium style={{ marginBottom: '18px' }}>
@@ -216,11 +218,6 @@ const CloseButton = styled.button`
 	position: absolute;
 	right: 5%;
 	top: 5%;
-`;
-
-const CloseIcon = styled.img`
-	width: 22px;
-	height: 22px;
 `;
 
 const InputRow = styled.div`

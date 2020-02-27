@@ -35,6 +35,8 @@ import { getExchangeRatesForCurrencies } from '../../utils/rates';
 import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
 import { EXCHANGE_EVENTS } from '../../constants/events';
 
+import { ReactComponent as ReverseArrowIcon } from '../../assets/images/reverse-arrow.svg';
+
 const TradeBox = ({
 	theme: { colors },
 	synthPair,
@@ -255,7 +257,7 @@ const TradeBox = ({
 						style={{ background: 'transparent' }}
 						onClick={() => setPair({ quote: base, base: quote })}
 					>
-						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
+						<ReverseArrowIcon width="16" height="12" />
 					</ButtonFilter>
 				</ButtonFilterRow>
 				<InputBlock>
@@ -367,11 +369,6 @@ const Header = styled.div`
 	& > button {
 		margin-left: 12px;
 	}
-`;
-
-const ButtonIcon = styled.img`
-	width: 16px;
-	height: 12px;
 `;
 
 const Body = styled.div`

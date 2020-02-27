@@ -159,7 +159,6 @@ const PairList = ({
 								// }
 								>
 									<ListHeaderLabel>{column.label}</ListHeaderLabel>
-									{/* <SortIcon src="/images/sort-arrows.svg" /> */}
 								</ButtonSort>
 							</ListHeaderElement>
 						);
@@ -282,12 +281,6 @@ const ButtonSort = styled.button`
 	cursor: pointer;
 	background: transparent;
 `;
-
-// const SortIcon = styled.img`
-// 	width: 6.5px;
-// 	height: 8px;
-// 	margin-left: 5px;
-// `;
 
 const mapStateToProps = state => {
 	return {

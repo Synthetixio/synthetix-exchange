@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 
+import { ReactComponent as ArrowDownIcon } from '../../assets/images/arrow-down.svg';
+
 import { DataSmall } from '../Typography';
 
 import { Z_INDEX } from '../../constants/ui';
@@ -22,7 +24,7 @@ export const ButtonFilterWithDropdown = ({ children, active, synths = [], onClic
 			<ButtonContainer>
 				<Button onClick={() => setIsVisible(!isVisible)} active={active}>
 					<ButtonLabel>{children}</ButtonLabel>
-					<AngleDownIcon src="/images/arrow-down.svg" />
+					<StyledArrowDownIcon />
 				</Button>
 				<DropDown isVisible={isVisible}>
 					<List>
@@ -52,7 +54,7 @@ const ButtonContainer = styled.div`
 	}
 `;
 
-const AngleDownIcon = styled.img`
+const StyledArrowDownIcon = styled(ArrowDownIcon)`
 	width: 6px;
 	height: 6px;
 	margin-left: 8px;
