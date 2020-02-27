@@ -18,6 +18,7 @@ import {
 	formatCurrency,
 	formatPercentage,
 	formatCurrencyWithPrecision,
+	formatCurrencyPair,
 } from '../../utils/formatters';
 import { getExchangeRatesForCurrencies } from '../../utils/rates';
 import { calculateRateChange, matchPairRates } from './chartCalculations';
@@ -114,7 +115,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 		<Container>
 			<Header>
 				<HeaderBlock>
-					<HeadingSmall>{`${base.name}/${quote.name}`}</HeadingSmall>
+					<HeadingSmall>{formatCurrencyPair(base.name, quote.name)}</HeadingSmall>
 					<Link style={{ textDecoration: 'none' }} to={'/'}></Link>
 				</HeaderBlock>
 				<HeaderBlock>
