@@ -10,16 +10,30 @@
 			"ether-collateral": "NEW: ETH Collateral is live!"
 		}
 	},
+	"modals": {
+		"wallet": {
+			"wallet-selector": {
+				"title": "Connect your wallet"
+			}
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
+		}
+	},
+	"trade": {
+		"promo": {
+			"ether-promo-card": {
+				"title": "get synths to start trading:"
+			}
 		}
 	},
 	"loans": {
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",
 			"loan-info": {
-				"interest-rate": "interest rate",
+				"interest-fee": "interest fee",
 				"minting-fee": "minting fee",
 				"number-of-open-loans": "# of open loans",
 				"currency-limit": "<0>{{currencyKey}}</0> limit",
@@ -35,7 +49,7 @@
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
 				"time-opened-col": "time opened",
-				"current-interest-col": "current interest",
+				"current-interest-fee-col": "current interest fee",
 				"fees-payable-col": "fees payable",
 				"status-col": "status",
 				"no-results": "No loans associated with this wallet."
@@ -58,6 +72,7 @@
 		}
 	},
 	"common": {
+		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
 		"actions": {
@@ -84,6 +99,10 @@
 			"amount-exceeds-balance": "Amount exceeds balance",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
 			"error-loading": "An error occurred trying to load"
+		},
+		"currency": {
+			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
+			"borrow-currency": "Borrow {{currencyKey}}"
 		}
 	}
 }

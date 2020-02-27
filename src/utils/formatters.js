@@ -45,6 +45,8 @@ export const formatCurrencyWithKey = (currencyKey, value, decimals = DEFAULT_CUR
 
 export const bytesFormatter = input => snxJSConnector.ethersUtils.formatBytes32String(input);
 
+export const parseBytes32String = input => snxJSConnector.ethersUtils.parseBytes32String(input);
+
 export const bigNumberFormatter = value => Number(snxJSConnector.utils.formatEther(value));
 
 export const getAddress = addr => snxJSConnector.ethersUtils.getAddress(addr);
