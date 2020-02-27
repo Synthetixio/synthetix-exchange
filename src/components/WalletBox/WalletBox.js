@@ -111,7 +111,11 @@ const WalletBox = ({
 											height="18px"
 											style={{ marginRight: '8px' }}
 										/>
+<<<<<<< HEAD
 										<DataLabelHoverable isHoverable={asset.name !== CRYPTO_CURRENCY_MAP.ETH}>
+=======
+										<DataLabelHoverable isHoverable={asset.name !== 'ETH'}>
+>>>>>>> refactor: currency icons, names and pairs.
 											{asset.name}
 										</DataLabelHoverable>
 									</Td>
