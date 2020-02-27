@@ -28,7 +28,10 @@ const formatAssets = balances => {
 	const { eth, snx, synths } = balances;
 	let assets = [{ name: 'ETH', ...eth }];
 	Object.keys(synths.balances).forEach(key => {
-		assets.push({ name: key, ...synths.balances[key] });
+		const synth = synths.balances[key];
+		if (synth && synth.balance > 0) {
+			assets.push({ name: key, ...synth });
+		}
 	});
 	return assets;
 };
