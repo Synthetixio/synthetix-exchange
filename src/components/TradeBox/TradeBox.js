@@ -332,7 +332,7 @@ const TradeBox = ({
 						<NetworkData>
 							{gasPrice || 0}
 							<ButtonEdit onClick={() => toggleGweiPopup(true)}>
-								<DataSmall color={colors.hyperLink}>Edit</DataSmall>
+								<DataSmall color={colors.hyperlink}>Edit</DataSmall>
 							</ButtonEdit>
 						</NetworkData>
 					</NetworkDataRow>

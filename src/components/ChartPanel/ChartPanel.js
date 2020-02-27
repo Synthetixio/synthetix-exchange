@@ -141,8 +141,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 							<AreaChart data={chartData} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
 								<defs>
 									<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-										<stop offset="5%" stopColor={colors.hyperLink} stopOpacity={0.5} />
-										<stop offset="95%" stopColor={colors.hyperLink} stopOpacity={0} />
+										<stop offset="5%" stopColor={colors.hyperlink} stopOpacity={0.5} />
+										<stop offset="95%" stopColor={colors.hyperlink} stopOpacity={0} />
 									</linearGradient>
 								</defs>
 								<XAxis
@@ -164,7 +164,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 								/>
 								<Area
 									dataKey="rate"
-									stroke={colors.hyperLink}
+									stroke={colors.hyperlink}
 									fillOpacity={0.5}
 									fill="url(#colorUv)"
 								/>

@@ -158,7 +158,7 @@ const CenteredSpinner = styled(Spinner)`
 
 const Link = styled.a`
 	letter-spacing: 0.2px;
-	color: ${props => props.theme.colors.hyperLink};
+	color: ${props => props.theme.colors.hyperlink};
 	&:hover {
 		text-decoration: underline;
 	}
