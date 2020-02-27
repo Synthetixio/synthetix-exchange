@@ -16,6 +16,7 @@ import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
+import { CRYPTO_CURRENCY_MAP } from '../../constants/currency';
 
 const getTotal = balances => {
 	if (!balances) return 0;
@@ -26,7 +27,7 @@ const getTotal = balances => {
 const formatAssets = balances => {
 	if (!balances) return [];
 	const { eth, snx, synths } = balances;
-	let assets = [{ name: 'ETH', ...eth }];
+	let assets = [{ name: CRYPTO_CURRENCY_MAP.ETH, ...eth }];
 	Object.keys(synths.balances).forEach(key => {
 		const synth = synths.balances[key];
 		if (synth && synth.balance > 0) {
@@ -104,7 +105,7 @@ const WalletBox = ({
 										onClick={() => setSynthSearch(asset.name)}
 									>
 										<SynthIcon src={`/images/synths/${asset.name}.svg`} />
-										<DataLabelHoverable isHoverable={asset.name !== 'ETH'}>
+										<DataLabelHoverable isHoverable={asset.name !== CRYPTO_CURRENCY_MAP.ETH}>
 											{asset.name}
 										</DataLabelHoverable>
 									</Td>
