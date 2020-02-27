@@ -6,10 +6,12 @@ import PropTypes from 'prop-types';
 
 import snxJSConnector from '../../../../../utils/snxJSConnector';
 import { GWEI_UNIT } from '../../../../../utils/networkUtils';
+import { normalizeGasLimit } from '../../../../../utils/transactions';
 
-import { getGasInfo, getEthRate, getWalletInfo } from '../../../../../ducks';
+import { getGasInfo, getWalletInfo } from '../../../../../ducks';
 import { toggleGweiPopup } from '../../../../../ducks/ui';
-import { updateLoan, LOAN_STATUS } from '../../../../../ducks/loans';
+import { updateLoan, LOAN_STATUS } from '../../../../../ducks/loans/myLoans';
+import { getEthRate } from '../../../../../ducks/rates';
 
 import { ButtonPrimary } from '../../../../../components/Button';
 import Card from '../../../../../components/Card';
@@ -65,7 +67,7 @@ export const CloseLoanCard = ({
 			const loanIDStr = loanID.toString();
 
 			const gasEstimate = await EtherCollateral.contract.estimate.closeLoan(loanIDStr);
-			const updatedGasEstimate = Number(gasEstimate);
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
 			await EtherCollateral.closeLoan(loanIDStr, {
@@ -82,7 +84,6 @@ export const CloseLoanCard = ({
 
 			onLoanClosed();
 		} catch (e) {
-			console.log(e);
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
 	};

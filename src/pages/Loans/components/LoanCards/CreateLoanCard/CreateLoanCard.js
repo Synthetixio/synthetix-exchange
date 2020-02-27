@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import snxJSConnector from '../../../../../utils/snxJSConnector';
 import { GWEI_UNIT } from '../../../../../utils/networkUtils';
+import { normalizeGasLimit } from '../../../../../utils/transactions';
 import { getCurrencyKeyBalance } from '../../../../../utils/balances';
 
 import { EMPTY_BALANCE } from '../../../../../constants/placeholder';
@@ -13,8 +14,9 @@ import { ButtonPrimary } from '../../../../../components/Button';
 import Card from '../../../../../components/Card';
 import { TradeInput } from '../../../../../components/Input';
 import { HeadingSmall } from '../../../../../components/Typography';
-import { getGasInfo, getEthRate, getWalletInfo } from '../../../../../ducks';
-import { createLoan, LOAN_STATUS } from '../../../../../ducks/loans';
+import { getGasInfo, getWalletInfo } from '../../../../../ducks';
+import { createLoan, LOAN_STATUS } from '../../../../../ducks/loans/myLoans';
+import { getEthRate } from '../../../../../ducks/rates';
 
 import { toggleGweiPopup } from '../../../../../ducks/ui';
 
@@ -64,7 +66,8 @@ export const CreateLoanCard = ({
 			};
 
 			const gasEstimate = await EtherCollateral.contract.estimate.openLoan(openLoanArgs);
-			const updatedGasEstimate = Number(gasEstimate);
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+
 			setLocalGasLimit(updatedGasEstimate);
 
 			const tx = await EtherCollateral.openLoan({

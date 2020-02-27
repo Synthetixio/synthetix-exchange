@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 
 import Card from '../../../../components/Card';
 import { HeadingSmall } from '../../../../components/Typography';
-import { getWalletInfo } from '../../../../ducks';
+import { getIsRefreshingLoansContractInfo } from '../../../../ducks/loans/contractInfo';
+import { getWalletInfo, getIsFetchingWalletBalances } from '../../../../ducks';
 
 import { getCurrencyKeyBalance } from '../../../../utils/balances';
 import {
@@ -19,8 +20,14 @@ import { CARD_HEIGHT } from '../../../../constants/ui';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from '../../../../shared/commonStyles';
 import { EMPTY_BALANCE } from '../../../../constants/placeholder';
+import Spinner from '../../../../components/Spinner';
 
-export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralPair }) => {
+export const Dashboard = ({
+	walletInfo: { balances, currentWallet },
+	collateralPair,
+	isFetchingWalletBalances,
+	isRefreshingLoansContractInfo,
+}) => {
 	const { t } = useTranslation();
 
 	const {
@@ -38,7 +45,7 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 
 	const loanInfoItems = [
 		{
-			label: t('loans.dashboard.loan-info.interest-rate'),
+			label: t('loans.dashboard.loan-info.interest-fee'),
 			value: formatPercentage(interestRatePercent),
 		},
 		{
@@ -91,6 +98,7 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 					<HeadingSmall>
 						{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
 					</HeadingSmall>
+					{isRefreshingLoansContractInfo && <Spinner size="sm" />}
 				</Card.Header>
 				<Card.Body>
 					<LoanInfoRow>
@@ -103,10 +111,13 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 					</LoanInfoRow>
 				</Card.Body>
 			</Card>
-			<Table cellPadding="0" cellPadding="0">
+			<Table cellSpacing="0" cellPadding="0">
 				<thead>
 					<TableRowHeader>
-						<th style={{ width: '60%' }}>{t('common.wallet.your-wallet')}</th>
+						<WalletBalancesHeading>
+							<span>{t('common.wallet.your-wallet')}</span>
+							{isFetchingWalletBalances && <Spinner size="sm" />}
+						</WalletBalancesHeading>
 						<th>{t('common.wallet.currency-balance', { currencyKey: loanCurrencyKey })}</th>
 						<th>
 							{t('common.wallet.currency-balance', {
@@ -138,7 +149,18 @@ export const Dashboard = ({ walletInfo: { balances, currentWallet }, collateralP
 Dashboard.propTypes = {
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
+	isRefreshingLoansContractInfo: PropTypes.bool,
 };
+
+const WalletBalancesHeading = styled.th`
+	width: 60%;
+	display: flex;
+	align-items: center;
+
+	> * + * {
+		margin-left: 10px;
+	}
+`;
 
 const LoanInfoRow = styled.div`
 	display: grid;
@@ -183,6 +205,8 @@ const TableRowHeader = styled.tr`
 
 const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
+	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
+	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),
 });
 
 export default connect(mapStateToProps, null)(Dashboard);

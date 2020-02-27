@@ -1,14 +1,16 @@
-import React, { useMemo, useEffect, useState, useCallback } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import Tooltip from '@material-ui/core/Tooltip';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ReactComponent as NoWalletIcon } from '../../../../assets/images/no-wallet.svg';
 import { ReactComponent as ErrorCircleIcon } from '../../../../assets/images/error-circle.svg';
+import { ReactComponent as SortDownIcon } from '../../../../assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from '../../../../assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from '../../../../assets/images/sort.svg';
 
 import Card from '../../../../components/Card';
 import { ButtonPrimarySmall } from '../../../../components/Button';
@@ -17,8 +19,16 @@ import Spinner from '../../../../components/Spinner';
 
 import { absoluteCenteredCSS } from '../../../../shared/commonStyles';
 
-import { fetchLoans, LOAN_STATUS } from '../../../../ducks/loans';
-import { getWalletInfo, getLoans, getIsFetchingLoans } from '../../../../ducks';
+import {
+	fetchLoans,
+	getMyLoans,
+	getIsLoadingMyLoans,
+	getIsRefreshingMyLoans,
+	getMyLoansLoadingError,
+	getIsLoadedMyLoans,
+	LOAN_STATUS,
+} from '../../../../ducks/loans/myLoans';
+import { getWalletInfo } from '../../../../ducks';
 import { showWalletPopup } from '../../../../ducks/ui';
 
 import {
@@ -36,12 +46,13 @@ export const MyLoans = ({
 	walletInfo: { currentWallet },
 	loans,
 	collateralPair,
-	isFetchingLoans,
+	isLoadingMyLoans,
+	isRefreshingMyLoans,
+	myLoansLoadingError,
+	isLoadedMyLoans,
 	showWalletPopup,
 }) => {
 	const { t } = useTranslation();
-	const [hasFetchError, setHasFetchError] = useState(false);
-	const [isLoansFetched, setIsLoansFetched] = useState(false);
 	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 
 	const columns = useMemo(
@@ -68,7 +79,7 @@ export const MyLoans = ({
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.current-interest-col'),
+				Header: t('loans.my-loans.table.current-interest-fee-col'),
 				accessor: 'currentInterest',
 				Cell: cellProps => (
 					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
@@ -129,62 +140,17 @@ export const MyLoans = ({
 		useFlexLayout
 	);
 
-	const fetchMyLoans = useCallback(async () => {
-		setHasFetchError(false);
-
-		const result = await fetchLoans();
-		if (result) {
-			setIsLoansFetched(true);
-		} else {
-			setHasFetchError(true);
-		}
-	}, [fetchLoans, setIsLoansFetched, setHasFetchError]);
-
 	useEffect(() => {
 		if (currentWallet) {
-			fetchMyLoans();
+			fetchLoans();
 		}
-	}, [fetchMyLoans, currentWallet]);
-
-	const renderTableMessage = () => {
-		if (!currentWallet) {
-			return (
-				<MessageContainer>
-					<NoWalletIcon />
-					<MessageLabel>{t('common.wallet.no-wallet-connected')}</MessageLabel>
-					<ButtonPrimarySmall onClick={showWalletPopup}>
-						{t('common.wallet.connect-currency-wallet', {
-							currencyKey: collateralCurrencyKey,
-						})}
-					</ButtonPrimarySmall>
-				</MessageContainer>
-			);
-		} else {
-			if (hasFetchError) {
-				return (
-					<MessageContainer>
-						<ErrorCircleIcon />
-						<MessageLabel>{t('common.errors.error-loading')}</MessageLabel>
-						<ButtonPrimarySmall onClick={fetchMyLoans}>
-							{t('common.actions.click-to-retry')}
-						</ButtonPrimarySmall>
-					</MessageContainer>
-				);
-			} else {
-				if (isFetchingLoans && !isLoansFetched) {
-					return <HeaderSpinner size="sm" centered={true} />;
-				}
-				if (rows.length === 0 && isLoansFetched) {
-					return <NoResults>{t('loans.my-loans.table.no-results')}</NoResults>;
-				}
-			}
-		}
-	};
+	}, [fetchLoans, currentWallet]);
 
 	return (
 		<StyledCard>
 			<Card.Header>
 				<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
+				{isRefreshingMyLoans && <Spinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
 				<Table {...getTableProps()}>
@@ -197,24 +163,23 @@ export const MyLoans = ({
 								>
 									{column.render('Header')}
 									{column.sortable && (
-										<span style={{ marginLeft: '5px' }}>
+										<SortIconContainer>
 											{column.isSorted ? (
 												column.isSortedDesc ? (
-													<FontAwesomeIcon icon="sort-down" />
+													<SortDownIcon />
 												) : (
-													<FontAwesomeIcon icon="sort-up" />
+													<SortUpIcon />
 												)
 											) : (
-												<FontAwesomeIcon icon="sort" />
+												<SortIcon />
 											)}
-										</span>
+										</SortIconContainer>
 									)}
 								</TableCellHead>
 							))}
 						</TableRow>
 					))}
-					{renderTableMessage()}
-					{isLoansFetched && (
+					{isLoadedMyLoans && rows.length > 0 ? (
 						<TableBody {...getTableBodyProps()}>
 							{rows.map(row => {
 								prepareRow(row);
@@ -234,6 +199,29 @@ export const MyLoans = ({
 								);
 							})}
 						</TableBody>
+					) : currentWallet == null ? (
+						<MessageContainer>
+							<NoWalletIcon />
+							<MessageLabel>{t('common.wallet.no-wallet-connected')}</MessageLabel>
+							<ButtonPrimarySmall onClick={showWalletPopup}>
+								{t('common.wallet.connect-currency-wallet', {
+									currencyKey: collateralCurrencyKey,
+								})}
+							</ButtonPrimarySmall>
+						</MessageContainer>
+					) : myLoansLoadingError ? (
+						<MessageContainer>
+							<ErrorCircleIcon />
+							<MessageLabel>{t('common.errors.error-loading')}</MessageLabel>
+							<ButtonPrimarySmall onClick={() => fetchLoans()}>
+								{t('common.actions.click-to-retry')}
+							</ButtonPrimarySmall>
+						</MessageContainer>
+					) : isLoadingMyLoans && !isLoadedMyLoans ? (
+						<HeaderSpinner size="sm" centered={true} />
+					) : (
+						rows.length === 0 &&
+						isLoadedMyLoans && <NoResults>{t('loans.my-loans.table.no-results')}</NoResults>
 					)}
 				</Table>
 			</StyledCardBody>
@@ -338,17 +326,29 @@ const MessageLabel = styled.div`
 	color: ${props => props.theme.colors.fontPrimary};
 `;
 
+const SortIconContainer = styled.span`
+	display: flex;
+	align-items: center;
+	margin-left: 5px;
+`;
+
 MyLoans.propTypes = {
 	onSelectLoan: PropTypes.func.isRequired,
 	selectedLoan: PropTypes.object,
 	collateralPair: PropTypes.object,
-	isFetchingLoans: PropTypes.bool,
+	isLoadingMyLoans: PropTypes.bool,
+	isRefreshingMyLoans: PropTypes.bool,
+	myLoansLoadingError: PropTypes.string,
+	isLoadedMyLoans: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
-	loans: getLoans(state),
-	isFetchingLoans: getIsFetchingLoans(state),
+	loans: getMyLoans(state),
+	isLoadingMyLoans: getIsLoadingMyLoans(state),
+	isRefreshingMyLoans: getIsRefreshingMyLoans(state),
+	myLoansLoadingError: getMyLoansLoadingError(state),
+	isLoadedMyLoans: getIsLoadedMyLoans(state),
 });
 
 const mapDispatchToProps = {

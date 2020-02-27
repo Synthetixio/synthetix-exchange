@@ -12,10 +12,11 @@ import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
 
-import { getWalletInfo } from '../../ducks';
+import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
+import { CRYPTO_CURRENCY_MAP } from '../../constants/currency';
 
 const getTotal = balances => {
 	if (!balances) return 0;
@@ -26,9 +27,12 @@ const getTotal = balances => {
 const formatAssets = balances => {
 	if (!balances) return [];
 	const { eth, snx, synths } = balances;
-	let assets = [{ name: 'ETH', ...eth }];
+	let assets = [{ name: CRYPTO_CURRENCY_MAP.ETH, ...eth }];
 	Object.keys(synths.balances).forEach(key => {
-		assets.push({ name: key, ...synths.balances[key] });
+		const synth = synths.balances[key];
+		if (synth && synth.balance > 0) {
+			assets.push({ name: key, ...synth });
+		}
 	});
 	return assets;
 };
@@ -43,16 +47,14 @@ const WalletBox = ({
 	theme: { colors },
 	walletInfo: { currentWallet, balances },
 	setSynthSearch,
+	isFetchingWalletBalances,
 }) => {
 	const [assets, setAssets] = useState([]);
-	const [isLoading, setIsLoading] = useState(false);
 	const [sortIsAcending, setSortIsAscending] = useState(true);
 	useEffect(() => {
-		if (currentWallet) setIsLoading(true);
 		if (!balances) return;
 		const dataAssets = formatAssets(balances);
 		setAssets(sortBy(dataAssets, 'usdBalance', false));
-		setIsLoading(false);
 	}, [balances, currentWallet]);
 
 	return (
@@ -61,14 +63,8 @@ const WalletBox = ({
 				<HeaderBlock>
 					<HeadingAndSpinner>
 						<HeadingSmall>Wallet Balance</HeadingSmall>
-						{isLoading ? <Spinner size="sm"></Spinner> : null}
+						{isFetchingWalletBalances ? <Spinner size="sm"></Spinner> : null}
 					</HeadingAndSpinner>
-					{/* <Link style={{ textDecoration: 'none' }} to={'/'}>
-						<LinkInner>
-							<LinkLabel>View Stats</LinkLabel>
-							<LinkIcon src="/images/link-arrow.svg" />
-						</LinkInner>
-					</Link> */}
 				</HeaderBlock>
 				<HeaderBlock>
 					<HeaderLabel>Total value: ${getTotal(balances)}</HeaderLabel>
@@ -106,21 +102,10 @@ const WalletBox = ({
 								<Tr key={i}>
 									<Td
 										style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
-										onClick={() => {
-											setSynthSearch(asset.name);
-											// if (asset.name === 'ETH') return;
-											// const base = asset.name === 'sUSD' ? 'sBTC' : 'sUSD';
-											// setSynthPair({
-											// 	quote: currentSynth,
-											// 	base: {
-											// 		name: asset.name === 'sUSD' ? 'sBTC' : 'sUSD',
-											// 		category: asset.name === 'sUSD' ? 'forex' : 'crypto',
-											// 	},
-											// });
-										}}
+										onClick={() => setSynthSearch(asset.name)}
 									>
 										<SynthIcon src={`/images/synths/${asset.name}.svg`} />
-										<DataLabelHoverable isHoverable={asset.name !== 'ETH'}>
+										<DataLabelHoverable isHoverable={asset.name !== CRYPTO_CURRENCY_MAP.ETH}>
 											{asset.name}
 										</DataLabelHoverable>
 									</Td>
@@ -204,6 +189,7 @@ const SynthIcon = styled.img`
 const HeadingAndSpinner = styled.div`
 	display: flex;
 	align-items: center;
+	height: 20px;
 	& > :first-child {
 		margin-right: 8px;
 	}
@@ -221,6 +207,7 @@ const mapStateToProps = state => {
 	return {
 		walletInfo: getWalletInfo(state),
 		synths: getAvailableSynths(state),
+		isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 	};
 };
 

@@ -1,22 +1,30 @@
 import React from 'react';
-import styled, { withTheme } from 'styled-components';
-
+import styled, { css } from 'styled-components';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import GenericInput from './Input';
-import { DataMedium } from '../Typography';
-import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
+
 import { SYNTHS_MAP } from '../../constants/currency';
+
+import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
+
+import { DataMedium } from '../Typography';
+import { ButtonPrimary } from '../Button';
+
+import GenericInput from './Input';
 
 const TradeInput = ({
 	label,
 	synth = SYNTHS_MAP.sUSD,
-	theme: { colors },
 	onChange,
 	amount,
 	inputProps,
 	errorMessage,
+	onMaxButtonClick,
 }) => {
+	const { t } = useTranslation();
 	const handleOnChange = e => onChange(e, e.target.value);
+	const hasMaxButton = onMaxButtonClick != null;
+
 	return (
 		<>
 			{label != null && <Label>{label}</Label>}
@@ -25,19 +33,20 @@ const TradeInput = ({
 					<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
 					<SynthName>{synth}</SynthName>
 				</Synth>
-				<GenericInput
+				<StyledGenericInput
 					type="number"
 					value={amount}
 					placeholder="0"
-					color={colors.fontPrimary}
 					onChange={handleOnChange}
 					{...inputProps}
+					hasMaxButton={hasMaxButton}
 				/>
 				{errorMessage && (
 					<StyledMessage type="error" floating={true}>
 						{errorMessage}
 					</StyledMessage>
 				)}
+				{hasMaxButton && <MaxButton onClick={onMaxButtonClick}>{t('common.max')}</MaxButton>}
 			</Container>
 		</>
 	);
@@ -46,11 +55,29 @@ const TradeInput = ({
 TradeInput.propTypes = {
 	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 	synth: PropTypes.string.isRequired,
-	theme: PropTypes.object.isRequired,
 	onChange: PropTypes.func.isRequired,
 	amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	errorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+	onMaxButtonClick: PropTypes.func,
 };
+
+const MaxButton = styled(ButtonPrimary).attrs({ size: 'sm' })`
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 25px;
+	line-height: unset;
+`;
+
+const StyledGenericInput = styled(GenericInput)`
+	${props =>
+		props.hasMaxButton &&
+		css`
+			padding-right: 72px;
+		`};
+	color: ${props => props.theme.colors.fontPrimary};
+`;
 
 const Label = styled(FlexDivCentered)`
 	justify-content: space-between;
@@ -84,4 +111,4 @@ export const StyledMessage = styled(Message)`
 	top: calc(100% + 10px);
 `;
 
-export default withTheme(TradeInput);
+export default TradeInput;
