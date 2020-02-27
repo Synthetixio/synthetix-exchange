@@ -91,12 +91,6 @@ const Synth = styled.li`
 		props.isActive ? props.theme.colors.accentLight : props.theme.colors.accentDark};
 `;
 
-const StyledCurrencyName = styled(Currency.Name)`
-	${dataSmallCSS};
-	text-transform: none;
-	font-size: 14px;
-`;
-
 const Button = styled.button`
 	border-radius: 1px;
 	outline: none;

@@ -7,7 +7,6 @@ import { SYNTHS_MAP } from '../../constants/currency';
 
 import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
 
-import { dataMediumCSS } from '../Typography/Data';
 import { ButtonPrimary } from '../Button';
 import Currency from '../Currency';
 
@@ -97,7 +96,6 @@ const Synth = styled(FlexDivCentered)`
 `;
 
 const StyledCurrencyName = styled(Currency.Name)`
-	${dataMediumCSS};
 	color: ${props => props.theme.colors.fontSecondary};
 `;
 
