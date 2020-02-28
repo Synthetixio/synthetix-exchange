@@ -8,7 +8,7 @@ import { SYNTHS_MAP, ASSETS_MAP } from '../constants/currency';
 const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
 
 const sortSynths = (a, b) => {
-	if (a.category === ASSETS_MAP.CRYPTO && b.category === ASSETS_MAP.CRYPTO) {
+	if (a.category === ASSETS_MAP.crypto && b.category === ASSETS_MAP.crypto) {
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
 		if (!a.inverted && b.inverted) {
 			return nameOrder - 1;
@@ -16,7 +16,7 @@ const sortSynths = (a, b) => {
 			return nameOrder;
 		} else return 0;
 	}
-	if (a.category === ASSETS_MAP.CRYPTO && b.category !== ASSETS_MAP.CRYPTO) {
+	if (a.category === ASSETS_MAP.crypto && b.category !== ASSETS_MAP.crypto) {
 		return -1;
 	}
 };
@@ -29,8 +29,8 @@ export const synthsSlice = createSlice({
 	initialState: {
 		availableSynths: {},
 		frozenSynths: {},
-		baseSynth: { name: DEFAULT_BASE_SYNTH, category: ASSETS_MAP.CRYPTO },
-		quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: ASSETS_MAP.FOREX },
+		baseSynth: { name: DEFAULT_BASE_SYNTH, category: ASSETS_MAP.crypto },
+		quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: ASSETS_MAP.forex },
 	},
 	reducers: {
 		setAvailableSynths: (state, action) => {
