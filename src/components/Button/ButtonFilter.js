@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 import { DataSmall } from '../Typography';
-import { dataSmallCSS } from '../Typography/Data';
 
 import { Z_INDEX } from '../../constants/ui';
 
