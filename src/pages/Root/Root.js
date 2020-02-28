@@ -14,7 +14,7 @@ import { getExchangeData, getWalletBalances } from '../../dataFetcher';
 
 import history from '../../utils/history';
 
-import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
+import { getCurrentTheme, getWalletInfo } from '../../ducks';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { updateWalletStatus, updateWalletBalances, fetchWalletBalances } from '../../ducks/wallet';
 import { fetchRates } from '../../ducks/rates';
@@ -52,7 +52,7 @@ const Root = ({
 		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
-		updateFrozenSynths(frozenSynths);
+		updateFrozenSynths({ frozenSynths });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -77,7 +77,7 @@ const Root = ({
 			}
 			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
-			setAvailableSynths(synths);
+			setAvailableSynths({ synths });
 			fetchAndSetExchangeData(synths);
 			clearInterval(intervalId);
 			intervalId = setInterval(() => {
@@ -129,13 +129,10 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const mapStateToProps = state => {
-	return {
-		availableSynths: getAvailableSynths(state),
-		walletInfo: getWalletInfo(state),
-		currentTheme: getCurrentTheme(state),
-	};
-};
+const mapStateToProps = state => ({
+	walletInfo: getWalletInfo(state),
+	currentTheme: getCurrentTheme(state),
+});
 
 const mapDispatchToProps = {
 	setAvailableSynths,

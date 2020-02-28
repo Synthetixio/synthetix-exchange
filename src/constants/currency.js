@@ -35,6 +35,9 @@ import { ReactComponent as iMKRIcon } from '../assets/currencies/synths/iMKR.svg
 import { ReactComponent as iCEXIcon } from '../assets/currencies/synths/iCEX.svg';
 import { ReactComponent as iDEFIIcon } from '../assets/currencies/synths/iDEFI.svg';
 
+export const ASSETS = ['crypto', 'forex', 'fiat'];
+export const ASSETS_MAP = keyBy(ASSETS);
+
 export const SYNTHS = [
 	'sBTC',
 	'sETH',

@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import { getAvailableSynths, getSynthsSigns, getSynthPair, getSynthSearch } from '../../ducks';
+import { getSynthSearch } from '../../ducks';
 import { getRatesExchangeRates, getIsLoadedRates } from '../../ducks/rates';
+import { getAvailableSynths, getSynthPair, getAvailableSynthsMap } from '../../ducks/synths';
 import { formatCurrency } from '../../utils/formatters';
 import { pairWeight } from '../../utils/synthOrdering';
 import { getExchangeRatesForCurrencies } from '../../utils/rates';
@@ -21,9 +22,9 @@ const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT'];
 
 const PairList = ({
 	synths,
+	synthsMap,
 	exchangeRates,
 	setSynthPair,
-	synthsSigns,
 	setSynthSearch,
 	search,
 	isLoadedRates,
@@ -171,7 +172,7 @@ const PairList = ({
 						<Pair
 							isDisabled={!isLoadedRates}
 							key={i}
-							onClick={() => setSynthPair({ base: pair.base, quote: pair.quote })}
+							onClick={() => setSynthPair({ baseSynth: pair.base, quoteSynth: pair.quote })}
 						>
 							<PairElement>
 								<Currency.Pair
@@ -181,7 +182,7 @@ const PairList = ({
 							</PairElement>
 							<PairElement>
 								<DataMedium>
-									{synthsSigns[quote.name]}
+									{synthsMap[quote.name].sign}
 									{formatCurrency(pair.rate, 6)}
 								</DataMedium>
 							</PairElement>
@@ -282,16 +283,14 @@ const ButtonSort = styled.button`
 	background: transparent;
 `;
 
-const mapStateToProps = state => {
-	return {
-		synths: getAvailableSynths(state),
-		exchangeRates: getRatesExchangeRates(state),
-		synthsSigns: getSynthsSigns(state),
-		synthPair: getSynthPair(state),
-		search: getSynthSearch(state),
-		isLoadedRates: getIsLoadedRates(state),
-	};
-};
+const mapStateToProps = state => ({
+	synths: getAvailableSynths(state),
+	synthsMap: getAvailableSynthsMap(state),
+	exchangeRates: getRatesExchangeRates(state),
+	synthPair: getSynthPair(state),
+	search: getSynthSearch(state),
+	isLoadedRates: getIsLoadedRates(state),
+});
 
 const mapDispatchToProps = {
 	setSynthPair,
