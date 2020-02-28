@@ -60,3 +60,6 @@ export const secondsToTime = seconds => {
 	const secondsLeft = seconds - minutes * 60;
 	return str_pad_left(minutes, '0', 2) + ':' + str_pad_left(secondsLeft, '0', 2);
 };
+
+export const formatCurrencyPair = (baseCurrencyKey, quoteCurrencyKey) =>
+	`${baseCurrencyKey} / ${quoteCurrencyKey}`;

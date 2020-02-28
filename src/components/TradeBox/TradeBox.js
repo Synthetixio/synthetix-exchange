@@ -10,6 +10,7 @@ import {
 	bytesFormatter,
 	bigNumberFormatter,
 	secondsToTime,
+	formatCurrencyPair,
 } from '../../utils/formatters';
 
 import { SYNTHS_MAP } from '../../constants/currency';
@@ -224,7 +225,7 @@ const TradeBox = ({
 	return (
 		<Container>
 			<Header>
-				<HeadingSmall>{`${synthPair.base.name}/${synthPair.quote.name}`}</HeadingSmall>
+				<HeadingSmall>{formatCurrencyPair(synthPair.base.name, synthPair.quote.name)}</HeadingSmall>
 			</Header>
 			<Body>
 				<InputBlock>

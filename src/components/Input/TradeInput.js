@@ -7,8 +7,8 @@ import { SYNTHS_MAP } from '../../constants/currency';
 
 import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
 
-import { DataMedium } from '../Typography';
 import { ButtonPrimary } from '../Button';
+import Currency from '../Currency';
 
 import GenericInput from './Input';
 
@@ -30,8 +30,7 @@ const TradeInput = ({
 			{label != null && <Label>{label}</Label>}
 			<Container>
 				<Synth>
-					<SynthIcon src={`/images/synths/${synth}.svg`}></SynthIcon>
-					<SynthName>{synth}</SynthName>
+					<StyledCurrencyName currencyKey={synth} showIcon={true} />
 				</Synth>
 				<StyledGenericInput
 					type="number"
@@ -96,14 +95,7 @@ const Synth = styled(FlexDivCentered)`
 	padding: 0 10px;
 `;
 
-const SynthIcon = styled.img`
-	width: 22px;
-	height: 22px;
-	margin-right: 6px;
-`;
-
-const SynthName = styled(DataMedium)`
-	text-transform: none;
+const StyledCurrencyName = styled(Currency.Name)`
 	color: ${props => props.theme.colors.fontSecondary};
 `;
 

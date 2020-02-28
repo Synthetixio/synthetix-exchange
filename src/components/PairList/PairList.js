@@ -10,6 +10,7 @@ import { formatCurrency } from '../../utils/formatters';
 import { pairWeight } from '../../utils/synthOrdering';
 import { getExchangeRatesForCurrencies } from '../../utils/rates';
 
+import Currency from '../Currency';
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 
@@ -174,8 +175,10 @@ const PairList = ({
 							onClick={() => setSynthPair({ base: pair.base, quote: pair.quote })}
 						>
 							<PairElement>
-								<SynthIcon src={`/images/synths/${pair.base.name}.svg`} />
-								<DataMedium>{`${pair.base.name} / ${pair.quote.name}`}</DataMedium>
+								<Currency.Pair
+									baseCurrencyKey={pair.base.name}
+									quoteCurrencyKey={pair.quote.name}
+								/>
 							</PairElement>
 							<PairElement>
 								<DataMedium>
@@ -252,12 +255,6 @@ const PairElement = styled.div`
 	&:first-child {
 		justify-content: flex-start;
 	}
-`;
-
-const SynthIcon = styled.img`
-	width: 22px;
-	height: 22px;
-	margin-right: 6px;
 `;
 
 const ListHeader = styled.div`

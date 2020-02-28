@@ -11,6 +11,7 @@ import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
+import Currency from '../Currency';
 
 import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
 import { setSynthPair } from '../../ducks/synths';
@@ -104,7 +105,12 @@ const WalletBox = ({
 										style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
 										onClick={() => setSynthSearch(asset.name)}
 									>
-										<SynthIcon src={`/images/synths/${asset.name}.svg`} />
+										<Currency.Icon
+											currencyKey={asset.name}
+											width="14px"
+											height="18px"
+											style={{ marginRight: '8px' }}
+										/>
 										<DataLabelHoverable isHoverable={asset.name !== CRYPTO_CURRENCY_MAP.ETH}>
 											{asset.name}
 										</DataLabelHoverable>
@@ -178,12 +184,6 @@ const LinkIcon = styled.img`
 	width: 8px;
 	height: 8px;
 	margin-left: 5px;
-`;
-
-const SynthIcon = styled.img`
-	width: 14px;
-	height: 14px;
-	margin-right: 8px;
 `;
 
 const HeadingAndSpinner = styled.div`
