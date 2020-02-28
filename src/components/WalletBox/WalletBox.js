@@ -174,7 +174,7 @@ const LinkInner = styled.div`
 const LinkLabel = styled(LabelSmall)`
 	text-transform: none;
 	margin-left: 10px;
-	color: ${props => props.theme.colors.hyperLink};
+	color: ${props => props.theme.colors.hyperlink};
 	&:hover {
 		text-decoration: underline;
 	}

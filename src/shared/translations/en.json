@@ -75,6 +75,9 @@
 		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
+		"contracts": {
+			"view": "View Contract"
+		},
 		"actions": {
 			"submit": "submit",
 			"close": "close",

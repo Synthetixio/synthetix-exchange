@@ -101,7 +101,7 @@ export const TextButton = styled.button`
 `;
 
 export const LinkTextSmall = styled(DataSmall)`
-	color: ${props => props.theme.colors.hyperLink};
+	color: ${props => props.theme.colors.hyperlink};
 `;
 
 export const Message = styled(FlexDivCentered)`
