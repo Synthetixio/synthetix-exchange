@@ -1,4 +1,4 @@
-import { calculateRateChange, matchPairRates } from './chartCalculations';
+import { calculateRateChange, matchPairRates } from './utils';
 
 test('return 0 when we only have one item in the array', () => {
 	expect(calculateRateChange([{ rate: 1 }])).toBe(0);

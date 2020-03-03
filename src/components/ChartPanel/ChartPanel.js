@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { format, subHours } from 'date-fns';
+import { format } from 'date-fns';
 import styled, { withTheme } from 'styled-components';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
-
-import snxData from 'synthetix-data';
 
 import { getSynthPair, getAvailableSynthsMap } from '../../ducks/synths';
 import { getRatesExchangeRates } from '../../ducks/rates';
@@ -14,105 +12,86 @@ import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
 import { ButtonFilter } from '../Button';
 import Spinner from '../Spinner';
 
+import ChangePercent from '../../components/ChangePercent';
+
 import {
 	formatCurrency,
-	formatPercentage,
 	formatCurrencyWithPrecision,
 	formatCurrencyPair,
 } from '../../utils/formatters';
 import { getExchangeRatesForCurrencies } from '../../utils/rates';
-import { calculateRateChange, matchPairRates } from './chartCalculations';
-import './chart.scss';
+
+import {
+	fetchSynthVolumeInUSD,
+	PERIOD_IN_HOURS,
+	fetchSynthRateUpdates,
+} from '../../services/rates/rates';
 
 const PERIODS = [
-	{ value: 168, label: '1W' },
-	{ value: 24, label: '1D' },
-	{ value: 4, label: '4H' },
-	{ value: 1, label: '1H' },
+	{ value: PERIOD_IN_HOURS.ONE_WEEK, label: '1W' },
+	{ value: PERIOD_IN_HOURS.ONE_DAY, label: '1D' },
+	{ value: PERIOD_IN_HOURS.FOUR_HOURS, label: '4H' },
+	{ value: PERIOD_IN_HOURS.ONE_HOUR, label: '1H' },
 ];
-
-const getMinAndMaxRate = data => {
-	if (data.length === 0) return [0, 0];
-	return data.reduce(
-		([min, max], val) => {
-			const { rate } = val;
-			const newMax = rate > max ? rate : max;
-			const newMin = rate < min ? rate : min;
-
-			return [newMin, newMax];
-		},
-		[Number.MAX_SAFE_INTEGER, 0]
-	);
-};
 
 const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMap }) => {
 	const colors = theme.colors;
-	const [chartData, setChartData] = useState([]);
-	const [lastDayData, setLastDayData] = useState([]);
-	const [volumeData, setVolumeData] = useState(0);
+	const [chartData, setChartData] = useState({
+		rates: [],
+		low24H: 0,
+		high24H: 0,
+		change24H: 0,
+	});
+	const [volume24HData, set24HVolumeData] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
-	const [period, setPeriod] = useState({ value: 24, label: '1D' });
-	const [currentPair, setCurrentPair] = useState({ base, quote });
+	const [period, setPeriod] = useState({ value: PERIOD_IN_HOURS.ONE_DAY, label: '1D' });
 
 	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
 
 	useEffect(() => {
 		const fetchChartData = async () => {
-			if (!base || !quote) return;
 			setIsLoading(true);
-			const now = new Date().getTime();
-			const [baseRates, quoteRates] = await Promise.all(
-				[base, quote].map(synth => {
-					return snxData.rate.updates({
-						synth: synth.name,
-						maxTimestamp: Math.trunc(now / 1000),
-						minTimestamp: Math.trunc(subHours(now, period.value).getTime() / 1000),
-						max: 1000,
-					});
-				})
+
+			let rates = [];
+
+			const rates24HData = await fetchSynthRateUpdates(
+				base.name,
+				quote.name,
+				PERIOD_IN_HOURS.ONE_DAY
 			);
-			// If quote or rate is sUSD then we just get
-			// the base or quote rates as they're already in sUSD
-			const dataResults =
-				quote.name === 'sUSD'
-					? baseRates
-					: base.name === 'sUSD'
-					? quoteRates
-					: matchPairRates(baseRates, quoteRates);
-			// store the first result separately
-			// for the 24h aggregation
-			if (
-				lastDayData.length === 0 ||
-				currentPair.base.name !== base.name ||
-				currentPair.quote.name !== quote.name
-			) {
-				setLastDayData(dataResults);
+			rates = rates24HData.rates;
+
+			// ONE_DAY period is fetched for the 24h data, so no need to refetch it.
+			if (period.value !== PERIOD_IN_HOURS.ONE_DAY) {
+				const ratesData = await fetchSynthRateUpdates(base.name, quote.name, period.value);
+				rates = ratesData.rates;
 			}
-			setChartData(dataResults);
+
+			setChartData({
+				rates,
+				low24H: rates24HData.low,
+				high24H: rates24HData.high,
+				change24H: rates24HData.change,
+			});
 			setIsLoading(false);
-			setCurrentPair({ base, quote });
 		};
 		const fetchVolumeData = async () => {
-			const yesterday = Math.trunc(subHours(new Date(), 24).getTime() / 1000);
-			const results = await snxData.exchanges.since({ timestampInSecs: yesterday });
-			setVolumeData(
-				results.reduce((acc, next) => {
-					if (next.fromCurrencyKey === quote.name && next.toCurrencyKey === base.name) {
-						acc += next.fromAmountInUSD;
-					}
-					return acc;
-				}, 0)
+			const totalVolume = await fetchSynthVolumeInUSD(
+				base.name,
+				quote.name,
+				PERIOD_IN_HOURS.ONE_DAY
 			);
+
+			set24HVolumeData(totalVolume);
 		};
 		fetchChartData();
 		fetchVolumeData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [period, base.name, quote.name]);
 
-	const [min, max] = getMinAndMaxRate(lastDayData);
-	const lastDayChange = calculateRateChange(lastDayData);
-	const rate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name) || 0;
+	const { low24H, high24H, change24H } = chartData;
 
+	const rate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name) || 0;
 	return (
 		<Container>
 			<Header>
@@ -138,10 +117,12 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 			<Body>
 				<ChartContainer>
 					{isLoading ? <Spinner size="sm" /> : null}
-					{!isLoading && chartData.length === 0 ? <DataLarge>No data available</DataLarge> : null}
-					{!isLoading && chartData && chartData.length > 0 ? (
+					{!isLoading && chartData.rates.length === 0 ? (
+						<DataLarge>No data available</DataLarge>
+					) : null}
+					{!isLoading && chartData.rates && chartData.rates.length > 0 ? (
 						<ResponsiveContainer width="100%" height={250}>
-							<AreaChart data={chartData} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
+							<AreaChart data={chartData.rates} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
 								<defs>
 									<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
 										<stop offset="5%" stopColor={colors.hyperlink} stopOpacity={0.5} />
@@ -206,31 +187,29 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 						<DataBlockValue
 							style={{
 								fontSize: '14px',
-								color:
-									lastDayChange === 0 ? undefined : lastDayChange >= 0 ? colors.green : colors.red,
 							}}
 						>
-							{formatPercentage(lastDayChange)}
+							<ChangePercent value={change24H} />
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
 							{synthSign}
-							{formatCurrencyWithPrecision(max)}
+							{formatCurrencyWithPrecision(high24H)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
 							{synthSign}
-							{formatCurrencyWithPrecision(min)}
+							{formatCurrencyWithPrecision(low24H)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h volume</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							${formatCurrency(volumeData)}
+							${formatCurrency(volume24HData)}
 						</DataBlockValue>
 					</DataBlock>
 				</DataRow>
@@ -257,6 +236,11 @@ const Header = styled.div`
 
 const Body = styled.div`
 	padding: 18px;
+
+	.recharts-yAxis .yAxis,
+	.recharts-xAxis .xAxis {
+		display: none;
+	}
 `;
 
 const DataRow = styled.div`
