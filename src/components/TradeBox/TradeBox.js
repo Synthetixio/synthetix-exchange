@@ -18,13 +18,8 @@ import { SYNTHS_MAP } from '../../constants/currency';
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
-import {
-	getSynthPair,
-	getWalletInfo,
-	getGasInfo,
-	getExchangeFeeRate,
-	getTransactions,
-} from '../../ducks';
+import { getWalletInfo, getGasInfo, getExchangeFeeRate, getTransactions } from '../../ducks';
+import { getSynthPair } from '../../ducks/synths';
 import { getRatesExchangeRates } from '../../ducks/rates';
 import { toggleGweiPopup } from '../../ducks/ui';
 import { fetchWalletBalances } from '../../ducks/wallet';

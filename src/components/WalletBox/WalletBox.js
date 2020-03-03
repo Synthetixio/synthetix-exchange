@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
 
-import { getAvailableSynths } from '../../ducks';
+import { getAvailableSynths } from '../../ducks/synths';
 
 import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';

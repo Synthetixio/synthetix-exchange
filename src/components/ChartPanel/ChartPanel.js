@@ -7,7 +7,7 @@ import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'rec
 
 import snxData from 'synthetix-data';
 
-import { getSynthPair, getSynthsSigns } from '../../ducks';
+import { getSynthPair, getAvailableSynthsMap } from '../../ducks/synths';
 import { getRatesExchangeRates } from '../../ducks/rates';
 
 import { HeadingSmall, DataSmall, DataLarge } from '../Typography';
@@ -45,7 +45,7 @@ const getMinAndMaxRate = data => {
 	);
 };
 
-const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSigns }) => {
+const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMap }) => {
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
 	const [lastDayData, setLastDayData] = useState([]);
@@ -53,6 +53,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 	const [isLoading, setIsLoading] = useState(true);
 	const [period, setPeriod] = useState({ value: 24, label: '1D' });
 	const [currentPair, setCurrentPair] = useState({ base, quote });
+
+	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
 
 	useEffect(() => {
 		const fetchChartData = async () => {
@@ -157,9 +159,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 								<YAxis
 									type="number"
 									domain={['auto', 'auto']}
-									tickFormatter={val =>
-										`${synthsSigns[quote.name]}${formatCurrencyWithPrecision(val)}`
-									}
+									tickFormatter={val => `${synthSign}${formatCurrencyWithPrecision(val)}`}
 									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 									orientation="right"
 								/>
@@ -185,9 +185,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 										color: colors.fontTertiary,
 										fontSize: '12px',
 									}}
-									formatter={value =>
-										`${synthsSigns[quote.name]}${formatCurrencyWithPrecision(value)}`
-									}
+									formatter={value => `${synthSign}${formatCurrencyWithPrecision(value)}`}
 									labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
 								/>
 							</AreaChart>
@@ -199,7 +197,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 					<DataBlock>
 						<DataBlockLabel>Price</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							{synthsSigns[quote.name]}
+							{synthSign}
 							{formatCurrencyWithPrecision(rate)}
 						</DataBlockValue>
 					</DataBlock>
@@ -218,14 +216,14 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 					<DataBlock>
 						<DataBlockLabel>24h high</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
-							{synthsSigns[quote.name]}
+							{synthSign}
 							{formatCurrencyWithPrecision(max)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
 						<DataBlockLabel>24h low</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
-							{synthsSigns[quote.name]}
+							{synthSign}
 							{formatCurrencyWithPrecision(min)}
 						</DataBlockValue>
 					</DataBlock>
@@ -314,13 +312,11 @@ const ChartContainer = styled.div`
 	align-items: center;
 `;
 
-const mapStateToProps = state => {
-	return {
-		synthPair: getSynthPair(state),
-		exchangeRates: getRatesExchangeRates(state),
-		synthsSigns: getSynthsSigns(state),
-	};
-};
+const mapStateToProps = state => ({
+	synthPair: getSynthPair(state),
+	exchangeRates: getRatesExchangeRates(state),
+	synthsMap: getAvailableSynthsMap(state),
+});
 
 const mapDispatchToProps = {};
 

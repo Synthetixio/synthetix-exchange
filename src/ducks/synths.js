@@ -1,23 +1,14 @@
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import keyBy from 'lodash/keyBy';
+
 import { synthWeight } from '../utils/synthOrdering';
-const SET_AVAILABLE_SYNTHS = 'SYNTHS/SET_AVAILABLE_SYNTHS';
-const SET_SYNTH_PAIR = 'SYNTHS/SET_SYNTH_PAIR';
-const SET_FROZEN_SYNTHS = 'SYNTHS/SET_FROZEN_SYNTHS';
 
-const defaultState = {
-	availableSynths: [],
-	synthsSigns: {},
-	synthTypes: [],
-	topSynthByVolume: [],
-	defaultSynth: null,
-	frozenSynths: null,
-	baseSynth: { name: 'sBTC', category: 'crypto' },
-	quoteSynth: { name: 'sUSD', category: 'forex' },
-};
+import { SYNTHS_MAP, ASSETS_MAP } from '../constants/currency';
 
-const FROZEN_SYNTHS = ['sMKR', 'iMKR'];
+const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
 
 const sortSynths = (a, b) => {
-	if (a.category === 'crypto' && b.category === 'crypto') {
+	if (a.category === ASSETS_MAP.crypto && b.category === ASSETS_MAP.crypto) {
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
 		if (!a.inverted && b.inverted) {
 			return nameOrder - 1;
@@ -25,59 +16,72 @@ const sortSynths = (a, b) => {
 			return nameOrder;
 		} else return 0;
 	}
-	if (a.category === 'crypto' && b.category !== 'crypto') {
+	if (a.category === ASSETS_MAP.crypto && b.category !== ASSETS_MAP.crypto) {
 		return -1;
 	}
 };
 
-const reducer = (state = defaultState, action = {}) => {
-	switch (action.type) {
-		case SET_AVAILABLE_SYNTHS: {
-			const baseSynth = action.payload.find(synth => synth.name === 'sBTC');
-			const quoteSynth = action.payload.find(synth => synth.name === 'sUSD');
-			const availableSynths = action.payload.sort(sortSynths);
-			const signs = {};
-			availableSynths.forEach(synth => {
-				signs[synth.name] = synth.sign;
+const DEFAULT_BASE_SYNTH = SYNTHS_MAP.sBTC;
+const DEFAULT_QUOTE_SYNTH = SYNTHS_MAP.sUSD;
+
+export const synthsSlice = createSlice({
+	name: 'synths',
+	initialState: {
+		availableSynths: {},
+		frozenSynths: {},
+		baseSynth: { name: DEFAULT_BASE_SYNTH, category: ASSETS_MAP.crypto },
+		quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: ASSETS_MAP.forex },
+	},
+	reducers: {
+		setAvailableSynths: (state, action) => {
+			const { synths } = action.payload;
+
+			const filteredSynths = synths.filter(synth => !FROZEN_SYNTHS.includes(synth.name));
+
+			const availableSynths = keyBy(filteredSynths, 'name');
+
+			const baseSynth = availableSynths[DEFAULT_BASE_SYNTH];
+			const quoteSynth = availableSynths[DEFAULT_QUOTE_SYNTH];
+
+			if (baseSynth) {
+				state.baseSynth = baseSynth;
+			}
+			if (quoteSynth) {
+				state.quoteSynth = quoteSynth;
+			}
+
+			state.availableSynths = availableSynths;
+		},
+		setSynthPair: (state, action) => {
+			const { quoteSynth, baseSynth } = action.payload;
+
+			state.baseSynth = baseSynth;
+			state.quoteSynth = quoteSynth;
+		},
+		updateFrozenSynths: (state, action) => {
+			const { frozenSynths } = action.payload;
+
+			Object.values(frozenSynths).forEach(synth => {
+				delete state.availableSynths[synth.name];
 			});
-			return {
-				...state,
-				availableSynths: availableSynths,
-				baseSynth,
-				quoteSynth,
-				synthsSigns: signs,
-			};
-		}
-		case SET_SYNTH_PAIR: {
-			const { quote, base } = action.payload;
-			return { ...state, baseSynth: base, quoteSynth: quote };
-		}
-		case SET_FROZEN_SYNTHS: {
-			const frozenSynths = action.payload;
-			return {
-				...state,
-				frozenSynths: action.payload,
-				availableSynths: state.availableSynths.filter(synth => !frozenSynths[synth.name]),
-			};
-		}
-		default:
-			return state;
-	}
-};
+			state.frozenSynths = frozenSynths;
+		},
+	},
+});
 
-export const setAvailableSynths = synths => {
-	return {
-		type: SET_AVAILABLE_SYNTHS,
-		payload: synths.filter(synth => !FROZEN_SYNTHS.includes(synth.name)),
-	};
-};
+export const getSynthsState = state => state.synths;
+export const getAvailableSynthsMap = state => getSynthsState(state).availableSynths;
+export const getAvailableSynths = createSelector(getAvailableSynthsMap, availableSynths =>
+	Object.values(availableSynths).sort(sortSynths)
+);
+export const getSynthPair = state => ({
+	base: getSynthsState(state).baseSynth,
+	quote: getSynthsState(state).quoteSynth,
+});
+export const getFrozenSynths = state => getSynthsState(state).frozenSynths;
 
-export const setSynthPair = pair => {
-	return { type: SET_SYNTH_PAIR, payload: pair };
-};
+const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSlice.actions;
 
-export const updateFrozenSynths = synths => {
-	return { type: SET_FROZEN_SYNTHS, payload: synths };
-};
+export default synthsSlice.reducer;
 
-export default reducer;
+export { setAvailableSynths, setSynthPair, updateFrozenSynths };
