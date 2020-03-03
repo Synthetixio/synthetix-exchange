@@ -1,7 +1,16 @@
 import React from 'react';
 
-const Landing = () => {
-	return <div style={{ color: 'white' }}>this is the home page</div>;
-};
+import Hero from './Hero';
+import Markets from './Markets';
 
-export default Landing;
+import Header from '../../components/Header';
+
+const Home = () => (
+	<>
+		<Header />
+		<Hero />
+		<Markets />
+	</>
+);
+
+export default Home;

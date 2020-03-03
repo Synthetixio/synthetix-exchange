@@ -14,7 +14,6 @@ import Spinner from '../Spinner';
 import Currency from '../Currency';
 
 import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
-import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
 import { CRYPTO_CURRENCY_MAP } from '../../constants/currency';
@@ -44,7 +43,6 @@ const sortBy = (assets, column, isAscending) => {
 
 const WalletBox = ({
 	synths,
-	setSynthPair,
 	theme: { colors },
 	walletInfo: { currentWallet, balances },
 	setSynthSearch,
@@ -111,11 +109,7 @@ const WalletBox = ({
 											height="18px"
 											style={{ marginRight: '8px' }}
 										/>
-<<<<<<< HEAD
 										<DataLabelHoverable isHoverable={asset.name !== CRYPTO_CURRENCY_MAP.ETH}>
-=======
-										<DataLabelHoverable isHoverable={asset.name !== 'ETH'}>
->>>>>>> refactor: currency icons, names and pairs.
 											{asset.name}
 										</DataLabelHoverable>
 									</Td>
@@ -216,7 +210,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-	setSynthPair,
 	setSynthSearch,
 };
 

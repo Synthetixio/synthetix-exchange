@@ -17,6 +17,25 @@
 			}
 		}
 	},
+	"home": {
+		"hero": {
+			"title": "Trade decentralised synthetic crypto, commodities & Forex",
+			"subtitle": ""
+		},
+		"markets": {
+			"table": {
+				"pair-col": "pair",
+				"last-price-col": "last price",
+				"24h-change-col": "24hr change",
+				"24h-low-col": "24hr low",
+				"24h-high-col": "24hr high",
+				"24h-volume-col": "24hr volume",
+				"actions": {
+					"see-all-pairs": "see all pairs"
+				}
+			}
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
@@ -105,7 +124,12 @@
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
-			"borrow-currency": "Borrow {{currencyKey}}"
-		}
+			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
+			"borrow-currency": "Borrow {{currencyKey}}",
+			"crypto": "crypto",
+			"forex": "forex",
+			"commodities": "commodities"
+		},
+		"search": "search"
 	}
 }

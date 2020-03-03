@@ -15,20 +15,12 @@ import Currency from '../Currency';
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 
-import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
+import { navigateToTrade } from '../../constants/routes';
 
 const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT'];
 
-const PairList = ({
-	synths,
-	synthsMap,
-	exchangeRates,
-	setSynthPair,
-	setSynthSearch,
-	search,
-	isLoadedRates,
-}) => {
+const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, isLoadedRates }) => {
 	const [quote, setQuote] = useState({ name: 'sUSD', category: 'forex' });
 	// const [sort, setSort] = useState({});
 	const [synthList, setSynthList] = useState([]);
@@ -167,28 +159,23 @@ const PairList = ({
 				</ListHeader>
 			</ContainerHeader>
 			<List>
-				{filteredSynths.map((pair, i) => {
-					return (
-						<Pair
-							isDisabled={!isLoadedRates}
-							key={i}
-							onClick={() => setSynthPair({ baseSynth: pair.base, quoteSynth: pair.quote })}
-						>
-							<PairElement>
-								<Currency.Pair
-									baseCurrencyKey={pair.base.name}
-									quoteCurrencyKey={pair.quote.name}
-								/>
-							</PairElement>
-							<PairElement>
-								<DataMedium>
-									{synthsMap[quote.name].sign}
-									{formatCurrency(pair.rate, 6)}
-								</DataMedium>
-							</PairElement>
-						</Pair>
-					);
-				})}
+				{filteredSynths.map(pair => (
+					<Pair
+						isDisabled={!isLoadedRates}
+						key={`${pair.base.name}-${pair.quote.name}`}
+						onClick={() => navigateToTrade(pair.base.name, pair.quote.name)}
+					>
+						<PairElement>
+							<Currency.Pair baseCurrencyKey={pair.base.name} quoteCurrencyKey={pair.quote.name} />
+						</PairElement>
+						<PairElement>
+							<DataMedium>
+								{synthsMap[quote.name].sign}
+								{formatCurrency(pair.rate, 6)}
+							</DataMedium>
+						</PairElement>
+					</Pair>
+				))}
 			</List>
 		</Container>
 	);
@@ -293,7 +280,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-	setSynthPair,
 	setSynthSearch,
 };
 
