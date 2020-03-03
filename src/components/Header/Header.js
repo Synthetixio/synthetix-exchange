@@ -30,7 +30,7 @@ export const Header = ({ showWalletPopup, walletInfo, currentTheme }) => {
 	return (
 		<Container>
 			<HeaderSection>
-				<Link to={ROUTES.Root}>
+				<Link to={ROUTES.Home}>
 					<Logo theme={currentTheme} />
 				</Link>
 				<Network>

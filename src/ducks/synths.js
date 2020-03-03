@@ -53,10 +53,10 @@ export const synthsSlice = createSlice({
 			state.availableSynths = availableSynths;
 		},
 		setSynthPair: (state, action) => {
-			const { quoteSynth, baseSynth } = action.payload;
+			const { baseCurrencyKey, quoteCurrencyKey } = action.payload;
 
-			state.baseSynth = baseSynth;
-			state.quoteSynth = quoteSynth;
+			state.baseSynth = state.availableSynths[baseCurrencyKey];
+			state.quoteSynth = state.availableSynths[quoteCurrencyKey];
 		},
 		updateFrozenSynths: (state, action) => {
 			const { frozenSynths } = action.payload;

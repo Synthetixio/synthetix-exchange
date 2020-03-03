@@ -11,8 +11,10 @@
 		"i18next": "^19.1.0",
 		"i18next-browser-languagedetector": "^4.0.1",
 		"i18next-xhr-backend": "^3.2.2",
+		"immer": "^5.3.6",
 		"lodash": "^4.17.15",
 		"numbro": "^2.1.2",
+		"query-string": "^6.11.0",
 		"rc-slider": "^8.7.1",
 		"react": "^16.8.6",
 		"react-app-polyfill": "~0.1.3",
@@ -30,7 +32,7 @@
 		"redux-thunk": "~2.3.0",
 		"styled-components": "^4.4.1",
 		"styled-system": "5.1.2",
-		"synthetix-data": "2.0.1",
+		"synthetix-data": "2.1.4",
 		"synthetix-js": "2.19.8"
 	},
 	"scripts": {

@@ -1,5 +1,21 @@
+import { subHours } from 'date-fns';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
+
+export const getMinAndMaxRate = data => {
+	if (data.length === 0) return [0, 0];
+
+	return data.reduce(
+		([min, max], val) => {
+			const { rate } = val;
+			const newMax = rate > max ? rate : max;
+			const newMin = rate < min ? rate : min;
+
+			return [newMin, newMax];
+		},
+		[Number.MAX_SAFE_INTEGER, 0]
+	);
+};
 
 export const calculateRateChange = data => {
 	if (data.length < 2) return 0;
@@ -35,3 +51,6 @@ export const matchPairRates = (baseRates, quoteRates) => {
 	const rates = matchRates(baseRates, quoteRates).concat(matchRates(quoteRates, baseRates, true));
 	return orderBy(uniqBy(rates, 'timestamp'), 'timestamp', ['desc']);
 };
+
+export const calculateTimestampForPeriod = periodInHours =>
+	Math.trunc(subHours(new Date().getTime(), periodInHours).getTime() / 1000);

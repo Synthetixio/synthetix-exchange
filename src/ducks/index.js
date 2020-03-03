@@ -5,8 +5,10 @@ import synths from './synths';
 import transaction from './transaction';
 import loans from './loans';
 import rates from './rates';
+import app from './app';
 
 export default combineReducers({
+	app,
 	wallet,
 	ui,
 	synths,

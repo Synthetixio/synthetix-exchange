@@ -20,15 +20,6 @@ export const FlexDivRow = styled(FlexDiv)`
 	justify-content: space-between;
 `;
 
-export const MainLayout = styled(FlexDiv)`
-	flex-flow: column;
-	width: 100%;
-	height: 100vh;
-	/* TODO: get color from theme */
-	color: white;
-	position: relative;
-`;
-
 export const PageLayout = styled(FlexDiv)`
 	width: 100%;
 	height: 100%;

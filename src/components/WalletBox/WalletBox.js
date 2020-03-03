@@ -14,7 +14,6 @@ import Spinner from '../Spinner';
 import Currency from '../Currency';
 
 import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
-import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
 import { CRYPTO_CURRENCY_MAP } from '../../constants/currency';
@@ -44,7 +43,6 @@ const sortBy = (assets, column, isAscending) => {
 
 const WalletBox = ({
 	synths,
-	setSynthPair,
 	theme: { colors },
 	walletInfo: { currentWallet, balances },
 	setSynthSearch,
@@ -212,7 +210,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-	setSynthPair,
 	setSynthSearch,
 };
 
