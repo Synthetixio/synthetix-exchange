@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { walletPopupIsVisible, getWalletInfo } from '../../ducks';
 import { toggleWalletPopup } from '../../ducks/ui';
 
+import { ReactComponent as CloseCrossIcon } from '../../assets/images/close-cross.svg';
+
 import { LabelMedium } from '../Typography';
 import WalletTypeSelector from './WalletTypeSelector';
 import WalletAddressSelector from './WalletAddressSelector';
@@ -30,7 +32,7 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 					</BackButton>
 				) : null}
 				<CloseButton onClick={() => toggleWalletPopup(false)}>
-					<CloseIcon src="/images/close-cross.svg" />
+					<CloseCrossIcon width="22" height="22" />
 				</CloseButton>
 				<CurrentScreen
 					selectAddressScreen={() => setCurrentScreen(WalletAddressSelector)}
@@ -86,11 +88,6 @@ const CloseButton = styled.button`
 	position: absolute;
 	right: 5%;
 	top: 5%;
-`;
-
-const CloseIcon = styled.img`
-	width: 22px;
-	height: 22px;
 `;
 
 const mapStateToProps = state => {
