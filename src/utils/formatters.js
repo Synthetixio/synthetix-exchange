@@ -12,16 +12,19 @@ const getPrecision = amount => {
 	} else return 6;
 };
 
-const str_pad_left = (string, pad, length) => {
+const strPadLeft = (string, pad, length) => {
 	return (new Array(length + 1).join(pad) + string).slice(-length);
 };
 
 export const formatCurrency = (value, decimals = DEFAULT_CURRENCY_DECIMALS) => {
-	if (!value) return 0;
-	if (!Number(value)) return 0;
-	if (Number.isInteger(value))
-		return numbro(value).format({ thousandSeparated: true, mantissa: 0 });
-	return numbro(value).format({ thousandSeparated: true, mantissa: decimals });
+	if (!value || !Number(value)) {
+		return 0;
+	}
+
+	return numbro(value).format({
+		thousandSeparated: true,
+		mantissa: Number.isInteger(value) ? 0 : decimals,
+	});
 };
 
 export const formatCurrencyWithPrecision = value => {
@@ -58,8 +61,11 @@ export const toJSTimestamp = timestamp => timestamp * 1000;
 export const secondsToTime = seconds => {
 	const minutes = Math.floor(seconds / 60);
 	const secondsLeft = seconds - minutes * 60;
-	return str_pad_left(minutes, '0', 2) + ':' + str_pad_left(secondsLeft, '0', 2);
+	return strPadLeft(minutes, '0', 2) + ':' + strPadLeft(secondsLeft, '0', 2);
 };
 
 export const formatCurrencyPair = (baseCurrencyKey, quoteCurrencyKey) =>
 	`${baseCurrencyKey} / ${quoteCurrencyKey}`;
+
+// TODO: use a library for this, because the sign does not always appear on the left. (perhaps something like number.toLocaleString)
+export const formatCurrencyWithSign = (sign, value) => `${sign}${formatCurrency(value)}`;
