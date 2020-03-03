@@ -54,15 +54,3 @@ export const matchPairRates = (baseRates, quoteRates) => {
 
 export const calculateTimestampForPeriod = periodInHours =>
 	Math.trunc(subHours(new Date().getTime(), periodInHours).getTime() / 1000);
-
-// export const calculateLowHighChange = (baseRates, quoteRates) => {
-// 	const rates =
-// 		quoteCurrencyKey === SYNTHS_MAP.sUSD
-// 			? baseRates
-// 			: baseCurrencyKey === SYNTHS_MAP.sUSD
-// 			? quoteRates
-// 			: matchPairRates(baseRates, quoteRates);
-
-// 	const [low, high] = getMinAndMaxRate(rates);
-// 	const change = calculateRateChange(rates);
-// };
