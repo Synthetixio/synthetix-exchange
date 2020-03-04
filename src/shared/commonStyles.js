@@ -144,7 +144,6 @@ export const InfoBox = styled.div`
 
 export const InfoBoxLabel = styled(DataSmall)`
 	white-space: nowrap;
-	text-transform: none;
 	color: ${props => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 `;
