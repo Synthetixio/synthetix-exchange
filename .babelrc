@@ -5,8 +5,16 @@
 			"babel-plugin-styled-components",
 			{
 				"ssr": false
-			},
-			"react-hot-loader/babel"
+			}
+		],
+		"react-hot-loader/babel",
+		[
+			"module-resolver",
+			{
+				"alias": {
+					"src": "./src"
+				}
+			}
 		]
 	]
 }
