@@ -38,10 +38,8 @@ export const formatPercentage = (value, decimals = DEFAULT_CURRENCY_DECIMALS) =>
 	});
 };
 
-export const shortenAddress = address => {
-	if (!address) return null;
-	return address.slice(0, 6) + '...' + address.slice(-4, address.length);
-};
+export const shortenAddress = (address, first = 5, last = 5) =>
+	address ? `${address.slice(0, first)}...${address.slice(-last, address.length)}` : null;
 
 export const formatCurrencyWithKey = (currencyKey, value, decimals = DEFAULT_CURRENCY_DECIMALS) =>
 	`${formatCurrency(value, decimals)} ${currencyKey}`;

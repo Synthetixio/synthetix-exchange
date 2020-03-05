@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 
-import Header from '../../../../components/Header';
+import AppHeader from '../AppHeader';
 
-import Spinner from '../../../../components/Spinner';
+import Spinner from 'src/components/Spinner';
 
-import { FlexDiv } from '../../../../shared/commonStyles';
+import { FlexDiv } from 'src/shared/commonStyles';
 
 export const MainLayout = ({ children, isAppReady }) => (
 	<>
 		<GlobalStyle />
 		<FullScreenContainer>
-			<Header />
+			<AppHeader />
 			{isAppReady ? children : <Spinner fullscreen={true} size="sm" />}
 		</FullScreenContainer>
 	</>

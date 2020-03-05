@@ -15,7 +15,6 @@ export const TableV2 = ({
 	options = {},
 	noResultsMessage = null,
 	onTableRowClick = undefined,
-	palette = 'data',
 }) => {
 	const memoizedColumns = useMemo(
 		() => columns,
@@ -85,7 +84,6 @@ TableV2.propTypes = {
 	data: PropTypes.array.isRequired,
 	columns: PropTypes.array.isRequired,
 	options: PropTypes.object,
-	palette: PropTypes.string,
 	onTableRowClick: PropTypes.func,
 };
 

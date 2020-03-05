@@ -2,9 +2,8 @@
 	"header": {
 		"connect-wallet": "Connect wallet",
 		"links": {
-			"exchange": "exchange",
-			"loans": "loans",
-			"support": "support"
+			"trade": "trade",
+			"loans": "loans"
 		},
 		"announcements": {
 			"ether-collateral": "NEW: ETH Collateral is live!"
