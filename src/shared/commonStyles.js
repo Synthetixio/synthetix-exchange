@@ -163,3 +163,12 @@ export const absoluteCenteredCSS = css`
 	top: 50%;
 	transform: translate(-50%, -50%);
 `;
+
+export const RoundedIcon = styled(FlexDivCentered)`
+	width: 32px;
+	height: 32px;
+	border-radius: 100%;
+	justify-content: center;
+
+	background-color: ${props => props.theme.colors.accentDark};
+`;
