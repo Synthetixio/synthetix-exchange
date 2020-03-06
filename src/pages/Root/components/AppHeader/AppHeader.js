@@ -20,36 +20,38 @@ export const AppHeader = memo(({ showUserInfo, showThemeToggle, showSupportLink,
 
 	return (
 		<Container {...rest}>
-			<MenuItemsLeft>
-				<MenuItem>
-					<Link to={ROUTES.Home}>
-						<Logo />
-					</Link>
-				</MenuItem>
-				<MenuLinkItem>
-					<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
-				</MenuLinkItem>
-				<MenuLinkItem>
-					<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
-				</MenuLinkItem>
-			</MenuItemsLeft>
-			<MenuItemsRight>
-				{showSupportLink && (
+			<Content>
+				<MenuItemsLeft>
 					<MenuItem>
-						<SupportLink />
+						<Link to={ROUTES.Home}>
+							<Logo />
+						</Link>
 					</MenuItem>
-				)}
-				{showThemeToggle && (
-					<MenuItem>
-						<ThemeToggle />
-					</MenuItem>
-				)}
-				{showUserInfo && (
-					<MenuItem>
-						<UserInfo />
-					</MenuItem>
-				)}
-			</MenuItemsRight>
+					<MenuLinkItem>
+						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
+					</MenuLinkItem>
+					<MenuLinkItem>
+						<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
+					</MenuLinkItem>
+				</MenuItemsLeft>
+				<MenuItemsRight>
+					{showSupportLink && (
+						<MenuItem>
+							<SupportLink />
+						</MenuItem>
+					)}
+					{showThemeToggle && (
+						<MenuItem>
+							<ThemeToggle />
+						</MenuItem>
+					)}
+					{showUserInfo && (
+						<MenuItem>
+							<UserInfo />
+						</MenuItem>
+					)}
+				</MenuItemsRight>
+			</Content>
 		</Container>
 	);
 });
@@ -67,14 +69,20 @@ AppHeader.propTypes = {
 	className: PropTypes.string,
 };
 
-const Container = styled(FlexDivCentered)`
+const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${props => props.theme.colors.surfaceL3};
-	padding: 0 16px;
+	border-color: ${props => props.theme.colors.accentDark};
+	border-style: solid;
+	border-width: 1px 0;
+`;
+
+const Content = styled(FlexDivCentered)`
+	width: 100%;
+	height: 100%;
 	justify-content: space-between;
-	border: 1px solid ${props => props.theme.colors.accentDark};
-	border-left: 0;
-	border-right: 0;
+	margin: 0 auto;
+	padding: 0 16px;
 `;
 
 const MenuItem = styled(FlexDivCentered)`

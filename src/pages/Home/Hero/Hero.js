@@ -9,10 +9,10 @@ export const Hero = () => {
 
 	return (
 		<Container>
-			<Section>
+			<Content>
 				<HeroTitle>{t('home.hero.title')}</HeroTitle>
 				<HeroSubtitle>{t('home.hero.subtitle')}</HeroSubtitle>
-			</Section>
+			</Content>
 		</Container>
 	);
 };
@@ -25,8 +25,7 @@ const Container = styled.div`
 	padding: 155px;
 `;
 
-const Section = styled.div`
-	max-width: 800px;
+const Content = styled.div`
 	margin: 0 auto;
 `;
 

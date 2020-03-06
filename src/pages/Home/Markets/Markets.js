@@ -20,6 +20,8 @@ import {
 	PERIOD_IN_HOURS,
 } from '../../../services/rates/rates';
 
+import { breakpoint } from 'src/shared/media';
+
 import { PAIRS } from './constants';
 
 import MarketsTable from './MarketsTable';
@@ -111,10 +113,10 @@ export const Markets = ({ exchangeRates, synthsMap }) => {
 
 	return (
 		<Container>
-			<Section>
+			<Content>
 				<MarketsCharts synthsRates={synthsRates} synthsMap={synthsMap} />
 				<MarketsTable synthsRates={synthsRates} synthsMap={synthsMap} />
-			</Section>
+			</Content>
 		</Container>
 	);
 };
@@ -128,8 +130,8 @@ const Container = styled.div`
 	background-color: ${props => props.theme.colors.white};
 `;
 
-const Section = styled.div`
-	max-width: 1300px;
+const Content = styled.div`
+	max-width: ${breakpoint.large};
 	margin: 0 auto;
 `;
 

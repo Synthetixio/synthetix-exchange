@@ -18,7 +18,7 @@
 	},
 	"home": {
 		"hero": {
-			"title": "Trade decentralised synthetic crypto, commodities & Forex",
+			"title": "Trade any asset on one exchange",
 			"subtitle": ""
 		},
 		"markets": {
@@ -31,6 +31,31 @@
 				"24h-volume-col": "24hr volume",
 				"actions": {
 					"see-all-pairs": "see all pairs"
+				}
+			}
+		},
+		"footer": {
+			"learn": {
+				"title": "learn",
+				"links": {
+					"litepaper": "Litepaper",
+					"tokens": "Tokens",
+					"blog": "Blog"
+				}
+			},
+			"products": {
+				"title": "products",
+				"links": {
+					"synthetix-exchange": "Synthetix.Exchange",
+					"mintr": "Mintr",
+					"dashboard": "Dashboard"
+				}
+			},
+			"connect": {
+				"title": "community",
+				"links": {
+					"community": "Community",
+					"contact-us": "Contact Us"
 				}
 			}
 		}
