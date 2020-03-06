@@ -12,10 +12,10 @@ const sharedColors = {
 };
 
 const fonts = {
-	light: 'apercu-light',
-	regular: 'apercu-regular',
-	medium: 'apercu-medium',
-	bold: 'apercu-bold',
+	light: `'apercu-light', sans-serif`,
+	regular: `'apercu-regular', sans-serif`,
+	medium: `'apercu-medium', sans-serif`,
+	bold: `'apercu-bold', sans-serif`,
 };
 
 export const isDarkTheme = theme => theme === 'dark';

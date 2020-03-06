@@ -1,12 +1,13 @@
 import React, { memo } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { bodyMediumCSS, bodyMediumSecondaryCSS } from 'src/components/Typography/Body';
+import Link from 'src/components/Link';
 
-import { FlexDivRow, ExternalLink, Link } from 'src/shared/commonStyles';
+import { FlexDivRow } from 'src/shared/commonStyles';
 
-import { breakpoint } from 'src/shared/media';
+import { breakpoint, media } from 'src/shared/media';
 
 import { LINKS } from 'src/constants/links';
 import { ROUTES } from 'src/constants/routes';
@@ -126,11 +127,9 @@ export const Footer = memo(() => {
 								<MenuLinkItems>
 									{links.map(({ i18nLabel, link, isExternal }) => (
 										<MenuLinkItem key={i18nLabel}>
-											{isExternal ? (
-												<FooterExternalLink href={link}>{t(i18nLabel)}</FooterExternalLink>
-											) : (
-												<FooterLink to={link}>{t(i18nLabel)}</FooterLink>
-											)}
+											<FooterLink to={link} isExternal={isExternal}>
+												{t(i18nLabel)}
+											</FooterLink>
 										</MenuLinkItem>
 									))}
 								</MenuLinkItems>
@@ -139,17 +138,17 @@ export const Footer = memo(() => {
 					</Menu>
 					<Social>
 						{SOCIAL_LINKS.map(({ icon, link }) => (
-							<ExternalLink key={link} href={link}>
+							<FooterLink key={link} to={link} isExternal={true}>
 								{icon}
-							</ExternalLink>
+							</FooterLink>
 						))}
 					</Social>
 				</FooterMenu>
 				<MiscLinks>
 					{MISC_LINKS.map(({ icon, link }) => (
-						<ExternalLink key={link} href={link}>
+						<FooterLink key={link} to={link} isExternal={true}>
 							{icon}
-						</ExternalLink>
+						</FooterLink>
 					))}
 				</MiscLinks>
 			</Content>
@@ -176,12 +175,21 @@ const MiscLinks = styled.div`
 	grid-template-columns: 1fr auto auto;
 	grid-gap: 20px;
 	align-items: center;
+	${media.medium`
+		grid-auto-flow: initial;
+		grid-template-columns: auto;
+	`}
 `;
 
 const Menu = styled.div`
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 80px;
+
+	${media.medium`
+		grid-auto-flow: initial;
+		grid-template-columns: auto;
+	`}
 `;
 
 const MenuItem = styled.div``;
@@ -191,6 +199,7 @@ const MenuTitle = styled.div`
 	${bodyMediumCSS};
 	padding-bottom: 25px;
 `;
+
 const MenuLinkItems = styled.ul`
 	margin: 0;
 	padding: 0;
@@ -200,19 +209,11 @@ const MenuLinkItem = styled.li`
 	padding-bottom: 12px;
 `;
 
-const footerLinkCSS = css`
+const FooterLink = styled(Link)`
 	${bodyMediumSecondaryCSS};
 	&:hover {
 		color: ${props => props.theme.colors.white};
 	}
-`;
-
-const FooterExternalLink = styled(ExternalLink)`
-	${footerLinkCSS};
-`;
-
-const FooterLink = styled(Link)`
-	${footerLinkCSS};
 `;
 
 const Social = styled.div`

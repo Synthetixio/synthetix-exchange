@@ -14,7 +14,7 @@ export const dataLargeCSS = css`
 export const dataMediumCSS = css`
 	${dataCSS};
 	font-size: 14px;
-	font-family: 'apercu-regular', sans-serif;
+	font-family: ${props => props.theme.fonts.regular};
 `;
 
 export const dataSmallCSS = css`
@@ -22,7 +22,7 @@ export const dataSmallCSS = css`
 	font-size: 12px;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
-	font-family: 'apercu-medium', sans-serif;
+	font-family: ${props => props.theme.fonts.medium};
 `;
 
 export const DataLarge = styled.span`

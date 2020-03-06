@@ -7,19 +7,23 @@ import { breakpoint } from 'src/shared/media';
 
 import Hero from './Hero';
 import Markets from './Markets';
+import NewUserPromo from './NewUserPromo';
+import ExchangeFeatures from './ExchangeFeatures';
 import Footer from './Footer';
 
 import AppHeader from '../Root/components/AppHeader';
 
 const Home = memo(() => (
 	<>
+		<GlobalStyle />
 		{/* force the app header to be in dark mode */}
 		<ThemeProvider theme={darkTheme}>
-			<GlobalStyle />
 			<StyledAppHeader showThemeToggle={false} />
 		</ThemeProvider>
 		<Hero />
 		<Markets />
+		<NewUserPromo />
+		<ExchangeFeatures />
 		<Footer />
 	</>
 ));
@@ -33,7 +37,7 @@ const StyledAppHeader = styled(AppHeader)`
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${props => props.theme.colors.surfaceL1};
+    background-color: ${darkTheme.colors.surfaceL1};
   }
 `;
 

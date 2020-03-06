@@ -24,7 +24,7 @@ export const LINKS = {
 	},
 	Misc: {
 		EthereumOrg: 'https://ethereum.org/',
-		DefiNetwork: 'https://https://defi.network/',
+		DefiNetwork: 'https://defi.network/',
 		Messari: 'https://messari.io/asset/synthetix',
 	},
 };
