@@ -96,7 +96,7 @@ const MenuLinkItem = styled(MenuItem)`
 
 const MenuLink = styled(Link)`
 	${labelMediumCSS};
-	padding: 6px 20px;
+	padding: 6px 10px;
 	display: flex;
 	align-items: center;
 	color: ${props => props.theme.colors.fontTertiary};
