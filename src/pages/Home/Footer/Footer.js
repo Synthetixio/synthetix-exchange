@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { bodyMediumCSS, bodyMediumSecondaryCSS } from 'src/components/Typography/Body';
 import Link from 'src/components/Link';
 
-import { FlexDivRow } from 'src/shared/commonStyles';
-
 import { breakpoint, media } from 'src/shared/media';
 
 import { LINKS } from 'src/constants/links';
@@ -122,7 +120,7 @@ export const Footer = memo(() => {
 				<FooterMenu>
 					<Menu>
 						{FOOTER_LINKS.map(({ i18nTitle, links }) => (
-							<MenuItem key={i18nTitle}>
+							<div key={i18nTitle}>
 								<MenuTitle>{t(i18nTitle)}</MenuTitle>
 								<MenuLinkItems>
 									{links.map(({ i18nLabel, link, isExternal }) => (
@@ -133,7 +131,7 @@ export const Footer = memo(() => {
 										</MenuLinkItem>
 									))}
 								</MenuLinkItems>
-							</MenuItem>
+							</div>
 						))}
 					</Menu>
 					<Social>
@@ -165,9 +163,19 @@ const Content = styled.div`
 	margin: 0 auto;
 `;
 
-const FooterMenu = styled(FlexDivRow)`
-	align-items: flex-start;
+const FooterMenu = styled.div`
 	padding-bottom: 115px;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: flex-start;
+	justify-items: flex-start;
+	grid-template-areas: 'menu social';
+	${media.medium`
+		grid-template-columns: initial;
+		grid-template-rows: auto auto;
+		grid-template-areas: 'social' 'menu';
+		grid-gap: 70px;
+	`};
 `;
 
 const MiscLinks = styled.div`
@@ -182,6 +190,7 @@ const MiscLinks = styled.div`
 `;
 
 const Menu = styled.div`
+	grid-area: menu;
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 80px;
@@ -191,8 +200,6 @@ const Menu = styled.div`
 		grid-template-columns: auto;
 	`}
 `;
-
-const MenuItem = styled.div``;
 
 const MenuTitle = styled.div`
 	text-transform: uppercase;
@@ -218,6 +225,7 @@ const FooterLink = styled(Link)`
 `;
 
 const Social = styled.div`
+	grid-area: social;
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 15px;
