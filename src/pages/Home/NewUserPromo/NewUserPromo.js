@@ -96,13 +96,16 @@ const PromoCards = styled.div`
 
 const PromoCard = styled.div`
 	display: grid;
-	grid-gap: 42px;
+	grid-gap: 24px;
 	padding: 24px;
 	background-color: ${lightTheme.colors.surfaceL3};
 	border: 1px solid ${lightTheme.colors.accentLight};
 	box-shadow: 0px 4px 11px rgba(209, 209, 232, 0.25);
 	border-radius: 2px;
 	justify-content: center;
+	box-sizing: border-box;
+	height: 180px;
+	grid-template-rows: 1fr auto;
 
 	> * {
 		margin: 0 auto;

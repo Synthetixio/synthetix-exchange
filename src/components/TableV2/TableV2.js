@@ -177,7 +177,7 @@ const Table = styled.div`
 						transform: none;
 					}
 					transition: box-shadow 0.2s ease-in-out;
-					box-shadow: 0px 4px 11px rgba(188, 99, 255, 0.15442);
+					box-shadow: rgba(188, 99, 255, 0.08) 0px 4px 6px;
 				}
 			}
 		`}
