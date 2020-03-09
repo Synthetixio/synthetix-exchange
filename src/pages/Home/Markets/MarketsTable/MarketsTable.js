@@ -3,24 +3,32 @@ import { ThemeProvider } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { navigateToTrade } from '../../../../constants/routes';
+import { navigateToTrade } from 'src/constants/routes';
 
-import { EMPTY_BALANCE } from '../../../../constants/placeholder';
-import ChangePercent from '../../../../components/ChangePercent';
-import TableV2 from '../../../../components/TableV2';
+import { EMPTY_VALUE } from 'src/constants/placeholder';
+import ChangePercent from 'src/components/ChangePercent';
+import TableV2 from 'src/components/TableV2';
+import Currency from 'src/components/Currency';
 
-import { lightTheme } from '../../../../styles/theme';
+import { lightTheme } from 'src/styles/theme';
 
-import { formatCurrencyWithSign, formatCurrencyPair } from '../../../../utils/formatters';
+import { formatCurrencyWithSign, formatCurrencyPair } from 'src/utils/formatters';
 
-const CurrencyCol = (synthsMap, cellProps) => {
+const NullableCell = ({ cellProps, children }) =>
+	cellProps.cell.value == null ? <span>{EMPTY_VALUE}</span> : children;
+
+const CurrencyCol = ({ synthsMap, cellProps }) => {
 	const quoteCurrencyKey = cellProps.row.original.quoteCurrencyKey;
 	const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
 
-	return <span>{formatCurrencyWithSign(sign, cellProps.cell.value)}</span>;
+	return (
+		<NullableCell cellProps={cellProps}>
+			<span>{formatCurrencyWithSign(sign, cellProps.cell.value)}</span>
+		</NullableCell>
+	);
 };
 
-export const MarketsTable = memo(({ synthsRates, synthsMap }) => {
+export const MarketsTable = memo(({ markets, synthsMap }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -29,51 +37,58 @@ export const MarketsTable = memo(({ synthsRates, synthsMap }) => {
 				columns={[
 					{
 						Header: t('home.markets.table.pair-col'),
-						accessor: d => formatCurrencyPair(d.baseCurrencyKey, d.quoteCurrencyKey),
-						Cell: cellProps => cellProps.cell.value,
+						accessor: 'pair',
+						Cell: cellProps => (
+							<Currency.Pair
+								baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
+								quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
+								showIcon={true}
+							/>
+						),
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: t('home.markets.table.last-price-col'),
 						accessor: 'lastPrice',
-						Cell: cellProps =>
-							cellProps.cell.value == EMPTY_BALANCE
-								? EMPTY_BALANCE
-								: CurrencyCol(synthsMap, cellProps),
+						Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: t('home.markets.table.24h-change-col'),
 						accessor: 'rates24hChange',
-						Cell: cellProps => <ChangePercent value={cellProps.cell.value} />,
+						Cell: cellProps => (
+							<NullableCell cellProps={cellProps}>
+								{cellProps.cell.value != null && <ChangePercent value={cellProps.cell.value} />}
+							</NullableCell>
+						),
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: t('home.markets.table.24h-low-col'),
 						accessor: 'rates24hLow',
-						Cell: cellProps => CurrencyCol(synthsMap, cellProps),
+						Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: t('home.markets.table.24h-high-col'),
 						accessor: 'rates24hHigh',
-						Cell: cellProps => CurrencyCol(synthsMap, cellProps),
+						Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: t('home.markets.table.24h-volume-col'),
 						accessor: 'rates24hVol',
-						Cell: cellProps => CurrencyCol(synthsMap, cellProps),
+						Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 						width: 150,
 						sortable: true,
 					},
 				]}
-				data={synthsRates}
+				data={markets}
 				onTableRowClick={row =>
 					navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey)
 				}
@@ -83,7 +98,7 @@ export const MarketsTable = memo(({ synthsRates, synthsMap }) => {
 });
 
 MarketsTable.propTypes = {
-	synthsRates: PropTypes.array.isRequired,
+	markets: PropTypes.array.isRequired,
 	synthsMap: PropTypes.object,
 };
 

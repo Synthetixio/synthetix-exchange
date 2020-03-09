@@ -1,143 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import produce from 'immer';
+import React, { useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import snxData from 'synthetix-data';
-import orderBy from 'lodash/orderBy';
 
-import { EMPTY_BALANCE } from '../../../constants/placeholder';
-import Spinner from '../../../components/Spinner';
+import Spinner from 'src/components/Spinner';
+import { Z_INDEX } from 'src/constants/ui';
 
-import { getAvailableSynthsMap } from '../../../ducks/synths';
-import { getRatesExchangeRates } from '../../../ducks/rates';
-
-import { getExchangeRatesForCurrencies } from '../../../utils/rates';
-
+import { getAvailableSynthsMap } from 'src/ducks/synths';
 import {
-	fetchSynthRateUpdates,
-	fetchSynthVolumeInUSD,
-	PERIOD_IN_HOURS,
-} from '../../../services/rates/rates';
+	getMarketsForSplashPage,
+	getIsLoadingMarkets,
+	getIsRefreshingMarkets,
+	getIsLoadedMarkets,
+	fetchMarketsRequest,
+} from 'src/ducks/markets';
 
 import { breakpoint } from 'src/shared/media';
-
-import { PAIRS } from './constants';
+import useInterval from 'src/shared/hooks/useInterval';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
 
-export const Markets = ({ exchangeRates, synthsMap }) => {
-	const [synthsRates, setSynthsRates] = useState([]);
-	const [isLoadedSynthRates, setLoadedSynthRates] = useState(false);
+import { PAIRS, MARKETS_REFRESH_INTERVAL_MS } from './constants';
+import { generatePlaceholderMarkets } from './placeholder';
 
+const PLACEHOLDER_MARKETS = generatePlaceholderMarkets(PAIRS);
+
+export const Markets = ({ synthsMap, fetchMarketsRequest, markets, marketsLoaded }) => {
 	useEffect(() => {
-		const exchangesSubscription = snxData.exchanges.observe().subscribe({
-			next(data) {
-				if (isLoadedSynthRates) {
-					const synthIndex = synthsRates.findIndex(
-						synth =>
-							data.fromCurrencyKey === synth.quoteCurrencyKey &&
-							data.toCurrencyKey === synth.baseCurrencyKey
-					);
-					if (synthIndex != -1) {
-						setSynthsRates(
-							produce(synthsRates, draftState => {
-								draftState[synthIndex].rates24hVol += data.fromAmountInUSD;
-							})
-						);
-					}
-				}
-			},
-		});
+		fetchMarketsRequest({ pairs: PAIRS });
+	}, [fetchMarketsRequest]);
 
-		const fetchSynthRates = async () => {
-			const synths = [];
-
-			for (const pair of PAIRS) {
-				const { baseCurrencyKey, quoteCurrencyKey } = pair;
-				const rates24H = await fetchSynthRateUpdates(
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					PERIOD_IN_HOURS.ONE_DAY
-				);
-				const volume24H = await fetchSynthVolumeInUSD(
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					PERIOD_IN_HOURS.ONE_DAY
-				);
-
-				synths.push({
-					pair: `${baseCurrencyKey}-${quoteCurrencyKey}`,
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					lastPrice: EMPTY_BALANCE,
-					rates: rates24H.rates,
-					rates24hChange: rates24H.change,
-					rates24hLow: rates24H.low,
-					rates24hHigh: rates24H.high,
-					rates24hVol: volume24H,
-				});
-			}
-			setSynthsRates(orderBy(synths, 'rates24hVol', 'desc'));
-			setLoadedSynthRates(true);
-		};
-
-		fetchSynthRates();
-		return () => {
-			exchangesSubscription.unsubscribe();
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
-		if (isLoadedSynthRates && exchangeRates != null) {
-			setSynthsRates(
-				synthsRates.map(synth => ({
-					...synth,
-					lastPrice:
-						getExchangeRatesForCurrencies(
-							exchangeRates,
-							synth.baseCurrencyKey,
-							synth.quoteCurrencyKey
-						) || 0,
-				}))
-			);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [exchangeRates, isLoadedSynthRates]);
-
-	if (!isLoadedSynthRates) {
-		return <Spinner size="sm" fullscreen={true} />;
-	}
+	useInterval(() => {
+		fetchMarketsRequest({ pairs: PAIRS });
+	}, MARKETS_REFRESH_INTERVAL_MS);
 
 	return (
 		<Container>
-			<Content>
-				<MarketsCharts synthsRates={synthsRates} synthsMap={synthsMap} />
-				<MarketsTable synthsRates={synthsRates} synthsMap={synthsMap} />
+			{!marketsLoaded && <StyledSpinner size="sm" fullscreen={true} />}
+			<Content marketsLoaded={marketsLoaded}>
+				<MarketsCharts
+					markets={marketsLoaded ? markets : PLACEHOLDER_MARKETS}
+					synthsMap={synthsMap}
+					key={marketsLoaded ? 'market-charts-placeholder' : 'market-charts'}
+				/>
+				<MarketsTable
+					markets={marketsLoaded ? markets : PLACEHOLDER_MARKETS}
+					synthsMap={synthsMap}
+					key={marketsLoaded ? 'market-table-placeholder' : 'market-table'}
+				/>
 			</Content>
 		</Container>
 	);
 };
 
 Markets.propTypes = {
-	exchangeRates: PropTypes.object,
 	synthsMap: PropTypes.object,
+	fetchMarketsRequest: PropTypes.func.isRequired,
+	marketsLoaded: PropTypes.bool.isRequired,
 };
 
 const Container = styled.div`
 	background-color: ${props => props.theme.colors.white};
+	position: relative;
+`;
+
+const StyledSpinner = styled(Spinner)`
+	z-index: ${Z_INDEX.BASE};
 `;
 
 const Content = styled.div`
 	max-width: ${breakpoint.large};
 	margin: 0 auto;
+	${props =>
+		!props.marketsLoaded &&
+		css`
+			/* filter: blur(2px); */
+		`}
 `;
 
 const mapStateToProps = state => ({
-	exchangeRates: getRatesExchangeRates(state),
 	synthsMap: getAvailableSynthsMap(state),
+	markets: getMarketsForSplashPage(state),
+	marketsLoading: getIsLoadingMarkets(state),
+	marketsLoaded: getIsLoadedMarkets(state),
+	marketsRefreshing: getIsRefreshingMarkets(state),
 });
 
-export default connect(mapStateToProps, null)(Markets);
+const mapDispatchToProps = {
+	fetchMarketsRequest,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Markets);

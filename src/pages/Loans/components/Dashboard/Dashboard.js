@@ -27,7 +27,7 @@ import {
 	CurrencyKey,
 	ExternalLink,
 } from '../../../../shared/commonStyles';
-import { EMPTY_BALANCE } from '../../../../constants/placeholder';
+import { EMPTY_VALUE } from '../../../../constants/placeholder';
 import Spinner from '../../../../components/Spinner';
 
 import snxJSConnector from '../../../../utils/snxJSConnector';
@@ -156,12 +156,12 @@ export const Dashboard = ({
 						<td>
 							{currentWallet
 								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
-								: EMPTY_BALANCE}
+								: EMPTY_VALUE}
 						</td>
 						<td>
 							{currentWallet
 								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
-								: EMPTY_BALANCE}
+								: EMPTY_VALUE}
 						</td>
 					</tr>
 				</tbody>

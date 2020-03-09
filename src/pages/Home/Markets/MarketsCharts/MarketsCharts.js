@@ -1,22 +1,21 @@
 import React, { memo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
-import ChartCard from '../../../../components/ChartCard/ChartCard';
+import ChartCard from 'src/components/ChartCard/ChartCard';
 
-import { lightTheme } from '../../../../styles/theme';
+import { lightTheme } from 'src/styles/theme';
 
-import { navigateToTrade } from '../../../../constants/routes';
-import { EMPTY_BALANCE } from '../../../../constants/placeholder';
+import { navigateToTrade } from 'src/constants/routes';
 
-import { formatCurrencyWithSign } from '../../../../utils/formatters';
+import { formatCurrencyWithSign } from 'src/utils/formatters';
 
 const CHART_CARDS = 4;
 
-export const MarketsCharts = memo(({ synthsRates, synthsMap }) => (
+export const MarketsCharts = memo(({ markets, synthsMap }) => (
 	<ThemeProvider theme={lightTheme}>
 		<Container>
-			{synthsRates
-				.slice(0, Math.min(CHART_CARDS, synthsRates.length))
+			{markets
+				.slice(0, Math.min(CHART_CARDS, markets.length))
 				.map(({ quoteCurrencyKey, pair, baseCurrencyKey, lastPrice, rates24hChange, rates }) => {
 					const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
 
@@ -25,11 +24,7 @@ export const MarketsCharts = memo(({ synthsRates, synthsMap }) => (
 							key={pair}
 							baseCurrencyKey={baseCurrencyKey}
 							quoteCurrencyKey={quoteCurrencyKey}
-							price={
-								lastPrice === EMPTY_BALANCE
-									? EMPTY_BALANCE
-									: formatCurrencyWithSign(sign, lastPrice)
-							}
+							price={lastPrice != null ? formatCurrencyWithSign(sign, lastPrice) : null}
 							change={rates24hChange}
 							chartData={rates}
 							onClick={() => navigateToTrade(baseCurrencyKey, quoteCurrencyKey)}
@@ -59,7 +54,7 @@ const Container = styled.div`
 `;
 
 MarketsCharts.propTypes = {
-	synthsRates: PropTypes.array.isRequired,
+	markets: PropTypes.array.isRequired,
 	synthsMap: PropTypes.object,
 };
 

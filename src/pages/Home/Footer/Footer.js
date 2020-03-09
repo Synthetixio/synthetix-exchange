@@ -104,12 +104,12 @@ const MISC_LINKS = [
 		link: LINKS.Misc.Messari,
 	},
 	{
-		icon: <EthereumLogoIcon width="184px" height="47px" />,
-		link: LINKS.Misc.EthereumOrg,
-	},
-	{
 		icon: <DefiNetworkLogoIcon width="133px" height="47px" />,
 		link: LINKS.Misc.DefiNetwork,
+	},
+	{
+		icon: <EthereumLogoIcon width="184px" height="47px" />,
+		link: LINKS.Misc.EthereumOrg,
 	},
 ];
 

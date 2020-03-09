@@ -8,7 +8,7 @@ import { GWEI_UNIT } from '../../../../../utils/networkUtils';
 import { normalizeGasLimit } from '../../../../../utils/transactions';
 import { getCurrencyKeyBalance } from '../../../../../utils/balances';
 
-import { EMPTY_BALANCE } from '../../../../../constants/placeholder';
+import { EMPTY_VALUE } from '../../../../../constants/placeholder';
 
 import { ButtonPrimary } from '../../../../../components/Button';
 import Card from '../../../../../components/Card';
@@ -147,7 +147,7 @@ export const CreateLoanCard = ({
 								</FormInputLabel>
 								<FormInputLabelSmall>
 									{t('common.wallet.balance-currency', {
-										balance: currentWallet ? collateralCurrencyBalance : EMPTY_BALANCE,
+										balance: currentWallet ? collateralCurrencyBalance : EMPTY_VALUE,
 									})}
 								</FormInputLabelSmall>
 							</>
@@ -174,7 +174,7 @@ export const CreateLoanCard = ({
 								</FormInputLabel>
 								<FormInputLabelSmall>
 									{t('common.wallet.balance-currency', {
-										balance: currentWallet ? loanCurrencyBalance : EMPTY_BALANCE,
+										balance: currentWallet ? loanCurrencyBalance : EMPTY_VALUE,
 									})}
 								</FormInputLabelSmall>
 							</>
