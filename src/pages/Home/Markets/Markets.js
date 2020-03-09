@@ -44,8 +44,7 @@ export const Markets = ({ synthsMap, fetchMarketsRequest, markets, marketsLoaded
 					key={marketsLoaded ? 'market-charts-placeholder' : 'market-charts'}
 				/>
 			</MarketChartsContent>
-
-			<Container>
+			<MarketsTableContainer>
 				{!marketsLoaded && <StyledSpinner size="sm" fullscreen={true} />}
 				<Content>
 					<MarketsTable
@@ -54,7 +53,7 @@ export const Markets = ({ synthsMap, fetchMarketsRequest, markets, marketsLoaded
 						key={marketsLoaded ? 'market-table-placeholder' : 'market-table'}
 					/>
 				</Content>
-			</Container>
+			</MarketsTableContainer>
 		</>
 	);
 };
@@ -65,7 +64,7 @@ Markets.propTypes = {
 	marketsLoaded: PropTypes.bool.isRequired,
 };
 
-const Container = styled.div`
+const MarketsTableContainer = styled.div`
 	background-color: ${props => props.theme.colors.white};
 	position: relative;
 	padding-top: 170px;
@@ -88,7 +87,7 @@ const Content = styled.div`
 
 const MarketChartsContent = styled(Content)`
 	position: relative;
-	z-index: 1;
+	z-index: ${Z_INDEX.BASE};
 	transform: translateY(50%);
 	${media.large`
 		transform: none;
