@@ -1,13 +1,17 @@
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 
-import { CARD_HEIGHT } from '../../constants/ui';
+import { CARD_HEIGHT } from 'src/constants/ui';
 
-import { ReactComponent as SortDownIcon } from '../../assets/images/sort-down.svg';
-import { ReactComponent as SortUpIcon } from '../../assets/images/sort-up.svg';
-import { ReactComponent as SortIcon } from '../../assets/images/sort.svg';
+import { ReactComponent as SortDownIcon } from 'src/assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from 'src/assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
+
+import { lightTheme, darkTheme } from 'src/styles/theme';
+
+import { TABLE_PALETTE } from './constants';
 
 export const TableV2 = ({
 	columns = [],
@@ -15,6 +19,7 @@ export const TableV2 = ({
 	options = {},
 	noResultsMessage = null,
 	onTableRowClick = undefined,
+	palette,
 }) => {
 	const memoizedColumns = useMemo(
 		() => columns,
@@ -33,7 +38,7 @@ export const TableV2 = ({
 	);
 
 	return (
-		<Table {...getTableProps()}>
+		<Table {...getTableProps()} palette={palette}>
 			{headerGroups.map(headerGroup => (
 				<TableRow {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map(column => (
@@ -85,16 +90,10 @@ TableV2.propTypes = {
 	columns: PropTypes.array.isRequired,
 	options: PropTypes.object,
 	onTableRowClick: PropTypes.func,
+	palette: PropTypes.string,
 };
 
-const Table = styled.div`
-	width: 100%;
-	height: 100%;
-	overflow-x: auto;
-	position: relative;
-`;
-
-const TableRow = styled.div`
+export const TableRow = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL3};
 	margin-bottom: 8px;
 `;
@@ -146,6 +145,42 @@ const SortIconContainer = styled.span`
 	display: flex;
 	align-items: center;
 	margin-left: 5px;
+`;
+
+const Table = styled.div`
+	width: 100%;
+	height: 100%;
+	overflow-x: auto;
+	position: relative;
+
+	${props =>
+		props.palette === TABLE_PALETTE.LIGHT_SECONDARY &&
+		css`
+			${TableCell} {
+				font-size: 14px;
+			}
+			${TableRow}, ${TableCellHead} {
+				background-color: ${lightTheme.colors.brand};
+			}
+			${TableCellHead} {
+				background-color: ${lightTheme.colors.brand};
+				color: ${darkTheme.colors.fontSecondary};
+				font-family: ${props => props.theme.fonts.bold};
+				font-size: 12px;
+			}
+			${TableBodyRow} {
+				background-color: transparent;
+				border: 1px solid ${lightTheme.colors.surfaceL1};
+				&:hover {
+					> * {
+						transition: none;
+						transform: none;
+					}
+					transition: box-shadow 0.2s ease-in-out;
+					box-shadow: 0px 4px 11px rgba(188, 99, 255, 0.15442);
+				}
+			}
+		`}
 `;
 
 export default TableV2;

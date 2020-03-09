@@ -97,15 +97,16 @@ const PromoCards = styled.div`
 const PromoCard = styled.div`
 	display: grid;
 	grid-gap: 42px;
-	/* width: 280px; */
-	height: 180px;
-	padding: 30px;
-	box-sizing: border-box;
+	padding: 24px;
 	background-color: ${lightTheme.colors.surfaceL3};
 	border: 1px solid ${lightTheme.colors.accentLight};
 	box-shadow: 0px 4px 11px rgba(209, 209, 232, 0.25);
 	border-radius: 2px;
 	justify-content: center;
+
+	> * {
+		margin: 0 auto;
+	}
 `;
 
 const PromoCardLabel = styled.span`

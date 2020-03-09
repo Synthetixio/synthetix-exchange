@@ -121,7 +121,8 @@ const FeatureCardDesc = styled.span`
 `;
 
 const StyledButtonPrimary = styled(ButtonPrimary)`
-	width: 320px;
+	width: auto;
+	padding: 0 80px;
 `;
 
 export default ExchangeFeatures;

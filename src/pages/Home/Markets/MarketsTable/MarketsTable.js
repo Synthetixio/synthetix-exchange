@@ -1,18 +1,20 @@
 import React, { memo } from 'react';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { navigateToTrade } from 'src/constants/routes';
+import { navigateToTrade, navigateTo, ROUTES } from 'src/constants/routes';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 import ChangePercent from 'src/components/ChangePercent';
 import TableV2 from 'src/components/TableV2';
+import { TABLE_PALETTE } from 'src/components/TableV2/constants';
 import Currency from 'src/components/Currency';
+import { ButtonPrimary } from 'src/components/Button';
 
 import { lightTheme } from 'src/styles/theme';
 
-import { formatCurrencyWithSign, formatCurrencyPair } from 'src/utils/formatters';
+import { formatCurrencyWithSign } from 'src/utils/formatters';
 
 const NullableCell = ({ cellProps, children }) =>
 	cellProps.cell.value == null ? <span>{EMPTY_VALUE}</span> : children;
@@ -34,6 +36,7 @@ export const MarketsTable = memo(({ markets, synthsMap }) => {
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<TableV2
+				palette={TABLE_PALETTE.LIGHT_SECONDARY}
 				columns={[
 					{
 						Header: t('home.markets.table.pair-col'),
@@ -60,7 +63,9 @@ export const MarketsTable = memo(({ markets, synthsMap }) => {
 						accessor: 'rates24hChange',
 						Cell: cellProps => (
 							<NullableCell cellProps={cellProps}>
-								{cellProps.cell.value != null && <ChangePercent value={cellProps.cell.value} />}
+								{cellProps.cell.value != null && (
+									<ChangePercent isLabel={true} value={cellProps.cell.value} />
+								)}
 							</NullableCell>
 						),
 						width: 150,
@@ -92,10 +97,30 @@ export const MarketsTable = memo(({ markets, synthsMap }) => {
 				onTableRowClick={row =>
 					navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey)
 				}
+				options={{
+					initialState: {
+						sortBy: [{ id: 'rates24hVol', desc: true }],
+					},
+				}}
 			/>
+			<ButtonContainer>
+				<StyledButtonPrimary onClick={() => navigateTo(ROUTES.Trade)}>
+					{t('home.markets.table.actions.see-all-pairs')}
+				</StyledButtonPrimary>
+			</ButtonContainer>
 		</ThemeProvider>
 	);
 });
+
+const ButtonContainer = styled.div`
+	padding: 75px 0;
+	text-align: center;
+`;
+
+const StyledButtonPrimary = styled(ButtonPrimary)`
+	padding: 0 70px;
+	width: auto;
+`;
 
 MarketsTable.propTypes = {
 	markets: PropTypes.array.isRequired,

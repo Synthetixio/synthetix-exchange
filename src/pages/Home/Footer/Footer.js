@@ -203,6 +203,7 @@ const MenuTitle = styled.div`
 const MenuLinkItems = styled.ul`
 	margin: 0;
 	padding: 0;
+	list-style: none;
 `;
 
 const MenuLinkItem = styled.li`
