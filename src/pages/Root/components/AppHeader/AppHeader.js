@@ -75,6 +75,7 @@ const Container = styled.header`
 	border-color: ${props => props.theme.colors.accentDark};
 	border-style: solid;
 	border-width: 1px 0;
+	overflow: hidden;
 `;
 
 const Content = styled(FlexDivCentered)`

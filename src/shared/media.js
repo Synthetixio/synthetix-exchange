@@ -11,13 +11,13 @@ export const mediaQuery = (...query) => (...rules) =>
 export const breakpoint = {
 	small: '480px',
 	medium: '768px',
-	large: '1300px',
-	extraLarge: '1600px',
+	large: '1150px',
+	extraLarge: '1300px',
 };
 
 export const media = {
 	small: mediaQuery`(max-width: ${breakpoint.small})`,
 	medium: mediaQuery`(max-width: ${breakpoint.medium})`,
 	large: mediaQuery`(max-width: ${breakpoint.large})`,
-	extraLarge: mediaQuery`(min-width: ${breakpoint.extraWide})`,
+	extraLarge: mediaQuery`(max-width: ${breakpoint.extraLarge})`,
 };

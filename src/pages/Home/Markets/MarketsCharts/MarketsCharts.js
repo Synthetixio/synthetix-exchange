@@ -7,6 +7,8 @@ import { lightTheme } from 'src/styles/theme';
 
 import { navigateToTrade } from 'src/constants/routes';
 
+import { media } from 'src/shared/media';
+
 import { formatCurrencyWithSign } from 'src/utils/formatters';
 
 const CHART_CARDS = 4;
@@ -36,21 +38,21 @@ export const MarketsCharts = memo(({ markets, synthsMap }) => (
 ));
 
 const Container = styled.div`
-	transform: translateY(-50%);
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	grid-gap: 24px;
 	justify-content: center;
-	@media (max-width: 1140px) {
+
+	${media.large`
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
-		grid-row-gap: 10px;
-	}
-	@media (max-width: 580px) {
+		grid-gap: 30px;
+	`}
+	${media.medium`
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr;
-		grid-row-gap: 10px;
-	}
+		grid-gap: 30px;
+	`}
 `;
 
 MarketsCharts.propTypes = {
