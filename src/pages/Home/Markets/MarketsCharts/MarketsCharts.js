@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
+
 import ChartCard from 'src/components/ChartCard/ChartCard';
 
 import { lightTheme } from 'src/styles/theme';
@@ -22,7 +23,7 @@ export const MarketsCharts = memo(({ markets, synthsMap }) => (
 					const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
 
 					return (
-						<ChartCard
+						<StyledChartCard
 							key={pair}
 							baseCurrencyKey={baseCurrencyKey}
 							quoteCurrencyKey={quoteCurrencyKey}
@@ -53,6 +54,10 @@ const Container = styled.div`
 		grid-template-rows: 1fr;
 		grid-gap: 30px;
 	`}
+`;
+
+const StyledChartCard = styled(ChartCard)`
+	background-color: ${props => props.theme.colors.white};
 `;
 
 MarketsCharts.propTypes = {

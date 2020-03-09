@@ -20,8 +20,9 @@ export const ChartCard = memo(
 		chartData = [],
 		theme: { colors },
 		onClick,
+		...rest
 	}) => (
-		<Container onClick={onClick}>
+		<Container onClick={onClick} {...rest}>
 			<LabelsContainer>
 				<Labels>
 					<Currency>{formatCurrencyPair(baseCurrencyKey, quoteCurrencyKey)}</Currency>
