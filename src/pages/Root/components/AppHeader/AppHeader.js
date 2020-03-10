@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
@@ -12,7 +12,7 @@ import { APP_HEADER_HEIGHT } from 'src/constants/ui';
 
 import { FlexDivCentered } from 'src/shared/commonStyles';
 
-import { mediumMediaQuery } from 'src/shared/media';
+import { mediumMediaQuery, breakpoint } from 'src/shared/media';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
@@ -76,11 +76,13 @@ AppHeader.defaultProps = {
 AppHeader.propTypes = {
 	showThemeToggle: PropTypes.bool,
 	className: PropTypes.string,
+	isOnSplashPage: PropTypes.bool,
 };
 
 export const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${props =>
+		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
 	border-color: ${props => props.theme.colors.accentDark};
 	border-style: solid;
 	border-width: 1px 0;
@@ -92,6 +94,11 @@ const Content = styled(FlexDivCentered)`
 	justify-content: space-between;
 	margin: 0 auto;
 	padding: 0 16px;
+	${props =>
+		props.isOnSplashPage &&
+		css`
+			max-width: ${breakpoint.extraLarge}px;
+		`}
 `;
 
 const MenuItem = styled(FlexDivCentered)`

@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import { media } from 'src/shared/media';
 import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/constants/ui';
 
-export const Dropdown = memo(({ children }) =>
-	ReactDOM.createPortal(<Container>{children}</Container>, document.body)
+export const Dropdown = memo(({ children, ...rest }) =>
+	ReactDOM.createPortal(<Container {...rest}>{children}</Container>, document.body)
 );
 
 Dropdown.propTypes = {

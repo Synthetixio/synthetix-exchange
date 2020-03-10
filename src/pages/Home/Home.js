@@ -1,9 +1,8 @@
 import React, { memo } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 
 import { darkTheme } from 'src/styles/theme';
-import { breakpoint } from 'src/shared/media';
 
 import Hero from './Hero';
 import Markets from './Markets';
@@ -18,7 +17,7 @@ const Home = memo(() => (
 		<GlobalStyle />
 		{/* force the app header to be in dark mode */}
 		<ThemeProvider theme={darkTheme}>
-			<StyledAppHeader showThemeToggle={false} />
+			<AppHeader showThemeToggle={false} isOnSplashPage={true} />
 		</ThemeProvider>
 		<Hero />
 		<Markets />
@@ -27,13 +26,6 @@ const Home = memo(() => (
 		<Footer />
 	</>
 ));
-
-const StyledAppHeader = styled(AppHeader)`
-	background-color: ${props => props.theme.colors.surfaceL1};
-	> div {
-		max-width: ${breakpoint.extraLarge}px;
-	}
-`;
 
 const GlobalStyle = createGlobalStyle`
   body {

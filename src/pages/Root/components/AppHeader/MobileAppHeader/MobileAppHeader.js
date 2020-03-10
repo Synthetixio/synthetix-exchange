@@ -29,64 +29,66 @@ import UserInfo from '../UserInfo';
 import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
-export const MobileAppHeader = memo(({ showThemeToggle, currentTheme, toggleTheme, ...rest }) => {
-	const [menuOpen, setMenuOpen] = useState(false);
-	const { t } = useTranslation();
+export const MobileAppHeader = memo(
+	({ showThemeToggle, currentTheme, toggleTheme, isOnSplashPage, ...rest }) => {
+		const [menuOpen, setMenuOpen] = useState(false);
+		const { t } = useTranslation();
 
-	const toggleMenu = () => setMenuOpen(!menuOpen);
+		const toggleMenu = () => setMenuOpen(!menuOpen);
 
-	return (
-		<>
-			<Container {...rest}>
-				<Content>
-					<MenuItemsLeft>
-						<MenuItem>
-							<StyledLogoLink to={ROUTES.Home}>
-								<Logo />
-							</StyledLogoLink>
-						</MenuItem>
-					</MenuItemsLeft>
-					<MenuItemsRight>
-						<MenuItem>
-							<UserInfo />
-						</MenuItem>
-						<MenuItem>
-							<MenuToggleButton onClick={toggleMenu}>
-								{menuOpen ? <MenuCloseIcon /> : <MenuHamburgerIcon />}
-							</MenuToggleButton>
-						</MenuItem>
-					</MenuItemsRight>
-				</Content>
-			</Container>
-			{menuOpen && (
-				<>
-					<Overlay onClick={toggleMenu} />
-					<Dropdown>
-						<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
-							{t('header.links.trade')}
-						</DropdownMenuLink>
-						<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
-							{t('header.links.loans')}
-						</DropdownMenuLink>
-						<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
-							{t('header.links.support')}
-						</DropdownMenuLink>
-						{showThemeToggle && (
-							<DropdownMenuItem
-								onClick={() => {
-									toggleMenu();
-									toggleTheme();
-								}}
-							>
-								{isLightTheme(currentTheme) ? t('header.theme.dark') : t('header.theme.light')}
-							</DropdownMenuItem>
-						)}
-					</Dropdown>
-				</>
-			)}
-		</>
-	);
-});
+		return (
+			<>
+				<Container {...rest}>
+					<Content>
+						<MenuItemsLeft>
+							<MenuItem>
+								<StyledLogoLink to={ROUTES.Home}>
+									<Logo />
+								</StyledLogoLink>
+							</MenuItem>
+						</MenuItemsLeft>
+						<MenuItemsRight>
+							<MenuItem>
+								<UserInfo />
+							</MenuItem>
+							<MenuItem>
+								<MenuToggleButton onClick={toggleMenu}>
+									{menuOpen ? <MenuCloseIcon /> : <MenuHamburgerIcon />}
+								</MenuToggleButton>
+							</MenuItem>
+						</MenuItemsRight>
+					</Content>
+				</Container>
+				{menuOpen && (
+					<>
+						<Overlay onClick={toggleMenu} />
+						<StyledDropdown isOnSplashPage={isOnSplashPage}>
+							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
+								{t('header.links.trade')}
+							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
+								{t('header.links.loans')}
+							</DropdownMenuLink>
+							<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
+								{t('header.links.support')}
+							</DropdownMenuLink>
+							{showThemeToggle && (
+								<DropdownMenuItem
+									onClick={() => {
+										toggleMenu();
+										toggleTheme();
+									}}
+								>
+									{isLightTheme(currentTheme) ? t('header.theme.dark') : t('header.theme.light')}
+								</DropdownMenuItem>
+							)}
+						</StyledDropdown>
+					</>
+				)}
+			</>
+		);
+	}
+);
 
 MobileAppHeader.defaultProps = {
 	showThemeToggle: true,
@@ -97,11 +99,13 @@ MobileAppHeader.propTypes = {
 	currentTheme: PropTypes.string.isRequired,
 	toggleTheme: PropTypes.func.isRequired,
 	className: PropTypes.string,
+	isOnSplashPage: PropTypes.bool,
 };
 
 const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${props =>
+		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
 	border-color: ${props => props.theme.colors.accentDark};
 	border-style: solid;
 	border-width: 1px 0;
@@ -147,6 +151,14 @@ const MenuItemsRight = styled(MenuItems)`
 	${MenuItem} {
 		border-left: 1px solid ${props => props.theme.colors.accentDark};
 	}
+`;
+
+const StyledDropdown = styled(Dropdown)`
+	${props =>
+		props.isOnSplashPage &&
+		css`
+			background-color: ${props => props.theme.colors.surfaceL1};
+		`}
 `;
 
 const dropdownItemCSS = css`
