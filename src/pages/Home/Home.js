@@ -31,7 +31,7 @@ const Home = memo(() => (
 const StyledAppHeader = styled(AppHeader)`
 	background-color: ${props => props.theme.colors.surfaceL1};
 	> div {
-		max-width: ${breakpoint.extraLarge};
+		max-width: ${breakpoint.extraLarge}px;
 	}
 `;
 

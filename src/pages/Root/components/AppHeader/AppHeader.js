@@ -1,22 +1,35 @@
 import React, { memo } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import { labelMediumCSS } from 'src/components/Typography/Label';
+import Link from 'src/components/Link';
 
 import { ROUTES } from 'src/constants/routes';
 import { APP_HEADER_HEIGHT } from 'src/constants/ui';
 
-import { FlexDivCentered, Link } from 'src/shared/commonStyles';
+import { FlexDivCentered } from 'src/shared/commonStyles';
+
+import { mediumMediaQuery } from 'src/shared/media';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import UserInfo from './UserInfo';
 import SupportLink from './SupportLink';
 
-export const AppHeader = memo(({ showUserInfo, showThemeToggle, showSupportLink, ...rest }) => {
+import MobileAppHeader from './MobileAppHeader';
+
+export const AppHeader = memo(props => {
+	const { showThemeToggle, ...rest } = props;
 	const { t } = useTranslation();
+
+	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
+
+	if (isTabletOrMobile) {
+		return <MobileAppHeader {...props} />;
+	}
 
 	return (
 		<Container {...rest}>
@@ -27,29 +40,29 @@ export const AppHeader = memo(({ showUserInfo, showThemeToggle, showSupportLink,
 							<Logo />
 						</Link>
 					</MenuItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
-					</MenuLinkItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
-					</MenuLinkItem>
+					{!isTabletOrMobile && (
+						<>
+							<MenuLinkItem>
+								<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
+							</MenuLinkItem>
+							<MenuLinkItem>
+								<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
+							</MenuLinkItem>
+						</>
+					)}
 				</MenuItemsLeft>
 				<MenuItemsRight>
-					{showSupportLink && (
-						<MenuItem>
-							<SupportLink />
-						</MenuItem>
-					)}
+					<MenuItem>
+						<SupportLink />
+					</MenuItem>
 					{showThemeToggle && (
 						<MenuItem>
 							<ThemeToggle />
 						</MenuItem>
 					)}
-					{showUserInfo && (
-						<MenuItem>
-							<UserInfo />
-						</MenuItem>
-					)}
+					<MenuItem>
+						<UserInfo />
+					</MenuItem>
 				</MenuItemsRight>
 			</Content>
 		</Container>
@@ -57,25 +70,20 @@ export const AppHeader = memo(({ showUserInfo, showThemeToggle, showSupportLink,
 });
 
 AppHeader.defaultProps = {
-	showUserInfo: true,
 	showThemeToggle: true,
-	showSupportLink: true,
 };
 
 AppHeader.propTypes = {
-	showUserInfo: PropTypes.bool,
 	showThemeToggle: PropTypes.bool,
-	showSupportLink: PropTypes.bool,
 	className: PropTypes.string,
 };
 
-const Container = styled.header`
+export const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${props => props.theme.colors.surfaceL3};
 	border-color: ${props => props.theme.colors.accentDark};
 	border-style: solid;
 	border-width: 1px 0;
-	overflow: hidden;
 `;
 
 const Content = styled(FlexDivCentered)`

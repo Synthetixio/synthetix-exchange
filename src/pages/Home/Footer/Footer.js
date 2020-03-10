@@ -159,7 +159,7 @@ const Container = styled.footer`
 `;
 
 const Content = styled.div`
-	max-width: ${breakpoint.extraLarge};
+	max-width: ${breakpoint.extraLarge}px;
 	margin: 0 auto;
 `;
 
