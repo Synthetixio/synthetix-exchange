@@ -15,8 +15,9 @@ const Container = styled.span`
 		props.isLabel
 			? css`
 					border-radius: 1px;
-					padding: 0 5px;
+					padding: 4px 8px;
 					color: ${props => props.theme.colors.white};
+
 					background-color: ${props =>
 						props.isPositive ? props.theme.colors.green : props.theme.colors.red};
 			  `

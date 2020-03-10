@@ -1,4 +1,6 @@
-import { SYNTHS_MAP } from '../../../constants/currency';
+import { SYNTHS_MAP } from 'src/constants/currency';
+
+export const MARKETS_REFRESH_INTERVAL_MS = 30000;
 
 export const PAIRS = [
 	{

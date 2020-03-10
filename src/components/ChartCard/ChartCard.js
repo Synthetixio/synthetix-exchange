@@ -6,8 +6,10 @@ import PropTypes from 'prop-types';
 
 import ChangePercent from '../ChangePercent';
 
-import { FlexDivRow } from '../../shared/commonStyles';
-import { formatCurrencyPair } from '../../utils/formatters';
+import { FlexDivRow } from 'src/shared/commonStyles';
+import { formatCurrencyPair } from 'src/utils/formatters';
+
+import { EMPTY_VALUE } from 'src/constants/placeholder';
 
 export const ChartCard = memo(
 	({
@@ -18,14 +20,15 @@ export const ChartCard = memo(
 		chartData = [],
 		theme: { colors },
 		onClick,
+		...rest
 	}) => (
-		<Container onClick={onClick}>
+		<Container onClick={onClick} {...rest}>
 			<LabelsContainer>
 				<Labels>
 					<Currency>{formatCurrencyPair(baseCurrencyKey, quoteCurrencyKey)}</Currency>
-					<CurrencyPrice>{price}</CurrencyPrice>
+					<CurrencyPrice>{price == null ? EMPTY_VALUE : price}</CurrencyPrice>
 				</Labels>
-				<ChangePercent value={change} isLabel={true} />
+				{change != null && <ChangePercent value={change} isLabel={true} />}
 			</LabelsContainer>
 			<ChartData>
 				{/* https://github.com/recharts/recharts/issues/1423 */}
@@ -94,9 +97,9 @@ const ChartData = styled.div`
 
 ChartCard.propTypes = {
 	baseCurrencyKey: PropTypes.string.isRequired,
-	price: PropTypes.string.isRequired,
-	change: PropTypes.number.isRequired,
-	chartData: PropTypes.array.isRequired,
+	price: PropTypes.string,
+	change: PropTypes.number,
+	chartData: PropTypes.array,
 };
 
 export default withTheme(ChartCard);

@@ -1,46 +1,64 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { darkTheme } from '../../../styles/theme';
+import { HeadingLarge } from 'src/components/Typography/Heading';
+import { media } from 'src/shared/media';
+import { darkTheme } from 'src/styles/theme';
 
-export const Hero = () => {
+export const Hero = memo(() => {
 	const { t } = useTranslation();
 
 	return (
 		<Container>
-			<Section>
+			<Content>
 				<HeroTitle>{t('home.hero.title')}</HeroTitle>
 				<HeroSubtitle>{t('home.hero.subtitle')}</HeroSubtitle>
-			</Section>
+			</Content>
 		</Container>
 	);
-};
+});
 
 const Container = styled.div`
-	height: 448px;
-	background-color: ${darkTheme.colors.surfaceL1};
 	width: 100%;
 	text-align: center;
-	padding: 155px;
+
+	padding: 125px 24px 0 24px;
+	${media.large`
+		padding: 80px 24px 0 24px;
+	`}
+	${media.medium`
+		padding: 45px 24px 0 24px;
+	`}
 `;
 
-const Section = styled.div`
-	max-width: 800px;
+const Content = styled.div`
 	margin: 0 auto;
 `;
 
-const HeroTitle = styled.div`
-	font-size: 56px;
-	color: ${props => props.theme.colors.white};
-	font-family: ${props => props.theme.fonts.medium};
+const HeroTitle = styled(HeadingLarge)`
+	color: ${darkTheme.colors.fontPrimary};
 	padding-bottom: 24px;
+	${media.large`
+		font-size: 40px;
+		line-height: 40px;
+	`}
+	${media.medium`
+		font-size: 32px;
+		line-height: 32px;
+	`}
 `;
 
 const HeroSubtitle = styled.div`
-	font-size: 18px;
-	color: ${props => props.theme.colors.fontTertiary};
+	font-size: 24px;
+	color: ${darkTheme.colors.fontTertiary};
 	font-family: ${props => props.theme.fonts.regular};
+	${media.large`
+		font-size: 16px;
+	`}
+	${media.medium`
+		font-size: 14px;
+	`}
 `;
 
 export default Hero;

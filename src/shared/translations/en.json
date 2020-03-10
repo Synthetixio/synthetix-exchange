@@ -18,8 +18,8 @@
 	},
 	"home": {
 		"hero": {
-			"title": "Trade decentralised synthetic crypto, commodities & Forex",
-			"subtitle": ""
+			"title": "On-chain exposure to any asset class",
+			"subtitle": "Trade synthetic cryptocurrencies (long and short), commodities, indexes and Forex"
 		},
 		"markets": {
 			"table": {
@@ -31,6 +31,54 @@
 				"24h-volume-col": "24hr volume",
 				"actions": {
 					"see-all-pairs": "see all pairs"
+				}
+			}
+		},
+		"new-user-promo": {
+			"title": "New to Synthetix.Exchange?",
+			"subtitle": "ETH holders can start trading through any of the following methods:"
+		},
+		"exchange-features": {
+			"title": "A unique trading experience on Ethereum",
+			"subtitle": "With on-chain features you won’t find anywhere else",
+			"features": {
+				"infinite-liquidity": {
+					"title": "Infinite Liquidity",
+					"desc": "There’s no orderbook, so you don’t need to worry about liquidity or slippage."
+				},
+				"peer-to-contract": {
+					"title": "Peer-To-Contract Trading",
+					"desc": "Seamlessly exchange between a wide variety of synthetic assets."
+				},
+				"distributed-collateral-pool": {
+					"title": "Distributed Collateral Pool",
+					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
+				}
+			},
+			"start-trading-button": "start trading now"
+		},
+		"footer": {
+			"learn": {
+				"title": "learn",
+				"links": {
+					"litepaper": "Litepaper",
+					"tokens": "Tokens",
+					"blog": "Blog"
+				}
+			},
+			"products": {
+				"title": "products",
+				"links": {
+					"synthetix-exchange": "Synthetix.Exchange",
+					"mintr": "Mintr",
+					"dashboard": "Dashboard"
+				}
+			},
+			"connect": {
+				"title": "community",
+				"links": {
+					"community": "Community",
+					"contact-us": "Contact Us"
 				}
 			}
 		}

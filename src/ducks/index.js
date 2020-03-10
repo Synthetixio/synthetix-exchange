@@ -6,6 +6,7 @@ import transaction from './transaction';
 import loans from './loans';
 import rates from './rates';
 import app from './app';
+import markets from './markets';
 
 export default combineReducers({
 	app,
@@ -15,6 +16,7 @@ export default combineReducers({
 	transaction,
 	loans,
 	rates,
+	markets,
 });
 
 // UI REDUCERS
