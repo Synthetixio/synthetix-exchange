@@ -22,7 +22,7 @@ import SupportLink from './SupportLink';
 import MobileAppHeader from './MobileAppHeader';
 
 export const AppHeader = memo(props => {
-	const { showThemeToggle, ...rest } = props;
+	const { showThemeToggle, isOnSplashPage, ...rest } = props;
 	const { t } = useTranslation();
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -32,8 +32,8 @@ export const AppHeader = memo(props => {
 	}
 
 	return (
-		<Container {...rest}>
-			<Content>
+		<Container isOnSplashPage={isOnSplashPage} {...rest}>
+			<Content isOnSplashPage={isOnSplashPage}>
 				<MenuItemsLeft>
 					<MenuItem>
 						<Link to={ROUTES.Home}>

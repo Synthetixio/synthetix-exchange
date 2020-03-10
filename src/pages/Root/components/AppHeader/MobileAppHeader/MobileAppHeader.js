@@ -38,7 +38,7 @@ export const MobileAppHeader = memo(
 
 		return (
 			<>
-				<Container {...rest}>
+				<Container isOnSplashPage={isOnSplashPage} {...rest}>
 					<Content>
 						<MenuItemsLeft>
 							<MenuItem>
@@ -173,6 +173,9 @@ const dropdownItemCSS = css`
 		background-color: ${props => props.theme.colors.accentDark};
 	}
 	cursor: pointer;
+	${media.small`
+		padding: 20px 24px;
+	`}
 `;
 
 const DropdownMenuLink = styled(Link)`
