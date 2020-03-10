@@ -9,4 +9,5 @@ export const Z_INDEX = {
 	DROPDOWN: 50,
 	TOOLTIP: 100,
 	MODAL: 200,
+	APP_HEADER: 1000,
 };

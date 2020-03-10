@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, createGlobalStyle } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { ReactComponent as MenuCloseIcon } from 'src/assets/images/menu-close.sv
 
 import { ROUTES } from 'src/constants/routes';
 import { LINKS } from 'src/constants/links';
-import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT } from 'src/constants/ui';
+import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/constants/ui';
 
 import { FlexDivCentered } from 'src/shared/commonStyles';
 import { media } from 'src/shared/media';
@@ -59,8 +59,10 @@ export const MobileAppHeader = memo(
 						</MenuItemsRight>
 					</Content>
 				</Container>
+				<MenuPusher />
 				{menuOpen && (
 					<>
+						<GlobalStyle />
 						<Overlay onClick={toggleMenu} />
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
 							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
@@ -109,9 +111,13 @@ const Container = styled.header`
 	border-color: ${props => props.theme.colors.accentDark};
 	border-style: solid;
 	border-width: 1px 0;
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: ${Z_INDEX.APP_HEADER};
 	${media.small`
-		height: ${MOBILE_APP_HEADER_HEIGHT}
-	`}
+		height: ${MOBILE_APP_HEADER_HEIGHT};		
+	`};
 `;
 
 const StyledLogoLink = styled(Link)`
@@ -211,6 +217,20 @@ const MenuToggleButton = styled.button`
 			height: 16px;
 		`}
 	}
+`;
+
+const MenuPusher = styled.div`
+	padding-top: ${APP_HEADER_HEIGHT};
+
+	${media.small`
+		padding-top: ${MOBILE_APP_HEADER_HEIGHT};
+	`}
+`;
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    overflow: hidden;
+  }
 `;
 
 const mapStateToProps = state => ({

@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { createGlobalStyle } from 'styled-components';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import { darkTheme } from 'src/styles/theme';
 
