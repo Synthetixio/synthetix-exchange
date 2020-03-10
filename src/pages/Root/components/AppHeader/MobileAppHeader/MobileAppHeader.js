@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import styled, { css, createGlobalStyle } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,6 @@ export const MobileAppHeader = memo(
 				<MenuPusher />
 				{menuOpen && (
 					<>
-						<GlobalStyle />
 						<Overlay onClick={toggleMenu} />
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
 							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
@@ -225,12 +224,6 @@ const MenuPusher = styled.div`
 	${media.small`
 		padding-top: ${MOBILE_APP_HEADER_HEIGHT};
 	`}
-`;
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    overflow: hidden;
-  }
 `;
 
 const mapStateToProps = state => ({

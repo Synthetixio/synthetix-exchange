@@ -16,9 +16,9 @@ export const breakpoint = {
 };
 
 export const smallMediaQuery = `(max-width: ${breakpoint.small}px)`;
-export const mediumMediaQuery = `(max-width: ${breakpoint.medium - 1}px)`;
-export const largeMediaQuery = `(max-width: ${breakpoint.large - 1}px)`;
-export const extraLargeMediaQuery = `(max-width: ${breakpoint.extraLarge - 1}px)`;
+export const mediumMediaQuery = `(max-width: ${breakpoint.medium}px)`;
+export const largeMediaQuery = `(max-width: ${breakpoint.large}px)`;
+export const extraLargeMediaQuery = `(max-width: ${breakpoint.extraLarge}px)`;
 export const wideMediaQuery = `(min-width: ${breakpoint.extraLarge}px)`;
 
 export const media = {

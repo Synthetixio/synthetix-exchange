@@ -170,7 +170,7 @@ const FooterMenu = styled.div`
 	align-items: flex-start;
 	justify-items: flex-start;
 	grid-template-areas: 'menu social';
-	${media.medium`
+	${media.small`
 		grid-template-columns: initial;
 		grid-template-rows: auto auto;
 		grid-template-areas: 'social' 'menu';
@@ -183,7 +183,7 @@ const MiscLinks = styled.div`
 	grid-template-columns: 1fr auto auto;
 	grid-gap: 20px;
 	align-items: center;
-	${media.medium`
+	${media.small`
 		grid-auto-flow: initial;
 		grid-template-columns: auto;
 	`}
@@ -196,6 +196,10 @@ const Menu = styled.div`
 	grid-gap: 80px;
 
 	${media.medium`
+		grid-gap: 50px;
+	`}
+
+	${media.small`
 		grid-auto-flow: initial;
 		grid-template-columns: auto;
 	`}

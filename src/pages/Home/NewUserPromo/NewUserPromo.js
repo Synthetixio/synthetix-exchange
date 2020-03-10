@@ -65,7 +65,7 @@ export const NewUserPromo = memo(() => {
 });
 
 const Container = styled.div`
-	padding: 85px;
+	padding: 85px 20px;
 	background-color: ${lightTheme.colors.surfaceL2};
 	width: 100%;
 	text-align: center;
@@ -87,10 +87,10 @@ const PromoCards = styled.div`
 	display: grid;
 	grid-gap: 40px;
 	margin-top: 56px;
-	grid-template-columns: repeat(3, 280px);
+	grid-template-columns: repeat(3, minmax(205px, 280px));
 	justify-content: center;
-	${media.medium`
-		grid-template-columns: 280px;
+	${media.small`
+		grid-template-columns: minmax(205px, 280px);
 	`}
 `;
 

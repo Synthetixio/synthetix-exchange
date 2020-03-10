@@ -22,7 +22,6 @@ const Container = styled.div`
 	position: fixed;
 	background-color: ${props => props.theme.colors.surfaceL1};
 	z-index: ${Z_INDEX.BASE};
-	opacity: 0.9;
 	${media.small`
 		top: ${MOBILE_APP_HEADER_HEIGHT}
 	`}
