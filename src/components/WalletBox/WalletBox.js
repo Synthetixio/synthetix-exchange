@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
+import { useTranslation } from 'react-i18next';
 
 import { getAvailableSynths } from '../../ducks';
 
@@ -49,6 +50,7 @@ const WalletBox = ({
 	setSynthSearch,
 	isFetchingWalletBalances,
 }) => {
+	const { t } = useTranslation();
 	const [assets, setAssets] = useState([]);
 	const [sortIsAcending, setSortIsAscending] = useState(true);
 	useEffect(() => {
@@ -62,12 +64,12 @@ const WalletBox = ({
 			<Header>
 				<HeaderBlock>
 					<HeadingAndSpinner>
-						<HeadingSmall>Wallet Balance</HeadingSmall>
+						<HeadingSmall>{t('trade.walletbox.Wallet-Balance')}</HeadingSmall>
 						{isFetchingWalletBalances ? <Spinner size="sm"></Spinner> : null}
 					</HeadingAndSpinner>
 				</HeaderBlock>
 				<HeaderBlock>
-					<HeaderLabel>Total value: ${getTotal(balances)}</HeaderLabel>
+					<HeaderLabel>{t('trade.walletbox.Total-value')}: ${getTotal(balances)}</HeaderLabel>
 				</HeaderBlock>
 			</Header>
 			<Body>
@@ -75,9 +77,9 @@ const WalletBox = ({
 					<Thead>
 						<Tr>
 							{[
-								{ key: 'name', value: 'asset' },
-								{ key: 'balance', value: 'quantity' },
-								{ key: 'usdBalance', value: 'value' },
+								{ key: 'name', value: t('trade.walletbox.asset') },
+								{ key: 'balance', value: t('trade.walletbox.quantity') },
+								{ key: 'usdBalance', value: t('trade.walletbox.value') },
 							].map(({ key, value }, i) => {
 								return (
 									<Th key={i}>

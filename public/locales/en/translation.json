@@ -20,6 +20,35 @@
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
+		},
+		"chartpannel": {
+			"price": "price",
+			"24h-change": "24h change",
+			"24h-high": "24h high",
+			"24h-low": "24h low",
+			"24h-volume": "24h volume"
+		},
+		"orderbook": {
+			"Your orders": "Your orders",
+			"Your trades": "Your trades",
+			"All trades": "All trades",
+			"Current": {
+				"Date-Time": "Date | Time",
+				"Pair": "Pair",
+				"Buying": "Buying",
+				"Selling": "Selling",
+				"Price": "Price",
+				"Total": "Total",
+				"Status": "Status"
+			},
+			"Past": {
+				"Date-Time": "Date | Time",
+				"Pair": "Pair",
+				"Bought": "Bought",
+				"Sold": "Sold",
+				"Price": "Price",
+				"Total": "Total"
+			}
 		}
 	},
 	"trade": {
@@ -27,6 +56,27 @@
 			"ether-promo-card": {
 				"title": "get synths to start trading:"
 			}
+		},
+		"tradebox": {
+			"Sell": "Sell",
+			"Buy": "Buy",
+			"Balance": "Balance",
+			"Price": "Price",
+			"USD-Value": "USD Value",
+			"Fee": "Fee",
+			"Gas-limit": "Gas limit",
+			"Gas-Price": "Gas Price ",
+			"Confirm-Trade": "Confirm Trade",
+			"Set-transaction-speed-price": "Set transaction speed & price",
+			"Set-transaction-speed-price-desc": "Adjust the slider below, or use the input field to set the transaction speed.",
+			"Submit-changes": "Submit changes"
+		},
+		"walletbox": {
+			"Wallet-Balance": "Wallet Balance",
+			"Total-value": "Total value",
+			"asset": "asset",
+			"quantity": "quantity",
+			"value": "value"
 		}
 	},
 	"loans": {

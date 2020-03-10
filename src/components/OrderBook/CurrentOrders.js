@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled, { withTheme } from 'styled-components';
 import { format } from 'date-fns';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { getWalletInfo } from '../../ducks/';
@@ -50,23 +51,30 @@ const StatusLabel = ({ transaction: { status, hash }, colors, network, hasHash }
 };
 
 const CurrentOrders = ({ theme: { colors }, transactions, walletInfo: { networkName } }) => {
+	const { t } = useTranslation();
 	return (
 		<Table cellSpacing="0">
 			<Thead>
 				<Tr>
-					{['Date | Time', 'Pair', 'Buying', 'Selling', 'Price', 'Total', 'Status'].map(
-						(label, i) => {
-							return (
-								<Th key={i}>
-									<ButtonSort>
-										<DataSmall style={{ whiteSpace: 'nowrap' }} color={colors.fontTertiary}>
-											{label}
-										</DataSmall>
-									</ButtonSort>
-								</Th>
-							);
-						}
-					)}
+					{[
+						t('exchange.orderbook.Current.Date-Time'),
+						t('exchange.orderbook.Current.Pair'),
+						t('exchange.orderbook.Current.Buying'),
+						t('exchange.orderbook.Current.Selling'),
+						t('exchange.orderbook.Current.Price'),
+						t('exchange.orderbook.Current.Total'),
+						t('exchange.orderbook.Current.Status'),
+					].map((label, i) => {
+						return (
+							<Th key={i}>
+								<ButtonSort>
+									<DataSmall style={{ whiteSpace: 'nowrap' }} color={colors.fontTertiary}>
+										{label}
+									</DataSmall>
+								</ButtonSort>
+							</Th>
+						);
+					})}
 				</Tr>
 			</Thead>
 			<Tbody>

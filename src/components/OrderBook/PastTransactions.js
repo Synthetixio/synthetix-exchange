@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { debounce } from 'lodash';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 import { DataSmall } from '../Typography';
 import { getNetworkId } from '../../ducks';
@@ -48,6 +49,7 @@ const PastTransactions = ({
 	onScrollPaging,
 	networkId,
 }) => {
+	const { t } = useTranslation();
 	const tbodyEl = useRef(null);
 
 	const onTableScroll = () => {
@@ -68,7 +70,15 @@ const PastTransactions = ({
 			<Table cellSpacing="0">
 				<Thead>
 					<Tr>
-						{['Date | Time', 'Pair', 'Bought', 'Sold', 'Price', 'Total', ''].map((label, i) => {
+						{[
+							t('exchange.orderbook.Past.Date-Time'),
+							t('exchange.orderbook.Past.Pair'),
+							t('exchange.orderbook.Past.Bought'),
+							t('exchange.orderbook.Past.Sold'),
+							t('exchange.orderbook.Past.Price'),
+							t('exchange.orderbook.Past.Total'),
+							'',
+						].map((label, i) => {
 							return (
 								<Th key={i} align={i >= 2 ? 'right' : 'left'}>
 									<ButtonSort>

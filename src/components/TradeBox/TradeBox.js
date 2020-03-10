@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled, { withTheme } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import isNan from 'lodash/isNaN';
+import { useTranslation } from 'react-i18next';
 
 import { getTransactionPrice, GWEI_UNIT } from '../../utils/networkUtils';
 import {
@@ -49,6 +50,7 @@ const TradeBox = ({
 	transactions,
 	fetchWalletBalances,
 }) => {
+	const { t } = useTranslation();
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
 	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
@@ -230,10 +232,11 @@ const TradeBox = ({
 				<InputBlock>
 					<InputInfo>
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
-							Sell:
+							{t('trade.tradebox.Sell')}:
 						</DataMedium>
 						<Balance>
-							Balance: {quoteBalance ? formatCurrency(quoteBalance.balance) : 0} {quote.name}
+							{t('trade.tradebox.Balance')}:
+							{quoteBalance ? formatCurrency(quoteBalance.balance) : 0} {quote.name}
 						</Balance>
 					</InputInfo>
 					<TradeInput
@@ -260,10 +263,11 @@ const TradeBox = ({
 				<InputBlock>
 					<InputInfo>
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
-							Buy:
+							{t('trade.tradebox.Buy')}:
 						</DataMedium>
 						<Balance>
-							Balance: {baseBalance ? formatCurrency(baseBalance.balance) : 0} {base.name}
+							{t('trade.tradebox.Balance')}:{baseBalance ? formatCurrency(baseBalance.balance) : 0}
+							{base.name}
 						</Balance>
 					</InputInfo>
 					<TradeInput
@@ -299,13 +303,13 @@ const TradeBox = ({
 				</ButtonRow>
 				<NetworkInfo>
 					<NetworkDataRow>
-						<NetworkData>Price</NetworkData>
+						<NetworkData>{t('trade.tradebox.Price')}</NetworkData>
 						<NetworkData>
 							1 {base.name} = {formatCurrency(inverseRate)} {quote.name}
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>USD Value</NetworkData>
+						<NetworkData>{t('trade.tradebox.USD-Value')}</NetworkData>
 						<NetworkData>
 							$
 							{formatCurrency(
@@ -315,20 +319,20 @@ const TradeBox = ({
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>Fee</NetworkData>
+						<NetworkData>{t('trade.tradebox.Fee')}</NetworkData>
 						<NetworkData>{`${
 							baseAmount && feeRate ? formatCurrency((baseAmount * feeRate) / 100, 4) : 0
 						} ${base.name} ${feeRate ? `(${feeRate}%)` : ''}`}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>Gas limit</NetworkData>
+						<NetworkData>{t('trade.tradebox.Gas-limit')}</NetworkData>
 						<NetworkData>
 							{formatCurrency(gasLimit, 0) || 0} ($
 							{formatCurrency(getTransactionPrice(gasPrice, gasLimit, ethRate))})
 						</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
-						<NetworkData>Gas Price (gwei)</NetworkData>
+						<NetworkData>{t('trade.tradebox.Gas-Price')}(gwei)</NetworkData>
 						<NetworkData>
 							{gasPrice || 0}
 							<ButtonEdit onClick={() => toggleGweiPopup(true)}>
@@ -341,7 +345,7 @@ const TradeBox = ({
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>Retry</ButtonPrimary>
 				) : (
 					<ButtonPrimary disabled={!baseAmount || !currentWallet || error} onClick={onConfirmTrade}>
-						Confirm Trade
+						{t('trade.tradebox.Confirm-Trade')}
 					</ButtonPrimary>
 				)}
 			</Body>

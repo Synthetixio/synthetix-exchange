@@ -25,7 +25,8 @@ export const DEFAULT_GAS_LIMIT = {
 export const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
 
 export const INFURA_JSON_RPC_URLS = {
-	1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+	1: `https://ceth.xiaopao.gq`,
+	//1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
 	3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`,
 	4: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
 	42: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,

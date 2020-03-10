@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { format, subHours } from 'date-fns';
 import styled, { withTheme } from 'styled-components';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 import snxData from 'synthetix-data';
 
@@ -45,6 +46,7 @@ const getMinAndMaxRate = data => {
 };
 
 const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSigns }) => {
+	const { t } = useTranslation();
 	const colors = theme.colors;
 	const [chartData, setChartData] = useState([]);
 	const [lastDayData, setLastDayData] = useState([]);
@@ -196,14 +198,14 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 
 				<DataRow>
 					<DataBlock>
-						<DataBlockLabel>Price</DataBlockLabel>
+						<DataBlockLabel> {t('exchange.chartpannel.price')}</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
 							{synthsSigns[quote.name]}
 							{formatCurrencyWithPrecision(rate)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>24h change</DataBlockLabel>
+						<DataBlockLabel>{t('exchange.chartpannel.24h-change')}</DataBlockLabel>
 						<DataBlockValue
 							style={{
 								fontSize: '14px',
@@ -215,21 +217,21 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsSi
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>24h high</DataBlockLabel>
+						<DataBlockLabel>{t('exchange.chartpannel.24h-high')}</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
 							{synthsSigns[quote.name]}
 							{formatCurrencyWithPrecision(max)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>24h low</DataBlockLabel>
+						<DataBlockLabel>{t('exchange.chartpannel.24h-low')}</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }} style={{ fontSize: '14px' }}>
 							{synthsSigns[quote.name]}
 							{formatCurrencyWithPrecision(min)}
 						</DataBlockValue>
 					</DataBlock>
 					<DataBlock>
-						<DataBlockLabel>24h volume</DataBlockLabel>
+						<DataBlockLabel>{t('exchange.chartpannel.24h-volume')}</DataBlockLabel>
 						<DataBlockValue style={{ fontSize: '14px' }}>
 							${formatCurrency(volumeData)}
 						</DataBlockValue>

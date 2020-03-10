@@ -1,0 +1,159 @@
+{
+	"header": {
+		"connect-wallet": "连接钱包",
+		"links": {
+			"exchange": "交易所",
+			"loans": "借款",
+			"support": "支持"
+		},
+		"announcements": {
+			"ether-collateral": "新消息: ETH抵押已上线!"
+		}
+	},
+	"modals": {
+		"wallet": {
+			"wallet-selector": {
+				"title": "连接到你的钱包"
+			}
+		}
+	},
+	"exchange": {
+		"errors": {
+			"waitingPeriod": "完成交易需等待一段时间。在尝试兑换{{quote}}前请等待大约{{waitingPeriod}}分钟"
+		},
+		"chartpannel": {
+			"price": "价格",
+			"24h-change": "24小时变化",
+			"24h-high": "24小时最高",
+			"24h-low": "24小时最低",
+			"24h-volume": "24小时交易量"
+		},
+		"orderbook": {
+			"Your orders": "你的订单",
+			"Your trades": "你的交易",
+			"All trades": "所有交易",
+			"Current": {
+				"Date-Time": "日期 | 时间",
+				"Pair": "交易对",
+				"Buying": "买入",
+				"Selling": "卖出",
+				"Price": "价格",
+				"Total": "总计",
+				"Status": "状态"
+			},
+			"Past": {
+				"Date-Time": "日期 | 时间",
+				"Pair": "交易对",
+				"Bought": "已买",
+				"Sold": "已卖",
+				"Price": "价格",
+				"Total": "总计"
+			}
+		}
+		
+	},
+	"trade": {
+		"promo": {
+			"ether-promo-card": {
+				"title": "获得合成物去开启交易:"
+			}
+		},
+		"tradebox": {
+			"Sell": "卖",
+			"Buy": "买",
+			"Balance": "余额",
+			"Price": "价格",
+			"USD-Value": "USD价值",
+			"Fee": "手续费",
+			"Gas-limit": "gas燃料限制",
+			"Gas-Price": "gas燃料价格",
+			"Confirm-Trade": "确认交易",
+			"Set-transaction-speed-price": "设置交易速度&价格",
+			"Set-transaction-speed-price-desc": "调整以下滑块使用框内的值设置交易速度。",
+			"Submit-changes": "提交修改"
+		},
+		"walletbox": {
+			"Wallet-Balance": "钱包余额",
+			"Total-value": "总计价值",
+			"asset": "资产",
+			"quantity": "数量",
+			"value": "价值"
+		}
+	},
+	"loans": {
+		"dashboard": {
+			"title": "以{{currencyKey}}作为抵押",
+			"loan-info": {
+				"interest-fee": "利息费",
+				"minting-fee": "铸造费",
+				"number-of-open-loans": "开启借款数",
+				"currency-limit": "<0>{{currencyKey}}</0>限制",
+				"currency-supply": "<0>{{currencyKey}}</0>供应",
+				"min-loan-size": "最小借款大小",
+				"collateral-size": "抵押率",
+				"locked-currency": "锁定的{{currencyKey}}"
+			}
+		},
+		"my-loans": {
+			"title": "我的借款",
+			"table": {
+				"amount-borrowed-col": "借出数量",
+				"collateral-col": "抵押",
+				"time-opened-col": "开启时间",
+				"current-interest-fee-col": "当前利息费",
+				"fees-payable-col": "应付费用",
+				"status-col": "状态",
+				"no-results": "无借款关联在此钱包。"
+			}
+		},
+		"loan-card": {
+			"create-loan": {
+				"title": "创建一个借款",
+				"currency-locked": "<0>{{currencyKey}}</0>将被锁定:",
+				"currency-borrowed": "<0>{{currencyKey}}</0>将被借出:"
+			},
+			"close-loan": {
+				"title": "关闭借款",
+				"currency-unlocked": "<0>{{currencyKey}}</0>将被解锁:",
+				"currency-burned": "<0>{{currencyKey}}</0>将被销毁:"
+			},
+			"errors": {
+				"min-loan-size": "你需要至少{{minLoanSize}} {{currencyKey}}去创建一个借款"
+			}
+		}
+	},
+	"common": {
+		"max": "最大",
+		"gas-limit": "gas燃料限制",
+		"gas-price-gwei": "gas燃料价格(gwei)",
+		"actions": {
+			"submit": "提交",
+			"close": "关闭",
+			"edit": "编辑",
+			"confirm": "确认",
+			"click-to-retry": "点击重试"
+		},
+		"tx-status": {
+			"waiting": "等待中",
+			"open": "打开",
+			"closed": "关闭",
+			"closing": "正在关闭"
+		},
+		"wallet": {
+			"your-wallet": "你的钱包",
+			"currency-balance": "{{currencyKey}}余额",
+			"balance-currency": "余额: {{balance}}",
+			"no-wallet-connected": "当前未连接钱包",
+			"connect-currency-wallet": "连接到{{currencyKey}}钱包开始交易"
+		},
+		"errors": {
+			"amount-exceeds-balance": "数量超出余额",
+			"unknown-error-try-again": "你提交后发生未知错误。请重新尝试",
+			"error-loading": "尝试加载时发生错误"
+		},
+		"currency": {
+			"buy-currencyA-with-currencyB": "用{{currencyKeyB}}购买{{currencyKeyA}}",
+			"borrow-currency": "借出{{currencyKey}}"
+		}
+	}
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes, withTheme, createGlobalStyle } from 'styled-components';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import { gweiPopupIsVisible } from '../../ducks';
 import { toggleGweiPopup } from '../../ducks/ui';
@@ -39,6 +40,7 @@ const WalletPopup = ({
 	ethRate,
 	theme: { colors },
 }) => {
+	const { t } = useTranslation();
 	const [gasSettings, setGasSettings] = useState({});
 
 	useEffect(() => {
@@ -59,11 +61,9 @@ const WalletPopup = ({
 					</CloseButton>
 					<Body>
 						<HeadingMedium style={{ marginBottom: '18px' }}>
-							Set transaction speed & price
+							{t('trade.tradebox.Set-transaction-speed-price')}
 						</HeadingMedium>
-						<BodyMedium>
-							Adjust the slider below, or use the input field to set the transaction speed.
-						</BodyMedium>
+						<BodyMedium>{t('trade.tradebox.Set-transaction-speed-price-desc')}</BodyMedium>
 						<SliderContainer>
 							<Slider
 								min={0}
@@ -98,7 +98,7 @@ const WalletPopup = ({
 							<Tbody>
 								<Tr>
 									<Td>
-										<DataLabel>PRICE</DataLabel>
+										<DataLabel>{t('trade.tradebox.Price')}</DataLabel>
 									</Td>
 									<Td>
 										<DataLabel>
@@ -150,7 +150,7 @@ const WalletPopup = ({
 									toggleGweiPopup(false);
 								}}
 							>
-								Submit changes
+								{t('trade.tradebox.Submit-changes')}
 							</ButtonPrimary>
 						</InputRow>
 					</Body>
