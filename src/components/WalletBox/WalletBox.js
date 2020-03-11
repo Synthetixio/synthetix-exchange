@@ -69,7 +69,9 @@ const WalletBox = ({
 					</HeadingAndSpinner>
 				</HeaderBlock>
 				<HeaderBlock>
-					<HeaderLabel>{t('trade.walletbox.Total-value')}: ${getTotal(balances)}</HeaderLabel>
+					<HeaderLabel>
+						{t('trade.walletbox.Total-value')}: ${getTotal(balances)}
+					</HeaderLabel>
 				</HeaderBlock>
 			</Header>
 			<Body>
