@@ -171,7 +171,7 @@ const FooterMenu = styled.div`
 	justify-items: flex-start;
 	grid-template-areas: 'menu social';
 	${media.small`
-		grid-template-columns: initial;
+		grid-template-columns: initial initial;
 		grid-template-rows: auto auto;
 		grid-template-areas: 'social' 'menu';
 		grid-gap: 70px;
