@@ -20,7 +20,8 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin-alt');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+//const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -130,13 +131,15 @@ module.exports = {
 	},
 	optimization: {
 		minimizer: [
-			new UglifyJsPlugin({
-				uglifyOptions: {
-					compress: {
-						keep_fnames: true,
-					},
+			new TerserPlugin({
+				parallel: true,
+				sourceMap: true,
+				terserOptions: {
+				  output: {
+					comments: false,
+				  }
 				},
-			}),
+			  }),
 			new OptimizeCSSAssetsPlugin({
 				cssProcessorOptions: {
 					parser: safePostCssParser,

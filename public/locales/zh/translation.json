@@ -68,10 +68,7 @@
 			"Fee": "手续费",
 			"Gas-limit": "gas燃料限制",
 			"Gas-Price": "gas燃料价格",
-			"Confirm-Trade": "确认交易",
-			"Set-transaction-speed-price": "",
-			"Set-transaction-speed-price-desc": "",
-			"Submit-changes": ""
+			"Confirm-Trade": "确认交易"
 		},
 		"gweipopup": {
 			"Price": "价格",
