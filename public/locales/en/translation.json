@@ -47,7 +47,8 @@
 				"Bought": "Bought",
 				"Sold": "Sold",
 				"Price": "Price",
-				"Total": "Total"
+				"Total": "Total",
+				"VIEW": "VIEW"
 			}
 		}
 	},
@@ -67,9 +68,17 @@
 			"Gas-limit": "Gas limit",
 			"Gas-Price": "Gas Price ",
 			"Confirm-Trade": "Confirm Trade",
+			
+		},
+		"gweipopup": {
+			"Price": "Price",
 			"Set-transaction-speed-price": "Set transaction speed & price",
 			"Set-transaction-speed-price-desc": "Adjust the slider below, or use the input field to set the transaction speed.",
-			"Submit-changes": "Submit changes"
+			"Submit-changes": "Submit changes",
+			"Speed_allowed": "Speed (allowed)",
+			"Slow": "Slow",
+			"Average": "Average",
+			"Fast": "Fast"
 		},
 		"walletbox": {
 			"Wallet-Balance": "Wallet Balance",
@@ -154,5 +163,6 @@
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
 			"borrow-currency": "Borrow {{currencyKey}}"
 		}
-	}
+	},
+	"etherscan": "etherscan.io"
 }

@@ -1,5 +1,6 @@
 import throttle from 'lodash/throttle';
 import invert from 'lodash/invert';
+import i18n from 'i18next';
 
 export const GWEI_UNIT = 1000000000;
 
@@ -111,3 +112,11 @@ export function onMetamaskNetworkChange(cb) {
 }
 
 export const isMainNet = networkId => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;
+
+export function getEtherscan() {
+	try {
+		return i18n.t('etherscan');
+	} catch (e) {
+		console.log('Error while getting etherscan address', e);
+	}
+}

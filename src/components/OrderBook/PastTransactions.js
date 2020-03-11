@@ -50,6 +50,7 @@ const PastTransactions = ({
 	networkId,
 }) => {
 	const { t } = useTranslation();
+	const tView = t('exchange.orderbook.Past.VIEW');
 	const tbodyEl = useRef(null);
 
 	const onTableScroll = () => {
@@ -130,7 +131,7 @@ const PastTransactions = ({
 								<Td>
 									<TradeLabel>
 										<Link href={getEtherscanTxLink(networkId, t.hash)} target="_blank">
-											VIEW
+											{tView}
 										</Link>
 									</TradeLabel>
 								</Td>

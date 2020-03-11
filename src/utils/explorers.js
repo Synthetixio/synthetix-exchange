@@ -1,10 +1,10 @@
-import { SUPPORTED_NETWORKS, isMainNet } from '../utils/networkUtils';
+import { SUPPORTED_NETWORKS, isMainNet, getEtherscan } from '../utils/networkUtils';
 
 const getEtherScanBaseURL = networkId => {
 	const network = SUPPORTED_NETWORKS[networkId];
 
 	if (isMainNet(networkId) || network == null) {
-		return 'https://etherscan.io';
+		return 'https://' + getEtherscan();
 	}
 
 	return `https://${network.toLowerCase()}.etherscan.io`;

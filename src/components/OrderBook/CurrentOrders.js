@@ -9,6 +9,7 @@ import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { getWalletInfo } from '../../ducks/';
 import { DataSmall } from '../Typography';
 import { formatCurrency } from '../../utils/formatters';
+import { getEtherscan } from '../../utils/networkUtils';
 
 const getAmountPrecision = amount => {
 	if (amount >= 1000) return 0;
@@ -40,7 +41,7 @@ const StatusLabel = ({ transaction: { status, hash }, colors, network, hasHash }
 	return hasHash ? (
 		<Link
 			color={color}
-			href={`https://${network === 'mainnet' ? '' : network + '.'}etherscan.io/tx/${hash}`}
+			href={`https://${network === 'mainnet' ? '' : network + '.'}${getEtherscan()}/tx/${hash}`}
 			target="_blank"
 		>
 			<DataLabel color={color}>{status}</DataLabel>

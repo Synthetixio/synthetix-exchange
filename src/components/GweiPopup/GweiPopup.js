@@ -61,9 +61,9 @@ const WalletPopup = ({
 					</CloseButton>
 					<Body>
 						<HeadingMedium style={{ marginBottom: '18px' }}>
-							{t('trade.tradebox.Set-transaction-speed-price')}
+							{t('trade.gweipopup.Set-transaction-speed-price')}
 						</HeadingMedium>
-						<BodyMedium>{t('trade.tradebox.Set-transaction-speed-price-desc')}</BodyMedium>
+						<BodyMedium>{t('trade.gweipopup.Set-transaction-speed-price-desc')}</BodyMedium>
 						<SliderContainer>
 							<Slider
 								min={0}
@@ -82,23 +82,27 @@ const WalletPopup = ({
 							<Thead>
 								<Tr>
 									<Th>
-										<DataSmall color={colors.fontTertiary}>Speed (allowed)</DataSmall>
+										<DataSmall color={colors.fontTertiary}>
+											{t('trade.gweipopup.Speed_allowed')}
+										</DataSmall>
 									</Th>
 									<Th>
-										<DataSmall color={colors.fontTertiary}>Slow</DataSmall>
+										<DataSmall color={colors.fontTertiary}>{t('trade.gweipopup.Slow')}</DataSmall>
 									</Th>
 									<Th>
-										<DataSmall color={colors.fontTertiary}>Average</DataSmall>
+										<DataSmall color={colors.fontTertiary}>
+											{t('trade.gweipopup.Average')}
+										</DataSmall>
 									</Th>
 									<Th>
-										<DataSmall color={colors.fontTertiary}>Fast</DataSmall>
+										<DataSmall color={colors.fontTertiary}>{t('trade.gweipopup.Fast')}</DataSmall>
 									</Th>
 								</Tr>
 							</Thead>
 							<Tbody>
 								<Tr>
 									<Td>
-										<DataLabel>{t('trade.tradebox.Price')}</DataLabel>
+										<DataLabel>{t('trade.gweipopup.Price')}</DataLabel>
 									</Td>
 									<Td>
 										<DataLabel>
@@ -150,7 +154,7 @@ const WalletPopup = ({
 									toggleGweiPopup(false);
 								}}
 							>
-								{t('trade.tradebox.Submit-changes')}
+								{t('trade.gweipopup.Submit-changes')}
 							</ButtonPrimary>
 						</InputRow>
 					</Body>

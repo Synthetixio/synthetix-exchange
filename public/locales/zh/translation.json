@@ -47,7 +47,8 @@
 				"Bought": "已买",
 				"Sold": "已卖",
 				"Price": "价格",
-				"Total": "总计"
+				"Total": "总计",
+				"VIEW": "查看"
 			}
 		}
 		
@@ -68,9 +69,19 @@
 			"Gas-limit": "gas燃料限制",
 			"Gas-Price": "gas燃料价格",
 			"Confirm-Trade": "确认交易",
+			"Set-transaction-speed-price": "",
+			"Set-transaction-speed-price-desc": "",
+			"Submit-changes": ""
+		},
+		"gweipopup": {
+			"Price": "价格",
 			"Set-transaction-speed-price": "设置交易速度&价格",
 			"Set-transaction-speed-price-desc": "调整以下滑块使用框内的值设置交易速度。",
-			"Submit-changes": "提交修改"
+			"Submit-changes": "提交修改",
+			"Speed_allowed": "速度(允许的)",
+			"Slow": "慢",
+			"Average": "平均",
+			"Fast": "快"
 		},
 		"walletbox": {
 			"Wallet-Balance": "钱包余额",
@@ -155,5 +166,6 @@
 			"buy-currencyA-with-currencyB": "用{{currencyKeyB}}购买{{currencyKeyA}}",
 			"borrow-currency": "借出{{currencyKey}}"
 		}
-	}
+	},
+	"etherscan": "cn.etherscan.com"
 }
