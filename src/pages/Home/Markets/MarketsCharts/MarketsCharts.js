@@ -49,7 +49,7 @@ const Container = styled.div`
 		grid-template-rows: 1fr 1fr;
 		grid-gap: 30px;
 	`}
-	${media.medium`
+	${media.small`
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr;
 		grid-gap: 30px;

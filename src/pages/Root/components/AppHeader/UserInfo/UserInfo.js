@@ -16,6 +16,8 @@ import { DataMedium } from 'src/components/Typography';
 
 import { ButtonPrimary } from 'src/components/Button';
 
+import { media } from 'src/shared/media';
+
 export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 	const { t } = useTranslation();
 	const { currentWallet, networkName } = walletInfo;
@@ -27,9 +29,9 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 			<NetworkLabel>{networkName}</NetworkLabel>
 		</Container>
 	) : (
-		<ButtonPrimary size="sm" onClick={showWalletPopup}>
+		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
 			{t('header.connect-wallet')}
-		</ButtonPrimary>
+		</StyledButtonPrimary>
 	);
 });
 
@@ -44,11 +46,21 @@ const Container = styled.div`
 	grid-auto-flow: column;
 	grid-gap: 10px;
 	align-items: center;
-
 	padding: 8px;
 	border-radius: ${ELEMENT_BORDER_RADIUS};
 	cursor: pointer;
 	border: 1px solid ${props => props.theme.colors.accentDark};
+
+	${media.small`
+		height: auto;
+		padding: 0;
+		border: 0;
+	`}
+	${media.medium`
+		height: auto;
+		padding: 0;
+		border: 0;
+	`}
 `;
 
 const GreenDot = styled(Dot)`
@@ -67,6 +79,16 @@ const NetworkLabel = styled(DataMedium)`
 	border-radius: 25px;
 	font-size: 12px;
 	padding: 3px 10px;
+`;
+
+const StyledButtonPrimary = styled(ButtonPrimary)`
+	${media.small`
+		font-size: 11px;
+		height: 24px;
+		line-height: 24px;
+		padding: 0 8px;
+	`}
+	${media.medium``}
 `;
 
 const mapStateToProps = state => ({

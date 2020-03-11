@@ -81,7 +81,7 @@ const StyledSpinner = styled(Spinner)`
 `;
 
 const Content = styled.div`
-	max-width: ${breakpoint.large};
+	max-width: ${breakpoint.large}px;
 	margin: 0 auto;
 `;
 

@@ -18,7 +18,7 @@ export const headingMediumCSS = css`
 	${headingCSS};
 	line-height: 32px;
 	font-size: 32px;
-	letter-spacing: 1.5px;
+	letter-spacing: 0.2px;
 `;
 
 export const headingSmallCSS = css`

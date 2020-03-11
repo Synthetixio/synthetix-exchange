@@ -16,6 +16,8 @@ body {
 		url('./assets/fonts/apercu-bold.woff2') format('woff2'),
 		url('./assets/fonts/apercu-bold.woff') format('woff'),
 		url('./assets/fonts/apercu-bold.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @font-face {
@@ -25,6 +27,8 @@ body {
 		url('./assets/fonts/apercu-medium.woff2') format('woff2'),
 		url('./assets/fonts/apercu-medium.woff') format('woff'),
 		url('./assets/fonts/apercu-medium.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @font-face {
@@ -34,6 +38,8 @@ body {
 		url('./assets/fonts/apercu-regular.woff2') format('woff2'),
 		url('./assets/fonts/apercu-regular.woff') format('woff'),
 		url('./assets/fonts/apercu-regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @font-face {
@@ -43,6 +49,8 @@ body {
 		url('./assets/fonts/apercu-light.woff2') format('woff2'),
 		url('./assets/fonts/apercu-light.woff') format('woff'),
 		url('./assets/fonts/apercu-light.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 /* Customize website's scrollbar like Mac OS
 /* total width */

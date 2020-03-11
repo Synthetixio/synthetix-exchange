@@ -3,7 +3,14 @@
 		"connect-wallet": "Connect wallet",
 		"links": {
 			"trade": "trade",
-			"loans": "loans"
+			"loans": "loans",
+			"markets": "markets",
+			"tokens": "tokens",
+			"support": "support"
+		},
+		"theme": {
+			"light": "light mode",
+			"dark": "dark mode"
 		},
 		"announcements": {
 			"ether-collateral": "NEW: ETH Collateral is live!"

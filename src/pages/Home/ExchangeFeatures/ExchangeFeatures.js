@@ -66,12 +66,12 @@ export const ExchangeFeatures = memo(() => {
 });
 
 const Container = styled.div`
-	padding: 120px;
+	padding: 120px 20px;
 	background-color: ${darkTheme.colors.surfaceL2};
 	width: 100%;
 	text-align: center;
 	${media.medium`
-		padding: 80px 20px 90px;
+		padding: 80px 20px;
 	`}
 `;
 
@@ -89,10 +89,10 @@ const FeatureCards = styled.div`
 	grid-gap: 40px;
 	margin-top: 76px;
 	margin-bottom: 93px;
-	grid-template-columns: repeat(3, 320px);
+	grid-template-columns: repeat(3, minmax(205px, 320px));
 	justify-content: center;
 	${media.medium`
-		grid-template-columns: 320px;
+		grid-template-columns: minmax(205px, 320px);
 	`}
 `;
 
