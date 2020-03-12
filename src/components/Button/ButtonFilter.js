@@ -1,43 +1,45 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
+
+import { ReactComponent as ArrowDownIcon } from '../../assets/images/arrow-down.svg';
+
 import { DataSmall } from '../Typography';
+
 import { Z_INDEX } from '../../constants/ui';
 
-export const ButtonFilter = ({ children, onClick, height, active, style }) => {
-	return (
-		<Button onClick={onClick} height={height} active={active} style={style}>
-			<ButtonLabel>{children}</ButtonLabel>
-		</Button>
-	);
-};
+import Currency from '../../components/Currency';
+
+export const ButtonFilter = ({ children, onClick, height, active, style }) => (
+	<Button onClick={onClick} height={height} active={active} style={style}>
+		<ButtonLabel>{children}</ButtonLabel>
+	</Button>
+);
 
 export const ButtonFilterWithDropdown = ({ children, active, synths = [], onClick, quote }) => {
 	const [isVisible, setIsVisible] = useState(false);
+
 	return (
 		<OutsideClickHandler onOutsideClick={() => setIsVisible(false)}>
 			<ButtonContainer>
 				<Button onClick={() => setIsVisible(!isVisible)} active={active}>
 					<ButtonLabel>{children}</ButtonLabel>
-					<AngleDownIcon src="/images/arrow-down.svg" />
+					<StyledArrowDownIcon />
 				</Button>
 				<DropDown isVisible={isVisible}>
 					<List>
-						{synths.map((synth, i) => {
-							return (
-								<Synth
-									key={i}
-									isActive={synth.name === quote}
-									onClick={() => {
-										setIsVisible(false);
-										onClick(synth);
-									}}
-								>
-									<SynthIcon src={`/images/synths/${synth.name}.svg`}></SynthIcon>
-									<SynthLabel>{synth.name}</SynthLabel>
-								</Synth>
-							);
-						})}
+						{synths.map(synth => (
+							<Synth
+								key={synth.name}
+								isActive={synth.name === quote}
+								onClick={() => {
+									setIsVisible(false);
+									onClick(synth);
+								}}
+							>
+								<Currency.Name currencyKey={synth.name} showIcon={true} />
+							</Synth>
+						))}
 					</List>
 				</DropDown>
 			</ButtonContainer>
@@ -52,7 +54,7 @@ const ButtonContainer = styled.div`
 	}
 `;
 
-const AngleDownIcon = styled.img`
+const StyledArrowDownIcon = styled(ArrowDownIcon)`
 	width: 6px;
 	height: 6px;
 	margin-left: 8px;
@@ -88,17 +90,6 @@ const Synth = styled.li`
 	}
 	background-color: ${props =>
 		props.isActive ? props.theme.colors.accentLight : props.theme.colors.accentDark};
-`;
-
-const SynthIcon = styled.img`
-	width: 22px;
-	height: 22px;
-	margin-right: 8px;
-`;
-
-const SynthLabel = styled(DataSmall)`
-	text-transform: none;
-	font-size: 14px;
 `;
 
 const Button = styled.button`

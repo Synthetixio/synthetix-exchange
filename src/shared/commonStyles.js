@@ -20,15 +20,6 @@ export const FlexDivRow = styled(FlexDiv)`
 	justify-content: space-between;
 `;
 
-export const MainLayout = styled(FlexDiv)`
-	flex-flow: column;
-	width: 100%;
-	height: 100vh;
-	/* TODO: get color from theme */
-	color: white;
-	position: relative;
-`;
-
 export const PageLayout = styled(FlexDiv)`
 	width: 100%;
 	height: 100%;
@@ -101,7 +92,7 @@ export const TextButton = styled.button`
 `;
 
 export const LinkTextSmall = styled(DataSmall)`
-	color: ${props => props.theme.colors.hyperLink};
+	color: ${props => props.theme.colors.hyperlink};
 `;
 
 export const Message = styled(FlexDivCentered)`
@@ -153,7 +144,6 @@ export const InfoBox = styled.div`
 
 export const InfoBoxLabel = styled(DataSmall)`
 	white-space: nowrap;
-	text-transform: none;
 	color: ${props => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 `;
@@ -172,4 +162,13 @@ export const absoluteCenteredCSS = css`
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
+`;
+
+export const RoundedIcon = styled(FlexDivCentered)`
+	width: 32px;
+	height: 32px;
+	border-radius: 100%;
+	justify-content: center;
+
+	background-color: ${props => props.theme.colors.accentDark};
 `;

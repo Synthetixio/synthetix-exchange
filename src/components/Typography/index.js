@@ -1,7 +1,7 @@
 import { DataLarge, DataMedium, DataSmall } from './Data';
 import { LabelMedium, LabelSmall } from './Label';
-import { HeadingMedium, HeadingSmall } from './Heading';
-import { BodyMedium } from './Body';
+import { HeadingLarge, HeadingMedium, HeadingSmall } from './Heading';
+import { BodyLarge, BodyMedium } from './Body';
 
 export {
 	DataLarge,
@@ -9,7 +9,9 @@ export {
 	DataSmall,
 	LabelMedium,
 	LabelSmall,
+	HeadingLarge,
 	HeadingMedium,
 	HeadingSmall,
+	BodyLarge,
 	BodyMedium,
 };

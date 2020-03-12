@@ -1,7 +1,35 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
-const Landing = () => {
-	return <div style={{ color: 'white' }}>this is the home page</div>;
-};
+import { darkTheme } from 'src/styles/theme';
 
-export default Landing;
+import Hero from './Hero';
+import Markets from './Markets';
+import NewUserPromo from './NewUserPromo';
+import ExchangeFeatures from './ExchangeFeatures';
+import Footer from './Footer';
+
+import AppHeader from '../Root/components/AppHeader';
+
+const Home = memo(() => (
+	<>
+		<GlobalStyle />
+		{/* force the app header to be in dark mode */}
+		<ThemeProvider theme={darkTheme}>
+			<AppHeader showThemeToggle={false} isOnSplashPage={true} />
+		</ThemeProvider>
+		<Hero />
+		<Markets />
+		<NewUserPromo />
+		<ExchangeFeatures />
+		<Footer />
+	</>
+));
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: ${darkTheme.colors.surfaceL1};
+  }
+`;
+
+export default Home;

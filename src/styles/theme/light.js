@@ -1,4 +1,5 @@
 export default {
+	brand: '#1E1A31',
 	surfaceL1: '#F2F2F6',
 	surfaceL2: '#F7F8FB',
 	surfaceL3: '#FFFFFF',

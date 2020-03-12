@@ -5,15 +5,15 @@ import { Link } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
 
-import { getAvailableSynths } from '../../ducks';
+import { getAvailableSynths } from '../../ducks/synths';
 
 import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
 import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
+import Currency from '../Currency';
 
 import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
-import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
 import { CRYPTO_CURRENCY_MAP } from '../../constants/currency';
@@ -43,7 +43,6 @@ const sortBy = (assets, column, isAscending) => {
 
 const WalletBox = ({
 	synths,
-	setSynthPair,
 	theme: { colors },
 	walletInfo: { currentWallet, balances },
 	setSynthSearch,
@@ -104,7 +103,12 @@ const WalletBox = ({
 										style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
 										onClick={() => setSynthSearch(asset.name)}
 									>
-										<SynthIcon src={`/images/synths/${asset.name}.svg`} />
+										<Currency.Icon
+											currencyKey={asset.name}
+											width="14px"
+											height="18px"
+											style={{ marginRight: '8px' }}
+										/>
 										<DataLabelHoverable isHoverable={asset.name !== CRYPTO_CURRENCY_MAP.ETH}>
 											{asset.name}
 										</DataLabelHoverable>
@@ -168,7 +172,7 @@ const LinkInner = styled.div`
 const LinkLabel = styled(LabelSmall)`
 	text-transform: none;
 	margin-left: 10px;
-	color: ${props => props.theme.colors.hyperLink};
+	color: ${props => props.theme.colors.hyperlink};
 	&:hover {
 		text-decoration: underline;
 	}
@@ -178,12 +182,6 @@ const LinkIcon = styled.img`
 	width: 8px;
 	height: 8px;
 	margin-left: 5px;
-`;
-
-const SynthIcon = styled.img`
-	width: 14px;
-	height: 14px;
-	margin-right: 8px;
 `;
 
 const HeadingAndSpinner = styled.div`
@@ -212,7 +210,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-	setSynthPair,
 	setSynthSearch,
 };
 

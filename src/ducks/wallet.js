@@ -13,7 +13,8 @@ const FETCH_WALLET_BALANCES_SUCCESS = 'WALLET/FETCH_WALLET_BALANCES_SUCCESS';
 const FETCH_WALLET_BALANCES_FAILURE = 'WALLET/FETCH_WALLET_BALANCES_FAILURE';
 
 import { getWalletBalances } from '../dataFetcher';
-import { getWalletInfo, getAvailableSynths } from './index';
+import { getAvailableSynths } from './synths';
+import { getWalletInfo } from './index';
 
 const defaultState = {
 	unlocked: false,
