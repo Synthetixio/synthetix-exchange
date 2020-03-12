@@ -71,8 +71,10 @@ export const fetchSynthVolumeInUSD = async (
 		return exchanges
 			.filter(
 				exchange =>
-					exchange.fromCurrencyKey === quoteCurrencyKey &&
-					exchange.toCurrencyKey === baseCurrencyKey
+					(exchange.fromCurrencyKey === quoteCurrencyKey &&
+						exchange.toCurrencyKey === baseCurrencyKey) ||
+					(exchange.fromCurrencyKey === baseCurrencyKey &&
+						exchange.toCurrencyKey === quoteCurrencyKey)
 			)
 			.reduce((totalVolume, exchange) => {
 				totalVolume += exchange.fromAmountInUSD;
