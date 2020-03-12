@@ -18,8 +18,13 @@ const fonts = {
 	bold: `'apercu-bold', sans-serif`,
 };
 
-export const isDarkTheme = theme => theme === 'dark';
-export const isLightTheme = theme => theme === 'light';
+export const THEMES = {
+	DARK: 'dark',
+	LIGHT: 'light',
+};
+
+export const isDarkTheme = theme => theme === THEMES.DARK;
+export const isLightTheme = theme => theme === THEMES.LIGHT;
 
 const theme = themeName => {
 	const darkTheme = isDarkTheme(themeName);
@@ -36,8 +41,8 @@ const theme = themeName => {
 	};
 };
 
-export const darkTheme = theme('dark');
-export const lightTheme = theme('light');
+export const darkTheme = theme(THEMES.DARK);
+export const lightTheme = theme(THEMES.LIGHT);
 
 export const themes = [darkTheme, lightTheme];
 

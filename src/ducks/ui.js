@@ -1,5 +1,5 @@
 import { persistState, getPersistedState } from '../config/store';
-import { isLightTheme } from '../styles/theme';
+import { isLightTheme, THEMES } from '../styles/theme';
 
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 const TOGGLE_WALLET_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
@@ -8,10 +8,12 @@ const TOGGLE_DEPOT_POPUP = 'UI/TOGGLE_DEPOT_POPUP';
 const TOGGLE_THEME = 'UI/TOGGLE_THEME';
 const SET_SYNTH_SEARCH = 'UI/SET_SYNTH_SEARCH';
 
+const userPrefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
 const persistedState = getPersistedState('ui');
 const defaultState = Object.assign(
 	{
-		theme: 'dark',
+		theme: userPrefersDarkTheme ? THEMES.DARK : THEMES.LIGHT,
 		walletPopupIsVisible: false,
 		gweiPopupIsVisibile: false,
 		depotPopupIsVisible: false,
@@ -43,7 +45,7 @@ const reducer = (state = defaultState, action = {}) => {
 				depotPopupIsVisible: action.payload,
 			};
 		case TOGGLE_THEME: {
-			const theme = isLightTheme(state.theme) ? 'dark' : 'light';
+			const theme = isLightTheme(state.theme) ? THEMES.DARK : THEMES.LIGHT;
 			persistState('ui', { theme });
 			return {
 				...state,
