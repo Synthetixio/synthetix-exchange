@@ -25,45 +25,46 @@ export const EtherPromoCard = ({ walletInfo: { balances, currentWallet } }) => {
 
 	const ETHCurrencyBalance = getCurrencyKeyBalance(balances, ETH_CURRENCY_KEY);
 
-	if (currentWallet == null || ETHCurrencyBalance == 0) {
-		return null;
-	}
+	const shouldShowPromoCard = currentWallet != null && ETHCurrencyBalance > 0;
 
 	return (
 		<EtherPromo>
-			<PromoCardShadow />
-			<Card>
-				<PromoCardHeader>{t('trade.promo.ether-promo-card.title')}</PromoCardHeader>
-				<Card.Body>
-					<ExternalLinksRow>
-						<ExternalLink href={LINKS.Trading.DexAG}>
-							<StyledButton>
-								<Trans
-									i18nKey="common.currency.buy-currencyA-with-currencyB"
-									values={{ currencyKeyA: SYNTHS_MAP.sUSD, currencyKeyB: ETH_CURRENCY_KEY }}
-									components={[<CurrencyKey />]}
-								/>
-							</StyledButton>
-						</ExternalLink>
-						<ExternalLink href={LINKS.Trading.DexAG}>
-							<StyledButton>
-								<Trans
-									i18nKey="common.currency.buy-currencyA-with-currencyB"
-									values={{ currencyKeyA: SYNTHS_MAP.sETH, currencyKeyB: ETH_CURRENCY_KEY }}
-									components={[<CurrencyKey />]}
-								/>
-							</StyledButton>
-						</ExternalLink>
-					</ExternalLinksRow>
-					<StyledButton onClick={() => history.push(ROUTES.Loans)}>
-						<Trans
-							i18nKey="common.currency.borrow-currency"
-							values={{ currencyKey: SYNTHS_MAP.sETH }}
-							components={[<CurrencyKey />]}
-						/>
-					</StyledButton>
-				</Card.Body>
-			</Card>
+			{/* TODO: This is temporary - we need to move the shadow to sit in a parent component */}
+			<Shadow />
+			{shouldShowPromoCard && (
+				<Card>
+					<PromoCardHeader>{t('trade.promo.ether-promo-card.title')}</PromoCardHeader>
+					<Card.Body>
+						<ExternalLinksRow>
+							<ExternalLink href={LINKS.Trading.DexAG}>
+								<StyledButton>
+									<Trans
+										i18nKey="common.currency.buy-currencyA-with-currencyB"
+										values={{ currencyKeyA: SYNTHS_MAP.sUSD, currencyKeyB: ETH_CURRENCY_KEY }}
+										components={[<CurrencyKey />]}
+									/>
+								</StyledButton>
+							</ExternalLink>
+							<ExternalLink href={LINKS.Trading.DexAG}>
+								<StyledButton>
+									<Trans
+										i18nKey="common.currency.buy-currencyA-with-currencyB"
+										values={{ currencyKeyA: SYNTHS_MAP.sETH, currencyKeyB: ETH_CURRENCY_KEY }}
+										components={[<CurrencyKey />]}
+									/>
+								</StyledButton>
+							</ExternalLink>
+						</ExternalLinksRow>
+						<StyledButton onClick={() => history.push(ROUTES.Loans)}>
+							<Trans
+								i18nKey="common.currency.borrow-currency"
+								values={{ currencyKey: SYNTHS_MAP.sETH }}
+								components={[<CurrencyKey />]}
+							/>
+						</StyledButton>
+					</Card.Body>
+				</Card>
+			)}
 		</EtherPromo>
 	);
 };
@@ -90,8 +91,11 @@ const EtherPromo = styled.div`
 	width: 100%;
 `;
 
-const PromoCardShadow = styled.div`
-	background-image: linear-gradient(180deg, rgba(20, 19, 30, 0) 50%, rgba(14, 13, 20, 1) 100%);
+const Shadow = styled.div`
+	background-image: ${props =>
+		props.theme.isDarkTheme
+			? `linear-gradient(180deg, rgba(20, 19, 30, 0) 50%, rgba(14, 13, 20, 1) 100%)`
+			: `linear-gradient(180deg, rgba(247, 248, 251, 0) 49.97%, #F8F9FC 100%)`};
 	width: 100%;
 	height: 67px;
 `;

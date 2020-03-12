@@ -5,14 +5,18 @@ import synths from './synths';
 import transaction from './transaction';
 import loans from './loans';
 import rates from './rates';
+import app from './app';
+import markets from './markets';
 
 export default combineReducers({
+	app,
 	wallet,
 	ui,
 	synths,
 	transaction,
 	loans,
 	rates,
+	markets,
 });
 
 // UI REDUCERS
@@ -58,27 +62,6 @@ export const getWalletBalances = state => {
 };
 
 export const getIsFetchingWalletBalances = state => state.wallet.isFetchingWalletBalances;
-
-// SYNTHS REDUCERS
-export const getAvailableSynths = state => {
-	return state.synths.availableSynths;
-};
-
-export const getAvailablePairs = state => {
-	return state.synths.availablePairs;
-};
-
-export const getSynthsSigns = state => {
-	return state.synths.synthsSigns;
-};
-
-export const getSynthPair = state => {
-	return { base: state.synths.baseSynth, quote: state.synths.quoteSynth };
-};
-
-export const getFrozenSynths = state => {
-	return state.synths.frozenSynths;
-};
 
 // TRANSACTION REDUCERS
 export const getGasInfo = state => {

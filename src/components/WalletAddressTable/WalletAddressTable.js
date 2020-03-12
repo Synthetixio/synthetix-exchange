@@ -9,6 +9,8 @@ import { formatCurrency } from '../../utils/formatters';
 import { getEtherscanAddressLink } from '../../utils/explorers';
 import { getWalletInfo } from '../../ducks';
 
+import EtherScanImage from '../../assets/images/etherscan-logo.png';
+
 const HEADER_LABELS = ['Wallet Address', 'SNX', 'sUSD', 'ETH', ''];
 
 const Balance = ({ value }) => {
@@ -53,7 +55,7 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 								}}
 							>
 								<Link href={getEtherscanAddressLink(networkId, wallet.address)} target="_blank">
-									<LinkImg width="20" src="/images/etherscan-logo.png" />
+									<LinkImg width="20px" src={EtherScanImage} />
 								</Link>
 							</Td>
 						</Tr>

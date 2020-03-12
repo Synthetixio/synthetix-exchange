@@ -1,1 +1,1 @@
-export const EMPTY_BALANCE = '-';
+export const EMPTY_VALUE = '-';

@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
+import { ReactComponent as ArrowHyperlinkIcon } from '../../../../assets/images/arrow-hyperlink.svg';
+
 import Card from '../../../../components/Card';
 import { HeadingSmall } from '../../../../components/Typography';
 import { getIsRefreshingLoansContractInfo } from '../../../../ducks/loans/contractInfo';
-import { getWalletInfo, getIsFetchingWalletBalances } from '../../../../ducks';
+import { getWalletInfo, getIsFetchingWalletBalances, getNetworkId } from '../../../../ducks';
 
 import { getCurrencyKeyBalance } from '../../../../utils/balances';
 import {
@@ -18,15 +20,25 @@ import {
 
 import { CARD_HEIGHT } from '../../../../constants/ui';
 
-import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from '../../../../shared/commonStyles';
-import { EMPTY_BALANCE } from '../../../../constants/placeholder';
+import {
+	InfoBox,
+	InfoBoxLabel,
+	InfoBoxValue,
+	CurrencyKey,
+	ExternalLink,
+} from '../../../../shared/commonStyles';
+import { EMPTY_VALUE } from '../../../../constants/placeholder';
 import Spinner from '../../../../components/Spinner';
+
+import snxJSConnector from '../../../../utils/snxJSConnector';
+import { getEtherscanAddressLink } from '../../../../utils/explorers';
 
 export const Dashboard = ({
 	walletInfo: { balances, currentWallet },
 	collateralPair,
 	isFetchingWalletBalances,
 	isRefreshingLoansContractInfo,
+	networkId,
 }) => {
 	const { t } = useTranslation();
 
@@ -42,6 +54,10 @@ export const Dashboard = ({
 		totalIssuedSynths,
 		lockedCollateralAmount,
 	} = collateralPair;
+
+	const {
+		snxJS: { EtherCollateral },
+	} = snxJSConnector;
 
 	const loanInfoItems = [
 		{
@@ -86,7 +102,9 @@ export const Dashboard = ({
 			value: formatPercentage(collateralizationRatioPercent, 0),
 		},
 		{
-			label: t('loans.dashboard.loan-info.locked-currency', { currencyKey: collateralCurrencyKey }),
+			label: t('loans.dashboard.loan-info.locked-currency', {
+				currencyKey: collateralCurrencyKey,
+			}),
 			value: formatCurrency(lockedCollateralAmount, 0),
 		},
 	];
@@ -99,6 +117,12 @@ export const Dashboard = ({
 						{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
 					</HeadingSmall>
 					{isRefreshingLoansContractInfo && <Spinner size="sm" />}
+					<StyledExternalLink
+						href={getEtherscanAddressLink(networkId, EtherCollateral.contract.address)}
+					>
+						{t('common.contracts.view')}
+						<StyledArrowHyperlinkIcon width="8" height="8" />
+					</StyledExternalLink>
 				</Card.Header>
 				<Card.Body>
 					<LoanInfoRow>
@@ -132,12 +156,12 @@ export const Dashboard = ({
 						<td>
 							{currentWallet
 								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
-								: EMPTY_BALANCE}
+								: EMPTY_VALUE}
 						</td>
 						<td>
 							{currentWallet
 								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
-								: EMPTY_BALANCE}
+								: EMPTY_VALUE}
 						</td>
 					</tr>
 				</tbody>
@@ -147,10 +171,23 @@ export const Dashboard = ({
 };
 
 Dashboard.propTypes = {
-	walletInfo: PropTypes.object,
-	collateralPair: PropTypes.object,
-	isRefreshingLoansContractInfo: PropTypes.bool,
+	walletInfo: PropTypes.object.isRequired,
+	collateralPair: PropTypes.object.isRequired,
+	isFetchingWalletBalances: PropTypes.bool.isRequired,
+	isRefreshingLoansContractInfo: PropTypes.bool.isRequired,
+	networkId: PropTypes.string.isRequired,
 };
+
+const StyledExternalLink = styled(ExternalLink)`
+	color: ${props => props.theme.colors.hyperlink};
+	text-transform: none;
+	margin-left: auto;
+	font-size: 13px;
+`;
+
+const StyledArrowHyperlinkIcon = styled(ArrowHyperlinkIcon)`
+	margin-left: 5px;
+`;
 
 const WalletBalancesHeading = styled.th`
 	width: 60%;
@@ -204,6 +241,7 @@ const TableRowHeader = styled.tr`
 `;
 
 const mapStateToProps = state => ({
+	networkId: getNetworkId(state),
 	walletInfo: getWalletInfo(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),

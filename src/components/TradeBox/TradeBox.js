@@ -10,6 +10,7 @@ import {
 	bytesFormatter,
 	bigNumberFormatter,
 	secondsToTime,
+	formatCurrencyPair,
 } from '../../utils/formatters';
 
 import { SYNTHS_MAP } from '../../constants/currency';
@@ -17,13 +18,8 @@ import { SYNTHS_MAP } from '../../constants/currency';
 import { HeadingSmall, DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonPrimary } from '../Button';
 import { TradeInput } from '../Input';
-import {
-	getSynthPair,
-	getWalletInfo,
-	getGasInfo,
-	getExchangeFeeRate,
-	getTransactions,
-} from '../../ducks';
+import { getWalletInfo, getGasInfo, getExchangeFeeRate, getTransactions } from '../../ducks';
+import { getSynthPair } from '../../ducks/synths';
 import { getRatesExchangeRates } from '../../ducks/rates';
 import { toggleGweiPopup } from '../../ducks/ui';
 import { fetchWalletBalances } from '../../ducks/wallet';
@@ -33,6 +29,8 @@ import errorMessages from '../../utils/errorMessages';
 import { getExchangeRatesForCurrencies } from '../../utils/rates';
 import { setGasLimit, createTransaction, updateTransaction } from '../../ducks/transaction';
 import { EXCHANGE_EVENTS } from '../../constants/events';
+
+import { ReactComponent as ReverseArrowIcon } from '../../assets/images/reverse-arrow.svg';
 
 const TradeBox = ({
 	theme: { colors },
@@ -224,7 +222,7 @@ const TradeBox = ({
 	return (
 		<Container>
 			<Header>
-				<HeadingSmall>{`${synthPair.base.name}/${synthPair.quote.name}`}</HeadingSmall>
+				<HeadingSmall>{formatCurrencyPair(synthPair.base.name, synthPair.quote.name)}</HeadingSmall>
 			</Header>
 			<Body>
 				<InputBlock>
@@ -254,7 +252,7 @@ const TradeBox = ({
 						style={{ background: 'transparent' }}
 						onClick={() => setPair({ quote: base, base: quote })}
 					>
-						<ButtonIcon src={'/images/reverse-arrow.svg'}></ButtonIcon>
+						<ReverseArrowIcon width="16" height="12" />
 					</ButtonFilter>
 				</ButtonFilterRow>
 				<InputBlock>
@@ -332,7 +330,7 @@ const TradeBox = ({
 						<NetworkData>
 							{gasPrice || 0}
 							<ButtonEdit onClick={() => toggleGweiPopup(true)}>
-								<DataSmall color={colors.hyperLink}>Edit</DataSmall>
+								<DataSmall color={colors.hyperlink}>Edit</DataSmall>
 							</ButtonEdit>
 						</NetworkData>
 					</NetworkDataRow>
@@ -366,11 +364,6 @@ const Header = styled.div`
 	& > button {
 		margin-left: 12px;
 	}
-`;
-
-const ButtonIcon = styled.img`
-	width: 16px;
-	height: 12px;
 `;
 
 const Body = styled.div`

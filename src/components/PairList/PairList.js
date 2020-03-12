@@ -4,29 +4,23 @@ import { connect } from 'react-redux';
 
 import { SearchInput } from '../Input';
 
-import { getAvailableSynths, getSynthsSigns, getSynthPair, getSynthSearch } from '../../ducks';
+import { getSynthSearch } from '../../ducks';
 import { getRatesExchangeRates, getIsLoadedRates } from '../../ducks/rates';
+import { getAvailableSynths, getSynthPair, getAvailableSynthsMap } from '../../ducks/synths';
 import { formatCurrency } from '../../utils/formatters';
 import { pairWeight } from '../../utils/synthOrdering';
 import { getExchangeRatesForCurrencies } from '../../utils/rates';
 
+import Currency from '../Currency';
 import { DataMedium, DataSmall } from '../Typography';
 import { ButtonFilter, ButtonFilterWithDropdown } from '../Button';
 
-import { setSynthPair } from '../../ducks/synths';
 import { setSynthSearch } from '../../ducks/ui';
+import { navigateToTrade } from '../../constants/routes';
 
 const FILTERS = ['sUSD', 'sBTC', 'sETH', 'sFIAT'];
 
-const PairList = ({
-	synths,
-	exchangeRates,
-	setSynthPair,
-	synthsSigns,
-	setSynthSearch,
-	search,
-	isLoadedRates,
-}) => {
+const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, isLoadedRates }) => {
 	const [quote, setQuote] = useState({ name: 'sUSD', category: 'forex' });
 	// const [sort, setSort] = useState({});
 	const [synthList, setSynthList] = useState([]);
@@ -158,7 +152,6 @@ const PairList = ({
 								// }
 								>
 									<ListHeaderLabel>{column.label}</ListHeaderLabel>
-									{/* <SortIcon src="/images/sort-arrows.svg" /> */}
 								</ButtonSort>
 							</ListHeaderElement>
 						);
@@ -166,26 +159,23 @@ const PairList = ({
 				</ListHeader>
 			</ContainerHeader>
 			<List>
-				{filteredSynths.map((pair, i) => {
-					return (
-						<Pair
-							isDisabled={!isLoadedRates}
-							key={i}
-							onClick={() => setSynthPair({ base: pair.base, quote: pair.quote })}
-						>
-							<PairElement>
-								<SynthIcon src={`/images/synths/${pair.base.name}.svg`} />
-								<DataMedium>{`${pair.base.name} / ${pair.quote.name}`}</DataMedium>
-							</PairElement>
-							<PairElement>
-								<DataMedium>
-									{synthsSigns[quote.name]}
-									{formatCurrency(pair.rate, 6)}
-								</DataMedium>
-							</PairElement>
-						</Pair>
-					);
-				})}
+				{filteredSynths.map(pair => (
+					<Pair
+						isDisabled={!isLoadedRates}
+						key={`${pair.base.name}-${pair.quote.name}`}
+						onClick={() => navigateToTrade(pair.base.name, pair.quote.name)}
+					>
+						<PairElement>
+							<Currency.Pair baseCurrencyKey={pair.base.name} quoteCurrencyKey={pair.quote.name} />
+						</PairElement>
+						<PairElement>
+							<DataMedium>
+								{synthsMap[quote.name].sign}
+								{formatCurrency(pair.rate, 6)}
+							</DataMedium>
+						</PairElement>
+					</Pair>
+				))}
 			</List>
 		</Container>
 	);
@@ -254,12 +244,6 @@ const PairElement = styled.div`
 	}
 `;
 
-const SynthIcon = styled.img`
-	width: 22px;
-	height: 22px;
-	margin-right: 6px;
-`;
-
 const ListHeader = styled.div`
 	display: flex;
 	justify-content: space-between;
@@ -286,25 +270,16 @@ const ButtonSort = styled.button`
 	background: transparent;
 `;
 
-// const SortIcon = styled.img`
-// 	width: 6.5px;
-// 	height: 8px;
-// 	margin-left: 5px;
-// `;
-
-const mapStateToProps = state => {
-	return {
-		synths: getAvailableSynths(state),
-		exchangeRates: getRatesExchangeRates(state),
-		synthsSigns: getSynthsSigns(state),
-		synthPair: getSynthPair(state),
-		search: getSynthSearch(state),
-		isLoadedRates: getIsLoadedRates(state),
-	};
-};
+const mapStateToProps = state => ({
+	synths: getAvailableSynths(state),
+	synthsMap: getAvailableSynthsMap(state),
+	exchangeRates: getRatesExchangeRates(state),
+	synthPair: getSynthPair(state),
+	search: getSynthSearch(state),
+	isLoadedRates: getIsLoadedRates(state),
+});
 
 const mapDispatchToProps = {
-	setSynthPair,
 	setSynthSearch,
 };
 

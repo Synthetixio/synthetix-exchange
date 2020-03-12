@@ -2,9 +2,15 @@
 	"header": {
 		"connect-wallet": "Connect wallet",
 		"links": {
-			"exchange": "exchange",
+			"trade": "trade",
 			"loans": "loans",
+			"markets": "markets",
+			"tokens": "tokens",
 			"support": "support"
+		},
+		"theme": {
+			"light": "light mode",
+			"dark": "dark mode"
 		},
 		"announcements": {
 			"ether-collateral": "NEW: ETH Collateral is live!"
@@ -14,6 +20,73 @@
 		"wallet": {
 			"wallet-selector": {
 				"title": "Connect your wallet"
+			}
+		}
+	},
+	"home": {
+		"hero": {
+			"title": "On-chain exposure to any asset class",
+			"subtitle": "Trade synthetic cryptocurrencies (long and short), commodities, indexes and Forex"
+		},
+		"markets": {
+			"table": {
+				"pair-col": "pair",
+				"last-price-col": "last price",
+				"24h-change-col": "24hr change",
+				"24h-low-col": "24hr low",
+				"24h-high-col": "24hr high",
+				"24h-volume-col": "24hr volume",
+				"actions": {
+					"see-all-pairs": "see all pairs"
+				}
+			}
+		},
+		"new-user-promo": {
+			"title": "New to Synthetix.Exchange?",
+			"subtitle": "ETH holders can start trading through any of the following methods:"
+		},
+		"exchange-features": {
+			"title": "A unique trading experience on Ethereum",
+			"subtitle": "With on-chain features you won’t find anywhere else",
+			"features": {
+				"infinite-liquidity": {
+					"title": "Infinite Liquidity",
+					"desc": "There’s no orderbook, so you don’t need to worry about liquidity or slippage."
+				},
+				"peer-to-contract": {
+					"title": "Peer-To-Contract Trading",
+					"desc": "Seamlessly exchange between a wide variety of synthetic assets."
+				},
+				"distributed-collateral-pool": {
+					"title": "Distributed Collateral Pool",
+					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
+				}
+			},
+			"start-trading-button": "start trading now"
+		},
+		"footer": {
+			"learn": {
+				"title": "learn",
+				"links": {
+					"litepaper": "Litepaper",
+					"tokens": "Tokens",
+					"blog": "Blog"
+				}
+			},
+			"products": {
+				"title": "products",
+				"links": {
+					"synthetix-exchange": "Synthetix.Exchange",
+					"mintr": "Mintr",
+					"dashboard": "Dashboard"
+				}
+			},
+			"connect": {
+				"title": "community",
+				"links": {
+					"community": "Community",
+					"contact-us": "Contact Us"
+				}
 			}
 		}
 	},
@@ -75,6 +148,9 @@
 		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
+		"contracts": {
+			"view": "View Contract"
+		},
 		"actions": {
 			"submit": "submit",
 			"close": "close",
@@ -102,7 +178,12 @@
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
-			"borrow-currency": "Borrow {{currencyKey}}"
-		}
+			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
+			"borrow-currency": "Borrow {{currencyKey}}",
+			"crypto": "crypto",
+			"forex": "forex",
+			"commodities": "commodities"
+		},
+		"search": "search"
 	}
 }

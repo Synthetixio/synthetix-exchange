@@ -1,27 +1,43 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { color, typography } from 'styled-system';
 
-export const DataLarge = styled.span`
+const dataCSS = css`
+	color: ${props => props.theme.colors.fontPrimary};
+`;
+
+export const dataLargeCSS = css`
+	${dataCSS};
 	font-size: 18px;
 	text-transform: uppercase;
-	color: ${props => props.theme.colors.fontPrimary};
+`;
+
+export const dataMediumCSS = css`
+	${dataCSS};
+	font-size: 14px;
+	font-family: ${props => props.theme.fonts.regular};
+`;
+
+export const dataSmallCSS = css`
+	${dataCSS};
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-family: ${props => props.theme.fonts.medium};
+`;
+
+export const DataLarge = styled.span`
+	${dataLargeCSS};
 	${typography}
 `;
 
 export const DataMedium = styled.span`
-	font-size: 14px;
-	color: ${props => props.theme.colors.fontPrimary};
-	font-family: 'apercu-regular', sans-serif;
+	${dataMediumCSS};
 	${typography};
 	${color};
 `;
 
 export const DataSmall = styled.span`
-	font-size: 12px;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
-	font-family: 'apercu-medium', sans-serif;
-	color: ${props => props.theme.colors.fontPrimary};
+	${dataSmallCSS};
 	${color};
 	${typography};
 `;
