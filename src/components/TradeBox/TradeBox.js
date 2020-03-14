@@ -33,20 +33,20 @@ import { EXCHANGE_EVENTS } from '../../constants/events';
 import { ReactComponent as ReverseArrowIcon } from '../../assets/images/reverse-arrow.svg';
 
 const TradeBox = ({
-	theme: { colors },
-	synthPair,
-	exchangeRates,
-	walletInfo: { balances, currentWallet, walletType },
-	setGasLimit,
-	toggleGweiPopup,
-	gasInfo: { gasLimit, gasPrice },
-	exchangeFeeRate,
-	ethRate,
-	createTransaction,
-	updateTransaction,
-	transactions,
-	fetchWalletBalances,
-}) => {
+					  theme: { colors },
+					  synthPair,
+					  exchangeRates,
+					  walletInfo: { balances, currentWallet, walletType },
+					  setGasLimit,
+					  toggleGweiPopup,
+					  gasInfo: { gasLimit, gasPrice },
+					  exchangeFeeRate,
+					  ethRate,
+					  createTransaction,
+					  updateTransaction,
+					  transactions,
+					  fetchWalletBalances,
+				  }) => {
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
 	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
@@ -230,7 +230,16 @@ const TradeBox = ({
 						<DataMedium color={colors.fontSecondary} fontFamily={'apercu-medium'}>
 							Sell:
 						</DataMedium>
-						<Balance>
+						<Balance
+							onClick={() => {
+								const balance = synthsBalances[quote.name].balance;
+								const amount = balance;
+								setTradeAllBalance(true);
+								setQuoteAmount(amount);
+								const convertedRate = amount * rate;
+								setBaseAmount(convertedRate);
+							}}
+						>
 							Balance: {quoteBalance ? formatCurrency(quoteBalance.balance) : 0} {quote.name}
 						</Balance>
 					</InputInfo>
@@ -308,7 +317,7 @@ const TradeBox = ({
 							$
 							{formatCurrency(
 								baseAmount *
-									getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)
+								getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)
 							)}
 						</NetworkData>
 					</NetworkDataRow>
@@ -316,7 +325,7 @@ const TradeBox = ({
 						<NetworkData>Fee</NetworkData>
 						<NetworkData>{`${
 							baseAmount && feeRate ? formatCurrency((baseAmount * feeRate) / 100, 4) : 0
-						} ${base.name} ${feeRate ? `(${feeRate}%)` : ''}`}</NetworkData>
+							} ${base.name} ${feeRate ? `(${feeRate}%)` : ''}`}</NetworkData>
 					</NetworkDataRow>
 					<NetworkDataRow>
 						<NetworkData>Gas limit</NetworkData>
