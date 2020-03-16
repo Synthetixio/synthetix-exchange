@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './config/store';
-// import Root from './pages/Root';
+import Root from './pages/Root';
 
 import './i18n';
 import './index.css';
@@ -26,16 +26,7 @@ const App = () => {
 	return (
 		<Suspense fallback={<div />}>
 			<Provider store={store}>
-				<div
-					style={{
-						position: 'absolute',
-						left: '50%',
-						top: '50%',
-						transform: 'translate(-50%, -50%)',
-					}}
-				>
-					Synthetix.Exchange is currently down for maintenance. it will be back shortly.
-				</div>
+				<Root />
 			</Provider>
 		</Suspense>
 	);
