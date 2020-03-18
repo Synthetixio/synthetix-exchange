@@ -237,6 +237,9 @@
 			"forex": "forex",
 			"commodities": "commodities"
 		},
-		"search": "search"
+		"search": "search",
+		"features": {
+			"coming-soon": "coming soon"
+		}
 	}
 }

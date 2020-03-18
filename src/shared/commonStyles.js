@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
-import { tableDataSmallCSS } from 'src/components/Typography/Data';
+import { tableDataSmallCSS, chartDataCSS } from 'src/components/Typography/Data';
 
 import { Z_INDEX } from '../constants/ui';
 
@@ -178,4 +178,12 @@ export const TableNoResults = styled.div`
 	padding-top: 20px;
 	color: ${props => props.theme.colors.fontPrimary};
 	${tableDataSmallCSS};
+`;
+
+export const CardHeadingDescription = styled.span`
+	${chartDataCSS};
+	color: ${props => props.theme.colors.fontSecondary};
+	&&& {
+		margin-left: auto;
+	}
 `;
