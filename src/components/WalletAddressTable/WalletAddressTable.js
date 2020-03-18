@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import get from 'lodash/get';
 
 import { DataLarge } from '../Typography';
 import Spinner from '../Spinner';
 
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, bigNumberFormatter } from '../../utils/formatters';
 import { getEtherscanAddressLink } from '../../utils/explorers';
 import { getWalletInfo } from '../../ducks';
 
@@ -41,13 +42,31 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 								<DataLabel>{wallet.address}</DataLabel>
 							</Td>
 							<Td>
-								<Balance value={wallet.balances.snxBalance} />
+								<Balance
+									value={
+										wallet.balances.snxBalance != null
+											? bigNumberFormatter(wallet.balances.snxBalance)
+											: undefined
+									}
+								/>
 							</Td>
 							<Td>
-								<Balance value={wallet.balances.sUSDBalance} />
+								<Balance
+									value={
+										wallet.balances.sUSDBalance != null
+											? bigNumberFormatter(wallet.balances.sUSDBalance)
+											: undefined
+									}
+								/>
 							</Td>
 							<Td>
-								<Balance value={wallet.balances.ethBalance} />
+								<Balance
+									value={
+										wallet.balances.ethBalance != null
+											? bigNumberFormatter(wallet.balances.ethBalance)
+											: undefined
+									}
+								/>
 							</Td>
 							<Td
 								onClick={e => {

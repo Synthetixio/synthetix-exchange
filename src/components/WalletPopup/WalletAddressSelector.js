@@ -40,43 +40,48 @@ const useGetWallets = () => {
 		setIsLoading(true);
 		const getWallets = async () => {
 			try {
-				const results = await snxJSConnector.signer.getNextAddresses(walletIndex, WALLET_PAGE_SIZE);
-				if (!results) throw new Error('Could not get addresses from wallet');
-				const nextWallets = results.map(address => {
-					return {
-						address,
-						balances: [],
-					};
-				});
+				const nextWalletAddresses = await snxJSConnector.signer.getNextAddresses(
+					walletIndex,
+					WALLET_PAGE_SIZE
+				);
+				if (!nextWalletAddresses) throw new Error('Could not get addresses from wallet');
+
+				const nextWallets = nextWalletAddresses.map(address => ({
+					address,
+					balances: {
+						snxBalance: null,
+						sUSDBalance: null,
+						ethBalance: null,
+					},
+				}));
+
 				dispatch(
 					updateWalletReducer({
 						unlocked: true,
 						availableWallets: [...availableWallets, ...nextWallets],
 					})
 				);
+
 				setIsLoading(false);
 
-				const getBalanceForWallet = async wallet => {
-					return {
-						snxBalance: await snxJSConnector.snxJS.Synthetix.collateral(wallet.address),
-						sUSDBalance: await snxJSConnector.snxJS.sUSD.balanceOf(wallet.address),
-						ethBalance: await snxJSConnector.provider.getBalance(wallet.address),
-					};
-				};
+				const nextWalletsWithBalances = [];
 
-				nextWallets.forEach((wallet, index) => {
-					getBalanceForWallet(wallet, index).then(balance => {
-						wallet.balances = {
-							snxBalance: bigNumberFormatter(balance.snxBalance),
-							sUSDBalance: bigNumberFormatter(balance.sUSDBalance),
-							ethBalance: bigNumberFormatter(balance.ethBalance),
-						};
-
-						dispatch(
-							updateWalletReducer({ availableWallets: [...availableWallets, ...nextWallets] })
-						);
+				for (const nextWallet of nextWallets) {
+					nextWalletsWithBalances.push({
+						address: nextWallet.address,
+						balances: {
+							snxBalance: await snxJSConnector.snxJS.Synthetix.collateral(nextWallet.address),
+							sUSDBalance: await snxJSConnector.snxJS.sUSD.balanceOf(nextWallet.address),
+							ethBalance: await snxJSConnector.provider.getBalance(nextWallet.address),
+						},
 					});
-				});
+				}
+
+				dispatch(
+					updateWalletReducer({
+						availableWallets: [...availableWallets, ...nextWalletsWithBalances],
+					})
+				);
 			} catch (e) {
 				console.log(e);
 				setError(e.message);
