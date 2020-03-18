@@ -109,15 +109,15 @@ const Td = styled.td`
 	padding: 0 20px;
 	text-align: right;
 	height: 48px;
-	border-top: 1px solid ${props => props.theme.colors.accentDark};
-	border-bottom: 1px solid ${props => props.theme.colors.accentDark};
+	border-top: 1px solid ${props => props.theme.colors.accentL1};
+	border-bottom: 1px solid ${props => props.theme.colors.accentL1};
 	&:first-child {
-		border-left: 1px solid ${props => props.theme.colors.accentDark};
+		border-left: 1px solid ${props => props.theme.colors.accentL1};
 		border-top-left-radius: 2px;
 		border-bottom-left-radius: 2px;
 	}
 	&:last-child {
-		border-right: 1px solid ${props => props.theme.colors.accentDark};
+		border-right: 1px solid ${props => props.theme.colors.accentL1};
 		border-top-right-radius: 2px;
 		border-bottom-right-radius: 2px;
 	}

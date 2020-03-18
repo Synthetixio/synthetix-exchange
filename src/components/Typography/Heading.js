@@ -6,6 +6,13 @@ const headingCSS = css`
 	color: ${props => props.theme.colors.fontPrimary};
 `;
 
+export const headingH5CSS = css`
+	font-family: ${props => props.theme.fonts.medium};
+	font-size: 20px;
+	line-height: 25px;
+	letter-spacing: 0.2px;
+`;
+
 export const headingLargeCSS = css`
 	${headingCSS};
 	font-family: ${props => props.theme.fonts.bold};

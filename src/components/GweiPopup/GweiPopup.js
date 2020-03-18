@@ -16,7 +16,7 @@ import { getGasInfo } from '../../ducks/';
 import { setGasPrice } from '../../ducks/transaction';
 import { getEthRate } from '../../ducks/rates';
 
-import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../Table';
+import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../deprecated/Table';
 import { ButtonPrimary } from '../Button';
 import { Z_INDEX } from '../../constants/ui';
 
@@ -233,7 +233,7 @@ const GlobalStyle = createGlobalStyle`
 
 // const Input = styled.input`
 // 	background-color: ${props => props.theme.colors.surfaceL3};
-// 	border: 1px solid ${props => props.theme.colors.accentLight};
+// 	border: 1px solid ${props => props.theme.colors.accentL2};
 // 	flex: 1;
 // 	font-size: 14px;
 // 	padding: 0 20px;

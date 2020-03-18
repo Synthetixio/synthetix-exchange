@@ -1,8 +1,11 @@
+import BigNumber from 'bignumber.js';
 import numbro from 'numbro';
 import { format } from 'date-fns';
 import snxJSConnector from './snxJSConnector';
 
 const DEFAULT_CURRENCY_DECIMALS = 2;
+
+export const toBigNumber = value => new BigNumber(value);
 
 const getPrecision = amount => {
 	if (amount >= 1) {

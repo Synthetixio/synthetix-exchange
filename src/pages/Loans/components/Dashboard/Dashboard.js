@@ -4,21 +4,18 @@ import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { ReactComponent as ArrowHyperlinkIcon } from '../../../../assets/images/arrow-hyperlink.svg';
+import { ReactComponent as ArrowHyperlinkIcon } from 'src/assets/images/arrow-hyperlink.svg';
 
-import Card from '../../../../components/Card';
-import { HeadingSmall } from '../../../../components/Typography';
-import { getIsRefreshingLoansContractInfo } from '../../../../ducks/loans/contractInfo';
-import { getWalletInfo, getIsFetchingWalletBalances, getNetworkId } from '../../../../ducks';
+import Card from 'src/components/Card';
+import { HeadingSmall } from 'src/components/Typography';
+import { getIsRefreshingLoansContractInfo } from 'src/ducks/loans/contractInfo';
+import { getWalletInfo, getNetworkId } from 'src/ducks';
+import { getIsFetchingWalletBalances } from 'src/ducks/wallet';
 
-import { getCurrencyKeyBalance } from '../../../../utils/balances';
-import {
-	formatPercentage,
-	formatCurrency,
-	formatCurrencyWithKey,
-} from '../../../../utils/formatters';
+import { getCurrencyKeyBalance } from 'src/utils/balances';
+import { formatPercentage, formatCurrency, formatCurrencyWithKey } from 'src/utils/formatters';
 
-import { CARD_HEIGHT } from '../../../../constants/ui';
+import { CARD_HEIGHT } from 'src/constants/ui';
 
 import {
 	InfoBox,
@@ -26,12 +23,12 @@ import {
 	InfoBoxValue,
 	CurrencyKey,
 	ExternalLink,
-} from '../../../../shared/commonStyles';
-import { EMPTY_VALUE } from '../../../../constants/placeholder';
-import Spinner from '../../../../components/Spinner';
+} from 'src/shared/commonStyles';
+import { EMPTY_VALUE } from 'src/constants/placeholder';
+import Spinner from 'src/components/Spinner';
 
-import snxJSConnector from '../../../../utils/snxJSConnector';
-import { getEtherscanAddressLink } from '../../../../utils/explorers';
+import snxJSConnector from 'src/utils/snxJSConnector';
+import { getEtherscanAddressLink } from 'src/utils/explorers';
 
 export const Dashboard = ({
 	walletInfo: { balances, currentWallet },

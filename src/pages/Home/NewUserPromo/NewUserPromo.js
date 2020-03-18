@@ -99,7 +99,7 @@ const PromoCard = styled.div`
 	grid-gap: 24px;
 	padding: 24px;
 	background-color: ${lightTheme.colors.surfaceL3};
-	border: 1px solid ${lightTheme.colors.accentLight};
+	border: 1px solid ${lightTheme.colors.accentL2};
 	box-shadow: 0px 4px 11px rgba(209, 209, 232, 0.25);
 	border-radius: 2px;
 	box-sizing: border-box;

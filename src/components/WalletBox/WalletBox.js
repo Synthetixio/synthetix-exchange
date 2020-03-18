@@ -5,37 +5,23 @@ import { Link } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
 
-import { getAvailableSynths } from '../../ducks/synths';
+import { getAvailableSynths } from 'src/ducks/synths';
+import {
+	getTotalWalletBalanceUSD,
+	getWalletBalances,
+	getIsFetchingWalletBalances,
+} from 'src/ducks/wallet';
 
 import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
-import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
+import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../deprecated/Table';
 import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
 import Currency from '../Currency';
 
-import { getWalletInfo, getIsFetchingWalletBalances } from '../../ducks';
-import { setSynthSearch } from '../../ducks/ui';
-import { formatCurrency } from '../../utils/formatters';
-import { CRYPTO_CURRENCY_MAP } from '../../constants/currency';
-
-const getTotal = balances => {
-	if (!balances) return 0;
-	const { eth, synths } = balances;
-	return formatCurrency(eth.usdBalance + synths.usdBalance);
-};
-
-const formatAssets = balances => {
-	if (!balances) return [];
-	const { eth, snx, synths } = balances;
-	let assets = [{ name: CRYPTO_CURRENCY_MAP.ETH, ...eth }];
-	Object.keys(synths.balances).forEach(key => {
-		const synth = synths.balances[key];
-		if (synth && synth.balance > 0) {
-			assets.push({ name: key, ...synth });
-		}
-	});
-	return assets;
-};
+import { getWalletInfo } from 'src/ducks';
+import { setSynthSearch } from 'src/ducks/ui';
+import { formatCurrency } from 'src/utils/formatters';
+import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
 
 const sortBy = (assets, column, isAscending) => {
 	return orderBy(assets, column, [isAscending ? 'asc' : 'desc']);
@@ -44,17 +30,18 @@ const sortBy = (assets, column, isAscending) => {
 const WalletBox = ({
 	synths,
 	theme: { colors },
-	walletInfo: { currentWallet, balances },
+	walletInfo: { currentWallet },
 	setSynthSearch,
 	isFetchingWalletBalances,
+	totalWalletBalanceUSD,
+	walletBalances,
 }) => {
 	const [assets, setAssets] = useState([]);
 	const [sortIsAcending, setSortIsAscending] = useState(true);
+
 	useEffect(() => {
-		if (!balances) return;
-		const dataAssets = formatAssets(balances);
-		setAssets(sortBy(dataAssets, 'usdBalance', false));
-	}, [balances, currentWallet]);
+		setAssets(walletBalances);
+	}, [walletBalances, currentWallet]);
 
 	return (
 		<Container>
@@ -66,7 +53,7 @@ const WalletBox = ({
 					</HeadingAndSpinner>
 				</HeaderBlock>
 				<HeaderBlock>
-					<HeaderLabel>Total value: ${getTotal(balances)}</HeaderLabel>
+					<HeaderLabel>Total value: ${formatCurrency(totalWalletBalanceUSD)}</HeaderLabel>
 				</HeaderBlock>
 			</Header>
 			<Body>
@@ -201,13 +188,13 @@ const DataLabelHoverable = styled(DataLabel)`
 	}
 `;
 
-const mapStateToProps = state => {
-	return {
-		walletInfo: getWalletInfo(state),
-		synths: getAvailableSynths(state),
-		isFetchingWalletBalances: getIsFetchingWalletBalances(state),
-	};
-};
+const mapStateToProps = state => ({
+	totalWalletBalanceUSD: getTotalWalletBalanceUSD(state),
+	walletInfo: getWalletInfo(state),
+	walletBalances: getWalletBalances(state),
+	synths: getAvailableSynths(state),
+	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
+});
 
 const mapDispatchToProps = {
 	setSynthSearch,

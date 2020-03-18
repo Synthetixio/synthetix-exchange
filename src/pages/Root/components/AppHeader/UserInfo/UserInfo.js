@@ -11,22 +11,32 @@ import { shortenAddress } from 'src/utils/formatters';
 import { showWalletPopup } from 'src/ducks/ui';
 import { getWalletInfo, getCurrentTheme } from 'src/ducks';
 
+import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+
 import { Dot } from 'src/shared/commonStyles';
 import { DataMedium } from 'src/components/Typography';
 
 import { ButtonPrimary } from 'src/components/Button';
+import Link from 'src/components/Link';
 
 import { media } from 'src/shared/media';
+import { ROUTES } from 'src/constants/routes';
 
 export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 	const { t } = useTranslation();
 	const { currentWallet, networkName } = walletInfo;
 
 	return currentWallet != null ? (
-		<Container onClick={showWalletPopup}>
-			<GreenDot />
-			<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
-			<NetworkLabel>{networkName}</NetworkLabel>
+		<Container>
+			<WalletInfo onClick={showWalletPopup} role="button">
+				<GreenDot />
+				<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
+				<NetworkLabel>{networkName}</NetworkLabel>
+			</WalletInfo>
+			{/* TOOD: This is temporary exposing the link to assets page */}
+			<StyledLink to={ROUTES.Assets.Home}>
+				<MenuArrowDownIcon />
+			</StyledLink>
 		</Container>
 	) : (
 		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
@@ -48,8 +58,7 @@ const Container = styled.div`
 	align-items: center;
 	padding: 8px;
 	border-radius: ${ELEMENT_BORDER_RADIUS};
-	cursor: pointer;
-	border: 1px solid ${props => props.theme.colors.accentDark};
+	border: 1px solid ${props => props.theme.colors.accentL1};
 
 	${media.small`
 		height: auto;
@@ -63,6 +72,18 @@ const Container = styled.div`
 	`}
 `;
 
+const WalletInfo = styled.div`
+	display: grid;
+	grid-auto-flow: column;
+	grid-gap: 10px;
+	align-items: center;
+	cursor: pointer;
+`;
+
+const StyledLink = styled(Link)`
+	display: inherit;
+`;
+
 const GreenDot = styled(Dot)`
 	background-color: ${props => props.theme.colors.green};
 `;
@@ -74,7 +95,7 @@ const WalletAddress = styled(DataMedium)`
 
 const NetworkLabel = styled(DataMedium)`
 	text-transform: uppercase;
-	background-color: ${props => props.theme.colors.accentDark};
+	background-color: ${props => props.theme.colors.accentL1};
 	color: ${props => props.theme.colors.fontTertiary};
 	border-radius: 25px;
 	font-size: 12px;
@@ -88,7 +109,6 @@ const StyledButtonPrimary = styled(ButtonPrimary)`
 		line-height: 24px;
 		padding: 0 8px;
 	`}
-	${media.medium``}
 `;
 
 const mapStateToProps = state => ({

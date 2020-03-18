@@ -46,14 +46,14 @@ const Button = styled.button`
 	height: 24px;
 	border-radius: 1px;
 	background-color: ${props =>
-		props.active ? props.theme.colors.accentLight : props.theme.colors.accentDark};
+		props.active ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
 	transition: all 0.1s ease;
 	&:hover {
-		background-color: ${props => props.theme.colors.accentLight};
+		background-color: ${props => props.theme.colors.accentL2};
 	}
 `;
 

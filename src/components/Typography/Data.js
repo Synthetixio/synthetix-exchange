@@ -41,3 +41,17 @@ export const DataSmall = styled.span`
 	${color};
 	${typography};
 `;
+
+export const chartDataCSS = css`
+	font-family: ${props => props.theme.fonts.regular};
+	font-size: 10px;
+	line-height: 12px;
+	letter-spacing: 0.2px;
+`;
+
+export const tableDataSmallCSS = css`
+	font-family: ${props => props.theme.fonts.regular};
+	font-size: 12px;
+	line-height: 15px;
+	letter-spacing: 0.2px;
+`;

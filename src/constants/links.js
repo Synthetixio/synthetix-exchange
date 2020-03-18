@@ -1,7 +1,11 @@
 export const LINKS = {
 	Support: 'https://help.synthetix.io/hc/en-us',
+	Tokens: 'https://www.synthetix.io/tokens/',
 	Trading: {
 		DexAG: 'https://dex.ag/',
+		Uniswap: 'https://uniswap.exchange/',
+		OneInch: 'https://1inch.exchange/#/sETH/DAI',
+		OneInchLink: (base, quote) => `https://1inch.exchange/#/${base}/${quote}`,
 	},
 	Learn: {
 		Litepaper: 'https://www.synthetix.io/litepaper',

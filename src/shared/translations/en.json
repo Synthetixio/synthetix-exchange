@@ -59,7 +59,7 @@
 				},
 				"distributed-collateral-pool": {
 					"title": "Distributed Collateral Pool",
-					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
+					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
 				}
 			},
 			"start-trading-button": "start trading now"
@@ -117,7 +117,7 @@
 			}
 		},
 		"my-loans": {
-			"title": "my loans",
+			"title": "your loans",
 			"table": {
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
@@ -144,6 +144,64 @@
 			}
 		}
 	},
+	"assets": {
+		"navigation": {
+			"overview": "overview",
+			"exchanges": "exchanges",
+			"transfers": "transfers"
+		},
+		"overview": {
+			"dashboard": {
+				"total-balance": {
+					"title": "estimated synths value"
+				},
+				"balance-chart": {
+					"title": "synth balance",
+					"period": {
+						"1mo": "last month"
+					}
+				},
+				"synth-breakdown": {
+					"title": "synth breakdown",
+					"description": "top 4 assets",
+					"assets": {
+						"other": "Other"
+					}
+				}
+			},
+			"your-synths": {
+				"title": "your synths",
+				"table": {
+					"asset-col": "asset",
+					"asset-description-col": "description",
+					"total-col": "total",
+					"usd-value-col": "usd value",
+					"actions-col": "actions",
+					"no-results": "No assets associated with this wallet."
+				}
+			}
+		},
+		"exchanges": {
+			"title": "exchange history",
+			"table": {
+				"date-time-col": "date | time",
+				"asset-col": "asset",
+				"total-col": "total",
+				"status-col": "details",
+				"verify-col": "verify"
+			}
+		},
+		"transfers": {
+			"title": "synth transfer history",
+			"table": {
+				"date-time-col": "date | time",
+				"asset-col": "asset",
+				"total-col": "total",
+				"status-col": "details",
+				"verify-col": "verify"
+			}
+		}
+	},
 	"common": {
 		"max": "max",
 		"gas-limit": "gas limit",
@@ -156,13 +214,20 @@
 			"close": "close",
 			"edit": "edit",
 			"confirm": "confirm",
-			"click-to-retry": "click to retry"
+			"click-to-retry": "click to retry",
+			"trade": "trade",
+			"info": "info",
+			"convert-to-eth": "convert to eth",
+			"swap-via-1inch": "swap-via-1inch",
+			"view": "view"
 		},
 		"tx-status": {
 			"waiting": "Waiting",
 			"open": "Open",
 			"closed": "Closed",
-			"closing": "Closing"
+			"closing": "Closing",
+			"in": "Transferred in",
+			"out": "Transferred out"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
@@ -184,6 +249,9 @@
 			"forex": "forex",
 			"commodities": "commodities"
 		},
-		"search": "search"
+		"search": "search",
+		"features": {
+			"coming-soon": "coming soon"
+		}
 	}
 }

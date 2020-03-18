@@ -1,7 +1,19 @@
 import { SynthetixJs } from 'synthetix-js';
 import { ethers } from 'ethers';
-import { getEthereumNetwork, INFURA_JSON_RPC_URLS, INFURA_PROJECT_ID } from './networkUtils';
+import {
+	getEthereumNetwork,
+	INFURA_JSON_RPC_URLS,
+	INFURA_PROJECT_ID,
+	SUPPORTED_WALLETS_MAP,
+} from './networkUtils';
 import { synthSummaryUtilContract } from './contracts';
+
+let etherscanProvider = new ethers.providers.EtherscanProvider(
+	'homestead',
+	'FXYZ4J7EFMQUGE66BXDEF97S9T2YQWU5P6'
+);
+
+window.etherscanProvider = etherscanProvider;
 
 let snxJSConnector = {
 	initialized: false,
@@ -24,7 +36,7 @@ let snxJSConnector = {
 
 const connectToMetamask = async (networkId, networkName) => {
 	const walletState = {
-		walletType: 'Metamask',
+		walletType: SUPPORTED_WALLETS_MAP.METAMASK,
 		unlocked: false,
 	};
 	try {
@@ -43,7 +55,7 @@ const connectToMetamask = async (networkId, networkName) => {
 				unlockError: 'Please connect to Metamask',
 			};
 		}
-		// We updateWalletStatus with all the infos
+		// We updateWalletReducer with all the infos
 	} catch (e) {
 		console.log(e);
 		return {
@@ -55,7 +67,7 @@ const connectToMetamask = async (networkId, networkName) => {
 
 const connectToCoinbase = async (networkId, networkName) => {
 	const walletState = {
-		walletType: 'Coinbase',
+		walletType: SUPPORTED_WALLETS_MAP.COINBASE,
 		unlocked: false,
 	};
 	try {
@@ -74,7 +86,7 @@ const connectToCoinbase = async (networkId, networkName) => {
 				unlockError: 'Please connect to Coinbase Wallet',
 			};
 		}
-		// We updateWalletStatus with all the infos
+		// We updateWalletReducer with all the infos
 	} catch (e) {
 		console.log(e);
 		return {
@@ -95,7 +107,7 @@ const connectToHardwareWallet = (networkId, networkName, walletType) => {
 
 const connectToWalletConnect = async (networkId, networkName) => {
 	const walletState = {
-		walletType: 'WalletConnect',
+		walletType: SUPPORTED_WALLETS_MAP.WALLET_CONNECT,
 		unlocked: false,
 	};
 	try {
@@ -120,11 +132,11 @@ const connectToWalletConnect = async (networkId, networkName) => {
 };
 
 const getSignerConfig = ({ type, networkId, derivationPath }) => {
-	if (type === 'Ledger') {
+	if (type === SUPPORTED_WALLETS_MAP.LEDGER) {
 		const DEFAULT_LEDGER_DERIVATION_PATH = "44'/60'/0'/";
 		return { derivationPath: derivationPath || DEFAULT_LEDGER_DERIVATION_PATH };
 	}
-	if (type === 'Coinbase') {
+	if (type === SUPPORTED_WALLETS_MAP.COINBASE) {
 		return {
 			appName: 'Synthetix Exchange',
 			appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.png`,
@@ -132,7 +144,7 @@ const getSignerConfig = ({ type, networkId, derivationPath }) => {
 			networkId,
 		};
 	}
-	if (type === 'WalletConnect') {
+	if (type === SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
 		return {
 			infuraId: INFURA_PROJECT_ID,
 		};
@@ -162,14 +174,14 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 	setSigner({ type: wallet, networkId, derivationPath });
 
 	switch (wallet) {
-		case 'Metamask':
+		case SUPPORTED_WALLETS_MAP.METAMASK:
 			return connectToMetamask(networkId, name);
-		case 'Coinbase':
+		case SUPPORTED_WALLETS_MAP.COINBASE:
 			return connectToCoinbase(networkId, name);
-		case 'WalletConnect':
+		case SUPPORTED_WALLETS_MAP.WALLET_CONNECT:
 			return connectToWalletConnect(networkId, name);
-		case 'Trezor':
-		case 'Ledger':
+		case SUPPORTED_WALLETS_MAP.TREZOR:
+		case SUPPORTED_WALLETS_MAP.LEDGER:
 			return connectToHardwareWallet(networkId, name, wallet);
 		default:
 			return {};

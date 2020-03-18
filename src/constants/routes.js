@@ -5,6 +5,12 @@ export const ROUTES = {
 	Home: '/',
 	Trade: '/trade',
 	Loans: '/loans',
+	Assets: {
+		Home: '/assets',
+		Overview: '/assets/overview',
+		Exchanges: '/assets/exchanges',
+		Transfers: '/assets/transfers',
+	},
 };
 
 export const navigateTo = (path, replacePath = false) =>

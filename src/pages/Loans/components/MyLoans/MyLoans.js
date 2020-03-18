@@ -6,18 +6,18 @@ import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { ReactComponent as NoWalletIcon } from '../../../../assets/images/no-wallet.svg';
-import { ReactComponent as ErrorCircleIcon } from '../../../../assets/images/error-circle.svg';
-import { ReactComponent as SortDownIcon } from '../../../../assets/images/sort-down.svg';
-import { ReactComponent as SortUpIcon } from '../../../../assets/images/sort-up.svg';
-import { ReactComponent as SortIcon } from '../../../../assets/images/sort.svg';
+import { ReactComponent as NoWalletIcon } from 'src/assets/images/no-wallet.svg';
+import { ReactComponent as ErrorCircleIcon } from 'src/assets/images/error-circle.svg';
+import { ReactComponent as SortDownIcon } from 'src/assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from 'src/assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
 
-import Card from '../../../../components/Card';
-import { ButtonPrimarySmall } from '../../../../components/Button';
-import { HeadingSmall } from '../../../../components/Typography';
-import Spinner from '../../../../components/Spinner';
+import Card from 'src/components/Card';
+import { ButtonPrimarySmall } from 'src/components/Button';
+import { HeadingSmall } from 'src/components/Typography';
+import Spinner from 'src/components/Spinner';
 
-import { absoluteCenteredCSS } from '../../../../shared/commonStyles';
+import { absoluteCenteredCSS, TableNoResults } from 'src/shared/commonStyles';
 
 import {
 	fetchLoans,
@@ -27,17 +27,13 @@ import {
 	getMyLoansLoadingError,
 	getIsLoadedMyLoans,
 	LOAN_STATUS,
-} from '../../../../ducks/loans/myLoans';
-import { getWalletInfo } from '../../../../ducks';
-import { showWalletPopup } from '../../../../ducks/ui';
+} from 'src/ducks/loans/myLoans';
+import { getWalletInfo } from 'src/ducks';
+import { showWalletPopup } from 'src/ducks/ui';
 
-import {
-	formatTxTimestamp,
-	formatCurrencyWithKey,
-	formatCurrency,
-} from '../../../../utils/formatters';
+import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'src/utils/formatters';
 
-import { CARD_HEIGHT } from '../../../../constants/ui';
+import { CARD_HEIGHT } from 'src/constants/ui';
 
 export const MyLoans = ({
 	onSelectLoan,
@@ -221,7 +217,9 @@ export const MyLoans = ({
 						<HeaderSpinner size="sm" centered={true} />
 					) : (
 						rows.length === 0 &&
-						isLoadedMyLoans && <NoResults>{t('loans.my-loans.table.no-results')}</NoResults>
+						isLoadedMyLoans && (
+							<TableNoResults>{t('loans.my-loans.table.no-results')}</TableNoResults>
+						)
 					)}
 				</Table>
 			</StyledCardBody>
@@ -269,9 +267,9 @@ const TableBody = styled.div`
 
 const TableBodyRow = styled(TableRow)`
 	background-color: ${props =>
-		props.isSelectedLoan ? props.theme.colors.accentDark : props.theme.colors.surfaceL3};
+		props.isSelectedLoan ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 	&:hover {
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${props => props.theme.colors.accentL1};
 		> * {
 			transition: transform 0.2s ease-out;
 			transform: scale(1.02);
@@ -301,13 +299,6 @@ const TableCellHead = styled(TableCell)`
 	user-select: none;
 	text-transform: uppercase;
 	background-color: ${props => props.theme.colors.surfaceL3};
-`;
-
-const NoResults = styled.div`
-	margin-top: 20px;
-	color: ${props => props.theme.colors.fontPrimary};
-	font-size: 13px;
-	padding: 0 18px;
 `;
 
 const MessageContainer = styled.div`
