@@ -147,7 +147,8 @@
 	"assets": {
 		"navigation": {
 			"overview": "overview",
-			"transactions": "transactions"
+			"exchanges": "exchanges",
+			"transfers": "transfers"
 		},
 		"overview": {
 			"dashboard": {
@@ -180,8 +181,18 @@
 				}
 			}
 		},
-		"transactions": {
-			"title": "transactions history",
+		"exchanges": {
+			"title": "exchange history",
+			"table": {
+				"date-time-col": "date | time",
+				"asset-col": "asset",
+				"total-col": "total",
+				"status-col": "details",
+				"verify-col": "verify"
+			}
+		},
+		"transfers": {
+			"title": "synth transfer history",
 			"table": {
 				"date-time-col": "date | time",
 				"asset-col": "asset",

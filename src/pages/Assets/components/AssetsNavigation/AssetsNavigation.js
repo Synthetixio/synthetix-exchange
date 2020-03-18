@@ -7,6 +7,7 @@ import { labelSmallCSS } from 'src/components/Typography/Label';
 
 import { ReactComponent as ChartsSquareIcon } from 'src/assets/images/charts-square.svg';
 import { ReactComponent as ClockSquareIcon } from 'src/assets/images/clock-square.svg';
+import { ReactComponent as ArrowsSquareIcon } from 'src/assets/images/arrows-square.svg';
 
 import { ROUTES } from 'src/constants/routes';
 
@@ -17,9 +18,14 @@ const MenuLinks = [
 		icon: <ClockSquareIcon />,
 	},
 	{
-		route: ROUTES.Assets.Transactions,
-		i18nKey: 'assets.navigation.transactions',
+		route: ROUTES.Assets.Exchanges,
+		i18nKey: 'assets.navigation.exchanges',
 		icon: <ChartsSquareIcon />,
+	},
+	{
+		route: ROUTES.Assets.Transfers,
+		i18nKey: 'assets.navigation.transfers',
+		icon: <ArrowsSquareIcon />,
 	},
 ];
 
@@ -27,23 +33,25 @@ const AssetsNavigation = memo(() => {
 	const { t } = useTranslation();
 
 	return (
-		<ul>
-			{MenuLinks.map(({ route, i18nKey, icon }) => (
-				<li key={route}>
-					<ListItemLink to={route}>
-						<span>{t(i18nKey)}</span>
-						{icon}
-					</ListItemLink>
-				</li>
-			))}
-		</ul>
+		<div>
+			<List>
+				{MenuLinks.map(({ route, i18nKey, icon }) => (
+					<li key={route}>
+						<ListItemLink to={route}>
+							<span>{t(i18nKey)}</span>
+							{icon}
+						</ListItemLink>
+					</li>
+				))}
+			</List>
+		</div>
 	);
 });
 
 const ListItemLink = styled(Link)`
 	${labelSmallCSS};
 	width: 170px;
-	border: 1px solid ${props => props.theme.colors.accentL2};
+	border-bottom: 1px solid ${props => props.theme.colors.accentL2};
 	font-size: 12px;
 	padding: 10px 16px;
 	box-sizing: border-box;
@@ -60,6 +68,15 @@ const ListItemLink = styled(Link)`
 	&.active {
 		background-color: ${props => props.theme.colors.accentL2};
 		color: ${props => props.theme.colors.fontPrimary};
+	}
+`;
+
+const List = styled.ul`
+	border: 1px solid ${props => props.theme.colors.accentL2};
+	> * {
+		&:last-child > ${ListItemLink} {
+			border: 0;
+		}
 	}
 `;
 

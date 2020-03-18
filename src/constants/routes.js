@@ -8,7 +8,8 @@ export const ROUTES = {
 	Assets: {
 		Home: '/assets',
 		Overview: '/assets/overview',
-		Transactions: '/assets/transactions',
+		Exchanges: '/assets/exchanges',
+		Transfers: '/assets/transfers',
 	},
 };
 

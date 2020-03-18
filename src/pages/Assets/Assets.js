@@ -7,7 +7,8 @@ import { CenteredPageLayout } from 'src/shared/commonStyles';
 import AssetsNavigation from './components/AssetsNavigation';
 
 import Overview from './Overview';
-import Transactions from './Transactions';
+import Exchanges from './Exchanges';
+import Transfers from './Transfers';
 
 const Assets = memo(() => (
 	<CenteredPageLayout>
@@ -15,7 +16,8 @@ const Assets = memo(() => (
 		<Content>
 			<Switch>
 				<Route path={ROUTES.Assets.Overview} component={Overview} />
-				<Route path={ROUTES.Assets.Transactions} component={Transactions} />
+				<Route path={ROUTES.Assets.Exchanges} component={Exchanges} />
+				<Route path={ROUTES.Assets.Transfers} component={Transfers} />
 				<Redirect to={ROUTES.Assets.Overview} />
 			</Switch>
 		</Content>

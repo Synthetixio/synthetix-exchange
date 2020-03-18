@@ -17,9 +17,9 @@ import { ButtonPrimary } from 'src/components/Button';
 import { getEtherscanTxLink } from 'src/utils/explorers';
 import { formatTxTimestamp, formatCurrency } from 'src/utils/formatters';
 
-import { getNetworkId } from 'src/ducks/index';
+import { getNetworkId } from 'src/ducks';
 
-const MOCK_TRANSACTIONS = [
+const MOCK_TRANSFERS = [
 	{
 		time: Date.now(),
 		currencyKey: CRYPTO_CURRENCY_MAP.ETH,
@@ -29,27 +29,27 @@ const MOCK_TRANSACTIONS = [
 	},
 ];
 
-export const Transactions = memo(({ transactions = MOCK_TRANSACTIONS, networkId }) => {
+export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 	const { t } = useTranslation();
 
 	return (
 		<Card>
 			<Card.Header>
-				<HeadingSmall>{t('assets.transactions.title')}</HeadingSmall>
+				<HeadingSmall>{t('assets.transfers.title')}</HeadingSmall>
 			</Card.Header>
 			<StyledCardBody>
 				<Table
 					palette={TABLE_PALETTE.STRIPED}
 					columns={[
 						{
-							Header: t('assets.transactions.table.date-time-col'),
+							Header: t('assets.transfers.table.date-time-col'),
 							accessor: 'time',
 							Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
 							width: 150,
 							sortable: true,
 						},
 						{
-							Header: t('assets.transactions.table.asset-col'),
+							Header: t('assets.transfers.table.asset-col'),
 							accessor: 'currencyKey',
 							Cell: cellProps => (
 								<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
@@ -57,21 +57,21 @@ export const Transactions = memo(({ transactions = MOCK_TRANSACTIONS, networkId 
 							width: 150,
 						},
 						{
-							Header: t('assets.transactions.table.total-col'),
+							Header: t('assets.transfers.table.total-col'),
 							accessor: 'amount',
 							Cell: cellProps => <span>{formatCurrency(cellProps.cell.value)}</span>,
 							width: 150,
 							sortable: true,
 						},
 						{
-							Header: t('assets.transactions.table.status-col'),
+							Header: t('assets.transfers.table.status-col'),
 							accessor: 'status',
 							Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
 							width: 150,
 							sortable: true,
 						},
 						{
-							Header: t('assets.transactions.table.verify-col'),
+							Header: t('assets.transfers.table.verify-col'),
 							accessor: 'actions',
 							Cell: cellProps => (
 								<Link
@@ -83,12 +83,17 @@ export const Transactions = memo(({ transactions = MOCK_TRANSACTIONS, networkId 
 							),
 						},
 					]}
-					data={transactions}
+					data={transfers}
 				/>
 			</StyledCardBody>
 		</Card>
 	);
 });
+
+Transfers.propTypes = {
+	transfers: PropTypes.array,
+	networkId: PropTypes.string.isRequired,
+};
 
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
@@ -98,9 +103,4 @@ const mapStateToProps = state => ({
 	networkId: getNetworkId(state),
 });
 
-Transactions.propTypes = {
-	transactions: PropTypes.array,
-	networkId: PropTypes.string.isRequired,
-};
-
-export default connect(mapStateToProps, null)(Transactions);
+export default connect(mapStateToProps, null)(Transfers);
