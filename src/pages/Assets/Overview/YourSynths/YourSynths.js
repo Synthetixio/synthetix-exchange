@@ -23,14 +23,14 @@ import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 import { LINKS } from 'src/constants/links';
 import Spinner from 'src/components/Spinner';
 
-export const YourAssets = memo(
+export const YourSynths = memo(
 	({ synthsWalletBalances, isRefreshingWalletBalances, synthsMap }) => {
 		const { t } = useTranslation();
 
 		return (
 			<Card>
 				<Card.Header>
-					<HeadingSmall>{t('assets.overview.your-assets.title')}</HeadingSmall>
+					<HeadingSmall>{t('assets.overview.your-synths.title')}</HeadingSmall>
 					{isRefreshingWalletBalances && <Spinner size="sm" />}
 				</Card.Header>
 				<StyledCardBody>
@@ -38,7 +38,7 @@ export const YourAssets = memo(
 						palette={TABLE_PALETTE.STRIPED}
 						columns={[
 							{
-								Header: t('assets.overview.your-assets.table.asset-col'),
+								Header: t('assets.overview.your-synths.table.asset-col'),
 								accessor: 'name',
 								Cell: cellProps => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
@@ -47,7 +47,7 @@ export const YourAssets = memo(
 								sortable: true,
 							},
 							{
-								Header: t('assets.overview.your-assets.table.asset-description-col'),
+								Header: t('assets.overview.your-synths.table.asset-description-col'),
 								id: 'asset-desc',
 								Cell: cellProps => {
 									const currencyKey = cellProps.row.original.name;
@@ -56,14 +56,14 @@ export const YourAssets = memo(
 								width: 150,
 							},
 							{
-								Header: t('assets.overview.your-assets.table.total-col'),
+								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
 								Cell: cellProps => formatCurrency(cellProps.cell.value, 4),
 								width: 150,
 								sortable: true,
 							},
 							{
-								Header: t('assets.overview.your-assets.table.usd-value-col'),
+								Header: t('assets.overview.your-synths.table.usd-value-col'),
 								accessor: 'usdBalance',
 								Cell: cellProps => (
 									<span>
@@ -77,7 +77,7 @@ export const YourAssets = memo(
 								sortable: true,
 							},
 							{
-								Header: t('assets.overview.your-assets.table.actions-col'),
+								Header: t('assets.overview.your-synths.table.actions-col'),
 								accessor: 'actions',
 								width: 250,
 								Cell: cellProps => {
@@ -126,7 +126,7 @@ const StyledCardBody = styled(Card.Body)`
 	padding: 0;
 `;
 
-YourAssets.propTypes = {
+YourSynths.propTypes = {
 	synthsMap: PropTypes.object,
 	synthsWalletBalances: PropTypes.array.isRequired,
 	isRefreshingWalletBalances: PropTypes.bool,
@@ -138,4 +138,4 @@ const mapStateToProps = state => ({
 	isRefreshingWalletBalances: getIsRefreshingWalletBalances(state),
 });
 
-export default connect(mapStateToProps, null)(YourAssets);
+export default connect(mapStateToProps, null)(YourSynths);

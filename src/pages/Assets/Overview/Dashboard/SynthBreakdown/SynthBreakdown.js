@@ -15,7 +15,7 @@ import { getIsLoadedWalletBalances, getSynthsWalletBalances } from 'src/ducks/wa
 
 const TOP_HOLDINGS = 4;
 
-export const WalletBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalances, theme }) => {
+export const SynthBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalances, theme }) => {
 	const { t } = useTranslation();
 	const COLORS = [
 		theme.colors.icons,
@@ -25,26 +25,27 @@ export const WalletBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalan
 		theme.colors.fontSecondary,
 	];
 
-	let topHoldings = synthsWalletBalances.slice(0, TOP_HOLDINGS);
+	let topSynthHoldings = synthsWalletBalances.slice(0, TOP_HOLDINGS);
 
+	// push the rest of synths to "other"
 	if (synthsWalletBalances.length > TOP_HOLDINGS) {
-		topHoldings.push({
-			portfolioPercent: 1 - sumBy(topHoldings, 'portfolioPercent'),
-			name: t('assets.overview.dashboard.wallet-breakdown.assets.other'),
+		topSynthHoldings.push({
+			portfolioPercent: 1 - sumBy(topSynthHoldings, 'portfolioPercent'),
+			name: t('assets.overview.dashboard.synth-breakdown.assets.other'),
 		});
 	}
 
 	return (
 		<Card>
 			<Card.Header>
-				<HeadingSmall>{t('assets.overview.dashboard.wallet-breakdown.title')}</HeadingSmall>
+				<HeadingSmall>{t('assets.overview.dashboard.synth-breakdown.title')}</HeadingSmall>
 			</Card.Header>
 			<StyledCardBody>
 				{isLoadedWalletBalances && (
 					<Container>
 						<PieChart width={92} height={92}>
 							<Pie
-								data={topHoldings}
+								data={topSynthHoldings}
 								dataKey="portfolioPercent"
 								innerRadius={25}
 								outerRadius={45}
@@ -53,21 +54,21 @@ export const WalletBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalan
 								isAnimationActive={false}
 								stroke="none"
 							>
-								{topHoldings.map((entry, index) => (
-									<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+								{topSynthHoldings.map((synth, index) => (
+									<Cell key={`chart-segment-${synth.name}`} fill={COLORS[index % COLORS.length]} />
 								))}
 							</Pie>
 						</PieChart>
 						<ChartLegend>
-							{topHoldings.map((balance, index) => (
-								<ChartLegendItem key={balance.name}>
+							{topSynthHoldings.map((synth, index) => (
+								<ChartLegendItem key={synth.name}>
 									<ChartLegendItemColor
 										style={{
 											background: COLORS[index % COLORS.length],
 										}}
 									/>
 									<span>
-										{balance.name}: {formatPercentage(balance.portfolioPercent)}
+										{synth.name}: {formatPercentage(synth.portfolioPercent)}
 									</span>
 								</ChartLegendItem>
 							))}
@@ -108,7 +109,7 @@ const ChartLegendItemColor = styled.span`
 	border-radius: 1px;
 `;
 
-WalletBreakdown.propTypes = {
+SynthBreakdown.propTypes = {
 	isLoadedWalletBalances: PropTypes.bool.isRequired,
 	synthsWalletBalances: PropTypes.array,
 	theme: PropTypes.object,
@@ -119,4 +120,4 @@ const mapStateToProps = state => ({
 	synthsWalletBalances: getSynthsWalletBalances(state),
 });
 
-export default connect(mapStateToProps, null)(withTheme(WalletBreakdown));
+export default connect(mapStateToProps, null)(withTheme(SynthBreakdown));

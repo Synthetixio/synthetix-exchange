@@ -160,14 +160,14 @@
 						"1mo": "last month"
 					}
 				},
-				"wallet-breakdown": {
+				"synth-breakdown": {
 					"title": "synth breakdown",
 					"assets": {
 						"other": "other"
 					}
 				}
 			},
-			"your-assets": {
+			"your-synths": {
 				"title": "your synths",
 				"table": {
 					"asset-col": "asset",

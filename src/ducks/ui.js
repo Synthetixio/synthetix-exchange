@@ -1,5 +1,6 @@
 import { persistState, getPersistedState } from '../config/store';
 import { isLightTheme, THEMES } from '../styles/theme';
+import { FIAT_CURRENCY_MAP } from 'src/constants/currency';
 
 const CHANGE_SCREEN = 'UI/CHANGE_SCREEN';
 const TOGGLE_WALLET_POPUP = 'UI/TOGGLE_WALLET_SELECTOR_POPUP';
@@ -18,6 +19,7 @@ const defaultState = Object.assign(
 		gweiPopupIsVisibile: false,
 		depotPopupIsVisible: false,
 		synthSearch: '',
+		fiatCurrency: FIAT_CURRENCY_MAP.USD,
 	},
 	persistedState
 );
@@ -87,5 +89,8 @@ export const toggleTheme = () => {
 export const setSynthSearch = search => {
 	return { type: SET_SYNTH_SEARCH, payload: search };
 };
+
+export const getUIState = state => state.ui;
+export const getFiatCurrency = state => getUIState(state).fiatCurrency;
 
 export default reducer;

@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 import TotalBalance from './TotalBalance';
 import BalanceChart from './BalanceChart';
-import WalletBreakdown from './WalletBreakdown';
+import SynthBreakdown from './SynthBreakdown';
 
 export const Dashboard = memo(() => (
 	<Container>
 		<TotalBalance />
 		<BalanceChart />
-		<WalletBreakdown />
+		<SynthBreakdown />
 	</Container>
 ));
 

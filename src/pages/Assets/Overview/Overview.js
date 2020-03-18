@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 
 import Dashboard from './Dashboard';
-import YourAssets from './YourAssets';
+import YourSynths from './YourSynths';
 
 export const Overview = memo(() => (
 	<>
 		<Dashboard />
-		<YourAssets />
+		<YourSynths />
 	</>
 ));
 

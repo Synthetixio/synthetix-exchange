@@ -13,7 +13,7 @@ import { getIsLoadedWalletBalances, getTotalWalletSynthsBalanceUSD } from 'src/d
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
 import { formatCurrencyWithSign } from 'src/utils/formatters';
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 
 export const TotalBalance = memo(
@@ -32,7 +32,8 @@ export const TotalBalance = memo(
 									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
 									totalWalletSynthsBalanceUSD
 							  )
-							: EMPTY_VALUE}
+							: EMPTY_VALUE}{' '}
+						{FIAT_CURRENCY_MAP.USD}
 					</Balance>
 				</StyledCardBody>
 			</Card>
