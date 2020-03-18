@@ -53,7 +53,6 @@ export const Exchanges = memo(
 			fetchMyTradesRequest();
 		}, []);
 
-		console.log(myTrades);
 		return (
 			<StyledCard>
 				<Card.Header>
