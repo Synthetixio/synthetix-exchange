@@ -106,21 +106,24 @@ export const getIsLoggedIn = createSelector(getCurrentWalletAddress, currentWall
 	currentWallet != null ? true : false
 );
 
-export const getTotalWalletETHBalanceUSD = createSelector(getWalletBalancesMap, walletBalancesMap =>
+export const getTotalETHBalanceUSD = createSelector(getWalletBalancesMap, walletBalancesMap =>
 	walletBalancesMap == null ? 0 : walletBalancesMap.eth.usdBalance
 );
 
-export const getTotalWalletSynthsBalanceUSD = createSelector(
-	getWalletBalancesMap,
-	walletBalancesMap => (walletBalancesMap == null ? 0 : walletBalancesMap.synths.usdBalance)
+export const getTotalETHBalance = createSelector(getWalletBalancesMap, walletBalancesMap =>
+	walletBalancesMap == null ? 0 : walletBalancesMap.eth.balance
+);
+
+export const getTotalSynthsBalanceUSD = createSelector(getWalletBalancesMap, walletBalancesMap =>
+	walletBalancesMap == null ? 0 : walletBalancesMap.synths.usdBalance
 );
 
 export const getTotalWalletBalanceUSD = createSelector(
-	getTotalWalletETHBalanceUSD,
-	getTotalWalletSynthsBalanceUSD,
-	(totalWalletETHBalanceUSD, totalWalletSynthsBalanceUSD) =>
+	getTotalETHBalanceUSD,
+	getTotalSynthsBalanceUSD,
+	(totalWalletETHBalanceUSD, totalSynthsBalanceUSD) =>
 		toBigNumber(totalWalletETHBalanceUSD)
-			.plus(totalWalletSynthsBalanceUSD)
+			.plus(totalSynthsBalanceUSD)
 			.toNumber()
 );
 

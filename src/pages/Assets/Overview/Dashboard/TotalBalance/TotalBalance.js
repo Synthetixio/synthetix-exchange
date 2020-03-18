@@ -8,57 +8,88 @@ import PropTypes from 'prop-types';
 
 import Card from 'src/components/Card';
 import { HeadingSmall } from 'src/components/Typography';
+import { headingH5CSS } from 'src/components/Typography/Heading';
 
-import { getIsLoadedWalletBalances, getTotalWalletSynthsBalanceUSD } from 'src/ducks/wallet';
+import {
+	getIsLoadedWalletBalances,
+	getTotalSynthsBalanceUSD,
+	getWalletBalances,
+	getTotalETHBalance,
+} from 'src/ducks/wallet';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
-import { formatCurrencyWithSign } from 'src/utils/formatters';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
+import { formatCurrencyWithSign, formatCurrency } from 'src/utils/formatters';
+import { FIAT_CURRENCY_MAP, CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 import { EMPTY_VALUE } from 'src/constants/placeholder';
+import { FlexDivRow } from 'src/shared/commonStyles';
 
 export const TotalBalance = memo(
-	({ isLoadedWalletBalances, totalWalletSynthsBalanceUSD, synthsMap }) => {
+	({ isLoadedWalletBalances, totalSynthsBalanceUSD, synthsMap, totalETHBalance }) => {
 		const { t } = useTranslation();
 
 		return (
-			<Card>
-				<Card.Header>
-					<HeadingSmall>{t('assets.overview.dashboard.total-balance.title')}</HeadingSmall>
-				</Card.Header>
-				<StyledCardBody>
-					<Balance>
-						{isLoadedWalletBalances
-							? `${formatCurrencyWithSign(
-									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-									totalWalletSynthsBalanceUSD
-							  )} ${FIAT_CURRENCY_MAP.USD}`
-							: EMPTY_VALUE}
-					</Balance>
-				</StyledCardBody>
-			</Card>
+			<Container>
+				<Card>
+					<Card.Header>
+						<HeadingSmall>{t('assets.overview.dashboard.total-balance.title')}</HeadingSmall>
+					</Card.Header>
+					<Card.Body>
+						<Balance>
+							{isLoadedWalletBalances
+								? `${formatCurrencyWithSign(
+										get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
+										totalSynthsBalanceUSD
+								  )} ${FIAT_CURRENCY_MAP.USD}`
+								: EMPTY_VALUE}
+						</Balance>
+					</Card.Body>
+				</Card>
+				<Card>
+					<Card.Body>
+						<FlexDivRow>
+							<HeadingSmall>
+								{t('common.wallet.currency-balance', {
+									currencyKey: CRYPTO_CURRENCY_MAP.ETH,
+								})}
+							</HeadingSmall>
+							<ETHBalance>
+								{isLoadedWalletBalances ? formatCurrency(totalETHBalance) : EMPTY_VALUE}
+							</ETHBalance>
+						</FlexDivRow>
+					</Card.Body>
+				</Card>
+			</Container>
 		);
 	}
 );
 
-const Balance = styled.div`
-	color: ${props => props.theme.colors.fontPrimary};
-	font-size: 20px;
-`;
-
-const StyledCardBody = styled(Card.Body)`
-	height: 120px;
-`;
-
 TotalBalance.propTypes = {
 	synthsMap: PropTypes.object,
 	isLoadedWalletBalances: PropTypes.bool.isRequired,
-	totalWalletSynthsBalanceUSD: PropTypes.number,
+	totalSynthsBalanceUSD: PropTypes.number,
 };
+
+const Container = styled.div`
+	display: grid;
+	grid-gap: 8px;
+	grid-auto-flow: row;
+`;
+
+const Balance = styled.div`
+	color: ${props => props.theme.colors.fontSecondary};
+	${headingH5CSS};
+`;
+
+const ETHBalance = styled(HeadingSmall)`
+	color: ${props => props.theme.colors.fontSecondary};
+`;
 
 const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
+	walletBalances: getWalletBalances(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
-	totalWalletSynthsBalanceUSD: getTotalWalletSynthsBalanceUSD(state),
+	totalSynthsBalanceUSD: getTotalSynthsBalanceUSD(state),
+	totalETHBalance: getTotalETHBalance(state),
 });
 
 export default connect(mapStateToProps, null)(TotalBalance);
