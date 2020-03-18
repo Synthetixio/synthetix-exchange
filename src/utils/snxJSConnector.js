@@ -8,13 +8,6 @@ import {
 } from './networkUtils';
 import { synthSummaryUtilContract } from './contracts';
 
-let etherscanProvider = new ethers.providers.EtherscanProvider(
-	'homestead',
-	'FXYZ4J7EFMQUGE66BXDEF97S9T2YQWU5P6'
-);
-
-window.etherscanProvider = etherscanProvider;
-
 let snxJSConnector = {
 	initialized: false,
 	signers: SynthetixJs.signers,
