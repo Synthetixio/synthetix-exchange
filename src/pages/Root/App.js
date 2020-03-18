@@ -15,11 +15,13 @@ import GlobalEventsGate from '../../gates/GlobalEventsGate';
 import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
 
 import MainLayout from './components/MainLayout';
+import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
 
 import Trade from '../Trade';
 import Loans from '../Loans';
+import Assets from '../Assets';
 import Home from '../Home';
 
 const App = ({ isAppReady, currentTheme }) => {
@@ -52,6 +54,15 @@ const App = ({ isAppReady, currentTheme }) => {
 							</MainLayout>
 						)}
 					/>
+					<ProtectedRoute
+						path={ROUTES.Assets.Home}
+						render={routeProps => (
+							<MainLayout isAppReady={isAppReady}>
+								<Assets {...routeProps} />
+							</MainLayout>
+						)}
+					/>
+
 					<Route path={ROUTES.Home} component={Home} />
 				</Switch>
 			</Router>

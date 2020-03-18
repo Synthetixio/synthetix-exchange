@@ -7,8 +7,9 @@ import { navigateToTrade, navigateTo, ROUTES } from 'src/constants/routes';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 import ChangePercent from 'src/components/ChangePercent';
-import TableV2 from 'src/components/TableV2';
-import { TABLE_PALETTE } from 'src/components/TableV2/constants';
+import Table from 'src/components/Table';
+import { TABLE_PALETTE } from 'src/components/Table/constants';
+
 import Currency from 'src/components/Currency';
 import { ButtonPrimary } from 'src/components/Button';
 
@@ -35,8 +36,8 @@ export const MarketsTable = memo(({ markets, synthsMap }) => {
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<TableV2
-				palette={TABLE_PALETTE.LIGHT_SECONDARY}
+			<Table
+				palette={TABLE_PALETTE.LIGHT}
 				columns={[
 					{
 						Header: t('home.markets.table.pair-col'),

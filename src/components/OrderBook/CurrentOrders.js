@@ -4,7 +4,7 @@ import styled, { withTheme } from 'styled-components';
 import { format } from 'date-fns';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
+import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../deprecated/Table';
 import { getWalletInfo } from '../../ducks/';
 import { DataSmall } from '../Typography';
 import { formatCurrency } from '../../utils/formatters';

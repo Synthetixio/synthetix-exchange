@@ -107,7 +107,7 @@ const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${props =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentDark};
+	border-color: ${props => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 	position: fixed;
@@ -148,13 +148,13 @@ const MenuItems = styled(FlexDivCentered)`
 
 const MenuItemsLeft = styled(MenuItems)`
 	${MenuItem} {
-		border-right: 1px solid ${props => props.theme.colors.accentDark};
+		border-right: 1px solid ${props => props.theme.colors.accentL1};
 	}
 `;
 
 const MenuItemsRight = styled(MenuItems)`
 	${MenuItem} {
-		border-left: 1px solid ${props => props.theme.colors.accentDark};
+		border-left: 1px solid ${props => props.theme.colors.accentL1};
 	}
 `;
 
@@ -175,7 +175,7 @@ const dropdownItemCSS = css`
 	text-transform: uppercase;
 	&:hover {
 		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${props => props.theme.colors.accentL1};
 	}
 	cursor: pointer;
 	${media.small`
@@ -186,7 +186,7 @@ const dropdownItemCSS = css`
 const DropdownMenuLink = styled(Link)`
 	${dropdownItemCSS};
 	&.active {
-		background-color: ${props => props.theme.colors.accentLight};
+		background-color: ${props => props.theme.colors.accentL2};
 		color: ${props => props.theme.colors.fontPrimary};
 	}
 `;

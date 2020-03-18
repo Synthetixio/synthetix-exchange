@@ -3,24 +3,24 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import snxJSConnector, { connectToWallet } from '../../utils/snxJSConnector';
+import snxJSConnector, { connectToWallet } from 'src/utils/snxJSConnector';
 import {
 	hasWeb3,
 	SUPPORTED_WALLETS,
 	SUPPORTED_WALLETS_MAP,
 	onMetamaskAccountChange,
-} from '../../utils/networkUtils';
-import { updateWalletStatus, resetWalletStatus } from '../../ducks/wallet';
-import { toggleWalletPopup } from '../../ducks/ui';
-import { getWalletInfo } from '../../ducks';
+} from 'src/utils/networkUtils';
+import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet';
+import { toggleWalletPopup } from 'src/ducks/ui';
+import { getWalletInfo } from 'src/ducks';
 
 import { HeadingMedium } from '../Typography';
 
-import { ReactComponent as CoinbaseWallet } from '../../assets/images/wallets/coinbase.svg';
-import { ReactComponent as LedgerWallet } from '../../assets/images/wallets/ledger.svg';
-import { ReactComponent as MetamaskWallet } from '../../assets/images/wallets/metamask.svg';
-import { ReactComponent as TrezorWallet } from '../../assets/images/wallets/trezor.svg';
-import { ReactComponent as WalletConnect } from '../../assets/images/wallets/walletConnect.svg';
+import { ReactComponent as CoinbaseWallet } from 'src/assets/images/wallets/coinbase.svg';
+import { ReactComponent as LedgerWallet } from 'src/assets/images/wallets/ledger.svg';
+import { ReactComponent as MetamaskWallet } from 'src/assets/images/wallets/metamask.svg';
+import { ReactComponent as TrezorWallet } from 'src/assets/images/wallets/trezor.svg';
+import { ReactComponent as WalletConnect } from 'src/assets/images/wallets/walletConnect.svg';
 
 const { METAMASK, LEDGER, TREZOR, COINBASE, WALLET_CONNECT } = SUPPORTED_WALLETS_MAP;
 
@@ -33,7 +33,7 @@ const walletTypeToIconMap = {
 };
 
 const WalletTypeSelector = ({
-	updateWalletStatus,
+	updateWalletReducer,
 	toggleWalletPopup,
 	selectAddressScreen,
 	walletInfo: { derivationPath },
@@ -41,9 +41,9 @@ const WalletTypeSelector = ({
 	const { t } = useTranslation();
 
 	const onWalletClick = async ({ wallet, derivationPath }) => {
-		resetWalletStatus();
+		resetWalletReducer();
 		const walletStatus = await connectToWallet({ wallet, derivationPath });
-		updateWalletStatus({ ...walletStatus, availableWallets: [] });
+		updateWalletReducer({ ...walletStatus, availableWallets: [] });
 		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
 			if (walletStatus.walletType === METAMASK) {
 				onMetamaskAccountChange(async accounts => {
@@ -53,7 +53,7 @@ const WalletTypeSelector = ({
 							networkId: walletStatus.networkId,
 							signer,
 						});
-						updateWalletStatus({ currentWallet: accounts[0] });
+						updateWalletReducer({ currentWallet: accounts[0] });
 					}
 				});
 			}
@@ -134,9 +134,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-	updateWalletStatus,
+	updateWalletReducer,
 	toggleWalletPopup,
-	resetWalletStatus,
+	resetWalletReducer,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletTypeSelector);

@@ -65,7 +65,7 @@ export const Dot = styled.div`
 	width: 14px;
 	height: 14px;
 	border-radius: 50%;
-	background-color: ${props => props.theme.colors.accentLight};
+	background-color: ${props => props.theme.colors.accentL2};
 `;
 
 export const FormInputRow = styled.div`
@@ -170,5 +170,5 @@ export const RoundedIcon = styled(FlexDivCentered)`
 	border-radius: 100%;
 	justify-content: center;
 
-	background-color: ${props => props.theme.colors.accentDark};
+	background-color: ${props => props.theme.colors.accentL1};
 `;

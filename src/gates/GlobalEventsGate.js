@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { updateLoan, swapTxHashWithLoanID, LOAN_STATUS } from '../ducks/loans/myLoans';
-import { fetchWalletBalances } from '../ducks/wallet';
+import { fetchWalletBalancesRequest } from '../ducks/wallet';
 import { fetchRates } from '../ducks/rates';
 import { fetchLoansContractInfo } from '../ducks/loans/contractInfo';
 
@@ -13,7 +13,7 @@ import { LOAN_EVENTS, EXCHANGE_RATES_EVENTS } from '../constants/events';
 
 const GlobalEventsGate = ({
 	updateLoan,
-	fetchWalletBalances,
+	fetchWalletBalancesRequest,
 	fetchLoansContractInfo,
 	swapTxHashWithLoanID,
 	fetchRates,
@@ -25,7 +25,7 @@ const GlobalEventsGate = ({
 
 		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
 			fetchLoansContractInfo();
-			fetchWalletBalances();
+			fetchWalletBalancesRequest();
 
 			const { transactionHash } = tx;
 			const loanIDNumber = Number(loanID);
@@ -47,7 +47,7 @@ const GlobalEventsGate = ({
 
 		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
 			fetchLoansContractInfo();
-			fetchWalletBalances();
+			fetchWalletBalancesRequest();
 			updateLoan({
 				loanID: Number(loanID),
 				loanInfo: {
@@ -74,7 +74,7 @@ const GlobalEventsGate = ({
 
 GlobalEventsGate.propTypes = {
 	updateLoan: PropTypes.func,
-	fetchWalletBalances: PropTypes.func,
+	fetchWalletBalancesRequest: PropTypes.func,
 	fetchLoansContractInfo: PropTypes.func,
 	fetchRates: PropTypes.func,
 };
@@ -82,7 +82,7 @@ GlobalEventsGate.propTypes = {
 const mapDispatchToProps = {
 	swapTxHashWithLoanID,
 	updateLoan,
-	fetchWalletBalances,
+	fetchWalletBalancesRequest,
 	fetchLoansContractInfo,
 	fetchRates,
 };

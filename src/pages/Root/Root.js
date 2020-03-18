@@ -9,7 +9,7 @@ import { getExchangeData } from '../../dataFetcher';
 
 import { getWalletInfo } from '../../ducks';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { updateWalletStatus, fetchWalletBalances } from '../../ducks/wallet';
+import { updateNetworkSettings, fetchWalletBalancesRequest } from '../../ducks/wallet';
 import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
@@ -24,9 +24,9 @@ const Root = ({
 	setNetworkGasInfo,
 	setExchangeFeeRate,
 	updateFrozenSynths,
-	updateWalletStatus,
+	updateNetworkSettings,
 	walletInfo: { currentWallet },
-	fetchWalletBalances,
+	fetchWalletBalancesRequest,
 	fetchRates,
 	setAppReady,
 	isAppReady,
@@ -42,9 +42,9 @@ const Root = ({
 
 	useEffect(() => {
 		if (isAppReady && currentWallet != null) {
-			fetchWalletBalances();
+			fetchWalletBalancesRequest();
 		}
-	}, [isAppReady, currentWallet, fetchWalletBalances]);
+	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
 
 	useEffect(() => {
 		if (isAppReady) {
@@ -59,7 +59,7 @@ const Root = ({
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({ networkId });
 			}
-			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
+			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
 
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 
@@ -70,7 +70,7 @@ const Root = ({
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
-				fetchWalletBalances();
+				fetchWalletBalancesRequest();
 			}, REFRESH_INTERVAL);
 			setIntervalId(_intervalId);
 		};
@@ -81,7 +81,7 @@ const Root = ({
 			clearInterval(intervalId);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [fetchAndSetExchangeData, fetchWalletBalances]);
+	}, [fetchAndSetExchangeData, fetchWalletBalancesRequest]);
 
 	return <App isAppReady={isAppReady} />;
 };
@@ -95,9 +95,9 @@ const mapDispatchToProps = {
 	setAvailableSynths,
 	setNetworkGasInfo,
 	updateFrozenSynths,
-	updateWalletStatus,
+	updateNetworkSettings,
 	setExchangeFeeRate,
-	fetchWalletBalances,
+	fetchWalletBalancesRequest,
 	fetchRates,
 	setAppReady,
 };

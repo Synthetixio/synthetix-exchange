@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { DataSmall } from '../Typography';
 import { getNetworkId } from '../../ducks';
-import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../Table';
+import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../deprecated/Table';
 import { formatCurrency } from '../../utils/formatters';
 import { getEtherscanTxLink } from '../../utils/explorers';
 

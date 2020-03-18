@@ -57,12 +57,6 @@ export const getTransactionSettings = state => {
 	};
 };
 
-export const getWalletBalances = state => {
-	return state.wallet.balances;
-};
-
-export const getIsFetchingWalletBalances = state => state.wallet.isFetchingWalletBalances;
-
 // TRANSACTION REDUCERS
 export const getGasInfo = state => {
 	const { gasPrice, gasLimit, gasSpeed } = state.transaction;

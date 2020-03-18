@@ -269,9 +269,9 @@ const TableBody = styled.div`
 
 const TableBodyRow = styled(TableRow)`
 	background-color: ${props =>
-		props.isSelectedLoan ? props.theme.colors.accentDark : props.theme.colors.surfaceL3};
+		props.isSelectedLoan ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 	&:hover {
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${props => props.theme.colors.accentL1};
 		> * {
 			transition: transform 0.2s ease-out;
 			transform: scale(1.02);

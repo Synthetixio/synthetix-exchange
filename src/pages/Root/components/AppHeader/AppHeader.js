@@ -40,16 +40,12 @@ export const AppHeader = memo(props => {
 							<Logo />
 						</Link>
 					</MenuItem>
-					{!isTabletOrMobile && (
-						<>
-							<MenuLinkItem>
-								<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
-							</MenuLinkItem>
-							<MenuLinkItem>
-								<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
-							</MenuLinkItem>
-						</>
-					)}
+					<MenuLinkItem>
+						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
+					</MenuLinkItem>
+					<MenuLinkItem>
+						<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
+					</MenuLinkItem>
 				</MenuItemsLeft>
 				<MenuItemsRight>
 					<MenuItem>
@@ -83,7 +79,7 @@ export const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${props =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentDark};
+	border-color: ${props => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 `;
@@ -119,10 +115,10 @@ const MenuLink = styled(Link)`
 	height: 32px;
 	&:hover {
 		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${props => props.theme.colors.accentL1};
 	}
 	&.active {
-		background-color: ${props => props.theme.colors.accentLight};
+		background-color: ${props => props.theme.colors.accentL2};
 		color: ${props => props.theme.colors.fontPrimary};
 	}
 `;
