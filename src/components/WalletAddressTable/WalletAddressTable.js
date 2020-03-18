@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import get from 'lodash/get';
 
 import { DataLarge } from '../Typography';
 import Spinner from '../Spinner';
