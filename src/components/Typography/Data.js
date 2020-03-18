@@ -54,5 +54,4 @@ export const tableDataSmallCSS = css`
 	font-size: 12px;
 	line-height: 15px;
 	letter-spacing: 0.2px;
-	padding: 18px;
 `;

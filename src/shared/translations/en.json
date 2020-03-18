@@ -162,8 +162,9 @@
 				},
 				"synth-breakdown": {
 					"title": "synth breakdown",
+					"description": "top 4 assets",
 					"assets": {
-						"other": "other"
+						"other": "Other"
 					}
 				}
 			},

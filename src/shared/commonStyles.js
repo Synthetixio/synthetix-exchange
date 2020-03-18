@@ -178,6 +178,7 @@ export const TableNoResults = styled.div`
 	padding-top: 20px;
 	color: ${props => props.theme.colors.fontPrimary};
 	${tableDataSmallCSS};
+	padding: 18px;
 `;
 
 export const CardHeadingDescription = styled.span`
