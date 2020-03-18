@@ -185,10 +185,14 @@
 			"title": "exchange history",
 			"table": {
 				"date-time-col": "date | time",
-				"asset-col": "asset",
+				"pair-col": "pair",
+				"buying-col": "buying",
+				"selling-col": "selling",
+				"price-col": "price",
 				"total-col": "total",
-				"status-col": "details",
-				"verify-col": "verify"
+				"status-col": "status",
+				"verify-col": "verify",
+				"no-results": "No exchanges associated with this wallet."
 			}
 		},
 		"transfers": {
@@ -227,7 +231,9 @@
 			"closed": "Closed",
 			"closing": "Closing",
 			"in": "Transferred in",
-			"out": "Transferred out"
+			"out": "Transferred out",
+			"complete": "Complete",
+			"pending": "Pending"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
