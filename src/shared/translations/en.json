@@ -174,7 +174,8 @@
 					"asset-description-col": "description",
 					"total-col": "total",
 					"usd-value-col": "usd value",
-					"actions-col": "actions"
+					"actions-col": "actions",
+					"no-results": "No assets associated with this wallet."
 				}
 			}
 		},

@@ -48,3 +48,11 @@ export const chartDataCSS = css`
 	line-height: 12px;
 	letter-spacing: 0.2px;
 `;
+
+export const tableDataSmallCSS = css`
+	font-family: ${props => props.theme.fonts.regular};
+	font-size: 12px;
+	line-height: 15px;
+	letter-spacing: 0.2px;
+	padding: 18px;
+`;

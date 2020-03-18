@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
+import { tableDataSmallCSS } from 'src/components/Typography/Data';
 
 import { Z_INDEX } from '../constants/ui';
 
@@ -171,4 +172,10 @@ export const RoundedIcon = styled(FlexDivCentered)`
 	justify-content: center;
 
 	background-color: ${props => props.theme.colors.accentL1};
+`;
+
+export const TableNoResults = styled.div`
+	padding-top: 20px;
+	color: ${props => props.theme.colors.fontPrimary};
+	${tableDataSmallCSS};
 `;

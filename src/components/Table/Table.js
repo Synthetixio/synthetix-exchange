@@ -12,6 +12,8 @@ import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
 import { lightTheme, darkTheme } from 'src/styles/theme';
 import { FlexDivCentered } from 'src/shared/commonStyles';
 
+import Spinner from 'src/components/Spinner';
+
 import { TABLE_PALETTE } from './constants';
 
 export const Table = ({
@@ -21,6 +23,7 @@ export const Table = ({
 	noResultsMessage = null,
 	onTableRowClick = undefined,
 	palette = TABLE_PALETTE.PRIMARY,
+	isLoading = false,
 }) => {
 	const memoizedColumns = useMemo(
 		() => columns,
@@ -64,6 +67,8 @@ export const Table = ({
 			))}
 			{noResultsMessage != null ? (
 				noResultsMessage
+			) : isLoading ? (
+				<Spinner size="sm" fullscreen={true} />
 			) : (
 				<TableBody {...getTableBodyProps()}>
 					{rows.map(row => {

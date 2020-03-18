@@ -18,7 +18,7 @@ export const BalanceChart = memo(({ currentTheme }) => {
 			<Card.Header>
 				<HeadingSmall>{t('assets.overview.dashboard.balance-chart.title')}</HeadingSmall>
 			</Card.Header>
-			<StyledCardBody>sdsdsd</StyledCardBody>
+			<StyledCardBody></StyledCardBody>
 		</Card>
 	);
 });

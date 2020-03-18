@@ -28,12 +28,11 @@ export const TotalBalance = memo(
 				<StyledCardBody>
 					<Balance>
 						{isLoadedWalletBalances
-							? formatCurrencyWithSign(
+							? `${formatCurrencyWithSign(
 									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
 									totalWalletSynthsBalanceUSD
-							  )
-							: EMPTY_VALUE}{' '}
-						{FIAT_CURRENCY_MAP.USD}
+							  )} ${FIAT_CURRENCY_MAP.USD}`
+							: EMPTY_VALUE}
 					</Balance>
 				</StyledCardBody>
 			</Card>

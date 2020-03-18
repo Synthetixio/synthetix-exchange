@@ -14,21 +14,34 @@ import { HeadingSmall } from 'src/components/Typography';
 import { ButtonPrimary } from 'src/components/Button';
 import Link from 'src/components/Link';
 
+import { TableNoResults } from 'src/shared/commonStyles';
+
 import { formatCurrency, formatCurrencyWithSign } from 'src/utils/formatters';
 
 import { getAvailableSynthsMap } from 'src/ducks/synths';
-import { getSynthsWalletBalances, getIsRefreshingWalletBalances } from 'src/ducks/wallet';
+import {
+	getSynthsWalletBalances,
+	getIsRefreshingWalletBalances,
+	getIsLoadedWalletBalances,
+	getIsFetchingWalletBalances,
+} from 'src/ducks/wallet';
 
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 import { LINKS } from 'src/constants/links';
 import Spinner from 'src/components/Spinner';
 
 export const YourSynths = memo(
-	({ synthsWalletBalances, isRefreshingWalletBalances, synthsMap }) => {
+	({
+		synthsWalletBalances,
+		isLoadedWalletBalances,
+		isRefreshingWalletBalances,
+		isFetchingWalletBalances,
+		synthsMap,
+	}) => {
 		const { t } = useTranslation();
 
 		return (
-			<Card>
+			<StyledCard>
 				<Card.Header>
 					<HeadingSmall>{t('assets.overview.your-synths.title')}</HeadingSmall>
 					{isRefreshingWalletBalances && <Spinner size="sm" />}
@@ -109,12 +122,28 @@ export const YourSynths = memo(
 							},
 						]}
 						data={synthsWalletBalances}
+						noResultsMessage={
+							isLoadedWalletBalances && synthsWalletBalances.length === 0 ? (
+								<TableNoResults>{t('assets.overview.your-synths.table.no-results')}</TableNoResults>
+							) : (
+								undefined
+							)
+						}
+						isLoading={isFetchingWalletBalances && !isLoadedWalletBalances}
 					/>
 				</StyledCardBody>
-			</Card>
+			</StyledCard>
 		);
 	}
 );
+
+YourSynths.propTypes = {
+	synthsMap: PropTypes.object,
+	synthsWalletBalances: PropTypes.array.isRequired,
+	isRefreshingWalletBalances: PropTypes.bool,
+	isFetchingWalletBalances: PropTypes.bool,
+	isLoadedWalletBalances: PropTypes.bool,
+};
 
 const ActionsCol = styled.div`
 	display: inline-grid;
@@ -122,20 +151,22 @@ const ActionsCol = styled.div`
 	grid-auto-flow: column;
 `;
 
-const StyledCardBody = styled(Card.Body)`
-	padding: 0;
+const StyledCard = styled(Card)`
+	flex-grow: 1;
 `;
 
-YourSynths.propTypes = {
-	synthsMap: PropTypes.object,
-	synthsWalletBalances: PropTypes.array.isRequired,
-	isRefreshingWalletBalances: PropTypes.bool,
-};
+const StyledCardBody = styled(Card.Body)`
+	padding: 0;
+	flex-grow: 1;
+	position: relative;
+`;
 
 const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	isRefreshingWalletBalances: getIsRefreshingWalletBalances(state),
+	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
+	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
 });
 
 export default connect(mapStateToProps, null)(YourSynths);
