@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+
 import PropTypes from 'prop-types';
 
 import { labelMediumCSS } from 'src/components/Typography/Label';
@@ -14,6 +16,8 @@ import { FlexDivCentered } from 'src/shared/commonStyles';
 
 import { mediumMediaQuery, breakpoint } from 'src/shared/media';
 
+import { getIsLoggedIn } from 'src/ducks/wallet';
+
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import UserInfo from './UserInfo';
@@ -22,7 +26,7 @@ import SupportLink from './SupportLink';
 import MobileAppHeader from './MobileAppHeader';
 
 export const AppHeader = memo(props => {
-	const { showThemeToggle, isOnSplashPage, ...rest } = props;
+	const { showThemeToggle, isOnSplashPage, isLoggedIn, ...rest } = props;
 	const { t } = useTranslation();
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -46,9 +50,11 @@ export const AppHeader = memo(props => {
 					<MenuLinkItem>
 						<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
 					</MenuLinkItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Assets.Home}>{t('header.links.assets')}</MenuLink>
-					</MenuLinkItem>
+					{isLoggedIn && (
+						<MenuLinkItem>
+							<MenuLink to={ROUTES.Assets.Home}>{t('header.links.assets')}</MenuLink>
+						</MenuLinkItem>
+					)}
 				</MenuItemsLeft>
 				<MenuItemsRight>
 					<MenuItem>
@@ -76,6 +82,7 @@ AppHeader.propTypes = {
 	showThemeToggle: PropTypes.bool,
 	className: PropTypes.string,
 	isOnSplashPage: PropTypes.bool,
+	isLoggedIn: PropTypes.bool,
 };
 
 export const Container = styled.header`
@@ -142,4 +149,8 @@ const MenuItemsRight = styled(MenuItems)`
 	}
 `;
 
-export default AppHeader;
+const mapStateToProps = state => ({
+	isLoggedIn: getIsLoggedIn(state),
+});
+
+export default connect(mapStateToProps, null)(AppHeader);
