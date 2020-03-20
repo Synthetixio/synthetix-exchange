@@ -8,9 +8,9 @@ import {
 	updateWalletPaginatorIndex,
 	setDerivationPath,
 	resetWalletReducer,
-} from 'src/ducks/wallet';
+} from 'src/ducks/wallet/walletDetails';
 import { toggleWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { HeadingMedium } from '../Typography';
 import WalletAddressTable from '../WalletAddressTable';
@@ -18,8 +18,6 @@ import WalletPaginator from '../WalletPaginator';
 import Spinner from '../Spinner';
 import Select from '../Select';
 import { ButtonPrimary } from '../Button';
-
-import { bigNumberFormatter } from 'src/utils/formatters';
 
 const WALLET_PAGE_SIZE = 5;
 const LEDGER_DERIVATION_PATHS = [

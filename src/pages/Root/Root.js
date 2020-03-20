@@ -7,9 +7,10 @@ import snxJSConnector from '../../utils/snxJSConnector';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData } from '../../dataFetcher';
 
-import { getWalletInfo } from '../../ducks';
+import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { updateNetworkSettings, fetchWalletBalancesRequest } from '../../ducks/wallet';
+import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
+import { updateNetworkSettings } from 'src/ducks/wallet/walletDetails';
 import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 

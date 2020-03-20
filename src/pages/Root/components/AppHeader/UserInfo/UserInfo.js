@@ -8,8 +8,8 @@ import { ELEMENT_BORDER_RADIUS } from 'src/constants/ui';
 
 import { shortenAddress } from 'src/utils/formatters';
 
-import { showWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo, getCurrentTheme } from 'src/ducks';
+import { showWalletPopup, getCurrentTheme } from 'src/ducks/ui';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
 

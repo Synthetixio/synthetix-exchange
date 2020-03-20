@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { updateLoan, swapTxHashWithLoanID, LOAN_STATUS } from '../ducks/loans/myLoans';
-import { fetchWalletBalancesRequest } from '../ducks/wallet';
+import { fetchWalletBalancesRequest } from '../ducks/wallet/walletBalances';
 import { fetchRates } from '../ducks/rates';
 import { fetchLoansContractInfo } from '../ducks/loans/contractInfo';
 

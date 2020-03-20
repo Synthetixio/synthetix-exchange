@@ -10,9 +10,9 @@ import {
 	SUPPORTED_WALLETS_MAP,
 	onMetamaskAccountChange,
 } from 'src/utils/networkUtils';
-import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet';
+import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet/walletDetails';
 import { toggleWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { HeadingMedium } from '../Typography';
 

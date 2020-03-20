@@ -148,4 +148,13 @@ export const updateTransaction = (updates, id) => {
 	};
 };
 
+export const getTransactionState = state => state.transaction;
+export const getGasInfo = state => {
+	const { gasPrice, gasLimit, gasSpeed } = getTransactionState(state);
+	return { gasPrice, gasLimit, gasSpeed };
+};
+export const getExchangeFeeRate = state => getTransactionState(state).exchangeFeeRate;
+export const getTransactions = state => getTransactionState(state).transactions;
+export const getPendingTransactions = state => getTransactionState(state).pendingTransactions;
+
 export default reducer;

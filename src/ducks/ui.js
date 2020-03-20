@@ -92,5 +92,10 @@ export const setSynthSearch = search => {
 
 export const getUIState = state => state.ui;
 export const getFiatCurrency = state => getUIState(state).fiatCurrency;
+export const getCurrentTheme = state => getUIState(state).theme;
+export const walletPopupIsVisible = state => getUIState(state).walletPopupIsVisible;
+export const gweiPopupIsVisible = state => getUIState(state).gweiPopupIsVisible;
+export const depotPopupIsVisible = state => getUIState(state).depotPopupIsVisible;
+export const getSynthSearch = state => getUIState(state).synthSearch;
 
 export default reducer;

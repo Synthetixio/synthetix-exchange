@@ -22,7 +22,7 @@ import { getWalletInfo, getGasInfo, getExchangeFeeRate, getTransactions } from '
 import { getSynthPair } from '../../ducks/synths';
 import { getRatesExchangeRates } from '../../ducks/rates';
 import { toggleGweiPopup } from '../../ducks/ui';
-import { fetchWalletBalancesRequest } from '../../ducks/wallet';
+import { fetchWalletBalancesRequest } from '../../ducks/wallet/walletDetails';
 import { getEthRate } from '../../ducks/rates';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';

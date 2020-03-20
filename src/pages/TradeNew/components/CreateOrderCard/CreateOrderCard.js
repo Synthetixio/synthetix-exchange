@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Card from 'src/components/Card';
 import { TradeInput } from 'src/components/Input';
 
-import { getWalletInfo } from 'src/ducks';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { getSynthPair } from 'src/ducks/synths';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';

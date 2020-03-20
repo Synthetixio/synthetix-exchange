@@ -24,7 +24,7 @@ import {
 	getIsRefreshingWalletBalances,
 	getIsLoadedWalletBalances,
 	getIsFetchingWalletBalances,
-} from 'src/ducks/wallet';
+} from 'src/ducks/wallet/walletBalances';
 
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 import { LINKS } from 'src/constants/links';
