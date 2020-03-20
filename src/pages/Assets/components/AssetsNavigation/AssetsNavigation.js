@@ -22,11 +22,13 @@ const MenuLinks = [
 		i18nKey: 'assets.navigation.exchanges',
 		icon: <ChartsSquareIcon />,
 	},
+	/* Transfers page is disabled for now.
 	{
 		route: ROUTES.Assets.Transfers,
 		i18nKey: 'assets.navigation.transfers',
 		icon: <ArrowsSquareIcon />,
 	},
+	*/
 ];
 
 const AssetsNavigation = memo(() => {
