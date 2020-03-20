@@ -8,7 +8,7 @@ const userPrefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').m
 const initialState = {
 	theme: userPrefersDarkTheme ? THEMES.DARK : THEMES.LIGHT,
 	walletPopupIsVisible: false,
-	gweiPopupIsVisibile: false,
+	gweiPopupIsVisible: false,
 	synthSearch: '',
 	fiatCurrency: FIAT_CURRENCY_MAP.USD,
 	hideSmallValueAssets: false,
@@ -26,10 +26,10 @@ export const uiSlice = createSlice({
 			state.walletPopupIsVisible = true;
 		},
 		toggleGweiPopup: (state, action) => {
-			state.gweiPopupIsVisibile = action.payload;
+			state.gweiPopupIsVisible = action.payload;
 		},
 		showGweiPopup: state => {
-			state.gweiPopupIsVisibile = true;
+			state.gweiPopupIsVisible = true;
 		},
 		toggleTheme: state => {
 			state.theme = isLightTheme(state.theme) ? THEMES.DARK : THEMES.LIGHT;
