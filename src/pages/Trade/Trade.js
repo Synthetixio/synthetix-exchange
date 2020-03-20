@@ -29,12 +29,6 @@ const Trade = ({ history, setSynthPair, synthPair }) => {
 
 	return (
 		<PageLayout>
-			<Container>
-				<BoxContainer height="100%">
-					<PairList />
-					<EtherPromoCard />
-				</BoxContainer>
-			</Container>
 			<CentralContainer>
 				<BoxContainer margin="0 0 8px 0">
 					<ChartPanel />

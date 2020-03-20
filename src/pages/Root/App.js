@@ -19,7 +19,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
 
-import Trade from '../Trade';
+import Trade from '../TradeNew';
 import Loans from '../Loans';
 import Assets from '../Assets';
 import Home from '../Home';
