@@ -8,7 +8,7 @@ import AssetsNavigation from './components/AssetsNavigation';
 
 import Overview from './Overview';
 import Exchanges from './Exchanges';
-import Transfers from './Transfers';
+// import Transfers from './Transfers';
 
 const Assets = memo(() => (
 	<CenteredPageLayout>
