@@ -11,16 +11,15 @@ import { shortenAddress } from 'src/utils/formatters';
 import { showWalletPopup } from 'src/ducks/ui';
 import { getWalletInfo, getCurrentTheme } from 'src/ducks';
 
-import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+// TODO: bring this back when implement the new dropdown
+// import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
 
 import { Dot } from 'src/shared/commonStyles';
 import { DataMedium } from 'src/components/Typography';
 
 import { ButtonPrimary } from 'src/components/Button';
-import Link from 'src/components/Link';
 
 import { media } from 'src/shared/media';
-import { ROUTES } from 'src/constants/routes';
 
 export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 	const { t } = useTranslation();
@@ -33,10 +32,7 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 				<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
 				<NetworkLabel>{networkName}</NetworkLabel>
 			</WalletInfo>
-			{/* TOOD: This is temporary exposing the link to assets page */}
-			<StyledLink to={ROUTES.Assets.Home}>
-				<MenuArrowDownIcon />
-			</StyledLink>
+			{/* <MenuArrowDownIcon /> */}
 		</Container>
 	) : (
 		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
@@ -78,10 +74,6 @@ const WalletInfo = styled.div`
 	grid-gap: 10px;
 	align-items: center;
 	cursor: pointer;
-`;
-
-const StyledLink = styled(Link)`
-	display: inherit;
 `;
 
 const GreenDot = styled(Dot)`

@@ -70,6 +70,9 @@ export const MobileAppHeader = memo(
 							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
 								{t('header.links.loans')}
 							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
+								{t('header.links.assets')}
+							</DropdownMenuLink>
 							<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
 								{t('header.links.support')}
 							</DropdownMenuLink>

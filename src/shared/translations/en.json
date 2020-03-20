@@ -6,7 +6,8 @@
 			"loans": "loans",
 			"markets": "markets",
 			"tokens": "tokens",
-			"support": "support"
+			"support": "support",
+			"assets": "assets"
 		},
 		"theme": {
 			"light": "light mode",
@@ -150,6 +151,10 @@
 			"exchanges": "exchanges",
 			"transfers": "transfers"
 		},
+		"balances": {
+			"hide-small-value": "Hide small value assets",
+			"show-small-value": "Show small value assets"
+		},
 		"overview": {
 			"dashboard": {
 				"total-balance": {
@@ -253,7 +258,8 @@
 			"borrow-currency": "Borrow {{currencyKey}}",
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodities": "commodities"
+			"commodities": "commodities",
+			"synthetic-currency": "Synthetic {{currencyKey}}"
 		},
 		"search": "search",
 		"features": {
