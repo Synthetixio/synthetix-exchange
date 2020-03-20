@@ -43,8 +43,7 @@ const ChartContainer = styled.div`
 	flex: 1;
 `;
 const CreateOrderContainer = styled.div`
-	min-width: 389px;
-	max-width: 400px;
+	width: 282px;
 	margin-left: 8px;
 `;
 const OrderBookContainer = styled.div`
