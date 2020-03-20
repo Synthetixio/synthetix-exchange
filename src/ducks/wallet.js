@@ -11,6 +11,9 @@ import { defaultNetwork } from '../utils/networkUtils';
 
 import { fetchSynthsBalance, fetchEthBalance } from '../dataFetcher';
 import { getAvailableSynths } from './synths';
+import { getHideSmallValueAssets } from './ui';
+
+const LOW_ASSET_VALUE_USD = 1;
 
 const initialState = {
 	walletType: '',
@@ -157,9 +160,16 @@ export const getWalletBalances = createSelector(getWalletBalancesMap, walletBala
 	);
 });
 
-// filter ETH from synth wallet balances
-export const getSynthsWalletBalances = createSelector(getWalletBalances, walletBalances =>
-	walletBalances.filter(asset => asset.name !== CRYPTO_CURRENCY_MAP.ETH)
+export const getSynthsWalletBalances = createSelector(
+	getWalletBalances,
+	getHideSmallValueAssets,
+	(walletBalances, hideSmallValueAssets) =>
+		walletBalances.filter(({ name, usdBalance }) => {
+			const filterETH = name !== CRYPTO_CURRENCY_MAP.ETH;
+			const filterSmallValueAssets = hideSmallValueAssets ? usdBalance > LOW_ASSET_VALUE_USD : true;
+
+			return filterETH && filterSmallValueAssets;
+		})
 );
 
 const {
