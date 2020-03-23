@@ -100,6 +100,22 @@
 			"ether-promo-card": {
 				"title": "get synths to start trading:"
 			}
+		},
+		"trade-card": {
+			"title": "Buy/Sell",
+			"reverse-button": "Reverse",
+			"sell-input-label": "Sell",
+			"buy-input-label": "Buy",
+			"confirm-trade-button": "Confirm trade",
+			"retry-button": "Retry",
+			"network-info": {
+				"usd-value": "USD Value",
+				"fee": "Fee"
+			},
+			"network-info-tooltip": {
+				"exchange-fee": "Exchange fee",
+				"network-fee": "Network fee (gas)"
+			}
 		}
 	},
 	"loans": {
@@ -245,7 +261,8 @@
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
-			"error-loading": "An error occurred trying to load"
+			"error-loading": "An error occurred trying to load",
+			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
