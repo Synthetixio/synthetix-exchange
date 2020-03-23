@@ -19,8 +19,6 @@ import Spinner from '../Spinner';
 import Select from '../Select';
 import { ButtonPrimary } from '../Button';
 
-import { bigNumberFormatter } from 'src/utils/formatters';
-
 const WALLET_PAGE_SIZE = 5;
 const LEDGER_DERIVATION_PATHS = [
 	{ value: "44'/60'/0'/", label: "Ethereum - m/44'/60'/0'" },

@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
 
@@ -18,6 +19,8 @@ import Spinner from 'src/components/Spinner';
 
 import { getEtherscanTxLink } from 'src/utils/explorers';
 import {
+	LONG_CRYPTO_CURRENCY_DECIMALS,
+	SHORT_CRYPTO_CURRENCY_DECIMALS,
 	formatTxTimestamp,
 	formatCurrency,
 	formatCurrencyWithSign,
@@ -51,6 +54,7 @@ export const Exchanges = memo(
 
 		useEffect(() => {
 			fetchMyTradesRequest();
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
 		return (
@@ -89,7 +93,20 @@ export const Exchanges = memo(
 								Header: t('assets.exchanges.table.buying-col'),
 								accessor: 'toAmount',
 								Cell: cellProps => (
-									<span>{formatCurrency(cellProps.row.original.toAmount, 4)}</span>
+									<Tooltip
+										title={formatCurrency(
+											cellProps.row.original.toAmount,
+											LONG_CRYPTO_CURRENCY_DECIMALS
+										)}
+										placement="top"
+									>
+										<span>
+											{formatCurrency(
+												cellProps.row.original.toAmount,
+												SHORT_CRYPTO_CURRENCY_DECIMALS
+											)}
+										</span>
+									</Tooltip>
 								),
 								width: 150,
 							},
@@ -97,7 +114,20 @@ export const Exchanges = memo(
 								Header: t('assets.exchanges.table.selling-col'),
 								accessor: 'fromAmount',
 								Cell: cellProps => (
-									<span>{formatCurrency(cellProps.row.original.fromAmount, 4)}</span>
+									<Tooltip
+										title={formatCurrency(
+											cellProps.row.original.fromAmount,
+											LONG_CRYPTO_CURRENCY_DECIMALS
+										)}
+										placement="top"
+									>
+										<span>
+											{formatCurrency(
+												cellProps.row.original.fromAmount,
+												SHORT_CRYPTO_CURRENCY_DECIMALS
+											)}
+										</span>
+									</Tooltip>
 								),
 								width: 150,
 							},
