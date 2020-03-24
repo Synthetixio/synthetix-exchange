@@ -41,6 +41,14 @@ const App = ({ isAppReady, currentTheme }) => {
 				)}
 				<Switch>
 					<Route
+						path={ROUTES.TradeMatch}
+						render={routeProps => (
+							<MainLayout isAppReady={isAppReady}>
+								<Trade {...routeProps} />
+							</MainLayout>
+						)}
+					/>
+					<Route
 						path={ROUTES.Trade}
 						render={routeProps => (
 							<MainLayout isAppReady={isAppReady}>

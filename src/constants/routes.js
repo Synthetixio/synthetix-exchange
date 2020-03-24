@@ -1,9 +1,9 @@
-import queryString from 'query-string';
 import history from '../utils/history';
 
 export const ROUTES = {
 	Home: '/',
 	Trade: '/trade',
+	TradeMatch: '/trade/:baseCurrencyKey-:quoteCurrencyKey',
 	Loans: '/loans',
 	Assets: {
 		Home: '/assets',
@@ -22,13 +22,4 @@ export const navigateTo = (path, replacePath = false, scrollToTop = false) => {
 };
 
 export const navigateToTrade = (baseCurrencyKey, quoteCurrencyKey, replacePath = false) =>
-	navigateTo(
-		{
-			pathname: ROUTES.Trade,
-			search: queryString.stringify({
-				base: baseCurrencyKey,
-				quote: quoteCurrencyKey,
-			}),
-		},
-		replacePath
-	);
+	navigateTo(`${ROUTES.Trade}/${baseCurrencyKey}-${quoteCurrencyKey}`, replacePath);
