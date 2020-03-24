@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -21,6 +21,8 @@ import { navigateTo, ROUTES } from 'src/constants/routes';
 import useInterval from 'src/shared/hooks/useInterval';
 
 import { Button } from 'src/components/Button';
+import { SearchInput } from 'src/components/Input';
+import { FlexDivRow } from 'src/shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
@@ -35,9 +37,12 @@ export const MarketsSection = ({
 	setMarketsAssetFilter,
 	isOnSplashPage,
 }) => {
-	const { t } = useTranslation();
-
 	const marketPairs = getFilteredMarketNames(marketsAssetFilter);
+
+	const [assetSearch, setAssetSearch] = useState('');
+	const [filteredMarkets, setFilteredMarkets] = useState(marketPairs);
+
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		fetchMarketsRequest({ pairs: marketPairs });
@@ -47,6 +52,20 @@ export const MarketsSection = ({
 		fetchMarketsRequest({ pairs: marketPairs });
 	}, MARKETS_REFRESH_INTERVAL_MS);
 
+	useEffect(() => {
+		if (assetSearch) {
+			setFilteredMarkets(
+				filteredMarkets.filter(market => {
+					const search = assetSearch.toLowerCase();
+
+					return market.baseCurrencyKey.toLowerCase().includes(search);
+				})
+			);
+		} else {
+			setFilteredMarkets(marketPairs);
+		}
+	}, [assetSearch]);
+
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<MarketChartsContent>
@@ -54,19 +73,22 @@ export const MarketsSection = ({
 			</MarketChartsContent>
 			<MarketsTableContainer>
 				<Content>
-					<AssetFilters>
-						{ASSET_FILTERS.map(({ asset }) => (
-							<FilterButton
-								size="sm"
-								palette="secondary"
-								isActive={asset === marketsAssetFilter}
-								key={asset}
-								onClick={() => setMarketsAssetFilter({ marketsAssetFilter: asset })}
-							>
-								{asset}
-							</FilterButton>
-						))}
-					</AssetFilters>
+					<FiltersRow>
+						<AssetFilters>
+							{ASSET_FILTERS.map(({ asset }) => (
+								<FilterButton
+									size="md"
+									palette="secondary"
+									isActive={asset === marketsAssetFilter}
+									key={asset}
+									onClick={() => setMarketsAssetFilter({ marketsAssetFilter: asset })}
+								>
+									{asset}
+								</FilterButton>
+							))}
+						</AssetFilters>
+						<AssetSearchInput onChange={e => setAssetSearch(e.target.value)} value={assetSearch} />
+					</FiltersRow>
 					<MarketsTable markets={markets} marketsLoaded={marketsLoaded} />
 					<ButtonContainer>
 						{isOnSplashPage ? (
@@ -97,18 +119,30 @@ MarketsSection.propTypes = {
 };
 
 const AssetFilters = styled.div`
-	padding: 32px 0;
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 8px;
+`;
 
+const FilterButton = styled(Button)`
+	text-transform: none;
+`;
+
+const FiltersRow = styled(FlexDivRow)`
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 32px 0;
 	${media.large`
 		padding: 32px 24px;
 	`}
 `;
 
-const FilterButton = styled(Button)`
-	text-transform: none;
+const AssetSearchInput = styled(SearchInput)`
+	width: 240px;
+	${media.small`
+		margin-top: 20px;
+		width: 100%;
+	`}
 `;
 
 const MarketsTableContainer = styled.div`
@@ -146,6 +180,7 @@ const ButtonContainer = styled.div`
 	padding: 75px 0;
 	text-align: center;
 `;
+
 const StyledButton = styled(Button)`
 	padding: 0 70px;
 `;

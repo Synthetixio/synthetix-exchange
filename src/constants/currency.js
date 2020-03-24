@@ -126,14 +126,46 @@ export const getAvailableMarketNames = memoizeOne(() => {
 	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
 	const synths = SYNTHS.filter(synth => !excludedSynths.includes(synth));
 
-	synths.forEach(synthA => {
-		synths.forEach(synthB => {
-			marketNames.push({
-				baseCurrencyKey: synthA,
-				quoteCurrencyKey: synthB,
-				pair: toMarketPair(synthA, synthB),
+	const fiatQuotePairs = [
+		SYNTHS_MAP.sEUR,
+		SYNTHS_MAP.sJPY,
+		SYNTHS_MAP.sUSD,
+		SYNTHS_MAP.sAUD,
+		SYNTHS_MAP.sGBP,
+		SYNTHS_MAP.sCHF,
+	];
+
+	const cryptoQuotePairs = [SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
+
+	fiatQuotePairs.forEach(quoteCurrencyKey => {
+		synths
+			.filter(baseCurrencyKey => quoteCurrencyKey != baseCurrencyKey)
+			.forEach(baseCurrencyKey => {
+				marketNames.push({
+					baseCurrencyKey,
+					quoteCurrencyKey,
+					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+				});
 			});
-		});
+	});
+
+	const usedCrypto = [];
+
+	cryptoQuotePairs.forEach(quoteCurrencyKey => {
+		synths
+			.filter(
+				baseCurrencyKey =>
+					quoteCurrencyKey != baseCurrencyKey &&
+					![...fiatQuotePairs, ...usedCrypto].includes(baseCurrencyKey)
+			)
+			.forEach(baseCurrencyKey => {
+				marketNames.push({
+					baseCurrencyKey,
+					quoteCurrencyKey,
+					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+				});
+			});
+		usedCrypto.push(quoteCurrencyKey);
 	});
 
 	return marketNames;
