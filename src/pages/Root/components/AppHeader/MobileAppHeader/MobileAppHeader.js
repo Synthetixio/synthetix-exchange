@@ -70,6 +70,9 @@ export const MobileAppHeader = memo(
 							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
 								{t('header.links.loans')}
 							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
+								{t('header.links.markets')}
+							</DropdownMenuLink>
 							{isLoggedIn && (
 								<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
 									{t('header.links.assets')}

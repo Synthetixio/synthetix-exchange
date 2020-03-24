@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import queryString from 'query-string';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
@@ -15,17 +14,20 @@ import EtherPromoCard from './components/EtherPromoCard';
 import { getSynthPair, setSynthPair } from '../../ducks/synths';
 import { navigateToTrade } from '../../constants/routes';
 
-const Trade = ({ history, setSynthPair, synthPair }) => {
+const Trade = ({ match, setSynthPair, synthPair }) => {
 	useEffect(() => {
-		const qs = queryString.parse(location.search);
-		if (qs != null && qs.base != null && qs.quote != null) {
-			const { base, quote } = qs;
-			setSynthPair({ baseCurrencyKey: base, quoteCurrencyKey: quote });
+		const { params } = match;
+
+		if (params && params.baseCurrencyKey && params.quoteCurrencyKey) {
+			setSynthPair({
+				baseCurrencyKey: params.baseCurrencyKey,
+				quoteCurrencyKey: params.quoteCurrencyKey,
+			});
 		} else {
 			navigateToTrade(synthPair.base.name, synthPair.quote.name, true);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [history.location, setSynthPair]);
+	}, [match, setSynthPair]);
 
 	return (
 		<PageLayout>
