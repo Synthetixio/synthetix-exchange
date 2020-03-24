@@ -2,6 +2,8 @@ import { DEFAULT_GAS_LIMIT } from '../constants/transaction';
 
 import { normalizeGasLimit } from '../utils/transactions';
 
+import { TRANSACTION_STATUS } from 'src/constants/transaction';
+
 const SET_GAS_PRICE = 'TRANSACTION/SET_GAS_PRICE';
 const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';
 const SET_EXCHANGE_FEE_RATE = 'TRANSACTION/SET_FEE_RATE';
@@ -70,7 +72,7 @@ const reducer = (state = defaultState, action = {}) => {
 					return tx;
 				}),
 			};
-			if (updates.status === 'Pending' && updates.hash) {
+			if (updates.status === TRANSACTION_STATUS.PENDING && updates.hash) {
 				storeUpdates.pendingTransactions = [...state.pendingTransactions, updates.hash];
 			}
 			return {

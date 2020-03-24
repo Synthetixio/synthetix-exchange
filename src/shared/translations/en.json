@@ -116,6 +116,23 @@
 				"exchange-fee": "Exchange fee",
 				"network-fee": "Network fee (gas)"
 			}
+		},
+		"order-book-card": {
+			"tabs": {
+				"your-orders": "Your orders",
+				"your-trades": "Your trades",
+				"all-trades": "All trades"
+			},
+			"table": {
+				"date": "Date | time",
+				"pair": "Pair",
+				"buying": "Buying",
+				"selling": "Selling",
+				"price": "Price",
+				"total": "Total",
+				"status": "Status",
+				"verify": "verify"
+			}
 		}
 	},
 	"loans": {
@@ -226,6 +243,9 @@
 		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
+		"transaction": {
+			"view": "View"
+		},
 		"contracts": {
 			"view": "View Contract"
 		},
@@ -249,7 +269,10 @@
 			"in": "Transferred in",
 			"out": "Transferred out",
 			"complete": "Complete",
-			"pending": "Pending"
+			"pending": "Pending",
+			"confirmed": "Confirmed",
+			"cancelled": "Cancelled",
+			"failed": "failed"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",

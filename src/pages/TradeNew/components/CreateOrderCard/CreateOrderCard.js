@@ -25,6 +25,7 @@ import { toggleGweiPopup } from 'src/ducks/ui';
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 import { BALANCE_FRACTIONS } from 'src/constants/order';
 import { SYNTHS_MAP } from 'src/constants/currency';
+import { TRANSACTION_STATUS } from 'src/constants/transaction';
 
 import { getExchangeRatesForCurrencies } from 'src/utils/rates';
 import { normalizeGasLimit } from 'src/utils/transactions';
@@ -194,7 +195,7 @@ const CreateOrderCard = ({
 				totalUSD: formatCurrency(
 					baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)
 				),
-				status: 'Waiting',
+				status: TRANSACTION_STATUS.WAITING,
 			});
 
 			const tx = await Synthetix.exchange(
@@ -207,14 +208,15 @@ const CreateOrderCard = ({
 				}
 			);
 
-			updateTransaction({ status: 'Pending', ...tx }, transactionId);
+			updateTransaction({ status: TRANSACTION_STATUS.PENDING, ...tx }, transactionId);
 			setIsSubmitting(false);
 		} catch (e) {
 			console.log(e);
 			const error = errorMessages(e, walletType);
 			updateTransaction(
 				{
-					status: error.type === 'cancelled' ? 'Cancelled' : 'Failed',
+					status:
+						error.type === 'cancelled' ? TRANSACTION_STATUS.CANCELLED : TRANSACTION_STATUS.FAILED,
 					error: error.message,
 				},
 				transactionId
