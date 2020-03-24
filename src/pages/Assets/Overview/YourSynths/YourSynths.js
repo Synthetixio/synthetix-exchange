@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import get from 'lodash/get';
 
 import PropTypes from 'prop-types';
@@ -16,7 +18,12 @@ import Link from 'src/components/Link';
 
 import { TableNoResults } from 'src/shared/commonStyles';
 
-import { formatCurrency, formatCurrencyWithSign } from 'src/utils/formatters';
+import {
+	LONG_CRYPTO_CURRENCY_DECIMALS,
+	SHORT_CRYPTO_CURRENCY_DECIMALS,
+	formatCurrency,
+	formatCurrencyWithSign,
+} from 'src/utils/formatters';
 
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 import {
@@ -64,14 +71,30 @@ export const YourSynths = memo(
 								id: 'asset-desc',
 								Cell: cellProps => {
 									const currencyKey = cellProps.row.original.name;
-									return <span>{get(synthsMap, [currencyKey, 'desc'])}</span>;
+
+									return (
+										<span>
+											{t('common.currency.synthetic-currency', {
+												currencyKey: get(synthsMap, [currencyKey, 'desc']),
+											})}
+										</span>
+									);
 								},
 								width: 150,
 							},
 							{
 								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
-								Cell: cellProps => formatCurrency(cellProps.cell.value, 4),
+								Cell: cellProps => (
+									<Tooltip
+										title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+										placement="top"
+									>
+										<span>
+											{formatCurrency(cellProps.cell.value, SHORT_CRYPTO_CURRENCY_DECIMALS)}
+										</span>
+									</Tooltip>
+								),
 								width: 150,
 								sortable: true,
 							},

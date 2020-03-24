@@ -64,6 +64,8 @@ export const SynthBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalanc
 							cx="50%"
 							cy="50%"
 							isAnimationActive={false}
+							startAngle={90}
+							endAngle={-270}
 							stroke="none"
 						>
 							{topSynthHoldings.map((synth, index) => (

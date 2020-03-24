@@ -18,6 +18,7 @@ import { TABLE_PALETTE } from './constants';
 
 export const Table = ({
 	columns = [],
+	columnsDeps = [],
 	data = [],
 	options = {},
 	noResultsMessage = null,
@@ -29,7 +30,7 @@ export const Table = ({
 	const memoizedColumns = useMemo(
 		() => columns,
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+		columnsDeps
 	);
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
 		{
@@ -94,6 +95,7 @@ export const Table = ({
 Table.propTypes = {
 	data: PropTypes.array.isRequired,
 	columns: PropTypes.array.isRequired,
+	columnsDeps: PropTypes.array,
 	options: PropTypes.object,
 	onTableRowClick: PropTypes.func,
 	palette: PropTypes.string,

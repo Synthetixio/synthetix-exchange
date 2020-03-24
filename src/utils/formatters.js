@@ -4,6 +4,9 @@ import { format } from 'date-fns';
 import snxJSConnector from './snxJSConnector';
 
 const DEFAULT_CURRENCY_DECIMALS = 2;
+export const FIAT_CURRENCY_DECIMALS = 2;
+export const SHORT_CRYPTO_CURRENCY_DECIMALS = 4;
+export const LONG_CRYPTO_CURRENCY_DECIMALS = 8;
 
 export const toBigNumber = value => new BigNumber(value);
 
@@ -69,4 +72,5 @@ export const formatCurrencyPair = (baseCurrencyKey, quoteCurrencyKey) =>
 	`${baseCurrencyKey} / ${quoteCurrencyKey}`;
 
 // TODO: use a library for this, because the sign does not always appear on the left. (perhaps something like number.toLocaleString)
-export const formatCurrencyWithSign = (sign, value) => `${sign}${formatCurrency(value)}`;
+export const formatCurrencyWithSign = (sign, value, decimals) =>
+	`${sign}${formatCurrency(value, decimals)}`;

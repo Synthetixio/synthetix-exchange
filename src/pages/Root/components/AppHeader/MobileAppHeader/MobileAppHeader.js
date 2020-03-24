@@ -29,7 +29,7 @@ import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
 export const MobileAppHeader = memo(
-	({ showThemeToggle, currentTheme, toggleTheme, isOnSplashPage, ...rest }) => {
+	({ showThemeToggle, currentTheme, toggleTheme, isOnSplashPage, isLoggedIn, ...rest }) => {
 		const [menuOpen, setMenuOpen] = useState(false);
 		const { t } = useTranslation();
 
@@ -69,6 +69,14 @@ export const MobileAppHeader = memo(
 							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
 								{t('header.links.loans')}
 							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
+								{t('header.links.markets')}
+							</DropdownMenuLink>
+							{isLoggedIn && (
+								<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
+									{t('header.links.assets')}
+								</DropdownMenuLink>
+							)}
 							<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
 								{t('header.links.support')}
 							</DropdownMenuLink>
@@ -100,6 +108,7 @@ MobileAppHeader.propTypes = {
 	toggleTheme: PropTypes.func.isRequired,
 	className: PropTypes.string,
 	isOnSplashPage: PropTypes.bool,
+	isLoggedIn: PropTypes.bool,
 };
 
 const Container = styled.header`

@@ -6,7 +6,8 @@
 			"loans": "loans",
 			"markets": "markets",
 			"tokens": "tokens",
-			"support": "support"
+			"support": "support",
+			"assets": "assets"
 		},
 		"theme": {
 			"light": "light mode",
@@ -27,19 +28,6 @@
 		"hero": {
 			"title": "On-chain exposure to any asset class",
 			"subtitle": "Trade synthetic cryptocurrencies (long and short), commodities, indexes and Forex"
-		},
-		"markets": {
-			"table": {
-				"pair-col": "pair",
-				"last-price-col": "last price",
-				"24h-change-col": "24hr change",
-				"24h-low-col": "24hr low",
-				"24h-high-col": "24hr high",
-				"24h-volume-col": "24hr volume",
-				"actions": {
-					"see-all-pairs": "see all pairs"
-				}
-			}
 		},
 		"new-user-promo": {
 			"title": "New to Synthetix.Exchange?",
@@ -87,6 +75,20 @@
 					"community": "Community",
 					"contact-us": "Contact Us"
 				}
+			}
+		}
+	},
+	"markets": {
+		"table": {
+			"pair-col": "pair",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"24h-low-col": "24hr low",
+			"24h-high-col": "24hr high",
+			"24h-volume-col": "24hr volume",
+			"actions": {
+				"see-all-pairs": "see all pairs",
+				"start-trading-now": "start trading now"
 			}
 		}
 	},
@@ -182,6 +184,10 @@
 			"overview": "overview",
 			"exchanges": "exchanges",
 			"transfers": "transfers"
+		},
+		"balances": {
+			"hide-small-value": "Hide small value assets",
+			"show-small-value": "Show small value assets"
 		},
 		"overview": {
 			"dashboard": {
@@ -293,7 +299,8 @@
 			"borrow-currency": "Borrow {{currencyKey}}",
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodities": "commodities"
+			"commodities": "commodities",
+			"synthetic-currency": "Synthetic {{currencyKey}}"
 		},
 		"search": "search",
 		"features": {

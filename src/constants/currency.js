@@ -1,4 +1,5 @@
 import keyBy from 'lodash/keyBy';
+import memoizeOne from 'memoize-one';
 
 // Crypto
 import { ReactComponent as ETHIcon } from '../assets/currencies/crypto/ETH.svg';
@@ -117,3 +118,27 @@ export const currencyKeyToIconMap = {
 export const isSynth = currencyKey => !!SYNTHS_MAP[currencyKey];
 export const isCryptoCurrency = currencyKey => !!CRYPTO_CURRENCY_MAP[currencyKey];
 export const isFiatCurrency = currencyKey => !!FIAT_CURRENCY_MAP[currencyKey];
+export const toMarketPair = (baseCurrencyKey, quoteCurrencyKey) =>
+	`${baseCurrencyKey}-${quoteCurrencyKey}`;
+
+export const getAvailableMarketNames = memoizeOne(() => {
+	const marketNames = [];
+	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
+	const synths = SYNTHS.filter(synth => !excludedSynths.includes(synth));
+
+	synths.forEach(synthA => {
+		synths.forEach(synthB => {
+			marketNames.push({
+				baseCurrencyKey: synthA,
+				quoteCurrencyKey: synthB,
+				pair: toMarketPair(synthA, synthB),
+			});
+		});
+	});
+
+	return marketNames;
+});
+
+export const getFilteredMarketNames = memoizeOne(quoteCurrencyKey =>
+	getAvailableMarketNames().filter(marketName => marketName.quoteCurrencyKey === quoteCurrencyKey)
+);

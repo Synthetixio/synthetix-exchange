@@ -1,7 +1,8 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, all } from 'redux-saga/effects';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import orderBy from 'lodash/orderBy';
 import merge from 'lodash/merge';
+import { getMarketsAssetFilter } from './ui';
 
 import { getRatesExchangeRates } from './rates';
 import { getExchangeRatesForCurrencies } from 'src/utils/rates';
@@ -12,113 +13,124 @@ import {
 	PERIOD_IN_HOURS,
 } from 'src/services/rates/rates';
 
-import { PAIRS as SPLASH_MARKET_PAIRS } from 'src/pages/Home/Markets/constants';
+import { getAvailableMarketNames } from 'src/constants/currency';
+
+const MARKET_CHART_CARDS = 4;
+
+const getMarketDefaults = marketPairs =>
+	marketPairs.reduce((markets, marketPair) => {
+		const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
+
+		markets[pair] = {
+			pair,
+			baseCurrencyKey,
+			quoteCurrencyKey,
+			lastPrice: null,
+			rates: [],
+			rates24hChange: null,
+			rates24hLow: null,
+			rates24hHigh: null,
+			rates24hVol: null,
+			isLoaded: false,
+			lastUpdated: null,
+		};
+
+		return markets;
+	}, {});
 
 export const marketsSlice = createSlice({
 	name: 'markets',
 	initialState: {
-		markets: {},
-		lastUpdated: null,
+		markets: getMarketDefaults(getAvailableMarketNames()),
 		loadingError: null,
 		isLoading: false,
-		isLoaded: false,
-		isRefreshing: false,
 	},
 	reducers: {
 		fetchMarketsRequest: state => {
 			state.loadingError = null;
 			state.isLoading = true;
-			if (state.isLoaded) {
-				state.isRefreshing = true;
-			}
 		},
 		fetchMarketsFailure: (state, action) => {
 			state.loadingError = action.payload.error;
 			state.isLoading = false;
-			state.isRefreshing = false;
 		},
-		fetchMarketsSuccess: (state, action) => {
-			const { markets } = action.payload;
+		fetchMarketSuccess: (state, action) => {
+			const { market } = action.payload;
 
-			state.markets = merge(state.markets, markets);
-			state.lastUpdated = Date.now();
+			state.markets = merge(state.markets, market);
 			state.isLoading = false;
-			state.isRefreshing = false;
-			state.isLoaded = true;
 		},
 	},
 });
 
 export const getMarketsState = state => state.markets;
 export const getMarketsMap = state => getMarketsState(state).markets;
-export const getIsLoadingMarkets = state => getMarketsState(state).isLoading;
-export const getIsRefreshingMarkets = state => getMarketsState(state).isRefreshing;
-export const getIsLoadedMarkets = state => getMarketsState(state).isLoaded;
 export const getMarketsLoadingError = state => getMarketsState(state).loadingError;
+export const getMarketsList = createSelector(getMarketsMap, marketsMap =>
+	Object.values(marketsMap)
+);
 
-export const getMarkets = createSelector(
-	getMarketsMap,
+export const getFilteredMarkets = createSelector(
+	getMarketsList,
+	getMarketsAssetFilter,
 	getRatesExchangeRates,
-	(marketsMap, exchangeRates) =>
-		Object.values(marketsMap).map(market => ({
-			...market,
-			lastPrice:
-				exchangeRates == null
-					? null
-					: getExchangeRatesForCurrencies(
-							exchangeRates,
-							market.baseCurrencyKey,
-							market.quoteCurrencyKey
-					  ) || 0,
-		}))
+	(marketsList, assetFilter, exchangeRates) =>
+		marketsList
+			.filter(market => market.quoteCurrencyKey === assetFilter)
+			.map(market => ({
+				...market,
+				lastPrice:
+					exchangeRates == null
+						? null
+						: getExchangeRatesForCurrencies(
+								exchangeRates,
+								market.baseCurrencyKey,
+								market.quoteCurrencyKey
+						  ) || 0,
+			}))
 );
 
-export const getMarketsForSplashPage = createSelector(getMarkets, markets =>
-	orderBy(markets, 'rates24hVol', 'desc').slice(
-		0,
-		Math.min(SPLASH_MARKET_PAIRS.length, markets.length)
-	)
+export const getIsLoadedFilteredMarkets = createSelector(getFilteredMarkets, filteredMarkets =>
+	filteredMarkets.every(market => market.isLoaded)
 );
 
-const { fetchMarketsRequest, fetchMarketsSuccess, fetchMarketsFailure } = marketsSlice.actions;
+export const getOrderedMarkets = createSelector(
+	getFilteredMarkets,
+	getIsLoadedFilteredMarkets,
+	(filteredMarkets, filteredMarketsLoaded) =>
+		filteredMarketsLoaded ? orderBy(filteredMarkets, 'rates24hVol', 'desc') : filteredMarkets
+);
+
+const { fetchMarketsRequest, fetchMarketSuccess, fetchMarketsFailure } = marketsSlice.actions;
+
+function* fetchMarket(marketPair) {
+	const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
+
+	const [rates24H, volume24H] = yield all([
+		fetchSynthRateUpdates(baseCurrencyKey, quoteCurrencyKey, PERIOD_IN_HOURS.ONE_DAY),
+		fetchSynthVolumeInUSD(baseCurrencyKey, quoteCurrencyKey, PERIOD_IN_HOURS.ONE_DAY),
+	]);
+
+	const market = {
+		rates: rates24H.rates,
+		rates24hChange: rates24H.change,
+		rates24hLow: rates24H.low,
+		rates24hHigh: rates24H.high,
+		rates24hVol: volume24H,
+		isLoaded: true,
+		lastUpdated: Date.now(),
+	};
+
+	yield put(fetchMarketSuccess({ market: { [pair]: market } }));
+}
 
 function* fetchMarkets(action) {
-	const { pairs } = action.payload;
+	const { pairs: marketPairs } = action.payload;
 
 	try {
-		const markets = {};
-
-		for (const pair of pairs) {
-			const { baseCurrencyKey, quoteCurrencyKey } = pair;
-			const rates24H = yield fetchSynthRateUpdates(
-				baseCurrencyKey,
-				quoteCurrencyKey,
-				PERIOD_IN_HOURS.ONE_DAY
-			);
-			const volume24H = yield fetchSynthVolumeInUSD(
-				baseCurrencyKey,
-				quoteCurrencyKey,
-				PERIOD_IN_HOURS.ONE_DAY
-			);
-
-			const marketPair = `${baseCurrencyKey}-${quoteCurrencyKey}`;
-
-			markets[marketPair] = {
-				pair: marketPair,
-				baseCurrencyKey,
-				quoteCurrencyKey,
-				lastPrice: null,
-				rates: rates24H.rates,
-				rates24hChange: rates24H.change,
-				rates24hLow: rates24H.low,
-				rates24hHigh: rates24H.high,
-				rates24hVol: volume24H,
-				isLoaded: true,
-			};
-		}
-		yield put({ type: fetchMarketsSuccess.type, payload: { markets } });
+		yield all(marketPairs.map(marketPair => fetchMarket(marketPair)));
 	} catch (e) {
-		yield put({ type: fetchMarketsFailure.type, payload: { error: e.message } });
+		yield put(fetchMarketsFailure({ error: e.message }));
 	}
 }
 

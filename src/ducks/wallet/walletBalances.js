@@ -6,6 +6,9 @@ import { fetchSynthsBalance, fetchEthBalance } from '../../dataFetcher';
 import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
 import { toBigNumber } from '../../utils/formatters';
 import { getAvailableSynths } from '../synths';
+import { getHideSmallValueAssets } from '../ui';
+
+const LOW_ASSET_VALUE_USD = 1;
 
 export const walletBalancesSlice = createSlice({
 	name: 'walletBalances',
@@ -91,9 +94,16 @@ export const getIsRefreshingWalletBalances = state =>
 export const getIsLoadedWalletBalances = state =>
 	getWalletBalancesState(state).isLoadedWalletBalances;
 
-// filter ETH from synth wallet balances
-export const getSynthsWalletBalances = createSelector(getWalletBalances, walletBalances =>
-	walletBalances.filter(asset => asset.name !== CRYPTO_CURRENCY_MAP.ETH)
+export const getSynthsWalletBalances = createSelector(
+	getWalletBalances,
+	getHideSmallValueAssets,
+	(walletBalances, hideSmallValueAssets) =>
+		walletBalances.filter(({ name, usdBalance }) => {
+			const filterETH = name !== CRYPTO_CURRENCY_MAP.ETH;
+			const filterSmallValueAssets = hideSmallValueAssets ? usdBalance > LOW_ASSET_VALUE_USD : true;
+
+			return filterETH && filterSmallValueAssets;
+		})
 );
 
 function* fetchWalletBalances() {

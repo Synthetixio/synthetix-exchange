@@ -8,7 +8,7 @@ import AssetsNavigation from './components/AssetsNavigation';
 
 import Overview from './Overview';
 import Exchanges from './Exchanges';
-import Transfers from './Transfers';
+// import Transfers from './Transfers';
 
 const Assets = memo(() => (
 	<CenteredPageLayout>
@@ -17,7 +17,8 @@ const Assets = memo(() => (
 			<Switch>
 				<Route path={ROUTES.Assets.Overview} component={Overview} />
 				<Route path={ROUTES.Assets.Exchanges} component={Exchanges} />
-				<Route path={ROUTES.Assets.Transfers} component={Transfers} />
+				{/* Transfers page is disabled for now. */}
+				{/* <Route path={ROUTES.Assets.Transfers} component={Transfers} /> */}
 				<Redirect to={ROUTES.Assets.Overview} />
 			</Switch>
 		</Content>
