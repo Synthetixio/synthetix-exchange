@@ -15,10 +15,22 @@ import {
 	updateTransaction,
 } from 'src/ducks/transaction';
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+import {
+	fetchAllTradesRequest,
+	getAllTrades,
+	getIsRefreshingAllTrades,
+	getIsLoadedAllTrades,
+} from 'src/ducks/trades/allTrades';
+import {
+	fetchMyTradesRequest,
+	getMyTrades,
+	getIsRefreshingMyTrades,
+	getIsLoadedMyTrades,
+} from 'src/ducks/trades/myTrades';
 
 import Card from 'src/components/Card';
-import YourOrders from './YourOrders';
-import Trades from './Trades';
+import MyOrders from './myOrders';
+import TradeHistory from './TradeHistory';
 
 const OrderBookCard = ({
 	walletInfo: { currentWallet },
@@ -26,6 +38,14 @@ const OrderBookCard = ({
 	transactions,
 	removePendingTransaction,
 	updateTransaction,
+	fetchAllTradesRequest,
+	fetchMyTradesRequest,
+	myTrades,
+	isLoadedMyTrades,
+	isRefreshingMyTrades,
+	allTrades,
+	isLoadedAllTrades,
+	isRefreshingAllTrades,
 }) => {
 	const { t } = useTranslation();
 
@@ -33,17 +53,29 @@ const OrderBookCard = ({
 		{
 			name: t('trade.order-book-card.tabs.your-orders'),
 			id: 'yourOrder',
-			component: <YourOrders />,
+			component: <MyOrders />,
 		},
 		{
 			name: t('trade.order-book-card.tabs.your-trades'),
 			id: 'yourTrades',
-			component: <Trades />,
+			component: (
+				<TradeHistory
+					trades={myTrades}
+					isLoading={isRefreshingMyTrades}
+					isLoaded={isLoadedMyTrades}
+				/>
+			),
 		},
 		{
 			name: t('trade.order-book-card.tabs.all-trades'),
 			id: 'allTrades',
-			component: <Trades />,
+			component: (
+				<TradeHistory
+					trades={allTrades}
+					isLoading={isRefreshingAllTrades}
+					isLoaded={isLoadedAllTrades}
+				/>
+			),
 		},
 	];
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
@@ -76,6 +108,12 @@ const OrderBookCard = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pendingTransactions.length]);
 
+	useEffect(() => {
+		fetchMyTradesRequest();
+		fetchAllTradesRequest();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentWallet]);
+
 	return (
 		<Card>
 			<Card.Body style={{ padding: 0 }}>
@@ -93,7 +131,7 @@ const OrderBookCard = ({
 						);
 					})}
 				</Tabs>
-				<BookContainer>{activeTab.component}</BookContainer>
+				{activeTab.component}
 			</Card.Body>
 		</Card>
 	);
@@ -121,19 +159,25 @@ const Tab = styled.button`
 	}
 `;
 
-const BookContainer = styled.div``;
-
 const mapStateToProps = state => {
 	return {
 		transactions: getTransactions(state),
 		pendingTransactions: getPendingTransactions(state),
 		walletInfo: getWalletInfo(state),
+		allTrades: getAllTrades(state),
+		isRefreshingAllTrades: getIsRefreshingAllTrades(state),
+		isLoadedAllTrades: getIsLoadedAllTrades(state),
+		myTrades: getMyTrades(state),
+		isRefreshingMyTrades: getIsRefreshingMyTrades(state),
+		isLoadedMyTrades: getIsLoadedMyTrades(state),
 	};
 };
 
 const mapDispatchToProps = {
 	updateTransaction,
 	removePendingTransaction,
+	fetchAllTradesRequest,
+	fetchMyTradesRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderBookCard);

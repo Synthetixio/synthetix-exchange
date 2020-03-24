@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -16,14 +15,12 @@ import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
 import { formatCurrency } from 'src/utils/formatters';
 import { getEtherscanTxLink } from 'src/utils/explorers';
 
-import { ReactComponent as ArrowHyperlinkIcon } from 'src/assets/images/arrow-hyperlink.svg';
-
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { ExternalLink } from 'src/shared/commonStyles';
 
 import Currency from 'src/components/Currency';
-import OrderStatusLabel from './OrderStatusLabel';
+
+import ViewLink, { ArrowIcon } from './ViewLink';
 
 const countDecimals = value => {
 	if (Math.floor(value) === value) return 0;
@@ -37,12 +34,13 @@ const getPrecision = amount => {
 	return 4;
 };
 
-const YourOrders = ({ transactions, networkId }) => {
+const MyOrders = ({ transactions, networkId }) => {
 	const { t } = useTranslation();
 	return (
 		<Table
 			data={transactions}
 			palette={TABLE_PALETTE.STRIPED}
+			cellHeight={'38px'}
 			columns={[
 				{
 					Header: t('trade.order-book-card.table.date'),
@@ -97,41 +95,26 @@ const YourOrders = ({ transactions, networkId }) => {
 				{
 					Header: t('trade.order-book-card.table.status'),
 					accessor: 'status',
-					Cell: cellProps => <OrderStatusLabel status={cellProps.row.original.status} />,
+					Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
 					sortable: true,
 				},
 				{
 					Header: t('trade.order-book-card.table.verify'),
+					accessor: 'hash',
 					Cell: cellProps => (
-						<StyledExternalLink
-							isDisabled={!cellProps.row.original.hash}
-							href={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
+						<ViewLink
+							isDisabled={!cellProps.cell.value}
+							href={getEtherscanTxLink(networkId, cellProps.cell.value)}
 						>
 							{t('common.transaction.view')}
-							<StyledArrowHyperlinkIcon width="8" height="8" />
-						</StyledExternalLink>
+							<ArrowIcon width="8" height="8" />
+						</ViewLink>
 					),
 				},
 			]}
 		></Table>
 	);
 };
-
-const StyledExternalLink = styled(ExternalLink)`
-	color: ${props => props.theme.colors.hyperlink};
-	margin-top: -4px;
-	font-size: 13px;
-	${props =>
-		props.isDisabled &&
-		css`
-			opacity: 0.3;
-			pointer-events: none;
-		`}
-`;
-
-const StyledArrowHyperlinkIcon = styled(ArrowHyperlinkIcon)`
-	margin-left: 5px;
-`;
 
 const mapStateToProps = state => {
 	return {
@@ -147,4 +130,4 @@ const mapDispatchToProps = {
 	removePendingTransaction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(YourOrders);
+export default connect(mapStateToProps, mapDispatchToProps)(MyOrders);

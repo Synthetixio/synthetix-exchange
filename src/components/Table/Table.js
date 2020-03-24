@@ -24,13 +24,13 @@ export const Table = ({
 	onTableRowClick = undefined,
 	palette = TABLE_PALETTE.PRIMARY,
 	isLoading = false,
+	cellHeight = null,
 }) => {
 	const memoizedColumns = useMemo(
 		() => columns,
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[]
 	);
-
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
 		{
 			columns: memoizedColumns,
@@ -42,7 +42,7 @@ export const Table = ({
 	);
 
 	return (
-		<ReactTable {...getTableProps()} palette={palette}>
+		<ReactTable {...getTableProps()} palette={palette} cellHeight={cellHeight}>
 			{headerGroups.map(headerGroup => (
 				<TableRow {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map(column => (
@@ -177,7 +177,7 @@ ${props =>
 		${TableCell} {
 			color: ${props => props.theme.colors.fontPrimary};
 			font-size: 12px;
-			height: 48px;
+			height: ${props => props.cellHeight || '48px'};
 		}
 		${TableRow} {
 			background-color: ${props => props.theme.colors.surfaceL3};
@@ -192,7 +192,7 @@ ${props =>
 		${TableBodyRow} {
 			background-color: ${props => props.theme.colors.surfaceL3};
 		}
-	`}		
+	`}
 
 	${props =>
 		props.palette === TABLE_PALETTE.LIGHT &&
