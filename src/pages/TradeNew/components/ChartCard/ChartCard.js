@@ -20,6 +20,7 @@ import {
 } from 'src/services/rates/rates';
 
 const PERIODS = [
+	{ value: PERIOD_IN_HOURS.ONE_MONTH, label: '1M' },
 	{ value: PERIOD_IN_HOURS.ONE_WEEK, label: '1W' },
 	{ value: PERIOD_IN_HOURS.ONE_DAY, label: '1D' },
 	{ value: PERIOD_IN_HOURS.FOUR_HOURS, label: '4H' },
