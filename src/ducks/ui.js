@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { persistState, getPersistedState } from '../config/store';
 import { isLightTheme, THEMES } from '../styles/theme';
-import { FIAT_CURRENCY_MAP } from 'src/constants/currency';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 
 const userPrefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -12,6 +12,7 @@ const initialState = {
 	synthSearch: '',
 	fiatCurrency: FIAT_CURRENCY_MAP.USD,
 	hideSmallValueAssets: false,
+	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	...getPersistedState('ui'),
 };
 
@@ -45,6 +46,10 @@ export const uiSlice = createSlice({
 			state.hideSmallValueAssets = !state.hideSmallValueAssets;
 			persistState('ui', { hideSmallValueAssets: state.hideSmallValueAssets });
 		},
+		setMarketsAssetFilter: (state, action) => {
+			state.marketsAssetFilter = action.payload.marketsAssetFilter;
+			persistState('ui', { marketsAssetFilter: state.marketsAssetFilter });
+		},
 	},
 });
 
@@ -57,11 +62,13 @@ const {
 	setSynthSearch,
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
+	setMarketsAssetFilter,
 } = uiSlice.actions;
 
 export const getUIState = state => state.ui;
 export const getFiatCurrency = state => getUIState(state).fiatCurrency;
 export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
+export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
 
 export default uiSlice.reducer;
 
@@ -74,4 +81,5 @@ export {
 	setSynthSearch,
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
+	setMarketsAssetFilter,
 };

@@ -29,19 +29,6 @@
 			"title": "On-chain exposure to any asset class",
 			"subtitle": "Trade synthetic cryptocurrencies (long and short), commodities, indexes and Forex"
 		},
-		"markets": {
-			"table": {
-				"pair-col": "pair",
-				"last-price-col": "last price",
-				"24h-change-col": "24hr change",
-				"24h-low-col": "24hr low",
-				"24h-high-col": "24hr high",
-				"24h-volume-col": "24hr volume",
-				"actions": {
-					"see-all-pairs": "see all pairs"
-				}
-			}
-		},
 		"new-user-promo": {
 			"title": "New to Synthetix.Exchange?",
 			"subtitle": "ETH holders can start trading through any of the following methods:"
@@ -88,6 +75,20 @@
 					"community": "Community",
 					"contact-us": "Contact Us"
 				}
+			}
+		}
+	},
+	"markets": {
+		"table": {
+			"pair-col": "pair",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"24h-low-col": "24hr low",
+			"24h-high-col": "24hr high",
+			"24h-volume-col": "24hr volume",
+			"actions": {
+				"see-all-pairs": "see all pairs",
+				"start-trading-now": "start trading now"
 			}
 		}
 	},
