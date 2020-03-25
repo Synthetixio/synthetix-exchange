@@ -33,7 +33,7 @@ const CurrencyCol = ({ synthsMap, cellProps }) => {
 	);
 };
 
-export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded }) => {
+export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResultsMessage }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -105,6 +105,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded }) => {
 					sortBy: marketsLoaded ? [{ id: 'rates24hVol', desc: true }] : [],
 				},
 			}}
+			noResultsMessage={noResultsMessage}
 		/>
 	);
 });
@@ -112,6 +113,8 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded }) => {
 MarketsTable.propTypes = {
 	markets: PropTypes.array.isRequired,
 	synthsMap: PropTypes.object,
+	marketsLoaded: PropTypes.bool,
+	noResultsMessage: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
