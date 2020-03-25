@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 import { Z_INDEX } from 'src/constants/ui';
@@ -21,6 +21,8 @@ import { navigateTo, ROUTES } from 'src/constants/routes';
 import useInterval from 'src/shared/hooks/useInterval';
 
 import { Button } from 'src/components/Button';
+import { SearchInput } from 'src/components/Input';
+import { FlexDivRow } from 'src/shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
@@ -35,9 +37,11 @@ export const MarketsSection = ({
 	setMarketsAssetFilter,
 	isOnSplashPage,
 }) => {
-	const { t } = useTranslation();
-
 	const marketPairs = getFilteredMarketNames(marketsAssetFilter);
+
+	const [assetSearch, setAssetSearch] = useState('');
+
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		fetchMarketsRequest({ pairs: marketPairs });
@@ -47,6 +51,14 @@ export const MarketsSection = ({
 		fetchMarketsRequest({ pairs: marketPairs });
 	}, MARKETS_REFRESH_INTERVAL_MS);
 
+	const filteredMarkets = useMemo(
+		() =>
+			markets.filter(({ baseCurrencyKey }) =>
+				baseCurrencyKey.toLowerCase().includes(assetSearch.toLowerCase())
+			),
+		[markets, assetSearch]
+	);
+
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<MarketChartsContent>
@@ -54,20 +66,39 @@ export const MarketsSection = ({
 			</MarketChartsContent>
 			<MarketsTableContainer>
 				<Content>
-					<AssetFilters>
-						{ASSET_FILTERS.map(({ asset }) => (
-							<FilterButton
-								size="sm"
-								palette="secondary"
-								isActive={asset === marketsAssetFilter}
-								key={asset}
-								onClick={() => setMarketsAssetFilter({ marketsAssetFilter: asset })}
-							>
-								{asset}
-							</FilterButton>
-						))}
-					</AssetFilters>
-					<MarketsTable markets={markets} marketsLoaded={marketsLoaded} />
+					<FiltersRow>
+						<AssetFilters>
+							{ASSET_FILTERS.map(({ asset }) => (
+								<FilterButton
+									size="md"
+									palette="secondary"
+									isActive={asset === marketsAssetFilter}
+									key={asset}
+									onClick={() => setMarketsAssetFilter({ marketsAssetFilter: asset })}
+								>
+									{asset}
+								</FilterButton>
+							))}
+						</AssetFilters>
+						<AssetSearchInput onChange={e => setAssetSearch(e.target.value)} value={assetSearch} />
+					</FiltersRow>
+					<MarketsTable
+						markets={filteredMarkets}
+						marketsLoaded={marketsLoaded}
+						noResultsMessage={
+							assetSearch && filteredMarkets.length === 0 ? (
+								<NoResultsMessage>
+									<Trans
+										i18nKey="common.search-results.no-results-for-query"
+										values={{ searchQuery: assetSearch }}
+										components={[<strong />]}
+									/>
+								</NoResultsMessage>
+							) : (
+								undefined
+							)
+						}
+					/>
 					<ButtonContainer>
 						{isOnSplashPage ? (
 							<StyledButton
@@ -97,18 +128,30 @@ MarketsSection.propTypes = {
 };
 
 const AssetFilters = styled.div`
-	padding: 32px 0;
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 8px;
+`;
 
+const FilterButton = styled(Button)`
+	text-transform: none;
+`;
+
+const FiltersRow = styled(FlexDivRow)`
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 32px 0;
 	${media.large`
 		padding: 32px 24px;
 	`}
 `;
 
-const FilterButton = styled(Button)`
-	text-transform: none;
+const AssetSearchInput = styled(SearchInput)`
+	width: 240px;
+	${media.small`
+		margin-top: 20px;
+		width: 100%;
+	`}
 `;
 
 const MarketsTableContainer = styled.div`
@@ -146,8 +189,13 @@ const ButtonContainer = styled.div`
 	padding: 75px 0;
 	text-align: center;
 `;
+
 const StyledButton = styled(Button)`
 	padding: 0 70px;
+`;
+
+const NoResultsMessage = styled.div`
+	padding: 18px;
 `;
 
 const mapStateToProps = (state, ownProps) => ({

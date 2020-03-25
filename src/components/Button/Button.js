@@ -6,7 +6,6 @@ const Button = styled.button`
 	height: 48px;
 	font-size: 16px;
 	letter-spacing: 0.5px;
-	line-height: 44px;
 	padding: 0 6px;
 	&:disabled {
 		opacity: 0.5;
@@ -17,14 +16,13 @@ const Button = styled.button`
 	white-space: nowrap;
 	cursor: pointer;
 	outline: none;
+	padding: 0 15px;
 
 	${props =>
 		props.size === 'xs' &&
 		css`
 			height: 24px;
 			font-size: 11px;
-			padding: 0 10px;
-			line-height: 24px;
 		`}
 
 	${props =>
@@ -32,8 +30,13 @@ const Button = styled.button`
 		css`
 			height: 32px;
 			font-size: 14px;
-			padding: 0 12px;
-			line-height: 34px;
+		`}
+
+	${props =>
+		props.size === 'md' &&
+		css`
+			height: 40px;
+			font-size: 14px;
 		`}
 
 	${props =>

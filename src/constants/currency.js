@@ -126,14 +126,52 @@ export const getAvailableMarketNames = memoizeOne(() => {
 	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
 	const synths = SYNTHS.filter(synth => !excludedSynths.includes(synth));
 
-	synths.forEach(synthA => {
-		synths.forEach(synthB => {
-			marketNames.push({
-				baseCurrencyKey: synthA,
-				quoteCurrencyKey: synthB,
-				pair: toMarketPair(synthA, synthB),
+	const fiatQuotePairs = [
+		SYNTHS_MAP.sEUR,
+		SYNTHS_MAP.sJPY,
+		SYNTHS_MAP.sUSD,
+		SYNTHS_MAP.sAUD,
+		SYNTHS_MAP.sGBP,
+		SYNTHS_MAP.sCHF,
+	];
+
+	// fiat markets trade against all synths
+	fiatQuotePairs.forEach(quoteCurrencyKey => {
+		synths
+			// ignore self
+			.filter(baseCurrencyKey => quoteCurrencyKey != baseCurrencyKey)
+			.forEach(baseCurrencyKey => {
+				marketNames.push({
+					baseCurrencyKey,
+					quoteCurrencyKey,
+					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+				});
 			});
-		});
+	});
+
+	const cryptoQuotePairsByMC = [SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
+
+	// Each iteration a crypto synth is added to be skipped in the next one
+	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC
+	const skipCryptoQuotes = [];
+
+	// crypto markets trade against all synths (ex fiat, ex existing crypto market)
+	cryptoQuotePairsByMC.forEach(quoteCurrencyKey => {
+		synths
+			.filter(
+				baseCurrencyKey =>
+					quoteCurrencyKey != baseCurrencyKey &&
+					![...fiatQuotePairs, ...skipCryptoQuotes].includes(baseCurrencyKey)
+			)
+			.forEach(baseCurrencyKey => {
+				marketNames.push({
+					baseCurrencyKey,
+					quoteCurrencyKey,
+					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+				});
+			});
+
+		skipCryptoQuotes.push(quoteCurrencyKey);
 	});
 
 	return marketNames;

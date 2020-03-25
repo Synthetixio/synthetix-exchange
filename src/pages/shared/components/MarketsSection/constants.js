@@ -5,10 +5,10 @@ export const ASSET_FILTERS = [
 		asset: SYNTHS_MAP.sUSD,
 	},
 	{
-		asset: SYNTHS_MAP.sETH,
+		asset: SYNTHS_MAP.sBTC,
 	},
 	{
-		asset: SYNTHS_MAP.sBTC,
+		asset: SYNTHS_MAP.sETH,
 	},
 ];
 
