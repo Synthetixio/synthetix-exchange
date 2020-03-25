@@ -1,34 +1,58 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { connect } from 'react-redux';
 
 import { CenteredPageLayout, SectionVerticalSpacer } from 'src/shared/commonStyles';
 
 import ChartCard from './components/ChartCard';
 import CreateOrderCard from './components/CreateOrderCard';
 import OrderBookCard from './components/OrderBookCard';
+import BlurBackground from './components/BlurBackground';
 
-const Trade = () => {
+import { getSynthPair, setSynthPair } from '../../ducks/synths';
+import { navigateToTrade } from 'src/constants/routes';
+
+const Trade = ({ match, setSynthPair, synthPair }) => {
+	useEffect(() => {
+		const { params } = match;
+
+		if (params && params.baseCurrencyKey && params.quoteCurrencyKey) {
+			setSynthPair({
+				baseCurrencyKey: params.baseCurrencyKey,
+				quoteCurrencyKey: params.quoteCurrencyKey,
+			});
+		} else {
+			navigateToTrade(synthPair.base.name, synthPair.quote.name, true);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [match, setSynthPair]);
+
 	return (
-		<CenteredPageLayout>
-			<TradeContainer>
-				<RowContainer>
-					<ChartContainer>
-						<ChartCard></ChartCard>
-					</ChartContainer>
-					<CreateOrderContainer>
-						<CreateOrderCard />
-					</CreateOrderContainer>
-				</RowContainer>
-				<SectionVerticalSpacer />
-				<RowContainer>
-					<OrderBookContainer>
-						<OrderBookCard />
-					</OrderBookContainer>
-				</RowContainer>
-			</TradeContainer>
-		</CenteredPageLayout>
+		<Container>
+			<BlurBackground />
+			<CenteredPageLayout>
+				<TradeContainer>
+					<RowContainer>
+						<ChartContainer>
+							<ChartCard />
+						</ChartContainer>
+						<CreateOrderContainer>
+							<CreateOrderCard />
+						</CreateOrderContainer>
+					</RowContainer>
+					<SectionVerticalSpacer />
+					<RowContainer>
+						<OrderBookContainer>
+							<OrderBookCard />
+						</OrderBookContainer>
+					</RowContainer>
+				</TradeContainer>
+			</CenteredPageLayout>
+		</Container>
 	);
 };
+
+const Container = styled.div``;
 
 const RowContainer = styled.div`
 	display: flex;
@@ -50,4 +74,12 @@ const OrderBookContainer = styled.div`
 	width: 100%;
 `;
 
-export default Trade;
+const mapStateToProps = state => ({
+	synthPair: getSynthPair(state),
+});
+
+const mapDispatchToProps = {
+	setSynthPair,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Trade);

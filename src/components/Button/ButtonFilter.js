@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 import { ReactComponent as ArrowDownIcon } from '../../assets/images/arrow-down.svg';
@@ -10,8 +10,8 @@ import { Z_INDEX } from '../../constants/ui';
 
 import Currency from '../../components/Currency';
 
-export const ButtonFilter = ({ children, onClick, height, active, style }) => (
-	<Button onClick={onClick} height={height} active={active} style={style}>
+export const ButtonFilter = ({ children, onClick, active, ...rest }) => (
+	<Button onClick={onClick} active={active} {...rest}>
 		<ButtonLabel>{children}</ButtonLabel>
 	</Button>
 );
@@ -92,6 +92,19 @@ const Synth = styled.li`
 		props.isActive ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 `;
 
+const fullRow = css`
+	flex: 1;
+	margin: 0 6px;
+	&:first-child {
+		margin-right: 6px;
+		margin-left: 0;
+	}
+	&:last-child {
+		margin-right: 0;
+		margin-left: 6px;
+	}
+`;
+
 const Button = styled.button`
 	border-radius: 1px;
 	outline: none;
@@ -108,6 +121,7 @@ const Button = styled.button`
 		background-color: ${props => props.theme.colors.accentL2};
 	}
 	border: none;
+	${props => props.fullRow && fullRow}
 `;
 
 const ButtonLabel = styled(DataSmall)`

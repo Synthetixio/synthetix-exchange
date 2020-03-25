@@ -90,6 +90,23 @@ export const getFilteredMarkets = createSelector(
 			}))
 );
 
+export const getAllMarkets = createSelector(
+	getMarketsList,
+	getRatesExchangeRates,
+	(marketsList, exchangeRates) =>
+		marketsList.map(market => ({
+			...market,
+			lastPrice:
+				exchangeRates == null
+					? null
+					: getExchangeRatesForCurrencies(
+							exchangeRates,
+							market.baseCurrencyKey,
+							market.quoteCurrencyKey
+					  ) || 0,
+		}))
+);
+
 export const getIsLoadedFilteredMarkets = createSelector(getFilteredMarkets, filteredMarkets =>
 	filteredMarkets.every(market => market.isLoaded)
 );

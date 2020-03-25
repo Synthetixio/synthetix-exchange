@@ -14,6 +14,7 @@ const initialState = {
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	pairListDropdownIsOpen: false,
+	blurBackgroundIsVisible: false,
 	...getPersistedState('ui'),
 };
 
@@ -53,6 +54,7 @@ export const uiSlice = createSlice({
 		},
 		setPairListDropdownIsOpen: (state, action) => {
 			state.pairListDropdownIsOpen = action.payload;
+			state.blurBackgroundIsVisible = action.payload;
 		},
 	},
 });
@@ -80,6 +82,7 @@ export const getSynthSearch = state => getUIState(state).synthSearch;
 export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
 export const getPairListDropdownIsOpen = state => getUIState(state).pairListDropdownIsOpen;
+export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
 
 export default uiSlice.reducer;
 

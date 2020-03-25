@@ -1,24 +1,27 @@
 import React, { memo } from 'react';
 import styled, { css } from 'styled-components';
+import OutsideClickHandler from 'react-outside-click-handler';
 
 import { ReactComponent as ArrowDownIcon } from 'src/assets/images/arrow-down.svg';
 
 import { APP_HEADER_HEIGHT, CARD_HEIGHT, SECTION_MARGIN, Z_INDEX } from 'src/constants/ui';
 
-const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick }) => {
+const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose }) => {
 	return (
-		<Container isOpen={isOpen}>
-			<Header onClick={onHeaderClick}>
-				{header}
-				<HeaderIcon isOpen={isOpen} />
-			</Header>
-			<Body isOpen={isOpen}>{body}</Body>
-		</Container>
+		<OutsideClickHandler onOutsideClick={handleClose}>
+			<Container isOpen={isOpen}>
+				<Header onClick={onHeaderClick}>
+					{header}
+					<HeaderIcon isOpen={isOpen} />
+				</Header>
+				<Body isOpen={isOpen}>{body}</Body>
+			</Container>
+		</OutsideClickHandler>
 	);
 });
 
 const isOpen = css`
-	height: ${`calc(100vh - ${APP_HEADER_HEIGHT} - ${SECTION_MARGIN} - ${CARD_HEIGHT})`};
+	height: ${`calc(100vh  - 6px - ${APP_HEADER_HEIGHT} - ${SECTION_MARGIN} - ${CARD_HEIGHT})`};
 `;
 
 const contentIsVisible = css`
@@ -27,9 +30,10 @@ const contentIsVisible = css`
 
 const Container = styled.div`
 	position: relative;
-	width: 285px;
+	width: 300px;
 	overflow: hidden;
 	${props => props.isOpen && contentIsVisible}
+	z-index: ${Z_INDEX.DROPDOWN_PANEL};
 `;
 
 const Header = styled.div`
@@ -50,11 +54,11 @@ const HeaderIcon = styled(ArrowDownIcon)`
 `;
 
 const Body = styled.div`
-	z-index: ${Z_INDEX.DROPDOWN_PANEL};
 	position: absolute;
-	width: 285px;
-	padding: 12px;
+	width: 300px;
+	padding: 12px 0;
 	height: 0;
+	overflow: hidden;
 	border-left: 1px solid ${props => props.theme.colors.accentL1};
 	border-right: 1px solid ${props => props.theme.colors.accentL1};
 	background-color: ${props => props.theme.colors.surfaceL2};

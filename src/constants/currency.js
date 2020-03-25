@@ -72,6 +72,29 @@ export const SYNTHS = [
 	'iDEFI',
 ];
 
+const CRYPTO_SYNTHS = [
+	'sBTC',
+	'sETH',
+	'sXRP',
+	'sLTC',
+	'sBNB',
+	'sXTZ',
+	'sTRX',
+	'sLINK',
+	'iBTC',
+	'iETH',
+	'iXRP',
+	'iLTC',
+	'iBNB',
+	'iXTZ',
+	'iTRX',
+	'iLINK',
+	'sCEX',
+	'sDEFI',
+	'iCEX',
+	'iDEFI',
+];
+
 export const SYNTHS_MAP = keyBy(SYNTHS);
 
 export const CRYPTO_CURRENCY = ['ETH', 'BTC'];
@@ -149,7 +172,7 @@ export const getAvailableMarketNames = memoizeOne(() => {
 			});
 	});
 
-	const cryptoQuotePairsByMC = [SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
+	const cryptoQuotePairsByMC = CRYPTO_SYNTHS;
 
 	// Each iteration a crypto synth is added to be skipped in the next one
 	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC

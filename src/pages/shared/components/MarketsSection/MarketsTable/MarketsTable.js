@@ -6,32 +6,12 @@ import PropTypes from 'prop-types';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 import { navigateToTrade } from 'src/constants/routes';
 
-import { EMPTY_VALUE } from 'src/constants/placeholder';
 import ChangePercent from 'src/components/ChangePercent';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
+import { CurrencyCol, NullableCell } from 'src/components/Table/utils';
 
 import Currency from 'src/components/Currency';
-
-import { formatCurrencyWithSign } from 'src/utils/formatters';
-
-const NullableCell = ({ cellProps, children }) =>
-	cellProps.cell.value == null ? <span>{EMPTY_VALUE}</span> : children;
-
-const CurrencyCol = ({ synthsMap, cellProps }) => {
-	const quoteCurrencyKey = cellProps.row.original.quoteCurrencyKey;
-	const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
-
-	if (cellProps.cell.value == null || !sign) {
-		return <span>{EMPTY_VALUE}</span>;
-	}
-
-	return (
-		<NullableCell cellProps={cellProps}>
-			<span>{formatCurrencyWithSign(sign, cellProps.cell.value)}</span>
-		</NullableCell>
-	);
-};
 
 export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResultsMessage }) => {
 	const { t } = useTranslation();

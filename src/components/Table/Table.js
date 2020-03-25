@@ -148,7 +148,7 @@ const ReactTable = styled.div`
 			${TableCell} {
 				color: ${props => props.theme.colors.fontPrimary};
 				font-size: 12px;
-				height: ${CARD_HEIGHT};
+				height: ${props => props.cellHeight || CARD_HEIGHT};
 			}
 			${TableRow} {
 				background-color: ${props => props.theme.colors.surfaceL3};
