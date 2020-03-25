@@ -28,7 +28,7 @@ const Blur = styled.div`
 	backdrop-filter: blur(0px);
 	pointer-events: none;
 	position: absolute;
-	z-index: ${Z_INDEX.MODAL};
+	z-index: ${Z_INDEX.BLUR_MODAL};
 	opacity: 0;
 	bottom: 0;
 	top: 54px;
