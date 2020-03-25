@@ -104,9 +104,10 @@ const PairListPanel = ({
 							},
 						]}
 						data={filteredMarkets}
-						onTableRowClick={row =>
-							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey)
-						}
+						onTableRowClick={row => {
+							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
+							setPairListDropdownIsOpen(false);
+						}}
 					></Table>
 				</PairListContainer>
 			}
