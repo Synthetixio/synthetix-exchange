@@ -260,7 +260,8 @@
 			"crypto": "crypto",
 			"forex": "forex",
 			"commodities": "commodities",
-			"synthetic-currency": "Synthetic {{currencyKey}}"
+			"synthetic-currency": "Synthetic {{currencyKey}}",
+			"fiat-synths": "sFiat"
 		},
 		"search": "search",
 		"features": {
