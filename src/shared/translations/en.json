@@ -265,6 +265,9 @@
 		"search": "search",
 		"features": {
 			"coming-soon": "coming soon"
+		},
+		"search-results": {
+			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
 		}
 	}
 }
