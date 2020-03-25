@@ -1,16 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { withTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from '../../assets/images/search.svg';
 
 import GenericInput from './Input';
 
-const Input = ({ onChange, value }) => (
+const Input = ({ onChange, value, t }) => (
 	<Container>
 		<StyledSearchIcon />
 		<GenericInput
 			padding="0 10px 0 25px"
-			placeholder="SEARCH"
+			placeholder={`${t('common.search')}...`}
 			onChange={onChange}
 			value={value}
 		></GenericInput>
@@ -31,4 +32,4 @@ const StyledSearchIcon = styled(SearchIcon)`
 	transform: translateY(-50%);
 `;
 
-export default Input;
+export default withTranslation()(Input);

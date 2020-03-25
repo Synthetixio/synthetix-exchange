@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import styled, { withTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import Chart from './Chart';
 import InfoRow from './InfoRow';
@@ -8,10 +8,8 @@ import InfoRow from './InfoRow';
 import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
 import { getRatesExchangeRates } from 'src/ducks/rates';
 
-import { HeadingSmall } from 'src/components/Typography';
 import { ButtonFilter } from 'src/components/Button';
-
-import { formatCurrencyPair } from 'src/utils/formatters';
+import PairListPanel from './PairListPanel';
 
 import {
 	fetchSynthVolumeInUSD,
@@ -80,11 +78,9 @@ const ChartCard = ({ synthPair: { base, quote } }) => {
 
 	return (
 		<Card>
-			<Card.Header>
+			<Card.Header style={{ paddingLeft: 0 }}>
 				<HeaderContainer>
-					<HeadingSmall style={{ textTransform: 'none' }}>
-						{formatCurrencyPair(base.name, quote.name)}
-					</HeadingSmall>
+					<PairListPanel />
 					<Periods>
 						{PERIODS.map((time, i) => {
 							return (
@@ -131,4 +127,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ChartCard));
+export default connect(mapStateToProps, mapDispatchToProps)(ChartCard);
