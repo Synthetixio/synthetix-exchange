@@ -301,7 +301,7 @@ const CreateOrderCard = ({
 					{BALANCE_FRACTIONS.map((fraction, id) => (
 						<ButtonAmount
 							disabled={!quoteBalance || !quoteBalance.balance}
-							key={id}
+							key={`button-fraction-${id}`}
 							onClick={() => {
 								const balance = quoteBalance.balance;
 								const isWholeBalance = fraction === 100;

@@ -7,6 +7,7 @@ import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
 import { toBigNumber } from '../../utils/formatters';
 import { getAvailableSynths } from '../synths';
 import { getHideSmallValueAssets } from '../ui';
+import { getCurrentWalletAddress } from './walletDetails';
 
 const LOW_ASSET_VALUE_USD = 1;
 
@@ -39,7 +40,6 @@ export const walletBalancesSlice = createSlice({
 	},
 });
 export const getWalletBalancesState = state => state.wallet.walletBalances;
-const getCurrentWalletAddress = state => state.wallet.walletDetails.currentWallet;
 export const getWalletBalancesMap = state => getWalletBalancesState(state).balances;
 export const getWalletBalances = createSelector(getWalletBalancesMap, walletBalancesMap => {
 	if (walletBalancesMap == null) {
