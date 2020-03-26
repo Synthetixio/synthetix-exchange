@@ -15,8 +15,6 @@ import {
 
 import { getAvailableMarketNames } from 'src/constants/currency';
 
-const MARKET_CHART_CARDS = 4;
-
 const getMarketDefaults = marketPairs =>
 	marketPairs.reduce((markets, marketPair) => {
 		const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
