@@ -1,17 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { FlexDivCentered, ExternalLink } from '../../shared/commonStyles';
+import { FlexDivCentered } from '../../shared/commonStyles';
+import Link from 'src/components/Link';
+
+const ETHER_COLLATERAL_BLOG_POST_LINK = 'http://blog.synthetix.io/bug-disclosure/';
 
 const Banner = () => (
 	<Wrapper>
 		Ether Collateral loans have been paused please see
-		<Link href="http://blog.synthetix.io/bug-disclosure/">this post</Link>
+		<StyledLink to={ETHER_COLLATERAL_BLOG_POST_LINK} isExternal={true}>
+			this post
+		</StyledLink>
 		for more details.
 	</Wrapper>
 );
 
-const Link = styled(ExternalLink)`
+const StyledLink = styled(Link)`
 	color: ${props => props.theme.colors.white};
 	margin: 0 5px;
 	text-decoration: underline;
