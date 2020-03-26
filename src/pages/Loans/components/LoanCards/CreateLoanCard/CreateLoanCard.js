@@ -34,8 +34,7 @@ import NetworkInfo from '../NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 
-const ETHER_COLLATERAL_BLOG_POST_LINK =
-	'https://blog.synthetix.io/p/bfc81f6b-cf2a-4008-9dc9-67750eeea657/';
+const ETHER_COLLATERAL_BLOG_POST_LINK = 'https://blog.synthetix.io/bug-disclosure/';
 
 export const CreateLoanCard = ({
 	toggleGweiPopup,
