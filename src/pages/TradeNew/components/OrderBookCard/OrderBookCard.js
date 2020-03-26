@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import snxJSConnector from 'src/utils/snxJSConnector';
@@ -148,6 +148,11 @@ const Tabs = styled.div`
 	display: flex;
 `;
 
+const isDisabled = css`
+	opacity: 0.2;
+	pointer-events: none;
+`;
+
 const Tab = styled.button`
 	min-width: 134px;
 	height: 42px;
@@ -157,13 +162,13 @@ const Tab = styled.button`
 	align-items: center;
 	outline: none;
 	border: none;
+	cursor: pointer;
 	background-color: ${props =>
 		props.active ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
-	opacity: ${props => (props.isDisabled ? 0.2 : 1)};
-	cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
 	&:hover {
 		background-color: ${props => props.theme.colors.surfaceL3};
 	}
+	${props => props.isDisabled && isDisabled}
 `;
 
 const mapStateToProps = state => {
