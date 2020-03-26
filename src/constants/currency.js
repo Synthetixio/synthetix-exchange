@@ -144,22 +144,22 @@ export const isFiatCurrency = currencyKey => !!FIAT_CURRENCY_MAP[currencyKey];
 export const toMarketPair = (baseCurrencyKey, quoteCurrencyKey) =>
 	`${baseCurrencyKey}-${quoteCurrencyKey}`;
 
+export const FIAT_SYNTHS = [
+	SYNTHS_MAP.sEUR,
+	SYNTHS_MAP.sJPY,
+	SYNTHS_MAP.sUSD,
+	SYNTHS_MAP.sAUD,
+	SYNTHS_MAP.sGBP,
+	SYNTHS_MAP.sCHF,
+];
+
 export const getAvailableMarketNames = memoizeOne(() => {
 	const marketNames = [];
 	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
 	const synths = SYNTHS.filter(synth => !excludedSynths.includes(synth));
 
-	const fiatQuotePairs = [
-		SYNTHS_MAP.sEUR,
-		SYNTHS_MAP.sJPY,
-		SYNTHS_MAP.sUSD,
-		SYNTHS_MAP.sAUD,
-		SYNTHS_MAP.sGBP,
-		SYNTHS_MAP.sCHF,
-	];
-
 	// fiat markets trade against all synths
-	fiatQuotePairs.forEach(quoteCurrencyKey => {
+	FIAT_SYNTHS.forEach(quoteCurrencyKey => {
 		synths
 			// ignore self
 			.filter(baseCurrencyKey => quoteCurrencyKey != baseCurrencyKey)
@@ -184,7 +184,7 @@ export const getAvailableMarketNames = memoizeOne(() => {
 			.filter(
 				baseCurrencyKey =>
 					quoteCurrencyKey != baseCurrencyKey &&
-					![...fiatQuotePairs, ...skipCryptoQuotes].includes(baseCurrencyKey)
+					![...FIAT_SYNTHS, ...skipCryptoQuotes].includes(baseCurrencyKey)
 			)
 			.forEach(baseCurrencyKey => {
 				marketNames.push({

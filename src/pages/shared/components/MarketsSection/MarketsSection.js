@@ -16,11 +16,11 @@ import { getMarketsAssetFilter, setMarketsAssetFilter } from 'src/ducks/ui';
 
 import { lightTheme } from 'src/styles/theme';
 
-import { getFilteredMarketNames } from 'src/constants/currency';
+import { getFilteredMarketNames, FIAT_SYNTHS } from 'src/constants/currency';
 import { navigateTo, ROUTES } from 'src/constants/routes';
 import useInterval from 'src/shared/hooks/useInterval';
 
-import { Button } from 'src/components/Button';
+import { Button, ButtonFilterWithDropdown } from 'src/components/Button';
 import { SearchInput } from 'src/components/Input';
 import { FlexDivRow } from 'src/shared/commonStyles';
 
@@ -79,6 +79,13 @@ export const MarketsSection = ({
 									{asset}
 								</FilterButton>
 							))}
+							<StyledButtonFilterWithDropdown
+								quote={marketsAssetFilter}
+								onClick={synth => setMarketsAssetFilter({ marketsAssetFilter: synth.name })}
+								synths={FIAT_SYNTHS.map(currency => ({ name: currency }))}
+							>
+								{t('common.currency.fiat-synths')}
+							</StyledButtonFilterWithDropdown>
 						</AssetFilters>
 						<AssetSearchInput onChange={e => setAssetSearch(e.target.value)} value={assetSearch} />
 					</FiltersRow>
@@ -144,12 +151,27 @@ const FiltersRow = styled(FlexDivRow)`
 	${media.large`
 		padding: 32px 24px;
 	`}
+	margin-top: -20px;
+	> * {
+		margin-top: 20px;
+		${media.small`
+		    flex-basis: 100%;
+		`}
+	}
+`;
+
+// TODO: ButtonFilterWithDropdown needs to be refactored to allow for easier customization
+const StyledButtonFilterWithDropdown = styled(ButtonFilterWithDropdown)`
+	height: 40px;
+	padding: 0 15px;
+	span {
+		font-size: 14px;
+	}
 `;
 
 const AssetSearchInput = styled(SearchInput)`
 	width: 240px;
 	${media.small`
-		margin-top: 20px;
 		width: 100%;
 	`}
 `;

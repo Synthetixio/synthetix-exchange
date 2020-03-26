@@ -16,13 +16,20 @@ export const ButtonFilter = ({ children, onClick, active, ...rest }) => (
 	</Button>
 );
 
-export const ButtonFilterWithDropdown = ({ children, active, synths = [], onClick, quote }) => {
+export const ButtonFilterWithDropdown = ({
+	children,
+	active,
+	synths = [],
+	onClick,
+	quote,
+	...rest
+}) => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	return (
 		<OutsideClickHandler onOutsideClick={() => setIsVisible(false)}>
 			<ButtonContainer>
-				<Button onClick={() => setIsVisible(!isVisible)} active={active}>
+				<Button onClick={() => setIsVisible(!isVisible)} active={active} {...rest}>
 					<ButtonLabel>{children}</ButtonLabel>
 					<StyledArrowDownIcon />
 				</Button>
