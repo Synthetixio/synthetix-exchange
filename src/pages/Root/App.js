@@ -15,12 +15,16 @@ import GlobalEventsGate from '../../gates/GlobalEventsGate';
 import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
 
 import MainLayout from './components/MainLayout';
+import HomeLayout from './components/HomeLayout';
+import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
 
 import Trade from '../Trade';
 import Loans from '../Loans';
+import Assets from '../Assets';
 import Home from '../Home';
+import Markets from '../Markets';
 
 const App = ({ isAppReady, currentTheme }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
@@ -37,6 +41,14 @@ const App = ({ isAppReady, currentTheme }) => {
 				)}
 				<Switch>
 					<Route
+						path={ROUTES.TradeMatch}
+						render={routeProps => (
+							<MainLayout isAppReady={isAppReady}>
+								<Trade {...routeProps} />
+							</MainLayout>
+						)}
+					/>
+					<Route
 						path={ROUTES.Trade}
 						render={routeProps => (
 							<MainLayout isAppReady={isAppReady}>
@@ -52,7 +64,30 @@ const App = ({ isAppReady, currentTheme }) => {
 							</MainLayout>
 						)}
 					/>
-					<Route path={ROUTES.Home} component={Home} />
+					<ProtectedRoute
+						path={ROUTES.Assets.Home}
+						render={routeProps => (
+							<MainLayout isAppReady={isAppReady}>
+								<Assets {...routeProps} />
+							</MainLayout>
+						)}
+					/>
+					<Route
+						path={ROUTES.Markets}
+						render={routeProps => (
+							<HomeLayout>
+								<Markets {...routeProps} />
+							</HomeLayout>
+						)}
+					/>
+					<Route
+						path={ROUTES.Home}
+						render={routeProps => (
+							<HomeLayout>
+								<Home {...routeProps} />
+							</HomeLayout>
+						)}
+					/>
 				</Switch>
 			</Router>
 		</ThemeProvider>

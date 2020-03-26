@@ -58,7 +58,7 @@ export const ChartCard = memo(
 
 const Container = styled.div`
 	background-color: ${props => props.theme.colors.surfaceL1};
-	border: 1px solid ${props => props.theme.colors.accentDark};
+	border: 1px solid ${props => props.theme.colors.accentL1};
 	box-shadow: 0px 4px 11px rgba(188, 99, 255, 0.15442);
 	border-radius: 2px;
 	width: 100%;

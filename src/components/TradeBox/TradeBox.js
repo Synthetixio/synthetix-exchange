@@ -22,7 +22,7 @@ import { getWalletInfo, getGasInfo, getExchangeFeeRate, getTransactions } from '
 import { getSynthPair } from '../../ducks/synths';
 import { getRatesExchangeRates } from '../../ducks/rates';
 import { toggleGweiPopup } from '../../ducks/ui';
-import { fetchWalletBalances } from '../../ducks/wallet';
+import { fetchWalletBalancesRequest } from '../../ducks/wallet';
 import { getEthRate } from '../../ducks/rates';
 import snxJSConnector from '../../utils/snxJSConnector';
 import errorMessages from '../../utils/errorMessages';
@@ -45,7 +45,7 @@ const TradeBox = ({
 	createTransaction,
 	updateTransaction,
 	transactions,
-	fetchWalletBalances,
+	fetchWalletBalancesRequest,
 }) => {
 	const [baseAmount, setBaseAmount] = useState('');
 	const [quoteAmount, setQuoteAmount] = useState('');
@@ -205,7 +205,7 @@ const TradeBox = ({
 		const {
 			snxJS: { Synthetix },
 		} = snxJSConnector;
-		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, fetchWalletBalances);
+		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, fetchWalletBalancesRequest);
 
 		return () => {
 			Synthetix.contract.removeAllListeners(EXCHANGE_EVENTS.SYNTH_EXCHANGE);
@@ -419,7 +419,7 @@ const ButtonAmount = styled.button`
 	flex: 1;
 	margin: 0 8px;
 	border: none;
-	background-color: ${props => props.theme.colors.accentLight};
+	background-color: ${props => props.theme.colors.accentL2};
 	height: 24px;
 `;
 
@@ -462,7 +462,7 @@ const mapDispatchToProps = {
 	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
-	fetchWalletBalances,
+	fetchWalletBalancesRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(TradeBox));

@@ -1,4 +1,5 @@
 import keyBy from 'lodash/keyBy';
+import memoizeOne from 'memoize-one';
 
 // Crypto
 import { ReactComponent as ETHIcon } from '../assets/currencies/crypto/ETH.svg';
@@ -117,3 +118,65 @@ export const currencyKeyToIconMap = {
 export const isSynth = currencyKey => !!SYNTHS_MAP[currencyKey];
 export const isCryptoCurrency = currencyKey => !!CRYPTO_CURRENCY_MAP[currencyKey];
 export const isFiatCurrency = currencyKey => !!FIAT_CURRENCY_MAP[currencyKey];
+export const toMarketPair = (baseCurrencyKey, quoteCurrencyKey) =>
+	`${baseCurrencyKey}-${quoteCurrencyKey}`;
+
+export const FIAT_SYNTHS = [
+	SYNTHS_MAP.sEUR,
+	SYNTHS_MAP.sJPY,
+	SYNTHS_MAP.sUSD,
+	SYNTHS_MAP.sAUD,
+	SYNTHS_MAP.sGBP,
+	SYNTHS_MAP.sCHF,
+];
+
+export const getAvailableMarketNames = memoizeOne(() => {
+	const marketNames = [];
+	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
+	const synths = SYNTHS.filter(synth => !excludedSynths.includes(synth));
+
+	// fiat markets trade against all synths
+	FIAT_SYNTHS.forEach(quoteCurrencyKey => {
+		synths
+			// ignore self
+			.filter(baseCurrencyKey => quoteCurrencyKey != baseCurrencyKey)
+			.forEach(baseCurrencyKey => {
+				marketNames.push({
+					baseCurrencyKey,
+					quoteCurrencyKey,
+					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+				});
+			});
+	});
+
+	const cryptoQuotePairsByMC = [SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
+
+	// Each iteration a crypto synth is added to be skipped in the next one
+	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC
+	const skipCryptoQuotes = [];
+
+	// crypto markets trade against all synths (ex fiat, ex existing crypto market)
+	cryptoQuotePairsByMC.forEach(quoteCurrencyKey => {
+		synths
+			.filter(
+				baseCurrencyKey =>
+					quoteCurrencyKey != baseCurrencyKey &&
+					![...FIAT_SYNTHS, ...skipCryptoQuotes].includes(baseCurrencyKey)
+			)
+			.forEach(baseCurrencyKey => {
+				marketNames.push({
+					baseCurrencyKey,
+					quoteCurrencyKey,
+					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+				});
+			});
+
+		skipCryptoQuotes.push(quoteCurrencyKey);
+	});
+
+	return marketNames;
+});
+
+export const getFilteredMarketNames = memoizeOne(quoteCurrencyKey =>
+	getAvailableMarketNames().filter(marketName => marketName.quoteCurrencyKey === quoteCurrencyKey)
+);

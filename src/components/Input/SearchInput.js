@@ -1,25 +1,38 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-import { ReactComponent as SearchIcon } from '../../assets/images/search.svg';
+import { ReactComponent as SearchIcon } from 'src/assets/images/search.svg';
 
 import GenericInput from './Input';
 
-const Input = ({ onChange, value }) => (
-	<Container>
-		<StyledSearchIcon />
-		<GenericInput
-			padding="0 10px 0 25px"
-			placeholder="SEARCH"
-			onChange={onChange}
-			value={value}
-		></GenericInput>
-	</Container>
-);
+export const SearchInput = memo(({ onChange, value, ...rest }) => {
+	const { t } = useTranslation();
+
+	return (
+		<Container {...rest}>
+			<StyledSearchIcon />
+			<StyledInput placeholder={t('common.search')} onChange={onChange} value={value} />
+		</Container>
+	);
+});
+
+SearchInput.propTypes = {
+	onChange: PropTypes.func.isRequired,
+	value: PropTypes.string,
+};
 
 const Container = styled.div`
-	width: 100%;
 	position: relative;
+`;
+
+const StyledInput = styled(GenericInput)`
+	border-radius: 1px;
+	padding: 0 10px 0 25px;
+	&::placeholder {
+		text-transform: uppercase;
+	}
 `;
 
 const StyledSearchIcon = styled(SearchIcon)`
@@ -31,4 +44,4 @@ const StyledSearchIcon = styled(SearchIcon)`
 	transform: translateY(-50%);
 `;
 
-export default Input;
+export default SearchInput;

@@ -11,6 +11,9 @@ import { shortenAddress } from 'src/utils/formatters';
 import { showWalletPopup } from 'src/ducks/ui';
 import { getWalletInfo, getCurrentTheme } from 'src/ducks';
 
+// TODO: bring this back when implement the new dropdown
+// import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+
 import { Dot } from 'src/shared/commonStyles';
 import { DataMedium } from 'src/components/Typography';
 
@@ -23,10 +26,13 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 	const { currentWallet, networkName } = walletInfo;
 
 	return currentWallet != null ? (
-		<Container onClick={showWalletPopup}>
-			<GreenDot />
-			<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
-			<NetworkLabel>{networkName}</NetworkLabel>
+		<Container>
+			<WalletInfo onClick={showWalletPopup} role="button">
+				<GreenDot />
+				<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
+				<NetworkLabel>{networkName}</NetworkLabel>
+			</WalletInfo>
+			{/* <MenuArrowDownIcon /> */}
 		</Container>
 	) : (
 		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
@@ -48,8 +54,7 @@ const Container = styled.div`
 	align-items: center;
 	padding: 8px;
 	border-radius: ${ELEMENT_BORDER_RADIUS};
-	cursor: pointer;
-	border: 1px solid ${props => props.theme.colors.accentDark};
+	border: 1px solid ${props => props.theme.colors.accentL1};
 
 	${media.small`
 		height: auto;
@@ -63,6 +68,14 @@ const Container = styled.div`
 	`}
 `;
 
+const WalletInfo = styled.div`
+	display: grid;
+	grid-auto-flow: column;
+	grid-gap: 10px;
+	align-items: center;
+	cursor: pointer;
+`;
+
 const GreenDot = styled(Dot)`
 	background-color: ${props => props.theme.colors.green};
 `;
@@ -74,7 +87,7 @@ const WalletAddress = styled(DataMedium)`
 
 const NetworkLabel = styled(DataMedium)`
 	text-transform: uppercase;
-	background-color: ${props => props.theme.colors.accentDark};
+	background-color: ${props => props.theme.colors.accentL1};
 	color: ${props => props.theme.colors.fontTertiary};
 	border-radius: 25px;
 	font-size: 12px;
@@ -88,7 +101,6 @@ const StyledButtonPrimary = styled(ButtonPrimary)`
 		line-height: 24px;
 		padding: 0 8px;
 	`}
-	${media.medium``}
 `;
 
 const mapStateToProps = state => ({

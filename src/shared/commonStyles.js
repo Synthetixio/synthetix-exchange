@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
+import { tableDataSmallCSS, chartDataCSS } from 'src/components/Typography/Data';
 
 import { Z_INDEX } from '../constants/ui';
 
@@ -65,7 +66,7 @@ export const Dot = styled.div`
 	width: 14px;
 	height: 14px;
 	border-radius: 50%;
-	background-color: ${props => props.theme.colors.accentLight};
+	background-color: ${props => props.theme.colors.accentL2};
 `;
 
 export const FormInputRow = styled.div`
@@ -170,5 +171,20 @@ export const RoundedIcon = styled(FlexDivCentered)`
 	border-radius: 100%;
 	justify-content: center;
 
-	background-color: ${props => props.theme.colors.accentDark};
+	background-color: ${props => props.theme.colors.accentL1};
+`;
+
+export const TableNoResults = styled.div`
+	padding-top: 20px;
+	color: ${props => props.theme.colors.fontPrimary};
+	${tableDataSmallCSS};
+	padding: 18px;
+`;
+
+export const CardHeadingDescription = styled.span`
+	${chartDataCSS};
+	color: ${props => props.theme.colors.fontSecondary};
+	&&& {
+		margin-left: auto;
+	}
 `;

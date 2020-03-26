@@ -17,7 +17,7 @@ const SimpleSelect = props => {
 				container: provided => ({
 					...provided,
 					opacity: isDisabled ? 0.4 : 1,
-					backgroundColor: colors.accentDark,
+					backgroundColor: colors.accentL1,
 				}),
 				singleValue: provided => ({
 					...provided,
@@ -31,14 +31,14 @@ const SimpleSelect = props => {
 					color: colors.fontPrimary,
 					cursor: 'pointer',
 					boxShadow: 'none',
-					border: `1px solid ${colors.accentLight}`,
+					border: `1px solid ${colors.accentL2}`,
 					borderRadius: '1px',
 					outline: 'none',
 				}),
 				menu: provided => ({
 					...provided,
-					backgroundColor: colors.accentDark,
-					border: `1px solid ${colors.accentLight}`,
+					backgroundColor: colors.accentL1,
+					border: `1px solid ${colors.accentL2}`,
 					borderRadius: '1px',
 				}),
 				menuList: provided => ({
@@ -53,9 +53,9 @@ const SimpleSelect = props => {
 					color: colors.fontPrimary,
 					cursor: 'pointer',
 					fontSize: '14px',
-					backgroundColor: colors.accentDark,
+					backgroundColor: colors.accentL1,
 					'&:hover': {
-						backgroundColor: colors.accentLight,
+						backgroundColor: colors.accentL2,
 					},
 				}),
 			}}

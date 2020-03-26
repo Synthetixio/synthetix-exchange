@@ -6,7 +6,8 @@
 			"loans": "loans",
 			"markets": "markets",
 			"tokens": "tokens",
-			"support": "support"
+			"support": "support",
+			"assets": "assets"
 		},
 		"theme": {
 			"light": "light mode",
@@ -28,19 +29,6 @@
 			"title": "On-chain exposure to any asset class",
 			"subtitle": "Trade synthetic cryptocurrencies (long and short), commodities, indexes and Forex"
 		},
-		"markets": {
-			"table": {
-				"pair-col": "pair",
-				"last-price-col": "last price",
-				"24h-change-col": "24hr change",
-				"24h-low-col": "24hr low",
-				"24h-high-col": "24hr high",
-				"24h-volume-col": "24hr volume",
-				"actions": {
-					"see-all-pairs": "see all pairs"
-				}
-			}
-		},
 		"new-user-promo": {
 			"title": "New to Synthetix.Exchange?",
 			"subtitle": "ETH holders can start trading through any of the following methods:"
@@ -59,7 +47,7 @@
 				},
 				"distributed-collateral-pool": {
 					"title": "Distributed Collateral Pool",
-					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
+					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
 				}
 			},
 			"start-trading-button": "start trading now"
@@ -90,6 +78,20 @@
 			}
 		}
 	},
+	"markets": {
+		"table": {
+			"pair-col": "pair",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"24h-low-col": "24hr low",
+			"24h-high-col": "24hr high",
+			"24h-volume-col": "24hr volume",
+			"actions": {
+				"see-all-pairs": "see all pairs",
+				"start-trading-now": "start trading now"
+			}
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
@@ -117,7 +119,7 @@
 			}
 		},
 		"my-loans": {
-			"title": "my loans",
+			"title": "your loans",
 			"table": {
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
@@ -144,6 +146,72 @@
 			}
 		}
 	},
+	"assets": {
+		"navigation": {
+			"overview": "overview",
+			"exchanges": "exchanges",
+			"transfers": "transfers"
+		},
+		"balances": {
+			"hide-small-value": "Hide small value assets",
+			"show-small-value": "Show small value assets"
+		},
+		"overview": {
+			"dashboard": {
+				"total-balance": {
+					"title": "estimated synths value"
+				},
+				"balance-chart": {
+					"title": "synth balance",
+					"period": {
+						"1mo": "last month"
+					}
+				},
+				"synth-breakdown": {
+					"title": "synth breakdown",
+					"description": "top 4 assets",
+					"assets": {
+						"other": "Other"
+					}
+				}
+			},
+			"your-synths": {
+				"title": "your synths",
+				"table": {
+					"asset-col": "asset",
+					"asset-description-col": "description",
+					"total-col": "total",
+					"usd-value-col": "usd value",
+					"actions-col": "actions",
+					"no-results": "No assets associated with this wallet."
+				}
+			}
+		},
+		"exchanges": {
+			"title": "exchange history",
+			"table": {
+				"date-time-col": "date | time",
+				"pair-col": "pair",
+				"buying-col": "buying",
+				"selling-col": "selling",
+				"price-col": "price",
+				"total-col": "total",
+				"status-col": "status",
+				"verify-col": "verify",
+				"no-results": "No exchanges associated with this wallet."
+			}
+		},
+		"transfers": {
+			"title": "synth transfer history",
+			"table": {
+				"date-time-col": "date | time",
+				"asset-col": "asset",
+				"total-col": "total",
+				"status-col": "details",
+				"verify-col": "verify"
+			}
+		}
+	},
 	"common": {
 		"max": "max",
 		"gas-limit": "gas limit",
@@ -156,13 +224,22 @@
 			"close": "close",
 			"edit": "edit",
 			"confirm": "confirm",
-			"click-to-retry": "click to retry"
+			"click-to-retry": "click to retry",
+			"trade": "trade",
+			"info": "info",
+			"convert-to-eth": "convert to eth",
+			"swap-via-1inch": "swap-via-1inch",
+			"view": "view"
 		},
 		"tx-status": {
 			"waiting": "Waiting",
 			"open": "Open",
 			"closed": "Closed",
-			"closing": "Closing"
+			"closing": "Closing",
+			"in": "Transferred in",
+			"out": "Transferred out",
+			"complete": "Complete",
+			"pending": "Pending"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
@@ -182,8 +259,16 @@
 			"borrow-currency": "Borrow {{currencyKey}}",
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodities": "commodities"
+			"commodities": "commodities",
+			"synthetic-currency": "Synthetic {{currencyKey}}",
+			"fiat-synths": "sFiat"
 		},
-		"search": "search"
+		"search": "search",
+		"features": {
+			"coming-soon": "coming soon"
+		},
+		"search-results": {
+			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
+		}
 	}
 }

@@ -30,7 +30,7 @@ import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
 export const MobileAppHeader = memo(
-	({ showThemeToggle, currentTheme, toggleTheme, isOnSplashPage, ...rest }) => {
+	({ showThemeToggle, currentTheme, toggleTheme, isOnSplashPage, isLoggedIn, ...rest }) => {
 		const [menuOpen, setMenuOpen] = useState(false);
 		const { t } = useTranslation();
 
@@ -70,6 +70,14 @@ export const MobileAppHeader = memo(
 							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
 								{t('header.links.loans')}
 							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
+								{t('header.links.markets')}
+							</DropdownMenuLink>
+							{isLoggedIn && (
+								<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
+									{t('header.links.assets')}
+								</DropdownMenuLink>
+							)}
 							<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
 								{t('header.links.support')}
 							</DropdownMenuLink>
@@ -101,13 +109,14 @@ MobileAppHeader.propTypes = {
 	toggleTheme: PropTypes.func.isRequired,
 	className: PropTypes.string,
 	isOnSplashPage: PropTypes.bool,
+	isLoggedIn: PropTypes.bool,
 };
 
 const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${props =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentDark};
+	border-color: ${props => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 	position: fixed;
@@ -148,13 +157,13 @@ const MenuItems = styled(FlexDivCentered)`
 
 const MenuItemsLeft = styled(MenuItems)`
 	${MenuItem} {
-		border-right: 1px solid ${props => props.theme.colors.accentDark};
+		border-right: 1px solid ${props => props.theme.colors.accentL1};
 	}
 `;
 
 const MenuItemsRight = styled(MenuItems)`
 	${MenuItem} {
-		border-left: 1px solid ${props => props.theme.colors.accentDark};
+		border-left: 1px solid ${props => props.theme.colors.accentL1};
 	}
 `;
 
@@ -175,7 +184,7 @@ const dropdownItemCSS = css`
 	text-transform: uppercase;
 	&:hover {
 		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${props => props.theme.colors.accentL1};
 	}
 	cursor: pointer;
 	${media.small`
@@ -186,7 +195,7 @@ const dropdownItemCSS = css`
 const DropdownMenuLink = styled(Link)`
 	${dropdownItemCSS};
 	&.active {
-		background-color: ${props => props.theme.colors.accentLight};
+		background-color: ${props => props.theme.colors.accentL2};
 		color: ${props => props.theme.colors.fontPrimary};
 	}
 `;
