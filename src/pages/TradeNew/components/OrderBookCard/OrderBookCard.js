@@ -115,8 +115,8 @@ const OrderBookCard = ({
 	}, [currentWallet]);
 
 	return (
-		<Card>
-			<Card.Body style={{ padding: 0 }}>
+		<StyledCard>
+			<Card.Body style={{ padding: 0, overflow: 'hidden' }}>
 				<Tabs>
 					{tabContent.map(tab => {
 						return (
@@ -133,9 +133,16 @@ const OrderBookCard = ({
 				</Tabs>
 				{activeTab.component}
 			</Card.Body>
-		</Card>
+		</StyledCard>
 	);
 };
+
+const StyledCard = styled(Card)`
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+`;
 
 const Tabs = styled.div`
 	display: flex;

@@ -41,18 +41,16 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 						</CreateOrderContainer>
 					</RowContainer>
 					<SectionVerticalSpacer />
-					<RowContainer>
-						<OrderBookContainer>
-							<OrderBookCard />
-						</OrderBookContainer>
-					</RowContainer>
+					<OrderBookCard />
 				</TradeContainer>
 			</CenteredPageLayout>
 		</Container>
 	);
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+	height: 100%;
+`;
 
 const RowContainer = styled.div`
 	display: flex;
@@ -69,9 +67,6 @@ const ChartContainer = styled.div`
 const CreateOrderContainer = styled.div`
 	width: 282px;
 	margin-left: 8px;
-`;
-const OrderBookContainer = styled.div`
-	width: 100%;
 `;
 
 const mapStateToProps = state => ({

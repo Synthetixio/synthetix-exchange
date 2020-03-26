@@ -59,6 +59,7 @@ const InfoRow = ({
 };
 
 const RowContainer = styled.div`
+	margin-top: 2px;
 	display: grid;
 	grid-column-gap: 12px;
 	grid-auto-flow: column;

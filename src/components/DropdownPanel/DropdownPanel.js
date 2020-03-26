@@ -41,7 +41,8 @@ const Header = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px 12px;
+	height: ${CARD_HEIGHT};
+	padding: 0 12px;
 	background-color: ${props => props.theme.colors.accentL1};
 	cursor: pointer;
 `;
