@@ -20,7 +20,7 @@ import Currency from 'src/components/Currency';
 import { SearchInput } from 'src/components/Input';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { CurrencyCol } from 'src/components/Table/utils';
+import { CurrencyCol, RightAlignedCell } from 'src/components/Table/utils';
 import { ButtonFilter } from 'src/components/Button';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
@@ -72,7 +72,10 @@ const PairListPanel = ({
 										key={`button-filter-${i}`}
 										fullRow="true"
 										active={asset === marketsAssetFilter}
-										onClick={() => setMarketsAssetFilter({ marketsAssetFilter: asset })}
+										onClick={() => {
+											setSearch(DEFAULT_SEARCH);
+											setMarketsAssetFilter({ marketsAssetFilter: asset });
+										}}
 									>
 										{asset}
 									</ButtonFilter>
@@ -80,13 +83,13 @@ const PairListPanel = ({
 							})}
 						</ButtonRow>
 					</SearchContainer>
-					<Table
-						cellHeight="32px"
+					<StyledTable
 						palette={TABLE_PALETTE.PRIMARY}
 						columns={[
 							{
 								Header: t('markets.table.pair-col'),
 								accessor: 'pair',
+								width: 150,
 								Cell: cellProps => (
 									<Currency.Pair
 										baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
@@ -99,7 +102,12 @@ const PairListPanel = ({
 							{
 								Header: t('markets.table.last-price-col'),
 								accessor: 'lastPrice',
-								Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
+								width: 100,
+								Cell: cellProps => (
+									<RightAlignedCell>
+										<CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />{' '}
+									</RightAlignedCell>
+								),
 								sortable: true,
 							},
 						]}
@@ -108,12 +116,37 @@ const PairListPanel = ({
 							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
 							setPairListDropdownIsOpen(false);
 						}}
-					></Table>
+					></StyledTable>
 				</PairListContainer>
 			}
 		></DropdownPanel>
 	);
 };
+
+const StyledTable = styled(Table)`
+	.table-row {
+		width: 100%;
+		& > :last-child {
+			justify-content: flex-end;
+		}
+	}
+	.table-body {
+		width: 300px;
+		margin-bottom: 80px;
+	}
+	.table-body-row {
+		margin: 0 6px 8px 6px;
+		& > :first-child {
+			padding-left: 12px;
+		}
+		& > :last-child {
+			padding-right: 16px;
+		}
+	}
+	.table-body-cell {
+		height: 32px;
+	}
+`;
 
 const PairListContainer = styled.div`
 	height: 100%;

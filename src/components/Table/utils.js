@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { formatCurrencyWithSign } from 'src/utils/formatters';
 import { EMPTY_VALUE } from 'src/constants/placeholder';
@@ -20,3 +21,9 @@ export const CurrencyCol = ({ synthsMap, cellProps }) => {
 		</NullableCell>
 	);
 };
+
+export const RightAlignedCell = styled.div`
+	display: flex;
+	width: inherit;
+	justify-content: flex-end;
+`;

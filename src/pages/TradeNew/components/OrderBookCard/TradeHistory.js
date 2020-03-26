@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 
@@ -26,8 +27,7 @@ import {
 const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => {
 	const { t } = useTranslation();
 	return (
-		<Table
-			cellHeight={'32px'}
+		<StyledTable
 			palette={TABLE_PALETTE.STRIPED}
 			columns={[
 				{
@@ -114,6 +114,12 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 		/>
 	);
 };
+
+const StyledTable = styled(Table)`
+	.table-body-cell {
+		height: 38px;
+	}
+`;
 
 const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),

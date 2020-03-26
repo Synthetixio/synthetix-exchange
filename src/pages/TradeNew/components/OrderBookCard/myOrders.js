@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
@@ -37,10 +38,9 @@ const getPrecision = amount => {
 const MyOrders = ({ transactions, networkId }) => {
 	const { t } = useTranslation();
 	return (
-		<Table
+		<StyledTable
 			data={transactions}
 			palette={TABLE_PALETTE.STRIPED}
-			cellHeight={'38px'}
 			columns={[
 				{
 					Header: t('trade.order-book-card.table.date'),
@@ -112,9 +112,15 @@ const MyOrders = ({ transactions, networkId }) => {
 					),
 				},
 			]}
-		></Table>
+		></StyledTable>
 	);
 };
+
+const StyledTable = styled(Table)`
+	.table-body-cell {
+		height: 38px;
+	}
+`;
 
 const mapStateToProps = state => {
 	return {

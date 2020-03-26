@@ -25,7 +25,7 @@ export const Table = ({
 	onTableRowClick = undefined,
 	palette = TABLE_PALETTE.PRIMARY,
 	isLoading = false,
-	cellHeight = null,
+	className,
 }) => {
 	const memoizedColumns = useMemo(
 		() => columns,
@@ -43,9 +43,9 @@ export const Table = ({
 	);
 
 	return (
-		<ReactTable {...getTableProps()} palette={palette} cellHeight={cellHeight}>
+		<ReactTable {...getTableProps()} palette={palette} className={className}>
 			{headerGroups.map(headerGroup => (
-				<TableRow {...headerGroup.getHeaderGroupProps()}>
+				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map(column => (
 						<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
 							{column.render('Header')}
@@ -71,17 +71,20 @@ export const Table = ({
 			) : isLoading ? (
 				<Spinner size="sm" fullscreen={true} />
 			) : (
-				<TableBody {...getTableBodyProps()}>
+				<TableBody className="table-body" {...getTableBodyProps()}>
 					{rows.map(row => {
 						prepareRow(row);
 
 						return (
 							<TableBodyRow
+								className="table-body-row"
 								{...row.getRowProps()}
 								onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
 							>
 								{row.cells.map(cell => (
-									<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+									<TableCell className="table-body-cell" {...cell.getCellProps()}>
+										{cell.render('Cell')}
+									</TableCell>
 								))}
 							</TableBodyRow>
 						);
@@ -148,7 +151,7 @@ const ReactTable = styled.div`
 			${TableCell} {
 				color: ${props => props.theme.colors.fontPrimary};
 				font-size: 12px;
-				height: ${props => props.cellHeight || CARD_HEIGHT};
+				height: ${CARD_HEIGHT};
 			}
 			${TableRow} {
 				background-color: ${props => props.theme.colors.surfaceL3};
@@ -179,7 +182,7 @@ ${props =>
 		${TableCell} {
 			color: ${props => props.theme.colors.fontPrimary};
 			font-size: 12px;
-			height: ${props => props.cellHeight || '48px'};
+			height: 48px;
 		}
 		${TableRow} {
 			background-color: ${props => props.theme.colors.surfaceL3};

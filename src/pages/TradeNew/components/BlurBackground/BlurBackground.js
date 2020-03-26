@@ -21,7 +21,7 @@ to {
 `;
 
 const isBlurred = css`
-	animation: ${keyf} 0.2s linear forwards;
+	animation: ${keyf} 0.1s linear forwards;
 `;
 
 const Blur = styled.div`
