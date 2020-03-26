@@ -24,6 +24,7 @@ import {
 	formatTxTimestamp,
 	formatCurrency,
 	formatCurrencyWithSign,
+	formatCurrencyWithKey,
 	formatCurrencyPair,
 } from 'src/utils/formatters';
 
@@ -76,7 +77,7 @@ export const Exchanges = memo(
 							},
 							{
 								Header: t('assets.exchanges.table.pair-col'),
-								accessor: d => formatCurrencyPair(d.fromCurrencyKey, d.toCurrencyKey),
+								accessor: d => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
 								Cell: cellProps => {
 									const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
@@ -101,7 +102,8 @@ export const Exchanges = memo(
 										placement="top"
 									>
 										<span>
-											{formatCurrency(
+											{formatCurrencyWithKey(
+												cellProps.row.original.toCurrencyKey,
 												cellProps.row.original.toAmount,
 												SHORT_CRYPTO_CURRENCY_DECIMALS
 											)}
@@ -122,7 +124,8 @@ export const Exchanges = memo(
 										placement="top"
 									>
 										<span>
-											{formatCurrency(
+											{formatCurrencyWithKey(
+												cellProps.row.original.fromCurrencyKey,
 												cellProps.row.original.fromAmount,
 												SHORT_CRYPTO_CURRENCY_DECIMALS
 											)}
