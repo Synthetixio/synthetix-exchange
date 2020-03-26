@@ -7,6 +7,7 @@ import loans from './loans';
 import rates from './rates';
 import app from './app';
 import markets from './markets';
+import trades from './trades';
 
 export default combineReducers({
 	app,
@@ -17,6 +18,7 @@ export default combineReducers({
 	loans,
 	rates,
 	markets,
+	trades,
 });
 
 // UI REDUCERS
@@ -56,12 +58,6 @@ export const getTransactionSettings = state => {
 		gasAndSpeedInfo: state.wallet.gasAndSpeedInfo,
 	};
 };
-
-export const getWalletBalances = state => {
-	return state.wallet.balances;
-};
-
-export const getIsFetchingWalletBalances = state => state.wallet.isFetchingWalletBalances;
 
 // TRANSACTION REDUCERS
 export const getGasInfo = state => {

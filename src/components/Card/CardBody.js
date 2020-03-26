@@ -9,6 +9,7 @@ CardBody.propTypes = {
 };
 
 const Container = styled.div`
+	position: relative;
 	padding: 16px 12px 18px 12px;
 `;
 

@@ -1,10 +1,15 @@
 import styled, { css } from 'styled-components';
-import { color } from 'styled-system';
 
 export const labelCSS = css`
-	${color};
-	font-family: 'apercu-medium', sans-serif;
-	color: ${props => props.color || props.theme.colors.fontPrimary};
+	font-family: ${props => props.theme.fonts.medium};
+	color: ${props => props.theme.colors.fontPrimary};
+	line-height: 1.2;
+	letter-spacing: 0.2px;
+`;
+
+export const labelLargeCSS = css`
+	${labelCSS};
+	font-size: 16px;
 `;
 
 export const labelMediumCSS = css`
@@ -15,6 +20,10 @@ export const labelMediumCSS = css`
 export const labelSmallCSS = css`
 	${labelCSS}
 	font-size: 12px;
+`;
+
+export const LabelLarge = styled.span`
+	${labelLargeCSS}
 `;
 
 export const LabelMedium = styled.span`

@@ -9,6 +9,14 @@ const smallButtonCSS = css`
 	line-height: 34px;
 `;
 
+const extraSmallButtonCSS = css`
+	height: 24px;
+	font-size: 11px;
+	padding: 0 10px;
+	width: auto;
+	line-height: 24px;
+`;
+
 const ButtonPrimary = styled.button`
 	border-radius: 1px;
 	height: 48px;
@@ -35,10 +43,15 @@ const ButtonPrimary = styled.button`
 	white-space: nowrap;
 	${width};
 	${props => props.size === 'sm' && smallButtonCSS}
+	${props => props.size === 'xs' && extraSmallButtonCSS}
 `;
 
 export const ButtonPrimarySmall = styled(ButtonPrimary)`
 	${smallButtonCSS}
+`;
+
+export const ButtonPrimaryExtraSmall = styled(ButtonPrimary)`
+	${extraSmallButtonCSS}
 `;
 
 export default ButtonPrimary;

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { DataLarge } from '../Typography';
 import Spinner from '../Spinner';
 
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, bigNumberFormatter } from '../../utils/formatters';
 import { getEtherscanAddressLink } from '../../utils/explorers';
 import { getWalletInfo } from '../../ducks';
 
@@ -41,13 +41,31 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 								<DataLabel>{wallet.address}</DataLabel>
 							</Td>
 							<Td>
-								<Balance value={wallet.balances.snxBalance} />
+								<Balance
+									value={
+										wallet.balances.snxBalance != null
+											? bigNumberFormatter(wallet.balances.snxBalance)
+											: undefined
+									}
+								/>
 							</Td>
 							<Td>
-								<Balance value={wallet.balances.sUSDBalance} />
+								<Balance
+									value={
+										wallet.balances.sUSDBalance != null
+											? bigNumberFormatter(wallet.balances.sUSDBalance)
+											: undefined
+									}
+								/>
 							</Td>
 							<Td>
-								<Balance value={wallet.balances.ethBalance} />
+								<Balance
+									value={
+										wallet.balances.ethBalance != null
+											? bigNumberFormatter(wallet.balances.ethBalance)
+											: undefined
+									}
+								/>
 							</Td>
 							<Td
 								onClick={e => {
@@ -109,15 +127,15 @@ const Td = styled.td`
 	padding: 0 20px;
 	text-align: right;
 	height: 48px;
-	border-top: 1px solid ${props => props.theme.colors.accentDark};
-	border-bottom: 1px solid ${props => props.theme.colors.accentDark};
+	border-top: 1px solid ${props => props.theme.colors.accentL1};
+	border-bottom: 1px solid ${props => props.theme.colors.accentL1};
 	&:first-child {
-		border-left: 1px solid ${props => props.theme.colors.accentDark};
+		border-left: 1px solid ${props => props.theme.colors.accentL1};
 		border-top-left-radius: 2px;
 		border-bottom-left-radius: 2px;
 	}
 	&:last-child {
-		border-right: 1px solid ${props => props.theme.colors.accentDark};
+		border-right: 1px solid ${props => props.theme.colors.accentL1};
 		border-top-right-radius: 2px;
 		border-bottom-right-radius: 2px;
 	}

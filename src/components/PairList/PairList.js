@@ -226,7 +226,7 @@ const Pair = styled.li`
 	justify-content: space-between;
 	transition: transform 0.2s ease-out;
 	&:hover {
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${props => props.theme.colors.accentL1};
 		transform: scale(1.02);
 	}
 	opacity: ${props => (props.isDisabled ? 0.5 : 1)};

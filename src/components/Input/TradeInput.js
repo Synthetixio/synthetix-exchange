@@ -90,7 +90,7 @@ const Container = styled(FlexDiv)`
 `;
 
 const Synth = styled(FlexDivCentered)`
-	border: 1px solid ${props => props.theme.colors.accentLight};
+	border: 1px solid ${props => props.theme.colors.accentL2};
 	border-right: none;
 	padding: 0 10px;
 `;
