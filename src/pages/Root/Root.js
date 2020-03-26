@@ -15,6 +15,7 @@ import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import { setAppReady, getIsAppReady } from '../../ducks/app';
 
+import MaintenanceMessage from './components/MaintenanceMessage';
 import App from './App';
 
 const REFRESH_INTERVAL = 3 * 60 * 1000;
@@ -32,12 +33,27 @@ const Root = ({
 	isAppReady,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
+	const [appIsOnMaintenance, setAppIsOnMaintenace] = useState(false);
 	const fetchAndSetExchangeData = useCallback(async synths => {
 		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths({ frozenSynths });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const fetchMaintenanceState = useCallback(async () => {
+		if (process.env.REACT_APP_CONTEXT !== 'production') return;
+		const {
+			snxJS: { DappMaintenance },
+		} = snxJSConnector;
+		try {
+			const isOnMaintenance = await DappMaintenance.isPausedSX();
+			setAppIsOnMaintenace(isOnMaintenance);
+		} catch (e) {
+			console.log(e);
+			setAppIsOnMaintenace(false);
+		}
 	}, []);
 
 	useEffect(() => {
@@ -66,7 +82,7 @@ const Root = ({
 			setAvailableSynths({ synths });
 			setAppReady();
 			fetchAndSetExchangeData(synths);
-
+			fetchMaintenanceState();
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
@@ -83,7 +99,7 @@ const Root = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetchAndSetExchangeData, fetchWalletBalancesRequest]);
 
-	return <App isAppReady={isAppReady} />;
+	return appIsOnMaintenance ? <MaintenanceMessage /> : <App isAppReady={isAppReady} />;
 };
 
 const mapStateToProps = state => ({
