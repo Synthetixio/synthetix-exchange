@@ -176,7 +176,11 @@
 			"create-loan": {
 				"title": "create a loan",
 				"currency-locked": "<0>{{currencyKey}}</0> being locked:",
-				"currency-borrowed": "<0>{{currencyKey}}</0> being borrowed:"
+				"currency-borrowed": "<0>{{currencyKey}}</0> being borrowed:",
+				"paused": {
+					"message": "Ether Collateral loans have been paused.",
+					"button-label": "read this post for info"
+				}
 			},
 			"close-loan": {
 				"title": "close loan",

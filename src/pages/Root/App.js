@@ -26,6 +26,8 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 
+import Banner from 'src/components/Banner';
+
 const App = ({ isAppReady, currentTheme }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
@@ -37,6 +39,7 @@ const App = ({ isAppReady, currentTheme }) => {
 						<GlobalEventsGate />
 						<WalletPopup />
 						<GweiPopup />
+						<Banner />
 					</>
 				)}
 				<Switch>

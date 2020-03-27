@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import snxJSConnector from 'src/utils/snxJSConnector';
@@ -19,6 +20,8 @@ import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { createLoan, LOAN_STATUS } from 'src/ducks/loans/myLoans';
 import { getEthRate } from 'src/ducks/rates';
 
+import Link from 'src/components/Link';
+
 import { toggleGweiPopup } from 'src/ducks/ui';
 
 import {
@@ -26,11 +29,14 @@ import {
 	FormInputLabel,
 	FormInputLabelSmall,
 	CurrencyKey,
+	FlexDivCentered,
 } from 'src/shared/commonStyles';
 
 import NetworkInfo from '../NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
+
+const ETHER_COLLATERAL_BLOG_POST_LINK = 'https://blog.synthetix.io/bug-disclosure/';
 
 export const CreateLoanCard = ({
 	toggleGweiPopup,
@@ -51,6 +57,8 @@ export const CreateLoanCard = ({
 
 	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
 
+	// ETH collateral is blocked for now
+	// eslint-disable-next-line
 	const handleSubmit = async () => {
 		const {
 			snxJS: { EtherCollateral },
@@ -192,10 +200,7 @@ export const CreateLoanCard = ({
 					ethRate={ethRate}
 					onEditButtonClick={showGweiPopup}
 				/>
-				<ButtonPrimary
-					onClick={handleSubmit}
-					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
-				>
+				<ButtonPrimary disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
 				{txErrorMessage && (
@@ -208,6 +213,16 @@ export const CreateLoanCard = ({
 						{txErrorMessage}
 					</TxErrorMessage>
 				)}
+				<BlockingOverlay>
+					<PauseMessage>
+						<HeadingSmall>{t('loans.loan-card.create-loan.paused.message')}</HeadingSmall>
+					</PauseMessage>
+					<Link to={ETHER_COLLATERAL_BLOG_POST_LINK} isExternal={true}>
+						<ButtonPrimary size="sm">
+							{t('loans.loan-card.create-loan.paused.button-label')}
+						</ButtonPrimary>
+					</Link>
+				</BlockingOverlay>
 			</Card.Body>
 		</Card>
 	);
@@ -220,6 +235,21 @@ CreateLoanCard.propTypes = {
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
 };
+
+const BlockingOverlay = styled(FlexDivCentered)`
+	background-color: ${props => props.theme.colors.surfaceL2};
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	flex-direction: column;
+	justify-content: center;
+`;
+
+const PauseMessage = styled.div`
+	padding-bottom: 30px;
+`;
 
 const mapStateToProps = state => ({
 	gasInfo: getGasInfo(state),
