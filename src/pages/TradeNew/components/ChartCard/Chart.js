@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
 
@@ -12,11 +13,15 @@ import { formatCurrencyWithPrecision } from 'src/utils/formatters';
 
 const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => {
 	const { colors } = useContext(ThemeContext);
+	const { t } = useTranslation();
 	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
+
 	return (
 		<ChartContainer>
 			{isLoading ? <Spinner size="sm" /> : null}
-			{!isLoading && data.rates.length === 0 ? <DataLarge>No data available</DataLarge> : null}
+			{!isLoading && data.rates.length === 0 ? (
+				<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
+			) : null}
 			{!isLoading && data.rates && data.rates.length > 0 ? (
 				<ResponsiveContainer width="100%" height={250}>
 					<AreaChart data={data.rates} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
@@ -85,6 +90,4 @@ const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Chart);
+export default connect(mapStateToProps, null)(Chart);

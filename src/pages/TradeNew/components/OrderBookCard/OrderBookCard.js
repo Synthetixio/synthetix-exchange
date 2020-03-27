@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -49,35 +49,40 @@ const OrderBookCard = ({
 }) => {
 	const { t } = useTranslation();
 
-	const tabContent = [
-		{
-			name: t('trade.order-book-card.tabs.your-orders'),
-			id: 'yourOrder',
-			component: <MyOrders />,
-		},
-		{
-			name: t('trade.order-book-card.tabs.your-trades'),
-			id: 'yourTrades',
-			component: (
-				<TradeHistory
-					trades={myTrades}
-					isLoading={isRefreshingMyTrades}
-					isLoaded={isLoadedMyTrades}
-				/>
-			),
-		},
-		{
-			name: t('trade.order-book-card.tabs.all-trades'),
-			id: 'allTrades',
-			component: (
-				<TradeHistory
-					trades={allTrades}
-					isLoading={isRefreshingAllTrades}
-					isLoaded={isLoadedAllTrades}
-				/>
-			),
-		},
-	];
+	const tabContent = useMemo(
+		() => [
+			{
+				name: t('trade.order-book-card.tabs.your-orders'),
+				id: 'yourOrder',
+				component: <MyOrders />,
+			},
+			{
+				name: t('trade.order-book-card.tabs.your-trades'),
+				id: 'yourTrades',
+				component: (
+					<TradeHistory
+						trades={myTrades}
+						isLoading={isRefreshingMyTrades}
+						isLoaded={isLoadedMyTrades}
+					/>
+				),
+			},
+			{
+				name: t('trade.order-book-card.tabs.all-trades'),
+				id: 'allTrades',
+				component: (
+					<TradeHistory
+						trades={allTrades}
+						isLoading={isRefreshingAllTrades}
+						isLoaded={isLoadedAllTrades}
+					/>
+				),
+			},
+		],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[myTrades, allTrades]
+	);
+
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
 
 	// TODO: Move this logic into Redux
@@ -116,12 +121,12 @@ const OrderBookCard = ({
 
 	return (
 		<StyledCard>
-			<Card.Body style={{ padding: 0, overflow: 'hidden' }}>
+			<StyledCardBody>
 				<Tabs>
 					{tabContent.map(tab => {
 						return (
 							<Tab
-								key={`tab-${tab.id}`}
+								key={tab.id}
 								isDisabled={tab.id === 'yourTrades' && !currentWallet}
 								onClick={() => setActiveTab(tab)}
 								active={tab.id === activeTab.id}
@@ -132,7 +137,7 @@ const OrderBookCard = ({
 					})}
 				</Tabs>
 				{activeTab.component}
-			</Card.Body>
+			</StyledCardBody>
 		</StyledCard>
 	);
 };
@@ -144,13 +149,13 @@ const StyledCard = styled(Card)`
 	overflow: hidden;
 `;
 
-const Tabs = styled.div`
-	display: flex;
+const StyledCardBody = styled(Card.Body)`
+	padding: 0;
+	overflow: 'hidden';
 `;
 
-const isDisabled = css`
-	opacity: 0.2;
-	pointer-events: none;
+const Tabs = styled.div`
+	display: flex;
 `;
 
 const Tab = styled.button`
@@ -168,22 +173,25 @@ const Tab = styled.button`
 	&:hover {
 		background-color: ${props => props.theme.colors.surfaceL3};
 	}
-	${props => props.isDisabled && isDisabled}
+	${props =>
+		props.isDisabled &&
+		css`
+			opacity: 0.2;
+			pointer-events: none;
+		`}
 `;
 
-const mapStateToProps = state => {
-	return {
-		transactions: getTransactions(state),
-		pendingTransactions: getPendingTransactions(state),
-		walletInfo: getWalletInfo(state),
-		allTrades: getAllTrades(state),
-		isRefreshingAllTrades: getIsRefreshingAllTrades(state),
-		isLoadedAllTrades: getIsLoadedAllTrades(state),
-		myTrades: getMyTrades(state),
-		isRefreshingMyTrades: getIsRefreshingMyTrades(state),
-		isLoadedMyTrades: getIsLoadedMyTrades(state),
-	};
-};
+const mapStateToProps = state => ({
+	transactions: getTransactions(state),
+	pendingTransactions: getPendingTransactions(state),
+	walletInfo: getWalletInfo(state),
+	allTrades: getAllTrades(state),
+	isRefreshingAllTrades: getIsRefreshingAllTrades(state),
+	isLoadedAllTrades: getIsLoadedAllTrades(state),
+	myTrades: getMyTrades(state),
+	isRefreshingMyTrades: getIsRefreshingMyTrades(state),
+	isLoadedMyTrades: getIsLoadedMyTrades(state),
+});
 
 const mapDispatchToProps = {
 	updateTransaction,

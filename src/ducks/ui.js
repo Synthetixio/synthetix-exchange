@@ -13,7 +13,6 @@ const initialState = {
 	fiatCurrency: FIAT_CURRENCY_MAP.USD,
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
-	pairListDropdownIsOpen: false,
 	blurBackgroundIsVisible: false,
 	...getPersistedState('ui'),
 };
@@ -52,8 +51,7 @@ export const uiSlice = createSlice({
 			state.marketsAssetFilter = action.payload.marketsAssetFilter;
 			persistState('ui', { marketsAssetFilter: state.marketsAssetFilter });
 		},
-		setPairListDropdownIsOpen: (state, action) => {
-			state.pairListDropdownIsOpen = action.payload;
+		setBlurBackgroundIsVisible: (state, action) => {
 			state.blurBackgroundIsVisible = action.payload;
 		},
 	},
@@ -69,7 +67,7 @@ const {
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
 	setMarketsAssetFilter,
-	setPairListDropdownIsOpen,
+	setBlurBackgroundIsVisible,
 } = uiSlice.actions;
 
 export const getUIState = state => state.ui;
@@ -81,7 +79,6 @@ export const depotPopupIsVisible = state => getUIState(state).depotPopupIsVisibl
 export const getSynthSearch = state => getUIState(state).synthSearch;
 export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
-export const getPairListDropdownIsOpen = state => getUIState(state).pairListDropdownIsOpen;
 export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
 
 export default uiSlice.reducer;
@@ -96,5 +93,5 @@ export {
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
 	setMarketsAssetFilter,
-	setPairListDropdownIsOpen,
+	setBlurBackgroundIsVisible,
 };

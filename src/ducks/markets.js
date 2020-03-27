@@ -68,41 +68,34 @@ export const getMarketsList = createSelector(getMarketsMap, marketsMap =>
 	Object.values(marketsMap)
 );
 
+const mapExchangeRatesToMarkets = (markets, exchangeRates) =>
+	markets.map(market => ({
+		...market,
+		lastPrice:
+			exchangeRates == null
+				? null
+				: getExchangeRatesForCurrencies(
+						exchangeRates,
+						market.baseCurrencyKey,
+						market.quoteCurrencyKey
+				  ) || 0,
+	}));
+
 export const getFilteredMarkets = createSelector(
 	getMarketsList,
 	getMarketsAssetFilter,
 	getRatesExchangeRates,
 	(marketsList, assetFilter, exchangeRates) =>
-		marketsList
-			.filter(market => market.quoteCurrencyKey === assetFilter)
-			.map(market => ({
-				...market,
-				lastPrice:
-					exchangeRates == null
-						? null
-						: getExchangeRatesForCurrencies(
-								exchangeRates,
-								market.baseCurrencyKey,
-								market.quoteCurrencyKey
-						  ) || 0,
-			}))
+		mapExchangeRatesToMarkets(
+			marketsList.filter(market => market.quoteCurrencyKey === assetFilter),
+			exchangeRates
+		)
 );
 
 export const getAllMarkets = createSelector(
 	getMarketsList,
 	getRatesExchangeRates,
-	(marketsList, exchangeRates) =>
-		marketsList.map(market => ({
-			...market,
-			lastPrice:
-				exchangeRates == null
-					? null
-					: getExchangeRatesForCurrencies(
-							exchangeRates,
-							market.baseCurrencyKey,
-							market.quoteCurrencyKey
-					  ) || 0,
-		}))
+	(marketsList, exchangeRates) => mapExchangeRatesToMarkets(marketsList, exchangeRates)
 );
 
 export const getIsLoadedFilteredMarkets = createSelector(getFilteredMarkets, filteredMarkets =>

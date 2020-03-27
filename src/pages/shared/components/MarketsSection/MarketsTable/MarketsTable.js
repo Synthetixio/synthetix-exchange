@@ -9,7 +9,7 @@ import { navigateToTrade } from 'src/constants/routes';
 import ChangePercent from 'src/components/ChangePercent';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { CurrencyCol, NullableCell } from 'src/components/Table/utils';
+import { CurrencyCol, NullableCell } from 'src/components/Table/common';
 
 import Currency from 'src/components/Currency';
 

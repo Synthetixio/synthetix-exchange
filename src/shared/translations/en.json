@@ -318,6 +318,9 @@
 		},
 		"search-results": {
 			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
+		},
+		"chart": {
+			"no-data-available": "No data available"
 		}
 	}
 }

@@ -16,7 +16,7 @@ from {
 }
 to {
 	backdrop-filter: blur(5px);
-	opacity: 0.7
+	opacity: 0.6
 }
 `;
 
@@ -33,7 +33,7 @@ const Blur = styled.div`
 	bottom: 0;
 	top: 54px;
 	width: 100%;
-	background: ${props => props.theme.colors.black};
+	background: ${props => props.theme.colors.surfaceL1};
 	${props => props.isVisible && isBlurred}
 `;
 
@@ -41,6 +41,4 @@ const mapStateToProps = state => ({
 	blurBackgroundIsVisible: getBlurBackgroundIsVisible(state),
 });
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BlurBackground);
+export default connect(mapStateToProps, null)(BlurBackground);

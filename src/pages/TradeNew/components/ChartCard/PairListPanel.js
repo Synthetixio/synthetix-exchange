@@ -7,10 +7,9 @@ import { navigateToTrade } from 'src/constants/routes';
 
 import { getSynthPair } from 'src/ducks/synths';
 import {
-	setPairListDropdownIsOpen,
-	getPairListDropdownIsOpen,
 	getMarketsAssetFilter,
 	setMarketsAssetFilter,
+	setBlurBackgroundIsVisible,
 } from 'src/ducks/ui';
 import { getFilteredMarkets, getAllMarkets } from 'src/ducks/markets';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
@@ -20,7 +19,7 @@ import Currency from 'src/components/Currency';
 import { SearchInput } from 'src/components/Input';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { CurrencyCol, RightAlignedCell } from 'src/components/Table/utils';
+import { CurrencyCol, RightAlignedCell } from 'src/components/Table/common';
 import { ButtonFilter } from 'src/components/Button';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
@@ -30,17 +29,16 @@ const ASSET_FILTERS = [SYNTHS_MAP.sUSD, SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
 
 const PairListPanel = ({
 	synthPair: { base, quote },
-	pairListDropdownIsOpen,
-	setPairListDropdownIsOpen,
 	marketsByQuote,
 	allMarkets,
 	synthsMap,
 	marketsAssetFilter,
 	setMarketsAssetFilter,
+	setBlurBackgroundIsVisible,
 }) => {
 	const { t } = useTranslation();
 	const [search, setSearch] = useState(DEFAULT_SEARCH);
-
+	const [pairListDropdownIsOpen, setPairListDropdownIsOpen] = useState(false);
 	const filteredMarkets = useMemo(() => {
 		if (!search) {
 			return marketsByQuote;
@@ -53,11 +51,16 @@ const PairListPanel = ({
 		}
 	}, [marketsByQuote, allMarkets, search]);
 
+	const toggleDropdown = isOpen => {
+		setPairListDropdownIsOpen(isOpen);
+		setBlurBackgroundIsVisible(isOpen);
+	};
+
 	return (
 		<DropdownPanel
 			isOpen={pairListDropdownIsOpen}
-			handleClose={() => setPairListDropdownIsOpen(false)}
-			onHeaderClick={() => setPairListDropdownIsOpen(!pairListDropdownIsOpen)}
+			handleClose={() => toggleDropdown(false)}
+			onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
 			header={
 				<Currency.Pair baseCurrencyKey={base.name} quoteCurrencyKey={quote.name} showIcon={true} />
 			}
@@ -66,10 +69,10 @@ const PairListPanel = ({
 					<SearchContainer>
 						<SearchInput value={search} onChange={e => setSearch(e.target.value)} />
 						<ButtonRow>
-							{ASSET_FILTERS.map((asset, i) => {
+							{ASSET_FILTERS.map(asset => {
 								return (
 									<ButtonFilter
-										key={`button-filter-${i}`}
+										key={`button-filter-${asset}`}
 										fullRow="true"
 										active={asset === marketsAssetFilter}
 										onClick={() => {
@@ -114,7 +117,7 @@ const PairListPanel = ({
 						data={filteredMarkets}
 						onTableRowClick={row => {
 							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
-							setPairListDropdownIsOpen(false);
+							toggleDropdown(false);
 						}}
 					></StyledTable>
 				</PairListContainer>
@@ -165,7 +168,6 @@ const ButtonRow = styled.div`
 
 const mapStateToProps = state => ({
 	synthPair: getSynthPair(state),
-	pairListDropdownIsOpen: getPairListDropdownIsOpen(state),
 	marketsByQuote: getFilteredMarkets(state),
 	synthsMap: getAvailableSynthsMap(state),
 	allMarkets: getAllMarkets(state),
@@ -173,8 +175,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-	setPairListDropdownIsOpen,
 	setMarketsAssetFilter,
+	setBlurBackgroundIsVisible,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PairListPanel);

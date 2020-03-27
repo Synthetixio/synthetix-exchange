@@ -72,29 +72,6 @@ export const SYNTHS = [
 	'iDEFI',
 ];
 
-const CRYPTO_SYNTHS = [
-	'sBTC',
-	'sETH',
-	'sXRP',
-	'sLTC',
-	'sBNB',
-	'sXTZ',
-	'sTRX',
-	'sLINK',
-	'iBTC',
-	'iETH',
-	'iXRP',
-	'iLTC',
-	'iBNB',
-	'iXTZ',
-	'iTRX',
-	'iLINK',
-	'sCEX',
-	'sDEFI',
-	'iCEX',
-	'iDEFI',
-];
-
 export const SYNTHS_MAP = keyBy(SYNTHS);
 
 export const CRYPTO_CURRENCY = ['ETH', 'BTC'];
@@ -102,6 +79,29 @@ export const CRYPTO_CURRENCY_MAP = keyBy(CRYPTO_CURRENCY);
 
 export const FIAT_CURRENCY = ['USD', 'AUD'];
 export const FIAT_CURRENCY_MAP = keyBy(FIAT_CURRENCY);
+
+const CRYPTO_SYNTHS_BY_MC = [
+	SYNTHS_MAP.sBTC,
+	SYNTHS_MAP.sETH,
+	SYNTHS_MAP.sXRP,
+	SYNTHS_MAP.sLTC,
+	SYNTHS_MAP.sBNB,
+	SYNTHS_MAP.sXTZ,
+	SYNTHS_MAP.sTRX,
+	SYNTHS_MAP.sLINK,
+	SYNTHS_MAP.iBTC,
+	SYNTHS_MAP.iETH,
+	SYNTHS_MAP.iXRP,
+	SYNTHS_MAP.iLTC,
+	SYNTHS_MAP.iBNB,
+	SYNTHS_MAP.iXTZ,
+	SYNTHS_MAP.iTRX,
+	SYNTHS_MAP.iLINK,
+	SYNTHS_MAP.sCEX,
+	SYNTHS_MAP.sDEFI,
+	SYNTHS_MAP.iCEX,
+	SYNTHS_MAP.iDEFI,
+];
 
 export const currencyKeyToIconMap = {
 	[CRYPTO_CURRENCY_MAP.ETH]: ETHIcon,
@@ -172,14 +172,12 @@ export const getAvailableMarketNames = memoizeOne(() => {
 			});
 	});
 
-	const cryptoQuotePairsByMC = CRYPTO_SYNTHS;
-
 	// Each iteration a crypto synth is added to be skipped in the next one
 	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC
 	const skipCryptoQuotes = [];
 
 	// crypto markets trade against all synths (ex fiat, ex existing crypto market)
-	cryptoQuotePairsByMC.forEach(quoteCurrencyKey => {
+	CRYPTO_SYNTHS_BY_MC.forEach(quoteCurrencyKey => {
 		synths
 			.filter(
 				baseCurrencyKey =>

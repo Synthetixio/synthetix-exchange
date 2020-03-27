@@ -26,6 +26,7 @@ import {
 
 const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => {
 	const { t } = useTranslation();
+
 	return (
 		<StyledTable
 			palette={TABLE_PALETTE.STRIPED}
@@ -126,6 +127,4 @@ const mapStateToProps = state => ({
 	networkId: getNetworkId(state),
 });
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TradeHistory);
+export default connect(mapStateToProps, null)(TradeHistory);

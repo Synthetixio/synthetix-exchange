@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
 import Tooltip from '@material-ui/core/Tooltip';
+import get from 'lodash/get';
 
 import {
 	getPendingTransactions,
@@ -12,14 +12,21 @@ import {
 	updateTransaction,
 } from 'src/ducks/transaction';
 import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
+import { getAvailableSynthsMap } from 'src/ducks/synths';
 
-import { formatCurrency } from 'src/utils/formatters';
+import {
+	formatCurrency,
+	formatTxTimestamp,
+	LONG_CRYPTO_CURRENCY_DECIMALS,
+	formatCurrencyWithSign,
+} from 'src/utils/formatters';
 import { getEtherscanTxLink } from 'src/utils/explorers';
 
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 
 import Currency from 'src/components/Currency';
+import { SYNTHS_MAP } from 'src/constants/currency';
 
 import ViewLink, { ArrowIcon } from './ViewLink';
 
@@ -35,7 +42,7 @@ const getPrecision = amount => {
 	return 4;
 };
 
-const MyOrders = ({ transactions, networkId }) => {
+const MyOrders = ({ transactions, networkId, synthsMap }) => {
 	const { t } = useTranslation();
 	return (
 		<StyledTable
@@ -45,7 +52,7 @@ const MyOrders = ({ transactions, networkId }) => {
 				{
 					Header: t('trade.order-book-card.table.date'),
 					accessor: 'date',
-					Cell: cellProps => format(cellProps.cell.value, 'DD-MM-YY | HH:mm'),
+					Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
 				{
@@ -78,9 +85,16 @@ const MyOrders = ({ transactions, networkId }) => {
 					Header: t('trade.order-book-card.table.price'),
 					accessor: 'priceUSD',
 					Cell: cellProps => (
-						<Tooltip title={formatCurrency(cellProps.cell.value, 8)} placement="top">
+						<Tooltip
+							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+							placement="top"
+						>
 							<span>
-								${formatCurrency(cellProps.cell.value, getPrecision(cellProps.cell.value))}
+								{formatCurrencyWithSign(
+									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
+									cellProps.cell.value,
+									getPrecision(cellProps.cell.value)
+								)}
 							</span>
 						</Tooltip>
 					),
@@ -122,14 +136,13 @@ const StyledTable = styled(Table)`
 	}
 `;
 
-const mapStateToProps = state => {
-	return {
-		networkId: getNetworkId(state),
-		transactions: getTransactions(state),
-		pendingTransactions: getPendingTransactions(state),
-		walletInfo: getWalletInfo(state),
-	};
-};
+const mapStateToProps = state => ({
+	networkId: getNetworkId(state),
+	transactions: getTransactions(state),
+	pendingTransactions: getPendingTransactions(state),
+	walletInfo: getWalletInfo(state),
+	synthsMap: getAvailableSynthsMap(state),
+});
 
 const mapDispatchToProps = {
 	updateTransaction,

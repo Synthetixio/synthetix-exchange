@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { connect } from 'react-redux';
 
-import { CenteredPageLayout, SectionVerticalSpacer } from 'src/shared/commonStyles';
+import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'src/shared/commonStyles';
 
 import ChartCard from './components/ChartCard';
 import CreateOrderCard from './components/CreateOrderCard';
@@ -51,9 +51,7 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 const Container = styled.div`
 	height: 100%;
 `;
-
-const RowContainer = styled.div`
-	display: flex;
+const RowContainer = styled(FlexDiv)`
 	width: 100%;
 `;
 const TradeContainer = styled.div`
