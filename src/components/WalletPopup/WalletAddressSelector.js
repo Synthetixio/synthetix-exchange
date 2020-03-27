@@ -27,7 +27,7 @@ const LEDGER_DERIVATION_PATHS = [
 
 const useGetWallets = () => {
 	const { walletPaginatorIndex, derivationPath, availableWallets } = useSelector(
-		state => state.wallet
+		state => state.wallet.walletDetails
 	);
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
