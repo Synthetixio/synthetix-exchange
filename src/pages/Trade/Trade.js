@@ -2,17 +2,15 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import PairList from '../../components/PairList';
-import ChartPanel from '../../components/ChartPanel';
-import OrderBook from '../../components/OrderBook';
-import TradeBox from '../../components/TradeBox';
-import WalletBox from '../../components/WalletBox';
+import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'src/shared/commonStyles';
 
-import { PageLayout, FlexDivCol } from '../../shared/commonStyles';
+import ChartCard from './components/ChartCard';
+import CreateOrderCard from './components/CreateOrderCard';
+import OrderBookCard from './components/OrderBookCard';
+import BlurBackground from './components/BlurBackground';
 
-import EtherPromoCard from './components/EtherPromoCard';
 import { getSynthPair, setSynthPair } from '../../ducks/synths';
-import { navigateToTrade } from '../../constants/routes';
+import { navigateToTrade } from 'src/constants/routes';
 
 const Trade = ({ match, setSynthPair, synthPair }) => {
 	useEffect(() => {
@@ -30,50 +28,43 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 	}, [match, setSynthPair]);
 
 	return (
-		<PageLayout>
-			<CentralContainer>
-				<BoxContainer margin="0 0 8px 0">
-					<ChartPanel />
-				</BoxContainer>
-				<BoxContainer style={{ minHeight: 0 }} height="100%">
-					<OrderBook />
-				</BoxContainer>
-			</CentralContainer>
-			<SmallContainer>
-				<BoxContainer margin="0 0 8px 0">
-					<TradeBox />
-				</BoxContainer>
-				<BoxContainer style={{ minHeight: 0 }} height="100%">
-					<WalletBox />
-				</BoxContainer>
-			</SmallContainer>
-		</PageLayout>
+		<Container>
+			<BlurBackground />
+			<CenteredPageLayout>
+				<TradeContainer>
+					<RowContainer>
+						<ChartContainer>
+							<ChartCard />
+						</ChartContainer>
+						<CreateOrderContainer>
+							<CreateOrderCard />
+						</CreateOrderContainer>
+					</RowContainer>
+					<SectionVerticalSpacer />
+					<OrderBookCard />
+				</TradeContainer>
+			</CenteredPageLayout>
+		</Container>
 	);
 };
 
-const Container = styled(FlexDivCol)`
-	width: 25%;
-	min-width: 300px;
-	max-width: 400px;
-	margin: 8px;
-	height: calc(100% - 16px);
+const Container = styled.div`
+	height: 100%;
 `;
-
-const SmallContainer = styled(Container)`
-	width: 15%;
-	min-width: 300px;
+const RowContainer = styled(FlexDiv)`
+	width: 100%;
 `;
-
-const CentralContainer = styled(FlexDivCol)`
+const TradeContainer = styled.div`
 	flex: 1;
-	margin: 8px 0;
-	min-width: 0;
+	display: flex;
+	flex-direction: column;
 `;
-
-const BoxContainer = styled.div`
-	position: relative;
-	margin: ${props => props.margin || '0'};
-	height: ${props => props.height || 'auto'};
+const ChartContainer = styled.div`
+	flex: 1;
+`;
+const CreateOrderContainer = styled.div`
+	width: 282px;
+	margin-left: 8px;
 `;
 
 const mapStateToProps = state => ({
