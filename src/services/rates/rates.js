@@ -10,6 +10,7 @@ import {
 import { SYNTHS_MAP } from '../../constants/currency';
 
 export const PERIOD_IN_HOURS = {
+	ONE_MONTH: 672,
 	ONE_WEEK: 168,
 	ONE_DAY: 24,
 	FOUR_HOURS: 4,
@@ -30,7 +31,7 @@ export const fetchSynthRateUpdates = async (
 					synth: synthName,
 					maxTimestamp: Math.trunc(now / 1000),
 					minTimestamp: calculateTimestampForPeriod(periodInHours),
-					max: 1000,
+					max: 6000,
 				})
 			)
 		);

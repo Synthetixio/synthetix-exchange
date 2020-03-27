@@ -8,7 +8,7 @@ import history from '../../utils/history';
 
 import { ROUTES } from '../../constants/routes';
 
-import { getCurrentTheme } from '../../ducks';
+import { getCurrentTheme } from '../../ducks/ui';
 
 import GlobalEventsGate from '../../gates/GlobalEventsGate';
 
@@ -20,7 +20,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
 
-import Trade from '../Trade';
+import Trade from '../TradeNew';
 import Loans from '../Loans';
 import Assets from '../Assets';
 import Home from '../Home';

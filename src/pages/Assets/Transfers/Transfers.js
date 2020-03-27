@@ -17,7 +17,7 @@ import { ButtonPrimary } from 'src/components/Button';
 import { getEtherscanTxLink } from 'src/utils/explorers';
 import { formatTxTimestamp, formatCurrency } from 'src/utils/formatters';
 
-import { getNetworkId } from 'src/ducks';
+import { getNetworkId } from 'src/ducks/wallet/walletDetails';
 
 const MOCK_TRANSFERS = [
 	{

@@ -18,8 +18,7 @@ import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/consta
 import { FlexDivCentered } from 'src/shared/commonStyles';
 import { media } from 'src/shared/media';
 
-import { getCurrentTheme } from 'src/ducks';
-import { toggleTheme } from 'src/ducks/ui';
+import { getCurrentTheme, toggleTheme } from 'src/ducks/ui';
 
 import { isLightTheme } from 'src/styles/theme';
 
@@ -124,7 +123,7 @@ const Container = styled.header`
 	right: 0;
 	z-index: ${Z_INDEX.APP_HEADER};
 	${media.small`
-		height: ${MOBILE_APP_HEADER_HEIGHT};		
+		height: ${MOBILE_APP_HEADER_HEIGHT};
 	`};
 `;
 

@@ -15,7 +15,7 @@ import {
 	getTotalSynthsBalanceUSD,
 	getWalletBalances,
 	getTotalETHBalance,
-} from 'src/ducks/wallet';
+} from 'src/ducks/wallet/walletBalances';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
 import { formatCurrencyWithSign, formatCurrency } from 'src/utils/formatters';

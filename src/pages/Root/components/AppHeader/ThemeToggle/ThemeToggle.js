@@ -8,8 +8,7 @@ import { ReactComponent as Moon } from 'src/assets/images/moon.svg';
 
 import { ELEMENT_BORDER_RADIUS } from 'src/constants/ui';
 
-import { getCurrentTheme } from 'src/ducks';
-import { toggleTheme } from 'src/ducks/ui';
+import { toggleTheme, getCurrentTheme } from 'src/ducks/ui';
 
 import { isLightTheme } from 'src/styles/theme';
 

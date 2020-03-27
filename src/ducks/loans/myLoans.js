@@ -2,7 +2,7 @@ import { createSlice, createSelector } from '@reduxjs/toolkit';
 import merge from 'lodash/merge';
 
 import snxJSConnector from '../../utils/snxJSConnector';
-import { getWalletInfo } from '../index';
+import { getWalletInfo } from '../wallet/walletDetails';
 import { bigNumberFormatter, toJSTimestamp } from '../../utils/formatters';
 
 export const LOAN_STATUS = {

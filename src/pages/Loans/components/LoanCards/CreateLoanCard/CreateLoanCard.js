@@ -15,10 +15,12 @@ import { ButtonPrimary } from 'src/components/Button';
 import Card from 'src/components/Card';
 import { TradeInput } from 'src/components/Input';
 import { HeadingSmall } from 'src/components/Typography';
-import Link from 'src/components/Link';
-import { getGasInfo, getWalletInfo } from 'src/ducks';
+import { getGasInfo } from 'src/ducks/transaction';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { createLoan, LOAN_STATUS } from 'src/ducks/loans/myLoans';
 import { getEthRate } from 'src/ducks/rates';
+
+import Link from 'src/components/Link';
 
 import { toggleGweiPopup } from 'src/ducks/ui';
 

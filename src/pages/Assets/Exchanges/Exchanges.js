@@ -30,7 +30,7 @@ import {
 
 import { TableNoResults } from 'src/shared/commonStyles';
 
-import { getNetworkId } from 'src/ducks';
+import { getNetworkId } from 'src/ducks/wallet/walletDetails';
 import {
 	fetchMyTradesRequest,
 	getMyTrades,

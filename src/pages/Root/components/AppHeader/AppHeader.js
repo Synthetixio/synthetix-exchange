@@ -16,7 +16,7 @@ import { FlexDivCentered } from 'src/shared/commonStyles';
 
 import { mediumMediaQuery, breakpoint } from 'src/shared/media';
 
-import { getIsLoggedIn } from 'src/ducks/wallet';
+import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';

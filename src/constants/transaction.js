@@ -2,6 +2,8 @@ export const TRANSACTION_STATUS = {
 	WAITING: 'waiting',
 	PENDING: 'pending',
 	CONFIRMED: 'confirmed',
+	FAILED: 'failed',
+	CANCELLED: 'cancelled',
 };
 
 export const GAS_LIMIT_BUFFER = 5000;

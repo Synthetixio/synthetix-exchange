@@ -9,8 +9,8 @@ import { ReactComponent as ArrowHyperlinkIcon } from 'src/assets/images/arrow-hy
 import Card from 'src/components/Card';
 import { HeadingSmall } from 'src/components/Typography';
 import { getIsRefreshingLoansContractInfo } from 'src/ducks/loans/contractInfo';
-import { getWalletInfo, getNetworkId } from 'src/ducks';
-import { getIsFetchingWalletBalances } from 'src/ducks/wallet';
+import { getIsFetchingWalletBalances } from 'src/ducks/wallet/walletBalances';
+import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
 
 import { getCurrencyKeyBalance } from 'src/utils/balances';
 import { formatPercentage, formatCurrency, formatCurrencyWithKey } from 'src/utils/formatters';

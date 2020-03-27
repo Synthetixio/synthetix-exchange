@@ -25,13 +25,13 @@ export const Table = ({
 	onTableRowClick = undefined,
 	palette = TABLE_PALETTE.PRIMARY,
 	isLoading = false,
+	className,
 }) => {
 	const memoizedColumns = useMemo(
 		() => columns,
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		columnsDeps
 	);
-
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
 		{
 			columns: memoizedColumns,
@@ -43,9 +43,9 @@ export const Table = ({
 	);
 
 	return (
-		<ReactTable {...getTableProps()} palette={palette}>
+		<ReactTable {...getTableProps()} palette={palette} className={className}>
 			{headerGroups.map(headerGroup => (
-				<TableRow {...headerGroup.getHeaderGroupProps()}>
+				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map(column => (
 						<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
 							{column.render('Header')}
@@ -71,17 +71,20 @@ export const Table = ({
 			) : isLoading ? (
 				<Spinner size="sm" fullscreen={true} />
 			) : (
-				<TableBody {...getTableBodyProps()}>
+				<TableBody className="table-body" {...getTableBodyProps()}>
 					{rows.map(row => {
 						prepareRow(row);
 
 						return (
 							<TableBodyRow
+								className="table-body-row"
 								{...row.getRowProps()}
 								onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
 							>
 								{row.cells.map(cell => (
-									<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+									<TableCell className="table-body-cell" {...cell.getCellProps()}>
+										{cell.render('Cell')}
+									</TableCell>
 								))}
 							</TableBodyRow>
 						);
@@ -194,7 +197,7 @@ ${props =>
 		${TableBodyRow} {
 			background-color: ${props => props.theme.colors.surfaceL3};
 		}
-	`}		
+	`}
 
 	${props =>
 		props.palette === TABLE_PALETTE.LIGHT &&

@@ -6,11 +6,7 @@ import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
 
 import { getAvailableSynths } from 'src/ducks/synths';
-import {
-	getTotalWalletBalanceUSD,
-	getWalletBalances,
-	getIsFetchingWalletBalances,
-} from 'src/ducks/wallet';
+import { getTotalWalletBalanceUSD, getWalletBalances, getIsFetchingWalletBalances } from 'src';
 
 import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
 import { Table, Tr, Thead, Tbody, Th, Td, DataLabel } from '../deprecated/Table';
