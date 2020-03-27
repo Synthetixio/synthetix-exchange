@@ -19,6 +19,7 @@ import {
 	formatTxTimestamp,
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	formatCurrencyWithSign,
+	formatCurrencyWithKey,
 } from 'src/utils/formatters';
 import { getEtherscanTxLink } from 'src/utils/explorers';
 
@@ -70,15 +71,39 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.buying'),
 					accessor: 'toAmount',
-					Cell: cellProps =>
-						formatCurrency(cellProps.cell.value, getPrecision(cellProps.cell.value)),
+					Cell: cellProps => (
+						<Tooltip
+							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+							placement="top"
+						>
+							<span>
+								{formatCurrencyWithKey(
+									cellProps.row.original.base,
+									cellProps.cell.value,
+									getPrecision(cellProps.cell.value)
+								)}
+							</span>
+						</Tooltip>
+					),
 					sortable: true,
 				},
 				{
 					Header: t('trade.order-book-card.table.selling'),
 					accessor: 'fromAmount',
-					Cell: cellProps =>
-						formatCurrency(cellProps.cell.value, getPrecision(cellProps.cell.value)),
+					Cell: cellProps => (
+						<Tooltip
+							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+							placement="top"
+						>
+							<span>
+								{formatCurrencyWithKey(
+									cellProps.row.original.quote,
+									cellProps.cell.value,
+									getPrecision(cellProps.cell.value)
+								)}
+							</span>
+						</Tooltip>
+					),
 					sortable: true,
 				},
 				{

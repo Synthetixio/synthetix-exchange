@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 import { getNetworkId } from 'src/ducks/wallet/walletDetails';
@@ -18,6 +19,9 @@ import ViewLink, { ArrowIcon } from './ViewLink';
 
 import { getEtherscanTxLink } from 'src/utils/explorers';
 import {
+	LONG_CRYPTO_CURRENCY_DECIMALS,
+	SHORT_CRYPTO_CURRENCY_DECIMALS,
+	formatCurrencyWithKey,
 	formatTxTimestamp,
 	formatCurrency,
 	formatCurrencyWithSign,
@@ -39,7 +43,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				},
 				{
 					Header: t('assets.exchanges.table.pair-col'),
-					accessor: d => formatCurrencyPair(d.fromCurrencyKey, d.toCurrencyKey),
+					accessor: d => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
 					Cell: cellProps => {
 						const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
@@ -50,13 +54,42 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				},
 				{
 					Header: t('assets.exchanges.table.buying-col'),
-					accessor: 'fromAmount',
-					Cell: cellProps => <span>{formatCurrency(cellProps.row.original.fromAmount, 4)}</span>,
+					accessor: 'toAmount',
+					Cell: cellProps => (
+						<Tooltip
+							title={formatCurrency(cellProps.row.original.toAmount, LONG_CRYPTO_CURRENCY_DECIMALS)}
+							placement="top"
+						>
+							<span>
+								{formatCurrencyWithKey(
+									cellProps.row.original.toCurrencyKey,
+									cellProps.row.original.toAmount,
+									SHORT_CRYPTO_CURRENCY_DECIMALS
+								)}
+							</span>
+						</Tooltip>
+					),
 				},
 				{
 					Header: t('assets.exchanges.table.selling-col'),
-					accessor: 'toAmount',
-					Cell: cellProps => <span>{formatCurrency(cellProps.row.original.toAmount, 4)}</span>,
+					accessor: 'fromAmount',
+					Cell: cellProps => (
+						<Tooltip
+							title={formatCurrency(
+								cellProps.row.original.fromAmount,
+								LONG_CRYPTO_CURRENCY_DECIMALS
+							)}
+							placement="top"
+						>
+							<span>
+								{formatCurrencyWithKey(
+									cellProps.row.original.fromCurrencyKey,
+									cellProps.row.original.fromAmount,
+									SHORT_CRYPTO_CURRENCY_DECIMALS
+								)}
+							</span>
+						</Tooltip>
+					),
 				},
 				{
 					Header: t('assets.exchanges.table.price-col'),
