@@ -10,9 +10,9 @@ const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose }
 	return (
 		<OutsideClickHandler onOutsideClick={handleClose}>
 			<Container isOpen={isOpen}>
-				<Header onClick={onHeaderClick}>
+				<Header isOpen={isOpen} onClick={onHeaderClick}>
 					{header}
-					<HeaderIcon isOpen={isOpen} />
+					<HeaderIcon />
 				</Header>
 				<Body isOpen={isOpen}>{body}</Body>
 			</Container>
@@ -45,12 +45,14 @@ const Header = styled.div`
 	padding: 0 12px;
 	background-color: ${props => props.theme.colors.accentL1};
 	cursor: pointer;
+	& > svg {
+		transform: ${props => `rotate(${props.isOpen ? -Math.PI : -Math.Pi}rad)`};
+	}
 `;
 
 const HeaderIcon = styled(ArrowDownIcon)`
 	width: 12px;
 	height: 8px;
-	transform: ${props => `rotate(${props.isOpen ? -Math.PI : -Math.Pi}rad)`};
 	transition: transform 0.3s ease-in-out;
 `;
 

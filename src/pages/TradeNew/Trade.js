@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'src/shared/commonStyles';
