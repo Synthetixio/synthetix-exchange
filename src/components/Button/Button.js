@@ -39,6 +39,15 @@ const Button = styled.button`
 			font-size: 14px;
 		`}
 
+
+	${props =>
+		props.size === 'lg' &&
+		css`
+			height: 72px;
+			font-size: 20px;
+			line-height: 25px;
+		`}		
+
 	${props =>
 		props.palette === 'primary' &&
 		css`
