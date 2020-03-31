@@ -1,3 +1,4 @@
+import { providers } from 'ethers';
 import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -38,20 +39,38 @@ const ListWallets = memo(
 			});
 		};
 
+		const connectToMetamask = async () => {
+			resetWalletReducer();
+			const walletStatus = await connectToWallet({
+				wallet: SUPPORTED_WALLETS_MAP.METAMASK,
+			});
+			updateWalletReducer({ ...walletStatus, availableWallets: [] });
+			registerMetamaskAccountChange(walletStatus);
+		};
+
+		const connectToTrust = async () => {
+			resetWalletReducer();
+			const { trustProvider } = window;
+			const { network, address } = await trustProvider.getAccounts();
+			const wrappedProvider = new providers.Web3Provider(trustProvider);
+			snxJSConnector.setContractSettings({
+				networkId: network,
+				signer: wrappedProvider.getSigner(),
+			});
+			updateWalletReducer({ currentWallet: address, networkId: network, unlocked: true });
+		};
+
 		useEffect(() => {
-			const connectToMetamask = async () => {
-				if (window.web3 && window.web3.currentProvider.isMetaMask) {
-					resetWalletReducer();
-					const walletStatus = await connectToWallet({
-						wallet: SUPPORTED_WALLETS_MAP.METAMASK,
-					});
-					updateWalletReducer({ ...walletStatus, availableWallets: [] });
-					registerMetamaskAccountChange(walletStatus);
-				} else {
-					// handle
+			try {
+				if (window.trustProvider) {
+					connectToTrust();
+				} else if (window.web3 && window.web3.currentProvider.isMetaMask) {
+					connectToMetamask();
 				}
-			};
-			connectToMetamask();
+			} catch (e) {
+				console.log(e);
+			}
+
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
