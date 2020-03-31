@@ -10,92 +10,25 @@ import { ROUTES } from '../../constants/routes';
 
 import { getCurrentTheme } from '../../ducks';
 
-import GlobalEventsGate from '../../gates/GlobalEventsGate';
+import { darkTheme } from '../../styles/theme';
 
-import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
+import Delegate from '../Delegate';
 
-import MainLayout from './components/MainLayout';
-import HomeLayout from './components/HomeLayout';
-import ProtectedRoute from './components/ProtectedRoute';
+import AppHeader from 'src/pages/Root/components/AppHeader';
+
 import WalletPopup from '../../components/WalletPopup';
-import GweiPopup from '../../components/GweiPopup';
 
-import Trade from '../Trade';
-import Loans from '../Loans';
-import Assets from '../Assets';
-import Home from '../Home';
-import Markets from '../Markets';
-
-import Banner from 'src/components/Banner';
-
-const App = ({ isAppReady, currentTheme }) => {
-	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
-
-	return (
-		<ThemeProvider theme={themeStyle}>
-			<Router history={history}>
-				{isAppReady && (
-					<>
-						<GlobalEventsGate />
-						<WalletPopup />
-						<GweiPopup />
-						<Banner />
-					</>
-				)}
-				<Switch>
-					<Route
-						path={ROUTES.TradeMatch}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Trade {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Trade}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Trade {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Loans}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Loans {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<ProtectedRoute
-						path={ROUTES.Assets.Home}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Assets {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Markets}
-						render={routeProps => (
-							<HomeLayout>
-								<Markets {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Home}
-						render={routeProps => (
-							<HomeLayout>
-								<Home {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
-				</Switch>
-			</Router>
-		</ThemeProvider>
-	);
-};
+const App = ({ isAppReady }) => (
+	<ThemeProvider theme={darkTheme}>
+		<Router history={history}>
+			<AppHeader />
+			<WalletPopup />
+			<Switch>
+				<Route path={ROUTES.Home} render={() => <Delegate isAppReady={isAppReady} />} />
+			</Switch>
+		</Router>
+	</ThemeProvider>
+);
 
 App.propTypes = {
 	isAppReady: PropTypes.bool.isRequired,

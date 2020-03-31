@@ -2,6 +2,10 @@ import history from '../utils/history';
 
 export const ROUTES = {
 	Home: '/',
+	Delegate: {
+		ManageWallet: '/manage',
+		ManageWalletMatch: '/manage/:walletAddr',
+	},
 	Trade: '/trade',
 	TradeMatch: '/trade/:baseCurrencyKey-:quoteCurrencyKey',
 	Loans: '/loans',
