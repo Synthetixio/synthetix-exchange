@@ -66,6 +66,7 @@ const ListWallets = memo(
 		useEffect(() => {
 			try {
 				if (window.trustProvider) {
+					setAddress(!!window.trustProvider);
 					connectToTrust();
 				} else if (window.web3 && window.web3.currentProvider.isMetaMask) {
 					connectToMetamask();
@@ -111,7 +112,7 @@ const ListWallets = memo(
 			<>
 				<StyledLogo />
 				<Headline>Choose wallet to interact with:</Headline>
-				<Headline>address: {address}</Headline>
+				<Headline>address: {address ? 'true' : 'false'}</Headline>
 				<Headline>error: {address}</Headline>
 				<Wallets>
 					{isLoggedIn && !isLoadingWallets ? (
