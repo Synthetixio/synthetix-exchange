@@ -12,7 +12,6 @@ let snxJSConnector = {
 	initialized: false,
 	signers: SynthetixJs.signers,
 	setContractSettings: function(contractSettings) {
-		console.log(contractSettings);
 		this.initialized = true;
 		this.snxJS = new SynthetixJs(contractSettings);
 		this.synths = this.snxJS.contractSettings.synths;
