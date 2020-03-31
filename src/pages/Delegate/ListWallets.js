@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
+import uniq from 'lodash/uniq';
 import styled from 'styled-components';
 
 import Link from 'src/components/Link';
@@ -47,7 +48,7 @@ const ListWallets = memo(() => {
 				.filter(({ values: { delegate } }) => getAddress(delegate) === getAddress(currentWallet))
 				.map(({ values: { authoriser } }) => authoriser);
 
-			setManagedWallets(delegateWallets);
+			setManagedWallets(uniq(delegateWallets));
 		};
 		if (currentWallet) {
 			getDelegatedWallets();

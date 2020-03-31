@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { shortenAddress, bigNumberFormatter, formatPercentage } from 'src/utils/formatters';
+import { shortenAddress, bigNumberFormatter } from 'src/utils/formatters';
 
 import { ReactComponent as MintrLogo } from 'src/assets/images/delegate/mintr-logo.svg';
 import { ReactComponent as BackButton } from 'src/assets/images/delegate/back-button.svg';
@@ -61,19 +61,31 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 	const handleBurnToTarget = async () => {
 		const gasEstimate = await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr);
 		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-		console.log(updatedGasEstimate);
+
+		await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr, {
+			gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+			gasLimit: updatedGasEstimate,
+		});
 	};
 
 	const handleClaimFees = async () => {
 		const gasEstimate = await FeePool.contract.estimate.claimOnBehalf(walletAddr);
 		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-		console.log(updatedGasEstimate);
+
+		await FeePool.contract.estimate.claimOnBehalf(walletAddr, {
+			gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+			gasLimit: updatedGasEstimate,
+		});
 	};
 
 	const handleMintMax = async () => {
 		const gasEstimate = await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr);
 		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-		console.log(updatedGasEstimate);
+
+		await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr, {
+			gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+			gasLimit: updatedGasEstimate,
+		});
 	};
 
 	return (
