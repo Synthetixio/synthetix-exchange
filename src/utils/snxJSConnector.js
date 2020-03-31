@@ -131,7 +131,7 @@ const getSignerConfig = ({ type, networkId, derivationPath }) => {
 	}
 	if (type === SUPPORTED_WALLETS_MAP.COINBASE) {
 		return {
-			appName: 'Synthetix Exchange',
+			appName: 'Synthetix Delegate',
 			appLogoUrl: `${window.location.origin}/images/synthetix-logo-small.png`,
 			jsonRpcUrl: INFURA_JSON_RPC_URLS[networkId],
 			networkId,
