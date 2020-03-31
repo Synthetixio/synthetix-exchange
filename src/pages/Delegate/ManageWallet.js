@@ -8,7 +8,6 @@ import { shortenAddress, bigNumberFormatter } from 'src/utils/formatters';
 import { ReactComponent as MintrLogo } from 'src/assets/images/delegate/mintr-logo.svg';
 import { ReactComponent as BackButton } from 'src/assets/images/delegate/back-button.svg';
 
-import Spinner from 'src/components/Spinner';
 import Link from 'src/components/Link';
 import { Button } from 'src/components/Button';
 import DismissableMessage from 'src/components/DismissableMessage';
@@ -59,6 +58,7 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 			setIsLoading(false);
 		};
 		init();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleBurnToTarget = async () => {

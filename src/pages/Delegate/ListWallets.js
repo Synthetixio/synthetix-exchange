@@ -42,7 +42,9 @@ const ListWallets = memo(
 			const connectToMetamask = async () => {
 				if (window.web3 && window.web3.currentProvider.isMetaMask) {
 					resetWalletReducer();
-					const walletStatus = await connectToWallet({ wallet: SUPPORTED_WALLETS_MAP.METAMASK });
+					const walletStatus = await connectToWallet({
+						wallet: SUPPORTED_WALLETS_MAP.METAMASK,
+					});
 					updateWalletReducer({ ...walletStatus, availableWallets: [] });
 					registerMetamaskAccountChange(walletStatus);
 				} else {
@@ -50,6 +52,7 @@ const ListWallets = memo(
 				}
 			};
 			connectToMetamask();
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
 		useEffect(() => {
@@ -76,6 +79,7 @@ const ListWallets = memo(
 			if (currentWallet) {
 				getDelegatedWallets();
 			}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [currentWallet]);
 
 		const isLoggedIn = !!currentWallet;
