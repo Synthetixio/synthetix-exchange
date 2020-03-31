@@ -52,16 +52,21 @@ const ListWallets = memo(
 
 		const connectToTrust = async () => {
 			resetWalletReducer();
-			const { trustProvider } = window;
-			const networkData = await trustProvider.getAccounts();
-			const { network, address } = networkData[0];
 			setWallet('coucou');
-			const wrappedProvider = new providers.Web3Provider(trustProvider);
-			snxJSConnector.setContractSettings({
-				networkId: network,
-				signer: wrappedProvider.getSigner(),
-			});
-			updateWalletReducer({ currentWallet: address, networkId: network, unlocked: true });
+			try {
+				const networkData = await trustProvider.getAccounts();
+				const { network, address } = networkData[0];
+				setWallet('coucou');
+				const wrappedProvider = new providers.Web3Provider(trustProvider);
+				snxJSConnector.setContractSettings({
+					networkId: network,
+					signer: wrappedProvider.getSigner(),
+				});
+				updateWalletReducer({ currentWallet: address, networkId: network, unlocked: true });
+			} catch (e) {
+				setError(e.message);
+			}
+			const { trustProvider } = window;
 		};
 
 		useEffect(() => {
