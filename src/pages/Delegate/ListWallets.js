@@ -18,7 +18,8 @@ import { SUPPORTED_WALLETS_MAP, onMetamaskAccountChange } from 'src/utils/networ
 
 const ListWallets = memo(
 	({ walletInfo: { currentWallet }, updateWalletReducer, resetWalletReducer }) => {
-		const [managedWallets, setManagedWallets] = useState([]);
+		const [managedWallets, setManagedWallets] = useState(null);
+		const [isLoadingWallets, setIsLoadingWallets] = useState(true);
 
 		const {
 			snxJS: { DelegateApprovals, contractSettings },
@@ -67,7 +68,10 @@ const ListWallets = memo(
 					.filter(({ values: { delegate } }) => getAddress(delegate) === getAddress(currentWallet))
 					.map(({ values: { authoriser } }) => authoriser);
 
-				setManagedWallets(uniq(delegateWallets));
+				if (delegateWallets.length > 0) {
+					setManagedWallets(uniq(delegateWallets));
+				}
+				setIsLoadingWallets(false);
 			};
 			if (currentWallet) {
 				getDelegatedWallets();
@@ -80,22 +84,24 @@ const ListWallets = memo(
 			<>
 				<StyledLogo />
 				<Headline>Choose wallet to interact with:</Headline>
-				{isLoggedIn ? (
-					<>
-						<Wallets>
-							{managedWallets.map(wallet => (
-								<PrimaryLink to={`${ROUTES.Delegate.ManageWallet}/${wallet}`} key={wallet}>
-									{shortenAddress(wallet)}
-								</PrimaryLink>
-							))}
-						</Wallets>
-						<SecondaryLink to="https://blog.synthetix.io/a-guide-to-delegation" isExternal={true}>
-							READ INSTRUCTIONS (BLOG)
-						</SecondaryLink>
-					</>
-				) : (
-					<Spinner size="sm" />
-				)}
+				<Wallets>
+					{isLoggedIn && !isLoadingWallets ? (
+						<>
+							{managedWallets == null
+								? 'No wallets found. Please go to mintr with your main SNX wallet and delegate to a mobile or hot wallet you trust.'
+								: managedWallets.map(wallet => (
+										<PrimaryLink to={`${ROUTES.Delegate.ManageWallet}/${wallet}`} key={wallet}>
+											{shortenAddress(wallet)}
+										</PrimaryLink>
+								  ))}
+						</>
+					) : (
+						<Spinner size="sm" />
+					)}
+				</Wallets>
+				<SecondaryLink to="https://blog.synthetix.io/a-guide-to-delegation" isExternal={true}>
+					READ INSTRUCTIONS (BLOG)
+				</SecondaryLink>
 			</>
 		);
 	}
@@ -116,6 +122,7 @@ const Headline = styled.div`
 
 const Wallets = styled.div`
 	flex-grow: 1;
+	color: ${props => props.theme.colors.fontPrimary};
 `;
 
 const PrimaryLink = styled(Link)`
