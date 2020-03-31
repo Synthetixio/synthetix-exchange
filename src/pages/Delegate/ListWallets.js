@@ -72,7 +72,8 @@ const ListWallets = memo(
 		useEffect(() => {
 			try {
 				if (window.trustProvider) {
-					connectToTrust();
+					setWallet(window.trustProvider && window.trustProvider.getAccounts && 'yoooo');
+					// connectToTrust();
 				} else if (window.web3 && window.web3.currentProvider.isMetaMask) {
 					connectToMetamask();
 				}
