@@ -68,7 +68,7 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 			const gasEstimate = await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr);
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
-			await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr, {
+			await Synthetix.burnSynthsToTargetOnBehalf(walletAddr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
@@ -84,7 +84,7 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 			const gasEstimate = await FeePool.contract.estimate.claimOnBehalf(walletAddr);
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
-			await FeePool.contract.estimate.claimOnBehalf(walletAddr, {
+			await FeePool.claimOnBehalf(walletAddr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
@@ -100,7 +100,7 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 			const gasEstimate = await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr);
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
-			await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr, {
+			await Synthetix.issueMaxSynthsOnBehalf(walletAddr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
