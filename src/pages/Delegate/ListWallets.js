@@ -52,21 +52,15 @@ const ListWallets = memo(
 
 		const connectToTrust = async () => {
 			resetWalletReducer();
-			setWallet('test');
 			try {
-				const {
-					web3: { eth },
-				} = window;
-				const accounts = await eth.getAccounts();
-				setWallet(accounts[0]);
-				// const { network, address } = networkData[0];
-				// setWallet('coucou');
-				// const wrappedProvider = new providers.Web3Provider(window.trustProvider);
-				// snxJSConnector.setContractSettings({
-				// 	networkId: network,
-				// 	signer: wrappedProvider.getSigner(),
-				// });
-				// updateWalletReducer({ currentWallet: address, networkId: network, unlocked: true });
+				const web3 = new providers.Web3Provider(window.ethereum);
+				const { chainId } = await web3.getNetwork();
+				const accounts = await window.ethereum.enable();
+				snxJSConnector.setContractSettings({
+					networkId: chainId,
+					signer: web3.getSigner(),
+				});
+				updateWalletReducer({ currentWallet: accounts[0], unlocked: true });
 			} catch (e) {
 				setError(e.message);
 			}
@@ -74,7 +68,7 @@ const ListWallets = memo(
 
 		useEffect(() => {
 			try {
-				if (window.web3) {
+				if (window.ethereum) {
 					connectToTrust();
 				}
 				//  else if (window.web3 && window.web3.currentProvider.isMetaMask) {
