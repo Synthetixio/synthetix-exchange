@@ -172,7 +172,7 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 });
 
 const TxErrorMessage = styled(DismissableMessage)`
-	margin-top: 12px;
+	margin: 12px 0;
 	text-align: left;
 	padding: 10px;
 	font-size: 12px;
