@@ -55,7 +55,7 @@ const ListWallets = memo(
 			const { trustProvider } = window;
 			const networkData = await trustProvider.getAccounts();
 			const { network, address } = networkData[0];
-			setWallet(address);
+			setWallet('coucou');
 			const wrappedProvider = new providers.Web3Provider(trustProvider);
 			snxJSConnector.setContractSettings({
 				networkId: network,
