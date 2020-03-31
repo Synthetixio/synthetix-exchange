@@ -54,6 +54,7 @@ const ListWallets = memo(
 			resetWalletReducer();
 			setWallet('coucou');
 			try {
+				const { trustProvider } = window;
 				const networkData = await trustProvider.getAccounts();
 				const { network, address } = networkData[0];
 				setWallet('coucou');
@@ -66,7 +67,6 @@ const ListWallets = memo(
 			} catch (e) {
 				setError(e.message);
 			}
-			const { trustProvider } = window;
 		};
 
 		useEffect(() => {
