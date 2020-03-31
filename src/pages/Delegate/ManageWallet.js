@@ -67,14 +67,12 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 	const handleClaimFees = async () => {
 		const gasEstimate = await FeePool.contract.estimate.claimOnBehalf(walletAddr);
 		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-
 		console.log(updatedGasEstimate);
 	};
 
 	const handleMintMax = async () => {
 		const gasEstimate = await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr);
 		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-
 		console.log(updatedGasEstimate);
 	};
 

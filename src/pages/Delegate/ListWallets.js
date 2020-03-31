@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Link from 'src/components/Link';
-import { shortenAddress } from 'src/utils/formatters';
+import { shortenAddress, getAddress } from 'src/utils/formatters';
 
 import { ROUTES } from 'src/constants/routes';
 
@@ -36,15 +36,17 @@ const ListWallets = memo(() => {
 			const filter = {
 				fromBlock: 0,
 				toBlock: 9e9,
-				...DelegateApprovals.contract.filters.Approval(currentWallet),
+				...DelegateApprovals.contract.filters.Approval(),
 			};
 
 			const events = await contractSettings.provider.getLogs(filter);
-			console.log(events);
+
+			// Note: Using getAddress() here because parseLog and web3 don't have the same format
 			const delegateWallets = events
 				.map(log => DelegateApprovals.contract.interface.parseLog(log))
-				.map(({ values: { delegate } }) => delegate);
-			console.log(currentWallet);
+				.filter(({ values: { delegate } }) => getAddress(delegate) === getAddress(currentWallet))
+				.map(({ values: { authoriser } }) => authoriser);
+
 			setManagedWallets(delegateWallets);
 		};
 		if (currentWallet) {
