@@ -54,38 +54,36 @@ const ListWallets = memo(
 			resetWalletReducer();
 			setWallet('test');
 			try {
-				const networkData = await window.trustProvider.getAccounts();
-				setWallet('haha');
-				const { network, address } = networkData[0];
-				setWallet('coucou');
-				const wrappedProvider = new providers.Web3Provider(window.trustProvider);
-				snxJSConnector.setContractSettings({
-					networkId: network,
-					signer: wrappedProvider.getSigner(),
-				});
-				updateWalletReducer({ currentWallet: address, networkId: network, unlocked: true });
+				const {
+					web3: { eth },
+				} = window;
+				const accounts = await eth.getAccounts();
+				setWallet(accounts[0]);
+				// const { network, address } = networkData[0];
+				// setWallet('coucou');
+				// const wrappedProvider = new providers.Web3Provider(window.trustProvider);
+				// snxJSConnector.setContractSettings({
+				// 	networkId: network,
+				// 	signer: wrappedProvider.getSigner(),
+				// });
+				// updateWalletReducer({ currentWallet: address, networkId: network, unlocked: true });
 			} catch (e) {
 				setError(e.message);
 			}
 		};
 
 		useEffect(() => {
-			const init = async () => {
-				try {
-					if (window.trustProvider) {
-						setWallet(window.trustProvider && window.trustProvider.getAccounts && 'yoooo');
-						const networkData = await window.trustProvider.getAccounts();
-						setWallet('bbbbb');
-						// connectToTrust();
-					} else if (window.web3 && window.web3.currentProvider.isMetaMask) {
-						connectToMetamask();
-					}
-				} catch (e) {
-					setError(e.message);
-					console.log(e);
+			try {
+				if (window.web3) {
+					connectToTrust();
 				}
-			};
-			init();
+				//  else if (window.web3 && window.web3.currentProvider.isMetaMask) {
+				// 	connectToMetamask();
+				// }
+			} catch (e) {
+				setError(e.message);
+				console.log(e);
+			}
 
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
