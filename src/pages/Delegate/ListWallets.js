@@ -14,15 +14,13 @@ import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet';
 import { getWalletInfo } from 'src/ducks';
 import Spinner from 'src/components/Spinner';
 
-import snxJSConnector, { connectToWallet } from 'src/utils/snxJSConnector';
+import snxJSConnector from 'src/utils/snxJSConnector';
 import { SUPPORTED_WALLETS_MAP, onMetamaskAccountChange } from 'src/utils/networkUtils';
 
 const ListWallets = memo(
 	({ walletInfo: { currentWallet }, updateWalletReducer, resetWalletReducer }) => {
 		const [managedWallets, setManagedWallets] = useState(null);
 		const [isLoadingWallets, setIsLoadingWallets] = useState(true);
-		const [wallet, setWallet] = useState(null);
-		const [error, setError] = useState(null);
 
 		const {
 			snxJS: { DelegateApprovals, contractSettings },
@@ -41,44 +39,37 @@ const ListWallets = memo(
 			});
 		};
 
-		const connectToMetamask = async () => {
-			resetWalletReducer();
-			const walletStatus = await connectToWallet({
-				wallet: SUPPORTED_WALLETS_MAP.METAMASK,
+		const setWallet = (networkId, signer, account) => {
+			snxJSConnector.setContractSettings({
+				networkId,
+				signer,
 			});
-			updateWalletReducer({ ...walletStatus, availableWallets: [] });
-			registerMetamaskAccountChange(walletStatus);
+			updateWalletReducer({ currentWallet: account, unlocked: true });
 		};
 
-		const connectToTrust = async () => {
-			resetWalletReducer();
+		const injectProvider = async () => {
 			try {
-				const web3 = new providers.Web3Provider(window.ethereum);
+				resetWalletReducer();
+				const { ethereum } = window;
+				const web3 = new providers.Web3Provider(ethereum);
 				const { chainId } = await web3.getNetwork();
-				const accounts = await window.ethereum.enable();
-				snxJSConnector.setContractSettings({
-					networkId: chainId,
-					signer: web3.getSigner(),
+				const accounts = await ethereum.enable();
+				setWallet(chainId, web3.getSigner(), accounts[0]);
+				ethereum.on('accountsChanged', newAccounts => {
+					const web3Provider = new providers.Web3Provider(ethereum);
+					setWallet(chainId, web3Provider.getSigner(), newAccounts[0]);
 				});
-				updateWalletReducer({ currentWallet: accounts[0], unlocked: true });
 			} catch (e) {
-				setError(e.message);
+				console.log(e);
 			}
 		};
 
 		useEffect(() => {
-			try {
-				if (window.ethereum) {
-					connectToTrust();
-				}
-				//  else if (window.web3 && window.web3.currentProvider.isMetaMask) {
-				// 	connectToMetamask();
-				// }
-			} catch (e) {
-				setError(e.message);
-				console.log(e);
+			if (window.ethereum) {
+				injectProvider();
+			} else {
+				// handle something in here
 			}
-
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
@@ -115,11 +106,10 @@ const ListWallets = memo(
 			<>
 				<StyledLogo />
 				<Headline>Choose wallet to interact with:</Headline>
-				<Headline>address: {wallet}</Headline>
-				<Headline>error: {error}</Headline>
 				<Wallets>
 					{isLoggedIn && !isLoadingWallets ? (
 						<>
+							<Headline>Connected wallet: {shortenAddress(currentWallet)}</Headline>
 							{managedWallets == null
 								? 'No wallets found. Please go to mintr with your main SNX wallet and delegate to a mobile or hot wallet you trust.'
 								: managedWallets.map(wallet => (
