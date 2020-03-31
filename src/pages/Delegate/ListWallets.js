@@ -52,13 +52,13 @@ const ListWallets = memo(
 
 		const connectToTrust = async () => {
 			resetWalletReducer();
-			setWallet('coucou');
+			setWallet('test');
 			try {
-				const { trustProvider } = window;
-				const networkData = await trustProvider.getAccounts();
+				const networkData = await window.trustProvider.getAccounts();
+				setWallet('haha');
 				const { network, address } = networkData[0];
 				setWallet('coucou');
-				const wrappedProvider = new providers.Web3Provider(trustProvider);
+				const wrappedProvider = new providers.Web3Provider(window.trustProvider);
 				snxJSConnector.setContractSettings({
 					networkId: network,
 					signer: wrappedProvider.getSigner(),
