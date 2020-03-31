@@ -20,6 +20,7 @@ const ListWallets = memo(
 	({ walletInfo: { currentWallet }, updateWalletReducer, resetWalletReducer }) => {
 		const [managedWallets, setManagedWallets] = useState(null);
 		const [isLoadingWallets, setIsLoadingWallets] = useState(true);
+		const [error, setError] = useState(null);
 
 		const {
 			snxJS: { DelegateApprovals, contractSettings },
@@ -40,13 +41,18 @@ const ListWallets = memo(
 
 		useEffect(() => {
 			const connectToMetamask = async () => {
-				if (window.web3 && window.web3.currentProvider.isMetaMask) {
-					resetWalletReducer();
-					const walletStatus = await connectToWallet({ wallet: SUPPORTED_WALLETS_MAP.METAMASK });
-					updateWalletReducer({ ...walletStatus, availableWallets: [] });
-					registerMetamaskAccountChange(walletStatus);
-				} else {
-					// handle
+				try {
+					if (window.web3 && window.web3.currentProvider.isMetaMask) {
+						resetWalletReducer();
+						const walletStatus = await connectToWallet({ wallet: SUPPORTED_WALLETS_MAP.METAMASK });
+						if (walletStatus.unlockError) throw new Error(walletStatus.unlockError);
+						updateWalletReducer({ ...walletStatus, availableWallets: [] });
+						registerMetamaskAccountChange(walletStatus);
+					} else {
+						// handle
+					}
+				} catch (e) {
+					setError(e.message);
 				}
 			};
 			connectToMetamask();
@@ -84,6 +90,7 @@ const ListWallets = memo(
 			<>
 				<StyledLogo />
 				<Headline>Choose wallet to interact with:</Headline>
+				<p>{error}</p>
 				<Wallets>
 					{isLoggedIn && !isLoadingWallets ? (
 						<>
