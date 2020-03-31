@@ -135,7 +135,7 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 				</CollatBoxValue>
 			</CollatBox>
 			<Buttons>
-				{isFeesClaimable && (
+				{sUSDBalance && (
 					<Button size="lg" palette="primary" disabled={isLoading} onClick={handleBurnToTarget}>
 						Burn to target
 					</Button>

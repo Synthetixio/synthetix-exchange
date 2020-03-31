@@ -1,3 +1,4 @@
+import { providers } from 'ethers';
 import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -13,7 +14,7 @@ import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet';
 import { getWalletInfo } from 'src/ducks';
 import Spinner from 'src/components/Spinner';
 
-import snxJSConnector, { connectToWallet } from 'src/utils/snxJSConnector';
+import snxJSConnector from 'src/utils/snxJSConnector';
 import { SUPPORTED_WALLETS_MAP, onMetamaskAccountChange } from 'src/utils/networkUtils';
 
 const ListWallets = memo(
@@ -38,20 +39,37 @@ const ListWallets = memo(
 			});
 		};
 
+		const setWallet = (networkId, signer, account) => {
+			snxJSConnector.setContractSettings({
+				networkId,
+				signer,
+			});
+			updateWalletReducer({ currentWallet: account, unlocked: true });
+		};
+
+		const injectProvider = async () => {
+			try {
+				resetWalletReducer();
+				const { ethereum } = window;
+				const web3 = new providers.Web3Provider(ethereum);
+				const { chainId } = await web3.getNetwork();
+				const accounts = await ethereum.enable();
+				setWallet(chainId, web3.getSigner(), accounts[0]);
+				ethereum.on('accountsChanged', newAccounts => {
+					const web3Provider = new providers.Web3Provider(ethereum);
+					setWallet(chainId, web3Provider.getSigner(), newAccounts[0]);
+				});
+			} catch (e) {
+				console.log(e);
+			}
+		};
+
 		useEffect(() => {
-			const connectToMetamask = async () => {
-				if (window.web3 && window.web3.currentProvider.isMetaMask) {
-					resetWalletReducer();
-					const walletStatus = await connectToWallet({
-						wallet: SUPPORTED_WALLETS_MAP.METAMASK,
-					});
-					updateWalletReducer({ ...walletStatus, availableWallets: [] });
-					registerMetamaskAccountChange(walletStatus);
-				} else {
-					// handle
-				}
-			};
-			connectToMetamask();
+			if (window.ethereum) {
+				injectProvider();
+			} else {
+				// handle something in here
+			}
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
@@ -91,6 +109,7 @@ const ListWallets = memo(
 				<Wallets>
 					{isLoggedIn && !isLoadingWallets ? (
 						<>
+							<Headline>Connected wallet: {shortenAddress(currentWallet)}</Headline>
 							{managedWallets == null
 								? 'No wallets found. Please go to mintr with your main SNX wallet and delegate to a mobile or hot wallet you trust.'
 								: managedWallets.map(wallet => (
