@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { shortenAddress, bigNumberFormatter } from 'src/utils/formatters';
@@ -10,6 +11,7 @@ import { ReactComponent as BackButton } from 'src/assets/images/delegate/back-bu
 import Spinner from 'src/components/Spinner';
 import Link from 'src/components/Link';
 import { Button } from 'src/components/Button';
+import DismissableMessage from 'src/components/DismissableMessage';
 
 import { ROUTES } from 'src/constants/routes';
 
@@ -21,12 +23,15 @@ import { normalizeGasLimit } from 'src/utils/transactions';
 import { getGasInfo } from 'src/ducks/index';
 
 const ManageWallet = memo(({ match, gasInfo }) => {
+	const { t } = useTranslation();
 	const [collateralisationRatio, setCollateralisationRatio] = useState(null);
 	const [issuanceRatio, setIssuanceRatio] = useState(null);
 	const [maxIssuableSynths, setMaxIssuableSynths] = useState(null);
 	const [isFeesClaimable, setIsFeesClaimable] = useState(null);
 	const [sUSDBalance, setsUSDBalance] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [txErrorMessage, setTxErrorMessage] = useState(null);
+
 	const {
 		snxJS: { Synthetix, SynthetixState, FeePool, sUSD },
 	} = snxJSConnector;
@@ -34,8 +39,6 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 	const {
 		params: { walletAddr },
 	} = match;
-
-	console.log(snxJSConnector);
 
 	useEffect(() => {
 		const init = async () => {
@@ -59,33 +62,51 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 	}, []);
 
 	const handleBurnToTarget = async () => {
-		const gasEstimate = await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr);
-		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+		try {
+			setTxErrorMessage(null);
 
-		await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr, {
-			gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-			gasLimit: updatedGasEstimate,
-		});
+			const gasEstimate = await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr);
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+
+			await Synthetix.contract.estimate.burnSynthsToTargetOnBehalf(walletAddr, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: updatedGasEstimate,
+			});
+		} catch (e) {
+			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+		}
 	};
 
 	const handleClaimFees = async () => {
-		const gasEstimate = await FeePool.contract.estimate.claimOnBehalf(walletAddr);
-		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+		try {
+			setTxErrorMessage(null);
 
-		await FeePool.contract.estimate.claimOnBehalf(walletAddr, {
-			gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-			gasLimit: updatedGasEstimate,
-		});
+			const gasEstimate = await FeePool.contract.estimate.claimOnBehalf(walletAddr);
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+
+			await FeePool.contract.estimate.claimOnBehalf(walletAddr, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: updatedGasEstimate,
+			});
+		} catch (e) {
+			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+		}
 	};
 
 	const handleMintMax = async () => {
-		const gasEstimate = await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr);
-		const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+		try {
+			setTxErrorMessage(null);
 
-		await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr, {
-			gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-			gasLimit: updatedGasEstimate,
-		});
+			const gasEstimate = await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr);
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
+
+			await Synthetix.contract.estimate.issueMaxSynthsOnBehalf(walletAddr, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: updatedGasEstimate,
+			});
+		} catch (e) {
+			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+		}
 	};
 
 	return (
@@ -136,9 +157,27 @@ const ManageWallet = memo(({ match, gasInfo }) => {
 					Mint max
 				</Button>
 			</Buttons>
+			{txErrorMessage && (
+				<TxErrorMessage
+					onDismiss={() => setTxErrorMessage(null)}
+					type="error"
+					size="sm"
+					floating={true}
+				>
+					{txErrorMessage}
+				</TxErrorMessage>
+			)}
 		</>
 	);
 });
+
+const TxErrorMessage = styled(DismissableMessage)`
+	margin-top: 12px;
+	text-align: left;
+	padding: 10px;
+	font-size: 12px;
+	color: ${props => props.theme.colors.fontPrimary};
+`;
 
 const CollatBox = styled.div`
 	display: flex;
