@@ -14,14 +14,11 @@ import { darkTheme } from '../../styles/theme';
 
 import Delegate from '../Delegate';
 
-import AppHeader from 'src/pages/Root/components/AppHeader';
-
 import WalletPopup from '../../components/WalletPopup';
 
 const App = ({ isAppReady }) => (
 	<ThemeProvider theme={darkTheme}>
 		<Router history={history}>
-			<AppHeader />
 			<WalletPopup />
 			<Switch>
 				<Route path={ROUTES.Home} render={() => <Delegate isAppReady={isAppReady} />} />
