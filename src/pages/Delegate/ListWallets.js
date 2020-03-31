@@ -21,6 +21,8 @@ const ListWallets = memo(
 	({ walletInfo: { currentWallet }, updateWalletReducer, resetWalletReducer }) => {
 		const [managedWallets, setManagedWallets] = useState(null);
 		const [isLoadingWallets, setIsLoadingWallets] = useState(true);
+		const [address, setAddress] = useState(null);
+		const [error, setError] = useState(null);
 
 		const {
 			snxJS: { DelegateApprovals, contractSettings },
@@ -52,6 +54,7 @@ const ListWallets = memo(
 			resetWalletReducer();
 			const { trustProvider } = window;
 			const { network, address } = await trustProvider.getAccounts();
+			setAddress(address);
 			const wrappedProvider = new providers.Web3Provider(trustProvider);
 			snxJSConnector.setContractSettings({
 				networkId: network,
@@ -68,6 +71,7 @@ const ListWallets = memo(
 					connectToMetamask();
 				}
 			} catch (e) {
+				setError(e.message);
 				console.log(e);
 			}
 
@@ -107,6 +111,8 @@ const ListWallets = memo(
 			<>
 				<StyledLogo />
 				<Headline>Choose wallet to interact with:</Headline>
+				<Headline>address: {address}</Headline>
+				<Headline>error: {address}</Headline>
 				<Wallets>
 					{isLoggedIn && !isLoadingWallets ? (
 						<>
