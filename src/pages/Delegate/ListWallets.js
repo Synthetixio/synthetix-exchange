@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
 import styled from 'styled-components';
 
@@ -8,78 +9,97 @@ import { shortenAddress, getAddress } from 'src/utils/formatters';
 import { ROUTES } from 'src/constants/routes';
 
 import { ReactComponent as MintrLogo } from 'src/assets/images/delegate/mintr-logo.svg';
-
+import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet';
+import { getWalletInfo } from 'src/ducks';
 import Spinner from 'src/components/Spinner';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
+import snxJSConnector, { connectToWallet } from 'src/utils/snxJSConnector';
+import { SUPPORTED_WALLETS_MAP, onMetamaskAccountChange } from 'src/utils/networkUtils';
 
-const ListWallets = memo(() => {
-	const [currentWallet, setCurrentWallet] = useState(null);
-	const [managedWallets, setManagedWallets] = useState([]);
+const ListWallets = memo(
+	({ walletInfo: { currentWallet }, updateWalletReducer, resetWalletReducer }) => {
+		const [managedWallets, setManagedWallets] = useState([]);
 
-	const {
-		snxJS: { DelegateApprovals, contractSettings },
-	} = snxJSConnector;
+		const {
+			snxJS: { DelegateApprovals, contractSettings },
+		} = snxJSConnector;
 
-	useEffect(() => {
-		if (window.web3 && window.web3.currentProvider.isMetaMask) {
-			window.web3.eth.getAccounts((error, accounts) => {
-				const walletAddr = accounts[0];
-				setCurrentWallet(walletAddr);
+		const registerMetamaskAccountChange = walletStatus => {
+			onMetamaskAccountChange(async accounts => {
+				if (accounts && accounts.length > 0) {
+					const signer = new snxJSConnector.signers[SUPPORTED_WALLETS_MAP.METAMASK]({});
+					snxJSConnector.setContractSettings({
+						networkId: walletStatus.networkId,
+						signer,
+					});
+					updateWalletReducer({ currentWallet: accounts[0] });
+				}
 			});
-		} else {
-			// handle
-		}
-	}, []);
-
-	useEffect(() => {
-		const getDelegatedWallets = async () => {
-			const filter = {
-				fromBlock: 0,
-				toBlock: 9e9,
-				...DelegateApprovals.contract.filters.Approval(),
-			};
-
-			const events = await contractSettings.provider.getLogs(filter);
-
-			// Note: Using getAddress() here because parseLog and web3 don't have the same format
-			const delegateWallets = events
-				.map(log => DelegateApprovals.contract.interface.parseLog(log))
-				.filter(({ values: { delegate } }) => getAddress(delegate) === getAddress(currentWallet))
-				.map(({ values: { authoriser } }) => authoriser);
-
-			setManagedWallets(uniq(delegateWallets));
 		};
-		if (currentWallet) {
-			getDelegatedWallets();
-		}
-	}, [currentWallet]);
 
-	const isLoggedIn = !!currentWallet;
+		useEffect(() => {
+			const connectToMetamask = async () => {
+				if (window.web3 && window.web3.currentProvider.isMetaMask) {
+					resetWalletReducer();
+					const walletStatus = await connectToWallet({ wallet: SUPPORTED_WALLETS_MAP.METAMASK });
+					updateWalletReducer({ ...walletStatus, availableWallets: [] });
+					registerMetamaskAccountChange(walletStatus);
+				} else {
+					// handle
+				}
+			};
+			connectToMetamask();
+		}, []);
 
-	return (
-		<>
-			<StyledLogo />
-			<Headline>Choose wallet to interact with:</Headline>
-			{isLoggedIn ? (
-				<>
-					<Wallets>
-						{managedWallets.map(wallet => (
-							<PrimaryLink to={`${ROUTES.Delegate.ManageWallet}/${wallet}`} key={wallet}>
-								{shortenAddress(wallet)}
-							</PrimaryLink>
-						))}
-					</Wallets>
-					<SecondaryLink to="https://blog.synthetix.io/a-guide-to-delegation" isExternal={true}>
-						READ INSTRUCTIONS (BLOG)
-					</SecondaryLink>
-				</>
-			) : (
-				<Spinner size="sm" />
-			)}
-		</>
-	);
-});
+		useEffect(() => {
+			const getDelegatedWallets = async () => {
+				const filter = {
+					fromBlock: 0,
+					toBlock: 9e9,
+					...DelegateApprovals.contract.filters.Approval(),
+				};
+
+				const events = await contractSettings.provider.getLogs(filter);
+
+				// Note: Using getAddress() here because parseLog and web3 don't have the same format
+				const delegateWallets = events
+					.map(log => DelegateApprovals.contract.interface.parseLog(log))
+					.filter(({ values: { delegate } }) => getAddress(delegate) === getAddress(currentWallet))
+					.map(({ values: { authoriser } }) => authoriser);
+
+				setManagedWallets(uniq(delegateWallets));
+			};
+			if (currentWallet) {
+				getDelegatedWallets();
+			}
+		}, [currentWallet]);
+
+		const isLoggedIn = !!currentWallet;
+
+		return (
+			<>
+				<StyledLogo />
+				<Headline>Choose wallet to interact with:</Headline>
+				{isLoggedIn ? (
+					<>
+						<Wallets>
+							{managedWallets.map(wallet => (
+								<PrimaryLink to={`${ROUTES.Delegate.ManageWallet}/${wallet}`} key={wallet}>
+									{shortenAddress(wallet)}
+								</PrimaryLink>
+							))}
+						</Wallets>
+						<SecondaryLink to="https://blog.synthetix.io/a-guide-to-delegation" isExternal={true}>
+							READ INSTRUCTIONS (BLOG)
+						</SecondaryLink>
+					</>
+				) : (
+					<Spinner size="sm" />
+				)}
+			</>
+		);
+	}
+);
 
 const StyledLogo = styled(MintrLogo)`
 	width: 291px;
@@ -119,4 +139,13 @@ const SecondaryLink = styled(PrimaryLink)`
 	color: ${props => props.theme.colors.fontSecondary};
 `;
 
-export default ListWallets;
+const mapStateToProps = state => ({
+	walletInfo: getWalletInfo(state),
+});
+
+const mapDispatchToProps = {
+	updateWalletReducer,
+	resetWalletReducer,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListWallets);
