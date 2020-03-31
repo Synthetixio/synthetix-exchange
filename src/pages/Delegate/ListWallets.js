@@ -70,17 +70,22 @@ const ListWallets = memo(
 		};
 
 		useEffect(() => {
-			try {
-				if (window.trustProvider) {
-					setWallet(window.trustProvider && window.trustProvider.getAccounts && 'yoooo');
-					// connectToTrust();
-				} else if (window.web3 && window.web3.currentProvider.isMetaMask) {
-					connectToMetamask();
+			const init = async () => {
+				try {
+					if (window.trustProvider) {
+						setWallet(window.trustProvider && window.trustProvider.getAccounts && 'yoooo');
+						const networkData = await window.trustProvider.getAccounts();
+						setWallet('bbbbb');
+						// connectToTrust();
+					} else if (window.web3 && window.web3.currentProvider.isMetaMask) {
+						connectToMetamask();
+					}
+				} catch (e) {
+					setError(e.message);
+					console.log(e);
 				}
-			} catch (e) {
-				setError(e.message);
-				console.log(e);
-			}
+			};
+			init();
 
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
