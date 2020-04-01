@@ -62,7 +62,7 @@ const PairListPanel = ({
 
 	useEffect(() => {
 		return () => {
-			toggleDropdown(false);
+			setBlurBackgroundIsVisible(false);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
