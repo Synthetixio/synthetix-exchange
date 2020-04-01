@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -8,32 +8,57 @@ import { ELEMENT_BORDER_RADIUS } from 'src/constants/ui';
 
 import { shortenAddress } from 'src/utils/formatters';
 
-import { showWalletPopup, getCurrentTheme } from 'src/ducks/ui';
+import { showWalletPopup, getCurrentTheme, setBlurBackgroundIsVisible } from 'src/ducks/ui';
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
-// TODO: bring this back when implement the new dropdown
-// import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
 
 import { Dot } from 'src/shared/commonStyles';
 import { DataMedium } from 'src/components/Typography';
 
 import { ButtonPrimary } from 'src/components/Button';
+import DropdownPanel from 'src/components/DropdownPanel';
+import WalletMenu from '../WalletMenu';
 
 import { media } from 'src/shared/media';
 
-export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
+export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroundIsVisible }) => {
 	const { t } = useTranslation();
 	const { currentWallet, networkName } = walletInfo;
+	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
+
+	const toggleDropdown = isOpen => {
+		if (!isOpen && !walletDropdownIsOpen) return;
+		setWalletDropdownIsOpen(isOpen);
+		setBlurBackgroundIsVisible(isOpen);
+	};
+
+	useEffect(() => {
+		return () => {
+			toggleDropdown(false);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return currentWallet != null ? (
-		<Container>
-			<WalletInfo onClick={showWalletPopup} role="button">
-				<GreenDot />
-				<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
-				<NetworkLabel>{networkName}</NetworkLabel>
-			</WalletInfo>
-			{/* <MenuArrowDownIcon /> */}
-		</Container>
+		<DropdownPanel
+			height="auto"
+			isOpen={walletDropdownIsOpen}
+			handleClose={() => toggleDropdown(false)}
+			width="300"
+			onHeaderClick={() => toggleDropdown(!walletDropdownIsOpen)}
+			header={
+				<UserInfoContainer>
+					<WalletInfo>
+						<GreenDot />
+						<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
+						<NetworkLabel>{networkName}</NetworkLabel>
+						<MenuArrowDownIcon />
+					</WalletInfo>
+				</UserInfoContainer>
+			}
+			body={<WalletMenu toggleDropdown={toggleDropdown} />}
+		></DropdownPanel>
 	) : (
 		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
 			{t('header.connect-wallet')}
@@ -46,7 +71,7 @@ AccountInfo.propTypes = {
 	showWalletPopup: PropTypes.func.isRequired,
 };
 
-const Container = styled.div`
+const UserInfoContainer = styled.div`
 	height: 40px;
 	display: grid;
 	grid-auto-flow: column;
@@ -110,6 +135,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
 	showWalletPopup,
+	setBlurBackgroundIsVisible,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountInfo);
