@@ -45,7 +45,7 @@ import { ReactComponent as iDEFIIcon } from '../assets/currencies/synths/iDEFI.s
 import { ReactComponent as iCEXIcon } from '../assets/currencies/synths/iCEX.svg';
 // Equity Synths
 import { ReactComponent as sFTSEIcon } from '../assets/currencies/synths/sFTSE.svg';
-import { ReactComponent as sNikkeiIcon } from '../assets/currencies/synths/sNikkei.svg';
+import { ReactComponent as sNIKKEIIcon } from '../assets/currencies/synths/sNIKKEI.svg';
 // Forex Synths
 import { ReactComponent as sEURIcon } from '../assets/currencies/synths/sEUR.svg';
 import { ReactComponent as sJPYIcon } from '../assets/currencies/synths/sJPY.svg';
@@ -89,7 +89,7 @@ export const SYNTHS = [
 	'iETC',
 	'iMKR',
 	'sFTSE',
-	'sNikkei',
+	'sNIKKEI',
 	'sXAU',
 	'sXAG',
 	'sBZ',
@@ -191,7 +191,7 @@ export const currencyKeyToIconMap = {
 	[SYNTHS_MAP.iCEX]: iCEXIcon,
 	[SYNTHS_MAP.iDEFI]: iDEFIIcon,
 	[SYNTHS_MAP.sFTSE]: sFTSEIcon,
-	[SYNTHS_MAP.sNikkei]: sNikkeiIcon,
+	[SYNTHS_MAP.sNIKKEI]: sNIKKEIIcon,
 };
 
 export const isSynth = currencyKey => !!SYNTHS_MAP[currencyKey];
