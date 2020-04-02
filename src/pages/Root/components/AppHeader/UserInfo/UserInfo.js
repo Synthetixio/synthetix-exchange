@@ -27,7 +27,7 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroun
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
 
-	const toggleDropdown = isOpen => {
+	const setDropdownIsOpen = isOpen => {
 		if (!isOpen && !walletDropdownIsOpen) return;
 		setWalletDropdownIsOpen(isOpen);
 		setBlurBackgroundIsVisible(isOpen);
@@ -44,9 +44,9 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroun
 		<DropdownPanel
 			height="auto"
 			isOpen={walletDropdownIsOpen}
-			handleClose={() => toggleDropdown(false)}
-			width="300"
-			onHeaderClick={() => toggleDropdown(!walletDropdownIsOpen)}
+			handleClose={() => setDropdownIsOpen(false)}
+			width="300px"
+			onHeaderClick={() => setDropdownIsOpen(!walletDropdownIsOpen)}
 			header={
 				<UserInfoContainer>
 					<WalletInfo>
@@ -57,8 +57,8 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroun
 					</WalletInfo>
 				</UserInfoContainer>
 			}
-			body={<WalletMenu toggleDropdown={toggleDropdown} />}
-		></DropdownPanel>
+			body={<WalletMenu setDropdownIsOpen={setDropdownIsOpen} />}
+		/>
 	) : (
 		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
 			{t('header.connect-wallet')}

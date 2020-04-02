@@ -38,7 +38,7 @@ import Currency from 'src/components/Currency';
 
 const WalletMenu = ({
 	resetWalletReducer,
-	toggleDropdown,
+	setDropdownIsOpen,
 	currentWallet,
 	showWalletPopup,
 	totalSynthsBalanceUSD,
@@ -51,7 +51,7 @@ const WalletMenu = ({
 
 	const logout = () => {
 		resetWalletReducer();
-		toggleDropdown(false);
+		setDropdownIsOpen(false);
 	};
 
 	return (
@@ -91,7 +91,7 @@ const WalletMenu = ({
 				<Card.Header>
 					<StyledHeadingSmall>{t('header.wallet-menu.cards.synth-balance')}</StyledHeadingSmall>
 				</Card.Header>
-				<Card.Body padding="0">
+				<StyleCardBody>
 					<StyledTable
 						palette={TABLE_PALETTE.STRIPED}
 						data={synthsWalletBalances}
@@ -146,7 +146,7 @@ const WalletMenu = ({
 							},
 						]}
 					></StyledTable>
-				</Card.Body>
+				</StyleCardBody>
 			</Card>
 			<Bottom>
 				<Link to={ROUTES.Assets.Home}>
@@ -210,6 +210,10 @@ const StyledButton = styled(ButtonPrimarySmall)`
 const CardData = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontPrimary};
 	text-transform: uppercase;
+`;
+
+const StyleCardBody = styled(Card.Body)`
+	padding: 0;
 `;
 
 const StyledFlexCentered = styled(FlexDivCentered)`

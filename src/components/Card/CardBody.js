@@ -10,7 +10,7 @@ CardBody.propTypes = {
 
 const Container = styled.div`
 	position: relative;
-	padding: ${props => props.padding || '16px 12px 18px 12px'};
+	padding: 16px 12px 18px 12px;
 `;
 
 export default CardBody;

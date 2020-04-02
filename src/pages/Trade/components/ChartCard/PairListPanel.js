@@ -24,6 +24,7 @@ import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import { CurrencyCol, RightAlignedCell } from 'src/components/Table/common';
 import { ButtonFilter } from 'src/components/Button';
+import { FlexDiv } from 'src/shared/commonStyles';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
 
@@ -72,7 +73,7 @@ const PairListPanel = ({
 			isOpen={pairListDropdownIsOpen}
 			handleClose={() => toggleDropdown(false)}
 			onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
-			width="300"
+			width="300px"
 			header={
 				<DropdownPanelHeader>
 					<Currency.Pair
@@ -186,9 +187,8 @@ const ButtonRow = styled.div`
 	justify-content: space-between;
 `;
 
-const DropdownPanelHeader = styled.div`
+const DropdownPanelHeader = styled(FlexDiv)`
 	width: 100%;
-	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	height: ${CARD_HEIGHT};

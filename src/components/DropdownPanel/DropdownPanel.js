@@ -31,7 +31,7 @@ const contentIsVisible = css`
 
 const Container = styled.div`
 	position: relative;
-	width: ${props => (props.width ? `${props.width}px` : '100%')};
+	width: ${props => props.width || '100%'};
 	overflow: hidden;
 	${props => props.isOpen && contentIsVisible}
 	z-index: ${Z_INDEX.DROPDOWN_PANEL};
