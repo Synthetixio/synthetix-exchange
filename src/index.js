@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-
 import { Provider } from 'react-redux';
 import store from './config/store';
 import Root from './pages/Root';
@@ -21,6 +20,7 @@ console.log('NODE_ENV', process.env.NODE_ENV);
 console.log(bugsnag.releaseStage);
 
 bugsnagClient.use(bugsnagReact, React);
+
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 const App = () => {
 	return (
@@ -31,6 +31,7 @@ const App = () => {
 		</Suspense>
 	);
 };
+
 ReactDOM.render(
 	<ErrorBoundary>
 		<App />
