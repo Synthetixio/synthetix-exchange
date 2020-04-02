@@ -98,6 +98,7 @@ const WalletInfo = styled.div`
 	grid-auto-flow: column;
 	grid-gap: 10px;
 	align-items: center;
+	justify-items: center;
 	cursor: pointer;
 `;
 
