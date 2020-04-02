@@ -208,6 +208,7 @@ const Menu = styled.div`
 const MenuTitle = styled.div`
 	text-transform: uppercase;
 	${bodyMediumCSS};
+	color: ${props => props.theme.colors.white};
 	padding-bottom: 25px;
 `;
 
