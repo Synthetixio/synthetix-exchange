@@ -350,7 +350,7 @@ const CreateOrderCard = ({
 				/>
 
 				{hasMarketClosed ? (
-					<ButtonPrimary disabled={true}>Closed market</ButtonPrimary>
+					<ButtonPrimary disabled={true}>Market closed</ButtonPrimary>
 				) : feeReclamationError ? (
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>
 						{t('trade.trade-card.retry-button')}
