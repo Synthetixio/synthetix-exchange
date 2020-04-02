@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { walletPopupIsVisible, getWalletInfo } from '../../ducks';
-import { toggleWalletPopup } from '../../ducks/ui';
+import { getWalletInfo } from '../../ducks/wallet/walletDetails';
+import { toggleWalletPopup, walletPopupIsVisible } from '../../ducks/ui';
 
 import { ReactComponent as CloseCrossIcon } from '../../assets/images/close-cross.svg';
 

@@ -9,7 +9,6 @@ import GenericInput from './Input';
 
 export const SearchInput = memo(({ onChange, value, ...rest }) => {
 	const { t } = useTranslation();
-
 	return (
 		<Container {...rest}>
 			<StyledSearchIcon />

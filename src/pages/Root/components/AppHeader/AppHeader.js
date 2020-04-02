@@ -16,7 +16,7 @@ import { FlexDivCentered } from 'src/shared/commonStyles';
 
 import { mediumMediaQuery, breakpoint } from 'src/shared/media';
 
-import { getIsLoggedIn } from 'src/ducks/wallet';
+import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
@@ -45,13 +45,13 @@ export const AppHeader = memo(props => {
 						</Link>
 					</MenuItem>
 					<MenuLinkItem>
+						<MenuLink to={ROUTES.Markets}>{t('header.links.markets')}</MenuLink>
+					</MenuLinkItem>
+					<MenuLinkItem>
 						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
 					</MenuLinkItem>
 					<MenuLinkItem>
 						<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
-					</MenuLinkItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Markets}>{t('header.links.markets')}</MenuLink>
 					</MenuLinkItem>
 					{isLoggedIn && (
 						<MenuLinkItem>
@@ -103,11 +103,6 @@ const Content = styled(FlexDivCentered)`
 	justify-content: space-between;
 	margin: 0 auto;
 	padding: 0 16px;
-	${props =>
-		props.isOnSplashPage &&
-		css`
-			max-width: ${breakpoint.extraLarge}px;
-		`}
 `;
 
 const MenuItem = styled(FlexDivCentered)`

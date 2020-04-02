@@ -13,6 +13,7 @@ const initialState = {
 	fiatCurrency: FIAT_CURRENCY_MAP.USD,
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
+	blurBackgroundIsVisible: false,
 	...getPersistedState('ui'),
 };
 
@@ -50,6 +51,9 @@ export const uiSlice = createSlice({
 			state.marketsAssetFilter = action.payload.marketsAssetFilter;
 			persistState('ui', { marketsAssetFilter: state.marketsAssetFilter });
 		},
+		setBlurBackgroundIsVisible: (state, action) => {
+			state.blurBackgroundIsVisible = action.payload;
+		},
 	},
 });
 
@@ -63,12 +67,19 @@ const {
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
 	setMarketsAssetFilter,
+	setBlurBackgroundIsVisible,
 } = uiSlice.actions;
 
 export const getUIState = state => state.ui;
 export const getFiatCurrency = state => getUIState(state).fiatCurrency;
+export const getCurrentTheme = state => getUIState(state).theme;
+export const walletPopupIsVisible = state => getUIState(state).walletPopupIsVisible;
+export const gweiPopupIsVisible = state => getUIState(state).gweiPopupIsVisible;
+export const depotPopupIsVisible = state => getUIState(state).depotPopupIsVisible;
+export const getSynthSearch = state => getUIState(state).synthSearch;
 export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
+export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
 
 export default uiSlice.reducer;
 
@@ -82,4 +93,5 @@ export {
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
 	setMarketsAssetFilter,
+	setBlurBackgroundIsVisible,
 };

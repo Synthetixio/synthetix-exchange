@@ -8,7 +8,7 @@ import history from '../../utils/history';
 
 import { ROUTES } from '../../constants/routes';
 
-import { getCurrentTheme } from '../../ducks';
+import { getCurrentTheme } from '../../ducks/ui';
 
 import GlobalEventsGate from '../../gates/GlobalEventsGate';
 

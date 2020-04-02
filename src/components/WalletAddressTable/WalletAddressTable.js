@@ -7,7 +7,7 @@ import Spinner from '../Spinner';
 
 import { formatCurrency, bigNumberFormatter } from '../../utils/formatters';
 import { getEtherscanAddressLink } from '../../utils/explorers';
-import { getWalletInfo } from '../../ducks';
+import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 
 import EtherScanImage from '../../assets/images/etherscan-logo.png';
 

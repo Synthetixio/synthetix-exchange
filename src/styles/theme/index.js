@@ -4,6 +4,7 @@ import ThemeLight from './light';
 const sharedColors = {
 	green: '#10BA97',
 	white: '#FFFFFF',
+	black: '#000000',
 	red: '#D94454',
 	hyperlink: '#A08AFF',
 	buttonDefault: '#795DF5',

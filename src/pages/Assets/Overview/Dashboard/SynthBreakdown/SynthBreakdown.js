@@ -14,7 +14,10 @@ import { formatPercentage } from 'src/utils/formatters';
 
 import { CardHeadingDescription } from 'src/shared/commonStyles';
 
-import { getIsLoadedWalletBalances, getSynthsWalletBalances } from 'src/ducks/wallet';
+import {
+	getIsLoadedWalletBalances,
+	getSynthsWalletBalances,
+} from 'src/ducks/wallet/walletBalances';
 
 import { MOCK_DATA } from './mockData';
 

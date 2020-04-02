@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes, withTheme, createGlobalStyle } from 'styled-components';
 import { connect } from 'react-redux';
 
-import { gweiPopupIsVisible } from '../../ducks';
-import { toggleGweiPopup } from '../../ducks/ui';
+import { toggleGweiPopup, gweiPopupIsVisible } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
 import { getTransactionPrice } from '../../utils/networkUtils';
 
@@ -12,8 +11,7 @@ import Slider from '../Slider';
 
 import { ReactComponent as CloseCrossIcon } from '../../assets/images/close-cross.svg';
 
-import { getGasInfo } from '../../ducks/';
-import { setGasPrice } from '../../ducks/transaction';
+import { setGasPrice, getGasInfo } from '../../ducks/transaction';
 import { getEthRate } from '../../ducks/rates';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../deprecated/Table';

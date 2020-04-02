@@ -13,6 +13,7 @@ const Input = styled.input`
 	::placeholder {
 		opacity: 0.5;
 		color: ${props => props.theme.colors.fontTertiary};
+		text-transform: capitalize;
 	}
 	${color}
 `;
