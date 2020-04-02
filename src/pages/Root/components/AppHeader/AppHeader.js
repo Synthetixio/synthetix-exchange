@@ -103,11 +103,6 @@ const Content = styled(FlexDivCentered)`
 	justify-content: space-between;
 	margin: 0 auto;
 	padding: 0 16px;
-	${props =>
-		props.isOnSplashPage &&
-		css`
-			max-width: ${breakpoint.extraLarge}px;
-		`}
 `;
 
 const MenuItem = styled(FlexDivCentered)`

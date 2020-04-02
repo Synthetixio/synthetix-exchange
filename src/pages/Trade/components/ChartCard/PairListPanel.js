@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { navigateToTrade } from 'src/constants/routes';
+import { CARD_HEIGHT } from 'src/constants/ui';
 
 import { getSynthPair } from 'src/ducks/synths';
 import {
@@ -14,6 +15,8 @@ import {
 import { getFilteredMarkets, getAllMarkets } from 'src/ducks/markets';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
+import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+
 import DropdownPanel from 'src/components/DropdownPanel';
 import Currency from 'src/components/Currency';
 import { SearchInput } from 'src/components/Input';
@@ -21,6 +24,7 @@ import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import { CurrencyCol, RightAlignedCell } from 'src/components/Table/common';
 import { ButtonFilter } from 'src/components/Button';
+import { FlexDiv } from 'src/shared/commonStyles';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
 
@@ -52,17 +56,33 @@ const PairListPanel = ({
 	}, [marketsByQuote, allMarkets, search]);
 
 	const toggleDropdown = isOpen => {
+		if (!isOpen && !pairListDropdownIsOpen) return;
 		setPairListDropdownIsOpen(isOpen);
 		setBlurBackgroundIsVisible(isOpen);
 	};
+
+	useEffect(() => {
+		return () => {
+			setBlurBackgroundIsVisible(false);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<DropdownPanel
 			isOpen={pairListDropdownIsOpen}
 			handleClose={() => toggleDropdown(false)}
 			onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
+			width="300px"
 			header={
-				<Currency.Pair baseCurrencyKey={base.name} quoteCurrencyKey={quote.name} showIcon={true} />
+				<DropdownPanelHeader>
+					<Currency.Pair
+						baseCurrencyKey={base.name}
+						quoteCurrencyKey={quote.name}
+						showIcon={true}
+					/>
+					<MenuArrowDownIcon />
+				</DropdownPanelHeader>
 			}
 			body={
 				<PairListContainer>
@@ -153,6 +173,7 @@ const StyledTable = styled(Table)`
 
 const PairListContainer = styled.div`
 	height: 100%;
+	padding: 12px 0;
 `;
 
 const SearchContainer = styled.div`
@@ -164,6 +185,15 @@ const ButtonRow = styled.div`
 	display: flex;
 	width: 100%;
 	justify-content: space-between;
+`;
+
+const DropdownPanelHeader = styled(FlexDiv)`
+	width: 100%;
+	justify-content: space-between;
+	align-items: center;
+	height: ${CARD_HEIGHT};
+	padding: 0 12px;
+	background-color: ${props => props.theme.colors.accentL1};
 `;
 
 const mapStateToProps = state => ({
