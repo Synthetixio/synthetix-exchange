@@ -7,10 +7,27 @@
 - Markets page
 - Assets page (overview + exchanges)
 - Wallet menu (App header)
+- New crypto synths added:
+
+* sADA / iADA
+* sBCH / iBCH
+* sDASH / iDASH
+* sEOS / iEOS
+* sETC / iETC
+* sXMR / iXMR
+
+- New commodity synth added:
+
+* sBZ
+
+- New equity synths added:
+
+* sFTSE
+* sNikkei
 
 ### Changed:
 
-- 🔥**Refactor trade view** 🔥
+- 🔥 **Refactor trade view** 🔥
 - Disabled loan creation
 - Significantly enhanced the performance of loading markets data
 - Friendlier URLs - trade/?base=sBTC&quote=sUSD -> trade/sBTC-sUSD
