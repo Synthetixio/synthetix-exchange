@@ -35,9 +35,8 @@
 		"redux-thunk": "~2.3.0",
 		"styled-components": "^4.4.1",
 		"styled-system": "5.1.2",
-		"synthetix": "^2.21.7-alpha",
 		"synthetix-data": "2.1.4",
-		"synthetix-js": "2.20.0"
+		"synthetix-js": "^2.21.7-alpha-2"
 	},
 	"scripts": {
 		"clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",
