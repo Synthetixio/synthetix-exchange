@@ -63,14 +63,14 @@ export const MobileAppHeader = memo(
 					<>
 						<Overlay onClick={toggleMenu} />
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
+							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
+								{t('header.links.markets')}
+							</DropdownMenuLink>
 							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
 								{t('header.links.trade')}
 							</DropdownMenuLink>
 							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
 								{t('header.links.loans')}
-							</DropdownMenuLink>
-							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
-								{t('header.links.markets')}
 							</DropdownMenuLink>
 							{isLoggedIn && (
 								<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
