@@ -15,6 +15,19 @@
 		},
 		"announcements": {
 			"ether-collateral": "NEW: ETH Collateral is live!"
+		},
+		"wallet-menu": {
+			"cards": {
+				"wallet-details": "Wallet details",
+				"estimated-wallet-value": "Estimated wallet value",
+				"synth-balance": "Synth balance",
+				"account": "Account"
+			},
+			"buttons": {
+				"wallet-overview": "Wallet overview",
+				"log-out": "Log out",
+				"change": "Change"
+			}
 		}
 	},
 	"modals": {
@@ -101,6 +114,48 @@
 		"promo": {
 			"ether-promo-card": {
 				"title": "get synths to start trading:"
+			}
+		},
+		"chart-card": {
+			"info-boxes": {
+				"price": "Price",
+				"24h-change": "24h change",
+				"24h-high": "24h high",
+				"24h-low": "24h low",
+				"24h-volume": "24h volume"
+			}
+		},
+		"trade-card": {
+			"title": "Buy/Sell",
+			"reverse-button": "Reverse",
+			"sell-input-label": "Sell",
+			"buy-input-label": "Buy",
+			"confirm-trade-button": "Confirm trade",
+			"retry-button": "Retry",
+			"network-info": {
+				"usd-value": "USD Value",
+				"fee": "Fee"
+			},
+			"network-info-tooltip": {
+				"exchange-fee": "Exchange fee",
+				"network-fee": "Network fee (gas)"
+			}
+		},
+		"order-book-card": {
+			"tabs": {
+				"your-orders": "Your orders",
+				"your-trades": "Your trades",
+				"all-trades": "All trades"
+			},
+			"table": {
+				"date": "Date | time",
+				"pair": "Pair",
+				"buying": "Buying",
+				"selling": "Selling",
+				"price": "Price",
+				"total": "Total",
+				"status": "Status",
+				"verify": "verify"
 			}
 		}
 	},
@@ -220,6 +275,9 @@
 		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
+		"transaction": {
+			"view": "View"
+		},
 		"contracts": {
 			"view": "View Contract"
 		},
@@ -243,7 +301,10 @@
 			"in": "Transferred in",
 			"out": "Transferred out",
 			"complete": "Complete",
-			"pending": "Pending"
+			"pending": "Pending",
+			"confirmed": "Confirmed",
+			"cancelled": "Cancelled",
+			"failed": "failed"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
@@ -255,7 +316,8 @@
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
-			"error-loading": "An error occurred trying to load"
+			"error-loading": "An error occurred trying to load",
+			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
@@ -273,6 +335,9 @@
 		},
 		"search-results": {
 			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
+		},
+		"chart": {
+			"no-data-available": "No data available"
 		}
 	}
 }

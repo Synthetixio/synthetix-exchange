@@ -28,7 +28,7 @@ import {
 	getIsLoadedMyLoans,
 	LOAN_STATUS,
 } from 'src/ducks/loans/myLoans';
-import { getWalletInfo } from 'src/ducks';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { showWalletPopup } from 'src/ducks/ui';
 
 import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'src/utils/formatters';

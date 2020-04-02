@@ -4,7 +4,7 @@ import snxData from 'synthetix-data';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
 
-import { getCurrentWalletAddress } from '../wallet';
+import { getCurrentWalletAddress } from '../wallet/walletDetails';
 
 export const myTradesSlice = createSlice({
 	name: 'myTrades',

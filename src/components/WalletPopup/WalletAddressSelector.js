@@ -8,9 +8,9 @@ import {
 	updateWalletPaginatorIndex,
 	setDerivationPath,
 	resetWalletReducer,
-} from 'src/ducks/wallet';
+} from 'src/ducks/wallet/walletDetails';
 import { toggleWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { HeadingMedium } from '../Typography';
 import WalletAddressTable from '../WalletAddressTable';
@@ -27,7 +27,7 @@ const LEDGER_DERIVATION_PATHS = [
 
 const useGetWallets = () => {
 	const { walletPaginatorIndex, derivationPath, availableWallets } = useSelector(
-		state => state.wallet
+		state => state.wallet.walletDetails
 	);
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);

@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { updateLoan, swapTxHashWithLoanID, LOAN_STATUS } from '../ducks/loans/myLoans';
-import { fetchWalletBalancesRequest } from '../ducks/wallet';
+import { fetchWalletBalancesRequest } from '../ducks/wallet/walletBalances';
+import { getWalletInfo } from '../ducks/wallet/walletDetails';
 import { fetchRates } from '../ducks/rates';
 import { fetchLoansContractInfo } from '../ducks/loans/contractInfo';
 
 import snxJSConnector from '../utils/snxJSConnector';
 
-import { LOAN_EVENTS, EXCHANGE_RATES_EVENTS } from '../constants/events';
+import { LOAN_EVENTS, EXCHANGE_RATES_EVENTS, EXCHANGE_EVENTS } from '../constants/events';
 
 const GlobalEventsGate = ({
 	updateLoan,
@@ -17,6 +18,7 @@ const GlobalEventsGate = ({
 	fetchLoansContractInfo,
 	swapTxHashWithLoanID,
 	fetchRates,
+	walletInfo: { currentWallet },
 }) => {
 	useEffect(() => {
 		const {
@@ -69,6 +71,24 @@ const GlobalEventsGate = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		if (!currentWallet) return;
+		const {
+			snxJS: { Synthetix },
+		} = snxJSConnector;
+
+		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, address => {
+			if (address === currentWallet) {
+				fetchWalletBalancesRequest();
+			}
+		});
+
+		return () => {
+			Object.values(EXCHANGE_EVENTS).forEach(event => Synthetix.contract.removeAllListeners(event));
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentWallet]);
+
 	return null;
 };
 
@@ -79,6 +99,12 @@ GlobalEventsGate.propTypes = {
 	fetchRates: PropTypes.func,
 };
 
+const mapStateToProps = state => {
+	return {
+		walletInfo: getWalletInfo(state),
+	};
+};
+
 const mapDispatchToProps = {
 	swapTxHashWithLoanID,
 	updateLoan,
@@ -87,4 +113,4 @@ const mapDispatchToProps = {
 	fetchRates,
 };
 
-export default connect(null, mapDispatchToProps)(GlobalEventsGate);
+export default connect(mapStateToProps, mapDispatchToProps)(GlobalEventsGate);

@@ -7,9 +7,10 @@ import snxJSConnector from '../../utils/snxJSConnector';
 import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData } from '../../dataFetcher';
 
-import { getWalletInfo } from '../../ducks';
+import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { updateNetworkSettings, fetchWalletBalancesRequest } from '../../ducks/wallet';
+import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
+import { updateNetworkSettings } from 'src/ducks/wallet/walletDetails';
 import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
@@ -33,27 +34,12 @@ const Root = ({
 	isAppReady,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
-	const [appIsOnMaintenance, setAppIsOnMaintenace] = useState(false);
 	const fetchAndSetExchangeData = useCallback(async synths => {
 		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths({ frozenSynths });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	const fetchMaintenanceState = useCallback(async () => {
-		if (process.env.REACT_APP_CONTEXT !== 'production') return;
-		const {
-			snxJS: { DappMaintenance },
-		} = snxJSConnector;
-		try {
-			const isOnMaintenance = await DappMaintenance.isPausedSX();
-			setAppIsOnMaintenace(isOnMaintenance);
-		} catch (e) {
-			console.log(e);
-			setAppIsOnMaintenace(false);
-		}
 	}, []);
 
 	useEffect(() => {
@@ -82,7 +68,6 @@ const Root = ({
 			setAvailableSynths({ synths });
 			setAppReady();
 			fetchAndSetExchangeData(synths);
-			fetchMaintenanceState();
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
 				fetchAndSetExchangeData(synths);
@@ -99,7 +84,7 @@ const Root = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetchAndSetExchangeData, fetchWalletBalancesRequest]);
 
-	return appIsOnMaintenance ? <MaintenanceMessage /> : <App isAppReady={isAppReady} />;
+	return <App isAppReady={isAppReady} />;
 };
 
 const mapStateToProps = state => ({
