@@ -92,7 +92,7 @@ export const SYNTHS = [
 	'sNIKKEI',
 	'sXAU',
 	'sXAG',
-	'sBZ',
+	// 'sBZ',
 	'sEUR',
 	'sJPY',
 	'sUSD',
