@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 
-import { getCurrentTheme } from 'src/ducks';
+import { getCurrentTheme } from 'src/ducks/ui';
 
 import { HeadingMedium } from 'src/components/Typography';
 import { isDarkTheme, lightTheme, darkTheme } from 'src/styles/theme';
