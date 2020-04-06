@@ -1,6 +1,6 @@
 # Changelog
 
-## 2 April 2020
+## 2 April 2020 (Graphite Release)
 
 ### Added
 
