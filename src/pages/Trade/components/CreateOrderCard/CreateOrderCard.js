@@ -24,7 +24,7 @@ import { toggleGweiPopup } from 'src/ducks/ui';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 import { BALANCE_FRACTIONS } from 'src/constants/order';
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP, ASSETS_MAP } from 'src/constants/currency';
 import { TRANSACTION_STATUS } from 'src/constants/transaction';
 
 import { getExchangeRatesForCurrencies } from 'src/utils/rates';
@@ -73,6 +73,7 @@ const CreateOrderCard = ({
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [feeReclamationError, setFeeReclamationError] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [hasMarketClosed, setHasMarketClosed] = useState(false);
 
 	const resetInputAmounts = () => {
 		setBaseAmount(INPUT_DEFAULT_VALUE);
@@ -103,6 +104,29 @@ const CreateOrderCard = ({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [synthPair.base.name, synthPair.quote.name]);
+
+	useEffect(() => {
+		const {
+			snxJS: { SystemStatus },
+		} = snxJSConnector;
+		const getIsSuspended = async () => {
+			try {
+				const [baseResult, quoteResult] = await Promise.all([
+					SystemStatus.synthSuspension(bytesFormatter(synthPair.base.name)),
+					SystemStatus.synthSuspension(bytesFormatter(synthPair.quote.name)),
+				]);
+				setHasMarketClosed(baseResult.suspended || quoteResult.suspended);
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		if ([base.category, quote.category].includes(ASSETS_MAP.equities)) {
+			getIsSuspended();
+		} else {
+			setHasMarketClosed(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [base.name, quote.name]);
 
 	const baseBalance =
 		(synthsWalletBalances && synthsWalletBalances.find(synth => synth.name === base.name)) || 0;
@@ -324,7 +348,12 @@ const CreateOrderCard = ({
 					amount={baseAmount}
 					usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
 				/>
-				{feeReclamationError ? (
+
+				{hasMarketClosed ? (
+					<ButtonPrimary disabled={true}>
+						{t('common.systemStatus.suspended-synths.reasons.market-closed')}
+					</ButtonPrimary>
+				) : feeReclamationError ? (
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>
 						{t('trade.trade-card.retry-button')}
 					</ButtonPrimary>
