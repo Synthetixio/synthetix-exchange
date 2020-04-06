@@ -24,7 +24,7 @@ import { toggleGweiPopup } from 'src/ducks/ui';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 import { BALANCE_FRACTIONS } from 'src/constants/order';
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP, ASSETS_MAP } from 'src/constants/currency';
 import { TRANSACTION_STATUS } from 'src/constants/transaction';
 
 import { getExchangeRatesForCurrencies } from 'src/utils/rates';
@@ -120,7 +120,7 @@ const CreateOrderCard = ({
 				console.log(e);
 			}
 		};
-		if (base.category === 'equities' || quote.category === 'equities') {
+		if ([base.category, quote.category].includes(ASSETS_MAP.equities)) {
 			getIsSuspended();
 		} else {
 			setHasMarketClosed(false);
@@ -350,7 +350,9 @@ const CreateOrderCard = ({
 				/>
 
 				{hasMarketClosed ? (
-					<ButtonPrimary disabled={true}>Market closed</ButtonPrimary>
+					<ButtonPrimary disabled={true}>
+						{t('common.systemStatus.suspended-synths.reasons.market-closed')}
+					</ButtonPrimary>
 				) : feeReclamationError ? (
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>
 						{t('trade.trade-card.retry-button')}

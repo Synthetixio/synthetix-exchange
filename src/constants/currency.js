@@ -54,7 +54,7 @@ import { ReactComponent as sAUDIcon } from '../assets/currencies/synths/sAUD.svg
 import { ReactComponent as sGBPIcon } from '../assets/currencies/synths/sGBP.svg';
 import { ReactComponent as sCHFIcon } from '../assets/currencies/synths/sCHF.svg';
 
-export const ASSETS = ['crypto', 'forex', 'fiat'];
+export const ASSETS = ['crypto', 'forex', 'fiat', 'equities'];
 export const ASSETS_MAP = keyBy(ASSETS);
 
 export const SYNTHS = [

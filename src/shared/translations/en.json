@@ -338,6 +338,13 @@
 		},
 		"chart": {
 			"no-data-available": "No data available"
+		},
+		"systemStatus": {
+			"suspended-synths": {
+				"reasons": {
+					"market-closed": "Market closed"
+				}
+			}
 		}
 	}
 }
