@@ -56,7 +56,7 @@ const Container = styled.div`
 `;
 
 const StyledChartCard = styled(ChartCard)`
-	background-color: ${props => props.theme.colors.white};
+	background: ${props => props.theme.colors.white};
 `;
 
 MarketsCharts.propTypes = {

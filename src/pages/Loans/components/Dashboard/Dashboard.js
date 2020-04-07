@@ -207,7 +207,7 @@ const LoanInfoRow = styled.div`
 `;
 
 const Table = styled.table`
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 	border-collapse: collapse;
 	width: 100%;
 	font-size: 12px;
@@ -234,7 +234,7 @@ const Table = styled.table`
 `;
 
 const TableRowHeader = styled.tr`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 `;
 
 const mapStateToProps = state => ({

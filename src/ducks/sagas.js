@@ -4,6 +4,7 @@ import { watchFetchMarketsRequest } from './markets';
 import { watchFetchWalletBalancesRequest } from './wallet/walletBalances';
 import { watchFetchMyTradesRequest } from './trades/myTrades';
 import { watchFetchAllTradesRequest } from './trades/allTrades';
+import { watchFetchLeaderboardRequest } from './leaderboard';
 
 const rootSaga = function*() {
 	yield all([
@@ -11,6 +12,7 @@ const rootSaga = function*() {
 		watchFetchWalletBalancesRequest(),
 		watchFetchMyTradesRequest(),
 		watchFetchAllTradesRequest(),
+		watchFetchLeaderboardRequest(),
 	]);
 };
 

@@ -7,6 +7,7 @@ import { getAddress } from '../../utils/formatters';
 import { defaultNetwork } from '../../utils/networkUtils';
 
 const initialState = {
+	twitterUsername: '',
 	walletType: '',
 	unlocked: false,
 	unlockError: null,
@@ -70,6 +71,7 @@ export const getCurrentWalletAddress = state => getWalletState(state).currentWal
 export const getIsLoggedIn = createSelector(getCurrentWalletAddress, currentWallet =>
 	currentWallet != null ? true : false
 );
+export const getTwitterUsername = state => getWalletState(state).twitterUsername;
 export const getWalletInfo = state => getWalletState(state);
 
 const {

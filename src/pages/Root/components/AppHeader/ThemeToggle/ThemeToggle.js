@@ -38,7 +38,7 @@ ThemeToggle.propTypes = {
 const StyledButton = styled.button`
 	width: 52px;
 	height: 32px;
-	background-color: ${props => props.theme.colors.accentL1};
+	background: ${props => props.theme.colors.accentL1};
 	color: ${props => props.theme.colors.fontTertiary};
 	display: flex;
 	align-items: center;

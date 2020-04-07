@@ -8,38 +8,44 @@ import history from '../../utils/history';
 
 import { ROUTES } from '../../constants/routes';
 
-import { getCurrentTheme } from '../../ducks/ui';
+import {
+	getCurrentTheme,
+	getLeaderboardPopupIsVisible,
+	getTwitterPopupIsVisible,
+	gweiPopupIsVisible,
+	walletPopupIsVisible,
+} from '../../ducks/ui';
 
 import GlobalEventsGate from '../../gates/GlobalEventsGate';
 
-import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
+import { darkTheme } from '../../styles/theme';
 
 import MainLayout from './components/MainLayout';
-import HomeLayout from './components/HomeLayout';
-import ProtectedRoute from './components/ProtectedRoute';
-import WalletPopup from '../../components/WalletPopup';
-import GweiPopup from '../../components/GweiPopup';
+import WalletPopup from 'src/components/WalletPopup';
+import GweiPopup from 'src/components/GweiPopup';
+import LeaderboardPopup from 'src/components/LeaderboardPopup';
+import TwitterPopup from 'src/components/TwitterPopup';
 
 import Trade from '../Trade';
-import Loans from '../Loans';
-import Assets from '../Assets';
-import Home from '../Home';
-import Markets from '../Markets';
+import Onboarding from '../Onboarding';
 
-import Banner from 'src/components/Banner';
-
-const App = ({ isAppReady, currentTheme }) => {
-	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
-
+const App = ({
+	isAppReady,
+	leaderboardPopupIsVisible,
+	twitterPopupIsVisible,
+	gweiPopupIsVisible,
+	walletPopupIsVisible,
+}) => {
 	return (
-		<ThemeProvider theme={themeStyle}>
+		<ThemeProvider theme={darkTheme}>
 			<Router history={history}>
 				{isAppReady && (
 					<>
 						<GlobalEventsGate />
-						<WalletPopup />
-						<GweiPopup />
-						<Banner />
+						{walletPopupIsVisible && <WalletPopup />}
+						{gweiPopupIsVisible && <GweiPopup />}
+						{leaderboardPopupIsVisible && <LeaderboardPopup />}
+						{twitterPopupIsVisible && <TwitterPopup />}
 					</>
 				)}
 				<Switch>
@@ -59,38 +65,7 @@ const App = ({ isAppReady, currentTheme }) => {
 							</MainLayout>
 						)}
 					/>
-					<Route
-						path={ROUTES.Loans}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Loans {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<ProtectedRoute
-						path={ROUTES.Assets.Home}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Assets {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Markets}
-						render={routeProps => (
-							<HomeLayout>
-								<Markets {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Home}
-						render={routeProps => (
-							<HomeLayout>
-								<Home {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
+					<Route path={ROUTES.Home} component={Onboarding} />
 				</Switch>
 			</Router>
 		</ThemeProvider>
@@ -104,6 +79,10 @@ App.propTypes = {
 
 const mapStateToProps = state => ({
 	currentTheme: getCurrentTheme(state),
+	leaderboardPopupIsVisible: getLeaderboardPopupIsVisible(state),
+	twitterPopupIsVisible: getTwitterPopupIsVisible(state),
+	gweiPopupIsVisible: gweiPopupIsVisible(state),
+	walletPopupIsVisible: walletPopupIsVisible(state),
 });
 
 export default connect(mapStateToProps, null)(App);

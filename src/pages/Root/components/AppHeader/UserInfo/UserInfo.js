@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import { ELEMENT_BORDER_RADIUS } from 'src/constants/ui';
@@ -17,12 +16,9 @@ import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { Dot } from 'src/shared/commonStyles';
 import { DataMedium } from 'src/components/Typography';
 
-import { ButtonPrimary } from 'src/components/Button';
-
 import { media } from 'src/shared/media';
 
 export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
-	const { t } = useTranslation();
 	const { currentWallet, networkName } = walletInfo;
 
 	return currentWallet != null ? (
@@ -34,11 +30,7 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo }) => {
 			</WalletInfo>
 			{/* <MenuArrowDownIcon /> */}
 		</Container>
-	) : (
-		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
-			{t('header.connect-wallet')}
-		</StyledButtonPrimary>
-	);
+	) : null;
 });
 
 AccountInfo.propTypes = {
@@ -77,7 +69,7 @@ const WalletInfo = styled.div`
 `;
 
 const GreenDot = styled(Dot)`
-	background-color: ${props => props.theme.colors.green};
+	background: ${props => props.theme.colors.green};
 `;
 
 const WalletAddress = styled(DataMedium)`
@@ -87,20 +79,11 @@ const WalletAddress = styled(DataMedium)`
 
 const NetworkLabel = styled(DataMedium)`
 	text-transform: uppercase;
-	background-color: ${props => props.theme.colors.accentL1};
+	background: ${props => props.theme.colors.accentL1};
 	color: ${props => props.theme.colors.fontTertiary};
 	border-radius: 25px;
 	font-size: 12px;
 	padding: 3px 10px;
-`;
-
-const StyledButtonPrimary = styled(ButtonPrimary)`
-	${media.small`
-		font-size: 11px;
-		height: 24px;
-		line-height: 24px;
-		padding: 0 8px;
-	`}
 `;
 
 const mapStateToProps = state => ({

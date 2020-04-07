@@ -43,7 +43,7 @@ const Header = styled.div`
 	align-items: center;
 	height: ${CARD_HEIGHT};
 	padding: 0 12px;
-	background-color: ${props => props.theme.colors.accentL1};
+	background: ${props => props.theme.colors.accentL1};
 	cursor: pointer;
 	& > svg {
 		transform: ${props => `rotate(${props.isOpen ? -Math.PI : -Math.Pi}rad)`};
@@ -64,7 +64,7 @@ const Body = styled.div`
 	overflow: hidden;
 	border-left: 1px solid ${props => props.theme.colors.accentL1};
 	border-right: 1px solid ${props => props.theme.colors.accentL1};
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 	${props => props.isOpen && isOpen}
 `;
 

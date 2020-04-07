@@ -177,7 +177,7 @@ const AssetSearchInput = styled(SearchInput)`
 `;
 
 const MarketsTableContainer = styled.div`
-	background-color: ${props => props.theme.colors.white};
+	background: ${props => props.theme.colors.white};
 	position: relative;
 	padding-top: 120px;
 	${media.large`

@@ -26,7 +26,7 @@ MainLayout.propTypes = {
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${props => props.theme.colors.surfaceL1};
+    background: ${props => props.theme.colors.surfaceL1};
   }
 `;
 

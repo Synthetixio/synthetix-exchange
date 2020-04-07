@@ -67,7 +67,7 @@ export const ExchangeFeatures = memo(() => {
 
 const Container = styled.div`
 	padding: 120px 20px;
-	background-color: ${darkTheme.colors.surfaceL2};
+	background: ${darkTheme.colors.surfaceL2};
 	width: 100%;
 	text-align: center;
 	${media.medium`

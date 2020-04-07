@@ -26,8 +26,7 @@ const StyledLink = styled(Link)`
 `;
 
 const Wrapper = styled(FlexDivCentered)`
-	background-color: ${props => props.theme.colors.buttonDefault};
-	color: ${props => props.theme.colors.white};
+	background: linear-gradient(173.69deg, #0885fe 34.26%, #4e3cbd 69.86%);
 	height: 36px;
 	display: flex;
 	justify-content: center;

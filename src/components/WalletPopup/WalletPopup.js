@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { getWalletInfo } from '../../ducks/wallet/walletDetails';
-import { toggleWalletPopup, walletPopupIsVisible } from '../../ducks/ui';
+import { toggleWalletPopup } from '../../ducks/ui';
 
 import { ReactComponent as CloseCrossIcon } from '../../assets/images/close-cross.svg';
 
@@ -12,19 +12,17 @@ import WalletTypeSelector from './WalletTypeSelector';
 import WalletAddressSelector from './WalletAddressSelector';
 import { Z_INDEX } from '../../constants/ui';
 
-const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
+const WalletPopup = ({ toggleWalletPopup, walletInfo }) => {
 	const { currentWallet } = walletInfo;
 	const [CurrentScreen, setCurrentScreen] = useState(WalletTypeSelector);
 
 	useEffect(() => {
-		if (popupIsVisible) {
-			setCurrentScreen(currentWallet ? WalletAddressSelector : WalletTypeSelector);
-		}
+		setCurrentScreen(currentWallet ? WalletAddressSelector : WalletTypeSelector);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [popupIsVisible]);
+	}, []);
 
 	return (
-		<Popup isVisible={popupIsVisible}>
+		<Popup>
 			<Container>
 				{CurrentScreen === WalletAddressSelector ? (
 					<BackButton onClick={() => setCurrentScreen(WalletTypeSelector)}>
@@ -45,9 +43,8 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 
 const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background-color: ${props => props.theme.colors.surfaceL1};
+	background: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
-	display: ${props => (props.isVisible ? 'block' : 'none')};
 	width: 100%;
 	height: 100vh;
 	top: 0;
@@ -92,7 +89,6 @@ const CloseButton = styled.button`
 
 const mapStateToProps = state => {
 	return {
-		popupIsVisible: walletPopupIsVisible(state),
 		walletInfo: getWalletInfo(state),
 	};
 };

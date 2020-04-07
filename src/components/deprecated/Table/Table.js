@@ -8,11 +8,11 @@ export const Table = styled.table`
 	height: ${props => (props.height ? props.height : '100%')};
 	display: flex;
 	flex-direction: column;
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 `;
 
 export const Thead = styled.thead`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 `;
 
 export const Tbody = styled.tbody`

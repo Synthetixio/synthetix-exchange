@@ -14,6 +14,8 @@ const initialState = {
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	blurBackgroundIsVisible: false,
+	leaderboardPopupIsVisible: false,
+	twitterPopupIsVisible: false,
 	...getPersistedState('ui'),
 };
 
@@ -32,6 +34,18 @@ export const uiSlice = createSlice({
 		},
 		showGweiPopup: state => {
 			state.gweiPopupIsVisible = true;
+		},
+		showLeaderboardPopup: state => {
+			state.leaderboardPopupIsVisible = true;
+		},
+		hideLeaderboardPopup: state => {
+			state.leaderboardPopupIsVisible = false;
+		},
+		showTwitterPopup: state => {
+			state.twitterPopupIsVisible = true;
+		},
+		hideTwitterPopup: state => {
+			state.twitterPopupIsVisible = false;
 		},
 		toggleTheme: state => {
 			state.theme = isLightTheme(state.theme) ? THEMES.DARK : THEMES.LIGHT;
@@ -68,6 +82,10 @@ const {
 	toggleHideSmallValueAssets,
 	setMarketsAssetFilter,
 	setBlurBackgroundIsVisible,
+	showLeaderboardPopup,
+	hideLeaderboardPopup,
+	showTwitterPopup,
+	hideTwitterPopup,
 } = uiSlice.actions;
 
 export const getUIState = state => state.ui;
@@ -80,6 +98,8 @@ export const getSynthSearch = state => getUIState(state).synthSearch;
 export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
 export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
+export const getLeaderboardPopupIsVisible = state => getUIState(state).leaderboardPopupIsVisible;
+export const getTwitterPopupIsVisible = state => getUIState(state).twitterPopupIsVisible;
 
 export default uiSlice.reducer;
 
@@ -94,4 +114,8 @@ export {
 	toggleHideSmallValueAssets,
 	setMarketsAssetFilter,
 	setBlurBackgroundIsVisible,
+	showLeaderboardPopup,
+	hideLeaderboardPopup,
+	showTwitterPopup,
+	hideTwitterPopup,
 };

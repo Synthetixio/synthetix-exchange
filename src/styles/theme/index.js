@@ -2,13 +2,13 @@ import ThemeDark from './dark';
 import ThemeLight from './light';
 
 const sharedColors = {
-	green: '#10BA97',
+	green: 'linear-gradient(357.51deg, #00E2DF 4.3%, #BFF360 94.52%);',
 	white: '#FFFFFF',
 	black: '#000000',
 	red: '#D94454',
-	hyperlink: '#A08AFF',
-	buttonDefault: '#795DF5',
-	buttonHover: '#947BFF',
+	hyperlink: '#00E2DF',
+	buttonDefault: 'linear-gradient(154.92deg, #F49E25 -8.54%, #B252E9 101.04%);',
+	buttonHover: 'linear-gradient(154.92deg, #F4C625 -8.54%, #E652E9 101.04%)',
 	icons: '#5641F2',
 };
 

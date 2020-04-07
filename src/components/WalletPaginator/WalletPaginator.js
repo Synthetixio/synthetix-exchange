@@ -45,7 +45,7 @@ const Button = styled.button`
 	width: 24px;
 	height: 24px;
 	border-radius: 1px;
-	background-color: ${props =>
+	background: ${props =>
 		props.active ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 	display: flex;
 	justify-content: center;
@@ -53,7 +53,7 @@ const Button = styled.button`
 	cursor: pointer;
 	transition: all 0.1s ease;
 	&:hover {
-		background-color: ${props => props.theme.colors.accentL2};
+		background: ${props => props.theme.colors.accentL2};
 	}
 `;
 

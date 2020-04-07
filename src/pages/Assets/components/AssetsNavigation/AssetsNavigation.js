@@ -82,19 +82,19 @@ const ListItemLink = styled(Link)`
 	justify-content: space-between;
 	text-transform: uppercase;
 	color: ${props => props.theme.colors.fontSecondary};
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 	&:hover {
 		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		background: ${props => props.theme.colors.accentL1};
 	}
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
+		background: ${props => props.theme.colors.accentL2};
 		color: ${props => props.theme.colors.fontPrimary};
 	}
 `;
 
 const List = styled.ul`
-	border: 1px solid ${props => props.theme.colors.accentL2};
+	border: 1px solid ${props => props.theme.colors.accentL2Solid};
 	> * {
 		&:last-child > ${ListItemLink} {
 			border: 0;
@@ -106,8 +106,8 @@ const List = styled.ul`
 
 const SmallValueAssets = styled.div`
 	${labelSmallCSS};
-	background-color: ${props => props.theme.colors.accentL1};
-	border: 1px solid ${props => props.theme.colors.accentL2};
+	background: ${props => props.theme.colors.accentL1};
+	border: 1px solid ${props => props.theme.colors.accentL2Solid};
 	color: ${props => props.theme.colors.fontSecondary};
 	cursor: pointer;
 	width: 170px;
@@ -116,7 +116,7 @@ const SmallValueAssets = styled.div`
 	text-align: center;
 	&:hover {
 		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL2};
+		background: ${props => props.theme.colors.accentL2};
 	}
 `;
 

@@ -154,17 +154,17 @@ const ReactTable = styled.div`
 				height: ${CARD_HEIGHT};
 			}
 			${TableRow} {
-				background-color: ${props => props.theme.colors.surfaceL3};
+				background: ${props => props.theme.colors.surfaceL3};
 				margin-bottom: 8px;
 			}
 			${TableCellHead} {
 				color: ${props => props.theme.colors.fontTertiary};
-				background-color: ${props => props.theme.colors.surfaceL3};
+				background: ${props => props.theme.colors.surfaceL3};
 			}
 			${TableBodyRow} {
-				background-color: ${props => props.theme.colors.surfaceL3};
+				background: ${props => props.theme.colors.surfaceL3};
 				&:hover {
-					background-color: ${props => props.theme.colors.accentL1};
+					background: ${props => props.theme.colors.accentL1};
 					> * {
 						transition: transform 0.2s ease-out;
 						transform: scale(1.02);
@@ -185,17 +185,17 @@ ${props =>
 			height: 48px;
 		}
 		${TableRow} {
-			background-color: ${props => props.theme.colors.surfaceL3};
+			background: ${props => props.theme.colors.surfaceL3};
 			&:nth-child(odd) {
-				background-color: ${props => props.theme.colors.surfaceL2};
+				background: ${props => props.theme.colors.surfaceL2};
 			}
 		}
 		${TableCellHead} {
 			color: ${props => props.theme.colors.fontTertiary};
-			background-color: ${props => props.theme.colors.surfaceL3};
+			background: ${props => props.theme.colors.surfaceL3};
 		}
 		${TableBodyRow} {
-			background-color: ${props => props.theme.colors.surfaceL3};
+			background: ${props => props.theme.colors.surfaceL3};
 		}
 	`}
 
@@ -211,17 +211,17 @@ ${props =>
 				height: ${CARD_HEIGHT};
 			}
 			${TableRow} {
-				background-color: ${darkTheme.colors.brand};
+				background: ${darkTheme.colors.brand};
 				margin-bottom: 8px;
 			}
 			${TableCellHead} {
-				background-color: ${lightTheme.colors.brand};
+				background: ${lightTheme.colors.brand};
 				color: ${darkTheme.colors.fontSecondary};
 				font-family: ${props => props.theme.fonts.bold};
 				font-size: 12px;
 			}
 			${TableBodyRow} {
-				background-color: ${darkTheme.colors.brand};
+				background: ${darkTheme.colors.brand};
 				border: 1px solid ${lightTheme.colors.surfaceL1};
 				&:hover {
 					transition: box-shadow 0.2s ease-in-out;
@@ -229,6 +229,33 @@ ${props =>
 				}
 			}
 		`}
+
+
+	${props =>
+		props.palette === TABLE_PALETTE.LEADERBOARD &&
+		css`
+			${TableBody} {
+				max-height: calc(100% - ${CARD_HEIGHT});
+			}
+			${TableCell} {
+				font-size: 14px;
+				color: ${darkTheme.colors.fontPrimary};
+				height: ${CARD_HEIGHT};
+			}
+			${TableRow} {
+				margin-bottom: 8px;
+			}
+			${TableCellHead} {
+				color: ${darkTheme.colors.fontSecondary};
+				font-family: ${props => props.theme.fonts.bold};
+				font-size: 14px;
+			}
+			${TableBodyRow} {
+				background: ${darkTheme.colors.surfaceL3};
+				border: 0.5px solid #cb5bf2;
+				border-radius: 2px;
+			}
+		`}		
 `;
 
 export default Table;

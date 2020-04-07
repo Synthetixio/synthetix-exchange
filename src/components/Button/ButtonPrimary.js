@@ -27,17 +27,17 @@ const ButtonPrimary = styled.button`
 	color: ${props => props.theme.colors.white};
 	cursor: pointer;
 	padding: 0 6px;
-	background-color: ${props => props.theme.colors.buttonDefault};
+	background: ${props => props.theme.colors.buttonDefault};
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;
 	}
 	&:hover {
 		&:not(:disabled) {
-			background-color: ${props => props.theme.colors.buttonHover};
+			background: ${props => props.theme.colors.buttonHover};
 		}
 	}
-	border: none;
+	border: 1px solid #ff8fc5;
 	text-transform: uppercase;
 	line-height: 44px;
 	white-space: nowrap;

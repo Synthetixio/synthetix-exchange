@@ -350,11 +350,11 @@ const TradeBox = ({
 const Container = styled.div`
 	width: 100%;
 	height: 100%;
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 `;
 
 const Header = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	width: 100%;
 	height: 40px;
 	display: flex;
@@ -419,7 +419,7 @@ const ButtonAmount = styled.button`
 	flex: 1;
 	margin: 0 8px;
 	border: none;
-	background-color: ${props => props.theme.colors.accentL2};
+	background: ${props => props.theme.colors.accentL2};
 	height: 24px;
 `;
 

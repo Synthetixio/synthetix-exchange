@@ -13,7 +13,7 @@ CardHeader.propTypes = {
 };
 
 const Container = styled(FlexDivCentered)`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	color: ${props => props.theme.colors.fontPrimary};
 	height: ${CARD_HEIGHT};
 	padding: 0 18px;
