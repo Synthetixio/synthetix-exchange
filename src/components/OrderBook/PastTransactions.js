@@ -141,7 +141,7 @@ const ButtonSort = styled.button`
 	border: none;
 	outline: none;
 	cursor: pointer;
-	background-color: transparent;
+	background: transparent;
 	padding: 0;
 `;
 const CenteredSpinner = styled(Spinner)`

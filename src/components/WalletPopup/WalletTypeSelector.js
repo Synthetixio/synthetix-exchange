@@ -105,7 +105,7 @@ const Wallets = styled.div`
 const Wallet = styled.button`
 	cursor: pointer;
 	border: none;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

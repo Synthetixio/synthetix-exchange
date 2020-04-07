@@ -115,14 +115,14 @@ const WalletBox = ({
 
 const Container = styled.div`
 	width: 100%;
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 `;
 
 const Header = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	width: 100%;
 	padding: 18px;
 	padding-bottom: 0;

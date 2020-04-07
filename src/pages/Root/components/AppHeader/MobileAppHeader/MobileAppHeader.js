@@ -113,7 +113,7 @@ MobileAppHeader.propTypes = {
 
 const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props =>
+	background: ${props =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
 	border-color: ${props => props.theme.colors.accentL1};
 	border-style: solid;
@@ -170,7 +170,7 @@ const StyledDropdown = styled(Dropdown)`
 	${props =>
 		props.isOnSplashPage &&
 		css`
-			background-color: ${props => props.theme.colors.surfaceL1};
+			background: ${props => props.theme.colors.surfaceL1};
 		`}
 `;
 
@@ -183,7 +183,7 @@ const dropdownItemCSS = css`
 	text-transform: uppercase;
 	&:hover {
 		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		background: ${props => props.theme.colors.accentL1};
 	}
 	cursor: pointer;
 	${media.small`
@@ -194,7 +194,7 @@ const dropdownItemCSS = css`
 const DropdownMenuLink = styled(Link)`
 	${dropdownItemCSS};
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
+		background: ${props => props.theme.colors.accentL2};
 		color: ${props => props.theme.colors.fontPrimary};
 	}
 `;

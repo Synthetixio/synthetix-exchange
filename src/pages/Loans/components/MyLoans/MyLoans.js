@@ -255,7 +255,7 @@ const Table = styled.div`
 `;
 
 const TableRow = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	margin-bottom: 8px;
 `;
 
@@ -266,10 +266,10 @@ const TableBody = styled.div`
 `;
 
 const TableBodyRow = styled(TableRow)`
-	background-color: ${props =>
+	background: ${props =>
 		props.isSelectedLoan ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 	&:hover {
-		background-color: ${props => props.theme.colors.accentL1};
+		background: ${props => props.theme.colors.accentL1};
 		> * {
 			transition: transform 0.2s ease-out;
 			transform: scale(1.02);
@@ -298,7 +298,7 @@ const TableCellHead = styled(TableCell)`
 	color: ${props => props.theme.colors.fontTertiary};
 	user-select: none;
 	text-transform: uppercase;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 `;
 
 const MessageContainer = styled.div`
@@ -308,7 +308,7 @@ const MessageContainer = styled.div`
 	width: 300px;
 	justify-items: center;
 	padding: 30px;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	${absoluteCenteredCSS};
 `;
 

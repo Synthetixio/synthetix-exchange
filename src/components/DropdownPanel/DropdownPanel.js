@@ -54,7 +54,7 @@ const Body = styled.div`
 	border-left: 1px solid ${props => props.theme.colors.accentL1};
 	border-right: 1px solid ${props => props.theme.colors.accentL1};
 	border-bottom: 1px solid ${props => props.theme.colors.accentL1};
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 	${props => props.isOpen && isOpen}
 `;
 

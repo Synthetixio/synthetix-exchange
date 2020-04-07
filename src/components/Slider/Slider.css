@@ -6,11 +6,11 @@
 	border-radius: 2px;
 }
 .rc-slider .rc-slider-track {
-	background-color: transparent;
+	background: transparent;
 	height: 8px;
 }
 .rc-slider .rc-slider-step {
-	background-color: transparent;
+	background: transparent;
 	height: 8px;
 }
 .rc-slider .rc-slider-handle {
@@ -23,7 +23,7 @@
 	cursor: grab;
 	border-radius: 50%;
 	border: solid 8px #ffffff;
-	background-color: transparent;
+	background: transparent;
 	touch-action: pan-x;
 	box-shadow: 0px 0px 6px 4px rgba(119, 119, 119, 0.2);
 }
@@ -31,7 +31,7 @@
 .rc-slider-tooltip-inner {
 	width: 128px;
 	font-size: 14px;
-	background-color: transparent;
+	background: transparent;
 	height: auto;
 	padding: 0;
 	box-shadow: none;

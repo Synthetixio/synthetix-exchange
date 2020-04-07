@@ -56,18 +56,18 @@ body {
 /* total width */
 *::-webkit-scrollbar {
 	visibility: hidden;
-	background-color: transparent;
+	background: transparent;
 	width: 8px;
 }
 
 /* background of the scrollbar except button or resizer */
 *::-webkit-scrollbar-track {
-	background-color: transparent;
+	background: transparent;
 }
 
 /* scrollbar itself */
 *::-webkit-scrollbar-thumb {
-	background-color: rgba(0, 0, 0, 0.2);
+	background: rgba(0, 0, 0, 0.2);
 	border-radius: 16px;
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	visibility: hidden;

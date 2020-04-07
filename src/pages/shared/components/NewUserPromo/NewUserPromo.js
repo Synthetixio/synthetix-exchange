@@ -66,7 +66,7 @@ export const NewUserPromo = memo(() => {
 
 const Container = styled.div`
 	padding: 85px 20px;
-	background-color: ${lightTheme.colors.surfaceL2};
+	background: ${lightTheme.colors.surfaceL2};
 	width: 100%;
 	text-align: center;
 	${media.medium`
@@ -98,7 +98,7 @@ const PromoCard = styled.div`
 	display: grid;
 	grid-gap: 24px;
 	padding: 24px;
-	background-color: ${lightTheme.colors.surfaceL3};
+	background: ${lightTheme.colors.surfaceL3};
 	border: 1px solid ${lightTheme.colors.accentL2};
 	box-shadow: 0px 4px 11px rgba(209, 209, 232, 0.25);
 	border-radius: 2px;

@@ -85,12 +85,12 @@ const Label = styled(FlexDivCentered)`
 
 const Container = styled(FlexDiv)`
 	width: 100%;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	position: relative;
 `;
 
 const Synth = styled(FlexDivCentered)`
-	border: 1px solid ${props => props.theme.colors.accentL2};
+	border: 1px solid ${props => props.theme.colors.accentL2Solid};
 	border-right: none;
 	padding: 0 10px;
 `;

@@ -1,14 +1,13 @@
 import React, { memo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import { ELEMENT_BORDER_RADIUS } from 'src/constants/ui';
 
 import { shortenAddress } from 'src/utils/formatters';
 
-import { showWalletPopup, getCurrentTheme, setBlurBackgroundIsVisible } from 'src/ducks/ui';
+import { getCurrentTheme, setBlurBackgroundIsVisible } from 'src/ducks/ui';
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
@@ -16,14 +15,12 @@ import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arro
 import { Dot } from 'src/shared/commonStyles';
 import { DataMedium } from 'src/components/Typography';
 
-import { ButtonPrimary } from 'src/components/Button';
 import DropdownPanel from 'src/components/DropdownPanel';
 import WalletMenu from '../WalletMenu';
 
 import { media } from 'src/shared/media';
 
-export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroundIsVisible }) => {
-	const { t } = useTranslation();
+export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
 
@@ -59,16 +56,11 @@ export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroun
 			}
 			body={<WalletMenu setDropdownIsOpen={setDropdownIsOpen} />}
 		/>
-	) : (
-		<StyledButtonPrimary size="sm" onClick={showWalletPopup}>
-			{t('header.connect-wallet')}
-		</StyledButtonPrimary>
-	);
+	) : null;
 });
 
 AccountInfo.propTypes = {
 	walletInfo: PropTypes.object.isRequired,
-	showWalletPopup: PropTypes.func.isRequired,
 };
 
 const UserInfoContainer = styled.div`
@@ -103,7 +95,7 @@ const WalletInfo = styled.div`
 `;
 
 const GreenDot = styled(Dot)`
-	background-color: ${props => props.theme.colors.green};
+	background: ${props => props.theme.colors.green};
 `;
 
 const WalletAddress = styled(DataMedium)`
@@ -113,20 +105,11 @@ const WalletAddress = styled(DataMedium)`
 
 const NetworkLabel = styled(DataMedium)`
 	text-transform: uppercase;
-	background-color: ${props => props.theme.colors.accentL1};
+	background: ${props => props.theme.colors.accentL1};
 	color: ${props => props.theme.colors.fontTertiary};
 	border-radius: 25px;
 	font-size: 12px;
 	padding: 3px 10px;
-`;
-
-const StyledButtonPrimary = styled(ButtonPrimary)`
-	${media.small`
-		font-size: 11px;
-		height: 24px;
-		line-height: 24px;
-		padding: 0 8px;
-	`}
 `;
 
 const mapStateToProps = state => ({
@@ -135,7 +118,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-	showWalletPopup,
 	setBlurBackgroundIsVisible,
 };
 

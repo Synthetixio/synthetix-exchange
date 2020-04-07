@@ -176,7 +176,7 @@ const OrderBook = ({
 
 const Container = styled.div`
 	height: 100%;
-	background-color: ${props => props.theme.colors.surfaceL1};
+	background: ${props => props.theme.colors.surfaceL1};
 	display: flex;
 	flex-direction: column;
 `;
@@ -205,10 +205,10 @@ const Tab = styled.button`
 	align-items: center;
 	flex: 1;
 	height: 42px;
-	background-color: ${props =>
+	background: ${props =>
 		props.active ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 	&:hover {
-		background-color: ${props => props.theme.colors.surfaceL3};
+		background: ${props => props.theme.colors.surfaceL3};
 	}
 	opacity: ${props => (props.isDisabled ? 0.2 : 1)};
 	cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};

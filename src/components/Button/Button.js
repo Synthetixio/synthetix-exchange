@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 const Button = styled.button`
 	font-family: ${props => props.theme.fonts.medium};
 	border-radius: 1px;
+	border: none;
 	height: 48px;
 	font-size: 16px;
 	letter-spacing: 0.5px;
@@ -11,7 +12,6 @@ const Button = styled.button`
 		opacity: 0.5;
 		cursor: default;
 	}
-	border: none;
 	text-transform: uppercase;
 	white-space: nowrap;
 	cursor: pointer;
@@ -42,17 +42,18 @@ const Button = styled.button`
 	${props =>
 		props.palette === 'primary' &&
 		css`
+			border: 1px solid #ff8fc5;
 			color: ${props => props.theme.colors.white};
-			background-color: ${props => props.theme.colors.buttonDefault};
+			background: ${props => props.theme.colors.buttonDefault};
 			&:hover {
 				&:not(:disabled) {
-					background-color: ${props => props.theme.colors.buttonHover};
+					background: ${props => props.theme.colors.buttonHover};
 				}
 			}
 			${props =>
 				props.isActive &&
 				css`
-					background-color: ${props => props.theme.colors.buttonHover};
+					background: ${props => props.theme.colors.buttonHover};
 				`}
 		`}
 
@@ -60,16 +61,16 @@ const Button = styled.button`
 		props.palette === 'secondary' &&
 		css`
 			color: ${props => props.theme.colors.fontTertiary};
-			background-color: ${props => props.theme.colors.accentL1};
+			background: ${props => props.theme.colors.accentL1};
 			&:hover {
 				&:not(:disabled) {
-					background-color: ${props => props.theme.colors.accentL2};
+					background: ${props => props.theme.colors.accentL2};
 				}
 			}
 			${props =>
 				props.isActive &&
 				css`
-					background-color: ${props => props.theme.colors.accentL2};
+					background: ${props => props.theme.colors.accentL2};
 				`}
 		`}
 `;

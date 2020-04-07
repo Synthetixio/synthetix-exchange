@@ -18,7 +18,7 @@ const Container = styled.span`
 					padding: 4px 8px;
 					color: ${props => props.theme.colors.white};
 
-					background-color: ${props =>
+					background: ${props =>
 						props.isPositive ? props.theme.colors.green : props.theme.colors.red};
 			  `
 			: css`

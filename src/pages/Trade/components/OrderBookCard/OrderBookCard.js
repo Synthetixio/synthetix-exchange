@@ -168,10 +168,10 @@ const Tab = styled.button`
 	outline: none;
 	border: none;
 	cursor: pointer;
-	background-color: ${props =>
+	background: ${props =>
 		props.active ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 	&:hover {
-		background-color: ${props => props.theme.colors.surfaceL3};
+		background: ${props => props.theme.colors.surfaceL3};
 	}
 	${props =>
 		props.isDisabled &&

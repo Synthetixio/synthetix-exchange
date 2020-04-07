@@ -373,7 +373,7 @@ const ButtonAmount = styled.button`
 	cursor: pointer;
 	flex: 1;
 	border: none;
-	background-color: ${props => props.theme.colors.accentL2};
+	background: ${props => props.theme.colors.accentL2};
 	height: 24px;
 `;
 

@@ -182,14 +182,14 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 };
 
 const Container = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 `;
 const ContainerHeader = styled.div`
 	padding: 12px;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 `;
 const ButtonRow = styled.div`
 	width: 100%;
@@ -226,7 +226,7 @@ const Pair = styled.li`
 	justify-content: space-between;
 	transition: transform 0.2s ease-out;
 	&:hover {
-		background-color: ${props => props.theme.colors.accentL1};
+		background: ${props => props.theme.colors.accentL1};
 		transform: scale(1.02);
 	}
 	opacity: ${props => (props.isDisabled ? 0.5 : 1)};

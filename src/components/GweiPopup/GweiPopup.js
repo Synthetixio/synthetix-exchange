@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes, withTheme, createGlobalStyle } from 'styled-components';
 import { connect } from 'react-redux';
 
-import { toggleGweiPopup, gweiPopupIsVisible } from '../../ducks/ui';
+import { toggleGweiPopup } from '../../ducks/ui';
 import { formatCurrency } from '../../utils/formatters';
 import { getTransactionPrice } from '../../utils/networkUtils';
 
@@ -28,7 +28,6 @@ const renderTooltipContent = ({ gasPrice, usdPrice }) => {
 };
 
 const WalletPopup = ({
-	popupIsVisible,
 	toggleGweiPopup,
 	setGasPrice,
 	gasInfo: {
@@ -52,7 +51,7 @@ const WalletPopup = ({
 	return (
 		<>
 			<GlobalStyle />
-			<Popup isVisible={popupIsVisible}>
+			<Popup>
 				<Container>
 					<CloseButton onClick={() => toggleGweiPopup(false)}>
 						<CloseCrossIcon />
@@ -180,9 +179,8 @@ const fadeOut = keyframes`
 
 const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background-color: ${props => props.theme.colors.surfaceL1};
+	background: ${props => props.theme.colors.surfaceL1};
 	position: absolute;
-	display: ${props => (props.isVisible ? 'block' : 'none')};
 	animation: ${props => (props.isVisible ? fadeIn : fadeOut)} 0.2s ease-in;
 	width: 100%;
 	height: 100vh;
@@ -230,7 +228,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 // const Input = styled.input`
-// 	background-color: ${props => props.theme.colors.surfaceL3};
+// 	background: ${props => props.theme.colors.surfaceL3};
 // 	border: 1px solid ${props => props.theme.colors.accentL2};
 // 	flex: 1;
 // 	font-size: 14px;
@@ -239,7 +237,7 @@ const GlobalStyle = createGlobalStyle`
 // `;
 
 const TooltipInner = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	height: 100%;
 	padding: 12px;
 `;
@@ -249,7 +247,6 @@ const TooltipValue = styled.div`
 `;
 const mapStateToProps = state => {
 	return {
-		popupIsVisible: gweiPopupIsVisible(state),
 		gasInfo: getGasInfo(state),
 		ethRate: getEthRate(state),
 	};

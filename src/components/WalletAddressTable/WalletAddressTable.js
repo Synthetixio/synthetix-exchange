@@ -139,7 +139,7 @@ const Td = styled.td`
 		border-top-right-radius: 2px;
 		border-bottom-right-radius: 2px;
 	}
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 `;
 
 const Link = styled.a`

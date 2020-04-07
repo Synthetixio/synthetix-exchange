@@ -7,7 +7,7 @@ const headingCSS = css`
 `;
 
 export const headingH5CSS = css`
-	font-family: ${props => props.theme.fonts.medium};
+	font-family: ${props => props.theme.fonts.regular};
 	font-size: 20px;
 	line-height: 25px;
 	letter-spacing: 0.2px;

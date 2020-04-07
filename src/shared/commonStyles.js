@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
 import { tableDataSmallCSS, chartDataCSS } from 'src/components/Typography/Data';
 
-import { Z_INDEX } from '../constants/ui';
+import { Z_INDEX, APP_HEADER_HEIGHT } from '../constants/ui';
 
 export const FlexDiv = styled.div`
 	display: flex;
@@ -65,7 +65,7 @@ export const Dot = styled.div`
 	width: 14px;
 	height: 14px;
 	border-radius: 50%;
-	background-color: ${props => props.theme.colors.accentL2};
+	background: ${props => props.theme.colors.accentL2};
 `;
 
 export const FormInputRow = styled.div`
@@ -122,12 +122,12 @@ export const Message = styled(FlexDivCentered)`
 		switch (props.type) {
 			case 'error': {
 				return css`
-					background-color: ${props => props.theme.colors.red};
+					background: ${props => props.theme.colors.red};
 				`;
 			}
 			case 'success': {
 				return css`
-					background-color: ${props => props.theme.colors.green};
+					background: ${props => props.theme.colors.green};
 				`;
 			}
 			default:
@@ -138,7 +138,7 @@ export const Message = styled(FlexDivCentered)`
 export const InfoBox = styled.div`
 	display: grid;
 	grid-row-gap: 10px;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	padding: 13px;
 `;
 
@@ -170,7 +170,7 @@ export const RoundedIcon = styled(FlexDivCentered)`
 	border-radius: 100%;
 	justify-content: center;
 
-	background-color: ${props => props.theme.colors.accentL1};
+	background: ${props => props.theme.colors.accentL1};
 `;
 
 export const TableNoResults = styled.div`
@@ -186,4 +186,32 @@ export const CardHeadingDescription = styled.span`
 	&&& {
 		margin-left: auto;
 	}
+`;
+
+export const resetButtonCSS = css`
+	border: none;
+	background: none;
+	outline: none;
+	cursor: pointer;
+`;
+
+export const CenteredContent = styled(FlexDivCentered)`
+	width: 100%;
+	max-width: 624px;
+	margin: 0 auto;
+	display: flex;
+	height: calc(100% - ${APP_HEADER_HEIGHT});
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+`;
+
+export const Popup = styled.div`
+	z-index: ${Z_INDEX.MODAL};
+	background: ${props => props.theme.colors.surfaceL1};
+	position: absolute;
+	width: 100%;
+	height: 100vh;
+	top: 0;
+	left: 0;
 `;

@@ -24,7 +24,7 @@ HomeLayout.propTypes = {
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${darkTheme.colors.surfaceL1};
+    background: ${darkTheme.colors.surfaceL1};
   }
 `;
 
