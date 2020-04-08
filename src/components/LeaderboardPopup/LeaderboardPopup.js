@@ -37,6 +37,7 @@ const LeaderboardPopup = ({
 		// eslint-disable-next-line
 	}, []);
 	console.log(isRefreshingLeaderboard);
+	console.log(isRefreshingLeaderboard);
 	return (
 		<Popup>
 			<SimpleAppHeader />
