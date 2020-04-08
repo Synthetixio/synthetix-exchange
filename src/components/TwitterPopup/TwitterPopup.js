@@ -158,9 +158,7 @@ const Content = styled(CenteredContent)`
 	max-width: 624px;
 `;
 
-const StyledBody = styled.span`
-	background: green;
-`;
+const StyledBody = styled.span``;
 
 const TweetContainer = styled.div`
 	a {
