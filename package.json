@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.21.8",
+	"version": "2.21.8-release-candidate",
 	"private": true,
 	"dependencies": {
 		"@material-ui/core": "^4.9.0",
