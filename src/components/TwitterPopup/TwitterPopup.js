@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { hideTwitterPopup } from 'src/ducks/ui';
@@ -14,7 +14,108 @@ import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
 
 import { resetButtonCSS, CenteredContent, Popup } from 'src/shared/commonStyles';
 
+import { shortenAddress } from 'src/utils/formatters';
+import { L2_URL } from 'src/constants/l2';
+
+const getTweet = address => {
+	const text = `Hey @Synthetix_io it's ${shortenAddress(
+		address
+	)}, give me some sUSD tokens on Layer 2! @optimismPBC`;
+	const hashtags = 'synthetix';
+	const url = L2_URL;
+
+	return {
+		text,
+		hashtags,
+		url,
+		composed: `${text} ${url} #${hashtags}`,
+	};
+};
+
+const tweet = getTweet('0x7f7A81978C441cF0b21B7b6D1857Dc599EB23F70');
+
 const TwitterPopup = ({ hideTwitterPopup }) => {
+	const alreadyFauceted = false;
+	const justFauceted = false;
+
+	const [polling, setPolling] = useState(false);
+	// initialize twitter stuff
+	const [twitterLoaded, setTwitterLoaded] = useState(false);
+	const [twitterLoadedError, setTwitterLoadedError] = useState(false);
+	useEffect(() => {
+		function initializeTwitter() {
+			window.twttr.ready().then(() => {
+				window.twttr.widgets.load();
+				setTwitterLoaded(true);
+
+				window.twttr.events.bind('tweet', () => {
+					setPolling(true);
+				});
+			});
+		}
+
+		if (!window.twttr) {
+			let stale = false;
+
+			setTimeout(() => {
+				if (!stale) {
+					if (window.twttr) {
+						initializeTwitter();
+					} else {
+						setTimeout(() => {
+							if (!stale) {
+								if (window.twttr) {
+									initializeTwitter();
+								} else {
+									setTwitterLoadedError(true);
+								}
+							}
+						}, 4000);
+					}
+				}
+			}, 1000);
+
+			return () => {
+				stale = true;
+			};
+		} else {
+			initializeTwitter();
+		}
+	}, []);
+
+	useEffect(() => {
+		if (justFauceted) {
+			setPolling(false);
+		}
+	}, [justFauceted]);
+
+	function MetaInformation() {
+		if (alreadyFauceted) {
+			return (
+				<StyledBody textStyle="gradient">
+					{justFauceted ? `The Unipig just granted you tokens.` : 'Enjoy your tokens responsibly.'}
+				</StyledBody>
+			);
+		} else if (twitterLoadedError) {
+			return <StyledBody textStyle="gradient">There was an error loading Twitter.</StyledBody>;
+		} else if (!twitterLoaded) {
+			return <StyledBody textStyle="gradient">Loading Twitter...</StyledBody>;
+		} else if (polling) {
+			return (
+				<>
+					<StyledBody textStyle="gradient">
+						<TweetListener>
+							<TweetLineChartIcon />
+							listening for your Tweet...
+						</TweetListener>
+					</StyledBody>
+				</>
+			);
+		} else {
+			return null;
+		}
+	}
+
 	return (
 		<Popup>
 			<SimpleAppHeader />
@@ -27,20 +128,27 @@ const TwitterPopup = ({ hideTwitterPopup }) => {
 				<CloseButton onClick={hideTwitterPopup}>
 					<CloseCrossIcon />
 				</CloseButton>
-				<TweetBox>
+				<TweetPreview>
 					<StyledQuoteRIcon />
-					Hey @Synthetix_io it's 0x3e7e...edx24, give me some sUSD tokens on Layer 2! #synthetix
-					https://synthetix.exchange @optimismPBC
+					{tweet.composed}
 					<StyledQuoteLIcon />
-				</TweetBox>
-				<TweetButton>
-					<TweetIcon />
-					Tweet
-				</TweetButton>
-				<TweetListener>
-					<TweetLineChartIcon />
-					listening for your Tweet...
-				</TweetListener>
+				</TweetPreview>
+				<TweetContainer hide={alreadyFauceted || polling || !twitterLoaded}>
+					<a
+						className="twitter-share-button"
+						href="https://twitter.com/intent/tweet"
+						data-size="large"
+						data-hashtags={tweet.hashtags}
+						data-url={tweet.url}
+						data-text={tweet.text}
+						data-dnt="true"
+						width="200"
+						height="300"
+					>
+						Tweet
+					</a>
+				</TweetContainer>
+				<MetaInformation />
 			</Content>
 		</Popup>
 	);
@@ -48,6 +156,25 @@ const TwitterPopup = ({ hideTwitterPopup }) => {
 
 const Content = styled(CenteredContent)`
 	max-width: 624px;
+`;
+
+const StyledBody = styled.span`
+	background: green;
+`;
+
+const TweetContainer = styled.div`
+	a {
+		display: none;
+	}
+
+	iframe {
+		${({ hide }) =>
+			hide &&
+			css`
+				visiblity: hidden !important;
+				height: 0 !important;
+			`}
+	}
 `;
 
 const Headline = styled.div`
@@ -83,7 +210,7 @@ const CloseButton = styled.button`
 	}
 `;
 
-const TweetBox = styled.div`
+const TweetPreview = styled.div`
 	background: ${props => props.theme.colors.surfaceL3};
 	color: ${props => props.theme.colors.fontPrimary};
 	border: 0.5px solid #cb5bf2;
