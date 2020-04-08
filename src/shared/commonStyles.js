@@ -187,3 +187,10 @@ export const CardHeadingDescription = styled.span`
 		margin-left: auto;
 	}
 `;
+
+export const shiftUpHoverEffectCSS = css`
+	transition: all 0.2s ease-in-out;
+	&:hover {
+		transform: translateY(-4px);
+	}
+`;
