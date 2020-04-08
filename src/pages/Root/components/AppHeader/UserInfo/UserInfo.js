@@ -20,7 +20,7 @@ import WalletMenu from '../WalletMenu';
 
 import { media } from 'src/shared/media';
 
-export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible }) => {
+export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isOnSplashPage }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
 
@@ -37,7 +37,7 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible }) => 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return currentWallet != null ? (
+	return currentWallet != null && !isOnSplashPage ? (
 		<DropdownPanel
 			height="auto"
 			isOpen={walletDropdownIsOpen}

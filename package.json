@@ -3,6 +3,9 @@
 	"version": "2.20.0",
 	"private": true,
 	"dependencies": {
+		"@ethersproject/address": "^5.0.0-beta.134",
+		"@ethersproject/keccak256": "^5.0.0-beta.131",
+		"@ethersproject/wallet": "^5.0.0-beta.139",
 		"@material-ui/core": "^4.9.0",
 		"@reduxjs/toolkit": "^1.2.5",
 		"bignumber.js": "^9.0.0",
@@ -36,7 +39,7 @@
 		"styled-components": "^4.4.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.4",
-		"synthetix-js": "github:Synthetixio/synthetix-js#feat/l2"
+		"synthetix-js": "^2.21.8-release-candidate"
 	},
 	"scripts": {
 		"clean-install": "rm ./package-lock.json && rm -rf node_modules/* && npm install",

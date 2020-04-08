@@ -3,9 +3,9 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { hideTwitterPopup } from 'src/ducks/ui';
+import { getCurrentWalletAddress } from 'src/ducks/wallet/walletDetails';
 
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
-import { ReactComponent as TweetIcon } from 'src/assets/images/l2/tweet.svg';
 import { ReactComponent as QuoteRIcon } from 'src/assets/images/l2/quoteL.svg';
 import { ReactComponent as QuoteLIcon } from 'src/assets/images/l2/quoteR.svg';
 import { ReactComponent as TweetLineChartIcon } from 'src/assets/images/l2/tweet-line-chart.svg';
@@ -32,9 +32,9 @@ const getTweet = address => {
 	};
 };
 
-const tweet = getTweet('0x7f7A81978C441cF0b21B7b6D1857Dc599EB23F70');
+const TwitterPopup = ({ hideTwitterPopup, currentWallet }) => {
+	const tweet = getTweet(currentWallet);
 
-const TwitterPopup = ({ hideTwitterPopup }) => {
 	const alreadyFauceted = false;
 	const justFauceted = false;
 
@@ -239,26 +239,26 @@ const StyledQuoteLIcon = styled(QuoteLIcon)`
 	bottom: 15px;
 `;
 
-const TweetButton = styled.button`
-	${resetButtonCSS};
-	color: ${props => props.theme.colors.fontPrimary};
-	font-size: 20px;
-	line-height: 25px;
-	/* identical to box height */
+// const TweetButton = styled.button`
+// 	${resetButtonCSS};
+// 	color: ${props => props.theme.colors.fontPrimary};
+// 	font-size: 20px;
+// 	line-height: 25px;
+// 	/* identical to box height */
 
-	text-align: center;
-	letter-spacing: 0.2px;
+// 	text-align: center;
+// 	letter-spacing: 0.2px;
 
-	background: #2daae1;
-	border-radius: 2px;
-	margin-bottom: 60px;
-	display: flex;
-	padding: 10px;
-	align-items: center;
-	svg {
-		margin-right: 5px;
-	}
-`;
+// 	background: #2daae1;
+// 	border-radius: 2px;
+// 	margin-bottom: 60px;
+// 	display: flex;
+// 	padding: 10px;
+// 	align-items: center;
+// 	svg {
+// 		margin-right: 5px;
+// 	}
+// `;
 
 const TweetListener = styled.div`
 	color: ${props => props.theme.colors.fontPrimary};
@@ -267,8 +267,12 @@ const TweetListener = styled.div`
 	grid-gap: 10px;
 `;
 
+const mapStateToProps = state => ({
+	currentWallet: getCurrentWalletAddress(state),
+});
+
 const mapDispatchToProps = {
 	hideTwitterPopup,
 };
 
-export default connect(null, mapDispatchToProps)(TwitterPopup);
+export default connect(mapStateToProps, mapDispatchToProps)(TwitterPopup);

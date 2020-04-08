@@ -39,7 +39,7 @@ export const AppHeader = memo(props => {
 					</MenuItem>
 					{isLoggedIn && (
 						<MenuItem>
-							<UserInfo />
+							<UserInfo isOnSplashPage={isOnSplashPage} />
 						</MenuItem>
 					)}
 				</MenuItemsRight>

@@ -1,19 +1,30 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
+import { Wallet } from '@ethersproject/wallet';
 import { LOCAL_STORAGE_KEYS } from 'src/constants/storage';
 
 import { setSigner } from '../../utils/snxJSConnector';
 import { getAddress } from '../../utils/formatters';
 import { defaultNetwork } from '../../utils/networkUtils';
 
+let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
+
+if (account == null) {
+	account = Wallet.createRandom().mnemonic;
+	localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account.phrase);
+}
+
+const wallet = Wallet.fromMnemonic(account);
+
 const initialState = {
+	wallet,
 	twitterUsername: '',
 	walletType: '',
-	unlocked: false,
+	unlocked: true,
 	unlockError: null,
 	walletPaginatorIndex: 0,
 	availableWallets: [],
-	currentWallet: null,
+	currentWallet: wallet.address,
 	derivationPath: localStorage.getItem(LOCAL_STORAGE_KEYS.WALLET_DERIVATION_PATH),
 	networkId: defaultNetwork.networkId,
 	networkName: defaultNetwork.name,
