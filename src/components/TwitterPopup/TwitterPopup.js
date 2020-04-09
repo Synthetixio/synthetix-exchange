@@ -12,10 +12,18 @@ import { ReactComponent as TweetLineChartIcon } from 'src/assets/images/l2/tweet
 
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
 
-import { resetButtonCSS, CenteredContent, Popup } from 'src/shared/commonStyles';
+import {
+	resetButtonCSS,
+	CenteredContent,
+	FlexDivCenteredCol,
+	Popup,
+	textShadowCSS,
+} from 'src/shared/commonStyles';
 
 import { shortenAddress } from 'src/utils/formatters';
 import { L2_URL } from 'src/constants/l2';
+
+import { media } from 'src/shared/media';
 
 const getTweet = address => {
 	const text = `Hey @Synthetix_io it's ${shortenAddress(
@@ -93,7 +101,7 @@ const TwitterPopup = ({ hideTwitterPopup, currentWallet }) => {
 		if (alreadyFauceted) {
 			return (
 				<StyledBody textStyle="gradient">
-					{justFauceted ? `The Unipig just granted you tokens.` : 'Enjoy your tokens responsibly.'}
+					{justFauceted ? `Here are your tokens.` : 'Already granted tokens.'}
 				</StyledBody>
 			);
 		} else if (twitterLoadedError) {
@@ -118,45 +126,43 @@ const TwitterPopup = ({ hideTwitterPopup, currentWallet }) => {
 
 	return (
 		<Popup>
-			<SimpleAppHeader />
-			<Content>
-				<Headline>Tweet @ us to get sUSD OVM tokens</Headline>
-				<Subtitle>
-					To start trading on L2 you need to claim sUSD OVM tokens. Tweet the link to your wallet
-					and start trading now!
-				</Subtitle>
-				<CloseButton onClick={hideTwitterPopup}>
-					<CloseCrossIcon />
-				</CloseButton>
-				<TweetPreview>
-					<StyledQuoteRIcon />
-					{tweet.composed}
-					<StyledQuoteLIcon />
-				</TweetPreview>
-				<TweetContainer hide={alreadyFauceted || polling || !twitterLoaded}>
-					<a
-						className="twitter-share-button"
-						href="https://twitter.com/intent/tweet"
-						data-size="large"
-						data-hashtags={tweet.hashtags}
-						data-url={tweet.url}
-						data-text={tweet.text}
-						data-dnt="true"
-						width="200"
-						height="300"
-					>
-						Tweet
-					</a>
-				</TweetContainer>
-				<MetaInformation />
-			</Content>
+			<SimpleAppHeader onClick={hideTwitterPopup} />
+			<CenteredContent>
+				<FlexDivCenteredCol style={{ padding: '0 20px' }}>
+					<Headline>Tweet @ us to get sUSD OVM tokens</Headline>
+					<Subtitle>
+						To start trading on L2 you need to claim sUSD OVM tokens. Tweet the link to your wallet
+						and start trading now!
+					</Subtitle>
+					<CloseButton onClick={hideTwitterPopup}>
+						<CloseCrossIcon />
+					</CloseButton>
+					<TweetPreview>
+						<StyledQuoteRIcon />
+						{tweet.composed}
+						<StyledQuoteLIcon />
+					</TweetPreview>
+					<TweetContainer hide={alreadyFauceted || polling || !twitterLoaded}>
+						<a
+							className="twitter-share-button"
+							href="https://twitter.com/intent/tweet"
+							data-size="large"
+							data-hashtags={tweet.hashtags}
+							data-url={tweet.url}
+							data-text={tweet.text}
+							data-dnt="true"
+							width="200"
+							height="300"
+						>
+							Tweet
+						</a>
+					</TweetContainer>
+					<MetaInformation />
+				</FlexDivCenteredCol>
+			</CenteredContent>
 		</Popup>
 	);
 };
-
-const Content = styled(CenteredContent)`
-	max-width: 624px;
-`;
 
 const StyledBody = styled.span``;
 
@@ -178,17 +184,19 @@ const TweetContainer = styled.div`
 const Headline = styled.div`
 	color: ${props => props.theme.colors.fontPrimary};
 	font-family: ${props => props.theme.fonts.medium};
-	text-shadow: 0px 0px 10px #b47598;
+	${textShadowCSS};
 	font-size: 32px;
 	line-height: 39px;
 	text-align: center;
 	letter-spacing: 0.2px;
 	padding-bottom: 16px;
+	${media.small`
+		max-width: 280px;
+	`}
 `;
 
 const Subtitle = styled.div`
 	color: ${props => props.theme.colors.fontSecondary};
-	font-family: ${props => props.theme.fonts.regular};
 	font-size: 16px;
 	line-height: 20px;
 	text-align: center;
@@ -200,12 +208,17 @@ const Subtitle = styled.div`
 const CloseButton = styled.button`
 	${resetButtonCSS};
 	position: absolute;
-	right: -100px;
-	top: 97px;
+	top: -50px;
+	right: 0;
 	svg {
 		width: 20px;
 		height: 20px;
 	}
+	${media.small`
+		position: fixed;
+		right: 10px;
+		top: 15px;
+	`}
 `;
 
 const TweetPreview = styled.div`
@@ -223,40 +236,35 @@ const TweetPreview = styled.div`
 	position: relative;
 	padding: 43px;
 	margin-bottom: 40px;
+
+	${media.small`
+		font-size: 16px;
+		line-height: 20px;
+		padding: 26px 43px;
+	`}
 `;
 
 const StyledQuoteRIcon = styled(QuoteRIcon)`
 	position: absolute;
 	left: 15px;
 	top: 15px;
+	${media.small`
+		width: 14px;
+		top: 10px;
+		left: 10px;
+	`}
 `;
 
 const StyledQuoteLIcon = styled(QuoteLIcon)`
 	position: absolute;
 	right: 15px;
 	bottom: 15px;
+	${media.small`
+		width: 14px;
+		right: 10px;
+		bottom: 10px;
+	`}
 `;
-
-// const TweetButton = styled.button`
-// 	${resetButtonCSS};
-// 	color: ${props => props.theme.colors.fontPrimary};
-// 	font-size: 20px;
-// 	line-height: 25px;
-// 	/* identical to box height */
-
-// 	text-align: center;
-// 	letter-spacing: 0.2px;
-
-// 	background: #2daae1;
-// 	border-radius: 2px;
-// 	margin-bottom: 60px;
-// 	display: flex;
-// 	padding: 10px;
-// 	align-items: center;
-// 	svg {
-// 		margin-right: 5px;
-// 	}
-// `;
 
 const TweetListener = styled.div`
 	color: ${props => props.theme.colors.fontPrimary};

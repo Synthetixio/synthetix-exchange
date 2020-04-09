@@ -5,6 +5,8 @@ import { tableDataSmallCSS, chartDataCSS } from 'src/components/Typography/Data'
 
 import { Z_INDEX, APP_HEADER_HEIGHT } from '../constants/ui';
 
+import { media } from 'src/shared/media';
+
 export const FlexDiv = styled.div`
 	display: flex;
 `;
@@ -19,6 +21,11 @@ export const FlexDivCol = styled(FlexDiv)`
 
 export const FlexDivRow = styled(FlexDiv)`
 	justify-content: space-between;
+`;
+
+export const FlexDivCenteredCol = styled(FlexDivCentered)`
+	flex-flow: column;
+	position: relative;
 `;
 
 export const PageLayout = styled(FlexDiv)`
@@ -196,14 +203,18 @@ export const resetButtonCSS = css`
 `;
 
 export const CenteredContent = styled(FlexDivCentered)`
+	margin-top: -${APP_HEADER_HEIGHT};
 	width: 100%;
 	max-width: 624px;
 	margin: 0 auto;
-	display: flex;
-	height: calc(100% - ${APP_HEADER_HEIGHT});
+	flex-grow: 1;
 	flex-direction: column;
 	justify-content: center;
 	position: relative;
+	${media.small`
+			margin-top: 40px;
+			justify-content: initial;
+	`}
 `;
 
 export const Popup = styled.div`
@@ -214,4 +225,15 @@ export const Popup = styled.div`
 	height: 100vh;
 	top: 0;
 	left: 0;
+	display: flex;
+	flex-flow: column;
+`;
+
+export const textShadowCSS = css`
+	text-shadow: 0px 0px 10px #b47598;
+`;
+
+export const gradientTextCSS = css`
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 `;

@@ -27,6 +27,8 @@ const Content = styled(CenteredContent)`
 `;
 
 const Container = styled.div`
+	display: flex;
+	flex-flow: column;
 	width: 100%;
 	height: 100vh;
 `;

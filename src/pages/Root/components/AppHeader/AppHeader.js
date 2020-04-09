@@ -12,14 +12,13 @@ import { APP_HEADER_HEIGHT } from 'src/constants/ui';
 
 import { FlexDivCentered } from 'src/shared/commonStyles';
 
-import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
 import { showLeaderboardPopup } from 'src/ducks/ui';
 
 import Logo from './Logo';
 import UserInfo from './UserInfo';
 
 export const AppHeader = memo(props => {
-	const { isOnSplashPage, isLoggedIn, showLeaderboardPopup, ...rest } = props;
+	const { isOnSplashPage, showLeaderboardPopup, ...rest } = props;
 
 	return (
 		<Container isOnSplashPage={isOnSplashPage} {...rest}>
@@ -37,9 +36,9 @@ export const AppHeader = memo(props => {
 							Leaderboard
 						</Button>
 					</MenuItem>
-					{isLoggedIn && (
+					{!isOnSplashPage && (
 						<MenuItem>
-							<UserInfo isOnSplashPage={isOnSplashPage} />
+							<UserInfo />
 						</MenuItem>
 					)}
 				</MenuItemsRight>
@@ -56,7 +55,6 @@ AppHeader.propTypes = {
 	showThemeToggle: PropTypes.bool,
 	className: PropTypes.string,
 	isOnSplashPage: PropTypes.bool,
-	isLoggedIn: PropTypes.bool,
 };
 
 export const Container = styled.header`
@@ -93,21 +91,23 @@ const MenuItems = styled(FlexDivCentered)`
 const MenuItemsLeft = styled(MenuItems)`
 	${MenuItem} {
 		padding-right: 18px;
+		&:first-child {
+			padding-right: 0;
+		}
 	}
 `;
 
 const MenuItemsRight = styled(MenuItems)`
 	${MenuItem} {
 		padding-left: 18px;
+		&:first-child {
+			padding-left: 0;
+		}
 	}
 `;
-
-const mapStateToProps = state => ({
-	isLoggedIn: getIsLoggedIn(state),
-});
 
 const mapDispatchToProps = {
 	showLeaderboardPopup,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppHeader);
+export default connect(null, mapDispatchToProps)(AppHeader);

@@ -6,8 +6,8 @@ import Link from 'src/components/Link';
 import { ROUTES } from 'src/constants/routes';
 import Logo from '../AppHeader/Logo';
 
-const SimpleAppHeader = () => (
-	<Header>
+const SimpleAppHeader = ({ onClick }) => (
+	<Header onClick={onClick}>
 		<HeaderContent>
 			<Link to={ROUTES.Home}>
 				<Logo />

@@ -19,10 +19,10 @@ import Link from 'src/components/Link';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 
-import { headingLargeCSS } from 'src/components/Typography/Heading';
-
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
-import { CenteredContent, Popup } from 'src/shared/commonStyles';
+import { CenteredContent, Popup, textShadowCSS, resetButtonCSS } from 'src/shared/commonStyles';
+
+import { media } from 'src/shared/media';
 
 const LeaderboardPopup = ({
 	hideLeaderboardPopup,
@@ -36,18 +36,18 @@ const LeaderboardPopup = ({
 		fetchLeaderboardRequest();
 		// eslint-disable-next-line
 	}, []);
-	console.log(isRefreshingLeaderboard);
-	console.log(isRefreshingLeaderboard);
 	return (
 		<Popup>
-			<SimpleAppHeader />
+			<SimpleAppHeader onClick={hideLeaderboardPopup} />
 			<Content>
-				<Headline>SYNTHETIX.EXCHANGE L2</Headline>
-				<HeadlineDesc>Trading Comp Top 10 Leaderboard</HeadlineDesc>
+				<Headline>
+					<span>SYNTHETIX.</span>EXCHANGE L2
+				</Headline>
+				<Description>Trading Comp Top 10 Leaderboard</Description>
 				<CloseButton onClick={hideLeaderboardPopup}>
 					<CloseCrossIcon />
 				</CloseButton>
-				<Table
+				<StyledTable
 					palette={TABLE_PALETTE.LEADERBOARD}
 					columns={[
 						{
@@ -83,40 +83,76 @@ const LeaderboardPopup = ({
 	);
 };
 
+const StyledTable = styled(Table)`
+	${media.small`
+		.table-body-row {
+			margin: 0;
+			border-radius: initial;
+			border-left: 0;
+			border-right: 0;
+			border-bottom: 0;
+			&:last-child {
+				border-bottom: 0.5px solid #cb5bf2;
+			}		
+		}
+	`}
+`;
+
 const Content = styled(CenteredContent)`
 	max-width: 600px;
 	padding-top: 87px;
+	${media.small`
+		padding-top: 0;
+	`}
 `;
 
 const Headline = styled.div`
-	${headingLargeCSS};
-	text-shadow: 0px 0px 10px #b47598;
-	padding-bottom: 12px;
+	${textShadowCSS};
+	font-family: ${props => props.theme.fonts.medium};
+	margin-bottom: 12px;
 	text-transform: uppercase;
 	font-size: 40px;
 	line-height: 49px;
-	padding: 0;
+	text-align: center;
+	${media.small`
+		font-size: 32px;
+		line-height: 39px;
+		span {
+			display: block;
+		}
+	`}
 `;
 
-const HeadlineDesc = styled(Headline)`
+const Description = styled.div`
+	${textShadowCSS};
+	font-family: ${props => props.theme.fonts.medium};
+	text-transform: uppercase;
 	font-weight: normal;
 	font-size: 30px;
 	padding-bottom: 50px;
-	font-family: ${props => props.theme.fonts.regular};
+	text-align: center;
+	${media.small`
+		max-width: 280px;
+		font-size: 24px;
+		line-height: 29px;
+	`}
 `;
 
 const CloseButton = styled.button`
-	border: none;
-	background: none;
-	cursor: pointer;
+	${resetButtonCSS};
 	position: absolute;
-	right: -100px;
-	top: 97px;
+	right: 0;
+	top: 50px;
 	outline: none;
 	svg {
 		width: 20px;
 		height: 20px;
 	}
+	${media.small`
+		position: fixed;
+		right: 10px;
+		top: 15px;
+	`}
 `;
 
 const Rank = styled.span`
