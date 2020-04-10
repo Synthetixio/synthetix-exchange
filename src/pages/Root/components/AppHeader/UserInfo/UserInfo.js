@@ -20,7 +20,7 @@ import WalletMenu from '../WalletMenu';
 
 import { media } from 'src/shared/media';
 
-export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible }) => {
+export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTabletOrMobile }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
 
@@ -42,15 +42,19 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible }) => 
 			height="auto"
 			isOpen={walletDropdownIsOpen}
 			handleClose={() => setDropdownIsOpen(false)}
-			width="300px"
+			width={isTabletOrMobile ? 'auto' : '300px'}
 			onHeaderClick={() => setDropdownIsOpen(!walletDropdownIsOpen)}
 			header={
 				<UserInfoContainer>
 					<WalletInfo>
 						<GreenDot />
 						<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
-						<NetworkLabel>{networkName}</NetworkLabel>
-						<MenuArrowDownIcon />
+						{!isTabletOrMobile && (
+							<>
+								<NetworkLabel>{networkName}</NetworkLabel>
+								<MenuArrowDownIcon />
+							</>
+						)}
 					</WalletInfo>
 				</UserInfoContainer>
 			}
@@ -72,17 +76,6 @@ const UserInfoContainer = styled.div`
 	padding: 8px;
 	border-radius: ${ELEMENT_BORDER_RADIUS};
 	border: 1px solid ${props => props.theme.colors.accentL1};
-
-	${media.small`
-		height: auto;
-		padding: 0;
-		border: 0;
-	`}
-	${media.medium`
-		height: auto;
-		padding: 0;
-		border: 0;
-	`}
 `;
 
 const WalletInfo = styled.div`

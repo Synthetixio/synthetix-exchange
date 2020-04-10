@@ -8,6 +8,7 @@ const Logo = memo(props => <StyledSynthetixLogo {...props} />);
 const StyledSynthetixLogo = styled(SynthetixLogo)`
 	position: relative;
 	top: 13px;
+	pointer-events: none;
 `;
 
 export default Logo;

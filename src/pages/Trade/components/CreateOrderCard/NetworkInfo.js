@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useMediaQuery } from 'react-responsive';
 
 import { formatCurrency } from 'src/utils/formatters';
 import { getTransactionPrice } from 'src/utils/networkUtils';
@@ -14,6 +15,8 @@ import { ReactComponent as QuestionMark } from 'src/assets/images/question-mark.
 import NetworkInfoTooltip from './NetworkInfoTooltip';
 import { formatPercentage } from 'src/utils/formatters';
 
+import { mediumMediaQuery } from 'src/shared/media';
+
 export const TransactionInfo = ({
 	gasPrice,
 	gasLimit,
@@ -22,11 +25,14 @@ export const TransactionInfo = ({
 	amount = 0,
 	exchangeFeeRate = 0,
 	onEditButtonClick,
+	lastPrice,
 }) => {
 	const { t } = useTranslation();
 	const usdValue = amount * usdRate;
 	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
+
+	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
 
 	const getTooltipBody = () => (
 		<TooltipContent>
@@ -64,11 +70,19 @@ export const TransactionInfo = ({
 				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
 				<NetworkData>
 					{gasPrice || 0}
-					<ButtonEdit onClick={onEditButtonClick}>
-						<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
-					</ButtonEdit>
+					{!isTabletOrMobile && (
+						<ButtonEdit onClick={onEditButtonClick}>
+							<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
+						</ButtonEdit>
+					)}
 				</NetworkData>
 			</NetworkDataRow>
+			{isTabletOrMobile && (
+				<NetworkDataRow>
+					<NetworkData>Price</NetworkData>
+					<NetworkData>{lastPrice}</NetworkData>
+				</NetworkDataRow>
+			)}
 		</Container>
 	);
 };

@@ -26,7 +26,8 @@ MainLayout.propTypes = {
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background: ${props => props.theme.colors.surfaceL1};
+		color: ${props => props.theme.colors.fontPrimary};
+		background: linear-gradient(180deg, #020B29 0%, #0F0F33 100%);
   }
 `;
 

@@ -13,6 +13,8 @@ import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { getSynthsWalletBalances } from 'src/ducks/wallet/walletBalances';
 import { getSynthPair } from 'src/ducks/synths';
 import { getRatesExchangeRates, getEthRate } from 'src/ducks/rates';
+import { getAvailableSynthsMap } from 'src/ducks/synths';
+
 import {
 	getExchangeFeeRate,
 	getGasInfo,
@@ -36,6 +38,7 @@ import {
 	bytesFormatter,
 	bigNumberFormatter,
 	secondsToTime,
+	formatCurrencyWithSign,
 } from 'src/utils/formatters';
 
 import { HeadingSmall, DataSmall } from 'src/components/Typography';
@@ -45,6 +48,8 @@ import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'src/shared/co
 
 import { ReactComponent as ReverseArrow } from 'src/assets/images/reverse-arrow.svg';
 import NetworkInfo from './NetworkInfo';
+
+import { media } from 'src/shared/media';
 
 const INPUT_DEFAULT_VALUE = '';
 
@@ -60,6 +65,7 @@ const CreateOrderCard = ({
 	createTransaction,
 	updateTransaction,
 	transactions,
+	synthsMap,
 }) => {
 	const { t } = useTranslation();
 	const { colors } = useContext(ThemeContext);
@@ -323,6 +329,10 @@ const CreateOrderCard = ({
 					onEditButtonClick={showGweiPopup}
 					amount={baseAmount}
 					usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
+					lastPrice={formatCurrencyWithSign(
+						synthsMap[quote.name] && synthsMap[quote.name].sign,
+						getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name)
+					)}
 				/>
 				{feeReclamationError ? (
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>
@@ -360,7 +370,7 @@ const CreateOrderCard = ({
 
 const BalanceFractionRow = styled.div`
 	display: grid;
-	grid-column-gap: 8px;
+	grid-column-gap: 13px;
 	grid-auto-flow: column;
 `;
 
@@ -375,6 +385,18 @@ const ButtonAmount = styled.button`
 	border: none;
 	background: ${props => props.theme.colors.accentL2};
 	height: 24px;
+	${media.medium`
+		height: 40px;
+		span {
+			font-size: 14px;
+		}
+	`}
+	${media.small`
+		height: 40px;
+		span {
+			font-size: 14px;
+		}
+	`}
 `;
 
 const HeaderContainer = styled.div`
@@ -408,6 +430,7 @@ const mapStateToProps = state => {
 		gasInfo: getGasInfo(state),
 		ethRate: getEthRate(state),
 		transactions: getTransactions(state),
+		synthsMap: getAvailableSynthsMap(state),
 	};
 };
 

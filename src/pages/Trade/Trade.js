@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
 
 import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'src/shared/commonStyles';
 
@@ -11,6 +12,10 @@ import BlurBackground from './components/BlurBackground';
 
 import { getSynthPair, setSynthPair } from '../../ducks/synths';
 import { navigateToTrade } from 'src/constants/routes';
+
+import { mediumMediaQuery } from 'src/shared/media';
+
+import TradeMobile from './TradeMobile';
 
 const Trade = ({ match, setSynthPair, synthPair }) => {
 	useEffect(() => {
@@ -26,6 +31,12 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [match, setSynthPair]);
+
+	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
+
+	if (isTabletOrMobile) {
+		return <TradeMobile />;
+	}
 
 	return (
 		<Container>

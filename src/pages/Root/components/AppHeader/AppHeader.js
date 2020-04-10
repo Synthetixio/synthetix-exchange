@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
 
 import PropTypes from 'prop-types';
 
@@ -14,11 +15,15 @@ import { FlexDivCentered } from 'src/shared/commonStyles';
 
 import { showLeaderboardPopup } from 'src/ducks/ui';
 
+import { mediumMediaQuery, media } from 'src/shared/media';
+
 import Logo from './Logo';
 import UserInfo from './UserInfo';
 
 export const AppHeader = memo(props => {
 	const { isOnSplashPage, showLeaderboardPopup, ...rest } = props;
+
+	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
 
 	return (
 		<Container isOnSplashPage={isOnSplashPage} {...rest}>
@@ -31,14 +36,16 @@ export const AppHeader = memo(props => {
 					</MenuItem>
 				</MenuItemsLeft>
 				<MenuItemsRight>
-					<MenuItem>
-						<Button onClick={showLeaderboardPopup} size="sm" palette="secondary">
-							Leaderboard
-						</Button>
-					</MenuItem>
+					{(!isTabletOrMobile || isOnSplashPage) && (
+						<MenuItem>
+							<Button onClick={showLeaderboardPopup} size="sm" palette="secondary">
+								Leaderboard
+							</Button>
+						</MenuItem>
+					)}
 					{!isOnSplashPage && (
 						<MenuItem>
-							<UserInfo />
+							<UserInfo isTabletOrMobile={isTabletOrMobile} />
 						</MenuItem>
 					)}
 				</MenuItemsRight>
@@ -66,6 +73,12 @@ export const Container = styled.header`
 			  `
 			: css`
 					border-color: ${props => props.theme.colors.accentL1};
+					${media.small`
+						border-color: #3230b0;
+					`}
+					${media.medium`
+						border-color: #3230b0;
+					`}
 					border-style: solid;
 					border-width: 1px 0;
 					background: ${props => props.theme.colors.surfaceL3};

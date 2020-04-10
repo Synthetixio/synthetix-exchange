@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'react-responsive';
 
 import { navigateToTrade } from 'src/constants/routes';
 import { CARD_HEIGHT } from 'src/constants/ui';
@@ -25,6 +26,8 @@ import { TABLE_PALETTE } from 'src/components/Table/constants';
 import { CurrencyCol, RightAlignedCell } from 'src/components/Table/common';
 import { ButtonFilter } from 'src/components/Button';
 import { FlexDiv } from 'src/shared/commonStyles';
+
+import { mediumMediaQuery, media } from 'src/shared/media';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
 
@@ -68,12 +71,14 @@ const PairListPanel = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
+
 	return (
 		<DropdownPanel
 			isOpen={pairListDropdownIsOpen}
 			handleClose={() => toggleDropdown(false)}
 			onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
-			width="300px"
+			width={isTabletOrMobile ? '100%' : '300px'}
 			header={
 				<DropdownPanelHeader>
 					<Currency.Pair
@@ -147,6 +152,7 @@ const PairListPanel = ({
 };
 
 const StyledTable = styled(Table)`
+	overflow-y: hidden;
 	.table-row {
 		width: 100%;
 		& > :last-child {
@@ -154,8 +160,15 @@ const StyledTable = styled(Table)`
 		}
 	}
 	.table-body {
+		overflow-y: overlay;
 		width: 300px;
 		margin-bottom: 80px;
+		${media.medium`
+			width: 100%;
+		`}
+		${media.small`
+			width: 100%;
+		`}
 	}
 	.table-body-row {
 		margin: 0 6px 8px 6px;
@@ -168,6 +181,12 @@ const StyledTable = styled(Table)`
 	}
 	.table-body-cell {
 		height: 32px;
+		${media.medium`
+			height: 40px;
+		`}
+		${media.small`
+			height: 40px;
+		`}
 	}
 `;
 
