@@ -18,8 +18,6 @@ import { DataMedium } from 'src/components/Typography';
 import DropdownPanel from 'src/components/DropdownPanel';
 import WalletMenu from '../WalletMenu';
 
-import { media } from 'src/shared/media';
-
 export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTabletOrMobile }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);

@@ -5,10 +5,8 @@ import { useMediaQuery } from 'react-responsive';
 
 import PropTypes from 'prop-types';
 
-import Link from 'src/components/Link';
 import { Button } from 'src/components/Button';
 
-import { ROUTES } from 'src/constants/routes';
 import { APP_HEADER_HEIGHT } from 'src/constants/ui';
 
 import { FlexDivCentered } from 'src/shared/commonStyles';

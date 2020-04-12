@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { connect } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import CreateOrderCard from '../components/CreateOrderCard';
 import PairListPanel from '../components/ChartCard/PairListPanel';
 import { showLeaderboardPopup } from 'src/ducks/ui';
@@ -34,6 +34,7 @@ const TradeMobile = ({ showLeaderboardPopup }) => {
 				onClick: showLeaderboardPopup,
 			},
 		],
+		// eslint-disable-next-line
 		[]
 	);
 
