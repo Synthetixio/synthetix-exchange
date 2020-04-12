@@ -10,9 +10,9 @@ import {
 	getTransactions,
 	removePendingTransaction,
 	updateTransaction,
-} from 'src/ducks/transaction';
-import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+} from 'ducks/transaction';
+import { getWalletInfo, getNetworkId } from 'ducks/wallet/walletDetails';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
 import {
 	formatCurrency,
@@ -20,14 +20,14 @@ import {
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	formatCurrencyWithSign,
 	formatCurrencyWithKey,
-} from 'src/utils/formatters';
-import { getEtherscanTxLink } from 'src/utils/explorers';
+} from 'utils/formatters';
+import { getEtherscanTxLink } from 'utils/explorers';
 
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
 
-import Currency from 'src/components/Currency';
-import { SYNTHS_MAP } from 'src/constants/currency';
+import Currency from 'components/Currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 import ViewLink, { ArrowIcon } from './ViewLink';
 

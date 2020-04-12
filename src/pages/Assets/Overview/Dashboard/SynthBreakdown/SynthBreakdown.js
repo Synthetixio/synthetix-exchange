@@ -7,17 +7,14 @@ import { PieChart, Pie, Cell } from 'recharts';
 
 import PropTypes from 'prop-types';
 
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
-import { tableDataSmallCSS } from 'src/components/Typography/Data';
-import { formatPercentage } from 'src/utils/formatters';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
+import { tableDataSmallCSS } from 'components/Typography/Data';
+import { formatPercentage } from 'utils/formatters';
 
-import { CardHeadingDescription } from 'src/shared/commonStyles';
+import { CardHeadingDescription } from 'shared/commonStyles';
 
-import {
-	getIsLoadedWalletBalances,
-	getSynthsWalletBalances,
-} from 'src/ducks/wallet/walletBalances';
+import { getIsLoadedWalletBalances, getSynthsWalletBalances } from 'ducks/wallet/walletBalances';
 
 import { MOCK_DATA } from './mockData';
 

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
+import snxJSConnector from 'utils/snxJSConnector';
 import {
 	updateWalletReducer,
 	updateWalletPaginatorIndex,
 	setDerivationPath,
 	resetWalletReducer,
-} from 'src/ducks/wallet/walletDetails';
-import { toggleWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+} from 'ducks/wallet/walletDetails';
+import { toggleWalletPopup } from 'ducks/ui';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
 import { HeadingMedium } from '../Typography';
 import WalletAddressTable from '../WalletAddressTable';

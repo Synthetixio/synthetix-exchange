@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { ROUTES } from 'src/constants/routes';
-import { CenteredPageLayout } from 'src/shared/commonStyles';
+import { ROUTES } from 'constants/routes';
+import { CenteredPageLayout } from 'shared/commonStyles';
 import AssetsNavigation from './components/AssetsNavigation';
 
 import Overview from './Overview';

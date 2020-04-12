@@ -2,7 +2,7 @@ import { DEFAULT_GAS_LIMIT } from '../constants/transaction';
 
 import { normalizeGasLimit } from '../utils/transactions';
 
-import { TRANSACTION_STATUS } from 'src/constants/transaction';
+import { TRANSACTION_STATUS } from 'constants/transaction';
 
 const SET_GAS_PRICE = 'TRANSACTION/SET_GAS_PRICE';
 const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';

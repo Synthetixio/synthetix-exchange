@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import styled, { css } from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 
-import { APP_HEADER_HEIGHT, CARD_HEIGHT, SECTION_MARGIN, Z_INDEX } from 'src/constants/ui';
+import { APP_HEADER_HEIGHT, CARD_HEIGHT, SECTION_MARGIN, Z_INDEX } from 'constants/ui';
 
 const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose, ...rest }) => {
 	return (

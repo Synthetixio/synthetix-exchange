@@ -3,7 +3,7 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import orderBy from 'lodash/orderBy';
 
 import { fetchSynthsBalance, fetchEthBalance } from '../../dataFetcher';
-import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
+import { CRYPTO_CURRENCY_MAP } from 'constants/currency';
 import { toBigNumber } from '../../utils/formatters';
 import { getAvailableSynths } from '../synths';
 import { getHideSmallValueAssets } from '../ui';

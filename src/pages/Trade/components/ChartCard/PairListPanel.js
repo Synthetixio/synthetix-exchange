@@ -3,30 +3,26 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { navigateToTrade } from 'src/constants/routes';
-import { CARD_HEIGHT } from 'src/constants/ui';
+import { navigateToTrade } from 'constants/routes';
+import { CARD_HEIGHT } from 'constants/ui';
 
-import { getSynthPair } from 'src/ducks/synths';
-import {
-	getMarketsAssetFilter,
-	setMarketsAssetFilter,
-	setBlurBackgroundIsVisible,
-} from 'src/ducks/ui';
-import { getFilteredMarkets, getAllMarkets } from 'src/ducks/markets';
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+import { getSynthPair } from 'ducks/synths';
+import { getMarketsAssetFilter, setMarketsAssetFilter, setBlurBackgroundIsVisible } from 'ducks/ui';
+import { getFilteredMarkets, getAllMarkets } from 'ducks/markets';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
-import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+import { ReactComponent as MenuArrowDownIcon } from 'assets/images/menu-arrow-down.svg';
 
-import DropdownPanel from 'src/components/DropdownPanel';
-import Currency from 'src/components/Currency';
-import { SearchInput } from 'src/components/Input';
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { CurrencyCol, RightAlignedCell } from 'src/components/Table/common';
-import { ButtonFilter } from 'src/components/Button';
-import { FlexDiv } from 'src/shared/commonStyles';
+import DropdownPanel from 'components/DropdownPanel';
+import Currency from 'components/Currency';
+import { SearchInput } from 'components/Input';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
+import { ButtonFilter } from 'components/Button';
+import { FlexDiv } from 'shared/commonStyles';
 
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 const DEFAULT_SEARCH = '';
 const ASSET_FILTERS = [SYNTHS_MAP.sUSD, SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];

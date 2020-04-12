@@ -1,5 +1,3 @@
-import { hot } from 'react-hot-loader/root';
-
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 
@@ -9,8 +7,8 @@ import { getExchangeData } from '../../dataFetcher';
 
 import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
-import { updateNetworkSettings } from 'src/ducks/wallet/walletDetails';
+import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
+import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
 import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
@@ -34,7 +32,7 @@ const Root = ({
 	isAppReady,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
-	const fetchAndSetExchangeData = useCallback(async synths => {
+	const fetchAndSetExchangeData = useCallback(async (synths) => {
 		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 		setExchangeFeeRate(exchangeFeeRate);
 		setNetworkGasInfo(networkPrices);
@@ -63,7 +61,7 @@ const Root = ({
 			}
 			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
 
-			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
+			const synths = snxJSConnector.snxJS.contractSettings.synths.filter((synth) => synth.asset);
 
 			setAvailableSynths({ synths });
 			setAppReady();
@@ -87,7 +85,7 @@ const Root = ({
 	return <App isAppReady={isAppReady} />;
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	isAppReady: getIsAppReady(state),
 });
@@ -103,4 +101,4 @@ const mapDispatchToProps = {
 	setAppReady,
 };
 
-export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));
+export default connect(mapStateToProps, mapDispatchToProps)(Root);

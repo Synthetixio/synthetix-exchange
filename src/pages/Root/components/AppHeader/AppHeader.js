@@ -6,17 +6,17 @@ import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import { labelMediumCSS } from 'src/components/Typography/Label';
-import Link from 'src/components/Link';
+import { labelMediumCSS } from 'components/Typography/Label';
+import Link from 'components/Link';
 
-import { ROUTES } from 'src/constants/routes';
-import { APP_HEADER_HEIGHT } from 'src/constants/ui';
+import { ROUTES } from 'constants/routes';
+import { APP_HEADER_HEIGHT } from 'constants/ui';
 
-import { FlexDivCentered } from 'src/shared/commonStyles';
+import { FlexDivCentered } from 'shared/commonStyles';
 
-import { mediumMediaQuery } from 'src/shared/media';
+import { mediumMediaQuery } from 'shared/media';
 
-import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
+import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';

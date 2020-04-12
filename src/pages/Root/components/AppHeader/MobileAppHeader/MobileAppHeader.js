@@ -5,22 +5,22 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { labelMediumCSS } from 'src/components/Typography/Label';
-import Link from 'src/components/Link';
+import { labelMediumCSS } from 'components/Typography/Label';
+import Link from 'components/Link';
 
-import { ReactComponent as MenuHamburgerIcon } from 'src/assets/images/menu-hamburger.svg';
-import { ReactComponent as MenuCloseIcon } from 'src/assets/images/menu-close.svg';
+import { ReactComponent as MenuHamburgerIcon } from 'assets/images/menu-hamburger.svg';
+import { ReactComponent as MenuCloseIcon } from 'assets/images/menu-close.svg';
 
-import { ROUTES } from 'src/constants/routes';
-import { LINKS } from 'src/constants/links';
-import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/constants/ui';
+import { ROUTES } from 'constants/routes';
+import { LINKS } from 'constants/links';
+import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/ui';
 
-import { FlexDivCentered } from 'src/shared/commonStyles';
-import { media } from 'src/shared/media';
+import { FlexDivCentered } from 'shared/commonStyles';
+import { media } from 'shared/media';
 
-import { getCurrentTheme, toggleTheme } from 'src/ducks/ui';
+import { getCurrentTheme, toggleTheme } from 'ducks/ui';
 
-import { isLightTheme } from 'src/styles/theme';
+import { isLightTheme } from 'styles/theme';
 
 import Logo from '../Logo';
 import UserInfo from '../UserInfo';

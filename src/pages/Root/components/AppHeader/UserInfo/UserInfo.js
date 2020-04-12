@@ -4,23 +4,23 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { ELEMENT_BORDER_RADIUS } from 'src/constants/ui';
+import { ELEMENT_BORDER_RADIUS } from 'constants/ui';
 
-import { shortenAddress } from 'src/utils/formatters';
+import { shortenAddress } from 'utils/formatters';
 
-import { showWalletPopup, getCurrentTheme, setBlurBackgroundIsVisible } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+import { showWalletPopup, getCurrentTheme, setBlurBackgroundIsVisible } from 'ducks/ui';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
-import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+import { ReactComponent as MenuArrowDownIcon } from 'assets/images/menu-arrow-down.svg';
 
-import { Dot } from 'src/shared/commonStyles';
-import { DataMedium } from 'src/components/Typography';
+import { Dot } from 'shared/commonStyles';
+import { DataMedium } from 'components/Typography';
 
-import { ButtonPrimary } from 'src/components/Button';
-import DropdownPanel from 'src/components/DropdownPanel';
+import { ButtonPrimary } from 'components/Button';
+import DropdownPanel from 'components/DropdownPanel';
 import WalletMenu from '../WalletMenu';
 
-import { media } from 'src/shared/media';
+import { media } from 'shared/media';
 
 export const AccountInfo = memo(({ showWalletPopup, walletInfo, setBlurBackgroundIsVisible }) => {
 	const { t } = useTranslation();

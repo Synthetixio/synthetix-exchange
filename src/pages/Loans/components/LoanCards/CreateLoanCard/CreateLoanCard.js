@@ -4,25 +4,25 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
-import { GWEI_UNIT } from 'src/utils/networkUtils';
-import { normalizeGasLimit } from 'src/utils/transactions';
-import { getCurrencyKeyBalance } from 'src/utils/balances';
+import snxJSConnector from 'utils/snxJSConnector';
+import { GWEI_UNIT } from 'utils/networkUtils';
+import { normalizeGasLimit } from 'utils/transactions';
+import { getCurrencyKeyBalance } from 'utils/balances';
 
-import { EMPTY_VALUE } from 'src/constants/placeholder';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
-import { ButtonPrimary } from 'src/components/Button';
-import Card from 'src/components/Card';
-import { TradeInput } from 'src/components/Input';
-import { HeadingSmall } from 'src/components/Typography';
-import { getGasInfo } from 'src/ducks/transaction';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
-import { createLoan, LOAN_STATUS } from 'src/ducks/loans/myLoans';
-import { getEthRate } from 'src/ducks/rates';
+import { ButtonPrimary } from 'components/Button';
+import Card from 'components/Card';
+import { TradeInput } from 'components/Input';
+import { HeadingSmall } from 'components/Typography';
+import { getGasInfo } from 'ducks/transaction';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { getEthRate } from 'ducks/rates';
 
-import Link from 'src/components/Link';
+import Link from 'components/Link';
 
-import { toggleGweiPopup } from 'src/ducks/ui';
+import { toggleGweiPopup } from 'ducks/ui';
 
 import {
 	FormInputRow,
@@ -30,7 +30,7 @@ import {
 	FormInputLabelSmall,
 	CurrencyKey,
 	FlexDivCentered,
-} from 'src/shared/commonStyles';
+} from 'shared/commonStyles';
 
 import NetworkInfo from '../NetworkInfo';
 

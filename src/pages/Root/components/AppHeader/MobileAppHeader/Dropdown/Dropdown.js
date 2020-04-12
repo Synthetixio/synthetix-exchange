@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { media } from 'src/shared/media';
-import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/constants/ui';
+import { media } from 'shared/media';
+import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/ui';
 
 export const Dropdown = memo(({ children, ...rest }) =>
 	ReactDOM.createPortal(<Container {...rest}>{children}</Container>, document.body)

@@ -6,18 +6,18 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import Currency from 'src/components/Currency';
-import Card from 'src/components/Card';
-import Link from 'src/components/Link';
-import { HeadingSmall } from 'src/components/Typography';
-import { ButtonPrimary } from 'src/components/Button';
-import Spinner from 'src/components/Spinner';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import Currency from 'components/Currency';
+import Card from 'components/Card';
+import Link from 'components/Link';
+import { HeadingSmall } from 'components/Typography';
+import { ButtonPrimary } from 'components/Button';
+import Spinner from 'components/Spinner';
 
-import { getEtherscanTxLink } from 'src/utils/explorers';
+import { getEtherscanTxLink } from 'utils/explorers';
 import {
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	SHORT_CRYPTO_CURRENCY_DECIMALS,
@@ -26,20 +26,20 @@ import {
 	formatCurrencyWithSign,
 	formatCurrencyWithKey,
 	formatCurrencyPair,
-} from 'src/utils/formatters';
+} from 'utils/formatters';
 
-import { TableNoResults } from 'src/shared/commonStyles';
+import { TableNoResults } from 'shared/commonStyles';
 
-import { getNetworkId } from 'src/ducks/wallet/walletDetails';
+import { getNetworkId } from 'ducks/wallet/walletDetails';
 import {
 	fetchMyTradesRequest,
 	getMyTrades,
 	getIsLoadingMyTrades,
 	getIsRefreshingMyTrades,
 	getIsLoadedMyTrades,
-} from 'src/ducks/trades/myTrades';
+} from 'ducks/trades/myTrades';
 
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
 export const Exchanges = memo(
 	({

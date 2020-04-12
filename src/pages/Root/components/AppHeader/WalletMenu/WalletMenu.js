@@ -5,19 +5,19 @@ import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { resetWalletReducer, getCurrentWalletAddress } from 'src/ducks/wallet/walletDetails';
+import { resetWalletReducer, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import {
 	getTotalSynthsBalanceUSD,
 	getIsLoadedWalletBalances,
 	getSynthsWalletBalances,
 	getIsFetchingWalletBalances,
-} from 'src/ducks/wallet/walletBalances';
-import { showWalletPopup } from 'src/ducks/ui';
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+} from 'ducks/wallet/walletBalances';
+import { showWalletPopup } from 'ducks/ui';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
-import { ROUTES } from 'src/constants/routes';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
-import { EMPTY_VALUE } from 'src/constants/placeholder';
+import { ROUTES } from 'constants/routes';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 import {
 	shortenAddress,
@@ -25,16 +25,16 @@ import {
 	formatCurrency,
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	SHORT_CRYPTO_CURRENCY_DECIMALS,
-} from 'src/utils/formatters';
+} from 'utils/formatters';
 
-import Card from 'src/components/Card';
-import { ButtonPrimaryExtraSmall, ButtonPrimarySmall } from 'src/components/Button/ButtonPrimary';
-import { HeadingSmall, DataMedium } from 'src/components/Typography';
-import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'src/shared/commonStyles';
-import Link from 'src/components/Link';
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import Currency from 'src/components/Currency';
+import Card from 'components/Card';
+import { ButtonPrimaryExtraSmall, ButtonPrimarySmall } from 'components/Button/ButtonPrimary';
+import { HeadingSmall, DataMedium } from 'components/Typography';
+import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'shared/commonStyles';
+import Link from 'components/Link';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import Currency from 'components/Currency';
 
 const WalletMenu = ({
 	resetWalletReducer,

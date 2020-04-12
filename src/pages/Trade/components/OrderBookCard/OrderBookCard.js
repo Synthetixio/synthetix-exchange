@@ -3,32 +3,32 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
-import { TRANSACTION_STATUS } from 'src/constants/transaction';
+import snxJSConnector from 'utils/snxJSConnector';
+import { TRANSACTION_STATUS } from 'constants/transaction';
 
-import { DataSmall } from 'src/components/Typography';
+import { DataSmall } from 'components/Typography';
 
 import {
 	getPendingTransactions,
 	getTransactions,
 	removePendingTransaction,
 	updateTransaction,
-} from 'src/ducks/transaction';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+} from 'ducks/transaction';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import {
 	fetchAllTradesRequest,
 	getAllTrades,
 	getIsRefreshingAllTrades,
 	getIsLoadedAllTrades,
-} from 'src/ducks/trades/allTrades';
+} from 'ducks/trades/allTrades';
 import {
 	fetchMyTradesRequest,
 	getMyTrades,
 	getIsRefreshingMyTrades,
 	getIsLoadedMyTrades,
-} from 'src/ducks/trades/myTrades';
+} from 'ducks/trades/myTrades';
 
-import Card from 'src/components/Card';
+import Card from 'components/Card';
 import MyOrders from './myOrders';
 import TradeHistory from './TradeHistory';
 

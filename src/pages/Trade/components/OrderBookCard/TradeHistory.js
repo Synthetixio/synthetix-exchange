@@ -5,19 +5,19 @@ import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getAvailableSynthsMap } from 'src/ducks/synths';
-import { getNetworkId } from 'src/ducks/wallet/walletDetails';
+import { getAvailableSynthsMap } from 'ducks/synths';
+import { getNetworkId } from 'ducks/wallet/walletDetails';
 
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import Currency from 'src/components/Currency';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import Currency from 'components/Currency';
 
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
-import { TableNoResults } from 'src/shared/commonStyles';
+import { TableNoResults } from 'shared/commonStyles';
 import ViewLink, { ArrowIcon } from './ViewLink';
 
-import { getEtherscanTxLink } from 'src/utils/explorers';
+import { getEtherscanTxLink } from 'utils/explorers';
 import {
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	SHORT_CRYPTO_CURRENCY_DECIMALS,
@@ -26,7 +26,7 @@ import {
 	formatCurrency,
 	formatCurrencyWithSign,
 	formatCurrencyPair,
-} from 'src/utils/formatters';
+} from 'utils/formatters';
 
 const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => {
 	const { t } = useTranslation();

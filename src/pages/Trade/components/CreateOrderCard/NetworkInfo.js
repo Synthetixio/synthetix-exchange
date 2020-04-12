@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { formatCurrency } from 'src/utils/formatters';
-import { getTransactionPrice } from 'src/utils/networkUtils';
+import { formatCurrency } from 'utils/formatters';
+import { getTransactionPrice } from 'utils/networkUtils';
 
-import { LinkTextSmall } from 'src/shared/commonStyles';
-import { TextButton, FlexDivRow } from 'src/shared/commonStyles';
+import { LinkTextSmall } from 'shared/commonStyles';
+import { TextButton, FlexDivRow } from 'shared/commonStyles';
 
-import { DataSmall } from 'src/components/Typography';
-import { ReactComponent as QuestionMark } from 'src/assets/images/question-mark.svg';
+import { DataSmall } from 'components/Typography';
+import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 import NetworkInfoTooltip from './NetworkInfoTooltip';
-import { formatPercentage } from 'src/utils/formatters';
+import { formatPercentage } from 'utils/formatters';
 
 export const TransactionInfo = ({
 	gasPrice,

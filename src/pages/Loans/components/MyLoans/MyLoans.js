@@ -6,18 +6,18 @@ import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { ReactComponent as NoWalletIcon } from 'src/assets/images/no-wallet.svg';
-import { ReactComponent as ErrorCircleIcon } from 'src/assets/images/error-circle.svg';
-import { ReactComponent as SortDownIcon } from 'src/assets/images/sort-down.svg';
-import { ReactComponent as SortUpIcon } from 'src/assets/images/sort-up.svg';
-import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
+import { ReactComponent as NoWalletIcon } from 'assets/images/no-wallet.svg';
+import { ReactComponent as ErrorCircleIcon } from 'assets/images/error-circle.svg';
+import { ReactComponent as SortDownIcon } from 'assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from 'assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from 'assets/images/sort.svg';
 
-import Card from 'src/components/Card';
-import { ButtonPrimarySmall } from 'src/components/Button';
-import { HeadingSmall } from 'src/components/Typography';
-import Spinner from 'src/components/Spinner';
+import Card from 'components/Card';
+import { ButtonPrimarySmall } from 'components/Button';
+import { HeadingSmall } from 'components/Typography';
+import Spinner from 'components/Spinner';
 
-import { absoluteCenteredCSS, TableNoResults } from 'src/shared/commonStyles';
+import { absoluteCenteredCSS, TableNoResults } from 'shared/commonStyles';
 
 import {
 	fetchLoans,
@@ -27,13 +27,13 @@ import {
 	getMyLoansLoadingError,
 	getIsLoadedMyLoans,
 	LOAN_STATUS,
-} from 'src/ducks/loans/myLoans';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
-import { showWalletPopup } from 'src/ducks/ui';
+} from 'ducks/loans/myLoans';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { showWalletPopup } from 'ducks/ui';
 
-import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'src/utils/formatters';
+import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'utils/formatters';
 
-import { CARD_HEIGHT } from 'src/constants/ui';
+import { CARD_HEIGHT } from 'constants/ui';
 
 export const MyLoans = ({
 	onSelectLoan,

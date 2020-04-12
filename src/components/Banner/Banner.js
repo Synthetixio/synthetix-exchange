@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { FlexDivCentered } from '../../shared/commonStyles';
-import Link from 'src/components/Link';
+import Link from 'components/Link';
 
 const ETHER_COLLATERAL_BLOG_POST_LINK = 'http://blog.synthetix.io/bug-disclosure/';
 

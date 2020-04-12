@@ -4,21 +4,21 @@ import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
-import { GWEI_UNIT } from 'src/utils/networkUtils';
-import { normalizeGasLimit } from 'src/utils/transactions';
+import snxJSConnector from 'utils/snxJSConnector';
+import { GWEI_UNIT } from 'utils/networkUtils';
+import { normalizeGasLimit } from 'utils/transactions';
 
-import { getGasInfo } from 'src/ducks/transaction';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
-import { toggleGweiPopup } from 'src/ducks/ui';
-import { updateLoan, LOAN_STATUS } from 'src/ducks/loans/myLoans';
-import { getEthRate } from 'src/ducks/rates';
+import { getGasInfo } from 'ducks/transaction';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { toggleGweiPopup } from 'ducks/ui';
+import { updateLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { getEthRate } from 'ducks/rates';
 
-import { ButtonPrimary } from 'src/components/Button';
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
+import { ButtonPrimary } from 'components/Button';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
 
-import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from 'src/shared/commonStyles';
+import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from 'shared/commonStyles';
 
 import NetworkInfo from '../NetworkInfo';
 

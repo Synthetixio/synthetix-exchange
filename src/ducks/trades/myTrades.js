@@ -2,7 +2,7 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import { createSlice } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
 
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 import { getCurrentWalletAddress } from '../wallet/walletDetails';
 

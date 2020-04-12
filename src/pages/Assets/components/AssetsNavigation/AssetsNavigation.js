@@ -5,16 +5,16 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import Link from 'src/components/Link';
-import { labelSmallCSS } from 'src/components/Typography/Label';
+import Link from 'components/Link';
+import { labelSmallCSS } from 'components/Typography/Label';
 
-import { toggleHideSmallValueAssets, getHideSmallValueAssets } from 'src/ducks/ui';
+import { toggleHideSmallValueAssets, getHideSmallValueAssets } from 'ducks/ui';
 
-import { ReactComponent as ChartsSquareIcon } from 'src/assets/images/charts-square.svg';
-import { ReactComponent as ClockSquareIcon } from 'src/assets/images/clock-square.svg';
-// import { ReactComponent as ArrowsSquareIcon } from 'src/assets/images/arrows-square.svg';
+import { ReactComponent as ChartsSquareIcon } from 'assets/images/charts-square.svg';
+import { ReactComponent as ClockSquareIcon } from 'assets/images/clock-square.svg';
+// import { ReactComponent as ArrowsSquareIcon } from 'assets/images/arrows-square.svg';
 
-import { ROUTES } from 'src/constants/routes';
+import { ROUTES } from 'constants/routes';
 
 const MenuLinks = [
 	{

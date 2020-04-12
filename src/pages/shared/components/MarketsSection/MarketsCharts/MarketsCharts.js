@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
-import ChartCard from 'src/components/ChartCard/ChartCard';
+import ChartCard from 'components/ChartCard/ChartCard';
 
-import { navigateToTrade } from 'src/constants/routes';
+import { navigateToTrade } from 'constants/routes';
 
-import { media } from 'src/shared/media';
+import { media } from 'shared/media';
 
-import { formatCurrencyWithSign } from 'src/utils/formatters';
+import { formatCurrencyWithSign } from 'utils/formatters';
 
-import { shiftUpHoverEffectCSS } from 'src/shared/commonStyles';
+import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
 
 const CHART_CARDS = 4;
 

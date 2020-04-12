@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 
 import AppHeader from '../AppHeader';
 
-import Spinner from 'src/components/Spinner';
+import Spinner from 'components/Spinner';
 
-import { FlexDiv } from 'src/shared/commonStyles';
+import { FlexDiv } from 'shared/commonStyles';
 
 export const MainLayout = ({ children, isAppReady }) => (
 	<>

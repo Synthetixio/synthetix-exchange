@@ -5,11 +5,11 @@ import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'rec
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
+import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 
-import { DataLarge } from 'src/components/Typography';
-import Spinner from 'src/components/Spinner';
-import { formatCurrencyWithPrecision } from 'src/utils/formatters';
+import { DataLarge } from 'components/Typography';
+import Spinner from 'components/Spinner';
+import { formatCurrencyWithPrecision } from 'utils/formatters';
 
 const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => {
 	const { colors } = useContext(ThemeContext);

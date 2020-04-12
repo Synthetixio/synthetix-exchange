@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
-import { ROUTES } from 'src/constants/routes';
+import { ROUTES } from 'constants/routes';
 
-import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
+import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 // TODO: redirect to the "login/wallet selection page"
 export const ProtectedRoute = ({ isLoggedIn, ...rest }) => {

@@ -1,6 +1,6 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
-import { LOCAL_STORAGE_KEYS } from 'src/constants/storage';
+import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 
 import { setSigner } from '../../utils/snxJSConnector';
 import { getAddress } from '../../utils/formatters';

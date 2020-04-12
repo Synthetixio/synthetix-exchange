@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { persistState, getPersistedState } from '../config/store';
 import { isLightTheme, THEMES } from '../styles/theme';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
 
 const userPrefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
 

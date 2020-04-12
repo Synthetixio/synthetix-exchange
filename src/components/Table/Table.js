@@ -3,16 +3,16 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 
-import { CARD_HEIGHT } from 'src/constants/ui';
+import { CARD_HEIGHT } from 'constants/ui';
 
-import { ReactComponent as SortDownIcon } from 'src/assets/images/sort-down.svg';
-import { ReactComponent as SortUpIcon } from 'src/assets/images/sort-up.svg';
-import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
+import { ReactComponent as SortDownIcon } from 'assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from 'assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from 'assets/images/sort.svg';
 
-import { lightTheme, darkTheme } from 'src/styles/theme';
-import { FlexDivCentered } from 'src/shared/commonStyles';
+import { lightTheme, darkTheme } from 'styles/theme';
+import { FlexDivCentered } from 'shared/commonStyles';
 
-import Spinner from 'src/components/Spinner';
+import Spinner from 'components/Spinner';
 
 import { TABLE_PALETTE } from './constants';
 

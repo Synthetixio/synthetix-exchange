@@ -2,19 +2,19 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingMedium, BodyLarge } from 'src/components/Typography';
-import { dataLargeCSS, dataMediumCSS } from 'src/components/Typography/Data';
-import { ButtonPrimary } from 'src/components/Button';
+import { HeadingMedium, BodyLarge } from 'components/Typography';
+import { dataLargeCSS, dataMediumCSS } from 'components/Typography/Data';
+import { ButtonPrimary } from 'components/Button';
 
-import { ReactComponent as LiquidityIcon } from 'src/assets/images/splash/liquidity.svg';
-import { ReactComponent as PeerToContractIcon } from 'src/assets/images/splash/peer-to-contract.svg';
-import { ReactComponent as DistributedIcon } from 'src/assets/images/splash/distributed.svg';
+import { ReactComponent as LiquidityIcon } from 'assets/images/splash/liquidity.svg';
+import { ReactComponent as PeerToContractIcon } from 'assets/images/splash/peer-to-contract.svg';
+import { ReactComponent as DistributedIcon } from 'assets/images/splash/distributed.svg';
 
-import { ROUTES, navigateTo } from 'src/constants/routes';
+import { ROUTES, navigateTo } from 'constants/routes';
 
-import { darkTheme } from 'src/styles/theme';
+import { darkTheme } from 'styles/theme';
 
-import { media } from 'src/shared/media';
+import { media } from 'shared/media';
 
 export const ExchangeFeatures = memo(() => {
 	const { t } = useTranslation();

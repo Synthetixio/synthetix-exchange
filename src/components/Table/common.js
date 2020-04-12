@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { formatCurrencyWithSign } from 'src/utils/formatters';
-import { EMPTY_VALUE } from 'src/constants/placeholder';
+import { formatCurrencyWithSign } from 'utils/formatters';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 export const NullableCell = ({ cellProps, children }) =>
 	cellProps.cell.value == null ? <span>{EMPTY_VALUE}</span> : children;

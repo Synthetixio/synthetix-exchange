@@ -1,4 +1,4 @@
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 export const ASSET_FILTERS = [
 	{

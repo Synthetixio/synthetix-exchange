@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getAvailableSynthsMap } from 'src/ducks/synths';
-import { navigateToTrade } from 'src/constants/routes';
+import { getAvailableSynthsMap } from 'ducks/synths';
+import { navigateToTrade } from 'constants/routes';
 
-import ChangePercent from 'src/components/ChangePercent';
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { CurrencyCol, NullableCell } from 'src/components/Table/common';
+import ChangePercent from 'components/ChangePercent';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import { CurrencyCol, NullableCell } from 'components/Table/common';
 
-import Currency from 'src/components/Currency';
+import Currency from 'components/Currency';
 
 export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResultsMessage }) => {
 	const { t } = useTranslation();

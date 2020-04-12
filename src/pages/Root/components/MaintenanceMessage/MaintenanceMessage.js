@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 
-import { getCurrentTheme } from 'src/ducks/ui';
+import { getCurrentTheme } from 'ducks/ui';
 
-import { HeadingMedium } from 'src/components/Typography';
-import { isDarkTheme, lightTheme, darkTheme } from 'src/styles/theme';
+import { HeadingMedium } from 'components/Typography';
+import { isDarkTheme, lightTheme, darkTheme } from 'styles/theme';
 
 const MaintenanceMessage = ({ currentTheme }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;

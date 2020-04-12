@@ -26,7 +26,7 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 
-import Banner from 'src/components/Banner';
+import Banner from 'components/Banner';
 
 const App = ({ isAppReady, currentTheme }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
