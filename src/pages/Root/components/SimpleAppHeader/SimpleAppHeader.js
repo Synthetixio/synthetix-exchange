@@ -1,17 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Link from 'src/components/Link';
-
-import { ROUTES } from 'src/constants/routes';
 import Logo from '../AppHeader/Logo';
 
 const SimpleAppHeader = ({ onClick }) => (
 	<Header onClick={onClick}>
 		<HeaderContent>
-			<Link to={ROUTES.Home}>
-				<Logo />
-			</Link>
+			<Logo />
 		</HeaderContent>
 	</Header>
 );
