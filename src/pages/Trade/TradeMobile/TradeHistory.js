@@ -81,7 +81,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 			isLoading={isLoading}
 			noResultsMessage={
 				isLoaded && trades.length === 0 ? (
-					<TableNoResults>No trades associated with this wallet.</TableNoResults>
+					<TableNoResults>{t('assets.exchanges.table.no-results')}</TableNoResults>
 				) : (
 					undefined
 				)
