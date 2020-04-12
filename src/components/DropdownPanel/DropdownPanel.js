@@ -8,12 +8,14 @@ const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose, 
 	return (
 		<OutsideClickHandler onOutsideClick={handleClose}>
 			<Container isOpen={isOpen} {...rest}>
-				<Header isOpen={isOpen} onClick={onHeaderClick} {...rest}>
+				<Header isOpen={isOpen} onClick={onHeaderClick} className="dropdown-panel-header">
 					{header}
 				</Header>
-				<Body isOpen={isOpen} {...rest}>
-					{body}
-				</Body>
+				{isOpen && (
+					<Body isOpen={isOpen} className="dropdown-panel-body">
+						{body}
+					</Body>
+				)}
 			</Container>
 		</OutsideClickHandler>
 	);

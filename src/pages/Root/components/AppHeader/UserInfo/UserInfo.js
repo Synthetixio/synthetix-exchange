@@ -18,6 +18,8 @@ import { DataMedium } from 'src/components/Typography';
 import DropdownPanel from 'src/components/DropdownPanel';
 import WalletMenu from '../WalletMenu';
 
+import { media } from 'src/shared/media';
+
 export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTabletOrMobile }) => {
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
@@ -36,7 +38,7 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTab
 	}, []);
 
 	return currentWallet != null ? (
-		<DropdownPanel
+		<StyledDropdownPanel
 			height="auto"
 			isOpen={walletDropdownIsOpen}
 			handleClose={() => setDropdownIsOpen(false)}
@@ -57,6 +59,9 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTab
 				</UserInfoContainer>
 			}
 			body={<WalletMenu setDropdownIsOpen={setDropdownIsOpen} />}
+			bodyProps={{
+				position: 'fixed !important',
+			}}
 		/>
 	) : null;
 });
@@ -64,6 +69,20 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTab
 AccountInfo.propTypes = {
 	walletInfo: PropTypes.object.isRequired,
 };
+
+const StyledDropdownPanel = styled(DropdownPanel)`
+	z-index: 151;
+	${media.medium`
+		.dropdown-panel-body {
+			position: fixed;
+			top: 56px;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: auto;
+		}
+	`}
+`;
 
 const UserInfoContainer = styled.div`
 	height: 40px;

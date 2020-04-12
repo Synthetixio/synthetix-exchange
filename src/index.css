@@ -56,20 +56,20 @@ body {
 /* total width */
 *::-webkit-scrollbar {
 	visibility: hidden;
-	background: transparent;
+	background: linear-gradient(180deg, #020b29 0%, #0f0f33 100%);
 	width: 8px;
 }
 
 /* background of the scrollbar except button or resizer */
 *::-webkit-scrollbar-track {
-	background: transparent;
+	background: linear-gradient(180deg, #020b29 0%, #0f0f33 100%);
 }
 
 /* scrollbar itself */
 *::-webkit-scrollbar-thumb {
-	background: rgba(0, 0, 0, 0.2);
-	border-radius: 16px;
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	background: #282862;
+	border-radius: 14px;
+	border: 1px solid #3531b0;
 	visibility: hidden;
 }
 *:hover::-webkit-scrollbar-thumb {

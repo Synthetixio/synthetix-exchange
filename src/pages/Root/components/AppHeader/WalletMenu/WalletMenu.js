@@ -15,12 +15,10 @@ import {
 import { showWalletPopup } from 'src/ducks/ui';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
-import { ROUTES } from 'src/constants/routes';
 import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 
 import {
-	shortenAddress,
 	formatCurrencyWithSign,
 	formatCurrency,
 	LONG_CRYPTO_CURRENCY_DECIMALS,
@@ -28,19 +26,13 @@ import {
 } from 'src/utils/formatters';
 
 import Card from 'src/components/Card';
-import { ButtonPrimaryExtraSmall, ButtonPrimarySmall } from 'src/components/Button/ButtonPrimary';
 import { HeadingSmall, DataMedium } from 'src/components/Typography';
-import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'src/shared/commonStyles';
-import Link from 'src/components/Link';
+import { gradientTextCSS, TableNoResults } from 'src/shared/commonStyles';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
 
 const WalletMenu = ({
-	resetWalletReducer,
-	setDropdownIsOpen,
-	currentWallet,
-	showWalletPopup,
 	totalSynthsBalanceUSD,
 	isLoadedWalletBalances,
 	synthsMap,
@@ -49,32 +41,11 @@ const WalletMenu = ({
 }) => {
 	const { t } = useTranslation();
 
-	const logout = () => {
-		resetWalletReducer();
-		setDropdownIsOpen(false);
-	};
-
 	return (
 		<Content>
 			<Card>
 				<Card.Header>
-					<StyledHeadingSmall>{t('header.wallet-menu.cards.wallet-details')}</StyledHeadingSmall>
-				</Card.Header>
-				<Card.Body>
-					<StyledFlexCentered>
-						<InfoBoxLabel>{t('header.wallet-menu.cards.account')}</InfoBoxLabel>
-						<ButtonPrimaryExtraSmall onClick={() => showWalletPopup()}>
-							{t('header.wallet-menu.buttons.change')}
-						</ButtonPrimaryExtraSmall>
-					</StyledFlexCentered>
-					<CardData>{shortenAddress(currentWallet)}</CardData>
-				</Card.Body>
-			</Card>
-			<Card>
-				<Card.Header>
-					<StyledHeadingSmall>
-						{t('header.wallet-menu.cards.estimated-wallet-value')}
-					</StyledHeadingSmall>
+					<StyledHeadingSmall>asset value</StyledHeadingSmall>
 				</Card.Header>
 				<Card.Body>
 					<CardData>
@@ -84,6 +55,16 @@ const WalletMenu = ({
 									totalSynthsBalanceUSD
 							  )} ${FIAT_CURRENCY_MAP.USD}`
 							: EMPTY_VALUE}
+					</CardData>
+				</Card.Body>
+			</Card>
+			<Card>
+				<Card.Header>
+					<StyledHeadingSmall>leaderboard ranking</StyledHeadingSmall>
+				</Card.Header>
+				<Card.Body>
+					<CardData>
+						<GreenGradient>#1</GreenGradient>
 					</CardData>
 				</Card.Body>
 			</Card>
@@ -148,12 +129,6 @@ const WalletMenu = ({
 					></StyledTable>
 				</StyleCardBody>
 			</Card>
-			<Bottom>
-				<Link to={ROUTES.Assets.Home}>
-					<StyledButton>{t('header.wallet-menu.buttons.wallet-overview')}</StyledButton>
-				</Link>
-				<StyledButton onClick={logout}>{t('header.wallet-menu.buttons.log-out')}</StyledButton>
-			</Bottom>
 		</Content>
 	);
 };
@@ -191,33 +166,27 @@ const Content = styled.div`
 const StyledHeadingSmall = styled(HeadingSmall)`
 	font-size: 10px;
 	color: ${props => props.theme.colors.fontSecondary};
-`;
-
-const Bottom = styled.div`
-	padding: 0 8px 8px 8px;
-	margin-top: 16px;
-	display: flex;
-	flex-direction: column;
-	& > * + * {
-		margin-top: 12px;
-	}
-`;
-
-const StyledButton = styled(ButtonPrimarySmall)`
-	width: 100%;
+	font-size: 12px;
+	line-height: 15px;
 `;
 
 const CardData = styled(DataMedium)`
 	color: ${props => props.theme.colors.fontPrimary};
 	text-transform: uppercase;
+	font-weight: 500;
+	font-size: 24px;
+	line-height: 29px;
 `;
 
 const StyleCardBody = styled(Card.Body)`
 	padding: 0;
 `;
 
-const StyledFlexCentered = styled(FlexDivCentered)`
-	justify-content: space-between;
+const GreenGradient = styled.span`
+	background: -webkit-linear-gradient(353.8deg, #00e2df 4.3%, #bff360 94.52%);
+	${gradientTextCSS};
+	-webkit-text-stroke: 1px #43eeec;
+	text-shadow: 0px 0px 20px rgba(255, 164, 235, 0.3);
 `;
 
 const mapStateToProps = state => ({
