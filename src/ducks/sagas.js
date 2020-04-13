@@ -5,7 +5,7 @@ import { watchFetchWalletBalancesRequest } from './wallet/walletBalances';
 import { watchFetchMyTradesRequest } from './trades/myTrades';
 import { watchFetchAllTradesRequest } from './trades/allTrades';
 
-const rootSaga = function*() {
+const rootSaga = function* () {
 	yield all([
 		watchFetchMarketsRequest(),
 		watchFetchWalletBalancesRequest(),

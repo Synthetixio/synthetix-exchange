@@ -129,9 +129,9 @@ const CreateOrderCard = ({
 	}, [base.name, quote.name]);
 
 	const baseBalance =
-		(synthsWalletBalances && synthsWalletBalances.find(synth => synth.name === base.name)) || 0;
+		(synthsWalletBalances && synthsWalletBalances.find((synth) => synth.name === base.name)) || 0;
 	const quoteBalance =
-		(synthsWalletBalances && synthsWalletBalances.find(synth => synth.name === quote.name)) || 0;
+		(synthsWalletBalances && synthsWalletBalances.find((synth) => synth.name === quote.name)) || 0;
 
 	const rate = getExchangeRatesForCurrencies(exchangeRates, quote.name, base.name);
 	const inverseRate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name);
@@ -402,7 +402,7 @@ const ButtonAmount = styled.button`
 	cursor: pointer;
 	flex: 1;
 	border: none;
-	background-color: ${props => props.theme.colors.accentL2};
+	background-color: ${(props) => props.theme.colors.accentL2};
 	height: 24px;
 `;
 
@@ -427,7 +427,7 @@ export const TxErrorMessage = styled(DismissableMessage)`
 	margin-top: 8px;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		synthPair: getSynthPair(state),
 		walletInfo: getWalletInfo(state),

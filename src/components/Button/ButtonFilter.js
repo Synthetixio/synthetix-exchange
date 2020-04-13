@@ -35,7 +35,7 @@ export const ButtonFilterWithDropdown = ({
 				</Button>
 				<DropDown isVisible={isVisible}>
 					<List>
-						{synths.map(synth => (
+						{synths.map((synth) => (
 							<Synth
 								key={synth.name}
 								isActive={synth.name === quote}
@@ -72,9 +72,9 @@ const DropDown = styled.div`
 	overflow-x: visible;
 	overflow-y: hidden;
 	position: absolute;
-	background-color: ${props => props.theme.colors.accentL1};
-	border: 1px solid ${props => props.theme.colors.accentL2};
-	visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
+	background-color: ${(props) => props.theme.colors.accentL1};
+	border: 1px solid ${(props) => props.theme.colors.accentL2};
+	visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
 	z-index: ${Z_INDEX.DROPDOWN};
 `;
 
@@ -93,9 +93,9 @@ const Synth = styled.li`
 	padding: 8px 16px;
 	cursor: pointer;
 	&:hover {
-		background-color: ${props => props.theme.colors.accentL2};
+		background-color: ${(props) => props.theme.colors.accentL2};
 	}
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.isActive ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 `;
 
@@ -115,24 +115,24 @@ const fullRow = css`
 const Button = styled.button`
 	border-radius: 1px;
 	outline: none;
-	height: ${props => (props.height ? props.height : '32px')};
+	height: ${(props) => (props.height ? props.height : '32px')};
 	cursor: pointer;
 	padding: 0 6px;
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.active ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 	& > * {
-		color: ${props =>
+		color: ${(props) =>
 			props.active ? props.theme.colors.fontSecondary : props.theme.colors.fontTertiary} !important;
 	}
 	&:hover {
-		background-color: ${props => props.theme.colors.accentL2};
+		background-color: ${(props) => props.theme.colors.accentL2};
 	}
 	border: none;
-	${props => props.fullRow && fullRow}
+	${(props) => props.fullRow && fullRow}
 `;
 
 const ButtonLabel = styled(DataSmall)`
 	text-transform: none;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	font-family: 'apercu-medium', sans-serif;
 `;

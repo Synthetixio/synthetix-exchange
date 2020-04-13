@@ -76,15 +76,15 @@ const Container = styled.div`
 `;
 
 const Balance = styled.div`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	${headingH5CSS};
 `;
 
 const ETHBalance = styled(HeadingSmall)`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 	walletBalances: getWalletBalances(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),

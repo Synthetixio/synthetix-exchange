@@ -111,7 +111,7 @@ export const CreateLoanCard = ({
 
 	useEffect(() => {
 		setCollateralAmountErrorMessage(null);
-		if (collateralAmount != '') {
+		if (collateralAmount !== '') {
 			if (currentWallet && collateralAmount > collateralCurrencyBalance) {
 				setCollateralAmountErrorMessage(t('common.errors.amount-exceeds-balance'));
 			} else if (collateralAmount < minLoanSize) {
@@ -237,7 +237,7 @@ CreateLoanCard.propTypes = {
 };
 
 const BlockingOverlay = styled(FlexDivCentered)`
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background-color: ${(props) => props.theme.colors.surfaceL2};
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -251,7 +251,7 @@ const PauseMessage = styled.div`
 	padding-bottom: 30px;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),

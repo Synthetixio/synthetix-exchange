@@ -8,9 +8,9 @@ export const FIAT_CURRENCY_DECIMALS = 2;
 export const SHORT_CRYPTO_CURRENCY_DECIMALS = 4;
 export const LONG_CRYPTO_CURRENCY_DECIMALS = 8;
 
-export const toBigNumber = value => new BigNumber(value);
+export const toBigNumber = (value) => new BigNumber(value);
 
-const getPrecision = amount => {
+const getPrecision = (amount) => {
 	if (amount >= 1) {
 		return 2;
 	} else if (amount > 0.01) {
@@ -33,7 +33,7 @@ export const formatCurrency = (value, decimals = DEFAULT_CURRENCY_DECIMALS) => {
 	});
 };
 
-export const formatCurrencyWithPrecision = value => {
+export const formatCurrencyWithPrecision = (value) => {
 	return formatCurrency(value, getPrecision(value));
 };
 
@@ -50,19 +50,19 @@ export const shortenAddress = (address, first = 5, last = 5) =>
 export const formatCurrencyWithKey = (currencyKey, value, decimals = DEFAULT_CURRENCY_DECIMALS) =>
 	`${formatCurrency(value, decimals)} ${currencyKey}`;
 
-export const bytesFormatter = input => snxJSConnector.ethersUtils.formatBytes32String(input);
+export const bytesFormatter = (input) => snxJSConnector.ethersUtils.formatBytes32String(input);
 
-export const parseBytes32String = input => snxJSConnector.ethersUtils.parseBytes32String(input);
+export const parseBytes32String = (input) => snxJSConnector.ethersUtils.parseBytes32String(input);
 
-export const bigNumberFormatter = value => Number(snxJSConnector.utils.formatEther(value));
+export const bigNumberFormatter = (value) => Number(snxJSConnector.utils.formatEther(value));
 
-export const getAddress = addr => snxJSConnector.ethersUtils.getAddress(addr);
+export const getAddress = (addr) => snxJSConnector.ethersUtils.getAddress(addr);
 
-export const formatTxTimestamp = timestamp => format(timestamp, 'DD-MM-YY | HH:mm');
+export const formatTxTimestamp = (timestamp) => format(timestamp, 'DD-MM-YY | HH:mm');
 
-export const toJSTimestamp = timestamp => timestamp * 1000;
+export const toJSTimestamp = (timestamp) => timestamp * 1000;
 
-export const secondsToTime = seconds => {
+export const secondsToTime = (seconds) => {
 	const minutes = Math.floor(seconds / 60);
 	const secondsLeft = seconds - minutes * 60;
 	return strPadLeft(minutes, '0', 2) + ':' + strPadLeft(secondsLeft, '0', 2);

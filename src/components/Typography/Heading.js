@@ -2,12 +2,12 @@ import styled, { css } from 'styled-components';
 import { typography } from 'styled-system';
 
 const headingCSS = css`
-	font-family: ${props => props.theme.fonts.regular};
-	color: ${props => props.theme.colors.fontPrimary};
+	font-family: ${(props) => props.theme.fonts.regular};
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
 export const headingH5CSS = css`
-	font-family: ${props => props.theme.fonts.medium};
+	font-family: ${(props) => props.theme.fonts.medium};
 	font-size: 20px;
 	line-height: 25px;
 	letter-spacing: 0.2px;
@@ -15,7 +15,7 @@ export const headingH5CSS = css`
 
 export const headingLargeCSS = css`
 	${headingCSS};
-	font-family: ${props => props.theme.fonts.bold};
+	font-family: ${(props) => props.theme.fonts.bold};
 	font-size: 56px;
 	line-height: 56px;
 	letter-spacing: 0.2px;

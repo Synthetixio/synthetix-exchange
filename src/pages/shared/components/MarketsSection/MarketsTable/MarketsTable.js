@@ -23,7 +23,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 				{
 					Header: t('markets.table.pair-col'),
 					accessor: 'pair',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<Currency.Pair
 							baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 							quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -36,14 +36,14 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 				{
 					Header: t('markets.table.last-price-col'),
 					accessor: 'lastPrice',
-					Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
+					Cell: (cellProps) => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 					width: 150,
 					sortable: true,
 				},
 				{
 					Header: t('markets.table.24h-change-col'),
 					accessor: 'rates24hChange',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<NullableCell cellProps={cellProps}>
 							{cellProps.cell.value != null && (
 								<ChangePercent isLabel={true} value={cellProps.cell.value} />
@@ -56,28 +56,28 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 				{
 					Header: t('markets.table.24h-low-col'),
 					accessor: 'rates24hLow',
-					Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
+					Cell: (cellProps) => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 					width: 150,
 					sortable: true,
 				},
 				{
 					Header: t('markets.table.24h-high-col'),
 					accessor: 'rates24hHigh',
-					Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
+					Cell: (cellProps) => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 					width: 150,
 					sortable: true,
 				},
 				{
 					Header: t('markets.table.24h-volume-col'),
 					accessor: 'rates24hVol',
-					Cell: cellProps => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
+					Cell: (cellProps) => <CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />,
 					width: 150,
 					sortable: true,
 				},
 			]}
 			columnsDeps={[synthsMap]}
 			data={markets}
-			onTableRowClick={row =>
+			onTableRowClick={(row) =>
 				navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey)
 			}
 			options={{
@@ -97,7 +97,7 @@ MarketsTable.propTypes = {
 	noResultsMessage: PropTypes.string,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 

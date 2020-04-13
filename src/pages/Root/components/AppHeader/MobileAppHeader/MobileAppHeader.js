@@ -113,9 +113,9 @@ MobileAppHeader.propTypes = {
 
 const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentL1};
+	border-color: ${(props) => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 	position: fixed;
@@ -156,21 +156,21 @@ const MenuItems = styled(FlexDivCentered)`
 
 const MenuItemsLeft = styled(MenuItems)`
 	${MenuItem} {
-		border-right: 1px solid ${props => props.theme.colors.accentL1};
+		border-right: 1px solid ${(props) => props.theme.colors.accentL1};
 	}
 `;
 
 const MenuItemsRight = styled(MenuItems)`
 	${MenuItem} {
-		border-left: 1px solid ${props => props.theme.colors.accentL1};
+		border-left: 1px solid ${(props) => props.theme.colors.accentL1};
 	}
 `;
 
 const StyledDropdown = styled(Dropdown)`
-	${props =>
+	${(props) =>
 		props.isOnSplashPage &&
 		css`
-			background-color: ${props => props.theme.colors.surfaceL1};
+			background-color: ${(props) => props.theme.colors.surfaceL1};
 		`}
 `;
 
@@ -179,11 +179,11 @@ const dropdownItemCSS = css`
 	padding: 20px 24px;
 	display: flex;
 	align-items: center;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	cursor: pointer;
 	${media.small`
@@ -194,8 +194,8 @@ const dropdownItemCSS = css`
 const DropdownMenuLink = styled(Link)`
 	${dropdownItemCSS};
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
-		color: ${props => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
 	}
 `;
 
@@ -234,7 +234,7 @@ const MenuPusher = styled.div`
 	`}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	currentTheme: getCurrentTheme(state),
 });
 

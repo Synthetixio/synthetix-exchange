@@ -14,7 +14,6 @@ import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import { setAppReady, getIsAppReady } from '../../ducks/app';
 
-import MaintenanceMessage from './components/MaintenanceMessage';
 import App from './App';
 
 const REFRESH_INTERVAL = 3 * 60 * 1000;

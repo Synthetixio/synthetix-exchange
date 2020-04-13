@@ -24,16 +24,16 @@ export const uiSlice = createSlice({
 		toggleWalletPopup: (state, action) => {
 			state.walletPopupIsVisible = action.payload;
 		},
-		showWalletPopup: state => {
+		showWalletPopup: (state) => {
 			state.walletPopupIsVisible = true;
 		},
 		toggleGweiPopup: (state, action) => {
 			state.gweiPopupIsVisible = action.payload;
 		},
-		showGweiPopup: state => {
+		showGweiPopup: (state) => {
 			state.gweiPopupIsVisible = true;
 		},
-		toggleTheme: state => {
+		toggleTheme: (state) => {
 			state.theme = isLightTheme(state.theme) ? THEMES.DARK : THEMES.LIGHT;
 			persistState('ui', { theme: state.theme });
 		},
@@ -43,7 +43,7 @@ export const uiSlice = createSlice({
 		setFiatCurrency: (state, action) => {
 			state.fiatCurrency = action.payload.fiatCurrency;
 		},
-		toggleHideSmallValueAssets: state => {
+		toggleHideSmallValueAssets: (state) => {
 			state.hideSmallValueAssets = !state.hideSmallValueAssets;
 			persistState('ui', { hideSmallValueAssets: state.hideSmallValueAssets });
 		},
@@ -70,16 +70,16 @@ const {
 	setBlurBackgroundIsVisible,
 } = uiSlice.actions;
 
-export const getUIState = state => state.ui;
-export const getFiatCurrency = state => getUIState(state).fiatCurrency;
-export const getCurrentTheme = state => getUIState(state).theme;
-export const walletPopupIsVisible = state => getUIState(state).walletPopupIsVisible;
-export const gweiPopupIsVisible = state => getUIState(state).gweiPopupIsVisible;
-export const depotPopupIsVisible = state => getUIState(state).depotPopupIsVisible;
-export const getSynthSearch = state => getUIState(state).synthSearch;
-export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
-export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
-export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
+export const getUIState = (state) => state.ui;
+export const getFiatCurrency = (state) => getUIState(state).fiatCurrency;
+export const getCurrentTheme = (state) => getUIState(state).theme;
+export const walletPopupIsVisible = (state) => getUIState(state).walletPopupIsVisible;
+export const gweiPopupIsVisible = (state) => getUIState(state).gweiPopupIsVisible;
+export const depotPopupIsVisible = (state) => getUIState(state).depotPopupIsVisible;
+export const getSynthSearch = (state) => getUIState(state).synthSearch;
+export const getHideSmallValueAssets = (state) => getUIState(state).hideSmallValueAssets;
+export const getMarketsAssetFilter = (state) => getUIState(state).marketsAssetFilter;
+export const getBlurBackgroundIsVisible = (state) => getUIState(state).blurBackgroundIsVisible;
 
 export default uiSlice.reducer;
 

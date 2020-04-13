@@ -59,7 +59,7 @@ const StyledCardBody = styled(Card.Body)`
 const Message = styled.div`
 	${absoluteCenteredCSS};
 	${labelMediumCSS};
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	text-transform: uppercase;
 `;
 

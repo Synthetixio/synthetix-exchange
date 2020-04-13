@@ -5,14 +5,14 @@ import { DataSmall } from '../../Typography';
 
 export const Table = styled.table`
 	width: 100%;
-	height: ${props => (props.height ? props.height : '100%')};
+	height: ${(props) => (props.height ? props.height : '100%')};
 	display: flex;
 	flex-direction: column;
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background-color: ${(props) => props.theme.colors.surfaceL2};
 `;
 
 export const Thead = styled.thead`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 `;
 
 export const Tbody = styled.tbody`
@@ -59,7 +59,7 @@ export const Td = styled.td`
 
 export const DataLabel = styled(DataSmall)`
 	text-transform: none;
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	font-family: 'apercu-regular', sans-serif;
 	${color};
 `;

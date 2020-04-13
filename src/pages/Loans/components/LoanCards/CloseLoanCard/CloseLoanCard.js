@@ -155,7 +155,7 @@ CloseLoanCard.propTypes = {
 };
 
 const StyledCard = styled(Card)`
-	${props =>
+	${(props) =>
 		!props.isInteractive &&
 		css`
 			opacity: 0.3;
@@ -168,7 +168,7 @@ const LoanInfoContainer = styled.div`
 	grid-row-gap: 15px;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),

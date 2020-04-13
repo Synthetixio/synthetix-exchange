@@ -45,7 +45,7 @@ const App = ({ isAppReady, currentTheme }) => {
 				<Switch>
 					<Route
 						path={ROUTES.TradeMatch}
-						render={routeProps => (
+						render={(routeProps) => (
 							<MainLayout isAppReady={isAppReady}>
 								<Trade {...routeProps} />
 							</MainLayout>
@@ -53,7 +53,7 @@ const App = ({ isAppReady, currentTheme }) => {
 					/>
 					<Route
 						path={ROUTES.Trade}
-						render={routeProps => (
+						render={(routeProps) => (
 							<MainLayout isAppReady={isAppReady}>
 								<Trade {...routeProps} />
 							</MainLayout>
@@ -61,7 +61,7 @@ const App = ({ isAppReady, currentTheme }) => {
 					/>
 					<Route
 						path={ROUTES.Loans}
-						render={routeProps => (
+						render={(routeProps) => (
 							<MainLayout isAppReady={isAppReady}>
 								<Loans {...routeProps} />
 							</MainLayout>
@@ -69,7 +69,7 @@ const App = ({ isAppReady, currentTheme }) => {
 					/>
 					<ProtectedRoute
 						path={ROUTES.Assets.Home}
-						render={routeProps => (
+						render={(routeProps) => (
 							<MainLayout isAppReady={isAppReady}>
 								<Assets {...routeProps} />
 							</MainLayout>
@@ -77,7 +77,7 @@ const App = ({ isAppReady, currentTheme }) => {
 					/>
 					<Route
 						path={ROUTES.Markets}
-						render={routeProps => (
+						render={(routeProps) => (
 							<HomeLayout>
 								<Markets {...routeProps} />
 							</HomeLayout>
@@ -85,7 +85,7 @@ const App = ({ isAppReady, currentTheme }) => {
 					/>
 					<Route
 						path={ROUTES.Home}
-						render={routeProps => (
+						render={(routeProps) => (
 							<HomeLayout>
 								<Home {...routeProps} />
 							</HomeLayout>
@@ -102,7 +102,7 @@ App.propTypes = {
 	currentTheme: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	currentTheme: getCurrentTheme(state),
 });
 

@@ -16,7 +16,7 @@ const SupportLink = memo(() => (
 ));
 
 const StyledQuestionMark = styled(QuestionMark)`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
 export default SupportLink;

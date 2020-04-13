@@ -96,7 +96,7 @@ const OrderBookCard = ({
 				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
 				removePendingTransaction(latestTransactionHash);
 				const status = await waitForTransaction(latestTransactionHash);
-				const matchingTransaction = transactions.find(tx => tx.hash === latestTransactionHash);
+				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
 				if (status) {
 					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
 				} else {
@@ -123,7 +123,7 @@ const OrderBookCard = ({
 		<StyledCard>
 			<StyledCardBody>
 				<Tabs>
-					{tabContent.map(tab => {
+					{tabContent.map((tab) => {
 						return (
 							<Tab
 								key={tab.id}
@@ -168,12 +168,12 @@ const Tab = styled.button`
 	outline: none;
 	border: none;
 	cursor: pointer;
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.active ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 	&:hover {
-		background-color: ${props => props.theme.colors.surfaceL3};
+		background-color: ${(props) => props.theme.colors.surfaceL3};
 	}
-	${props =>
+	${(props) =>
 		props.isDisabled &&
 		css`
 			opacity: 0.2;
@@ -181,7 +181,7 @@ const Tab = styled.button`
 		`}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	transactions: getTransactions(state),
 	pendingTransactions: getPendingTransactions(state),
 	walletInfo: getWalletInfo(state),

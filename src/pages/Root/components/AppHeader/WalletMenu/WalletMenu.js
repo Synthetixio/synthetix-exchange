@@ -98,16 +98,14 @@ const WalletMenu = ({
 						noResultsMessage={
 							isLoadedWalletBalances && synthsWalletBalances.length === 0 ? (
 								<TableNoResults>{t('assets.overview.your-synths.table.no-results')}</TableNoResults>
-							) : (
-								undefined
-							)
+							) : undefined
 						}
 						isLoading={isFetchingWalletBalances && !isLoadedWalletBalances}
 						columns={[
 							{
 								Header: t('assets.overview.your-synths.table.asset-col'),
 								accessor: 'name',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 								),
 								width: 100,
@@ -117,7 +115,7 @@ const WalletMenu = ({
 							{
 								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Tooltip
 										title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 										placement="top"
@@ -133,7 +131,7 @@ const WalletMenu = ({
 							{
 								Header: t('assets.overview.your-synths.table.usd-value-col'),
 								accessor: 'usdBalance',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<span>
 										{formatCurrencyWithSign(
 											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -190,7 +188,7 @@ const Content = styled.div`
 
 const StyledHeadingSmall = styled(HeadingSmall)`
 	font-size: 10px;
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
 const Bottom = styled.div`
@@ -208,7 +206,7 @@ const StyledButton = styled(ButtonPrimarySmall)`
 `;
 
 const CardData = styled(DataMedium)`
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	text-transform: uppercase;
 `;
 
@@ -220,7 +218,7 @@ const StyledFlexCentered = styled(FlexDivCentered)`
 	justify-content: space-between;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	currentWallet: getCurrentWalletAddress(state),
 	totalSynthsBalanceUSD: getTotalSynthsBalanceUSD(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),

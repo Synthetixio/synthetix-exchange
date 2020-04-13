@@ -58,7 +58,7 @@ const Container = styled.div`
 `;
 
 const StyledChartCard = styled(ChartCard)`
-	background-color: ${props => props.theme.colors.white};
+	background-color: ${(props) => props.theme.colors.white};
 	${shiftUpHoverEffectCSS};
 `;
 
@@ -68,7 +68,7 @@ MarketsCharts.propTypes = {
 	marketsLoaded: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 

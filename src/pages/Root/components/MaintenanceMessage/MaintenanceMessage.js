@@ -36,7 +36,7 @@ MaintenanceMessage.propTypes = {
 	currentTheme: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	currentTheme: getCurrentTheme(state),
 });
 

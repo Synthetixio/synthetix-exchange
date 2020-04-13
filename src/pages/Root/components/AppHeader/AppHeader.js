@@ -25,7 +25,7 @@ import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
 
-export const AppHeader = memo(props => {
+export const AppHeader = memo((props) => {
 	const { showThemeToggle, isOnSplashPage, isLoggedIn, ...rest } = props;
 	const { t } = useTranslation();
 
@@ -90,9 +90,9 @@ AppHeader.propTypes = {
 
 export const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentL1};
+	border-color: ${(props) => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 `;
@@ -118,16 +118,16 @@ const MenuLink = styled(Link)`
 	padding: 6px 10px;
 	display: flex;
 	align-items: center;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 	height: 32px;
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
-		color: ${props => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
 	}
 `;
 
@@ -147,7 +147,7 @@ const MenuItemsRight = styled(MenuItems)`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
 

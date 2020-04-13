@@ -31,12 +31,12 @@ import { SYNTHS_MAP } from 'constants/currency';
 
 import ViewLink, { ArrowIcon } from './ViewLink';
 
-const countDecimals = value => {
+const countDecimals = (value) => {
 	if (Math.floor(value) === value) return 0;
 	return value.toString().split('.')[1].length || 0;
 };
 
-const getPrecision = amount => {
+const getPrecision = (amount) => {
 	const amountToNumber = Number(amount);
 	if (amountToNumber >= 1000 || countDecimals(amountToNumber) === 0) return 0;
 	if (countDecimals(amountToNumber) <= 2) return 2;
@@ -53,13 +53,13 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.date'),
 					accessor: 'date',
-					Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+					Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
 				{
 					Header: t('trade.order-book-card.table.pair'),
 					accessor: 'pair',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<Currency.Pair
 							baseCurrencyKey={cellProps.row.original.base}
 							quoteCurrencyKey={cellProps.row.original.quote}
@@ -71,7 +71,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.buying'),
 					accessor: 'toAmount',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 							placement="top"
@@ -90,7 +90,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.selling'),
 					accessor: 'fromAmount',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 							placement="top"
@@ -109,7 +109,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.price'),
 					accessor: 'priceUSD',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 							placement="top"
@@ -128,19 +128,19 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.total'),
 					accessor: 'totalUSD',
-					Cell: cellProps => <span>${cellProps.cell.value}</span>,
+					Cell: (cellProps) => <span>${cellProps.cell.value}</span>,
 					sortable: true,
 				},
 				{
 					Header: t('trade.order-book-card.table.status'),
 					accessor: 'status',
-					Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
+					Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
 					sortable: true,
 				},
 				{
 					Header: t('trade.order-book-card.table.verify'),
 					accessor: 'hash',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<ViewLink
 							isDisabled={!cellProps.cell.value}
 							href={getEtherscanTxLink(networkId, cellProps.cell.value)}
@@ -161,7 +161,7 @@ const StyledTable = styled(Table)`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 	transactions: getTransactions(state),
 	pendingTransactions: getPendingTransactions(state),

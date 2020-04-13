@@ -34,7 +34,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 						<XAxis
 							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 							dataKey="timestamp"
-							tickFormatter={val =>
+							tickFormatter={(val) =>
 								period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
 							}
 							reversed={true}
@@ -42,7 +42,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 						<YAxis
 							type="number"
 							domain={['auto', 'auto']}
-							tickFormatter={val => `${synthSign}${formatCurrencyWithPrecision(val)}`}
+							tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
 							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 							orientation="right"
 						/>
@@ -63,8 +63,8 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 								color: colors.fontTertiary,
 								fontSize: '12px',
 							}}
-							formatter={value => `${synthSign}${formatCurrencyWithPrecision(value)}`}
-							labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
+							formatter={(value) => `${synthSign}${formatCurrencyWithPrecision(value)}`}
+							labelFormatter={(label) => format(label, 'Do MMM YY | HH:mm')}
 						/>
 					</AreaChart>
 				</ResponsiveContainer>
@@ -85,7 +85,7 @@ const ChartContainer = styled.div`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthPair: getSynthPair(state),
 	synthsMap: getAvailableSynthsMap(state),
 });

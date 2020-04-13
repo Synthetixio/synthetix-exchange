@@ -48,7 +48,7 @@ export const Container = styled.div`
 `;
 
 export const NetworkData = styled(DataSmall)`
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 `;
 
 export const NetworkDataRow = styled(FlexDivRow)`

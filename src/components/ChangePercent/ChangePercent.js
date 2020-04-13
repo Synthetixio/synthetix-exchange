@@ -11,18 +11,19 @@ export const ChangePercent = memo(({ value, isLabel = false, ...rest }) => (
 ));
 
 const Container = styled.span`
-	${props =>
+	${(props) =>
 		props.isLabel
 			? css`
 					border-radius: 1px;
 					padding: 4px 8px;
-					color: ${props => props.theme.colors.white};
+					color: ${(props) => props.theme.colors.white};
 
-					background-color: ${props =>
+					background-color: ${(props) =>
 						props.isPositive ? props.theme.colors.green : props.theme.colors.red};
 			  `
 			: css`
-					color: ${props => (props.isPositive ? props.theme.colors.green : props.theme.colors.red)};
+					color: ${(props) =>
+						props.isPositive ? props.theme.colors.green : props.theme.colors.red};
 			  `}
 `;
 

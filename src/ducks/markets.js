@@ -15,7 +15,7 @@ import {
 
 import { getAvailableMarketNames } from 'constants/currency';
 
-const getMarketDefaults = marketPairs =>
+const getMarketDefaults = (marketPairs) =>
 	marketPairs.reduce((markets, marketPair) => {
 		const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
 
@@ -44,7 +44,7 @@ export const marketsSlice = createSlice({
 		isLoading: false,
 	},
 	reducers: {
-		fetchMarketsRequest: state => {
+		fetchMarketsRequest: (state) => {
 			state.loadingError = null;
 			state.isLoading = true;
 		},
@@ -61,15 +61,15 @@ export const marketsSlice = createSlice({
 	},
 });
 
-export const getMarketsState = state => state.markets;
-export const getMarketsMap = state => getMarketsState(state).markets;
-export const getMarketsLoadingError = state => getMarketsState(state).loadingError;
-export const getMarketsList = createSelector(getMarketsMap, marketsMap =>
+export const getMarketsState = (state) => state.markets;
+export const getMarketsMap = (state) => getMarketsState(state).markets;
+export const getMarketsLoadingError = (state) => getMarketsState(state).loadingError;
+export const getMarketsList = createSelector(getMarketsMap, (marketsMap) =>
 	Object.values(marketsMap)
 );
 
 const mapExchangeRatesToMarkets = (markets, exchangeRates) =>
-	markets.map(market => ({
+	markets.map((market) => ({
 		...market,
 		lastPrice:
 			exchangeRates == null
@@ -87,7 +87,7 @@ export const getFilteredMarkets = createSelector(
 	getRatesExchangeRates,
 	(marketsList, assetFilter, exchangeRates) =>
 		mapExchangeRatesToMarkets(
-			marketsList.filter(market => market.quoteCurrencyKey === assetFilter),
+			marketsList.filter((market) => market.quoteCurrencyKey === assetFilter),
 			exchangeRates
 		)
 );
@@ -98,8 +98,8 @@ export const getAllMarkets = createSelector(
 	(marketsList, exchangeRates) => mapExchangeRatesToMarkets(marketsList, exchangeRates)
 );
 
-export const getIsLoadedFilteredMarkets = createSelector(getFilteredMarkets, filteredMarkets =>
-	filteredMarkets.every(market => market.isLoaded)
+export const getIsLoadedFilteredMarkets = createSelector(getFilteredMarkets, (filteredMarkets) =>
+	filteredMarkets.every((market) => market.isLoaded)
 );
 
 export const getOrderedMarkets = createSelector(
@@ -136,7 +136,7 @@ function* fetchMarkets(action) {
 	const { pairs: marketPairs } = action.payload;
 
 	try {
-		yield all(marketPairs.map(marketPair => fetchMarket(marketPair)));
+		yield all(marketPairs.map((marketPair) => fetchMarket(marketPair)));
 	} catch (e) {
 		yield put(fetchMarketsFailure({ error: e.message }));
 	}
