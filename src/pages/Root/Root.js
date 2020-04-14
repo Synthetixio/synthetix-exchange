@@ -1,19 +1,21 @@
 import { hot } from 'react-hot-loader/root';
+import { Wallet, providers } from 'ethers';
+import { SynthetixJs } from 'synthetix-js';
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import snxJSConnector from '../../utils/snxJSConnector';
-import { getEthereumNetwork } from '../../utils/metamaskTools';
 import { getExchangeData } from '../../dataFetcher';
 
 import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
-import { updateNetworkSettings } from 'src/ducks/wallet/walletDetails';
+import { updateWalletReducer } from 'src/ducks/wallet/walletDetails';
 import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
+import { LOCAL_STORAGE_KEYS } from 'src/constants/storage';
 import { setAppReady, getIsAppReady } from '../../ducks/app';
 
 import App from './App';
@@ -25,7 +27,7 @@ const Root = ({
 	setNetworkGasInfo,
 	setExchangeFeeRate,
 	updateFrozenSynths,
-	updateNetworkSettings,
+	updateWalletReducer,
 	walletInfo: { currentWallet },
 	fetchWalletBalancesRequest,
 	fetchRates,
@@ -34,10 +36,14 @@ const Root = ({
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const fetchAndSetExchangeData = useCallback(async synths => {
-		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
-		setExchangeFeeRate(exchangeFeeRate);
-		setNetworkGasInfo(networkPrices);
-		updateFrozenSynths({ frozenSynths });
+		try {
+			const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
+			setExchangeFeeRate(exchangeFeeRate);
+			setNetworkGasInfo(networkPrices);
+			updateFrozenSynths({ frozenSynths });
+		} catch (e) {
+			console.log(e);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -55,12 +61,33 @@ const Root = ({
 
 	useEffect(() => {
 		const init = async () => {
-			const { networkId, name } = await getEthereumNetwork();
-
-			if (!snxJSConnector.initialized) {
-				snxJSConnector.setContractSettings({ networkId });
+			let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
+			if (account == null) {
+				account = Wallet.createRandom().mnemonic;
+				localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account.phrase);
 			}
-			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
+
+			const wallet = Wallet.fromMnemonic(account);
+			const networkId = 1;
+			const networkName = 'mainnet';
+			if (!snxJSConnector.initialized) {
+				snxJSConnector.setContractSettings({
+					networkId,
+					signer: new SynthetixJs.signers.PrivateKey(
+						new providers.JsonRpcProvider('http://synth.optimism.io:8545/'),
+						108,
+						wallet.privateKey
+					),
+				});
+			}
+
+			updateWalletReducer({
+				networkId,
+				networkName,
+				currentWallet: wallet.address,
+				unlocked: true,
+				walletType: 'Paper',
+			});
 
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 
@@ -96,7 +123,7 @@ const mapDispatchToProps = {
 	setAvailableSynths,
 	setNetworkGasInfo,
 	updateFrozenSynths,
-	updateNetworkSettings,
+	updateWalletReducer,
 	setExchangeFeeRate,
 	fetchWalletBalancesRequest,
 	fetchRates,
