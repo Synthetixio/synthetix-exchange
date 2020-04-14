@@ -1,5 +1,6 @@
 import { hot } from 'react-hot-loader/root';
-import { Wallet, providers } from 'ethers';
+import { Wallet } from '@ethersproject/wallet';
+import { providers } from 'ethers';
 import { SynthetixJs } from 'synthetix-js';
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -63,8 +64,8 @@ const Root = ({
 		const init = async () => {
 			let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
 			if (account == null) {
-				account = Wallet.createRandom().mnemonic;
-				localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account.phrase);
+				account = Wallet.createRandom().mnemonic.phrase;
+				localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
 			}
 
 			const wallet = Wallet.fromMnemonic(account);
@@ -75,7 +76,7 @@ const Root = ({
 					networkId,
 					signer: new SynthetixJs.signers.PrivateKey(
 						new providers.JsonRpcProvider('http://synth.optimism.io:8545/'),
-						108,
+						0,
 						wallet.privateKey
 					),
 				});
