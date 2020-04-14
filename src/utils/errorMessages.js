@@ -12,6 +12,7 @@ const ERROR_CODES = {
 	Coinbase: {
 		'-32603': USER_DENIED,
 	},
+	Paper: {},
 };
 
 export default (error, walletType) => {
