@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import {
 	getTop10Leaders,
 	getIsLoadingLeaderboard,
-	getIsRefreshingLeaderboard,
 	getIsLoadedLeaderboard,
 	fetchLeaderboardRequest,
 } from 'src/ducks/leaderboard';
@@ -28,7 +27,6 @@ const LeaderboardPopup = ({
 	hideLeaderboardPopup,
 	isLoadingLeaderboard,
 	isLoadedLeaderboard,
-	isRefreshingLeaderboard,
 	top10leaders,
 	fetchLeaderboardRequest,
 }) => {
@@ -167,7 +165,6 @@ const mapStateToProps = state => ({
 	top10leaders: getTop10Leaders(state),
 	isLoadingLeaderboard: getIsLoadingLeaderboard(state),
 	isLoadedLeaderboard: getIsLoadedLeaderboard(state),
-	isRefreshingLeaderboard: getIsRefreshingLeaderboard(state),
 });
 
 const mapDispatchToProps = {
