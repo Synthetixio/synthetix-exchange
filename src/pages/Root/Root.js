@@ -61,51 +61,47 @@ const Root = ({
 	}, [isAppReady, fetchRates]);
 
 	useEffect(() => {
-		const init = () => {
-			try {
-				let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
-				if (account == null) {
-					account = Wallet.createRandom().mnemonic.phrase;
-					localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
-				}
-
-				const wallet = Wallet.fromMnemonic(account);
-				const networkId = 1;
-				const networkName = 'mainnet';
-				if (!snxJSConnector.initialized) {
-					snxJSConnector.setContractSettings({
-						networkId,
-						signer: new SynthetixJs.signers.PrivateKey(
-							new providers.JsonRpcProvider('http://synth.optimism.io:8545/'),
-							0,
-							wallet.privateKey
-						),
-					});
-				}
-
-				updateWalletReducer({
-					networkId,
-					networkName,
-					currentWallet: wallet.address,
-					unlocked: true,
-					walletType: 'Paper',
-				});
-
-				const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
-
-				setAvailableSynths({ synths });
-				setAppReady();
-				fetchAndSetExchangeData(synths);
-
-				clearInterval(intervalId);
-				const _intervalId = setInterval(() => {
-					fetchAndSetExchangeData(synths);
-					fetchWalletBalancesRequest();
-				}, REFRESH_INTERVAL);
-				setIntervalId(_intervalId);
-			} catch (e) {
-				console.log(e);
+		const init = async () => {
+			let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
+			if (account == null) {
+				account = Wallet.createRandom().mnemonic.phrase;
+				localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
 			}
+
+			const provider = new providers.JsonRpcProvider('https://synth.optimism.io');
+			const wallet = Wallet.fromMnemonic(account);
+			const networkId = 108;
+			const networkName = 'ovm';
+			const signer = new SynthetixJs.signers.PrivateKey(provider, networkId, wallet.privateKey);
+
+			if (!snxJSConnector.initialized) {
+				snxJSConnector.setContractSettings({
+					networkId,
+					signer,
+					provider,
+				});
+			}
+
+			updateWalletReducer({
+				networkId,
+				networkName,
+				currentWallet: wallet.address,
+				unlocked: true,
+				walletType: 'Paper',
+			});
+
+			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
+
+			setAvailableSynths({ synths });
+			setAppReady();
+			fetchAndSetExchangeData(synths);
+
+			clearInterval(intervalId);
+			const _intervalId = setInterval(() => {
+				fetchAndSetExchangeData(synths);
+				fetchWalletBalancesRequest();
+			}, REFRESH_INTERVAL);
+			setIntervalId(_intervalId);
 		};
 
 		init();
