@@ -221,11 +221,11 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 const Container = styled.div`
 	width: 100%;
 
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 `;
 
 const Header = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	width: 100%;
 	height: 40px;
 	display: flex;
@@ -253,7 +253,7 @@ const DataBlock = styled.div`
 	max-width: 20%;
 	min-width: 115px;
 	margin-top: 6px;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	justify-content: center;
 	align-items: flex-start;
 	display: flex;

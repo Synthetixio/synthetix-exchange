@@ -80,7 +80,7 @@ const PairListPanel = ({
 			onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
 			width={isTabletOrMobile ? '100%' : '300px'}
 			header={
-				<DropdownPanelHeader>
+				<DropdownPanelHeader isOpen={pairListDropdownIsOpen}>
 					<Currency.Pair
 						baseCurrencyKey={base.name}
 						quoteCurrencyKey={quote.name}
@@ -212,7 +212,11 @@ const DropdownPanelHeader = styled(FlexDiv)`
 	align-items: center;
 	height: ${CARD_HEIGHT};
 	padding: 0 12px;
-	background-color: ${props => props.theme.colors.accentL1};
+	background: ${props =>
+		props.isOpen ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
+	&:hover {
+		background: ${props => props.theme.colors.accentL2};
+	}
 `;
 
 const mapStateToProps = state => ({
