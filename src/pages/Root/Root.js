@@ -68,17 +68,17 @@ const Root = ({
 				localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
 			}
 
+			const provider = new providers.JsonRpcProvider('https://synth.optimism.io');
 			const wallet = Wallet.fromMnemonic(account);
-			const networkId = 1;
-			const networkName = 'mainnet';
+			const networkId = 108;
+			const networkName = 'ovm';
+			const signer = new SynthetixJs.signers.PrivateKey(provider, networkId, wallet.privateKey);
+
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({
 					networkId,
-					signer: new SynthetixJs.signers.PrivateKey(
-						new providers.JsonRpcProvider('http://synth.optimism.io:8545/'),
-						0,
-						wallet.privateKey
-					),
+					signer,
+					provider,
 				});
 			}
 
