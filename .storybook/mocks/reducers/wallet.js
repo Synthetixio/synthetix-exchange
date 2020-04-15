@@ -10,6 +10,10 @@ export const walletReducerDefaults = {
 	balances: null,
 	networkId: defaultNetwork.networkId,
 	networkName: defaultNetwork.name,
+	twitterFaucet: 0,
+	twitterId: null,
+	twitterHandle: null,
+	permissionSignature: null,
 };
 
 export const loggedOutUser = {

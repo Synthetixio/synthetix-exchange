@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { hideTwitterPopup } from 'src/ducks/ui';
-import { getCurrentWalletAddress } from 'src/ducks/wallet/walletDetails';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
 import { ReactComponent as QuoteRIcon } from 'src/assets/images/l2/quoteL.svg';
@@ -40,11 +40,11 @@ const getTweet = address => {
 	};
 };
 
-const TwitterPopup = ({ hideTwitterPopup, currentWallet }) => {
+const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
+	const currentWallet = walletInfo.currentWallet;
 	const tweet = getTweet(currentWallet);
 
-	const alreadyFauceted = false;
-	const justFauceted = false;
+	const alreadyFauceted = walletInfo.twitterFaucet > 0;
 
 	const [polling, setPolling] = useState(false);
 	// initialize twitter stuff
@@ -92,31 +92,26 @@ const TwitterPopup = ({ hideTwitterPopup, currentWallet }) => {
 	}, []);
 
 	useEffect(() => {
-		if (justFauceted) {
+		if (alreadyFauceted) {
 			setPolling(false);
+			hideTwitterPopup();
 		}
-	}, [justFauceted]);
+	}, [alreadyFauceted, hideTwitterPopup]);
 
 	function MetaInformation() {
-		if (alreadyFauceted) {
-			return (
-				<StyledBody textStyle="gradient">
-					{justFauceted ? `Here are your tokens.` : 'Already granted tokens.'}
-				</StyledBody>
-			);
-		} else if (twitterLoadedError) {
-			return <StyledBody textStyle="gradient">There was an error loading Twitter.</StyledBody>;
+		if (twitterLoadedError) {
+			return <span>There was an error loading Twitter.</span>;
 		} else if (!twitterLoaded) {
-			return <StyledBody textStyle="gradient">Loading Twitter...</StyledBody>;
+			return <span>Loading Twitter...</span>;
 		} else if (polling) {
 			return (
 				<>
-					<StyledBody textStyle="gradient">
+					<span>
 						<TweetListener>
 							<TweetLineChartIcon />
 							listening for your Tweet...
 						</TweetListener>
-					</StyledBody>
+					</span>
 				</>
 			);
 		} else {
@@ -163,8 +158,6 @@ const TwitterPopup = ({ hideTwitterPopup, currentWallet }) => {
 		</Popup>
 	);
 };
-
-const StyledBody = styled.span``;
 
 const TweetContainer = styled.div`
 	a {
@@ -274,7 +267,7 @@ const TweetListener = styled.div`
 `;
 
 const mapStateToProps = state => ({
-	currentWallet: getCurrentWalletAddress(state),
+	walletInfo: getWalletInfo(state),
 });
 
 const mapDispatchToProps = {
