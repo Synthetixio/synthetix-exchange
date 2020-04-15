@@ -61,47 +61,51 @@ const Root = ({
 	}, [isAppReady, fetchRates]);
 
 	useEffect(() => {
-		const init = async () => {
-			let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
-			if (account == null) {
-				account = Wallet.createRandom().mnemonic.phrase;
-				localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
-			}
+		const init = () => {
+			try {
+				let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
+				if (account == null) {
+					account = Wallet.createRandom().mnemonic.phrase;
+					localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
+				}
 
-			const provider = new providers.JsonRpcProvider('https://synth.optimism.io');
-			const wallet = Wallet.fromMnemonic(account);
-			const networkId = 108;
-			const networkName = 'ovm';
-			const signer = new SynthetixJs.signers.PrivateKey(provider, networkId, wallet.privateKey);
+				const provider = new providers.JsonRpcProvider('https://synth.optimism.io');
+				const wallet = Wallet.fromMnemonic(account);
+				const networkId = 108;
+				const networkName = 'ovm';
+				const signer = new SynthetixJs.signers.PrivateKey(provider, networkId, wallet.privateKey);
 
-			if (!snxJSConnector.initialized) {
-				snxJSConnector.setContractSettings({
+				if (!snxJSConnector.initialized) {
+					snxJSConnector.setContractSettings({
+						networkId,
+						signer,
+						provider,
+					});
+				}
+
+				updateWalletReducer({
 					networkId,
-					signer,
-					provider,
+					networkName,
+					currentWallet: wallet.address,
+					unlocked: true,
+					walletType: 'Paper',
 				});
-			}
 
-			updateWalletReducer({
-				networkId,
-				networkName,
-				currentWallet: wallet.address,
-				unlocked: true,
-				walletType: 'Paper',
-			});
+				const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
 
-			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
-
-			setAvailableSynths({ synths });
-			setAppReady();
-			fetchAndSetExchangeData(synths);
-
-			clearInterval(intervalId);
-			const _intervalId = setInterval(() => {
+				setAvailableSynths({ synths });
+				setAppReady();
 				fetchAndSetExchangeData(synths);
-				fetchWalletBalancesRequest();
-			}, REFRESH_INTERVAL);
-			setIntervalId(_intervalId);
+
+				clearInterval(intervalId);
+				const _intervalId = setInterval(() => {
+					fetchAndSetExchangeData(synths);
+					fetchWalletBalancesRequest();
+				}, REFRESH_INTERVAL);
+				setIntervalId(_intervalId);
+			} catch (e) {
+				console.log(e);
+			}
 		};
 
 		init();
