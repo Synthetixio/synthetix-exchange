@@ -88,10 +88,8 @@ const Root = ({
 
 				const walletAddr = wallet.address;
 				const permissionString = getPermissionString(walletAddr);
-				const [permissionSignature, addressData] = await Promise.all([
-					wallet.signMessage(permissionString),
-					mockGetAddressData(walletAddr, permissionSignature),
-				]);
+				const permissionSignature = await wallet.signMessage(permissionString);
+				const addressData = await mockGetAddressData(walletAddr, permissionSignature);
 
 				if (addressData) {
 					const networkId = 108;
@@ -128,7 +126,7 @@ const Root = ({
 						fetchWalletBalancesRequest();
 					}, REFRESH_INTERVAL);
 					setIntervalId(_intervalId);
-					console.log(addressData);
+
 					if (addressData.twitterFaucet === 0) {
 						setAddressDataIntervalDelay(ADDRESS_DATA_INTERVAL);
 					}
