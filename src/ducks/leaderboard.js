@@ -61,8 +61,8 @@ function* fetchLeaderboard() {
 		yield put(
 			fetchLeaderboardSuccess({
 				data: [
-					{ twitterUsername: 'ev', assetValue: 10000 },
-					{ twitterUsername: 'xx', assetValue: 10000 },
+					{ twitterHandle: 'ev', assetValue: 10000 },
+					{ twitterHandle: 'xx', assetValue: 10000 },
 				],
 			})
 		);

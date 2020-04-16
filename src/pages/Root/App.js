@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider } from 'styled-components';
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import history from '../../utils/history';
@@ -15,6 +15,8 @@ import {
 	gweiPopupIsVisible,
 	walletPopupIsVisible,
 } from '../../ducks/ui';
+
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import GlobalEventsGate from '../../gates/GlobalEventsGate';
 
@@ -35,42 +37,53 @@ const App = ({
 	twitterPopupIsVisible,
 	gweiPopupIsVisible,
 	walletPopupIsVisible,
-}) => {
-	return (
-		<ThemeProvider theme={darkTheme}>
-			<Router history={history}>
-				{isAppReady && (
-					<>
-						<GlobalEventsGate />
-						{walletPopupIsVisible && <WalletPopup />}
-						{gweiPopupIsVisible && <GweiPopup />}
-						{leaderboardPopupIsVisible && <LeaderboardPopup />}
-						{twitterPopupIsVisible && <TwitterPopup />}
-					</>
-				)}
-				<Switch>
-					<Route
-						path={ROUTES.TradeMatch}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Trade {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Trade}
-						render={routeProps => (
-							<MainLayout isAppReady={isAppReady}>
-								<Trade {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route path={ROUTES.Home} component={Onboarding} />
-				</Switch>
-			</Router>
-		</ThemeProvider>
-	);
-};
+	walletInfo,
+}) => (
+	<ThemeProvider theme={darkTheme}>
+		<Router history={history}>
+			{isAppReady && (
+				<>
+					<GlobalEventsGate />
+					{walletPopupIsVisible && <WalletPopup />}
+					{gweiPopupIsVisible && <GweiPopup />}
+					{leaderboardPopupIsVisible && <LeaderboardPopup />}
+					{twitterPopupIsVisible && <TwitterPopup />}
+				</>
+			)}
+			<Switch>
+				<Route
+					path={ROUTES.TradeMatch}
+					render={routeProps => (
+						<>
+							{walletInfo.twitterFaucet > 0 ? (
+								<MainLayout isAppReady={isAppReady}>
+									<Trade {...routeProps} />
+								</MainLayout>
+							) : (
+								<Redirect to={ROUTES.Home} />
+							)}
+						</>
+					)}
+				/>
+				<Route
+					path={ROUTES.Trade}
+					render={routeProps => (
+						<>
+							{walletInfo.twitterFaucet > 0 ? (
+								<MainLayout isAppReady={isAppReady}>
+									<Trade {...routeProps} />
+								</MainLayout>
+							) : (
+								<Redirect to={ROUTES.Home} />
+							)}
+						</>
+					)}
+				/>
+				<Route path={ROUTES.Home} component={Onboarding} />
+			</Switch>
+		</Router>
+	</ThemeProvider>
+);
 
 App.propTypes = {
 	isAppReady: PropTypes.bool.isRequired,
@@ -78,6 +91,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = state => ({
+	walletInfo: getWalletInfo(state),
 	currentTheme: getCurrentTheme(state),
 	leaderboardPopupIsVisible: getLeaderboardPopupIsVisible(state),
 	twitterPopupIsVisible: getTwitterPopupIsVisible(state),

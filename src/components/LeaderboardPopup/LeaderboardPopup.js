@@ -58,7 +58,7 @@ const LeaderboardPopup = ({
 						},
 						{
 							Header: 'TWITTER HANDLE',
-							accessor: 'twitterUsername',
+							accessor: 'twitterHandle',
 							Cell: cellProps => (
 								<StyledLink to={`https://twitter.com/${cellProps.cell.value}`} isExternal={true}>
 									@{cellProps.cell.value}

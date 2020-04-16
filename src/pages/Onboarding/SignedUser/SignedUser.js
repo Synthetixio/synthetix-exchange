@@ -12,9 +12,9 @@ import { textShadowCSS, gradientTextCSS, FlexDivCenteredCol } from 'src/shared/c
 
 import { media } from 'src/shared/media';
 
-const SignedUser = memo(({ twitterUsername }) => (
+const SignedUser = memo(({ twitterHandle }) => (
 	<FlexDivCenteredCol style={{ padding: '0 20px' }}>
-		<Heading>Here are your tokens, @{twitterUsername}:</Heading>
+		<Heading>Here are your tokens, @{twitterHandle}:</Heading>
 		<Subtitle>
 			Your wallet now has OVM sUSD, start trading now to experience the speed of synthetix.exchange
 			powered by the OVM.

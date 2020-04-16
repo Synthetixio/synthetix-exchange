@@ -3,20 +3,24 @@ import { connect } from 'react-redux';
 import styled, { createGlobalStyle } from 'styled-components';
 import AppHeader from 'src/pages/Root/components/AppHeader';
 
-import { getTwitterUsername } from 'src/ducks/wallet/walletDetails';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 
 import { CenteredContent } from 'src/shared/commonStyles';
 
 import NewUser from './NewUser';
 import SignedUser from './SignedUser';
 
-const Splash = memo(({ twitterUsername }) => (
+const Splash = memo(({ walletInfo }) => (
 	<>
 		<GlobalStyle />
 		<Container>
 			<AppHeader isOnSplashPage={true} />
 			<Content>
-				{twitterUsername ? <SignedUser twitterUsername={twitterUsername} /> : <NewUser />}
+				{walletInfo.twitterFaucet > 0 ? (
+					<SignedUser twitterHandle={walletInfo.twitterHandle} />
+				) : (
+					<NewUser />
+				)}
 			</Content>
 		</Container>
 	</>
@@ -41,7 +45,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const mapStateToProps = state => ({
-	twitterUsername: getTwitterUsername(state),
+	walletInfo: getWalletInfo(state),
 });
 
 export default connect(mapStateToProps, null)(Splash);
