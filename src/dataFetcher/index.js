@@ -2,6 +2,7 @@ import { getGasInfo } from '../utils/networkUtils';
 import snxJSConnector from '../utils/snxJSConnector';
 import { bytesFormatter, bigNumberFormatter, parseBytes32String } from '../utils/formatters';
 import isEmpty from 'lodash/isEmpty';
+import compact from 'lodash/compact';
 
 const getExchangeFeeRate = async () => {
 	const { formatEther } = snxJSConnector.snxJS.utils;
@@ -14,13 +15,9 @@ const getNetworkPrices = async () => {
 };
 
 const getFrozenSynths = async () => {
-	const frozenSynths = {};
-	const result = await snxJSConnector.synthSummaryUtilContract.frozenSynths();
-	result.forEach((synth) => {
-		const synthKeyString = parseBytes32String(synth);
-		if (synthKeyString) frozenSynths[synthKeyString] = true;
-	});
-	return frozenSynths;
+	const frozenSynths = await snxJSConnector.synthSummaryUtilContract.frozenSynths();
+
+	return compact(frozenSynths.map(parseBytes32String));
 };
 
 export const getExchangeData = async (synths) => {

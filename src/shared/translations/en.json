@@ -105,6 +105,15 @@
 			}
 		}
 	},
+	"tokens": {
+		"table": {
+			"token-col": "token",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"7-day-trend-col": "7 day trend",
+			"trade-now-col": "trade now"
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"

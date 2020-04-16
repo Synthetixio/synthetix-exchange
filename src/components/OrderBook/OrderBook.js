@@ -19,6 +19,7 @@ const BookContent = ({ tab, transactions, pastTransactions, onScrollPaging }) =>
 		case 'Your trades':
 		case 'All trades':
 			return <PastTransactions transactions={pastTransactions} onScrollPaging={onScrollPaging} />;
+		default:
 	}
 };
 

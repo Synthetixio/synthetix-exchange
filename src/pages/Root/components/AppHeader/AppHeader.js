@@ -48,6 +48,9 @@ export const AppHeader = memo((props) => {
 						<MenuLink to={ROUTES.Markets}>{t('header.links.markets')}</MenuLink>
 					</MenuLinkItem>
 					<MenuLinkItem>
+						<MenuLink to={ROUTES.Tokens.Home}>{t('header.links.tokens')}</MenuLink>
+					</MenuLinkItem>
+					<MenuLinkItem>
 						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
 					</MenuLinkItem>
 					<MenuLinkItem>

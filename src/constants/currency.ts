@@ -54,6 +54,9 @@ import { ReactComponent as sAUDIcon } from '../assets/currencies/synths/sAUD.svg
 import { ReactComponent as sGBPIcon } from '../assets/currencies/synths/sGBP.svg';
 import { ReactComponent as sCHFIcon } from '../assets/currencies/synths/sCHF.svg';
 
+export type CurrencyKey = string;
+export type CurrencyKeys = string[];
+
 export const ASSETS = ['crypto', 'forex', 'fiat', 'equities'];
 export const ASSETS_MAP = keyBy(ASSETS);
 
@@ -194,10 +197,10 @@ export const currencyKeyToIconMap = {
 	[SYNTHS_MAP.sNIKKEI]: sNIKKEIIcon,
 };
 
-export const isSynth = (currencyKey) => !!SYNTHS_MAP[currencyKey];
-export const isCryptoCurrency = (currencyKey) => !!CRYPTO_CURRENCY_MAP[currencyKey];
-export const isFiatCurrency = (currencyKey) => !!FIAT_CURRENCY_MAP[currencyKey];
-export const toMarketPair = (baseCurrencyKey, quoteCurrencyKey) =>
+export const isSynth = (currencyKey: CurrencyKey) => !!SYNTHS_MAP[currencyKey];
+export const isCryptoCurrency = (currencyKey: CurrencyKey) => !!CRYPTO_CURRENCY_MAP[currencyKey];
+export const isFiatCurrency = (currencyKey: CurrencyKey) => !!FIAT_CURRENCY_MAP[currencyKey];
+export const toMarketPair = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
 	`${baseCurrencyKey}-${quoteCurrencyKey}`;
 
 export const FIAT_SYNTHS = [
@@ -210,7 +213,11 @@ export const FIAT_SYNTHS = [
 ];
 
 export const getAvailableMarketNames = memoizeOne(() => {
-	const marketNames = [];
+	const marketNames: Array<{
+		baseCurrencyKey: CurrencyKey;
+		quoteCurrencyKey: CurrencyKey;
+		pair: string;
+	}> = [];
 	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
 	const synths = SYNTHS.filter((synth) => !excludedSynths.includes(synth));
 
@@ -230,17 +237,17 @@ export const getAvailableMarketNames = memoizeOne(() => {
 
 	// Each iteration a crypto synth is added to be skipped in the next one
 	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC
-	const skipCryptoQuotes = [];
+	const skipCryptoQuotes: CurrencyKeys = [];
 
 	// crypto markets trade against all synths (ex fiat, ex existing crypto market)
-	CRYPTO_SYNTHS_BY_MC.forEach((quoteCurrencyKey) => {
+	CRYPTO_SYNTHS_BY_MC.forEach((quoteCurrencyKey: CurrencyKey) => {
 		synths
 			.filter(
-				(baseCurrencyKey) =>
+				(baseCurrencyKey: CurrencyKey) =>
 					quoteCurrencyKey !== baseCurrencyKey &&
 					![...FIAT_SYNTHS, ...skipCryptoQuotes].includes(baseCurrencyKey)
 			)
-			.forEach((baseCurrencyKey) => {
+			.forEach((baseCurrencyKey: CurrencyKey) => {
 				marketNames.push({
 					baseCurrencyKey,
 					quoteCurrencyKey,
@@ -254,6 +261,6 @@ export const getAvailableMarketNames = memoizeOne(() => {
 	return marketNames;
 });
 
-export const getFilteredMarketNames = memoizeOne((quoteCurrencyKey) =>
+export const getFilteredMarketNames = memoizeOne((quoteCurrencyKey: CurrencyKey) =>
 	getAvailableMarketNames().filter((marketName) => marketName.quoteCurrencyKey === quoteCurrencyKey)
 );

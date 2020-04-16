@@ -1,4 +1,5 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
+
 import ui from './ui';
 import wallet from './wallet';
 import synths from './synths';

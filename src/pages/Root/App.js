@@ -25,6 +25,7 @@ import Loans from '../Loans';
 import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
+import Tokens from '../Tokens';
 
 import Banner from 'components/Banner';
 
@@ -80,6 +81,14 @@ const App = ({ isAppReady, currentTheme }) => {
 						render={(routeProps) => (
 							<HomeLayout>
 								<Markets {...routeProps} />
+							</HomeLayout>
+						)}
+					/>
+					<Route
+						path={ROUTES.Tokens.Home}
+						render={(routeProps) => (
+							<HomeLayout>
+								<Tokens {...routeProps} />
 							</HomeLayout>
 						)}
 					/>
