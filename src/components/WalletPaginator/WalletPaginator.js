@@ -34,8 +34,8 @@ const Wrapper = styled.div`
 	justify-content: center;
 	align-items: center;
 	transition: opacity 0.1s ease-out;
-	opacity: ${props => (props.disabled ? 0.6 : 1)};
-	pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
+	opacity: ${(props) => (props.disabled ? 0.6 : 1)};
+	pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 const Button = styled.button`
@@ -45,7 +45,7 @@ const Button = styled.button`
 	width: 24px;
 	height: 24px;
 	border-radius: 1px;
-	background: ${props =>
+	background: ${(props) =>
 		props.active ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 	display: flex;
 	justify-content: center;
@@ -53,7 +53,7 @@ const Button = styled.button`
 	cursor: pointer;
 	transition: all 0.1s ease;
 	&:hover {
-		background: ${props => props.theme.colors.accentL2};
+		background: ${(props) => props.theme.colors.accentL2};
 	}
 `;
 

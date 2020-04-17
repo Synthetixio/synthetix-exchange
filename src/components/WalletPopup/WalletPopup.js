@@ -43,7 +43,7 @@ const WalletPopup = ({ toggleWalletPopup, walletInfo }) => {
 
 const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background: ${props => props.theme.colors.surfaceL1};
+	background: ${(props) => props.theme.colors.surfaceL1};
 	position: absolute;
 	width: 100%;
 	height: 100vh;
@@ -70,7 +70,7 @@ const BackButton = styled.button`
 	left: 5%;
 	top: 5%;
 	span {
-		color: ${props => props.theme.colors.fontTertiary};
+		color: ${(props) => props.theme.colors.fontTertiary};
 		font-size: 18px;
 		&:hover {
 			text-decoration: underline;
@@ -87,7 +87,7 @@ const CloseButton = styled.button`
 	top: 5%;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};

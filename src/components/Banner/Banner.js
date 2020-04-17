@@ -17,7 +17,7 @@ const Banner = () => (
 );
 
 const StyledLink = styled(Link)`
-	color: ${props => props.theme.colors.white};
+	color: ${(props) => props.theme.colors.white};
 	margin: 0 5px;
 	text-decoration: underline;
 	&:hover {

@@ -176,7 +176,7 @@ Dashboard.propTypes = {
 };
 
 const StyledExternalLink = styled(ExternalLink)`
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 	text-transform: none;
 	margin-left: auto;
 	font-size: 13px;
@@ -207,14 +207,14 @@ const LoanInfoRow = styled.div`
 `;
 
 const Table = styled.table`
-	background: ${props => props.theme.colors.surfaceL2};
+	background: ${(props) => props.theme.colors.surfaceL2};
 	border-collapse: collapse;
 	width: 100%;
 	font-size: 12px;
 	tr {
 		text-align: left;
 		> * {
-			color: ${props => props.theme.colors.fontPrimary};
+			color: ${(props) => props.theme.colors.fontPrimary};
 			height: ${CARD_HEIGHT};
 			text-align: left;
 			&:first-child {
@@ -227,17 +227,17 @@ const Table = styled.table`
 		}
 		> th {
 			&:not(:first-child) {
-				color: ${props => props.theme.colors.fontTertiary};
+				color: ${(props) => props.theme.colors.fontTertiary};
 			}
 		}
 	}
 `;
 
 const TableRowHeader = styled.tr`
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 	walletInfo: getWalletInfo(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),

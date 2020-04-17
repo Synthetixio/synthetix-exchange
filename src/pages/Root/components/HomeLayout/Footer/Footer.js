@@ -208,7 +208,7 @@ const Menu = styled.div`
 const MenuTitle = styled.div`
 	text-transform: uppercase;
 	${bodyMediumCSS};
-	color: ${props => props.theme.colors.white};
+	color: ${(props) => props.theme.colors.white};
 	padding-bottom: 25px;
 `;
 
@@ -225,7 +225,7 @@ const MenuLinkItem = styled.li`
 const FooterLink = styled(Link)`
 	${bodyMediumSecondaryCSS};
 	&:hover {
-		color: ${props => props.theme.colors.white};
+		color: ${(props) => props.theme.colors.white};
 	}
 `;
 

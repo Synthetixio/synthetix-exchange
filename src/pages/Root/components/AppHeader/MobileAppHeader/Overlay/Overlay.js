@@ -20,7 +20,7 @@ const Container = styled.div`
 	left: 0;
 	right: 0;
 	position: fixed;
-	background: ${props => props.theme.colors.surfaceL1};
+	background: ${(props) => props.theme.colors.surfaceL1};
 	z-index: ${Z_INDEX.BASE};
 	${media.small`
 		top: ${MOBILE_APP_HEADER_HEIGHT}

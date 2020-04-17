@@ -21,7 +21,7 @@ const History = ({ fetchMyTradesRequest, myTrades, isLoadedMyTrades, isLoadingMy
 	);
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	myTrades: getMyTrades(state),
 	isLoadingMyTrades: getIsLoadingMyTrades(state),
 	isLoadedMyTrades: getIsLoadedMyTrades(state),

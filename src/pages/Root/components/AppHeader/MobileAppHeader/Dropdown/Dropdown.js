@@ -18,7 +18,7 @@ const Container = styled.div`
 	top: ${APP_HEADER_HEIGHT};
 	width: 100%;
 	position: fixed;
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 	z-index: ${Z_INDEX.BASE};
 	${media.small`
 		top: ${MOBILE_APP_HEADER_HEIGHT}

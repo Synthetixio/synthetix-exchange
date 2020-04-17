@@ -8,7 +8,7 @@ import './Slider.css';
 
 const CustomSlider = createSliderWithTooltip(Slider);
 
-export const handle = props => {
+export const handle = (props) => {
 	const { value, dragging, index, ...restProps } = props;
 	return (
 		<Tooltip

@@ -69,7 +69,7 @@ const WalletPopup = ({
 								max={fastestAllowed}
 								defaultValue={gasSettings.gasPrice}
 								tooltipRenderer={() => renderTooltipContent(gasSettings)}
-								onChange={newPrice => {
+								onChange={(newPrice) => {
 									setGasSettings({
 										gasPrice: newPrice,
 										usdPrice: getTransactionPrice(newPrice, gasLimit, ethRate),
@@ -179,9 +179,9 @@ const fadeOut = keyframes`
 
 const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background: ${props => props.theme.colors.surfaceL1};
+	background: ${(props) => props.theme.colors.surfaceL1};
 	position: absolute;
-	animation: ${props => (props.isVisible ? fadeIn : fadeOut)} 0.2s ease-in;
+	animation: ${(props) => (props.isVisible ? fadeIn : fadeOut)} 0.2s ease-in;
 	width: 100%;
 	height: 100vh;
 	top: 0;
@@ -237,7 +237,7 @@ const GlobalStyle = createGlobalStyle`
 // `;
 
 const TooltipInner = styled.div`
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 	height: 100%;
 	padding: 12px;
 `;
@@ -245,7 +245,7 @@ const TooltipInner = styled.div`
 const TooltipValue = styled.div`
 	margin-bottom: 4px;
 `;
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		gasInfo: getGasInfo(state),
 		ethRate: getEthRate(state),

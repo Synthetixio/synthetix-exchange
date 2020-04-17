@@ -51,13 +51,13 @@ const LeaderboardPopup = ({
 						{
 							Header: 'RANK',
 							accessor: 'rank',
-							Cell: cellProps => <Rank>{cellProps.cell.value}</Rank>,
+							Cell: (cellProps) => <Rank>{cellProps.cell.value}</Rank>,
 							width: 80,
 						},
 						{
 							Header: 'TWITTER HANDLE',
 							accessor: 'twitterHandle',
-							Cell: cellProps => (
+							Cell: (cellProps) => (
 								<StyledLink to={`https://twitter.com/${cellProps.cell.value}`} isExternal={true}>
 									@{cellProps.cell.value}
 								</StyledLink>
@@ -67,7 +67,7 @@ const LeaderboardPopup = ({
 						{
 							Header: 'ASSET VALUE',
 							accessor: 'assetValue',
-							Cell: cellProps => (
+							Cell: (cellProps) => (
 								<span>{formatCurrencyWithSign('$', cellProps.cell.value)} USD</span>
 							),
 							width: 150,
@@ -106,7 +106,7 @@ const Content = styled(CenteredContent)`
 
 const Headline = styled.div`
 	${textShadowCSS};
-	font-family: ${props => props.theme.fonts.medium};
+	font-family: ${(props) => props.theme.fonts.medium};
 	margin-bottom: 12px;
 	text-transform: uppercase;
 	font-size: 40px;
@@ -123,7 +123,7 @@ const Headline = styled.div`
 
 const Description = styled.div`
 	${textShadowCSS};
-	font-family: ${props => props.theme.fonts.medium};
+	font-family: ${(props) => props.theme.fonts.medium};
 	text-transform: uppercase;
 	font-weight: normal;
 	font-size: 30px;
@@ -154,14 +154,14 @@ const CloseButton = styled.button`
 `;
 
 const Rank = styled.span`
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 `;
 
 const StyledLink = styled(Link)`
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	top10leaders: getTop10Leaders(state),
 	isLoadingLeaderboard: getIsLoadingLeaderboard(state),
 	isLoadedLeaderboard: getIsLoadedLeaderboard(state),

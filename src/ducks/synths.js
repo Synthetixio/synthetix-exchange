@@ -36,7 +36,7 @@ export const synthsSlice = createSlice({
 		setAvailableSynths: (state, action) => {
 			const { synths } = action.payload;
 
-			const filteredSynths = synths.filter(synth => !FROZEN_SYNTHS.includes(synth.name));
+			const filteredSynths = synths.filter((synth) => !FROZEN_SYNTHS.includes(synth.name));
 
 			const availableSynths = keyBy(filteredSynths, 'name');
 
@@ -61,24 +61,25 @@ export const synthsSlice = createSlice({
 		updateFrozenSynths: (state, action) => {
 			const { frozenSynths } = action.payload;
 
-			Object.values(frozenSynths).forEach(synth => {
-				delete state.availableSynths[synth.name];
+			frozenSynths.forEach((synth) => {
+				delete state.availableSynths[synth];
 			});
+
 			state.frozenSynths = frozenSynths;
 		},
 	},
 });
 
-export const getSynthsState = state => state.synths;
-export const getAvailableSynthsMap = state => getSynthsState(state).availableSynths;
-export const getAvailableSynths = createSelector(getAvailableSynthsMap, availableSynths =>
+export const getSynthsState = (state) => state.synths;
+export const getAvailableSynthsMap = (state) => getSynthsState(state).availableSynths;
+export const getAvailableSynths = createSelector(getAvailableSynthsMap, (availableSynths) =>
 	Object.values(availableSynths).sort(sortSynths)
 );
-export const getSynthPair = state => ({
+export const getSynthPair = (state) => ({
 	base: getSynthsState(state).baseSynth,
 	quote: getSynthsState(state).quoteSynth,
 });
-export const getFrozenSynths = state => getSynthsState(state).frozenSynths;
+export const getFrozenSynths = (state) => getSynthsState(state).frozenSynths;
 
 const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSlice.actions;
 

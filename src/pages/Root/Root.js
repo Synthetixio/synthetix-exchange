@@ -30,20 +30,11 @@ const ADDRESS_DATA_INTERVAL = 6000;
 async function mockGetAddressData(address, signature) {
 	console.log('wallet address: ', address);
 	console.log('signature: ', signature);
-	const r = Math.random() > 0.5;
-	const res = await Promise.resolve(
-		r
-			? {
-					twitterId: null,
-					twitterHandle: null,
-					twitterFaucet: 0,
-			  }
-			: {
-					twitterId: 1,
-					twitterHandle: 'ev',
-					twitterFaucet: Date.now(),
-			  }
-	);
+	const res = await Promise.resolve({
+		twitterId: 1,
+		twitterHandle: 'ev',
+		twitterFaucet: Date.now(),
+	});
 	return res;
 }
 
@@ -63,7 +54,7 @@ const Root = ({
 	const [addressDataIntervalDelay, setAddressDataIntervalDelay] = useState(null);
 	const currentWallet = walletInfo.currentWallet;
 
-	const fetchAndSetExchangeData = useCallback(async synths => {
+	const fetchAndSetExchangeData = useCallback(async (synths) => {
 		try {
 			const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 			setExchangeFeeRate(exchangeFeeRate);
@@ -115,7 +106,10 @@ const Root = ({
 						...addressData,
 					});
 
-					const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
+					// grab crypto synths + sUSD
+					const synths = snxJSConnector.snxJS.contractSettings.synths.filter(
+						(synth) => synth.asset && (synth.category === 'crypto' || synth.name === 'sUSD')
+					);
 
 					setAvailableSynths({ synths });
 					setAppReady();
@@ -177,7 +171,7 @@ const Root = ({
 	return <App isAppReady={isAppReady} />;
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	isAppReady: getIsAppReady(state),
 });

@@ -24,7 +24,7 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTab
 	const { currentWallet, networkName } = walletInfo;
 	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState(false);
 
-	const setDropdownIsOpen = isOpen => {
+	const setDropdownIsOpen = (isOpen) => {
 		if (!isOpen && !walletDropdownIsOpen) return;
 		setWalletDropdownIsOpen(isOpen);
 		setBlurBackgroundIsVisible(isOpen);
@@ -92,7 +92,7 @@ const UserInfoContainer = styled.div`
 	align-items: center;
 	padding: 8px;
 	border-radius: ${ELEMENT_BORDER_RADIUS};
-	border: 1px solid ${props => props.theme.colors.accentL1};
+	border: 1px solid ${(props) => props.theme.colors.accentL1};
 `;
 
 const WalletInfo = styled.div`
@@ -105,24 +105,24 @@ const WalletInfo = styled.div`
 `;
 
 const GreenDot = styled(Dot)`
-	background: ${props => props.theme.colors.green};
+	background: ${(props) => props.theme.colors.green};
 `;
 
 const WalletAddress = styled(DataMedium)`
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 `;
 
 const NetworkLabel = styled(DataMedium)`
 	text-transform: uppercase;
-	background: ${props => props.theme.colors.accentL1};
-	color: ${props => props.theme.colors.fontTertiary};
+	background: ${(props) => props.theme.colors.accentL1};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	border-radius: 25px;
 	font-size: 12px;
 	padding: 3px 10px;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	currentTheme: getCurrentTheme(state),
 });

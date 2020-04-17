@@ -22,7 +22,7 @@ const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose, 
 });
 
 const isOpen = css`
-	height: ${props =>
+	height: ${(props) =>
 		props.height ||
 		`calc(100vh  - 6px - ${APP_HEADER_HEIGHT} - ${SECTION_MARGIN} - ${CARD_HEIGHT})`};
 `;
@@ -33,9 +33,9 @@ const contentIsVisible = css`
 
 const Container = styled.div`
 	position: relative;
-	width: ${props => props.width || '100%'};
+	width: ${(props) => props.width || '100%'};
 	overflow: hidden;
-	${props => props.isOpen && contentIsVisible}
+	${(props) => props.isOpen && contentIsVisible}
 	z-index: ${Z_INDEX.DROPDOWN_PANEL};
 `;
 
@@ -43,7 +43,7 @@ const Header = styled.div`
 	cursor: pointer;
 	& svg {
 		transition: transform 0.3s ease-in-out;
-		transform: ${props => `rotate(${props.isOpen ? -Math.PI : -Math.Pi}rad)`};
+		transform: ${(props) => `rotate(${props.isOpen ? -Math.PI : -Math.Pi}rad)`};
 	}
 `;
 
@@ -53,11 +53,11 @@ const Body = styled.div`
 	top: 100%;
 	height: 0;
 	overflow: hidden;
-	border-left: 1px solid ${props => props.theme.colors.accentL1};
-	border-right: 1px solid ${props => props.theme.colors.accentL1};
-	border-bottom: 1px solid ${props => props.theme.colors.accentL1};
-	background: ${props => props.theme.colors.surfaceL2};
-	${props => props.isOpen && isOpen}
+	border-left: 1px solid ${(props) => props.theme.colors.accentL1};
+	border-right: 1px solid ${(props) => props.theme.colors.accentL1};
+	border-bottom: 1px solid ${(props) => props.theme.colors.accentL1};
+	background: ${(props) => props.theme.colors.surfaceL2};
+	${(props) => props.isOpen && isOpen}
 `;
 
 export default DropdownPanel;

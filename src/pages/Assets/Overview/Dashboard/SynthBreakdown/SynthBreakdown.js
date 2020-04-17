@@ -104,7 +104,7 @@ const Container = styled.div`
 	grid-gap: 20px;
 	grid-template-columns: auto 1fr;
 	align-items: center;
-	${props =>
+	${(props) =>
 		!props.isLoadedWalletBalances &&
 		css`
 			filter: blur(4px);
@@ -117,7 +117,7 @@ const ChartLegendItem = styled.li`
 	grid-gap: 8px;
 	grid-template-columns: auto 1fr;
 	align-items: center;
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	margin-bottom: 5px;
 	&:last-child {
 		margin-bottom: 0;
@@ -136,7 +136,7 @@ SynthBreakdown.propTypes = {
 	theme: PropTypes.object,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 });

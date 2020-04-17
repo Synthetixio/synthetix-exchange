@@ -109,7 +109,7 @@ const QuestionMarkIcon = styled.div`
 	border-radius: 50%;
 	width: 12px;
 	height: 12px;
-	background: ${props => props.theme.colors.accentL1};
+	background: ${(props) => props.theme.colors.accentL1};
 	margin-left: 4px;
 `;
 
@@ -122,7 +122,7 @@ const Container = styled.div`
 `;
 
 const NetworkData = styled(DataSmall)`
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 `;
 
 const NetworkDataLabelFlex = styled(NetworkData)`

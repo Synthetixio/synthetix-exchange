@@ -33,13 +33,13 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				{
 					Header: t('assets.exchanges.table.date-time-col'),
 					accessor: 'timestamp',
-					Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+					Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
 				{
 					Header: t('assets.exchanges.table.pair-col'),
-					accessor: d => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
-					Cell: cellProps => {
+					accessor: (d) => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
+					Cell: (cellProps) => {
 						const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
 						return (
@@ -54,7 +54,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				{
 					Header: t('assets.exchanges.table.price-col'),
 					accessor: 'price',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<span>
 							{formatCurrencyWithSign(
 								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -66,7 +66,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				{
 					Header: t('assets.exchanges.table.status-col'),
 					accessor: 'status',
-					Cell: cellProps => (
+					Cell: (cellProps) => (
 						<ViewLink
 							isDisabled={!cellProps.row.original.hash}
 							href={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
@@ -82,9 +82,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 			noResultsMessage={
 				isLoaded && trades.length === 0 ? (
 					<TableNoResults>{t('assets.exchanges.table.no-results')}</TableNoResults>
-				) : (
-					undefined
-				)
+				) : undefined
 			}
 		/>
 	);
@@ -96,7 +94,7 @@ const StyledTable = styled(Table)`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 	networkId: getNetworkId(state),
 });

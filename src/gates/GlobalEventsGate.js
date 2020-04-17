@@ -61,10 +61,10 @@ const GlobalEventsGate = ({
 		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRates);
 
 		return () => {
-			Object.values(LOAN_EVENTS).forEach(event =>
+			Object.values(LOAN_EVENTS).forEach((event) =>
 				EtherCollateral.contract.removeAllListeners(event)
 			);
-			Object.values(EXCHANGE_RATES_EVENTS).forEach(event =>
+			Object.values(EXCHANGE_RATES_EVENTS).forEach((event) =>
 				ExchangeRates.contract.removeAllListeners(event)
 			);
 		};
@@ -77,14 +77,16 @@ const GlobalEventsGate = ({
 			snxJS: { Synthetix },
 		} = snxJSConnector;
 
-		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, address => {
+		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, (address) => {
 			if (address === currentWallet) {
 				fetchWalletBalancesRequest();
 			}
 		});
 
 		return () => {
-			Object.values(EXCHANGE_EVENTS).forEach(event => Synthetix.contract.removeAllListeners(event));
+			Object.values(EXCHANGE_EVENTS).forEach((event) =>
+				Synthetix.contract.removeAllListeners(event)
+			);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentWallet]);
@@ -99,7 +101,7 @@ GlobalEventsGate.propTypes = {
 	fetchRates: PropTypes.func,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};

@@ -73,7 +73,7 @@ AssetsNavigation.propTypes = {
 const ListItemLink = styled(Link)`
 	${labelSmallCSS};
 	width: 170px;
-	border-bottom: 1px solid ${props => props.theme.colors.accentL2};
+	border-bottom: 1px solid ${(props) => props.theme.colors.accentL2};
 	font-size: 12px;
 	padding: 10px 16px;
 	box-sizing: border-box;
@@ -81,20 +81,20 @@ const ListItemLink = styled(Link)`
 	align-items: center;
 	justify-content: space-between;
 	text-transform: uppercase;
-	color: ${props => props.theme.colors.fontSecondary};
-	background: ${props => props.theme.colors.surfaceL2};
+	color: ${(props) => props.theme.colors.fontSecondary};
+	background: ${(props) => props.theme.colors.surfaceL2};
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background: ${props => props.theme.colors.accentL1};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background: ${(props) => props.theme.colors.accentL1};
 	}
 	&.active {
-		background: ${props => props.theme.colors.accentL2};
-		color: ${props => props.theme.colors.fontPrimary};
+		background: ${(props) => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
 	}
 `;
 
 const List = styled.ul`
-	border: 1px solid ${props => props.theme.colors.accentL2Solid};
+	border: 1px solid ${(props) => props.theme.colors.accentL2Solid};
 	> * {
 		&:last-child > ${ListItemLink} {
 			border: 0;
@@ -106,21 +106,21 @@ const List = styled.ul`
 
 const SmallValueAssets = styled.div`
 	${labelSmallCSS};
-	background: ${props => props.theme.colors.accentL1};
-	border: 1px solid ${props => props.theme.colors.accentL2Solid};
-	color: ${props => props.theme.colors.fontSecondary};
+	background: ${(props) => props.theme.colors.accentL1};
+	border: 1px solid ${(props) => props.theme.colors.accentL2Solid};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	cursor: pointer;
 	width: 170px;
 	padding: 5px;
 	box-sizing: border-box;
 	text-align: center;
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background: ${props => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background: ${(props) => props.theme.colors.accentL2};
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	hideSmallValueAssets: getHideSmallValueAssets(state),
 });
 

@@ -30,8 +30,8 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 		if (!synths || synths.length === 0) return;
 		let listToCompare = synths;
 		let list = [];
-		synths.forEach(a => {
-			listToCompare.forEach(b => {
+		synths.forEach((a) => {
+			listToCompare.forEach((b) => {
 				const rate = getExchangeRatesForCurrencies(exchangeRates, a.name, b.name) || 0;
 				const inverseRate = getExchangeRatesForCurrencies(exchangeRates, b.name, a.name) || 0;
 				if (a.name !== b.name) {
@@ -63,7 +63,7 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 					}
 				}
 			});
-			listToCompare = listToCompare.filter(s => s.name !== a.name);
+			listToCompare = listToCompare.filter((s) => s.name !== a.name);
 		});
 		setSynthList(list);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +71,7 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 
 	useEffect(() => {
 		setSynthSearch('');
-		setFilteredSynths(synthList.filter(synth => synth.quote.name === quote.name));
+		setFilteredSynths(synthList.filter((synth) => synth.quote.name === quote.name));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [quote.name]);
 
@@ -79,10 +79,10 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 		let list = [];
 		let usdPairCount = 0;
 		if (!search) {
-			list = synthList.filter(synth => synth.quote.name === quote.name);
+			list = synthList.filter((synth) => synth.quote.name === quote.name);
 		} else {
 			list = synthList
-				.filter(synth => {
+				.filter((synth) => {
 					const hasMatch =
 						synth.base.name.toLowerCase().includes(search.toLowerCase()) ||
 						synth.quote.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -93,7 +93,7 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 				})
 				// we want to put sBASE/sUSD at the top when a search different than
 				// sUSD occurs
-				.sort(a => {
+				.sort((a) => {
 					if (usdPairCount <= 2 && a.quote.name === 'sUSD') {
 						if (!a.base.inverted) return -2;
 						return -1;
@@ -108,18 +108,18 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 	return (
 		<Container>
 			<ContainerHeader>
-				<SearchInput value={search} onChange={e => setSynthSearch(e.target.value)} />
+				<SearchInput value={search} onChange={(e) => setSynthSearch(e.target.value)} />
 				<ButtonRow>
 					{FILTERS.map((filter, i) => {
 						return ['sFIAT'].includes(filter) ? (
 							<ButtonFilterWithDropdown
 								key={i}
 								quote={quote}
-								onClick={synth => setQuote(synth)}
+								onClick={(synth) => setQuote(synth)}
 								synths={
 									filter === 'sFIAT'
-										? synths.filter(synth => synth.category === 'forex')
-										: synths.filter(synth => synth.category !== 'forex')
+										? synths.filter((synth) => synth.category === 'forex')
+										: synths.filter((synth) => synth.category !== 'forex')
 								}
 							>
 								{filter}
@@ -128,7 +128,7 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 							<ButtonFilter
 								key={i}
 								active={filter === quote.name}
-								onClick={() => setQuote(synths.find(synth => synth.name === filter))}
+								onClick={() => setQuote(synths.find((synth) => synth.name === filter))}
 							>
 								{filter}
 							</ButtonFilter>
@@ -159,7 +159,7 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 				</ListHeader>
 			</ContainerHeader>
 			<List>
-				{filteredSynths.map(pair => (
+				{filteredSynths.map((pair) => (
 					<Pair
 						isDisabled={!isLoadedRates}
 						key={`${pair.base.name}-${pair.quote.name}`}
@@ -182,14 +182,14 @@ const PairList = ({ synths, synthsMap, exchangeRates, setSynthSearch, search, is
 };
 
 const Container = styled.div`
-	background: ${props => props.theme.colors.surfaceL2};
+	background: ${(props) => props.theme.colors.surfaceL2};
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 `;
 const ContainerHeader = styled.div`
 	padding: 12px;
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 `;
 const ButtonRow = styled.div`
 	width: 100%;
@@ -215,7 +215,7 @@ const List = styled.ul`
 `;
 
 const Pair = styled.li`
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 	cursor: pointer;
 	margin-top: 6px;
 	height: 42px;
@@ -226,11 +226,11 @@ const Pair = styled.li`
 	justify-content: space-between;
 	transition: transform 0.2s ease-out;
 	&:hover {
-		background: ${props => props.theme.colors.accentL1};
+		background: ${(props) => props.theme.colors.accentL1};
 		transform: scale(1.02);
 	}
-	opacity: ${props => (props.isDisabled ? 0.5 : 1)};
-	pointer-events: ${props => (props.isDisabled ? 'none' : 'auto')};
+	opacity: ${(props) => (props.isDisabled ? 0.5 : 1)};
+	pointer-events: ${(props) => (props.isDisabled ? 'none' : 'auto')};
 `;
 
 const PairElement = styled.div`
@@ -252,7 +252,7 @@ const ListHeader = styled.div`
 
 const ListHeaderLabel = styled(DataSmall)`
 	font-family: 'apercu-medium', sans-serif;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 `;
 
 const ListHeaderElement = styled.div`
@@ -270,7 +270,7 @@ const ButtonSort = styled.button`
 	background: transparent;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synths: getAvailableSynths(state),
 	synthsMap: getAvailableSynthsMap(state),
 	exchangeRates: getRatesExchangeRates(state),

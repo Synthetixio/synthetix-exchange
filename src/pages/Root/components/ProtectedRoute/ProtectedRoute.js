@@ -15,7 +15,7 @@ export const ProtectedRoute = ({ isLoggedIn, ...rest }) => {
 	return <Route {...rest} />;
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
 

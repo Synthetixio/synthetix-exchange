@@ -14,16 +14,18 @@ const getNetworkPrices = async () => {
 };
 
 const getFrozenSynths = async () => {
-	const frozenSynths = {};
+	const frozenSynths = [];
 	const result = await snxJSConnector.synthSummaryUtilContract.frozenSynths();
-	result.forEach(synth => {
+	result.forEach((synth) => {
 		const synthKeyString = parseBytes32String(synth);
-		if (synthKeyString) frozenSynths[synthKeyString] = true;
+		if (synthKeyString) {
+			frozenSynths.push(synthKeyString);
+		}
 	});
 	return frozenSynths;
 };
 
-export const getExchangeData = async synths => {
+export const getExchangeData = async (synths) => {
 	try {
 		const [exchangeFeeRate, networkPrices, frozenSynths] = await Promise.all([
 			getExchangeFeeRate(),
@@ -40,7 +42,7 @@ export const getExchangeData = async synths => {
 	}
 };
 
-export const fetchSynthsBalance = async walletAddress => {
+export const fetchSynthsBalance = async (walletAddress) => {
 	let balances = {};
 	const [balanceResults, totalBalanceResults] = await Promise.all([
 		snxJSConnector.synthSummaryUtilContract.synthsBalances(walletAddress),
@@ -63,7 +65,7 @@ export const fetchSynthsBalance = async walletAddress => {
 	};
 };
 
-export const fetchEthBalance = async walletAddress => {
+export const fetchEthBalance = async (walletAddress) => {
 	const balance = await snxJSConnector.provider.getBalance(walletAddress);
 	const usdBalance = await snxJSConnector.snxJS.ExchangeRates.effectiveValue(
 		bytesFormatter('sETH'),

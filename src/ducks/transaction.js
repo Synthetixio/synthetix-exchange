@@ -58,7 +58,7 @@ const reducer = (state = defaultState, action = {}) => {
 		case UPDATE_TRANSACTION: {
 			const { updates, id } = action.payload;
 			const storeUpdates = {
-				transactions: state.transactions.map(tx => {
+				transactions: state.transactions.map((tx) => {
 					if (tx.id === id) {
 						return {
 							...tx,
@@ -78,7 +78,7 @@ const reducer = (state = defaultState, action = {}) => {
 		}
 		case ADD_PENDING_TRANSACTION: {
 			const hash = action.payload;
-			if (state.pendingTransactions.find(tx => tx.hash === hash)) return state;
+			if (state.pendingTransactions.find((tx) => tx.hash === hash)) return state;
 			return {
 				...state,
 				pendingTransactions: [...state.pendingTransactions, hash],
@@ -88,7 +88,7 @@ const reducer = (state = defaultState, action = {}) => {
 			const hash = action.payload;
 			return {
 				...state,
-				pendingTransactions: state.pendingTransactions.filter(txHash => txHash !== hash),
+				pendingTransactions: state.pendingTransactions.filter((txHash) => txHash !== hash),
 			};
 		}
 
@@ -97,42 +97,42 @@ const reducer = (state = defaultState, action = {}) => {
 	}
 };
 
-export const setGasPrice = gasPrice => {
+export const setGasPrice = (gasPrice) => {
 	return {
 		type: SET_GAS_PRICE,
 		payload: gasPrice,
 	};
 };
 
-export const setGasLimit = gasLimit => {
+export const setGasLimit = (gasLimit) => {
 	return {
 		type: SET_GAS_LIMIT,
 		payload: normalizeGasLimit(gasLimit),
 	};
 };
 
-export const setExchangeFeeRate = feeRate => {
+export const setExchangeFeeRate = (feeRate) => {
 	return {
 		type: SET_EXCHANGE_FEE_RATE,
 		payload: feeRate,
 	};
 };
 
-export const setNetworkGasInfo = gasInfo => {
+export const setNetworkGasInfo = (gasInfo) => {
 	return {
 		type: SET_NETWORK_GAS_INFO,
 		payload: gasInfo,
 	};
 };
 
-export const createTransaction = transaction => {
+export const createTransaction = (transaction) => {
 	return {
 		type: CREATE_TRANSACTION,
 		payload: transaction,
 	};
 };
 
-export const removePendingTransaction = hash => {
+export const removePendingTransaction = (hash) => {
 	return {
 		type: REMOVE_PENDING_TRANSACTION,
 		payload: hash,
@@ -146,13 +146,13 @@ export const updateTransaction = (updates, id) => {
 	};
 };
 
-export const getTransactionState = state => state.transaction;
-export const getGasInfo = state => {
+export const getTransactionState = (state) => state.transaction;
+export const getGasInfo = (state) => {
 	const { gasPrice, gasLimit, gasSpeed } = getTransactionState(state);
 	return { gasPrice, gasLimit, gasSpeed };
 };
-export const getExchangeFeeRate = state => getTransactionState(state).exchangeFeeRate;
-export const getTransactions = state => getTransactionState(state).transactions;
-export const getPendingTransactions = state => getTransactionState(state).pendingTransactions;
+export const getExchangeFeeRate = (state) => getTransactionState(state).exchangeFeeRate;
+export const getTransactions = (state) => getTransactionState(state).transactions;
+export const getPendingTransactions = (state) => getTransactionState(state).pendingTransactions;
 
 export default reducer;

@@ -22,7 +22,7 @@ const TradeInput = ({
 	onMaxButtonClick,
 }) => {
 	const { t } = useTranslation();
-	const handleOnChange = e => onChange(e, e.target.value);
+	const handleOnChange = (e) => onChange(e, e.target.value);
 	const hasMaxButton = onMaxButtonClick != null;
 
 	return (
@@ -70,12 +70,12 @@ const MaxButton = styled(ButtonPrimary).attrs({ size: 'sm' })`
 `;
 
 const StyledGenericInput = styled(GenericInput)`
-	${props =>
+	${(props) =>
 		props.hasMaxButton &&
 		css`
 			padding-right: 72px;
 		`};
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
 const Label = styled(FlexDivCentered)`
@@ -85,18 +85,18 @@ const Label = styled(FlexDivCentered)`
 
 const Container = styled(FlexDiv)`
 	width: 100%;
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 	position: relative;
 `;
 
 const Synth = styled(FlexDivCentered)`
-	border: 1px solid ${props => props.theme.colors.accentL2Solid};
+	border: 1px solid ${(props) => props.theme.colors.accentL2Solid};
 	border-right: none;
 	padding: 0 10px;
 `;
 
 const StyledCurrencyName = styled(Currency.Name)`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
 export const StyledMessage = styled(Message)`

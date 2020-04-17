@@ -15,7 +15,7 @@ Card.propTypes = {
 };
 
 const Container = styled.div`
-	background: ${props => props.theme.colors.surfaceL2};
+	background: ${(props) => props.theme.colors.surfaceL2};
 	display: flex;
 	flex-direction: column;
 `;

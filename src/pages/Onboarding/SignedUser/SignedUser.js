@@ -34,7 +34,7 @@ const SignedUser = memo(({ twitterHandle }) => (
 
 const Heading = styled.div`
 	${textShadowCSS};
-	font-family: ${props => props.theme.fonts.medium};
+	font-family: ${(props) => props.theme.fonts.medium};
 	font-size: 40px;
 	line-height: 49px;
 	text-align: center;
@@ -48,7 +48,7 @@ const Heading = styled.div`
 `;
 
 const Subtitle = styled.div`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	font-size: 20px;
 	line-height: 120%;
 	text-align: center;
@@ -71,7 +71,7 @@ const Tokens = styled.div`
 `;
 
 const TokensText = styled.div`
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 	font-size: 56px;
 	line-height: 70px;
 	text-align: center;

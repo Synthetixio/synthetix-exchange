@@ -16,7 +16,7 @@ const Arrow = ({ direction = 'left' }) => {
 	);
 };
 
-const getDirectionAngle = direction => {
+const getDirectionAngle = (direction) => {
 	switch (direction) {
 		case 'up':
 		default:
@@ -34,7 +34,7 @@ const Container = styled.div`
 	width: 11px;
 	height: 8px;
 	display: flex;
-	transform: ${props => 'rotate(' + getDirectionAngle(props.direction) + 'rad)'};
+	transform: ${(props) => 'rotate(' + getDirectionAngle(props.direction) + 'rad)'};
 `;
 
 export default Arrow;

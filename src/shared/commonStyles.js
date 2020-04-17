@@ -72,7 +72,7 @@ export const Dot = styled.div`
 	width: 14px;
 	height: 14px;
 	border-radius: 50%;
-	background: ${props => props.theme.colors.accentL2};
+	background: ${(props) => props.theme.colors.accentL2};
 `;
 
 export const FormInputRow = styled.div`
@@ -80,15 +80,15 @@ export const FormInputRow = styled.div`
 `;
 
 export const FormInputLabel = styled(DataMedium)`
-	color: ${props => props.theme.colors.fontTertiary};
-	font-family: ${props => props.theme.fonts.medium};
+	color: ${(props) => props.theme.colors.fontTertiary};
+	font-family: ${(props) => props.theme.fonts.medium};
 	text-transform: uppercase;
 `;
 
 export const FormInputLabelSmall = styled(DataSmall)`
 	text-transform: none;
-	color: ${props => props.theme.colors.fontTertiary};
-	font-family: ${props => props.theme.fonts.light};
+	color: ${(props) => props.theme.colors.fontTertiary};
+	font-family: ${(props) => props.theme.fonts.light};
 `;
 
 export const TextButton = styled.button`
@@ -99,7 +99,7 @@ export const TextButton = styled.button`
 `;
 
 export const LinkTextSmall = styled(DataSmall)`
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 `;
 
 export const Message = styled(FlexDivCentered)`
@@ -107,7 +107,7 @@ export const Message = styled(FlexDivCentered)`
 	transition: opacity 0.2s ease-out;
 	width: 100%;
 	
-	${props =>
+	${(props) =>
 		props.size === 'sm'
 			? css`
 					font-size: 11px;
@@ -118,23 +118,23 @@ export const Message = styled(FlexDivCentered)`
 					padding: 11px 10px;
 			  `}		
 
-	${props =>
+	${(props) =>
 		props.floating &&
 		css`
 			z-index: ${Z_INDEX.TOOLTIP};
 			position: absolute;
 		`}
 
-	${props => {
+	${(props) => {
 		switch (props.type) {
 			case 'error': {
 				return css`
-					background: ${props => props.theme.colors.red};
+					background: ${(props) => props.theme.colors.red};
 				`;
 			}
 			case 'success': {
 				return css`
-					background: ${props => props.theme.colors.green};
+					background: ${(props) => props.theme.colors.green};
 				`;
 			}
 			default:
@@ -145,13 +145,13 @@ export const Message = styled(FlexDivCentered)`
 export const InfoBox = styled.div`
 	display: grid;
 	grid-row-gap: 10px;
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 	padding: 13px;
 `;
 
 export const InfoBoxLabel = styled(DataSmall)`
 	white-space: nowrap;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 `;
 
@@ -177,19 +177,19 @@ export const RoundedIcon = styled(FlexDivCentered)`
 	border-radius: 100%;
 	justify-content: center;
 
-	background: ${props => props.theme.colors.accentL1};
+	background: ${(props) => props.theme.colors.accentL1};
 `;
 
 export const TableNoResults = styled.div`
 	padding-top: 20px;
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	${tableDataSmallCSS};
 	padding: 18px;
 `;
 
 export const CardHeadingDescription = styled.span`
 	${chartDataCSS};
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	&&& {
 		margin-left: auto;
 	}
@@ -219,7 +219,7 @@ export const CenteredContent = styled(FlexDivCentered)`
 
 export const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background: ${props => props.theme.colors.surfaceL1};
+	background: ${(props) => props.theme.colors.surfaceL1};
 	position: absolute;
 	width: 100%;
 	height: 100vh;

@@ -24,7 +24,7 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 		<Table cellSpacing="0">
 			<Thead>
 				<Tr>
-					{HEADER_LABELS.map(header => {
+					{HEADER_LABELS.map((header) => {
 						return (
 							<Th key={header}>
 								<HeaderLabel>{header}</HeaderLabel>
@@ -68,7 +68,7 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 								/>
 							</Td>
 							<Td
-								onClick={e => {
+								onClick={(e) => {
 									e.stopPropagation();
 								}}
 							>
@@ -86,7 +86,7 @@ const WalletAddressTable = ({ data, walletInfo, onWalletSelection }) => {
 
 const HeaderLabel = styled(DataLarge)`
 	font-size: 16px;
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
 const DataLabel = styled(DataLarge)`
@@ -127,19 +127,19 @@ const Td = styled.td`
 	padding: 0 20px;
 	text-align: right;
 	height: 48px;
-	border-top: 1px solid ${props => props.theme.colors.accentL1};
-	border-bottom: 1px solid ${props => props.theme.colors.accentL1};
+	border-top: 1px solid ${(props) => props.theme.colors.accentL1};
+	border-bottom: 1px solid ${(props) => props.theme.colors.accentL1};
 	&:first-child {
-		border-left: 1px solid ${props => props.theme.colors.accentL1};
+		border-left: 1px solid ${(props) => props.theme.colors.accentL1};
 		border-top-left-radius: 2px;
 		border-bottom-left-radius: 2px;
 	}
 	&:last-child {
-		border-right: 1px solid ${props => props.theme.colors.accentL1};
+		border-right: 1px solid ${(props) => props.theme.colors.accentL1};
 		border-top-right-radius: 2px;
 		border-bottom-right-radius: 2px;
 	}
-	background: ${props => props.theme.colors.surfaceL3};
+	background: ${(props) => props.theme.colors.surfaceL3};
 `;
 
 const Link = styled.a`
@@ -153,7 +153,7 @@ const LinkImg = styled.img`
 	height: 20px;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};

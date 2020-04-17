@@ -18,7 +18,7 @@ import { mediumMediaQuery, media } from 'src/shared/media';
 import Logo from './Logo';
 import UserInfo from './UserInfo';
 
-export const AppHeader = memo(props => {
+export const AppHeader = memo((props) => {
 	const { isOnSplashPage, showLeaderboardPopup, ...rest } = props;
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -62,13 +62,13 @@ AppHeader.propTypes = {
 
 export const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	${props =>
+	${(props) =>
 		props.isOnSplashPage
 			? css`
-					background: ${props => props.theme.colors.surfaceL1};
+					background: ${(props) => props.theme.colors.surfaceL1};
 			  `
 			: css`
-					border-color: ${props => props.theme.colors.accentL1};
+					border-color: ${(props) => props.theme.colors.accentL1};
 					${media.small`
 						border-color: #3230b0;
 					`}
@@ -77,7 +77,7 @@ export const Container = styled.header`
 					`}
 					border-style: solid;
 					border-width: 1px 0;
-					background: ${props => props.theme.colors.surfaceL3};
+					background: ${(props) => props.theme.colors.surfaceL3};
 			  `}
 `;
 
