@@ -31,7 +31,7 @@ const Blur = styled.div`
 	z-index: ${Z_INDEX.BLUR_MODAL};
 	opacity: 0;
 	bottom: 0;
-	top: 54px;
+	top: 56px;
 	width: 100%;
 	background: ${props => props.theme.colors.surfaceL1};
 	${props => props.isVisible && isBlurred}

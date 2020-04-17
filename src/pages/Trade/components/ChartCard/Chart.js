@@ -54,19 +54,19 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 							strokeWidth={2}
 						/>
 						<Tooltip
-							cursor={{ strokeWidth: 1, stroke: colors.fontTertiary }}
+							cursor={{ strokeWidth: 1, stroke: colors.white }}
 							contentStyle={{
-								border: `none`,
-								borderRadius: '3px',
-								backgroundColor: colors.surfaceL1,
+								border: '0.5px solid #5334B2',
+								borderRadius: '4px',
+								backgroundColor: colors.accentL1,
 							}}
 							itemStyle={{
-								color: colors.fontTertiary,
+								color: colors.white,
 								fontSize: '12px',
 								textTransform: 'capitalize',
 							}}
 							labelStyle={{
-								color: colors.fontTertiary,
+								color: colors.white,
 								fontSize: '12px',
 							}}
 							formatter={value => `${synthSign}${formatCurrencyWithPrecision(value)}`}
