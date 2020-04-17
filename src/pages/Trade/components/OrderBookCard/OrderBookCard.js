@@ -15,6 +15,7 @@ import {
 	updateTransaction,
 } from 'src/ducks/transaction';
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
 import {
 	fetchAllTradesRequest,
 	getAllTrades,
@@ -46,6 +47,7 @@ const OrderBookCard = ({
 	allTrades,
 	isLoadedAllTrades,
 	isRefreshingAllTrades,
+	fetchWalletBalancesRequest,
 }) => {
 	const { t } = useTranslation();
 
@@ -88,17 +90,17 @@ const OrderBookCard = ({
 	// TODO: Move this logic into Redux
 	useEffect(() => {
 		const handlePendingTransactions = async () => {
-			const {
-				utils: { waitForTransaction },
-			} = snxJSConnector;
+			const { provider } = snxJSConnector;
 			try {
 				if (pendingTransactions.length === 0) return;
 				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
 				removePendingTransaction(latestTransactionHash);
-				const status = await waitForTransaction(latestTransactionHash);
+				await provider.waitForTransaction(latestTransactionHash);
+				const status = await provider.getTransactionReceipt(latestTransactionHash);
 				const matchingTransaction = transactions.find(tx => tx.hash === latestTransactionHash);
 				if (status) {
 					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
+					fetchWalletBalancesRequest();
 				} else {
 					updateTransaction(
 						{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
@@ -198,6 +200,7 @@ const mapDispatchToProps = {
 	removePendingTransaction,
 	fetchAllTradesRequest,
 	fetchMyTradesRequest,
+	fetchWalletBalancesRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderBookCard);
