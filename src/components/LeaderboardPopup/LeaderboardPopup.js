@@ -91,7 +91,7 @@ const StyledTable = styled(Table)`
 			border-bottom: 0;
 			&:last-child {
 				border-bottom: 0.5px solid #cb5bf2;
-			}		
+			}
 		}
 	`}
 `;

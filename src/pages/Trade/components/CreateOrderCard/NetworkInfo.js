@@ -66,17 +66,6 @@ export const TransactionInfo = ({
 				</NetworkDataLabelFlex>
 				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
-			<NetworkDataRow>
-				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
-				<NetworkData>
-					{gasPrice || 0}
-					{!isTabletOrMobile && (
-						<ButtonEdit onClick={onEditButtonClick}>
-							<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
-						</ButtonEdit>
-					)}
-				</NetworkData>
-			</NetworkDataRow>
 			{isTabletOrMobile && (
 				<NetworkDataRow>
 					<NetworkData>Price</NetworkData>

@@ -28,7 +28,8 @@ const REFRESH_INTERVAL = 3 * 60 * 1000;
 const ADDRESS_DATA_INTERVAL = 6000;
 
 async function mockGetAddressData(address, signature) {
-	console.log(address, signature);
+	console.log('wallet address: ', address);
+	console.log('signature: ', signature);
 	const r = Math.random() > 0.5;
 	const res = await Promise.resolve(
 		r

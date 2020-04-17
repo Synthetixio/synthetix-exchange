@@ -43,14 +43,10 @@ const reducer = (state = defaultState, action = {}) => {
 		}
 		case SET_NETWORK_GAS_INFO: {
 			const gasSpeed = action.payload;
-			const currentGasPrice = state.gasPrice || gasSpeed['slowAllowed'];
 			return {
 				...state,
 				gasSpeed,
-				gasPrice:
-					currentGasPrice > gasSpeed['fastestAllowed']
-						? gasSpeed['fastestAllowed']
-						: currentGasPrice,
+				gasPrice: 0,
 			};
 		}
 		case CREATE_TRANSACTION: {
