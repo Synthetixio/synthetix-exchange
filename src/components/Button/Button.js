@@ -6,7 +6,6 @@ const Button = styled.button`
 	height: 48px;
 	font-size: 16px;
 	letter-spacing: 0.5px;
-	padding: 0 6px;
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;

@@ -95,7 +95,11 @@ export const LinkTextSmall = styled(DataSmall)`
 	color: ${(props) => props.theme.colors.hyperlink};
 `;
 
-export const Message = styled(FlexDivCentered)`
+export const Message = styled(FlexDivCentered)<{
+	size: 'sm' | 'lg';
+	floating: boolean;
+	type: 'error' | 'success';
+}>`
 	border-radius: 1px;
 	transition: opacity 0.2s ease-out;
 	width: 100%;
@@ -174,7 +178,6 @@ export const RoundedIcon = styled(FlexDivCentered)`
 `;
 
 export const TableNoResults = styled.div`
-	padding-top: 20px;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	${tableDataSmallCSS};
 	padding: 18px;

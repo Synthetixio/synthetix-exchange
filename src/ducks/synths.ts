@@ -17,9 +17,10 @@ export interface SynthDefinition {
 	desc: string;
 	aggregator: string;
 	inverted: boolean;
+	isFrozen?: boolean;
 }
 
-const sortSynths = (a: SynthDefinition, b: SynthDefinition) => {
+const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 	if (a.category === ASSETS_MAP.crypto && b.category === ASSETS_MAP.crypto) {
 		// @ts-ignore
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
@@ -32,6 +33,7 @@ const sortSynths = (a: SynthDefinition, b: SynthDefinition) => {
 	if (a.category === ASSETS_MAP.crypto && b.category !== ASSETS_MAP.crypto) {
 		return -1;
 	}
+	return 0;
 };
 
 const DEFAULT_BASE_SYNTH = SYNTHS_MAP.sBTC;
@@ -41,30 +43,32 @@ type SynthDefinitionMap = Record<string, SynthDefinition>;
 
 export interface SynthsSliceState {
 	availableSynths: SynthDefinitionMap;
-	frozenSynths: CurrencyKeys;
 	baseSynth: SynthDefinition;
 	quoteSynth: SynthDefinition;
 }
 
 const initialState: SynthsSliceState = {
 	availableSynths: {},
-	frozenSynths: [],
 	baseSynth: { name: DEFAULT_BASE_SYNTH, category: ASSETS_MAP.crypto } as SynthDefinition,
 	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: ASSETS_MAP.forex } as SynthDefinition,
 };
 
+const sliceName = 'synths';
+
 export const synthsSlice = createSlice({
-	name: 'synths',
+	name: sliceName,
 	initialState,
 	reducers: {
 		setAvailableSynths: (state, action: PayloadAction<{ synths: SynthDefinition[] }>) => {
 			const { synths } = action.payload;
 
-			const filteredSynths = synths.filter(
-				(synth: SynthDefinition) => !FROZEN_SYNTHS.includes(synth.name)
+			const availableSynths: SynthDefinitionMap = keyBy(
+				synths.map((synth) => ({
+					...synth,
+					isFrozen: FROZEN_SYNTHS.includes(synth.name),
+				})),
+				'name'
 			);
-
-			const availableSynths: SynthDefinitionMap = keyBy(filteredSynths, 'name');
 
 			const baseSynth = availableSynths[DEFAULT_BASE_SYNTH];
 			const quoteSynth = availableSynths[DEFAULT_QUOTE_SYNTH];
@@ -91,25 +95,31 @@ export const synthsSlice = createSlice({
 			const { frozenSynths } = action.payload;
 
 			frozenSynths.forEach((synth: CurrencyKey) => {
-				delete state.availableSynths[synth];
+				if (state.availableSynths[synth]) {
+					state.availableSynths[synth].isFrozen = true;
+				}
 			});
-
-			state.frozenSynths = frozenSynths;
 		},
 	},
 });
 
-export const getSynthsState = (state: RootState) => state.synths;
+export const getSynthsState = (state: RootState) => state[sliceName];
 export const getAvailableSynthsMap = (state: RootState) => getSynthsState(state).availableSynths;
-export const getAvailableSynths = createSelector(getAvailableSynthsMap, (availableSynths) =>
-	// @ts-ignore
-	Object.values(availableSynths).sort(sortSynths)
+export const getSortedAvailableList = createSelector(getAvailableSynthsMap, (availableSynths) =>
+	Object.values(availableSynths)
+);
+
+export const getSortedAvailableSynths = createSelector(getSortedAvailableList, (availableSynths) =>
+	availableSynths.sort(sortSynths)
+);
+
+export const getAvailableSynths = createSelector(getSortedAvailableSynths, (availableSynths) =>
+	availableSynths.filter((synth: SynthDefinition) => !synth.isFrozen)
 );
 export const getSynthPair = (state: RootState) => ({
 	base: getSynthsState(state).baseSynth,
 	quote: getSynthsState(state).quoteSynth,
 });
-export const getFrozenSynths = (state: RootState) => getSynthsState(state).frozenSynths;
 
 export const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSlice.actions;
 
