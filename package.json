@@ -8,6 +8,7 @@
 		"@ethersproject/wallet": "^5.0.0-beta.139",
 		"@material-ui/core": "^4.9.0",
 		"@reduxjs/toolkit": "^1.2.5",
+		"axios": "^0.19.2",
 		"bignumber.js": "^9.0.0",
 		"date-fns": "~1.30.1",
 		"ethers": "^4.0.44",

@@ -2,6 +2,7 @@ import { hot } from 'react-hot-loader/root';
 import { Wallet } from '@ethersproject/wallet';
 import { providers } from 'ethers';
 import { SynthetixJs } from 'synthetix-js';
+import axios from 'axios';
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
@@ -30,6 +31,17 @@ const ADDRESS_DATA_INTERVAL = 6000;
 async function mockGetAddressData(address, signature) {
 	console.log('wallet address: ', address);
 	console.log('signature: ', signature);
+
+	try {
+		const response = await axios.post('https://l2.api.synthetix.io/api/address-data', {
+			address,
+			signature,
+		});
+		console.log(response);
+	} catch (e) {
+		console.error(e);
+	}
+
 	const res = await Promise.resolve({
 		twitterId: 1,
 		twitterHandle: 'ev',
