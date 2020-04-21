@@ -16,6 +16,8 @@ const initialState = {
 	blurBackgroundIsVisible: false,
 	leaderboardPopupIsVisible: false,
 	twitterPopupIsVisible: false,
+	ovmTradeTooltipVisible: false,
+	seenOvmTradeTooltip: false,
 	...getPersistedState('ui'),
 };
 
@@ -68,10 +70,19 @@ export const uiSlice = createSlice({
 		setBlurBackgroundIsVisible: (state, action) => {
 			state.blurBackgroundIsVisible = action.payload;
 		},
+		setOvmTradeTooltipVisible: (state, action) => {
+			state.ovmTradeTooltipVisible = action.payload;
+			if (state.ovmTradeTooltipVisible == true) {
+				state.seenOvmTradeTooltip = true;
+				persistState('ui', { seenOvmTradeTooltip: true });
+			}
+		},
 	},
 });
 
-const {
+export const {
+	setSeenOvmTradeTooltip,
+	setOvmTradeTooltipVisible,
 	toggleWalletPopup,
 	showWalletPopup,
 	toggleGweiPopup,
@@ -100,22 +111,7 @@ export const getMarketsAssetFilter = (state) => getUIState(state).marketsAssetFi
 export const getBlurBackgroundIsVisible = (state) => getUIState(state).blurBackgroundIsVisible;
 export const getLeaderboardPopupIsVisible = (state) => getUIState(state).leaderboardPopupIsVisible;
 export const getTwitterPopupIsVisible = (state) => getUIState(state).twitterPopupIsVisible;
+export const getOvmTradeTooltipVisible = (state) => getUIState(state).ovmTradeTooltipVisible;
+export const getSeenTradeTooltipVisible = (state) => getUIState(state).seenOvmTradeTooltip;
 
 export default uiSlice.reducer;
-
-export {
-	toggleWalletPopup,
-	showWalletPopup,
-	toggleGweiPopup,
-	showGweiPopup,
-	toggleTheme,
-	setSynthSearch,
-	setFiatCurrency,
-	toggleHideSmallValueAssets,
-	setMarketsAssetFilter,
-	setBlurBackgroundIsVisible,
-	showLeaderboardPopup,
-	hideLeaderboardPopup,
-	showTwitterPopup,
-	hideTwitterPopup,
-};

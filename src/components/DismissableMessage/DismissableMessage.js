@@ -30,6 +30,7 @@ const StyledMessage = styled(Message)`
 
 const StyledCloseButton = styled(CloseIcon)`
 	cursor: pointer;
+	color: #fff;
 `;
 
 export default DismissableMessage;

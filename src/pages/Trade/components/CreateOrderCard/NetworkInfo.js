@@ -12,10 +12,12 @@ import { TextButton, FlexDivRow } from 'src/shared/commonStyles';
 
 import { DataSmall } from 'src/components/Typography';
 import { ReactComponent as QuestionMark } from 'src/assets/images/question-mark.svg';
-import NetworkInfoTooltip from './NetworkInfoTooltip';
+import Tooltip from './Tooltip';
 import { formatPercentage } from 'src/utils/formatters';
 
 import { mediumMediaQuery } from 'src/shared/media';
+
+import { TooltipContent, TooltipContentRow, TooltipLabel } from './common';
 
 export const TransactionInfo = ({
 	gasPrice,
@@ -58,11 +60,11 @@ export const TransactionInfo = ({
 			<NetworkDataRow>
 				<NetworkDataLabelFlex>
 					{t('trade.trade-card.network-info.fee')}
-					<NetworkInfoTooltip title={getTooltipBody()}>
+					<Tooltip title={getTooltipBody()}>
 						<QuestionMarkIcon>
 							<QuestionMarkStyled />
 						</QuestionMarkIcon>
-					</NetworkInfoTooltip>
+					</Tooltip>
 				</NetworkDataLabelFlex>
 				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
@@ -82,24 +84,6 @@ TransactionInfo.propTypes = {
 	ethRate: PropTypes.number,
 	onEditButtonClick: PropTypes.func.isRequired,
 };
-
-const TooltipContent = styled.div`
-	width: 200px;
-	& > * + * {
-		margin-top: 8px;
-	}
-`;
-
-const TooltipLabel = styled(DataSmall)`
-	text-transform: none;
-`;
-
-const TooltipContentRow = styled.div`
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-`;
 
 const QuestionMarkIcon = styled.div`
 	cursor: pointer;

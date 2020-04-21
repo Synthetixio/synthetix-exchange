@@ -45,10 +45,12 @@ const getPrecision = (amount) => {
 
 const MyOrders = ({ transactions, networkId, synthsMap }) => {
 	const { t } = useTranslation();
+
 	return (
 		<StyledTable
 			data={transactions}
 			palette={TABLE_PALETTE.STRIPED}
+			columnsDeps={[transactions]}
 			columns={[
 				{
 					Header: t('trade.order-book-card.table.date'),
@@ -138,6 +140,14 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					sortable: true,
 				},
 				{
+					Header: 'Confirmation time',
+					accessor: 'confirmTxTime',
+					Cell: (cellProps) => (
+						<span>{cellProps.cell.value != null && `${cellProps.cell.value}ms`}</span>
+					),
+					sortable: true,
+				},
+				{
 					Header: t('trade.order-book-card.table.verify'),
 					accessor: 'hash',
 					Cell: (cellProps) => (
@@ -151,7 +161,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					),
 				},
 			]}
-		></StyledTable>
+		/>
 	);
 };
 

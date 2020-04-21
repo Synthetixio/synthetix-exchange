@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import isEmpty from 'lodash/isEmpty';
+import get from 'lodash/get';
+import { ReactComponent as CloseIcon } from 'src/assets/images/close.svg';
 
 import snxJSConnector from 'src/utils/snxJSConnector';
 
@@ -22,7 +24,11 @@ import {
 	updateTransaction,
 	getTransactions,
 } from 'src/ducks/transaction';
-import { toggleGweiPopup } from 'src/ducks/ui';
+import {
+	toggleGweiPopup,
+	setOvmTradeTooltipVisible,
+	getOvmTradeTooltipVisible,
+} from 'src/ducks/ui';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';
 import { BALANCE_FRACTIONS } from 'src/constants/order';
@@ -44,10 +50,17 @@ import {
 import { HeadingSmall, DataSmall } from 'src/components/Typography';
 import { ButtonFilter, ButtonPrimary } from 'src/components/Button';
 import DismissableMessage from 'src/components/DismissableMessage';
-import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'src/shared/commonStyles';
+import {
+	FormInputRow,
+	FormInputLabel,
+	FormInputLabelSmall,
+	ExternalLink,
+} from 'src/shared/commonStyles';
 
 import { ReactComponent as ReverseArrow } from 'src/assets/images/reverse-arrow.svg';
 import NetworkInfo from './NetworkInfo';
+import Tooltip from './Tooltip';
+import { TooltipContent, TooltipContentRow, TooltipLabel } from './common';
 
 import { media } from 'src/shared/media';
 
@@ -66,6 +79,8 @@ const CreateOrderCard = ({
 	updateTransaction,
 	transactions,
 	synthsMap,
+	ovmTradeTooltipVisible,
+	setOvmTradeTooltipVisible,
 }) => {
 	const { t } = useTranslation();
 	const { colors } = useContext(ThemeContext);
@@ -166,6 +181,7 @@ const CreateOrderCard = ({
 			utils,
 		} = snxJSConnector;
 		const transactionId = transactions.length;
+		setOvmTradeTooltipVisible(false);
 		setTxErrorMessage(null);
 		setIsSubmitting(true);
 		try {
@@ -202,6 +218,7 @@ const CreateOrderCard = ({
 					baseAmount * getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)
 				),
 				status: TRANSACTION_STATUS.WAITING,
+				confirmTxTime: null,
 			});
 
 			const tx = await Synthetix.exchange(
@@ -231,6 +248,37 @@ const CreateOrderCard = ({
 			setIsSubmitting(false);
 		}
 	};
+
+	const getOVMTradeTooltipBody = () => (
+		<TooltipContent>
+			<CloseIcon
+				onClick={() => setOvmTradeTooltipVisible(false)}
+				style={{
+					position: 'absolute',
+					top: '15px',
+					right: '15px',
+					color: '#908FDA',
+					cursor: 'pointer',
+				}}
+			/>
+			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '4px' }}>
+				<TooltipLabel>
+					Trade confirmed in {get(transactions, [transactions.length - 1, 'confirmTxTime'])}ms.
+				</TooltipLabel>
+			</TooltipContentRow>
+			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '4px' }}>
+				<TooltipLabel>Yes, the OVM is that fast!</TooltipLabel>
+			</TooltipContentRow>
+			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '4px' }}>
+				<TooltipLabel>
+					Read more:{' '}
+					<Link isExternal={true} to="https://optimism.io/ovm/">
+						https://optimism.io/ovm/
+					</Link>
+				</TooltipLabel>
+			</TooltipContentRow>
+		</TooltipContent>
+	);
 
 	return (
 		<Card>
@@ -339,9 +387,17 @@ const CreateOrderCard = ({
 						{t('trade.trade-card.retry-button')}
 					</ButtonPrimary>
 				) : (
-					<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
-						{t('trade.trade-card.confirm-trade-button')}
-					</ButtonPrimary>
+					<Tooltip
+						key="ovm-trade-tooltip"
+						title={getOVMTradeTooltipBody()}
+						open={ovmTradeTooltipVisible}
+						interactive={true}
+						tooltipPadding="20px"
+					>
+						<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
+							{t('trade.trade-card.confirm-trade-button')}
+						</ButtonPrimary>
+					</Tooltip>
 				)}
 				{txErrorMessage && (
 					<TxErrorMessage
@@ -431,6 +487,7 @@ const mapStateToProps = (state) => {
 		ethRate: getEthRate(state),
 		transactions: getTransactions(state),
 		synthsMap: getAvailableSynthsMap(state),
+		ovmTradeTooltipVisible: getOvmTradeTooltipVisible(state),
 	};
 };
 
@@ -438,6 +495,7 @@ const mapDispatchToProps = {
 	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
+	setOvmTradeTooltipVisible,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderCard);

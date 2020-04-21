@@ -28,6 +28,7 @@ import {
 	getIsRefreshingMyTrades,
 	getIsLoadedMyTrades,
 } from 'src/ducks/trades/myTrades';
+import { setOvmTradeTooltipVisible, getSeenTradeTooltipVisible } from 'src/ducks/ui';
 
 import Card from 'src/components/Card';
 import MyOrders from './myOrders';
@@ -48,6 +49,8 @@ const OrderBookCard = ({
 	isLoadedAllTrades,
 	isRefreshingAllTrades,
 	fetchWalletBalancesRequest,
+	setOvmTradeTooltipVisible,
+	seenTradeTooltipVisible,
 }) => {
 	const { t } = useTranslation();
 
@@ -99,8 +102,17 @@ const OrderBookCard = ({
 				const status = await provider.getTransactionReceipt(latestTransactionHash);
 				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
 				if (status) {
-					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
+					updateTransaction(
+						{
+							status: TRANSACTION_STATUS.CONFIRMED,
+							confirmTxTime: Date.now() - +matchingTransaction.date,
+						},
+						matchingTransaction.id
+					);
 					fetchWalletBalancesRequest();
+					if (!seenTradeTooltipVisible) {
+						setOvmTradeTooltipVisible(true);
+					}
 				} else {
 					updateTransaction(
 						{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
@@ -193,6 +205,7 @@ const mapStateToProps = (state) => ({
 	myTrades: getMyTrades(state),
 	isRefreshingMyTrades: getIsRefreshingMyTrades(state),
 	isLoadedMyTrades: getIsLoadedMyTrades(state),
+	seenTradeTooltipVisible: getSeenTradeTooltipVisible(state),
 });
 
 const mapDispatchToProps = {
@@ -201,6 +214,7 @@ const mapDispatchToProps = {
 	fetchAllTradesRequest,
 	fetchMyTradesRequest,
 	fetchWalletBalancesRequest,
+	setOvmTradeTooltipVisible,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderBookCard);
