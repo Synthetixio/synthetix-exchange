@@ -51,12 +51,7 @@ import {
 import { HeadingSmall, DataSmall } from 'src/components/Typography';
 import { ButtonFilter, ButtonPrimary } from 'src/components/Button';
 import DismissableMessage from 'src/components/DismissableMessage';
-import {
-	FormInputRow,
-	FormInputLabel,
-	FormInputLabelSmall,
-	ExternalLink,
-} from 'src/shared/commonStyles';
+import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'src/shared/commonStyles';
 
 import { ReactComponent as ReverseArrow } from 'src/assets/images/reverse-arrow.svg';
 import NetworkInfo from './NetworkInfo';
