@@ -267,7 +267,7 @@ const CreateOrderCard = ({
 			</TooltipContentRow>
 			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '10px' }}>
 				<TooltipLabel>
-					<Link isExternal={true} to="https://optimism.io/ovm/" style={{ color: '#fff' }}>
+					<Link isExternal={true} to="https://optimism.io/ovm/" style={{ color: '#00E2DF' }}>
 						Click here to learn more
 					</Link>
 				</TooltipLabel>
