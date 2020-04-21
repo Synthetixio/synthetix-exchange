@@ -10,6 +10,7 @@ import snxJSConnector from 'src/utils/snxJSConnector';
 
 import Card from 'src/components/Card';
 import { TradeInput } from 'src/components/Input';
+import Link from 'src/components/Link';
 
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { getSynthsWalletBalances } from 'src/ducks/wallet/walletBalances';
@@ -269,11 +270,10 @@ const CreateOrderCard = ({
 			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '4px' }}>
 				<TooltipLabel>Yes, the OVM is that fast!</TooltipLabel>
 			</TooltipContentRow>
-			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '4px' }}>
+			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '10px' }}>
 				<TooltipLabel>
-					Read more:{' '}
-					<Link isExternal={true} to="https://optimism.io/ovm/">
-						https://optimism.io/ovm/
+					<Link isExternal={true} to="https://optimism.io/ovm/" style={{ color: '#fff' }}>
+						Click here to learn more
 					</Link>
 				</TooltipLabel>
 			</TooltipContentRow>
