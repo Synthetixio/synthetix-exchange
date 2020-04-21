@@ -63,11 +63,11 @@ export const MobileAppHeader = memo(
 					<>
 						<Overlay onClick={toggleMenu} />
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
-							<DropdownMenuLink to={ROUTES.Tokens.Home} onClick={toggleMenu}>
-								{t('header.links.markets')}
-							</DropdownMenuLink>
 							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
 								{t('header.links.markets')}
+							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Tokens.Home} onClick={toggleMenu}>
+								{t('header.links.tokens')}
 							</DropdownMenuLink>
 							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
 								{t('header.links.trade')}
@@ -122,6 +122,7 @@ const Container = styled.header`
 	border-style: solid;
 	border-width: 1px 0;
 	position: fixed;
+	top: 0;
 	left: 0;
 	right: 0;
 	z-index: ${Z_INDEX.APP_HEADER};

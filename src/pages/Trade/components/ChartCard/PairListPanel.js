@@ -124,7 +124,11 @@ const PairListPanel = ({
 								width: 100,
 								Cell: (cellProps) => (
 									<RightAlignedCell>
-										<CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />{' '}
+										<CurrencyCol
+											currencyKey={cellProps.row.original.quoteCurrencyKey}
+											synthsMap={synthsMap}
+											cellProps={cellProps}
+										/>{' '}
 									</RightAlignedCell>
 								),
 								sortable: true,

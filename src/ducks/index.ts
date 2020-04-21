@@ -6,6 +6,7 @@ import synths from './synths';
 import transaction from './transaction';
 import loans from './loans';
 import rates from './rates';
+import historicalRates from './historicalRates';
 import app from './app';
 import markets from './markets';
 import trades from './trades';
@@ -18,6 +19,7 @@ export default combineReducers({
 	transaction,
 	loans,
 	rates,
+	historicalRates,
 	markets,
 	trades,
 });

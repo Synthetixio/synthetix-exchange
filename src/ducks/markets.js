@@ -7,11 +7,9 @@ import { getMarketsAssetFilter } from './ui';
 import { getRatesExchangeRates } from './rates';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 
-import {
-	fetchSynthRateUpdates,
-	fetchSynthVolumeInUSD,
-	PERIOD_IN_HOURS,
-} from 'services/rates/rates';
+import { PERIOD_IN_HOURS } from 'constants/period';
+
+import { fetchSynthRateUpdates, fetchSynthVolumeInUSD } from 'services/rates/rates';
 
 import { getAvailableMarketNames } from 'constants/currency';
 

@@ -1,15 +1,23 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import keyBy from 'lodash/keyBy';
+import orderBy from 'lodash/orderBy';
 
 import { synthWeight } from '../utils/synthOrdering';
 
 import { SYNTHS_MAP, ASSETS_MAP, CurrencyKeys, CurrencyKey } from '../constants/currency';
 
 import { RootState } from './types';
+import {
+	getHistoricalRatesState,
+	HistoricalRates,
+	getHistoricalRatesIsOneDayPeriodLoaded,
+} from './historicalRates';
+import { getRatesExchangeRates } from './rates';
+import { Period } from 'constants/period';
 
 const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
 
-export interface SynthDefinition {
+export type SynthDefinition = {
 	name: CurrencyKey;
 	asset: string;
 	category: string;
@@ -18,7 +26,12 @@ export interface SynthDefinition {
 	aggregator: string;
 	inverted: boolean;
 	isFrozen?: boolean;
-}
+};
+
+export type SynthDefinitionWithRates = SynthDefinition & {
+	historicalRates: Record<Period, Partial<HistoricalRates>> | null;
+	lastPrice: number | null;
+};
 
 const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 	if (a.category === ASSETS_MAP.crypto && b.category === ASSETS_MAP.crypto) {
@@ -39,13 +52,13 @@ const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 const DEFAULT_BASE_SYNTH = SYNTHS_MAP.sBTC;
 const DEFAULT_QUOTE_SYNTH = SYNTHS_MAP.sUSD;
 
-type SynthDefinitionMap = Record<string, SynthDefinition>;
+export type SynthDefinitionMap = Record<string, SynthDefinition>;
 
-export interface SynthsSliceState {
+export type SynthsSliceState = {
 	availableSynths: SynthDefinitionMap;
 	baseSynth: SynthDefinition;
 	quoteSynth: SynthDefinition;
-}
+};
 
 const initialState: SynthsSliceState = {
 	availableSynths: {},
@@ -103,6 +116,8 @@ export const synthsSlice = createSlice({
 	},
 });
 
+export const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSlice.actions;
+
 export const getSynthsState = (state: RootState) => state[sliceName];
 export const getAvailableSynthsMap = (state: RootState) => getSynthsState(state).availableSynths;
 export const getSortedAvailableList = createSelector(getAvailableSynthsMap, (availableSynths) =>
@@ -116,11 +131,31 @@ export const getSortedAvailableSynths = createSelector(getSortedAvailableList, (
 export const getAvailableSynths = createSelector(getSortedAvailableSynths, (availableSynths) =>
 	availableSynths.filter((synth: SynthDefinition) => !synth.isFrozen)
 );
+
+export const getSynthsWithRates = createSelector(
+	getAvailableSynths,
+	getHistoricalRatesState,
+	getRatesExchangeRates,
+	(availableSynths, historicalRates, exchangeRates) =>
+		availableSynths.map((synth) => ({
+			...synth,
+			historicalRates: historicalRates[synth.name] || null,
+			lastPrice: exchangeRates != null ? exchangeRates[synth.name] : null,
+		}))
+);
+
+export const getOrderedSynthsWithRates = createSelector(
+	getSynthsWithRates,
+	getHistoricalRatesIsOneDayPeriodLoaded,
+	(synthsWithRates, historicalRatesIsOneDayPeriodLoaded) =>
+		historicalRatesIsOneDayPeriodLoaded
+			? orderBy(synthsWithRates, (synth) => synth.historicalRates.ONE_DAY.data?.change, 'desc')
+			: synthsWithRates
+);
+
 export const getSynthPair = (state: RootState) => ({
 	base: getSynthsState(state).baseSynth,
 	quote: getSynthsState(state).quoteSynth,
 });
-
-export const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSlice.actions;
 
 export default synthsSlice.reducer;

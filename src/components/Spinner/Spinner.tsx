@@ -8,11 +8,11 @@ import { absoluteCenteredCSS } from 'shared/commonStyles';
 
 type ImageSize = 'lg' | 'sm';
 
-interface SpinnerProps {
+type SpinnerProps = {
 	size?: ImageSize;
 	className?: string;
 	fullscreen?: boolean;
-}
+};
 
 const Spinner: FC<SpinnerProps> = memo(
 	({ size = 'lg', className, fullscreen = false, ...rest }) => (

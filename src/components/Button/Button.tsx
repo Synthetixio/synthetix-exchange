@@ -1,6 +1,12 @@
 import styled, { css } from 'styled-components';
 
-const Button = styled.button`
+type ButtonProps = {
+	size?: 'xs' | 'sm' | 'md' | 'lg';
+	palette?: 'primary' | 'secondary' | 'outline';
+	isActive?: boolean;
+};
+
+const Button = styled.button<ButtonProps>`
 	font-family: ${(props) => props.theme.fonts.medium};
 	border-radius: 1px;
 	height: 48px;
@@ -49,7 +55,7 @@ const Button = styled.button`
 				}
 			}
 			${(props) =>
-				props.isActive &&
+				(props as ButtonProps).isActive &&
 				css`
 					background-color: ${(props) => props.theme.colors.buttonHover};
 				`}
@@ -66,11 +72,30 @@ const Button = styled.button`
 				}
 			}
 			${(props) =>
-				props.isActive &&
+				(props as ButtonProps).isActive &&
 				css`
 					background-color: ${(props) => props.theme.colors.accentL2};
 				`}
 		`}
+
+	${(props) =>
+		props.palette === 'outline' &&
+		css`
+			border-radius: 1px;
+			color: ${(props) => props.theme.colors.buttonDefault};
+			background-color: ${(props) => props.theme.colors.white};
+			border: 1px solid ${(props) => props.theme.colors.buttonDefault};
+			&:hover {
+				&:not(:disabled) {
+					background-color: ${(props) => props.theme.colors.accentL2};
+				}
+			}
+			${(props) =>
+				(props as ButtonProps).isActive &&
+				css`
+					background-color: ${(props) => props.theme.colors.buttonHover};
+				`}
+		`}	
 `;
 
 export default Button;

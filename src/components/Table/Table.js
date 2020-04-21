@@ -43,55 +43,57 @@ export const Table = ({
 	);
 
 	return (
-		<ReactTable {...getTableProps()} palette={palette} className={className}>
-			{headerGroups.map((headerGroup) => (
-				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
-					{headerGroup.headers.map((column) => (
-						<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
-							{column.render('Header')}
-							{column.sortable && (
-								<SortIconContainer>
-									{column.isSorted ? (
-										column.isSortedDesc ? (
-											<SortDownIcon />
+		<TableContainer>
+			<ReactTable {...getTableProps()} palette={palette} className={className}>
+				{headerGroups.map((headerGroup) => (
+					<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
+						{headerGroup.headers.map((column) => (
+							<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
+								{column.render('Header')}
+								{column.sortable && (
+									<SortIconContainer>
+										{column.isSorted ? (
+											column.isSortedDesc ? (
+												<SortDownIcon />
+											) : (
+												<SortUpIcon />
+											)
 										) : (
-											<SortUpIcon />
-										)
-									) : (
-										<SortIcon />
-									)}
-								</SortIconContainer>
-							)}
-						</TableCellHead>
-					))}
-				</TableRow>
-			))}
-			{noResultsMessage != null ? (
-				noResultsMessage
-			) : isLoading ? (
-				<Spinner size="sm" fullscreen={true} />
-			) : (
-				<TableBody className="table-body" {...getTableBodyProps()}>
-					{rows.map((row) => {
-						prepareRow(row);
+											<SortIcon />
+										)}
+									</SortIconContainer>
+								)}
+							</TableCellHead>
+						))}
+					</TableRow>
+				))}
+				{noResultsMessage != null ? (
+					noResultsMessage
+				) : isLoading ? (
+					<Spinner size="sm" fullscreen={true} />
+				) : (
+					<TableBody className="table-body" {...getTableBodyProps()}>
+						{rows.map((row) => {
+							prepareRow(row);
 
-						return (
-							<TableBodyRow
-								className="table-body-row"
-								{...row.getRowProps()}
-								onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
-							>
-								{row.cells.map((cell) => (
-									<TableCell className="table-body-cell" {...cell.getCellProps()}>
-										{cell.render('Cell')}
-									</TableCell>
-								))}
-							</TableBodyRow>
-						);
-					})}
-				</TableBody>
-			)}
-		</ReactTable>
+							return (
+								<TableBodyRow
+									className="table-body-row"
+									{...row.getRowProps()}
+									onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
+								>
+									{row.cells.map((cell) => (
+										<TableCell className="table-body-cell" {...cell.getCellProps()}>
+											{cell.render('Cell')}
+										</TableCell>
+									))}
+								</TableBodyRow>
+							);
+						})}
+					</TableBody>
+				)}
+			</ReactTable>
+		</TableContainer>
 	);
 };
 
@@ -102,7 +104,13 @@ Table.propTypes = {
 	options: PropTypes.object,
 	onTableRowClick: PropTypes.func,
 	palette: PropTypes.string,
+	className: PropTypes.string,
 };
+
+const TableContainer = styled.div`
+	display: block;
+	overflow: auto;
+`;
 
 export const TableRow = styled.div``;
 
@@ -203,12 +211,12 @@ ${(props) =>
 		props.palette === TABLE_PALETTE.LIGHT &&
 		css`
 			${TableBody} {
-				max-height: calc(100% - ${CARD_HEIGHT});
+				max-height: calc(100% - 56px);
 			}
 			${TableCell} {
 				font-size: 14px;
 				color: ${lightTheme.colors.fontPrimary};
-				height: ${CARD_HEIGHT};
+				height: 56px;
 			}
 			${TableRow} {
 				background-color: ${darkTheme.colors.brand};

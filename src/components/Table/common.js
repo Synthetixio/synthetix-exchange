@@ -7,9 +7,8 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 export const NullableCell = ({ cellProps, children }) =>
 	cellProps.cell.value == null ? <span>{EMPTY_VALUE}</span> : children;
 
-export const CurrencyCol = ({ synthsMap, cellProps }) => {
-	const quoteCurrencyKey = cellProps.row.original.quoteCurrencyKey;
-	const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
+export const CurrencyCol = ({ currencyKey, synthsMap, cellProps }) => {
+	const sign = synthsMap[currencyKey] && synthsMap[currencyKey].sign;
 
 	if (cellProps.cell.value == null || !sign) {
 		return <span>{EMPTY_VALUE}</span>;

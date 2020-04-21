@@ -1,4 +1,4 @@
-export interface ThemeColors {
+export type ThemeColors = {
 	brand: string;
 	surfaceL1: string;
 	surfaceL2: string;
@@ -8,6 +8,6 @@ export interface ThemeColors {
 	fontPrimary: string;
 	fontSecondary: string;
 	fontTertiary: string;
-}
+};
 
 export type Theme = 'light' | 'dark';

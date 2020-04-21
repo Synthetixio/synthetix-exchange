@@ -11,7 +11,7 @@ import { navigateToTrade } from 'constants/routes';
 
 import { media } from 'shared/media';
 
-import { formatCurrencyWithSign } from 'utils/formatters';
+import { formatCurrencyPair, formatCurrencyWithSign } from 'utils/formatters';
 
 import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
 
@@ -27,8 +27,7 @@ export const MarketsCharts = memo(({ markets, synthsMap, marketsLoaded }) => (
 				return (
 					<StyledChartCard
 						key={pair}
-						baseCurrencyKey={baseCurrencyKey}
-						quoteCurrencyKey={quoteCurrencyKey}
+						currencyLabel={formatCurrencyPair(baseCurrencyKey, quoteCurrencyKey)}
 						price={lastPrice != null ? formatCurrencyWithSign(sign, lastPrice) : null}
 						change={rates24hChange}
 						chartData={marketsLoaded ? rates : []}

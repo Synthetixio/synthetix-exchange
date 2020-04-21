@@ -8,14 +8,12 @@ import InfoRow from './InfoRow';
 import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { getRatesExchangeRates } from 'ducks/rates';
 
+import { PERIOD_IN_HOURS } from 'constants/period';
+
 import { ButtonFilter } from 'components/Button';
 import PairListPanel from './PairListPanel';
 
-import {
-	fetchSynthVolumeInUSD,
-	PERIOD_IN_HOURS,
-	fetchSynthRateUpdates,
-} from 'services/rates/rates';
+import { fetchSynthVolumeInUSD, fetchSynthRateUpdates } from 'services/rates/rates';
 import Card from 'components/Card';
 
 const PERIODS = [

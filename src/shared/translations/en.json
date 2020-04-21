@@ -106,11 +106,14 @@
 		}
 	},
 	"tokens": {
+		"hero": {
+			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
+		},
 		"table": {
 			"token-col": "token",
 			"last-price-col": "last price",
 			"24h-change-col": "24hr change",
-			"7-day-trend-col": "7 day trend",
+			"24h-trend-col": "24h trend",
 			"trade-now-col": "trade now"
 		}
 	},
