@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { ExternalLink } from 'src/shared/commonStyles';
-import { ReactComponent as ArrowHyperlinkIcon } from 'src/assets/images/arrow-hyperlink.svg';
+import { ReactComponent as ArrowLinkIcon } from 'src/assets/images/l2/link-arrow.svg';
 
 const ViewLink = styled(ExternalLink)`
 	color: ${(props) => props.theme.colors.hyperlink};
@@ -18,7 +18,7 @@ const ViewLink = styled(ExternalLink)`
 		`}
 `;
 
-export const ArrowIcon = styled(ArrowHyperlinkIcon)`
+export const ArrowIcon = styled(ArrowLinkIcon)`
 	margin-left: 5px;
 `;
 

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 import { ReactComponent as CloseIcon } from 'src/assets/images/close.svg';
+import { ReactComponent as ArrowLinkIcon } from 'src/assets/images/l2/link-arrow.svg';
 
 import snxJSConnector from 'src/utils/snxJSConnector';
 
@@ -268,7 +269,7 @@ const CreateOrderCard = ({
 			<TooltipContentRow style={{ justifyContent: 'center', marginTop: '10px' }}>
 				<TooltipLabel>
 					<Link isExternal={true} to="https://optimism.io/ovm/" style={{ color: '#00E2DF' }}>
-						Click here to learn more
+						Click here to learn more <ArrowLinkIcon />
 					</Link>
 				</TooltipLabel>
 			</TooltipContentRow>
