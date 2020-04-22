@@ -100,6 +100,7 @@ const Container = styled.div`
 	padding: 48px;
 	${media.medium`
 		width: 100%;
+		border: 0;
 	`}
 `;
 
@@ -138,6 +139,11 @@ const TableCell = styled.td`
 const TableCellLabel = styled(TableCell)`
 	color: #cacaf1;
 	white-space: nowrap;
+	min-width: 100px;
+	word-break: normal;
+	${media.medium`
+		white-space: normal;
+	`}
 `;
 
 const TableCellDesc = styled(TableCell)`
