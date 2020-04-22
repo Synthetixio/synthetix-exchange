@@ -87,7 +87,7 @@ const Root = ({
 					localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
 				}
 
-				const provider = new providers.JsonRpcProvider('https://synth.optimism.io');
+				const provider = new providers.JsonRpcProvider('https://uat.synth.optimism.io');
 				const wallet = Wallet.fromMnemonic(account);
 
 				const walletAddr = wallet.address;
