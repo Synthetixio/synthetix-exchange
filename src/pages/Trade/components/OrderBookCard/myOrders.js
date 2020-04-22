@@ -6,7 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import get from 'lodash/get';
 
 import { getPendingTransactions, getTransactions, updateTransaction } from 'src/ducks/transaction';
-import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
+import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
 import {
@@ -16,7 +16,6 @@ import {
 	formatCurrencyWithSign,
 	formatCurrencyWithKey,
 } from 'src/utils/formatters';
-import { getEtherscanTxLink } from 'src/utils/explorers';
 
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
@@ -24,7 +23,7 @@ import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
-import ViewLink, { ArrowIcon } from './ViewLink';
+import ViewLink from './ViewLink';
 
 const countDecimals = (value) => {
 	if (Math.floor(value) === value) return 0;
@@ -38,7 +37,7 @@ const getPrecision = (amount) => {
 	return 4;
 };
 
-const MyOrders = ({ transactions, networkId, synthsMap }) => {
+const MyOrders = ({ transactions, synthsMap }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -145,15 +144,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.verify'),
 					accessor: 'hash',
-					Cell: (cellProps) => (
-						<ViewLink
-							isDisabled={!cellProps.cell.value}
-							href={getEtherscanTxLink(networkId, cellProps.cell.value)}
-						>
-							{t('common.transaction.view')}
-							<ArrowIcon width="8" height="8" />
-						</ViewLink>
-					),
+					Cell: (cellProps) => <ViewLink hash={cellProps.cell.value} />,
 				},
 			]}
 		/>
@@ -167,7 +158,6 @@ const StyledTable = styled(Table)`
 `;
 
 const mapStateToProps = (state) => ({
-	networkId: getNetworkId(state),
 	transactions: getTransactions(state),
 	pendingTransactions: getPendingTransactions(state),
 	walletInfo: getWalletInfo(state),

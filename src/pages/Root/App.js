@@ -14,6 +14,7 @@ import {
 	getTwitterPopupIsVisible,
 	gweiPopupIsVisible,
 	walletPopupIsVisible,
+	getViewTxModalVisible,
 } from '../../ducks/ui';
 
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
@@ -27,6 +28,7 @@ import WalletPopup from 'src/components/WalletPopup';
 import GweiPopup from 'src/components/GweiPopup';
 import LeaderboardPopup from 'src/components/LeaderboardPopup';
 import TwitterPopup from 'src/components/TwitterPopup';
+import ViewTxModal from 'src/components/ViewTxModal';
 
 import Trade from '../Trade';
 import Onboarding from '../Onboarding';
@@ -38,6 +40,7 @@ const App = ({
 	gweiPopupIsVisible,
 	walletPopupIsVisible,
 	walletInfo,
+	viewTxModalVisible,
 }) => (
 	<ThemeProvider theme={darkTheme}>
 		<Router history={history}>
@@ -48,6 +51,7 @@ const App = ({
 					{gweiPopupIsVisible && <GweiPopup />}
 					{leaderboardPopupIsVisible && <LeaderboardPopup />}
 					{twitterPopupIsVisible && <TwitterPopup />}
+					{viewTxModalVisible && <ViewTxModal />}
 				</>
 			)}
 			<Switch>
@@ -97,6 +101,7 @@ const mapStateToProps = (state) => ({
 	twitterPopupIsVisible: getTwitterPopupIsVisible(state),
 	gweiPopupIsVisible: gweiPopupIsVisible(state),
 	walletPopupIsVisible: walletPopupIsVisible(state),
+	viewTxModalVisible: getViewTxModalVisible(state),
 });
 
 export default connect(mapStateToProps, null)(App);

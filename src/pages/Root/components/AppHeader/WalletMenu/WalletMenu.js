@@ -32,6 +32,8 @@ import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
 
+import { media } from 'src/shared/media';
+
 const WalletMenu = ({
 	totalSynthsBalanceUSD,
 	isLoadedWalletBalances,
@@ -124,7 +126,7 @@ const WalletMenu = ({
 								sortable: true,
 							},
 						]}
-					></StyledTable>
+					/>
 				</StyleCardBody>
 			</Card>
 		</Content>
@@ -142,6 +144,9 @@ const StyledTable = styled(Table)`
 		width: 300px;
 		height: 256px;
 		overflow-x: hidden;
+		${media.medium`
+			width: 100%;
+		`}
 	}
 	.table-body-row {
 		& > :first-child {

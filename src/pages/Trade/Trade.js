@@ -69,6 +69,7 @@ const TradeContainer = styled.div`
 	flex: 1;
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 `;
 const ChartContainer = styled.div`
 	flex: 1;

@@ -18,6 +18,8 @@ const initialState = {
 	twitterPopupIsVisible: false,
 	ovmTradeTooltipVisible: false,
 	seenOvmTradeTooltip: false,
+	viewTxModalVisible: false,
+	viewTxModalProps: {},
 	...getPersistedState('ui'),
 };
 
@@ -77,10 +79,20 @@ export const uiSlice = createSlice({
 				persistState('ui', { seenOvmTradeTooltip: true });
 			}
 		},
+		showViewTxModal: (state, action) => {
+			state.viewTxModalVisible = true;
+			state.viewTxModalProps = action.payload;
+		},
+		hideViewTxModal: (state) => {
+			state.viewTxModalVisible = false;
+			state.viewTxModalProps = {};
+		},
 	},
 });
 
 export const {
+	showViewTxModal,
+	hideViewTxModal,
 	setSeenOvmTradeTooltip,
 	setOvmTradeTooltipVisible,
 	toggleWalletPopup,
@@ -113,5 +125,7 @@ export const getLeaderboardPopupIsVisible = (state) => getUIState(state).leaderb
 export const getTwitterPopupIsVisible = (state) => getUIState(state).twitterPopupIsVisible;
 export const getOvmTradeTooltipVisible = (state) => getUIState(state).ovmTradeTooltipVisible;
 export const getSeenTradeTooltipVisible = (state) => getUIState(state).seenOvmTradeTooltip;
+export const getViewTxModalVisible = (state) => getUIState(state).viewTxModalVisible;
+export const getViewTxModalProps = (state) => getUIState(state).viewTxModalProps;
 
 export default uiSlice.reducer;
