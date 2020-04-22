@@ -7,8 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import { formatCurrency } from 'src/utils/formatters';
 import { getTransactionPrice } from 'src/utils/networkUtils';
 
-import { LinkTextSmall } from 'src/shared/commonStyles';
-import { TextButton, FlexDivRow } from 'src/shared/commonStyles';
+import { FlexDivRow } from 'src/shared/commonStyles';
 
 import { DataSmall } from 'src/components/Typography';
 import { ReactComponent as QuestionMark } from 'src/assets/images/question-mark.svg';
@@ -26,7 +25,6 @@ export const TransactionInfo = ({
 	usdRate = 0,
 	amount = 0,
 	exchangeFeeRate = 0,
-	onEditButtonClick,
 	lastPrice,
 }) => {
 	const { t } = useTranslation();
@@ -118,10 +116,6 @@ const NetworkDataRow = styled(FlexDivRow)`
 	display: flex;
 	align-items: center;
 	margin-bottom: 8px;
-`;
-
-const ButtonEdit = styled(TextButton)`
-	margin-left: 10px;
 `;
 
 export default TransactionInfo;

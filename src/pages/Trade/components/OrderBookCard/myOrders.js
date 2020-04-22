@@ -5,12 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import get from 'lodash/get';
 
-import {
-	getPendingTransactions,
-	getTransactions,
-	removePendingTransaction,
-	updateTransaction,
-} from 'src/ducks/transaction';
+import { getPendingTransactions, getTransactions, updateTransaction } from 'src/ducks/transaction';
 import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
@@ -181,7 +176,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
 	updateTransaction,
-	removePendingTransaction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyOrders);

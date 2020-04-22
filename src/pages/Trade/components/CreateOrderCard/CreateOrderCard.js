@@ -18,6 +18,7 @@ import { getSynthsWalletBalances } from 'src/ducks/wallet/walletBalances';
 import { getSynthPair } from 'src/ducks/synths';
 import { getRatesExchangeRates, getEthRate } from 'src/ducks/rates';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
+import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
 
 import {
 	getExchangeFeeRate,
@@ -30,6 +31,7 @@ import {
 	toggleGweiPopup,
 	setOvmTradeTooltipVisible,
 	getOvmTradeTooltipVisible,
+	getSeenTradeTooltipVisible,
 } from 'src/ducks/ui';
 
 import { EMPTY_VALUE } from 'src/constants/placeholder';
@@ -78,6 +80,8 @@ const CreateOrderCard = ({
 	synthsMap,
 	ovmTradeTooltipVisible,
 	setOvmTradeTooltipVisible,
+	fetchWalletBalancesRequest,
+	seenTradeTooltipVisible,
 }) => {
 	const { t } = useTranslation();
 	const { colors } = useContext(ThemeContext);
@@ -218,17 +222,40 @@ const CreateOrderCard = ({
 				confirmTxTime: null,
 			});
 
+			const gasPrice = gasInfo.gasPrice * GWEI_UNIT;
+			const now = Date.now();
+
 			const tx = await Synthetix.exchange(
 				bytesFormatter(quote.name),
 				amountToExchange,
 				bytesFormatter(base.name),
 				{
-					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasPrice,
 					gasLimit: rectifiedGasLimit,
 				}
 			);
 
-			updateTransaction({ status: TRANSACTION_STATUS.PENDING, ...tx }, transactionId);
+			const confirmTxTime = Date.now() - now;
+
+			if (tx && tx.hash) {
+				updateTransaction(
+					{ status: TRANSACTION_STATUS.CONFIRMED, ...tx, confirmTxTime },
+					transactionId
+				);
+				fetchWalletBalancesRequest();
+				if (!seenTradeTooltipVisible) {
+					setOvmTradeTooltipVisible(true);
+				}
+			} else {
+				updateTransaction(
+					{
+						status: TRANSACTION_STATUS.FAILED,
+						error: 'Transaction failed',
+					},
+					transactionId
+				);
+			}
+
 			setIsSubmitting(false);
 		} catch (e) {
 			console.log(e);
@@ -472,26 +499,26 @@ export const TxErrorMessage = styled(DismissableMessage)`
 	margin-top: 8px;
 `;
 
-const mapStateToProps = (state) => {
-	return {
-		synthPair: getSynthPair(state),
-		walletInfo: getWalletInfo(state),
-		synthsWalletBalances: getSynthsWalletBalances(state),
-		exchangeRates: getRatesExchangeRates(state),
-		exchangeFeeRate: getExchangeFeeRate(state),
-		gasInfo: getGasInfo(state),
-		ethRate: getEthRate(state),
-		transactions: getTransactions(state),
-		synthsMap: getAvailableSynthsMap(state),
-		ovmTradeTooltipVisible: getOvmTradeTooltipVisible(state),
-	};
-};
+const mapStateToProps = (state) => ({
+	synthPair: getSynthPair(state),
+	walletInfo: getWalletInfo(state),
+	synthsWalletBalances: getSynthsWalletBalances(state),
+	exchangeRates: getRatesExchangeRates(state),
+	exchangeFeeRate: getExchangeFeeRate(state),
+	gasInfo: getGasInfo(state),
+	ethRate: getEthRate(state),
+	transactions: getTransactions(state),
+	synthsMap: getAvailableSynthsMap(state),
+	ovmTradeTooltipVisible: getOvmTradeTooltipVisible(state),
+	seenTradeTooltipVisible: getSeenTradeTooltipVisible(state),
+});
 
 const mapDispatchToProps = {
 	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
 	setOvmTradeTooltipVisible,
+	fetchWalletBalancesRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateOrderCard);

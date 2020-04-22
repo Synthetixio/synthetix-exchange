@@ -3,19 +3,10 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
-import { TRANSACTION_STATUS } from 'src/constants/transaction';
-
 import { DataSmall } from 'src/components/Typography';
 
-import {
-	getPendingTransactions,
-	getTransactions,
-	removePendingTransaction,
-	updateTransaction,
-} from 'src/ducks/transaction';
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
-import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
+
 import {
 	fetchAllTradesRequest,
 	getAllTrades,
@@ -28,7 +19,6 @@ import {
 	getIsRefreshingMyTrades,
 	getIsLoadedMyTrades,
 } from 'src/ducks/trades/myTrades';
-import { setOvmTradeTooltipVisible, getSeenTradeTooltipVisible } from 'src/ducks/ui';
 
 import Card from 'src/components/Card';
 import MyOrders from './myOrders';
@@ -36,10 +26,6 @@ import TradeHistory from './TradeHistory';
 
 const OrderBookCard = ({
 	walletInfo: { currentWallet },
-	pendingTransactions,
-	transactions,
-	removePendingTransaction,
-	updateTransaction,
 	fetchAllTradesRequest,
 	fetchMyTradesRequest,
 	myTrades,
@@ -48,9 +34,6 @@ const OrderBookCard = ({
 	allTrades,
 	isLoadedAllTrades,
 	isRefreshingAllTrades,
-	fetchWalletBalancesRequest,
-	setOvmTradeTooltipVisible,
-	seenTradeTooltipVisible,
 }) => {
 	const { t } = useTranslation();
 
@@ -89,43 +72,6 @@ const OrderBookCard = ({
 	);
 
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
-
-	// TODO: Move this logic into Redux
-	useEffect(() => {
-		const handlePendingTransactions = async () => {
-			const { provider } = snxJSConnector;
-			try {
-				if (pendingTransactions.length === 0) return;
-				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
-				removePendingTransaction(latestTransactionHash);
-				await provider.waitForTransaction(latestTransactionHash);
-				const status = await provider.getTransactionReceipt(latestTransactionHash);
-				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
-				if (status) {
-					updateTransaction(
-						{
-							status: TRANSACTION_STATUS.CONFIRMED,
-							confirmTxTime: Date.now() - +matchingTransaction.date,
-						},
-						matchingTransaction.id
-					);
-					fetchWalletBalancesRequest();
-					if (!seenTradeTooltipVisible) {
-						setOvmTradeTooltipVisible(true);
-					}
-				} else {
-					updateTransaction(
-						{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
-						matchingTransaction.id
-					);
-				}
-			} catch (e) {
-				console.log(e);
-			}
-		};
-		handlePendingTransactions();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pendingTransactions.length]);
 
 	useEffect(() => {
 		fetchMyTradesRequest();
@@ -196,8 +142,6 @@ const Tab = styled.button`
 `;
 
 const mapStateToProps = (state) => ({
-	transactions: getTransactions(state),
-	pendingTransactions: getPendingTransactions(state),
 	walletInfo: getWalletInfo(state),
 	allTrades: getAllTrades(state),
 	isRefreshingAllTrades: getIsRefreshingAllTrades(state),
@@ -205,16 +149,11 @@ const mapStateToProps = (state) => ({
 	myTrades: getMyTrades(state),
 	isRefreshingMyTrades: getIsRefreshingMyTrades(state),
 	isLoadedMyTrades: getIsLoadedMyTrades(state),
-	seenTradeTooltipVisible: getSeenTradeTooltipVisible(state),
 });
 
 const mapDispatchToProps = {
-	updateTransaction,
-	removePendingTransaction,
 	fetchAllTradesRequest,
 	fetchMyTradesRequest,
-	fetchWalletBalancesRequest,
-	setOvmTradeTooltipVisible,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderBookCard);
