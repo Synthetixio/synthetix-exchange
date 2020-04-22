@@ -53,7 +53,7 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 				{isLoading ? (
 					<Spinner size="sm" />
 				) : (
-					<table cellSpacing={0} cellPadding={0} style={{ width: '100%' }}>
+					<Table cellSpacing={0} cellPadding={0}>
 						<tbody>
 							<tr>
 								<TableCellLabel>transaction hash</TableCellLabel>
@@ -84,7 +84,7 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 								<TableCellDesc>{txDetails.confirmations}</TableCellDesc>
 							</tr>
 						</tbody>
-					</table>
+					</Table>
 				)}
 			</Container>
 		</Modal>
@@ -94,7 +94,7 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 const Container = styled.div`
 	outline: 0;
 	position: relative;
-	width: 820px;
+	width: 830px;
 	background: ${(props) => props.theme.colors.surfaceL3};
 	border: 0.5px solid #cb5bf2;
 	padding: 48px;
@@ -124,8 +124,14 @@ const Heading = styled.div`
 	padding-bottom: 30px;
 `;
 
+const Table = styled.table`
+	width: 100%;
+	border-collapse: collapse;
+`;
+
 const TableCell = styled.td`
 	border: 1px solid #cb5bf2;
+	border-collapse: collapse;
 	padding: 8px 12px;
 	font-style: normal;
 	font-weight: 500;
