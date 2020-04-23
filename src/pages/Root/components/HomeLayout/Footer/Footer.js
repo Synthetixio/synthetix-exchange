@@ -98,16 +98,16 @@ const SOCIAL_LINKS = [
 
 const MISC_LINKS = [
 	{
-		icon: <MessariLogoIcon width="152px" height="52px" />,
+		icon: <MessariLogoIcon />,
 		link: LINKS.Misc.Messari,
 	},
 	{
-		icon: <DefiNetworkLogoIcon width="133px" height="47px" />,
-		link: LINKS.Misc.DefiNetwork,
+		icon: <EthereumLogoIcon />,
+		link: LINKS.Misc.EthereumOrg,
 	},
 	{
-		icon: <EthereumLogoIcon width="184px" height="47px" />,
-		link: LINKS.Misc.EthereumOrg,
+		icon: <DefiNetworkLogoIcon />,
+		link: LINKS.Misc.DefiNetwork,
 	},
 ];
 
@@ -155,7 +155,13 @@ export const Footer = memo(() => {
 });
 
 const Container = styled.footer`
-	padding: 70px;
+	padding: 68px;
+	${media.medium`
+		padding: 42px;
+	`}
+	${media.small`
+		padding: 32px;
+	`}
 `;
 
 const Content = styled.div`
@@ -164,13 +170,14 @@ const Content = styled.div`
 `;
 
 const FooterMenu = styled.div`
-	padding-bottom: 115px;
+	padding-bottom: 100px;
 	display: grid;
 	grid-template-columns: 1fr auto;
 	align-items: flex-start;
 	justify-items: flex-start;
 	grid-template-areas: 'menu social';
 	${media.small`
+		padding-bottom: 70px;
 		grid-template-columns: initial initial;
 		grid-template-rows: auto auto;
 		grid-template-areas: 'social' 'menu';
@@ -179,9 +186,9 @@ const FooterMenu = styled.div`
 `;
 
 const MiscLinks = styled.div`
-	display: grid;
-	grid-template-columns: 1fr auto auto;
-	grid-gap: 20px;
+	display: inline-grid;
+	grid-template-columns: auto auto auto;
+	grid-gap: 24px;
 	align-items: center;
 	${media.small`
 		grid-auto-flow: initial;
