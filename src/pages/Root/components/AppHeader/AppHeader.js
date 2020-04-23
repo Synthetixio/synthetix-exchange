@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
@@ -14,7 +14,7 @@ import { APP_HEADER_HEIGHT } from 'src/constants/ui';
 
 import { FlexDivCentered } from 'src/shared/commonStyles';
 
-import { mediumMediaQuery, breakpoint } from 'src/shared/media';
+import { mediumMediaQuery } from 'src/shared/media';
 
 import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
 

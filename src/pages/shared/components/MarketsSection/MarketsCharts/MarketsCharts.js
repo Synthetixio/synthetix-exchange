@@ -13,6 +13,8 @@ import { media } from 'src/shared/media';
 
 import { formatCurrencyWithSign } from 'src/utils/formatters';
 
+import { shiftUpHoverEffectCSS } from 'src/shared/commonStyles';
+
 const CHART_CARDS = 4;
 
 export const MarketsCharts = memo(({ markets, synthsMap, marketsLoaded }) => (
@@ -57,6 +59,7 @@ const Container = styled.div`
 
 const StyledChartCard = styled(ChartCard)`
 	background-color: ${props => props.theme.colors.white};
+	${shiftUpHoverEffectCSS};
 `;
 
 MarketsCharts.propTypes = {

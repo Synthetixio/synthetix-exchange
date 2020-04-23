@@ -19,6 +19,8 @@ import { LINKS } from 'src/constants/links';
 
 import { media } from 'src/shared/media';
 
+import { shiftUpHoverEffectCSS } from 'src/shared/commonStyles';
+
 export const NewUserPromo = memo(() => {
 	const { t } = useTranslation();
 
@@ -106,6 +108,7 @@ const PromoCard = styled.div`
 	height: 180px;
 	grid-template-rows: 1fr auto;
 	justify-items: center;
+	${shiftUpHoverEffectCSS};
 `;
 
 const PromoCardLabel = styled.span`
