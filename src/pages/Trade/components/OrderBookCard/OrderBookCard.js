@@ -111,7 +111,7 @@ const StyledCard = styled(Card)`
 
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
-	overflow: 'hidden';
+	overflow: hidden;
 `;
 
 const Tabs = styled.div`
