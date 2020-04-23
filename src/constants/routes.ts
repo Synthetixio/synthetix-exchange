@@ -14,8 +14,8 @@ export const ROUTES = {
 	},
 	Markets: '/markets',
 	Tokens: {
-		Home: '/tokens',
-		TokenInfo: '/tokens/:currencyKey',
+		Home: '/synths',
+		TokenInfo: '/synths/:currencyKey',
 	},
 };
 

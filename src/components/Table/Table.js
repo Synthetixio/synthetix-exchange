@@ -43,57 +43,55 @@ export const Table = ({
 	);
 
 	return (
-		<TableContainer>
-			<ReactTable {...getTableProps()} palette={palette} className={className}>
-				{headerGroups.map((headerGroup) => (
-					<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
-						{headerGroup.headers.map((column) => (
-							<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
-								{column.render('Header')}
-								{column.sortable && (
-									<SortIconContainer>
-										{column.isSorted ? (
-											column.isSortedDesc ? (
-												<SortDownIcon />
-											) : (
-												<SortUpIcon />
-											)
+		<ReactTable {...getTableProps()} palette={palette} className={className}>
+			{headerGroups.map((headerGroup) => (
+				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
+					{headerGroup.headers.map((column) => (
+						<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
+							{column.render('Header')}
+							{column.sortable && (
+								<SortIconContainer>
+									{column.isSorted ? (
+										column.isSortedDesc ? (
+											<SortDownIcon />
 										) : (
-											<SortIcon />
-										)}
-									</SortIconContainer>
-								)}
-							</TableCellHead>
-						))}
-					</TableRow>
-				))}
-				{noResultsMessage != null ? (
-					noResultsMessage
-				) : isLoading ? (
-					<Spinner size="sm" fullscreen={true} />
-				) : (
-					<TableBody className="table-body" {...getTableBodyProps()}>
-						{rows.map((row) => {
-							prepareRow(row);
+											<SortUpIcon />
+										)
+									) : (
+										<SortIcon />
+									)}
+								</SortIconContainer>
+							)}
+						</TableCellHead>
+					))}
+				</TableRow>
+			))}
+			{noResultsMessage != null ? (
+				noResultsMessage
+			) : isLoading ? (
+				<Spinner size="sm" fullscreen={true} />
+			) : (
+				<TableBody className="table-body" {...getTableBodyProps()}>
+					{rows.map((row) => {
+						prepareRow(row);
 
-							return (
-								<TableBodyRow
-									className="table-body-row"
-									{...row.getRowProps()}
-									onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
-								>
-									{row.cells.map((cell) => (
-										<TableCell className="table-body-cell" {...cell.getCellProps()}>
-											{cell.render('Cell')}
-										</TableCell>
-									))}
-								</TableBodyRow>
-							);
-						})}
-					</TableBody>
-				)}
-			</ReactTable>
-		</TableContainer>
+						return (
+							<TableBodyRow
+								className="table-body-row"
+								{...row.getRowProps()}
+								onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
+							>
+								{row.cells.map((cell) => (
+									<TableCell className="table-body-cell" {...cell.getCellProps()}>
+										{cell.render('Cell')}
+									</TableCell>
+								))}
+							</TableBodyRow>
+						);
+					})}
+				</TableBody>
+			)}
+		</ReactTable>
 	);
 };
 
@@ -106,11 +104,6 @@ Table.propTypes = {
 	palette: PropTypes.string,
 	className: PropTypes.string,
 };
-
-const TableContainer = styled.div`
-	display: block;
-	overflow: auto;
-`;
 
 export const TableRow = styled.div``;
 
