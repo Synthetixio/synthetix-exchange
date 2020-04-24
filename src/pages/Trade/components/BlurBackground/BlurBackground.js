@@ -33,11 +33,11 @@ const Blur = styled.div`
 	bottom: 0;
 	top: 56px;
 	width: 100%;
-	background: ${(props) => props.theme.colors.surfaceL1};
-	${(props) => props.isVisible && isBlurred}
+	background: ${props => props.theme.colors.surfaceL1};
+	${props => props.isVisible && isBlurred}
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	blurBackgroundIsVisible: getBlurBackgroundIsVisible(state),
 });
 

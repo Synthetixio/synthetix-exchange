@@ -43,7 +43,7 @@ const TradeMobile = ({ showLeaderboardPopup }) => {
 	return (
 		<>
 			<Tabs>
-				{tabContent.map((tab) => (
+				{tabContent.map(tab => (
 					<Tab
 						key={tab.id}
 						onClick={() => {
@@ -76,17 +76,17 @@ const Tab = styled.button`
 	outline: none;
 	border: none;
 	cursor: pointer;
-	background: ${(props) =>
+	background: ${props =>
 		props.active ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 
 	span {
-		color: ${(props) =>
+		color: ${props =>
 			props.active ? props.theme.colors.fontPrimary : props.theme.colors.fontTertiary};
 	}
 	&:hover {
-		background: ${(props) => props.theme.colors.accentL1};
+		background: ${props => props.theme.colors.accentL1};
 		span {
-			color: ${(props) => props.theme.colors.fontPrimary};
+			color: ${props => props.theme.colors.fontPrimary};
 		}
 	}
 `;

@@ -13,7 +13,7 @@ export const leaderboardSlice = createSlice({
 		isRefreshing: false,
 	},
 	reducers: {
-		fetchRequest: (state) => {
+		fetchRequest: state => {
 			state.loadingError = null;
 			state.isLoading = true;
 			if (state.isLoaded) {
@@ -37,14 +37,14 @@ export const leaderboardSlice = createSlice({
 	},
 });
 
-export const getLeaderboardState = (state) => state.leaderboard;
-export const getIsLoadingLeaderboard = (state) => getLeaderboardState(state).isLoading;
-export const getIsRefreshingLeaderboard = (state) => getLeaderboardState(state).isRefreshing;
-export const getIsLoadedLeaderboard = (state) => getLeaderboardState(state).isLoaded;
-export const getLeaderboardLoadingError = (state) => getLeaderboardState(state).loadingError;
-export const getLeaderboardData = (state) => getLeaderboardState(state).data;
+export const getLeaderboardState = state => state.leaderboard;
+export const getIsLoadingLeaderboard = state => getLeaderboardState(state).isLoading;
+export const getIsRefreshingLeaderboard = state => getLeaderboardState(state).isRefreshing;
+export const getIsLoadedLeaderboard = state => getLeaderboardState(state).isLoaded;
+export const getLeaderboardLoadingError = state => getLeaderboardState(state).loadingError;
+export const getLeaderboardData = state => getLeaderboardState(state).data;
 
-export const getTop10Leaders = createSelector(getLeaderboardData, (leaderboardData) =>
+export const getTop10Leaders = createSelector(getLeaderboardData, leaderboardData =>
 	orderBy(leaderboardData, 'assetValue', 'desc')
 		.slice(0, 10)
 		.map((d, idx) => ({ rank: idx + 1, ...d }))

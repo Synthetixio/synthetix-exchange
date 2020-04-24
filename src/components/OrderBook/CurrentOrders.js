@@ -9,12 +9,12 @@ import { getWalletInfo } from '../../ducks/';
 import { DataSmall } from '../Typography';
 import { formatCurrency } from '../../utils/formatters';
 
-const getAmountPrecision = (amount) => {
+const getAmountPrecision = amount => {
 	if (amount >= 1000) return 0;
 	return 2;
 };
 
-const getPricePrecision = (amount) => {
+const getPricePrecision = amount => {
 	if (amount >= 1) return 2;
 	return 4;
 };
@@ -154,16 +154,16 @@ const Link = styled.a`
 	align-items: center;
 	justify-content: flex-end;
 	text-decoration: underline;
-	color: ${(props) => props.color};
+	color: ${props => props.color};
 `;
 
 const TransactionRow = styled(Tr)`
 	& span {
-		color: ${(props) => (props.isPending ? props.theme.colors.fontTertiary : '')};
+		color: ${props => (props.isPending ? props.theme.colors.fontTertiary : '')};
 	}
 `;
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};

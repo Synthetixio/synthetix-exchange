@@ -60,7 +60,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.asset-col'),
 								accessor: 'name',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 								),
 								width: 150,
@@ -69,7 +69,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.asset-description-col'),
 								id: 'asset-desc',
-								Cell: (cellProps) => {
+								Cell: cellProps => {
 									const currencyKey = cellProps.row.original.name;
 
 									return (
@@ -85,7 +85,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<Tooltip
 										title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 										placement="top"
@@ -101,7 +101,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.usd-value-col'),
 								accessor: 'usdBalance',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<span>
 										{formatCurrencyWithSign(
 											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -116,7 +116,7 @@ export const YourSynths = memo(
 								Header: t('assets.overview.your-synths.table.actions-col'),
 								accessor: 'actions',
 								width: 250,
-								Cell: (cellProps) => {
+								Cell: cellProps => {
 									const currencyKey = cellProps.row.original.name;
 
 									return (
@@ -182,7 +182,7 @@ const StyledCardBody = styled(Card.Body)`
 	position: relative;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	isRefreshingWalletBalances: getIsRefreshingWalletBalances(state),

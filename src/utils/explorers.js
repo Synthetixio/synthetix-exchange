@@ -1,6 +1,6 @@
 import { SUPPORTED_NETWORKS, isMainNet } from '../utils/networkUtils';
 
-const getEtherScanBaseURL = (networkId) => {
+const getEtherScanBaseURL = networkId => {
 	const network = SUPPORTED_NETWORKS[networkId];
 
 	if (isMainNet(networkId) || network == null) {

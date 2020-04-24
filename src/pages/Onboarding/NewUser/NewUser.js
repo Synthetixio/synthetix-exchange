@@ -116,7 +116,7 @@ const Welcome = styled.div`
 	line-height: 25px;
 	letter-spacing: 0.2px;
 	text-transform: uppercase;
-	font-family: ${(props) => props.theme.fonts.medium};
+	font-family: ${props => props.theme.fonts.medium};
 	background: -webkit-linear-gradient(167.03deg, #f4c625 -8.54%, #e652e9 101.04%);
 	${gradientTextCSS};
 	padding-bottom: 12px;
@@ -128,7 +128,7 @@ const Welcome = styled.div`
 
 const Heading = styled.div`
 	${textShadowCSS};
-	font-family: ${(props) => props.theme.fonts.medium};
+	font-family: ${props => props.theme.fonts.medium};
 	font-size: 56px;
 	line-height: 70px;
 	text-align: center;
@@ -149,11 +149,11 @@ const Subtitle = styled.div`
 	padding-bottom: 58px;
 	max-width: 650px;
 	margin: 0 auto;
-	color: ${(props) => props.theme.colors.fontSecondary};
+	color: ${props => props.theme.colors.fontSecondary};
 	font-weight: normal;
 	a {
 		text-decoration: underline;
-		color: ${(props) => props.theme.colors.fontSecondary};
+		color: ${props => props.theme.colors.fontSecondary};
 		&:hover {
 			text-decoration: underline;
 		}

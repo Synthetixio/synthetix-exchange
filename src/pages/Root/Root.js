@@ -66,7 +66,7 @@ const Root = ({
 	const [addressDataIntervalDelay, setAddressDataIntervalDelay] = useState(null);
 	const currentWallet = walletInfo.currentWallet;
 
-	const fetchAndSetExchangeData = useCallback(async (synths) => {
+	const fetchAndSetExchangeData = useCallback(async synths => {
 		try {
 			const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
 			setExchangeFeeRate(exchangeFeeRate);
@@ -120,7 +120,7 @@ const Root = ({
 
 					// grab crypto synths + sUSD
 					const synths = snxJSConnector.snxJS.contractSettings.synths.filter(
-						(synth) => synth.asset && (synth.category === 'crypto' || synth.name === 'sUSD')
+						synth => synth.asset && (synth.category === 'crypto' || synth.name === 'sUSD')
 					);
 
 					setAvailableSynths({ synths });
@@ -183,7 +183,7 @@ const Root = ({
 	return <App isAppReady={isAppReady} />;
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 	isAppReady: getIsAppReady(state),
 });

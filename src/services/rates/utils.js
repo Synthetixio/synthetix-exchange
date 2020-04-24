@@ -2,7 +2,7 @@ import { subHours } from 'date-fns';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 
-export const getMinAndMaxRate = (data) => {
+export const getMinAndMaxRate = data => {
 	if (data.length === 0) return [0, 0];
 
 	return data.reduce(
@@ -17,7 +17,7 @@ export const getMinAndMaxRate = (data) => {
 	);
 };
 
-export const calculateRateChange = (data) => {
+export const calculateRateChange = data => {
 	if (data.length < 2) return 0;
 	const newPrice = data[0].rate;
 	const oldPrice = data[data.length - 1].rate;
@@ -28,10 +28,10 @@ export const calculateRateChange = (data) => {
 const matchRates = (ratesA, ratesB, isQuote) => {
 	let rates = [];
 	// For each base rate (USD)
-	ratesA.forEach((rateA) => {
+	ratesA.forEach(rateA => {
 		// We search what was the quote rate in USD
 		// prior (or same time) the base rate ticker
-		const matchRate = ratesB.find((rateB) => {
+		const matchRate = ratesB.find(rateB => {
 			return rateB.timestamp <= rateA.timestamp;
 		});
 		// if one is found, we do rate = base / quote
@@ -52,5 +52,5 @@ export const matchPairRates = (baseRates, quoteRates) => {
 	return orderBy(uniqBy(rates, 'timestamp'), 'timestamp', ['desc']);
 };
 
-export const calculateTimestampForPeriod = (periodInHours) =>
+export const calculateTimestampForPeriod = periodInHours =>
 	Math.trunc(subHours(new Date().getTime(), periodInHours).getTime() / 1000);

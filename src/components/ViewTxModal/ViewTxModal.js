@@ -95,7 +95,7 @@ const Container = styled.div`
 	outline: 0;
 	position: relative;
 	width: 830px;
-	background: ${(props) => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	border: 0.5px solid #cb5bf2;
 	padding: 48px;
 	${media.medium`
@@ -156,7 +156,7 @@ const TableCellDesc = styled(TableCell)`
 	color: #fff;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	viewTxModalProps: getViewTxModalProps(state),
 });
 

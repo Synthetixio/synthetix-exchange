@@ -18,10 +18,10 @@ const ViewButton = styled.button`
 	background: none;
 	outline: none;
 	cursor: pointer;
-	color: ${(props) => props.theme.colors.hyperlink};
+	color: ${props => props.theme.colors.hyperlink};
 	box-sizing: border-box;
 	font-size: 13px;
-	${(props) =>
+	${props =>
 		props.isDisabled &&
 		css`
 			opacity: 0.3;

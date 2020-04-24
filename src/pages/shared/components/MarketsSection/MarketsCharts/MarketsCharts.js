@@ -56,7 +56,7 @@ const Container = styled.div`
 `;
 
 const StyledChartCard = styled(ChartCard)`
-	background: ${(props) => props.theme.colors.white};
+	background: ${props => props.theme.colors.white};
 `;
 
 MarketsCharts.propTypes = {
@@ -65,7 +65,7 @@ MarketsCharts.propTypes = {
 	marketsLoaded: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 

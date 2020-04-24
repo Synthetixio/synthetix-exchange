@@ -79,7 +79,7 @@ const CreateOrderContainer = styled.div`
 	margin-left: 8px;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthPair: getSynthPair(state),
 });
 

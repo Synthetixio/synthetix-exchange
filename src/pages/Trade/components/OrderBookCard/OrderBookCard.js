@@ -83,7 +83,7 @@ const OrderBookCard = ({
 		<StyledCard>
 			<StyledCardBody>
 				<Tabs>
-					{tabContent.map((tab) => {
+					{tabContent.map(tab => {
 						return (
 							<Tab
 								key={tab.id}
@@ -128,12 +128,12 @@ const Tab = styled.button`
 	outline: none;
 	border: none;
 	cursor: pointer;
-	background: ${(props) =>
+	background: ${props =>
 		props.active ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 	&:hover {
-		background: ${(props) => props.theme.colors.surfaceL3};
+		background: ${props => props.theme.colors.surfaceL3};
 	}
-	${(props) =>
+	${props =>
 		props.isDisabled &&
 		css`
 			opacity: 0.2;
@@ -141,7 +141,7 @@ const Tab = styled.button`
 		`}
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 	allTrades: getAllTrades(state),
 	isRefreshingAllTrades: getIsRefreshingAllTrades(state),

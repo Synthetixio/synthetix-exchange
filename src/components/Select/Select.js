@@ -6,7 +6,7 @@ const IndicatorSeparator = () => {
 	return null;
 };
 
-const SimpleSelect = (props) => {
+const SimpleSelect = props => {
 	const {
 		theme: { colors },
 		isDisabled,
@@ -14,19 +14,19 @@ const SimpleSelect = (props) => {
 	return (
 		<Select
 			styles={{
-				container: (provided) => ({
+				container: provided => ({
 					...provided,
 					opacity: isDisabled ? 0.4 : 1,
 					backgroundColor: colors.accentL1,
 				}),
-				singleValue: (provided) => ({
+				singleValue: provided => ({
 					...provided,
 					color: colors.fontPrimary,
 					boxShadow: 'none',
 					fontSize: '14px',
 					border: 'none',
 				}),
-				control: (provided) => ({
+				control: provided => ({
 					...provided,
 					color: colors.fontPrimary,
 					cursor: 'pointer',
@@ -35,20 +35,20 @@ const SimpleSelect = (props) => {
 					borderRadius: '1px',
 					outline: 'none',
 				}),
-				menu: (provided) => ({
+				menu: provided => ({
 					...provided,
 					backgroundColor: colors.accentL1,
 					border: `1px solid ${colors.accentL2}`,
 					borderRadius: '1px',
 				}),
-				menuList: (provided) => ({
+				menuList: provided => ({
 					...provided,
 					borderRadius: '3px',
 					paddingBottom: 0,
 					paddingTop: 0,
 					textAlign: 'left',
 				}),
-				option: (provided) => ({
+				option: provided => ({
 					...provided,
 					color: colors.fontPrimary,
 					cursor: 'pointer',

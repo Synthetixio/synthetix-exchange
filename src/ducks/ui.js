@@ -30,28 +30,28 @@ export const uiSlice = createSlice({
 		toggleWalletPopup: (state, action) => {
 			state.walletPopupIsVisible = action.payload;
 		},
-		showWalletPopup: (state) => {
+		showWalletPopup: state => {
 			state.walletPopupIsVisible = true;
 		},
 		toggleGweiPopup: (state, action) => {
 			state.gweiPopupIsVisible = action.payload;
 		},
-		showGweiPopup: (state) => {
+		showGweiPopup: state => {
 			state.gweiPopupIsVisible = true;
 		},
-		showLeaderboardPopup: (state) => {
+		showLeaderboardPopup: state => {
 			state.leaderboardPopupIsVisible = true;
 		},
-		hideLeaderboardPopup: (state) => {
+		hideLeaderboardPopup: state => {
 			state.leaderboardPopupIsVisible = false;
 		},
-		showTwitterPopup: (state) => {
+		showTwitterPopup: state => {
 			state.twitterPopupIsVisible = true;
 		},
-		hideTwitterPopup: (state) => {
+		hideTwitterPopup: state => {
 			state.twitterPopupIsVisible = false;
 		},
-		toggleTheme: (state) => {
+		toggleTheme: state => {
 			state.theme = isLightTheme(state.theme) ? THEMES.DARK : THEMES.LIGHT;
 			persistState('ui', { theme: state.theme });
 		},
@@ -61,7 +61,7 @@ export const uiSlice = createSlice({
 		setFiatCurrency: (state, action) => {
 			state.fiatCurrency = action.payload.fiatCurrency;
 		},
-		toggleHideSmallValueAssets: (state) => {
+		toggleHideSmallValueAssets: state => {
 			state.hideSmallValueAssets = !state.hideSmallValueAssets;
 			persistState('ui', { hideSmallValueAssets: state.hideSmallValueAssets });
 		},
@@ -83,7 +83,7 @@ export const uiSlice = createSlice({
 			state.viewTxModalVisible = true;
 			state.viewTxModalProps = action.payload;
 		},
-		hideViewTxModal: (state) => {
+		hideViewTxModal: state => {
 			state.viewTxModalVisible = false;
 			state.viewTxModalProps = {};
 		},
@@ -111,21 +111,21 @@ export const {
 	hideTwitterPopup,
 } = uiSlice.actions;
 
-export const getUIState = (state) => state.ui;
-export const getFiatCurrency = (state) => getUIState(state).fiatCurrency;
-export const getCurrentTheme = (state) => getUIState(state).theme;
-export const walletPopupIsVisible = (state) => getUIState(state).walletPopupIsVisible;
-export const gweiPopupIsVisible = (state) => getUIState(state).gweiPopupIsVisible;
-export const depotPopupIsVisible = (state) => getUIState(state).depotPopupIsVisible;
-export const getSynthSearch = (state) => getUIState(state).synthSearch;
-export const getHideSmallValueAssets = (state) => getUIState(state).hideSmallValueAssets;
-export const getMarketsAssetFilter = (state) => getUIState(state).marketsAssetFilter;
-export const getBlurBackgroundIsVisible = (state) => getUIState(state).blurBackgroundIsVisible;
-export const getLeaderboardPopupIsVisible = (state) => getUIState(state).leaderboardPopupIsVisible;
-export const getTwitterPopupIsVisible = (state) => getUIState(state).twitterPopupIsVisible;
-export const getOvmTradeTooltipVisible = (state) => getUIState(state).ovmTradeTooltipVisible;
-export const getSeenTradeTooltipVisible = (state) => getUIState(state).seenOvmTradeTooltip;
-export const getViewTxModalVisible = (state) => getUIState(state).viewTxModalVisible;
-export const getViewTxModalProps = (state) => getUIState(state).viewTxModalProps;
+export const getUIState = state => state.ui;
+export const getFiatCurrency = state => getUIState(state).fiatCurrency;
+export const getCurrentTheme = state => getUIState(state).theme;
+export const walletPopupIsVisible = state => getUIState(state).walletPopupIsVisible;
+export const gweiPopupIsVisible = state => getUIState(state).gweiPopupIsVisible;
+export const depotPopupIsVisible = state => getUIState(state).depotPopupIsVisible;
+export const getSynthSearch = state => getUIState(state).synthSearch;
+export const getHideSmallValueAssets = state => getUIState(state).hideSmallValueAssets;
+export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
+export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
+export const getLeaderboardPopupIsVisible = state => getUIState(state).leaderboardPopupIsVisible;
+export const getTwitterPopupIsVisible = state => getUIState(state).twitterPopupIsVisible;
+export const getOvmTradeTooltipVisible = state => getUIState(state).ovmTradeTooltipVisible;
+export const getSeenTradeTooltipVisible = state => getUIState(state).seenOvmTradeTooltip;
+export const getViewTxModalVisible = state => getUIState(state).viewTxModalVisible;
+export const getViewTxModalProps = state => getUIState(state).viewTxModalProps;
 
 export default uiSlice.reducer;

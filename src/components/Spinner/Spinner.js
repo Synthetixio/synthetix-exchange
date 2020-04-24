@@ -13,7 +13,7 @@ const Spinner = ({ size = 'lg', className, fullscreen = false, ...rest }) => (
 );
 
 const Container = styled.div`
-	${(props) => props.fullscreen && absoluteCenteredCSS}
+	${props => props.fullscreen && absoluteCenteredCSS}
 `;
 
 const imageRotation = keyframes`
@@ -27,7 +27,7 @@ const imageRotation = keyframes`
 
 const Img = styled.img`
 	animation: ${imageRotation} 2s infinite linear;
-	${(props) =>
+	${props =>
 		props.size === 'sm' &&
 		css`
 			width: 20px;

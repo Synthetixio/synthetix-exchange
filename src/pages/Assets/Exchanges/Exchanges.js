@@ -71,14 +71,14 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.date-time-col'),
 								accessor: 'timestamp',
-								Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
+								Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
 								width: 150,
 								sortable: true,
 							},
 							{
 								Header: t('assets.exchanges.table.pair-col'),
-								accessor: (d) => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
-								Cell: (cellProps) => {
+								accessor: d => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
+								Cell: cellProps => {
 									const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
 									return (
@@ -93,7 +93,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.buying-col'),
 								accessor: 'toAmount',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<Tooltip
 										title={formatCurrency(
 											cellProps.row.original.toAmount,
@@ -115,7 +115,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.selling-col'),
 								accessor: 'fromAmount',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<Tooltip
 										title={formatCurrency(
 											cellProps.row.original.fromAmount,
@@ -137,7 +137,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.price-col'),
 								accessor: 'price',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<span>
 										{formatCurrencyWithSign(
 											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -150,7 +150,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.total-col'),
 								accessor: 'amount',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<span>
 										{formatCurrencyWithSign(
 											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -171,7 +171,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.verify-col'),
 								accessor: 'actions',
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<Link
 										to={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
 										isExternal={true}
@@ -212,7 +212,7 @@ const StyledCardBody = styled(Card.Body)`
 	flex-grow: 1;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
 	networkId: getNetworkId(state),
 	myTrades: getMyTrades(state),
