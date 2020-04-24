@@ -119,6 +119,7 @@ const Container = styled.header`
 	border-style: solid;
 	border-width: 1px 0;
 	position: fixed;
+	top: 0;
 	left: 0;
 	right: 0;
 	z-index: ${Z_INDEX.APP_HEADER};
