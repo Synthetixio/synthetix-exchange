@@ -3,26 +3,22 @@ import { connect } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import { Z_INDEX } from 'src/constants/ui';
-import { breakpoint, media } from 'src/shared/media';
+import { Z_INDEX } from 'constants/ui';
+import { breakpoint, media } from 'shared/media';
 
-import {
-	getIsLoadedFilteredMarkets,
-	fetchMarketsRequest,
-	getOrderedMarkets,
-} from 'src/ducks/markets';
+import { getIsLoadedFilteredMarkets, fetchMarketsRequest, getOrderedMarkets } from 'ducks/markets';
 
-import { getMarketsAssetFilter, setMarketsAssetFilter } from 'src/ducks/ui';
+import { getMarketsAssetFilter, setMarketsAssetFilter } from 'ducks/ui';
 
-import { lightTheme } from 'src/styles/theme';
+import { lightTheme } from 'styles/theme';
 
-import { getFilteredMarketNames, FIAT_SYNTHS } from 'src/constants/currency';
-import { navigateTo, ROUTES } from 'src/constants/routes';
-import useInterval from 'src/shared/hooks/useInterval';
+import { getFilteredMarketNames, FIAT_SYNTHS } from 'constants/currency';
+import { navigateTo, ROUTES } from 'constants/routes';
+import useInterval from 'shared/hooks/useInterval';
 
-import { Button, ButtonFilterWithDropdown } from 'src/components/Button';
-import { SearchInput } from 'src/components/Input';
-import { FlexDivRow } from 'src/shared/commonStyles';
+import { Button, ButtonFilterWithDropdown } from 'components/Button';
+import { SearchInput } from 'components/Input';
+import { FlexDivRow } from 'shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
@@ -81,13 +77,16 @@ export const MarketsSection = ({
 							))}
 							<StyledButtonFilterWithDropdown
 								quote={marketsAssetFilter}
-								onClick={synth => setMarketsAssetFilter({ marketsAssetFilter: synth.name })}
-								synths={FIAT_SYNTHS.map(currency => ({ name: currency }))}
+								onClick={(synth) => setMarketsAssetFilter({ marketsAssetFilter: synth.name })}
+								synths={FIAT_SYNTHS.map((currency) => ({ name: currency }))}
 							>
 								{t('common.currency.fiat-synths')}
 							</StyledButtonFilterWithDropdown>
 						</AssetFilters>
-						<AssetSearchInput onChange={e => setAssetSearch(e.target.value)} value={assetSearch} />
+						<AssetSearchInput
+							onChange={(e) => setAssetSearch(e.target.value)}
+							value={assetSearch}
+						/>
 					</FiltersRow>
 					<MarketsTable
 						markets={filteredMarkets}
@@ -101,9 +100,7 @@ export const MarketsSection = ({
 										components={[<strong />]}
 									/>
 								</NoResultsMessage>
-							) : (
-								undefined
-							)
+							) : undefined
 						}
 					/>
 					<ButtonContainer>
@@ -177,7 +174,7 @@ const AssetSearchInput = styled(SearchInput)`
 `;
 
 const MarketsTableContainer = styled.div`
-	background-color: ${props => props.theme.colors.white};
+	background-color: ${(props) => props.theme.colors.white};
 	position: relative;
 	padding-top: 120px;
 	${media.large`

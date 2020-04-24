@@ -3,16 +3,16 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 
-import { CARD_HEIGHT } from 'src/constants/ui';
+import { CARD_HEIGHT } from 'constants/ui';
 
-import { ReactComponent as SortDownIcon } from 'src/assets/images/sort-down.svg';
-import { ReactComponent as SortUpIcon } from 'src/assets/images/sort-up.svg';
-import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
+import { ReactComponent as SortDownIcon } from 'assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from 'assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from 'assets/images/sort.svg';
 
-import { lightTheme, darkTheme } from 'src/styles/theme';
-import { FlexDivCentered } from 'src/shared/commonStyles';
+import { lightTheme, darkTheme } from 'styles/theme';
+import { FlexDivCentered } from 'shared/commonStyles';
 
-import Spinner from 'src/components/Spinner';
+import Spinner from 'components/Spinner';
 
 import { TABLE_PALETTE } from './constants';
 
@@ -44,9 +44,9 @@ export const Table = ({
 
 	return (
 		<ReactTable {...getTableProps()} palette={palette} className={className}>
-			{headerGroups.map(headerGroup => (
+			{headerGroups.map((headerGroup) => (
 				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
-					{headerGroup.headers.map(column => (
+					{headerGroup.headers.map((column) => (
 						<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
 							{column.render('Header')}
 							{column.sortable && (
@@ -72,7 +72,7 @@ export const Table = ({
 				<Spinner size="sm" fullscreen={true} />
 			) : (
 				<TableBody className="table-body" {...getTableBodyProps()}>
-					{rows.map(row => {
+					{rows.map((row) => {
 						prepareRow(row);
 
 						return (
@@ -81,7 +81,7 @@ export const Table = ({
 								{...row.getRowProps()}
 								onClick={onTableRowClick ? () => onTableRowClick(row) : undefined}
 							>
-								{row.cells.map(cell => (
+								{row.cells.map((cell) => (
 									<TableCell className="table-body-cell" {...cell.getCellProps()}>
 										{cell.render('Cell')}
 									</TableCell>
@@ -102,6 +102,7 @@ Table.propTypes = {
 	options: PropTypes.object,
 	onTableRowClick: PropTypes.func,
 	palette: PropTypes.string,
+	className: PropTypes.string,
 };
 
 export const TableRow = styled.div``;
@@ -112,7 +113,7 @@ const TableBody = styled.div`
 `;
 
 const TableBodyRow = styled(TableRow)`
-	cursor: ${props => (props.onClick ? 'pointer' : 'default')};
+	cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
 `;
 
 const TableCell = styled(FlexDivCentered)`
@@ -142,29 +143,29 @@ const ReactTable = styled.div`
 	overflow-x: auto;
 	position: relative;
 
-	${props =>
+	${(props) =>
 		props.palette === TABLE_PALETTE.PRIMARY &&
 		css`
 			${TableBody} {
 				max-height: calc(100% - ${CARD_HEIGHT});
 			}
 			${TableCell} {
-				color: ${props => props.theme.colors.fontPrimary};
+				color: ${(props) => props.theme.colors.fontPrimary};
 				font-size: 12px;
 				height: ${CARD_HEIGHT};
 			}
 			${TableRow} {
-				background-color: ${props => props.theme.colors.surfaceL3};
+				background-color: ${(props) => props.theme.colors.surfaceL3};
 				margin-bottom: 8px;
 			}
 			${TableCellHead} {
-				color: ${props => props.theme.colors.fontTertiary};
-				background-color: ${props => props.theme.colors.surfaceL3};
+				color: ${(props) => props.theme.colors.fontTertiary};
+				background-color: ${(props) => props.theme.colors.surfaceL3};
 			}
 			${TableBodyRow} {
-				background-color: ${props => props.theme.colors.surfaceL3};
+				background-color: ${(props) => props.theme.colors.surfaceL3};
 				&:hover {
-					background-color: ${props => props.theme.colors.accentL1};
+					background-color: ${(props) => props.theme.colors.accentL1};
 					> * {
 						transition: transform 0.2s ease-out;
 						transform: scale(1.02);
@@ -173,42 +174,42 @@ const ReactTable = styled.div`
 			}
 		`}
 
-${props =>
+${(props) =>
 	props.palette === TABLE_PALETTE.STRIPED &&
 	css`
 		${TableBody} {
 			max-height: calc(100% - 48px);
 		}
 		${TableCell} {
-			color: ${props => props.theme.colors.fontPrimary};
+			color: ${(props) => props.theme.colors.fontPrimary};
 			font-size: 12px;
 			height: 48px;
 		}
 		${TableRow} {
-			background-color: ${props => props.theme.colors.surfaceL3};
+			background-color: ${(props) => props.theme.colors.surfaceL3};
 			&:nth-child(odd) {
-				background-color: ${props => props.theme.colors.surfaceL2};
+				background-color: ${(props) => props.theme.colors.surfaceL2};
 			}
 		}
 		${TableCellHead} {
-			color: ${props => props.theme.colors.fontTertiary};
-			background-color: ${props => props.theme.colors.surfaceL3};
+			color: ${(props) => props.theme.colors.fontTertiary};
+			background-color: ${(props) => props.theme.colors.surfaceL3};
 		}
 		${TableBodyRow} {
-			background-color: ${props => props.theme.colors.surfaceL3};
+			background-color: ${(props) => props.theme.colors.surfaceL3};
 		}
 	`}
 
-	${props =>
+	${(props) =>
 		props.palette === TABLE_PALETTE.LIGHT &&
 		css`
 			${TableBody} {
-				max-height: calc(100% - ${CARD_HEIGHT});
+				max-height: calc(100% - 56px);
 			}
 			${TableCell} {
 				font-size: 14px;
 				color: ${lightTheme.colors.fontPrimary};
-				height: ${CARD_HEIGHT};
+				height: 56px;
 			}
 			${TableRow} {
 				background-color: ${darkTheme.colors.brand};
@@ -217,7 +218,7 @@ ${props =>
 			${TableCellHead} {
 				background-color: ${lightTheme.colors.brand};
 				color: ${darkTheme.colors.fontSecondary};
-				font-family: ${props => props.theme.fonts.bold};
+				font-family: ${(props) => props.theme.fonts.bold};
 				font-size: 12px;
 			}
 			${TableBodyRow} {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Link as RouterLink, ExternalLink } from 'src/shared/commonStyles';
+import { Link as RouterLink, ExternalLink } from 'shared/commonStyles';
 
 export const Link = ({ to, isExternal, ...rest }) =>
 	isExternal ? <ExternalLink href={to} {...rest} /> : <RouterLink to={to} {...rest} />;

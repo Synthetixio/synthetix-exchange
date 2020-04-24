@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import styled, { withTheme } from 'styled-components';
 import orderBy from 'lodash/orderBy';
 
-import { getAvailableSynths } from 'src/ducks/synths';
+import { getAvailableSynths } from 'ducks/synths';
 import { getTotalWalletBalanceUSD, getWalletBalances, getIsFetchingWalletBalances } from 'src';
 
 import { HeadingSmall, DataSmall, LabelSmall } from '../Typography';
@@ -14,10 +14,10 @@ import { ButtonSort } from '../Button';
 import Spinner from '../Spinner';
 import Currency from '../Currency';
 
-import { getWalletInfo } from 'src/ducks';
-import { setSynthSearch } from 'src/ducks/ui';
-import { formatCurrency } from 'src/utils/formatters';
-import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
+import { getWalletInfo } from 'ducks';
+import { setSynthSearch } from 'ducks/ui';
+import { formatCurrency } from 'utils/formatters';
+import { CRYPTO_CURRENCY_MAP } from 'constants/currency';
 
 const sortBy = (assets, column, isAscending) => {
 	return orderBy(assets, column, [isAscending ? 'asc' : 'desc']);

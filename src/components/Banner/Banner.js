@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { FlexDivCentered } from '../../shared/commonStyles';
-import Link from 'src/components/Link';
+import Link from 'components/Link';
 
 const ETHER_COLLATERAL_BLOG_POST_LINK = 'http://blog.synthetix.io/bug-disclosure/';
 
@@ -17,7 +17,7 @@ const Banner = () => (
 );
 
 const StyledLink = styled(Link)`
-	color: ${props => props.theme.colors.white};
+	color: ${(props) => props.theme.colors.white};
 	margin: 0 5px;
 	text-decoration: underline;
 	&:hover {
@@ -26,8 +26,8 @@ const StyledLink = styled(Link)`
 `;
 
 const Wrapper = styled(FlexDivCentered)`
-	background-color: ${props => props.theme.colors.buttonDefault};
-	color: ${props => props.theme.colors.white};
+	background-color: ${(props) => props.theme.colors.buttonDefault};
+	color: ${(props) => props.theme.colors.white};
 	height: 36px;
 	display: flex;
 	justify-content: center;

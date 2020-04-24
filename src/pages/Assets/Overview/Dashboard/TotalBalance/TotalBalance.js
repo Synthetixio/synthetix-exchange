@@ -6,22 +6,22 @@ import get from 'lodash/get';
 
 import PropTypes from 'prop-types';
 
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
-import { headingH5CSS } from 'src/components/Typography/Heading';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
+import { headingH5CSS } from 'components/Typography/Heading';
 
 import {
 	getIsLoadedWalletBalances,
 	getTotalSynthsBalanceUSD,
 	getWalletBalances,
 	getTotalETHBalance,
-} from 'src/ducks/wallet/walletBalances';
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+} from 'ducks/wallet/walletBalances';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
-import { formatCurrencyWithSign, formatCurrency } from 'src/utils/formatters';
-import { FIAT_CURRENCY_MAP, CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
-import { EMPTY_VALUE } from 'src/constants/placeholder';
-import { FlexDivRow } from 'src/shared/commonStyles';
+import { formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
+import { FIAT_CURRENCY_MAP, CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { EMPTY_VALUE } from 'constants/placeholder';
+import { FlexDivRow } from 'shared/commonStyles';
 
 export const TotalBalance = memo(
 	({ isLoadedWalletBalances, totalSynthsBalanceUSD, synthsMap, totalETHBalance }) => {
@@ -76,15 +76,15 @@ const Container = styled.div`
 `;
 
 const Balance = styled.div`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	${headingH5CSS};
 `;
 
 const ETHBalance = styled(HeadingSmall)`
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 	walletBalances: getWalletBalances(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),

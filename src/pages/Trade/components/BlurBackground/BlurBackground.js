@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getBlurBackgroundIsVisible } from 'src/ducks/ui';
+import { getBlurBackgroundIsVisible } from 'ducks/ui';
 import styled, { keyframes, css } from 'styled-components';
-import { Z_INDEX } from 'src/constants/ui';
+import { Z_INDEX } from 'constants/ui';
 
 const BlurBackground = ({ blurBackgroundIsVisible }) => (
 	<Blur isVisible={blurBackgroundIsVisible} />
@@ -33,11 +33,11 @@ const Blur = styled.div`
 	bottom: 0;
 	top: 54px;
 	width: 100%;
-	background: ${props => props.theme.colors.surfaceL1};
-	${props => props.isVisible && isBlurred}
+	background: ${(props) => props.theme.colors.surfaceL1};
+	${(props) => props.isVisible && isBlurred}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	blurBackgroundIsVisible: getBlurBackgroundIsVisible(state),
 });
 

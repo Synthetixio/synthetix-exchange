@@ -2,7 +2,7 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import { createSlice } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
 
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 import { getCurrentWalletAddress } from '../wallet/walletDetails';
 
@@ -17,7 +17,7 @@ export const myTradesSlice = createSlice({
 		isRefreshing: false,
 	},
 	reducers: {
-		fetchMyTradesRequest: state => {
+		fetchMyTradesRequest: (state) => {
 			state.loadingError = null;
 			state.isLoading = true;
 			if (state.isLoaded) {
@@ -41,12 +41,12 @@ export const myTradesSlice = createSlice({
 	},
 });
 
-export const getMyTradesState = state => state.trades.myTrades;
-export const getIsLoadingMyTrades = state => getMyTradesState(state).isLoading;
-export const getIsRefreshingMyTrades = state => getMyTradesState(state).isRefreshing;
-export const getIsLoadedMyTrades = state => getMyTradesState(state).isLoaded;
-export const getMyTradesLoadingError = state => getMyTradesState(state).loadingError;
-export const getMyTrades = state => getMyTradesState(state).trades;
+export const getMyTradesState = (state) => state.trades.myTrades;
+export const getIsLoadingMyTrades = (state) => getMyTradesState(state).isLoading;
+export const getIsRefreshingMyTrades = (state) => getMyTradesState(state).isRefreshing;
+export const getIsLoadedMyTrades = (state) => getMyTradesState(state).isLoaded;
+export const getMyTradesLoadingError = (state) => getMyTradesState(state).loadingError;
+export const getMyTrades = (state) => getMyTradesState(state).trades;
 
 const { fetchMyTradesRequest, fetchMyTradesSuccess, fetchMyTradesFailure } = myTradesSlice.actions;
 
@@ -63,7 +63,7 @@ function* fetchMyTrades() {
 				max: 100,
 			});
 
-			const trades = transactions.map(tx => ({
+			const trades = transactions.map((tx) => ({
 				...tx,
 				price:
 					tx.toCurrencyKey === SYNTHS_MAP.sUSD

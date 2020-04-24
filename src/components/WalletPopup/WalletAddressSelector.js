@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
+import snxJSConnector from 'utils/snxJSConnector';
 import {
 	updateWalletReducer,
 	updateWalletPaginatorIndex,
 	setDerivationPath,
 	resetWalletReducer,
-} from 'src/ducks/wallet/walletDetails';
-import { toggleWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+} from 'ducks/wallet/walletDetails';
+import { toggleWalletPopup } from 'ducks/ui';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
 import { HeadingMedium } from '../Typography';
 import WalletAddressTable from '../WalletAddressTable';
@@ -27,7 +27,7 @@ const LEDGER_DERIVATION_PATHS = [
 
 const useGetWallets = () => {
 	const { walletPaginatorIndex, derivationPath, availableWallets } = useSelector(
-		state => state.wallet.walletDetails
+		(state) => state.wallet.walletDetails
 	);
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ const useGetWallets = () => {
 				);
 				if (!nextWalletAddresses) throw new Error('Could not get addresses from wallet');
 
-				const nextWallets = nextWalletAddresses.map(address => ({
+				const nextWallets = nextWalletAddresses.map((address) => ({
 					address,
 					balances: {
 						snxBalance: null,
@@ -137,7 +137,7 @@ const WalletAddressSelector = ({
 	const isHardwareWallet = ['Ledger', 'Trezor'].includes(walletType);
 	const isLedger = walletType === 'Ledger';
 	const selectedDerivationPath = derivationPath
-		? LEDGER_DERIVATION_PATHS.find(path => path.value === derivationPath)
+		? LEDGER_DERIVATION_PATHS.find((path) => path.value === derivationPath)
 		: LEDGER_DERIVATION_PATHS[0];
 	const onRetry = () => {
 		resetWalletReducer();
@@ -157,7 +157,7 @@ const WalletAddressSelector = ({
 							searchable={false}
 							options={LEDGER_DERIVATION_PATHS}
 							value={selectedDerivationPath}
-							onChange={option => {
+							onChange={(option) => {
 								if (option.value === derivationPath) return;
 								const signerOptions = {
 									type: 'Ledger',
@@ -193,7 +193,7 @@ const WalletAddressSelector = ({
 					<WalletPaginator
 						disabled={isLoading || !isHardwareWallet}
 						currentIndex={walletPaginatorIndex}
-						onIndexChange={index => updateWalletPaginatorIndex(index)}
+						onIndexChange={(index) => updateWalletPaginatorIndex(index)}
 					/>
 				) : null}
 			</Body>
@@ -228,7 +228,7 @@ const AddressesContainer = styled.div`
 	justify-content: center;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};

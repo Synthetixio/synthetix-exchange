@@ -2,24 +2,24 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingMedium, BodyLarge } from 'src/components/Typography';
-import { dataLargeCSS } from 'src/components/Typography/Data';
-import Link from 'src/components/Link';
+import { HeadingMedium, BodyLarge } from 'components/Typography';
+import { dataLargeCSS } from 'components/Typography/Data';
+import Link from 'components/Link';
 
-import { ReactComponent as BorrowsETHIcon } from 'src/assets/images/splash/borrow-sETH.svg';
-import { ReactComponent as BuysETHIcon } from 'src/assets/images/splash/buy-sETH.svg';
-import { ReactComponent as BuysUSDIcon } from 'src/assets/images/splash/buy-sUSD.svg';
+import { ReactComponent as BorrowsETHIcon } from 'assets/images/splash/borrow-sETH.svg';
+import { ReactComponent as BuysETHIcon } from 'assets/images/splash/buy-sETH.svg';
+import { ReactComponent as BuysUSDIcon } from 'assets/images/splash/buy-sUSD.svg';
 
-import { lightTheme } from 'src/styles/theme';
+import { lightTheme } from 'styles/theme';
 
-import { SYNTHS_MAP, CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP, CRYPTO_CURRENCY_MAP } from 'constants/currency';
 
-import { ROUTES } from 'src/constants/routes';
-import { LINKS } from 'src/constants/links';
+import { ROUTES } from 'constants/routes';
+import { LINKS } from 'constants/links';
 
-import { media } from 'src/shared/media';
+import { media } from 'shared/media';
 
-import { shiftUpHoverEffectCSS } from 'src/shared/commonStyles';
+import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
 
 export const NewUserPromo = memo(() => {
 	const { t } = useTranslation();

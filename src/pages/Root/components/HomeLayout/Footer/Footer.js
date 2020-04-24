@@ -2,22 +2,22 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { bodyMediumCSS, bodyMediumSecondaryCSS } from 'src/components/Typography/Body';
-import Link from 'src/components/Link';
+import { bodyMediumCSS, bodyMediumSecondaryCSS } from 'components/Typography/Body';
+import Link from 'components/Link';
 
-import { breakpoint, media } from 'src/shared/media';
+import { breakpoint, media } from 'shared/media';
 
-import { LINKS } from 'src/constants/links';
-import { ROUTES } from 'src/constants/routes';
+import { LINKS } from 'constants/links';
+import { ROUTES } from 'constants/routes';
 
-import { ReactComponent as TwitterLogoIcon } from 'src/assets/images/splash/twitter-logo.svg';
-import { ReactComponent as MediumLogoIcon } from 'src/assets/images/splash/medium-logo.svg';
-import { ReactComponent as DiscordLogoIcon } from 'src/assets/images/splash/discord-logo.svg';
-import { ReactComponent as GithubLogoIcon } from 'src/assets/images/splash/github-logo.svg';
+import { ReactComponent as TwitterLogoIcon } from 'assets/images/splash/twitter-logo.svg';
+import { ReactComponent as MediumLogoIcon } from 'assets/images/splash/medium-logo.svg';
+import { ReactComponent as DiscordLogoIcon } from 'assets/images/splash/discord-logo.svg';
+import { ReactComponent as GithubLogoIcon } from 'assets/images/splash/github-logo.svg';
 
-import { ReactComponent as MessariLogoIcon } from 'src/assets/images/splash/messari-logo.svg';
-import { ReactComponent as EthereumLogoIcon } from 'src/assets/images/splash/ethereum-logo.svg';
-import { ReactComponent as DefiNetworkLogoIcon } from 'src/assets/images/splash/defi-network-logo.svg';
+import { ReactComponent as MessariLogoIcon } from 'assets/images/splash/messari-logo.svg';
+import { ReactComponent as EthereumLogoIcon } from 'assets/images/splash/ethereum-logo.svg';
+import { ReactComponent as DefiNetworkLogoIcon } from 'assets/images/splash/defi-network-logo.svg';
 
 const FOOTER_LINKS = [
 	{
@@ -215,7 +215,7 @@ const Menu = styled.div`
 const MenuTitle = styled.div`
 	text-transform: uppercase;
 	${bodyMediumCSS};
-	color: ${props => props.theme.colors.white};
+	color: ${(props) => props.theme.colors.white};
 	padding-bottom: 25px;
 `;
 
@@ -232,7 +232,7 @@ const MenuLinkItem = styled.li`
 const FooterLink = styled(Link)`
 	${bodyMediumSecondaryCSS};
 	&:hover {
-		color: ${props => props.theme.colors.white};
+		color: ${(props) => props.theme.colors.white};
 	}
 `;
 

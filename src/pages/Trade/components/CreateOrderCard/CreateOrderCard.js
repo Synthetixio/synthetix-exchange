@@ -4,46 +4,46 @@ import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import isEmpty from 'lodash/isEmpty';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
+import snxJSConnector from 'utils/snxJSConnector';
 
-import Card from 'src/components/Card';
-import { TradeInput } from 'src/components/Input';
+import Card from 'components/Card';
+import { TradeInput } from 'components/Input';
 
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
-import { getSynthsWalletBalances } from 'src/ducks/wallet/walletBalances';
-import { getSynthPair } from 'src/ducks/synths';
-import { getRatesExchangeRates, getEthRate } from 'src/ducks/rates';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getSynthsWalletBalances } from 'ducks/wallet/walletBalances';
+import { getSynthPair } from 'ducks/synths';
+import { getRatesExchangeRates, getEthRate } from 'ducks/rates';
 import {
 	getExchangeFeeRate,
 	getGasInfo,
 	createTransaction,
 	updateTransaction,
 	getTransactions,
-} from 'src/ducks/transaction';
-import { toggleGweiPopup } from 'src/ducks/ui';
+} from 'ducks/transaction';
+import { toggleGweiPopup } from 'ducks/ui';
 
-import { EMPTY_VALUE } from 'src/constants/placeholder';
-import { BALANCE_FRACTIONS } from 'src/constants/order';
-import { SYNTHS_MAP, ASSETS_MAP } from 'src/constants/currency';
-import { TRANSACTION_STATUS } from 'src/constants/transaction';
+import { EMPTY_VALUE } from 'constants/placeholder';
+import { BALANCE_FRACTIONS } from 'constants/order';
+import { SYNTHS_MAP, ASSETS_MAP } from 'constants/currency';
+import { TRANSACTION_STATUS } from 'constants/transaction';
 
-import { getExchangeRatesForCurrencies } from 'src/utils/rates';
-import { normalizeGasLimit } from 'src/utils/transactions';
-import { GWEI_UNIT } from 'src/utils/networkUtils';
-import errorMessages from 'src/utils/errorMessages';
+import { getExchangeRatesForCurrencies } from 'utils/rates';
+import { normalizeGasLimit } from 'utils/transactions';
+import { GWEI_UNIT } from 'utils/networkUtils';
+import errorMessages from 'utils/errorMessages';
 import {
 	formatCurrency,
 	bytesFormatter,
 	bigNumberFormatter,
 	secondsToTime,
-} from 'src/utils/formatters';
+} from 'utils/formatters';
 
-import { HeadingSmall, DataSmall } from 'src/components/Typography';
-import { ButtonFilter, ButtonPrimary } from 'src/components/Button';
-import DismissableMessage from 'src/components/DismissableMessage';
-import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'src/shared/commonStyles';
+import { HeadingSmall, DataSmall } from 'components/Typography';
+import { ButtonFilter, ButtonPrimary } from 'components/Button';
+import DismissableMessage from 'components/DismissableMessage';
+import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'shared/commonStyles';
 
-import { ReactComponent as ReverseArrow } from 'src/assets/images/reverse-arrow.svg';
+import { ReactComponent as ReverseArrow } from 'assets/images/reverse-arrow.svg';
 import NetworkInfo from './NetworkInfo';
 
 const INPUT_DEFAULT_VALUE = '';
@@ -129,9 +129,9 @@ const CreateOrderCard = ({
 	}, [base.name, quote.name]);
 
 	const baseBalance =
-		(synthsWalletBalances && synthsWalletBalances.find(synth => synth.name === base.name)) || 0;
+		(synthsWalletBalances && synthsWalletBalances.find((synth) => synth.name === base.name)) || 0;
 	const quoteBalance =
-		(synthsWalletBalances && synthsWalletBalances.find(synth => synth.name === quote.name)) || 0;
+		(synthsWalletBalances && synthsWalletBalances.find((synth) => synth.name === quote.name)) || 0;
 
 	const rate = getExchangeRatesForCurrencies(exchangeRates, quote.name, base.name);
 	const inverseRate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name);
@@ -402,7 +402,7 @@ const ButtonAmount = styled.button`
 	cursor: pointer;
 	flex: 1;
 	border: none;
-	background-color: ${props => props.theme.colors.accentL2};
+	background-color: ${(props) => props.theme.colors.accentL2};
 	height: 24px;
 `;
 
@@ -427,7 +427,7 @@ export const TxErrorMessage = styled(DismissableMessage)`
 	margin-top: 8px;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		synthPair: getSynthPair(state),
 		walletInfo: getWalletInfo(state),

@@ -5,16 +5,16 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import Link from 'src/components/Link';
-import { labelSmallCSS } from 'src/components/Typography/Label';
+import Link from 'components/Link';
+import { labelSmallCSS } from 'components/Typography/Label';
 
-import { toggleHideSmallValueAssets, getHideSmallValueAssets } from 'src/ducks/ui';
+import { toggleHideSmallValueAssets, getHideSmallValueAssets } from 'ducks/ui';
 
-import { ReactComponent as ChartsSquareIcon } from 'src/assets/images/charts-square.svg';
-import { ReactComponent as ClockSquareIcon } from 'src/assets/images/clock-square.svg';
-// import { ReactComponent as ArrowsSquareIcon } from 'src/assets/images/arrows-square.svg';
+import { ReactComponent as ChartsSquareIcon } from 'assets/images/charts-square.svg';
+import { ReactComponent as ClockSquareIcon } from 'assets/images/clock-square.svg';
+// import { ReactComponent as ArrowsSquareIcon } from 'assets/images/arrows-square.svg';
 
-import { ROUTES } from 'src/constants/routes';
+import { ROUTES } from 'constants/routes';
 
 const MenuLinks = [
 	{
@@ -73,7 +73,7 @@ AssetsNavigation.propTypes = {
 const ListItemLink = styled(Link)`
 	${labelSmallCSS};
 	width: 170px;
-	border-bottom: 1px solid ${props => props.theme.colors.accentL2};
+	border-bottom: 1px solid ${(props) => props.theme.colors.accentL2};
 	font-size: 12px;
 	padding: 10px 16px;
 	box-sizing: border-box;
@@ -81,20 +81,20 @@ const ListItemLink = styled(Link)`
 	align-items: center;
 	justify-content: space-between;
 	text-transform: uppercase;
-	color: ${props => props.theme.colors.fontSecondary};
-	background-color: ${props => props.theme.colors.surfaceL2};
+	color: ${(props) => props.theme.colors.fontSecondary};
+	background-color: ${(props) => props.theme.colors.surfaceL2};
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
-		color: ${props => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
 	}
 `;
 
 const List = styled.ul`
-	border: 1px solid ${props => props.theme.colors.accentL2};
+	border: 1px solid ${(props) => props.theme.colors.accentL2};
 	> * {
 		&:last-child > ${ListItemLink} {
 			border: 0;
@@ -106,21 +106,21 @@ const List = styled.ul`
 
 const SmallValueAssets = styled.div`
 	${labelSmallCSS};
-	background-color: ${props => props.theme.colors.accentL1};
-	border: 1px solid ${props => props.theme.colors.accentL2};
-	color: ${props => props.theme.colors.fontSecondary};
+	background-color: ${(props) => props.theme.colors.accentL1};
+	border: 1px solid ${(props) => props.theme.colors.accentL2};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	cursor: pointer;
 	width: 170px;
 	padding: 5px;
 	box-sizing: border-box;
 	text-align: center;
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL2};
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	hideSmallValueAssets: getHideSmallValueAssets(state),
 });
 

@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { formatCurrency } from 'src/utils/formatters';
-import { getTransactionPrice } from 'src/utils/networkUtils';
+import { formatCurrency } from 'utils/formatters';
+import { getTransactionPrice } from 'utils/networkUtils';
 
-import { LinkTextSmall } from 'src/shared/commonStyles';
-import { TextButton, FlexDivRow } from 'src/shared/commonStyles';
+import { LinkTextSmall } from 'shared/commonStyles';
+import { TextButton, FlexDivRow } from 'shared/commonStyles';
 
-import { DataSmall } from 'src/components/Typography';
-import { ReactComponent as QuestionMark } from 'src/assets/images/question-mark.svg';
+import { DataSmall } from 'components/Typography';
+import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 import NetworkInfoTooltip from './NetworkInfoTooltip';
-import { formatPercentage } from 'src/utils/formatters';
+import { formatPercentage } from 'utils/formatters';
 
 export const TransactionInfo = ({
 	gasPrice,
@@ -106,7 +106,7 @@ const QuestionMarkIcon = styled.div`
 	border-radius: 50%;
 	width: 12px;
 	height: 12px;
-	background-color: ${props => props.theme.colors.accentL1};
+	background-color: ${(props) => props.theme.colors.accentL1};
 	margin-left: 4px;
 `;
 
@@ -119,7 +119,7 @@ const Container = styled.div`
 `;
 
 const NetworkData = styled(DataSmall)`
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 `;
 
 const NetworkDataLabelFlex = styled(NetworkData)`

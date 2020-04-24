@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
-import { darkTheme } from 'src/styles/theme';
+import { darkTheme } from 'styles/theme';
 
 import Footer from './Footer';
 import AppHeader from '../AppHeader';

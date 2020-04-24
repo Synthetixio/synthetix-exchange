@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { media } from 'src/shared/media';
-import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/constants/ui';
+import { media } from 'shared/media';
+import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/ui';
 
 export const Overlay = memo(({ onClick }) =>
 	ReactDOM.createPortal(<Container onClick={onClick} />, document.body)
@@ -20,7 +20,7 @@ const Container = styled.div`
 	left: 0;
 	right: 0;
 	position: fixed;
-	background-color: ${props => props.theme.colors.surfaceL1};
+	background-color: ${(props) => props.theme.colors.surfaceL1};
 	z-index: ${Z_INDEX.BASE};
 	${media.small`
 		top: ${MOBILE_APP_HEADER_HEIGHT}

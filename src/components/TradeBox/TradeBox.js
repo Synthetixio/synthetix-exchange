@@ -350,11 +350,11 @@ const TradeBox = ({
 const Container = styled.div`
 	width: 100%;
 	height: 100%;
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background-color: ${(props) => props.theme.colors.surfaceL2};
 `;
 
 const Header = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 	width: 100%;
 	height: 40px;
 	display: flex;
@@ -388,7 +388,7 @@ const InputInfo = styled.div`
 
 const Balance = styled(DataSmall)`
 	text-transform: none;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	font-family: 'apercu-light', sans-serif;
 `;
 
@@ -419,7 +419,7 @@ const ButtonAmount = styled.button`
 	flex: 1;
 	margin: 0 8px;
 	border: none;
-	background-color: ${props => props.theme.colors.accentL2};
+	background-color: ${(props) => props.theme.colors.accentL2};
 	height: 24px;
 `;
 
@@ -434,7 +434,7 @@ const NetworkDataRow = styled.div`
 `;
 
 const NetworkData = styled(DataSmall)`
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 `;
 
 const ButtonEdit = styled.button`
@@ -445,7 +445,7 @@ const ButtonEdit = styled.button`
 	cursor: pointer;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		synthPair: getSynthPair(state),
 		exchangeRates: getRatesExchangeRates(state),

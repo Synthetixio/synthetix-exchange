@@ -5,7 +5,7 @@
 			"trade": "trade",
 			"loans": "loans",
 			"markets": "markets",
-			"tokens": "tokens",
+			"tokens": "synths",
 			"support": "support",
 			"assets": "assets"
 		},
@@ -103,6 +103,18 @@
 				"see-all-pairs": "see all pairs",
 				"start-trading-now": "start trading now"
 			}
+		}
+	},
+	"tokens": {
+		"hero": {
+			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
+		},
+		"table": {
+			"token-col": "token",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"24h-trend-col": "24h trend",
+			"trade-now-col": "trade now"
 		}
 	},
 	"exchange": {

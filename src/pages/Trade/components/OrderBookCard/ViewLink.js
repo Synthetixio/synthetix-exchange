@@ -1,16 +1,16 @@
 import styled, { css } from 'styled-components';
 
-import { ExternalLink } from 'src/shared/commonStyles';
-import { ReactComponent as ArrowHyperlinkIcon } from 'src/assets/images/arrow-hyperlink.svg';
+import { ExternalLink } from 'shared/commonStyles';
+import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperlink.svg';
 
 const ViewLink = styled(ExternalLink)`
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 	box-sizing: border-box;
 	flex: 150 0 auto;
 	min-width: 0px;
 	width: 150px;
 	font-size: 13px;
-	${props =>
+	${(props) =>
 		props.isDisabled &&
 		css`
 			opacity: 0.3;

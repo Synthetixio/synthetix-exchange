@@ -7,17 +7,14 @@ import { PieChart, Pie, Cell } from 'recharts';
 
 import PropTypes from 'prop-types';
 
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
-import { tableDataSmallCSS } from 'src/components/Typography/Data';
-import { formatPercentage } from 'src/utils/formatters';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
+import { tableDataSmallCSS } from 'components/Typography/Data';
+import { formatPercentage } from 'utils/formatters';
 
-import { CardHeadingDescription } from 'src/shared/commonStyles';
+import { CardHeadingDescription } from 'shared/commonStyles';
 
-import {
-	getIsLoadedWalletBalances,
-	getSynthsWalletBalances,
-} from 'src/ducks/wallet/walletBalances';
+import { getIsLoadedWalletBalances, getSynthsWalletBalances } from 'ducks/wallet/walletBalances';
 
 import { MOCK_DATA } from './mockData';
 
@@ -104,7 +101,7 @@ const Container = styled.div`
 	grid-gap: 20px;
 	grid-template-columns: auto 1fr;
 	align-items: center;
-	${props =>
+	${(props) =>
 		!props.isLoadedWalletBalances &&
 		css`
 			filter: blur(4px);
@@ -117,7 +114,7 @@ const ChartLegendItem = styled.li`
 	grid-gap: 8px;
 	grid-template-columns: auto 1fr;
 	align-items: center;
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	margin-bottom: 5px;
 	&:last-child {
 		margin-bottom: 0;
@@ -136,7 +133,7 @@ SynthBreakdown.propTypes = {
 	theme: PropTypes.object,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 });

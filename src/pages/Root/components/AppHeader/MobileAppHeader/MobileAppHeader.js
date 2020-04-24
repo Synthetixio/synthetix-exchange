@@ -5,22 +5,22 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { labelMediumCSS } from 'src/components/Typography/Label';
-import Link from 'src/components/Link';
+import { labelMediumCSS } from 'components/Typography/Label';
+import Link from 'components/Link';
 
-import { ReactComponent as MenuHamburgerIcon } from 'src/assets/images/menu-hamburger.svg';
-import { ReactComponent as MenuCloseIcon } from 'src/assets/images/menu-close.svg';
+import { ReactComponent as MenuHamburgerIcon } from 'assets/images/menu-hamburger.svg';
+import { ReactComponent as MenuCloseIcon } from 'assets/images/menu-close.svg';
 
-import { ROUTES } from 'src/constants/routes';
-import { LINKS } from 'src/constants/links';
-import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'src/constants/ui';
+import { ROUTES } from 'constants/routes';
+import { LINKS } from 'constants/links';
+import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/ui';
 
-import { FlexDivCentered } from 'src/shared/commonStyles';
-import { media } from 'src/shared/media';
+import { FlexDivCentered } from 'shared/commonStyles';
+import { media } from 'shared/media';
 
-import { getCurrentTheme, toggleTheme } from 'src/ducks/ui';
+import { getCurrentTheme, toggleTheme } from 'ducks/ui';
 
-import { isLightTheme } from 'src/styles/theme';
+import { isLightTheme } from 'styles/theme';
 
 import Logo from '../Logo';
 import UserInfo from '../UserInfo';
@@ -65,6 +65,9 @@ export const MobileAppHeader = memo(
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
 							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
 								{t('header.links.markets')}
+							</DropdownMenuLink>
+							<DropdownMenuLink to={ROUTES.Tokens.Home} onClick={toggleMenu}>
+								{t('header.links.tokens')}
 							</DropdownMenuLink>
 							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
 								{t('header.links.trade')}
@@ -113,9 +116,9 @@ MobileAppHeader.propTypes = {
 
 const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentL1};
+	border-color: ${(props) => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 	position: fixed;
@@ -157,21 +160,21 @@ const MenuItems = styled(FlexDivCentered)`
 
 const MenuItemsLeft = styled(MenuItems)`
 	${MenuItem} {
-		border-right: 1px solid ${props => props.theme.colors.accentL1};
+		border-right: 1px solid ${(props) => props.theme.colors.accentL1};
 	}
 `;
 
 const MenuItemsRight = styled(MenuItems)`
 	${MenuItem} {
-		border-left: 1px solid ${props => props.theme.colors.accentL1};
+		border-left: 1px solid ${(props) => props.theme.colors.accentL1};
 	}
 `;
 
 const StyledDropdown = styled(Dropdown)`
-	${props =>
+	${(props) =>
 		props.isOnSplashPage &&
 		css`
-			background-color: ${props => props.theme.colors.surfaceL1};
+			background-color: ${(props) => props.theme.colors.surfaceL1};
 		`}
 `;
 
@@ -180,11 +183,11 @@ const dropdownItemCSS = css`
 	padding: 20px 24px;
 	display: flex;
 	align-items: center;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	cursor: pointer;
 	${media.small`
@@ -195,8 +198,8 @@ const dropdownItemCSS = css`
 const DropdownMenuLink = styled(Link)`
 	${dropdownItemCSS};
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
-		color: ${props => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
 	}
 `;
 
@@ -235,7 +238,7 @@ const MenuPusher = styled.div`
 	`}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	currentTheme: getCurrentTheme(state),
 });
 

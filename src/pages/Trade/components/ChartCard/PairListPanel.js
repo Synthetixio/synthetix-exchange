@@ -3,30 +3,26 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { navigateToTrade } from 'src/constants/routes';
-import { CARD_HEIGHT } from 'src/constants/ui';
+import { navigateToTrade } from 'constants/routes';
+import { CARD_HEIGHT } from 'constants/ui';
 
-import { getSynthPair } from 'src/ducks/synths';
-import {
-	getMarketsAssetFilter,
-	setMarketsAssetFilter,
-	setBlurBackgroundIsVisible,
-} from 'src/ducks/ui';
-import { getFilteredMarkets, getAllMarkets } from 'src/ducks/markets';
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+import { getSynthPair } from 'ducks/synths';
+import { getMarketsAssetFilter, setMarketsAssetFilter, setBlurBackgroundIsVisible } from 'ducks/ui';
+import { getFilteredMarkets, getAllMarkets } from 'ducks/markets';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
-import { ReactComponent as MenuArrowDownIcon } from 'src/assets/images/menu-arrow-down.svg';
+import { ReactComponent as MenuArrowDownIcon } from 'assets/images/menu-arrow-down.svg';
 
-import DropdownPanel from 'src/components/DropdownPanel';
-import Currency from 'src/components/Currency';
-import { SearchInput } from 'src/components/Input';
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import { CurrencyCol, RightAlignedCell } from 'src/components/Table/common';
-import { ButtonFilter } from 'src/components/Button';
-import { FlexDiv } from 'src/shared/commonStyles';
+import DropdownPanel from 'components/DropdownPanel';
+import Currency from 'components/Currency';
+import { SearchInput } from 'components/Input';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
+import { ButtonFilter } from 'components/Button';
+import { FlexDiv } from 'shared/commonStyles';
 
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 const DEFAULT_SEARCH = '';
 const ASSET_FILTERS = [SYNTHS_MAP.sUSD, SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
@@ -55,7 +51,7 @@ const PairListPanel = ({
 		}
 	}, [marketsByQuote, allMarkets, search]);
 
-	const toggleDropdown = isOpen => {
+	const toggleDropdown = (isOpen) => {
 		if (!isOpen && !pairListDropdownIsOpen) return;
 		setPairListDropdownIsOpen(isOpen);
 		setBlurBackgroundIsVisible(isOpen);
@@ -87,9 +83,9 @@ const PairListPanel = ({
 			body={
 				<PairListContainer>
 					<SearchContainer>
-						<SearchInput value={search} onChange={e => setSearch(e.target.value)} />
+						<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
 						<ButtonRow>
-							{ASSET_FILTERS.map(asset => {
+							{ASSET_FILTERS.map((asset) => {
 								return (
 									<ButtonFilter
 										key={`button-filter-${asset}`}
@@ -113,7 +109,7 @@ const PairListPanel = ({
 								Header: t('markets.table.pair-col'),
 								accessor: 'pair',
 								width: 150,
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Currency.Pair
 										baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 										quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -126,16 +122,20 @@ const PairListPanel = ({
 								Header: t('markets.table.last-price-col'),
 								accessor: 'lastPrice',
 								width: 100,
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<RightAlignedCell>
-										<CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />{' '}
+										<CurrencyCol
+											currencyKey={cellProps.row.original.quoteCurrencyKey}
+											synthsMap={synthsMap}
+											cellProps={cellProps}
+										/>{' '}
 									</RightAlignedCell>
 								),
 								sortable: true,
 							},
 						]}
 						data={filteredMarkets}
-						onTableRowClick={row => {
+						onTableRowClick={(row) => {
 							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
 							toggleDropdown(false);
 						}}
@@ -193,10 +193,10 @@ const DropdownPanelHeader = styled(FlexDiv)`
 	align-items: center;
 	height: ${CARD_HEIGHT};
 	padding: 0 12px;
-	background-color: ${props => props.theme.colors.accentL1};
+	background-color: ${(props) => props.theme.colors.accentL1};
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthPair: getSynthPair(state),
 	marketsByQuote: getFilteredMarkets(state),
 	synthsMap: getAvailableSynthsMap(state),

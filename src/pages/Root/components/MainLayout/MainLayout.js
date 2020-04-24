@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 
 import AppHeader from '../AppHeader';
 
-import Spinner from 'src/components/Spinner';
+import Spinner from 'components/Spinner';
 
-import { FlexDiv } from 'src/shared/commonStyles';
+import { FlexDiv } from 'shared/commonStyles';
 
 export const MainLayout = ({ children, isAppReady }) => (
 	<>
@@ -26,7 +26,7 @@ MainLayout.propTypes = {
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${props => props.theme.colors.surfaceL1};
+    background-color: ${(props) => props.theme.colors.surfaceL1};
   }
 `;
 

@@ -1,6 +1,6 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
-import { LOCAL_STORAGE_KEYS } from 'src/constants/storage';
+import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 
 import { setSigner } from '../../utils/snxJSConnector';
 import { getAddress } from '../../utils/formatters';
@@ -59,18 +59,18 @@ export const walletDetailsSlice = createSlice({
 	},
 });
 
-export const getWalletState = state => state.wallet.walletDetails;
-export const getNetworkId = state => getWalletState(state).networkId;
-export const getNetworkName = state => getWalletState(state).networkName;
-export const getNetwork = state => ({
+export const getWalletState = (state) => state.wallet.walletDetails;
+export const getNetworkId = (state) => getWalletState(state).networkId;
+export const getNetworkName = (state) => getWalletState(state).networkName;
+export const getNetwork = (state) => ({
 	networkId: getNetworkId(state),
 	networkName: getNetworkName(state),
 });
-export const getCurrentWalletAddress = state => getWalletState(state).currentWallet;
-export const getIsLoggedIn = createSelector(getCurrentWalletAddress, currentWallet =>
+export const getCurrentWalletAddress = (state) => getWalletState(state).currentWallet;
+export const getIsLoggedIn = createSelector(getCurrentWalletAddress, (currentWallet) =>
 	currentWallet != null ? true : false
 );
-export const getWalletInfo = state => getWalletState(state);
+export const getWalletInfo = (state) => getWalletState(state);
 
 const {
 	addAvailableWallets,

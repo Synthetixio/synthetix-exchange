@@ -209,11 +209,5 @@ const chartData = [
 ];
 
 export const card = () => (
-	<ChartCard
-		baseCurrencyKey="sETH"
-		quoteCurrencyKey="sUSD"
-		price="$1.5"
-		change={-0.5}
-		chartData={chartData}
-	/>
+	<ChartCard currencyLabel="sETH/sUSD" price="$1.5" change={-0.5} chartData={chartData} />
 );

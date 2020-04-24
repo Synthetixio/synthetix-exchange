@@ -5,19 +5,19 @@ import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { resetWalletReducer, getCurrentWalletAddress } from 'src/ducks/wallet/walletDetails';
+import { resetWalletReducer, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import {
 	getTotalSynthsBalanceUSD,
 	getIsLoadedWalletBalances,
 	getSynthsWalletBalances,
 	getIsFetchingWalletBalances,
-} from 'src/ducks/wallet/walletBalances';
-import { showWalletPopup } from 'src/ducks/ui';
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+} from 'ducks/wallet/walletBalances';
+import { showWalletPopup } from 'ducks/ui';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
-import { ROUTES } from 'src/constants/routes';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
-import { EMPTY_VALUE } from 'src/constants/placeholder';
+import { ROUTES } from 'constants/routes';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 import {
 	shortenAddress,
@@ -25,16 +25,16 @@ import {
 	formatCurrency,
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	SHORT_CRYPTO_CURRENCY_DECIMALS,
-} from 'src/utils/formatters';
+} from 'utils/formatters';
 
-import Card from 'src/components/Card';
-import { ButtonPrimaryExtraSmall, ButtonPrimarySmall } from 'src/components/Button/ButtonPrimary';
-import { HeadingSmall, DataMedium } from 'src/components/Typography';
-import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'src/shared/commonStyles';
-import Link from 'src/components/Link';
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import Currency from 'src/components/Currency';
+import Card from 'components/Card';
+import { ButtonPrimaryExtraSmall, ButtonPrimarySmall } from 'components/Button/ButtonPrimary';
+import { HeadingSmall, DataMedium } from 'components/Typography';
+import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'shared/commonStyles';
+import Link from 'components/Link';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import Currency from 'components/Currency';
 
 const WalletMenu = ({
 	resetWalletReducer,
@@ -98,16 +98,14 @@ const WalletMenu = ({
 						noResultsMessage={
 							isLoadedWalletBalances && synthsWalletBalances.length === 0 ? (
 								<TableNoResults>{t('assets.overview.your-synths.table.no-results')}</TableNoResults>
-							) : (
-								undefined
-							)
+							) : undefined
 						}
 						isLoading={isFetchingWalletBalances && !isLoadedWalletBalances}
 						columns={[
 							{
 								Header: t('assets.overview.your-synths.table.asset-col'),
 								accessor: 'name',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 								),
 								width: 100,
@@ -117,7 +115,7 @@ const WalletMenu = ({
 							{
 								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Tooltip
 										title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 										placement="top"
@@ -133,7 +131,7 @@ const WalletMenu = ({
 							{
 								Header: t('assets.overview.your-synths.table.usd-value-col'),
 								accessor: 'usdBalance',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<span>
 										{formatCurrencyWithSign(
 											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -190,7 +188,7 @@ const Content = styled.div`
 
 const StyledHeadingSmall = styled(HeadingSmall)`
 	font-size: 10px;
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
 const Bottom = styled.div`
@@ -208,7 +206,7 @@ const StyledButton = styled(ButtonPrimarySmall)`
 `;
 
 const CardData = styled(DataMedium)`
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	text-transform: uppercase;
 `;
 
@@ -220,7 +218,7 @@ const StyledFlexCentered = styled(FlexDivCentered)`
 	justify-content: space-between;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	currentWallet: getCurrentWalletAddress(state),
 	totalSynthsBalanceUSD: getTotalSynthsBalanceUSD(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),

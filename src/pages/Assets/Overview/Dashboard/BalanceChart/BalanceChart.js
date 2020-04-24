@@ -3,12 +3,12 @@ import styled, { withTheme } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis } from 'recharts';
 
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
-import { labelMediumCSS } from 'src/components/Typography/Label';
-import { absoluteCenteredCSS } from 'src/shared/commonStyles';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
+import { labelMediumCSS } from 'components/Typography/Label';
+import { absoluteCenteredCSS } from 'shared/commonStyles';
 
-import { CardHeadingDescription } from 'src/shared/commonStyles';
+import { CardHeadingDescription } from 'shared/commonStyles';
 
 // TODO: implement using real data
 import { MOCK_DATA } from './mockData';
@@ -59,7 +59,7 @@ const StyledCardBody = styled(Card.Body)`
 const Message = styled.div`
 	${absoluteCenteredCSS};
 	${labelMediumCSS};
-	color: ${props => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	text-transform: uppercase;
 `;
 

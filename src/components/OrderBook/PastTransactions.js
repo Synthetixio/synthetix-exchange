@@ -14,12 +14,12 @@ import { getEtherscanTxLink } from '../../utils/explorers';
 import Spinner from '../Spinner';
 const SCROLL_THRESHOLD = 0.8;
 
-const getPrecision = amount => {
+const getPrecision = (amount) => {
 	if (amount >= 1) return 2;
 	return 4;
 };
 
-const getAmountPrecision = amount => {
+const getAmountPrecision = (amount) => {
 	if (amount >= 1000) return 0;
 	return 2;
 };
@@ -158,7 +158,7 @@ const CenteredSpinner = styled(Spinner)`
 
 const Link = styled.a`
 	letter-spacing: 0.2px;
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 	&:hover {
 		text-decoration: underline;
 	}
@@ -170,7 +170,7 @@ const TradeLabel = styled(DataLabel)`
 	white-space: nowrap;
 `;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		networkId: getNetworkId(state),
 	};

@@ -8,34 +8,34 @@ import get from 'lodash/get';
 
 import PropTypes from 'prop-types';
 
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import Currency from 'src/components/Currency';
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
-import { ButtonPrimary } from 'src/components/Button';
-import Link from 'src/components/Link';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import Currency from 'components/Currency';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
+import { ButtonPrimary } from 'components/Button';
+import Link from 'components/Link';
 
-import { TableNoResults } from 'src/shared/commonStyles';
+import { TableNoResults } from 'shared/commonStyles';
 
 import {
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	SHORT_CRYPTO_CURRENCY_DECIMALS,
 	formatCurrency,
 	formatCurrencyWithSign,
-} from 'src/utils/formatters';
+} from 'utils/formatters';
 
-import { getAvailableSynthsMap } from 'src/ducks/synths';
+import { getAvailableSynthsMap } from 'ducks/synths';
 import {
 	getSynthsWalletBalances,
 	getIsRefreshingWalletBalances,
 	getIsLoadedWalletBalances,
 	getIsFetchingWalletBalances,
-} from 'src/ducks/wallet/walletBalances';
+} from 'ducks/wallet/walletBalances';
 
-import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'src/constants/currency';
-import { LINKS } from 'src/constants/links';
-import Spinner from 'src/components/Spinner';
+import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { LINKS } from 'constants/links';
+import Spinner from 'components/Spinner';
 
 export const YourSynths = memo(
 	({
@@ -60,7 +60,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.asset-col'),
 								accessor: 'name',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 								),
 								width: 150,
@@ -69,7 +69,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.asset-description-col'),
 								id: 'asset-desc',
-								Cell: cellProps => {
+								Cell: (cellProps) => {
 									const currencyKey = cellProps.row.original.name;
 
 									return (
@@ -85,7 +85,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<Tooltip
 										title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 										placement="top"
@@ -101,7 +101,7 @@ export const YourSynths = memo(
 							{
 								Header: t('assets.overview.your-synths.table.usd-value-col'),
 								accessor: 'usdBalance',
-								Cell: cellProps => (
+								Cell: (cellProps) => (
 									<span>
 										{formatCurrencyWithSign(
 											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -116,7 +116,7 @@ export const YourSynths = memo(
 								Header: t('assets.overview.your-synths.table.actions-col'),
 								accessor: 'actions',
 								width: 250,
-								Cell: cellProps => {
+								Cell: (cellProps) => {
 									const currencyKey = cellProps.row.original.name;
 
 									return (
@@ -148,9 +148,7 @@ export const YourSynths = memo(
 						noResultsMessage={
 							isLoadedWalletBalances && synthsWalletBalances.length === 0 ? (
 								<TableNoResults>{t('assets.overview.your-synths.table.no-results')}</TableNoResults>
-							) : (
-								undefined
-							)
+							) : undefined
 						}
 						isLoading={isFetchingWalletBalances && !isLoadedWalletBalances}
 					/>
@@ -184,7 +182,7 @@ const StyledCardBody = styled(Card.Body)`
 	position: relative;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	isRefreshingWalletBalances: getIsRefreshingWalletBalances(state),
