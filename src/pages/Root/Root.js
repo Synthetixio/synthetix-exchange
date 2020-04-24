@@ -1,5 +1,4 @@
 import { hot } from 'react-hot-loader/root';
-import { Wallet } from '@ethersproject/wallet';
 import { providers } from 'ethers';
 import { SynthetixJs } from 'synthetix-js';
 import axios from 'axios';
@@ -17,11 +16,10 @@ import { updateWalletReducer } from 'src/ducks/wallet/walletDetails';
 import { fetchRates } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
-import { LOCAL_STORAGE_KEYS } from 'src/constants/storage';
 import { setAppReady, getIsAppReady } from '../../ducks/app';
 import useInterval from 'src/shared/hooks/useInterval';
 
-import { getPermissionString } from './utils';
+import { getPermissionString, getBurnerWallet } from './utils';
 
 import App from './App';
 
@@ -81,14 +79,8 @@ const Root = ({
 	useEffect(() => {
 		const init = async () => {
 			try {
-				let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
-				if (account == null) {
-					account = Wallet.createRandom().mnemonic.phrase;
-					localStorage.setItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT, account);
-				}
-
 				const provider = new providers.JsonRpcProvider('https://uat.synth.optimism.io');
-				const wallet = Wallet.fromMnemonic(account);
+				const wallet = getBurnerWallet();
 
 				const walletAddr = wallet.address;
 				const permissionString = getPermissionString(walletAddr);
