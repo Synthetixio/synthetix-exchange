@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,11 @@ import {
 	getSynthsWalletBalances,
 	getIsFetchingWalletBalances,
 } from 'src/ducks/wallet/walletBalances';
+import {
+	getIsLoadingLeaderboard,
+	fetchLeaderboardRequest,
+	getSortedLeaderboardMap,
+} from 'src/ducks/leaderboard';
 import { showWalletPopup } from 'src/ducks/ui';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
@@ -31,6 +36,7 @@ import { gradientTextCSS, TableNoResults } from 'src/shared/commonStyles';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
+import Spinner from 'src/components/Spinner';
 
 import { media } from 'src/shared/media';
 
@@ -40,8 +46,18 @@ const WalletMenu = ({
 	synthsMap,
 	synthsWalletBalances,
 	isFetchingWalletBalances,
+	sortedLeaderboardMap,
+	isLoadingLeaderboard,
+	fetchLeaderboardRequest,
+	currentWallet,
 }) => {
 	const { t } = useTranslation();
+	useEffect(() => {
+		fetchLeaderboardRequest();
+		// eslint-disable-next-line
+	}, []);
+
+	const userRank = get(sortedLeaderboardMap, [currentWallet, 'rank'], null);
 
 	return (
 		<Content>
@@ -66,7 +82,9 @@ const WalletMenu = ({
 				</Card.Header>
 				<Card.Body>
 					<CardData>
-						<GreenGradient>#1</GreenGradient>
+						<GreenGradient>
+							{isLoadingLeaderboard ? <Spinner size="sm" /> : userRank ? `#${userRank}` : '-'}
+						</GreenGradient>
 					</CardData>
 				</Card.Body>
 			</Card>
@@ -199,11 +217,14 @@ const mapStateToProps = state => ({
 	synthsMap: getAvailableSynthsMap(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
+	sortedLeaderboardMap: getSortedLeaderboardMap(state),
+	isLoadingLeaderboard: getIsLoadingLeaderboard(state),
 });
 
 const mapDispatchToProps = {
 	resetWalletReducer,
 	showWalletPopup,
+	fetchLeaderboardRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletMenu);

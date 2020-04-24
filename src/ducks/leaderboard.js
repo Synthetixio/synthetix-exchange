@@ -1,9 +1,10 @@
 import { takeLatest, put } from 'redux-saga/effects';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
+import axios from 'axios';
 import orderBy from 'lodash/orderBy';
+import keyBy from 'lodash/keyBy';
 import { L2_API_URL } from 'src/constants/l2';
 import snxJSConnector from 'src/utils/snxJSConnector';
-import axios from 'axios';
 
 export const leaderboardSlice = createSlice({
 	name: 'leaderboard',
@@ -51,11 +52,15 @@ export const getSortedLeaderboard = createSelector(getLeaderboardData, leaderboa
 	orderBy(leaderboardData, 'assetValue', 'desc').map((d, idx) => ({ rank: idx + 1, ...d }))
 );
 
+export const getSortedLeaderboardMap = createSelector(getSortedLeaderboard, sortedLeaderboardData =>
+	keyBy(sortedLeaderboardData, 'address')
+);
+
 export const getTop10Leaders = createSelector(getSortedLeaderboard, sortedLeaderboardData =>
 	sortedLeaderboardData.slice(0, 10)
 );
 
-const {
+export const {
 	fetchRequest: fetchLeaderboardRequest,
 	fetchSuccess: fetchLeaderboardSuccess,
 	fetchFailure: fetchLeaderboardFailure,
@@ -90,5 +95,3 @@ export function* watchFetchLeaderboardRequest() {
 }
 
 export default leaderboardSlice.reducer;
-
-export { fetchLeaderboardRequest };

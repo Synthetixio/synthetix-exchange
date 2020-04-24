@@ -58,7 +58,7 @@ export const AccountInfo = memo(({ walletInfo, setBlurBackgroundIsVisible, isTab
 					</WalletInfo>
 				</UserInfoContainer>
 			}
-			body={<WalletMenu setDropdownIsOpen={setDropdownIsOpen} />}
+			body={<WalletMenu />}
 			bodyProps={{
 				position: 'fixed !important',
 			}}
