@@ -3,6 +3,7 @@ import { createSlice, createSelector } from '@reduxjs/toolkit';
 import orderBy from 'lodash/orderBy';
 import { L2_API_URL } from 'src/constants/l2';
 import snxJSConnector from 'src/utils/snxJSConnector';
+import axios from 'axios';
 
 export const leaderboardSlice = createSlice({
 	name: 'leaderboard',
@@ -46,10 +47,12 @@ export const getIsLoadedLeaderboard = state => getLeaderboardState(state).isLoad
 export const getLeaderboardLoadingError = state => getLeaderboardState(state).loadingError;
 export const getLeaderboardData = state => getLeaderboardState(state).data;
 
-export const getTop10Leaders = createSelector(getLeaderboardData, leaderboardData =>
-	orderBy(leaderboardData, 'assetValue', 'desc')
-		.slice(0, 10)
-		.map((d, idx) => ({ rank: idx + 1, ...d }))
+export const getSortedLeaderboard = createSelector(getLeaderboardData, leaderboardData =>
+	orderBy(leaderboardData, 'assetValue', 'desc').map((d, idx) => ({ rank: idx + 1, ...d }))
+);
+
+export const getTop10Leaders = createSelector(getSortedLeaderboard, sortedLeaderboardData =>
+	sortedLeaderboardData.slice(0, 10)
 );
 
 const {
@@ -63,20 +66,18 @@ function* fetchLeaderboard() {
 		snxJS: { sUSD },
 	} = snxJSConnector;
 	try {
-		const results = yield fetch(`${L2_API_URL}/api/holders`);
-		const holders = yield results.json();
+		const results = yield axios.get(`${L2_API_URL}/api/holders`);
+		const holders = results.data;
 
 		// Logic to be replaced with utility smart contract
 		const balances = yield Promise.all(holders.map(holder => sUSD.balanceOf(holder.address)));
 
 		yield put(
 			fetchLeaderboardSuccess({
-				data: holders.map((holder, i) => {
-					return {
-						...holder,
-						assetValue: balances[i] / 1e18,
-					};
-				}),
+				data: holders.map((holder, idx) => ({
+					...holder,
+					assetValue: balances[idx] / 1e18,
+				})),
 			})
 		);
 	} catch (e) {
