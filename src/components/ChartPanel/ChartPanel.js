@@ -132,7 +132,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 								<XAxis
 									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 									dataKey="timestamp"
-									tickFormatter={(val) =>
+									tickFormatter={val =>
 										period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
 									}
 									reversed={true}
@@ -140,7 +140,7 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 								<YAxis
 									type="number"
 									domain={['auto', 'auto']}
-									tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
+									tickFormatter={val => `${synthSign}${formatCurrencyWithPrecision(val)}`}
 									tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 									orientation="right"
 								/>
@@ -166,8 +166,8 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 										color: colors.fontTertiary,
 										fontSize: '12px',
 									}}
-									formatter={(value) => `${synthSign}${formatCurrencyWithPrecision(value)}`}
-									labelFormatter={(label) => format(label, 'Do MMM YY | HH:mm')}
+									formatter={value => `${synthSign}${formatCurrencyWithPrecision(value)}`}
+									labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
 								/>
 							</AreaChart>
 						</ResponsiveContainer>
@@ -221,11 +221,11 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 const Container = styled.div`
 	width: 100%;
 
-	background: ${(props) => props.theme.colors.surfaceL2};
+	background: ${props => props.theme.colors.surfaceL2};
 `;
 
 const Header = styled.div`
-	background: ${(props) => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	width: 100%;
 	height: 40px;
 	display: flex;
@@ -253,7 +253,7 @@ const DataBlock = styled.div`
 	max-width: 20%;
 	min-width: 115px;
 	margin-top: 6px;
-	background: ${(props) => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	justify-content: center;
 	align-items: flex-start;
 	display: flex;
@@ -267,11 +267,11 @@ const DataBlock = styled.div`
 
 const DataBlockLabel = styled(DataSmall)`
 	white-space: nowrap;
-	color: ${(props) => props.theme.colors.fontTertiary};
+	color: ${props => props.theme.colors.fontTertiary};
 `;
 
 const DataBlockValue = styled(DataLarge)`
-	color: ${(props) => (props.color ? props.color : props.theme.colors.fontPrimary)};
+	color: ${props => (props.color ? props.color : props.theme.colors.fontPrimary)};
 `;
 
 const HeaderBlock = styled.div`
@@ -296,7 +296,7 @@ const ChartContainer = styled.div`
 	align-items: center;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthPair: getSynthPair(state),
 	exchangeRates: getRatesExchangeRates(state),
 	synthsMap: getAvailableSynthsMap(state),

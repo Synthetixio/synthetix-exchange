@@ -67,7 +67,7 @@ const RowContainer = styled.div`
 	grid-auto-flow: column;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthPair: getSynthPair(state),
 	exchangeRates: getRatesExchangeRates(state),
 	synthsMap: getAvailableSynthsMap(state),

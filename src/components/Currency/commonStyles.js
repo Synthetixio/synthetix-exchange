@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { dataMediumCSS } from '../Typography/Data';
 
 export const Container = styled.span`
-	${(props) =>
+	${props =>
 		props.showIcon &&
 		css`
 			display: inline-grid;

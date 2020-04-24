@@ -58,7 +58,7 @@ const PairListPanel = ({
 		}
 	}, [marketsByQuote, allMarkets, search]);
 
-	const toggleDropdown = (isOpen) => {
+	const toggleDropdown = isOpen => {
 		if (!isOpen && !pairListDropdownIsOpen) return;
 		setPairListDropdownIsOpen(isOpen);
 		setBlurBackgroundIsVisible(isOpen);
@@ -92,9 +92,9 @@ const PairListPanel = ({
 			body={
 				<PairListContainer>
 					<SearchContainer>
-						<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+						<SearchInput value={search} onChange={e => setSearch(e.target.value)} />
 						<ButtonRow>
-							{ASSET_FILTERS.map((asset) => {
+							{ASSET_FILTERS.map(asset => {
 								return (
 									<ButtonFilter
 										key={`button-filter-${asset}`}
@@ -118,7 +118,7 @@ const PairListPanel = ({
 								Header: t('markets.table.pair-col'),
 								accessor: 'pair',
 								width: 150,
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<Currency.Pair
 										baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 										quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -131,7 +131,7 @@ const PairListPanel = ({
 								Header: t('markets.table.last-price-col'),
 								accessor: 'lastPrice',
 								width: 100,
-								Cell: (cellProps) => (
+								Cell: cellProps => (
 									<RightAlignedCell>
 										<CurrencyCol synthsMap={synthsMap} cellProps={cellProps} />{' '}
 									</RightAlignedCell>
@@ -140,7 +140,7 @@ const PairListPanel = ({
 							},
 						]}
 						data={filteredMarkets}
-						onTableRowClick={(row) => {
+						onTableRowClick={row => {
 							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
 							toggleDropdown(false);
 						}}
@@ -212,14 +212,14 @@ const DropdownPanelHeader = styled(FlexDiv)`
 	align-items: center;
 	height: ${CARD_HEIGHT};
 	padding: 0 12px;
-	background: ${(props) =>
+	background: ${props =>
 		props.isOpen ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 	&:hover {
-		background: ${(props) => props.theme.colors.accentL2};
+		background: ${props => props.theme.colors.accentL2};
 	}
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	synthPair: getSynthPair(state),
 	marketsByQuote: getFilteredMarkets(state),
 	synthsMap: getAvailableSynthsMap(state),

@@ -52,7 +52,7 @@ const HeroTitle = styled(HeadingLarge)`
 const HeroSubtitle = styled.div`
 	font-size: 24px;
 	color: ${darkTheme.colors.fontTertiary};
-	font-family: ${(props) => props.theme.fonts.regular};
+	font-family: ${props => props.theme.fonts.regular};
 	${media.large`
 		font-size: 16px;
 	`}

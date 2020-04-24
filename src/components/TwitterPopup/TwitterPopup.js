@@ -25,7 +25,7 @@ import { L2_URL } from 'src/constants/l2';
 
 import { media } from 'src/shared/media';
 
-const getTweet = (address) => {
+const getTweet = address => {
 	const text = `Hey @Synthetix_io it's ${shortenAddress(
 		address
 	)}, give me some sUSD tokens on Layer 2! @optimismPBC`;
@@ -175,8 +175,8 @@ const TweetContainer = styled.div`
 `;
 
 const Headline = styled.div`
-	color: ${(props) => props.theme.colors.fontPrimary};
-	font-family: ${(props) => props.theme.fonts.medium};
+	color: ${props => props.theme.colors.fontPrimary};
+	font-family: ${props => props.theme.fonts.medium};
 	${textShadowCSS};
 	font-size: 32px;
 	line-height: 39px;
@@ -189,7 +189,7 @@ const Headline = styled.div`
 `;
 
 const Subtitle = styled.div`
-	color: ${(props) => props.theme.colors.fontSecondary};
+	color: ${props => props.theme.colors.fontSecondary};
 	font-size: 16px;
 	line-height: 20px;
 	text-align: center;
@@ -215,8 +215,8 @@ const CloseButton = styled.button`
 `;
 
 const TweetPreview = styled.div`
-	background: ${(props) => props.theme.colors.surfaceL3};
-	color: ${(props) => props.theme.colors.fontPrimary};
+	background: ${props => props.theme.colors.surfaceL3};
+	color: ${props => props.theme.colors.fontPrimary};
 	border: 0.5px solid #cb5bf2;
 	box-sizing: border-box;
 	border-radius: 1px;
@@ -260,13 +260,13 @@ const StyledQuoteLIcon = styled(QuoteLIcon)`
 `;
 
 const TweetListener = styled.div`
-	color: ${(props) => props.theme.colors.fontPrimary};
+	color: ${props => props.theme.colors.fontPrimary};
 	display: grid;
 	grid-auto-flow: column;
 	grid-gap: 10px;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 });
 

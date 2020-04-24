@@ -15,7 +15,7 @@ export const contractInfoSlice = createSlice({
 		isRefreshing: false,
 	},
 	reducers: {
-		fetchLoansContractInfoRequest: (state) => {
+		fetchLoansContractInfoRequest: state => {
 			state.loadingError = null;
 			state.isLoading = true;
 			if (state.isLoaded) {
@@ -36,14 +36,14 @@ export const contractInfoSlice = createSlice({
 	},
 });
 
-export const getLoansContractInfoState = (state) => state.loans.contractInfo;
-export const getIsLoadingLoansContractInfo = (state) => getLoansContractInfoState(state).isLoading;
-export const getIsRefreshingLoansContractInfo = (state) =>
+export const getLoansContractInfoState = state => state.loans.contractInfo;
+export const getIsLoadingLoansContractInfo = state => getLoansContractInfoState(state).isLoading;
+export const getIsRefreshingLoansContractInfo = state =>
 	getLoansContractInfoState(state).isRefreshing;
-export const getIsLoadedLoansContractInfo = (state) => getLoansContractInfoState(state).isLoaded;
-export const getLoansContractInfoLoadingError = (state) =>
+export const getIsLoadedLoansContractInfo = state => getLoansContractInfoState(state).isLoaded;
+export const getLoansContractInfoLoadingError = state =>
 	getLoansContractInfoState(state).loadingError;
-export const getLoansCollateralPair = (state) => getLoansContractInfoState(state).collateralPair;
+export const getLoansCollateralPair = state => getLoansContractInfoState(state).collateralPair;
 
 const {
 	fetchLoansContractInfoRequest,
@@ -51,7 +51,7 @@ const {
 	fetchLoansContractInfoFailure,
 } = contractInfoSlice.actions;
 
-export const fetchLoansContractInfo = () => async (dispatch) => {
+export const fetchLoansContractInfo = () => async dispatch => {
 	const {
 		snxJS: { EtherCollateral },
 	} = snxJSConnector;

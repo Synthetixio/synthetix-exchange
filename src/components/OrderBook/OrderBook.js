@@ -52,7 +52,7 @@ const OrderBook = ({
 				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
 				removePendingTransaction(latestTransactionHash);
 				const status = await snxJSConnector.utils.waitForTransaction(latestTransactionHash);
-				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
+				const matchingTransaction = transactions.find(tx => tx.hash === latestTransactionHash);
 				if (status) {
 					updateTransaction({ status: 'Confirmed' }, matchingTransaction.id);
 				} else {
@@ -95,10 +95,10 @@ const OrderBook = ({
 		}
 		if (results && results.length) {
 			const hashMap = {};
-			list.forEach((l) => {
+			list.forEach(l => {
 				hashMap[l.hash] = true;
 			});
-			results = results.filter((r) => !hashMap[r.hash]);
+			results = results.filter(r => !hashMap[r.hash]);
 			results = [...list, ...results];
 
 			setPastTransactions({
@@ -137,7 +137,7 @@ const OrderBook = ({
 	return (
 		<Container>
 			<Tabs>
-				{['Your orders', 'Your trades', 'All trades'].map((tab) => {
+				{['Your orders', 'Your trades', 'All trades'].map(tab => {
 					return (
 						<Tab
 							key={tab}
@@ -176,7 +176,7 @@ const OrderBook = ({
 
 const Container = styled.div`
 	height: 100%;
-	background: ${(props) => props.theme.colors.surfaceL1};
+	background: ${props => props.theme.colors.surfaceL1};
 	display: flex;
 	flex-direction: column;
 `;
@@ -198,20 +198,20 @@ const Tab = styled.button`
 	padding: 0 18px;
 	outline: none;
 	border: none;
-	visibility: ${(props) => (props.hidden ? 'hidden' : 'visible')};
+	visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex: 1;
 	height: 42px;
-	background: ${(props) =>
+	background: ${props =>
 		props.active ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 	&:hover {
-		background: ${(props) => props.theme.colors.surfaceL3};
+		background: ${props => props.theme.colors.surfaceL3};
 	}
-	opacity: ${(props) => (props.isDisabled ? 0.2 : 1)};
-	cursor: ${(props) => (props.isDisabled ? 'not-allowed' : 'pointer')};
+	opacity: ${props => (props.isDisabled ? 0.2 : 1)};
+	cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
 `;
 
 const Book = styled.div`
@@ -226,7 +226,7 @@ const Book = styled.div`
 // 	margin-left: 5px;
 // `;
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		transactions: getTransactions(state),
 		pendingTransactions: getPendingTransactions(state),

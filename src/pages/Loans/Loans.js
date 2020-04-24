@@ -18,7 +18,7 @@ import { fetchLoansContractInfo, getLoansCollateralPair } from '../../ducks/loan
 const Loans = ({ collateralPair, fetchLoansContractInfo }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 
-	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
+	const handleSelectLoan = loanInfo => setSelectedLoan(loanInfo);
 	const clearSelectedLoan = () => {
 		setSelectedLoan(null);
 	};
@@ -75,7 +75,7 @@ const LoanCardsContainer = styled.div`
 	max-width: 400px;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	collateralPair: getLoansCollateralPair(state),
 });
 

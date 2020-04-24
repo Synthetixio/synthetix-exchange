@@ -4,15 +4,15 @@ import { color } from 'styled-system';
 const Input = styled.input`
 	width: 100%;
 	font-family: 'apercu-regular', sans-serif;
-	background: ${(props) => props.theme.colors.surfaceL3};
-	border: 1px solid ${(props) => props.theme.colors.accentL2Solid};
+	background: ${props => props.theme.colors.surfaceL3};
+	border: 1px solid ${props => props.theme.colors.accentL2Solid};
 	height: 42px;
-	padding: ${(props) => (props.padding ? props.padding : '0 10px')};
+	padding: ${props => (props.padding ? props.padding : '0 10px')};
 	font-size: 14px;
-	color: ${(props) => props.theme.colors.fontTertiary};
+	color: ${props => props.theme.colors.fontTertiary};
 	::placeholder {
 		opacity: 0.5;
-		color: ${(props) => props.theme.colors.fontTertiary};
+		color: ${props => props.theme.colors.fontTertiary};
 		text-transform: capitalize;
 	}
 	${color}

@@ -13,7 +13,7 @@ export const allTradesSlice = createSlice({
 		isRefreshing: false,
 	},
 	reducers: {
-		fetchAllTradesRequest: (state) => {
+		fetchAllTradesRequest: state => {
 			state.loadingError = null;
 			state.isLoading = true;
 			if (state.isLoaded) {
@@ -37,12 +37,12 @@ export const allTradesSlice = createSlice({
 	},
 });
 
-export const getAllTradesState = (state) => state.trades.allTrades;
-export const getIsLoadingAllTrades = (state) => getAllTradesState(state).isLoading;
-export const getIsRefreshingAllTrades = (state) => getAllTradesState(state).isRefreshing;
-export const getIsLoadedAllTrades = (state) => getAllTradesState(state).isLoaded;
-export const getAllTradesLoadingError = (state) => getAllTradesState(state).loadingError;
-export const getAllTrades = (state) => getAllTradesState(state).trades;
+export const getAllTradesState = state => state.trades.allTrades;
+export const getIsLoadingAllTrades = state => getAllTradesState(state).isLoading;
+export const getIsRefreshingAllTrades = state => getAllTradesState(state).isRefreshing;
+export const getIsLoadedAllTrades = state => getAllTradesState(state).isLoaded;
+export const getAllTradesLoadingError = state => getAllTradesState(state).loadingError;
+export const getAllTrades = state => getAllTradesState(state).trades;
 
 const {
 	fetchAllTradesRequest,

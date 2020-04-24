@@ -109,4 +109,4 @@ export function onMetamaskNetworkChange(cb) {
 	window.ethereum.on('networkChanged', listener);
 }
 
-export const isMainNet = (networkId) => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;
+export const isMainNet = networkId => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;

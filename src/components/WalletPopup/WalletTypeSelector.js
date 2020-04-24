@@ -46,7 +46,7 @@ const WalletTypeSelector = ({
 		updateWalletReducer({ ...walletStatus, availableWallets: [] });
 		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
 			if (walletStatus.walletType === METAMASK) {
-				onMetamaskAccountChange(async (accounts) => {
+				onMetamaskAccountChange(async accounts => {
 					if (accounts && accounts.length > 0) {
 						const signer = new snxJSConnector.signers[METAMASK]({});
 						snxJSConnector.setContractSettings({
@@ -65,7 +65,7 @@ const WalletTypeSelector = ({
 		<Container>
 			<HeadingMedium>{t('modals.wallet.wallet-selector.title')}</HeadingMedium>
 			<Wallets>
-				{SUPPORTED_WALLETS.map((wallet) => {
+				{SUPPORTED_WALLETS.map(wallet => {
 					const noMetamask = wallet === METAMASK && !hasWeb3();
 					const Icon = walletTypeToIconMap[wallet];
 
@@ -105,7 +105,7 @@ const Wallets = styled.div`
 const Wallet = styled.button`
 	cursor: pointer;
 	border: none;
-	background: ${(props) => props.theme.colors.surfaceL3};
+	background: ${props => props.theme.colors.surfaceL3};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -123,13 +123,13 @@ const Wallet = styled.button`
 `;
 
 const WalletLabel = styled.h3`
-	color: ${(props) => props.theme.colors.fontPrimary};
+	color: ${props => props.theme.colors.fontPrimary};
 	font-family: 'apercu-light', sans-serif;
 	letter-spacing: 1px;
 	font-size: 24px;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 });
 

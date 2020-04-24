@@ -24,10 +24,10 @@ export const THEMES = {
 	LIGHT: 'light',
 };
 
-export const isDarkTheme = (theme) => theme === THEMES.DARK;
-export const isLightTheme = (theme) => theme === THEMES.LIGHT;
+export const isDarkTheme = theme => theme === THEMES.DARK;
+export const isLightTheme = theme => theme === THEMES.LIGHT;
 
-const theme = (themeName) => {
+const theme = themeName => {
 	const darkTheme = isDarkTheme(themeName);
 	const lightTheme = isLightTheme(themeName);
 

@@ -11,7 +11,7 @@ export const synthWeight = {
 };
 
 // Ugly. Needs to find a better solution.
-export const pairWeight = (synth) => {
+export const pairWeight = synth => {
 	if (synth.category === 'forex') return 1;
 	if (synth.name === 'sBTC') return 2;
 	if (synth.name === 'sETH') return 3;

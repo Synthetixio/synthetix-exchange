@@ -81,16 +81,13 @@ export const MarketsSection = ({
 							))}
 							<StyledButtonFilterWithDropdown
 								quote={marketsAssetFilter}
-								onClick={(synth) => setMarketsAssetFilter({ marketsAssetFilter: synth.name })}
-								synths={FIAT_SYNTHS.map((currency) => ({ name: currency }))}
+								onClick={synth => setMarketsAssetFilter({ marketsAssetFilter: synth.name })}
+								synths={FIAT_SYNTHS.map(currency => ({ name: currency }))}
 							>
 								{t('common.currency.fiat-synths')}
 							</StyledButtonFilterWithDropdown>
 						</AssetFilters>
-						<AssetSearchInput
-							onChange={(e) => setAssetSearch(e.target.value)}
-							value={assetSearch}
-						/>
+						<AssetSearchInput onChange={e => setAssetSearch(e.target.value)} value={assetSearch} />
 					</FiltersRow>
 					<MarketsTable
 						markets={filteredMarkets}
@@ -178,7 +175,7 @@ const AssetSearchInput = styled(SearchInput)`
 `;
 
 const MarketsTableContainer = styled.div`
-	background: ${(props) => props.theme.colors.white};
+	background: ${props => props.theme.colors.white};
 	position: relative;
 	padding-top: 120px;
 	${media.large`

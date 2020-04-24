@@ -41,7 +41,7 @@ const middleware = [thunk, sagaMiddleware];
 
 const finalCreateStore = compose(
 	applyMiddleware(...middleware),
-	window.devToolsExtension ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f
+	window.devToolsExtension ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f
 )(createStore);
 
 const store = finalCreateStore(reducers);

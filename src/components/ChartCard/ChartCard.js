@@ -57,8 +57,8 @@ export const ChartCard = memo(
 );
 
 const Container = styled.div`
-	background: ${(props) => props.theme.colors.surfaceL1};
-	border: 1px solid ${(props) => props.theme.colors.accentL1};
+	background: ${props => props.theme.colors.surfaceL1};
+	border: 1px solid ${props => props.theme.colors.accentL1};
 	box-shadow: 0px 4px 11px rgba(188, 99, 255, 0.15442);
 	border-radius: 2px;
 	width: 100%;
@@ -69,7 +69,7 @@ const Container = styled.div`
 	grid-auto-flow: row;
 	grid-gap: 10px;
 	font-size: 13px;
-	cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
+	cursor: ${props => (props.onClick ? 'pointer' : 'default')};
 `;
 
 const LabelsContainer = styled(FlexDivRow)`
@@ -83,11 +83,11 @@ const Labels = styled.div`
 `;
 
 const Currency = styled.span`
-	color: ${(props) => props.theme.colors.fontPrimary};
+	color: ${props => props.theme.colors.fontPrimary};
 `;
 
 const CurrencyPrice = styled.span`
-	color: ${(props) => props.theme.colors.fontSecondary};
+	color: ${props => props.theme.colors.fontSecondary};
 `;
 
 const ChartData = styled.div`

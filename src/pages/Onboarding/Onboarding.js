@@ -39,12 +39,12 @@ const Container = styled.div`
 
 const GlobalStyle = createGlobalStyle`
   body {
-		color: ${(props) => props.theme.colors.fontPrimary};
+		color: ${props => props.theme.colors.fontPrimary};
     background: linear-gradient(180deg, #020B29 0%, #0F0F33 100%);
   }
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 });
 

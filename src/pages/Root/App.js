@@ -57,7 +57,7 @@ const App = ({
 			<Switch>
 				<Route
 					path={ROUTES.TradeMatch}
-					render={(routeProps) => (
+					render={routeProps => (
 						<>
 							{walletInfo.twitterFaucet > 0 ? (
 								<MainLayout isAppReady={isAppReady}>
@@ -71,7 +71,7 @@ const App = ({
 				/>
 				<Route
 					path={ROUTES.Trade}
-					render={(routeProps) => (
+					render={routeProps => (
 						<>
 							{walletInfo.twitterFaucet > 0 ? (
 								<MainLayout isAppReady={isAppReady}>
@@ -94,7 +94,7 @@ App.propTypes = {
 	currentTheme: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 	currentTheme: getCurrentTheme(state),
 	leaderboardPopupIsVisible: getLeaderboardPopupIsVisible(state),

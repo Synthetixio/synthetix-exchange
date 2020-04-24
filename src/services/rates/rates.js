@@ -26,7 +26,7 @@ export const fetchSynthRateUpdates = async (
 		const now = new Date().getTime();
 
 		const [baseRates, quoteRates] = await Promise.all(
-			[baseCurrencyKey, quoteCurrencyKey].map((synthName) =>
+			[baseCurrencyKey, quoteCurrencyKey].map(synthName =>
 				snxData.rate.updates({
 					synth: synthName,
 					maxTimestamp: Math.trunc(now / 1000),
@@ -71,7 +71,7 @@ export const fetchSynthVolumeInUSD = async (
 
 		return exchanges
 			.filter(
-				(exchange) =>
+				exchange =>
 					(exchange.fromCurrencyKey === quoteCurrencyKey &&
 						exchange.toCurrencyKey === baseCurrencyKey) ||
 					(exchange.fromCurrencyKey === baseCurrencyKey &&
