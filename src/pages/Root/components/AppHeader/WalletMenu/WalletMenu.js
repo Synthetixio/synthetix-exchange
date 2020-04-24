@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
+import copy from 'copy-to-clipboard';
+
+import { LOCAL_STORAGE_KEYS } from 'src/constants/storage';
 
 import { resetWalletReducer, getCurrentWalletAddress } from 'src/ducks/wallet/walletDetails';
 import {
@@ -37,6 +40,7 @@ import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
 import Spinner from 'src/components/Spinner';
+import { Button } from 'src/components/Button';
 
 import { media } from 'src/shared/media';
 
@@ -58,6 +62,26 @@ const WalletMenu = ({
 	}, []);
 
 	const userRank = get(sortedLeaderboardMap, [currentWallet, 'rank'], null);
+
+	const [accountCopied, setAccountCopied] = useState(false);
+	useEffect(() => {
+		if (accountCopied) {
+			const timeout = setTimeout(() => {
+				setAccountCopied(false);
+			}, 1000);
+
+			return () => {
+				clearTimeout(timeout);
+			};
+		}
+	}, [accountCopied]);
+
+	function copyAccount() {
+		let account = localStorage.getItem(LOCAL_STORAGE_KEYS.L2_ACCOUNT);
+
+		copy(`${window.location.origin}/?account=${account.replace(/ /g, '-')}`);
+		setAccountCopied(true);
+	}
 
 	return (
 		<Content>
@@ -88,11 +112,11 @@ const WalletMenu = ({
 					</CardData>
 				</Card.Body>
 			</Card>
-			<Card>
+			<Card style={{ flexGrow: '1', height: '100%' }}>
 				<Card.Header>
 					<StyledHeadingSmall>{t('header.wallet-menu.cards.synth-balance')}</StyledHeadingSmall>
 				</Card.Header>
-				<StyleCardBody>
+				<StyleCardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 					<StyledTable
 						palette={TABLE_PALETTE.STRIPED}
 						data={synthsWalletBalances}
@@ -109,7 +133,7 @@ const WalletMenu = ({
 								Cell: cellProps => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 								),
-								width: 100,
+								width: 95,
 								sortable: true,
 							},
 
@@ -145,11 +169,28 @@ const WalletMenu = ({
 							},
 						]}
 					/>
+					<ExportAccountContainer>
+						<Button
+							size="sm"
+							palette="secondary"
+							style={{ width: '100%' }}
+							onClick={() => copyAccount()}
+						>
+							{accountCopied ? 'copied' : 'export account'}
+						</Button>
+					</ExportAccountContainer>
 				</StyleCardBody>
 			</Card>
 		</Content>
 	);
 };
+
+const ExportAccountContainer = styled.div`
+	padding: 15px;
+	button {
+		color: #fff;
+	}
+`;
 
 const StyledTable = styled(Table)`
 	.table-row {
@@ -182,6 +223,8 @@ const StyledTable = styled(Table)`
 const Content = styled.div`
 	width: 100%;
 	height: 100%;
+	display: flex;
+	flex-direction: column;
 `;
 
 const StyledHeadingSmall = styled(HeadingSmall)`

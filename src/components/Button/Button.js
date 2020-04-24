@@ -60,7 +60,7 @@ const Button = styled.button`
 	${props =>
 		props.palette === 'secondary' &&
 		css`
-			color: ${props => props.theme.colors.fontTertiary};
+			color: ${props => props.theme.colors.fontSecondary};
 			background: ${props => props.theme.colors.accentL1};
 			&:hover {
 				&:not(:disabled) {
