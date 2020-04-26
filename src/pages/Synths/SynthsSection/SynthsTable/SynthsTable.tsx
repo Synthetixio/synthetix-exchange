@@ -121,13 +121,16 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 const StyledTable = styled(Table)`
 	.table-row {
 		& > :last-child {
-			justify-content: center;
+			justify-content: flex-end;
 		}
 	}
 
 	.table-body-row {
 		& > :last-child {
-			justify-content: center;
+			justify-content: flex-end;
+		}
+		&:hover {
+			box-shadow: none;
 		}
 	}
 `;
