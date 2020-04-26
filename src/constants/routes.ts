@@ -19,6 +19,9 @@ export const ROUTES = {
 	},
 };
 
+export const buildTradeLink = (baseCurrencyKey: string, quoteCurrencyKey: string) =>
+	`${ROUTES.Trade}/${baseCurrencyKey}-${quoteCurrencyKey}`;
+
 export const navigateTo = (
 	path: string,
 	replacePath: boolean = false,
@@ -34,6 +37,6 @@ export const navigateToTrade = (
 	baseCurrencyKey: CurrencyKey,
 	quoteCurrencyKey: CurrencyKey,
 	replacePath: boolean = false
-) => navigateTo(`${ROUTES.Trade}/${baseCurrencyKey}-${quoteCurrencyKey}`, replacePath);
+) => navigateTo(buildTradeLink(baseCurrencyKey, quoteCurrencyKey), replacePath);
 
 export default ROUTES;

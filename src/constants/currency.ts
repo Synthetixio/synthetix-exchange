@@ -212,6 +212,8 @@ export const FIAT_SYNTHS = [
 	SYNTHS_MAP.sCHF,
 ];
 
+export const BASE_TRADING_PAIRS = [SYNTHS_MAP.sUSD, SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
+
 export const getAvailableMarketNames = memoizeOne(() => {
 	const marketNames: Array<{
 		baseCurrencyKey: CurrencyKey;

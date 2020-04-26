@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import { dataMediumCSS } from '../Typography/Data';
 
-export const Container = styled.span`
+export const Container = styled.span<{ showIcon?: boolean }>`
 	${(props) =>
 		props.showIcon &&
 		css`
