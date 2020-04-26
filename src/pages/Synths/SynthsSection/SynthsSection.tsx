@@ -77,12 +77,14 @@ const Content = styled.div`
 const SynthsChartsContent = styled(Content)`
 	position: relative;
 	z-index: ${Z_INDEX.BASE};
-	transform: translateY(50%);
+	transform: translateY(calc(50% - 20px));
 	${media.large`
+		transform: translateY(50%);
 		transform: none;
 		padding: 73px 24px;
 	`}
 	${media.medium`
+		transform: translateY(50%);
 		transform: none;
 		padding: 40px 24px;
 	`}
