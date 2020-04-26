@@ -105,7 +105,7 @@
 			}
 		}
 	},
-	"tokens": {
+	"synths": {
 		"hero": {
 			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
 		},
@@ -115,6 +115,10 @@
 			"24h-change-col": "24hr change",
 			"24h-trend-col": "24h trend",
 			"trade-now-col": "trade now"
+		},
+		"charts": {
+			"biggest-gainers-24h": "biggest gainers (24h)",
+			"biggest-losers-24h": "biggest losers (24h)"
 		}
 	},
 	"exchange": {

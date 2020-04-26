@@ -1,6 +1,7 @@
 import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 
 import { getAvailableSynthsMap, SynthDefinitionWithRates, SynthDefinitionMap } from 'ducks/synths';
@@ -17,6 +18,7 @@ import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
 import { SYNTHS_MAP } from 'constants/currency';
 import { RootState } from 'ducks/types';
 import { HistoricalRatesData } from 'ducks/historicalRates';
+import { captionCSS } from 'components/Typography/Caption';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -24,57 +26,119 @@ type StateProps = {
 
 type Props = {
 	synthsWithRates: SynthDefinitionWithRates[];
+	maxTopSynths: number;
 };
 
 type SynthsCharts = StateProps & Props;
 
-export const SynthsCharts: FC<SynthsCharts> = memo(({ synthsWithRates, synthsMap }) => (
-	<Container>
-		{[...synthsWithRates.slice(0, 3), ...synthsWithRates.slice(-3)].map(
-			({ name, historicalRates, lastPrice }) => {
-				const historicalData: HistoricalRatesData | null = get(
-					historicalRates,
-					'ONE_DAY.data',
-					null
-				);
-				const chartData = historicalData != null ? historicalData.rates : null;
-				const change = historicalData != null ? historicalData.change : null;
+export const SynthsCharts: FC<SynthsCharts> = memo(
+	({ synthsWithRates, synthsMap, maxTopSynths }) => {
+		const { t } = useTranslation();
 
-				return (
-					<StyledChartCard
-						key={name}
-						currencyLabel={name}
-						price={
-							lastPrice != null
-								? formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, lastPrice)
-								: null
-						}
-						change={change}
-						chartData={chartData || []}
-						onClick={() => navigateToTrade(name, SYNTHS_MAP.sUSD)}
-						variableGradient={true}
-						labelPosition="down"
-					/>
-				);
-			}
-		)}
-	</Container>
-));
+		const charts = synthsWithRates.map(({ name, historicalRates, lastPrice }) => {
+			const historicalData: HistoricalRatesData | null = get(historicalRates, 'ONE_DAY.data', null);
+			const chartData = historicalData != null ? historicalData.rates : null;
+			const change = historicalData != null ? historicalData.change : null;
 
-const Container = styled.div`
+			return (
+				<StyledChartCard
+					key={name}
+					currencyLabel={name}
+					price={
+						lastPrice != null
+							? formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, lastPrice)
+							: null
+					}
+					change={change}
+					chartData={chartData || []}
+					onClick={() => navigateToTrade(name, SYNTHS_MAP.sUSD)}
+					variableGradient={true}
+					labelPosition="down"
+				/>
+			);
+		});
+
+		const gainers = charts.slice(0, maxTopSynths);
+		const losers = charts.slice(-maxTopSynths);
+
+		return (
+			<GridContainer>
+				<GridItem>
+					<Gainers>{t('synths.charts.biggest-gainers-24h')}</Gainers>
+					<Charts>{gainers}</Charts>
+				</GridItem>
+				<GridItem>
+					<Losers>{t('synths.charts.biggest-losers-24h')}</Losers>
+					<Charts>{losers}</Charts>
+				</GridItem>
+			</GridContainer>
+		);
+	}
+);
+
+const GridContainer = styled.div`
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: 24px;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 12px;
 	justify-content: center;
 
 	${media.large`
-		grid-template-columns: 1fr 1fr 1fr;
-		grid-template-rows: 1fr 1fr 1fr;
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr 1fr;
 		grid-gap: 30px;
 	`}
+`;
+
+const GridItem = styled.div`
+	display: grid;
+	grid-template-rows: auto 1fr;
+	grid-gap: 20px;
+`;
+
+const ChartLabel = styled.div`
+	${captionCSS};
+	color: ${({ theme }) => theme.colors.white};
+	padding: 5px 10px;
+	min-width: 181px;
+	box-sizing: border-box;
+	border-radius: 1px;
+	text-align: center;
+	justify-self: flex-start;
+
+	${media.small`
+		justify-self: initial;
+	`}
+`;
+
+const Gainers = styled(ChartLabel)`
+	background-color: ${({ theme }) => theme.colors.green};
+`;
+
+const Losers = styled(ChartLabel)`
+	background-color: ${({ theme }) => theme.colors.red};
+	justify-self: flex-end;
+
+	${media.large`
+		justify-self: flex-start;
+	`}
+
+	${media.medium`
+		justify-self: flex-start;
+	`}
+
+	${media.small`
+		justify-self: initial;
+	`}
+`;
+
+const Charts = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-gap: 12px;
+	justify-content: center;
+
 	${media.small`
 		grid-template-columns: 1fr;
-		grid-template-rows: 1fr;
 		grid-gap: 30px;
 	`}
 `;

@@ -1,4 +1,4 @@
-import React, { memo, FC, useEffect } from 'react';
+import React, { memo, FC, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled, { ThemeProvider } from 'styled-components';
 
@@ -29,17 +29,27 @@ type DispatchProps = {
 
 type SynthsSectionProps = StateProps & DispatchProps;
 
+const MAX_TOP_SYNTHS = 3;
+
 export const SynthsSection: FC<SynthsSectionProps> = memo(
 	({ synths, synthsWithRates, fetchHistoricalRatesRequest }) => {
 		useEffect(() => {
 			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
 		}, [fetchHistoricalRatesRequest, synths]);
 
+		const topGainersLosersSynths = useMemo(
+			() => [
+				...synthsWithRates.slice(0, MAX_TOP_SYNTHS),
+				...synthsWithRates.slice(-MAX_TOP_SYNTHS),
+			],
+			[synthsWithRates]
+		);
+
 		return (
 			<>
 				<ThemeProvider theme={lightTheme}>
 					<SynthsChartsContent>
-						<SynthsCharts synthsWithRates={synthsWithRates} />
+						<SynthsCharts synthsWithRates={topGainersLosersSynths} maxTopSynths={MAX_TOP_SYNTHS} />
 					</SynthsChartsContent>
 					<SynthsTableContainer>
 						<Content>

@@ -197,3 +197,7 @@ export const shiftUpHoverEffectCSS = css`
 		transform: translateY(-4px);
 	}
 `;
+
+export const TableOverflowContainer = styled.div`
+	overflow: auto;
+`;
