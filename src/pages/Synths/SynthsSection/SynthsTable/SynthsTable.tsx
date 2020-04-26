@@ -31,9 +31,9 @@ type Props = {
 	synthsWithRates: SynthDefinitionWithRates[];
 };
 
-type TokensTableProps = StateProps & Props;
+type SynthsTableProps = StateProps & Props;
 
-export const TokensTable: FC<TokensTableProps> = memo(({ synthsMap, synthsWithRates }) => {
+export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRates }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -134,4 +134,4 @@ const mapStateToProps = (state: RootState): StateProps => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 
-export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(TokensTable);
+export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(SynthsTable);

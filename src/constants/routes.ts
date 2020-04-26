@@ -13,9 +13,9 @@ export const ROUTES = {
 		Transfers: '/assets/transfers',
 	},
 	Markets: '/markets',
-	Tokens: {
+	Synths: {
 		Home: '/synths',
-		TokenInfo: '/synths/:currencyKey',
+		SynthInfo: '/synths/:currencyKey',
 	},
 };
 

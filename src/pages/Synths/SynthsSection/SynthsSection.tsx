@@ -15,8 +15,8 @@ import {
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
 import { Z_INDEX } from 'constants/ui';
-import TokensTable from './TokensTable';
-import TokensCharts from './TokensCharts';
+import SynthsTable from './SynthsTable';
+import SynthsCharts from './SynthsCharts';
 
 type StateProps = {
 	synths: SynthDefinition[];
@@ -27,9 +27,9 @@ type DispatchProps = {
 	fetchHistoricalRatesRequest: typeof fetchHistoricalRatesRequest;
 };
 
-type TokensSectionProps = StateProps & DispatchProps;
+type SynthsSectionProps = StateProps & DispatchProps;
 
-export const TokensSection: FC<TokensSectionProps> = memo(
+export const SynthsSection: FC<SynthsSectionProps> = memo(
 	({ synths, synthsWithRates, fetchHistoricalRatesRequest }) => {
 		useEffect(() => {
 			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
@@ -38,21 +38,21 @@ export const TokensSection: FC<TokensSectionProps> = memo(
 		return (
 			<>
 				<ThemeProvider theme={lightTheme}>
-					<TokensChartsContent>
-						<TokensCharts synthsWithRates={synthsWithRates} />
-					</TokensChartsContent>
-					<TokensTableContainer>
+					<SynthsChartsContent>
+						<SynthsCharts synthsWithRates={synthsWithRates} />
+					</SynthsChartsContent>
+					<SynthsTableContainer>
 						<Content>
-							<TokensTable synthsWithRates={synthsWithRates} />
+							<SynthsTable synthsWithRates={synthsWithRates} />
 						</Content>
-					</TokensTableContainer>
+					</SynthsTableContainer>
 				</ThemeProvider>
 			</>
 		);
 	}
 );
 
-const TokensTableContainer = styled.div`
+const SynthsTableContainer = styled.div`
 	background-color: ${({ theme }) => theme.colors.white};
 	position: relative;
 	padding-top: 120px;
@@ -64,7 +64,7 @@ const Content = styled.div`
 	margin: 0 auto;
 `;
 
-const TokensChartsContent = styled(Content)`
+const SynthsChartsContent = styled(Content)`
 	position: relative;
 	z-index: ${Z_INDEX.BASE};
 	transform: translateY(50%);
@@ -90,4 +90,4 @@ const mapDispatchToProps: DispatchProps = {
 export default connect<StateProps, DispatchProps, {}, RootState>(
 	mapStateToProps,
 	mapDispatchToProps
-)(TokensSection);
+)(SynthsSection);

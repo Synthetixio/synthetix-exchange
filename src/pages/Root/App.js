@@ -25,7 +25,7 @@ import Loans from '../Loans';
 import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
-import Tokens from '../Tokens';
+import Synths from '../Synths';
 
 import Banner from 'components/Banner';
 
@@ -85,10 +85,10 @@ const App = ({ isAppReady, currentTheme }) => {
 						)}
 					/>
 					<Route
-						path={ROUTES.Tokens.Home}
+						path={ROUTES.Synths.Home}
 						render={(routeProps) => (
 							<HomeLayout>
-								<Tokens {...routeProps} />
+								<Synths {...routeProps} />
 							</HomeLayout>
 						)}
 					/>

@@ -26,9 +26,9 @@ type Props = {
 	synthsWithRates: SynthDefinitionWithRates[];
 };
 
-type TokensCharts = StateProps & Props;
+type SynthsCharts = StateProps & Props;
 
-export const TokensCharts: FC<TokensCharts> = memo(({ synthsWithRates, synthsMap }) => (
+export const SynthsCharts: FC<SynthsCharts> = memo(({ synthsWithRates, synthsMap }) => (
 	<Container>
 		{[...synthsWithRates.slice(0, 3), ...synthsWithRates.slice(-3)].map(
 			({ name, historicalRates, lastPrice }) => {
@@ -92,4 +92,4 @@ const mapStateToProps = (state: RootState): StateProps => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 
-export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(TokensCharts);
+export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(SynthsCharts);

@@ -5,7 +5,7 @@
 			"trade": "trade",
 			"loans": "loans",
 			"markets": "markets",
-			"tokens": "synths",
+			"synths": "synths",
 			"support": "support",
 			"assets": "assets"
 		},
