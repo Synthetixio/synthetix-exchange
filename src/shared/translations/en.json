@@ -110,7 +110,7 @@
 			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
 		},
 		"table": {
-			"token-col": "token",
+			"synth-col": "synth",
 			"last-price-col": "last price",
 			"24h-change-col": "24hr change",
 			"24h-trend-col": "24h trend",

@@ -74,7 +74,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 					palette={TABLE_PALETTE.LIGHT}
 					columns={[
 						{
-							Header: t('synths.table.token-col'),
+							Header: t('synths.table.synth-col'),
 							accessor: 'name',
 							Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
 								<Currency.Name
