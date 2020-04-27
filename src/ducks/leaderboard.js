@@ -3,8 +3,11 @@ import { createSlice, createSelector } from '@reduxjs/toolkit';
 import axios from 'axios';
 import orderBy from 'lodash/orderBy';
 import keyBy from 'lodash/keyBy';
+
 import { L2_API_URL } from 'src/constants/l2';
 import snxJSConnector from 'src/utils/snxJSConnector';
+import { bytesFormatter } from 'src/utils/formatters';
+import { SYNTHS_MAP } from 'src/constants/currency';
 
 export const leaderboardSlice = createSlice({
 	name: 'leaderboard',
@@ -67,15 +70,15 @@ export const {
 } = leaderboardSlice.actions;
 
 function* fetchLeaderboard() {
-	const {
-		snxJS: { sUSD },
-	} = snxJSConnector;
+	const { synthSummaryUtilContract } = snxJSConnector;
 	try {
 		const results = yield axios.get(`${L2_API_URL}/api/holders`);
 		const holders = results.data;
 
-		// Logic to be replaced with utility smart contract
-		const balances = yield Promise.all(holders.map(holder => sUSD.balanceOf(holder.address)));
+		const balances = yield synthSummaryUtilContract.totalSynthsInKeyForAccounts(
+			holders.map(holder => holder.address),
+			bytesFormatter(SYNTHS_MAP.sUSD)
+		);
 
 		yield put(
 			fetchLeaderboardSuccess({
