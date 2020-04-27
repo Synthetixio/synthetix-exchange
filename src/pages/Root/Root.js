@@ -21,6 +21,9 @@ import useInterval from 'src/shared/hooks/useInterval';
 
 import { getPermissionString, getBurnerWallet } from './utils';
 
+import history from 'src/utils/history';
+import { ROUTES } from 'src/constants/routes';
+
 import App from './App';
 
 const REFRESH_INTERVAL = 3 * 60 * 1000;
@@ -93,16 +96,6 @@ const Root = ({
 						});
 					}
 
-					updateWalletReducer({
-						networkId,
-						networkName,
-						currentWallet: wallet.address,
-						unlocked: true,
-						walletType: 'Paper',
-						permissionSignature,
-						...addressData,
-					});
-
 					// grab crypto synths + sUSD
 					const synths = snxJSConnector.snxJS.contractSettings.synths.filter(
 						synth => synth.asset && (synth.category === 'crypto' || synth.name === 'sUSD')
@@ -119,8 +112,20 @@ const Root = ({
 					}, REFRESH_INTERVAL);
 					setIntervalId(_intervalId);
 
+					updateWalletReducer({
+						networkId,
+						networkName,
+						currentWallet: wallet.address,
+						unlocked: true,
+						walletType: 'Paper',
+						permissionSignature,
+						...addressData,
+					});
+
 					if (addressData.twitterFaucet === 0) {
 						setAddressDataIntervalDelay(ADDRESS_DATA_INTERVAL);
+					} else {
+						history.push(ROUTES.Trade);
 					}
 				}
 			} catch (e) {
