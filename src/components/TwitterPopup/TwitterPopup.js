@@ -166,7 +166,7 @@ const TweetContainer = styled.div`
 		${({ hide }) =>
 			hide &&
 			css`
-				visiblity: hidden !important;
+				visibility: hidden !important;
 				height: 0 !important;
 			`}
 	}
