@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { persistState, getPersistedState } from '../config/store';
 import { isLightTheme, THEMES } from '../styles/theme';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP, ASSETS_MAP } from 'constants/currency';
 
 const userPrefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+const baseCategoryFilters = [ASSETS_MAP.crypto, ASSETS_MAP.forex];
 
 const initialState = {
 	theme: userPrefersDarkTheme ? THEMES.DARK : THEMES.LIGHT,
@@ -14,6 +16,7 @@ const initialState = {
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	blurBackgroundIsVisible: false,
+	synthsCategoryFilter: [...baseCategoryFilters, ASSETS_MAP.inverse],
 	...getPersistedState('ui'),
 };
 
@@ -51,13 +54,30 @@ export const uiSlice = createSlice({
 			state.marketsAssetFilter = action.payload.marketsAssetFilter;
 			persistState('ui', { marketsAssetFilter: state.marketsAssetFilter });
 		},
+		setSynthsCategoryFilter: (state, action) => {
+			const category = action.payload.category;
+
+			if (state.synthsCategoryFilter.includes(category)) {
+				const potentialNewState = state.synthsCategoryFilter.filter(
+					(existingCategory) => category !== existingCategory
+				);
+				if (potentialNewState.some((cat) => baseCategoryFilters.includes(cat))) {
+					state.synthsCategoryFilter = potentialNewState;
+				}
+			} else {
+				state.synthsCategoryFilter.push(category);
+			}
+
+			persistState('ui', { synthsCategoryFilter: state.synthsCategoryFilter });
+		},
 		setBlurBackgroundIsVisible: (state, action) => {
 			state.blurBackgroundIsVisible = action.payload;
 		},
 	},
 });
 
-const {
+export const {
+	setSynthsCategoryFilter,
 	toggleWalletPopup,
 	showWalletPopup,
 	toggleGweiPopup,
@@ -79,19 +99,7 @@ export const depotPopupIsVisible = (state) => getUIState(state).depotPopupIsVisi
 export const getSynthSearch = (state) => getUIState(state).synthSearch;
 export const getHideSmallValueAssets = (state) => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = (state) => getUIState(state).marketsAssetFilter;
+export const getSynthsCategoryFilter = (state) => getUIState(state).synthsCategoryFilter;
 export const getBlurBackgroundIsVisible = (state) => getUIState(state).blurBackgroundIsVisible;
 
 export default uiSlice.reducer;
-
-export {
-	toggleWalletPopup,
-	showWalletPopup,
-	toggleGweiPopup,
-	showGweiPopup,
-	toggleTheme,
-	setSynthSearch,
-	setFiatCurrency,
-	toggleHideSmallValueAssets,
-	setMarketsAssetFilter,
-	setBlurBackgroundIsVisible,
-};

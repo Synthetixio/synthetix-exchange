@@ -342,6 +342,7 @@
 			"crypto": "crypto",
 			"forex": "forex",
 			"commodities": "commodities",
+			"inverse": "inverse",
 			"synthetic-currency": "Synthetic {{currencyKey}}",
 			"fiat-synths": "sFiat"
 		},

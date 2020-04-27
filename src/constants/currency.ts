@@ -57,7 +57,7 @@ import { ReactComponent as sCHFIcon } from '../assets/currencies/synths/sCHF.svg
 export type CurrencyKey = string;
 export type CurrencyKeys = string[];
 
-export const ASSETS = ['crypto', 'forex', 'fiat', 'equities'];
+export const ASSETS = ['crypto', 'forex', 'equities', 'inverse'];
 export const ASSETS_MAP = keyBy(ASSETS);
 
 export const SYNTHS = [

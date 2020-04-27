@@ -14,6 +14,7 @@ import {
 } from './historicalRates';
 import { getRatesExchangeRates } from './rates';
 import { Period } from 'constants/period';
+import { getSynthsCategoryFilter } from './ui';
 
 const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
 
@@ -129,15 +130,28 @@ export const getSortedAvailableSynths = createSelector(getSortedAvailableList, (
 );
 
 export const getAvailableSynths = createSelector(getSortedAvailableSynths, (availableSynths) =>
-	availableSynths.filter((synth: SynthDefinition) => !synth.isFrozen)
+	availableSynths.filter((synth) => !synth.isFrozen)
+);
+
+export const getFilteredAvailableSynths = createSelector(
+	getAvailableSynths,
+	getSynthsCategoryFilter,
+	(availableSynths, synthsCategoryFilter) =>
+		availableSynths.filter((synth) => {
+			const matchCategory = synthsCategoryFilter.includes(synth.category);
+			if (synth.inverted) {
+				return matchCategory && synthsCategoryFilter.includes(ASSETS_MAP.inverse);
+			}
+			return matchCategory;
+		})
 );
 
 export const getSynthsWithRates = createSelector(
-	getAvailableSynths,
+	getFilteredAvailableSynths,
 	getHistoricalRatesState,
 	getRatesExchangeRates,
-	(availableSynths, historicalRates, exchangeRates) =>
-		availableSynths.map((synth) => ({
+	(filteredAvailableSynths, historicalRates, exchangeRates) =>
+		filteredAvailableSynths.map((synth) => ({
 			...synth,
 			historicalRates: historicalRates[synth.name] || null,
 			lastPrice: exchangeRates != null ? exchangeRates[synth.name] : null,
