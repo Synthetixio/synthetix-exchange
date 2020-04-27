@@ -90,6 +90,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 						{
 							Header: t('synths.table.last-price-col'),
 							accessor: 'lastPrice',
+							sortType: 'basic',
 							Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
 								<CurrencyCol
 									currencyKey={SYNTHS_MAP.sUSD}
@@ -102,6 +103,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 						},
 						{
 							Header: t('synths.table.24h-change-col'),
+							sortType: 'basic',
 							accessor: (d: SynthDefinitionWithRates) =>
 								get(d.historicalRates, 'ONE_DAY.data.change', null),
 							Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
@@ -109,6 +111,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 									<ChangePercent isLabel={true} value={cellProps.cell.value} />
 								</NullableCell>
 							),
+							sortable: true,
 							width: 100,
 						},
 						{

@@ -39,6 +39,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 					{
 						Header: t('markets.table.last-price-col'),
 						accessor: 'lastPrice',
+						sortType: 'basic',
 						Cell: (cellProps) => (
 							<CurrencyCol
 								currencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -52,6 +53,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 					{
 						Header: t('markets.table.24h-change-col'),
 						accessor: 'rates24hChange',
+						sortType: 'basic',
 						Cell: (cellProps) => (
 							<NullableCell cellProps={cellProps}>
 								{cellProps.cell.value != null && (
@@ -65,6 +67,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 					{
 						Header: t('markets.table.24h-low-col'),
 						accessor: 'rates24hLow',
+						sortType: 'basic',
 						Cell: (cellProps) => (
 							<CurrencyCol
 								currencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -78,6 +81,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 					{
 						Header: t('markets.table.24h-high-col'),
 						accessor: 'rates24hHigh',
+						sortType: 'basic',
 						Cell: (cellProps) => (
 							<CurrencyCol
 								currencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -91,6 +95,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 					{
 						Header: t('markets.table.24h-volume-col'),
 						accessor: 'rates24hVol',
+						sortType: 'basic',
 						Cell: (cellProps) => (
 							<CurrencyCol
 								currencyKey={cellProps.row.original.quoteCurrencyKey}
