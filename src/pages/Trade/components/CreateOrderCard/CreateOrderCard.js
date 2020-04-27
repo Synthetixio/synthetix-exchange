@@ -65,6 +65,8 @@ import { media } from 'src/shared/media';
 
 const INPUT_DEFAULT_VALUE = '';
 
+const CONFIRM_TRADE_BUTTON_RATE_LIMIT_MS = 1500;
+
 const CreateOrderCard = ({
 	synthPair,
 	walletInfo: { currentWallet, walletType },
@@ -95,6 +97,7 @@ const CreateOrderCard = ({
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [feeReclamationError, setFeeReclamationError] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [confirmTradeButtonRateLimited, setConfirmTradeButtonRateLimited] = useState(false);
 
 	const resetInputAmounts = () => {
 		setBaseAmount(INPUT_DEFAULT_VALUE);
@@ -135,7 +138,13 @@ const CreateOrderCard = ({
 	const inverseRate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name);
 
 	const buttonDisabled =
-		!baseAmount || !currentWallet || inputError || isSubmitting || feeReclamationError;
+		!baseAmount ||
+		!currentWallet ||
+		inputError ||
+		isSubmitting ||
+		feeReclamationError ||
+		baseAmount > baseBalance ||
+		confirmTradeButtonRateLimited;
 
 	useEffect(() => {
 		setInputError(null);
@@ -257,6 +266,12 @@ const CreateOrderCard = ({
 			}
 
 			setIsSubmitting(false);
+
+			// rate limit
+			setConfirmTradeButtonRateLimited(true);
+			setTimeout(() => {
+				setConfirmTradeButtonRateLimited(false);
+			}, CONFIRM_TRADE_BUTTON_RATE_LIMIT_MS);
 		} catch (e) {
 			console.log(e);
 			const error = errorMessages(e, walletType);
@@ -270,6 +285,7 @@ const CreateOrderCard = ({
 			);
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 			setIsSubmitting(false);
+			setConfirmTradeButtonRateLimited(false);
 		}
 	};
 
