@@ -143,7 +143,7 @@ const CreateOrderCard = ({
 		inputError ||
 		isSubmitting ||
 		feeReclamationError ||
-		baseAmount > baseBalance ||
+		baseAmount > quoteBalance ||
 		confirmTradeButtonRateLimited;
 
 	useEffect(() => {
