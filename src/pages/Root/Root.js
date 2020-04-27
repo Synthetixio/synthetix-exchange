@@ -155,12 +155,13 @@ const Root = ({
 					walletInfo.currentWallet,
 					walletInfo.permissionSignature
 				);
+				if (addressData.twitterFaucet > 0) {
+					fetchWalletBalancesRequest();
+					setAddressDataIntervalDelay(null);
+				}
 				updateWalletReducer({
 					...addressData,
 				});
-				if (addressData.twitterFaucet > 0) {
-					setAddressDataIntervalDelay(null);
-				}
 			} catch (e) {
 				console.error(e);
 			}
