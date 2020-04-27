@@ -26,9 +26,7 @@ import { L2_URL } from 'src/constants/l2';
 import { media } from 'src/shared/media';
 
 const getTweet = address => {
-	const text = `Hey @Synthetix_io it's ${shortenAddress(
-		address
-	)}, give me some sUSD tokens on Layer 2! @optimismPBC`;
+	const text = `Hey @Synthetix_io it's ${address}, give me some sUSD tokens on Layer 2! @optimismPBC`;
 	const hashtags = 'synthetix';
 	const url = L2_URL;
 
@@ -134,7 +132,7 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 					</CloseButton>
 					<TweetPreview>
 						<StyledQuoteRIcon />
-						{tweet.composed}
+						{tweet.composed.replace(currentWallet, shortenAddress(currentWallet))}
 						<StyledQuoteLIcon />
 					</TweetPreview>
 					<TweetContainer hide={alreadyFauceted || polling || !twitterLoaded}>

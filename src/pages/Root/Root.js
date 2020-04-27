@@ -26,7 +26,7 @@ import App from './App';
 const REFRESH_INTERVAL = 3 * 60 * 1000;
 const ADDRESS_DATA_INTERVAL = 6000;
 
-async function mockGetAddressData(address, signature) {
+async function getAddressData(address, signature) {
 	console.log('wallet address: ', address);
 	console.log('signature: ', signature);
 
@@ -35,17 +35,10 @@ async function mockGetAddressData(address, signature) {
 			address,
 			signature,
 		});
-		console.log(response);
+		return response.data;
 	} catch (e) {
 		console.error(e);
 	}
-
-	const res = await Promise.resolve({
-		twitterId: 1,
-		twitterHandle: 'ev',
-		twitterFaucet: Date.now(),
-	});
-	return res;
 }
 
 const Root = ({
@@ -85,7 +78,7 @@ const Root = ({
 				const walletAddr = wallet.address;
 				const permissionString = getPermissionString(walletAddr);
 				const permissionSignature = await wallet.signMessage(permissionString);
-				const addressData = await mockGetAddressData(walletAddr, permissionSignature);
+				const addressData = await getAddressData(walletAddr, permissionSignature);
 
 				if (addressData) {
 					const networkId = 108;
@@ -156,20 +149,24 @@ const Root = ({
 	}, [isAppReady, fetchRates]);
 
 	useInterval(() => {
-		const getAddressData = async () => {
-			const addressData = await mockGetAddressData(
-				walletInfo.currentWallet,
-				walletInfo.permissionSignature
-			);
-			updateWalletReducer({
-				...addressData,
-			});
-			if (addressData.twitterFaucet > 0) {
-				setAddressDataIntervalDelay(null);
+		const updateAddressData = async () => {
+			try {
+				const addressData = await getAddressData(
+					walletInfo.currentWallet,
+					walletInfo.permissionSignature
+				);
+				updateWalletReducer({
+					...addressData,
+				});
+				if (addressData.twitterFaucet > 0) {
+					setAddressDataIntervalDelay(null);
+				}
+			} catch (e) {
+				console.error(e);
 			}
 		};
 
-		getAddressData();
+		updateAddressData();
 	}, addressDataIntervalDelay);
 
 	return <App isAppReady={isAppReady} />;
