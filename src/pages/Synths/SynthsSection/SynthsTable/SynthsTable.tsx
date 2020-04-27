@@ -29,7 +29,13 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 const useStyles = makeStyles(() =>
 	createStyles({
-		paper: {},
+		popover: {
+			marginTop: '8px',
+		},
+		paper: {
+			boxShadow: '0px 4px 11px rgba(188,99,255,0.15442)',
+			border: '1px solid #F2F2F6',
+		},
 	})
 );
 
@@ -144,6 +150,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 				/>
 			</TableOverflowContainer>
 			<Popover
+				className={classes.popover}
 				classes={{
 					paper: classes.paper,
 				}}
@@ -163,7 +170,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 				<PopoverContent>
 					{selectedSynth &&
 						BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => (
-							<Link to={buildTradeLink(selectedSynth, quote)}>
+							<Link to={buildTradeLink(selectedSynth, quote)} key={`${selectedSynth}-${quote}`}>
 								<Currency.Pair
 									key={quote}
 									baseCurrencyKey={selectedSynth}
@@ -176,13 +183,6 @@ export const SynthsTable: FC<SynthsTableProps> = memo(({ synthsMap, synthsWithRa
 		</>
 	);
 });
-
-const PopoverContent = styled.div`
-	display: grid;
-	> * {
-		padding: 10px 15px;
-	}
-`;
 
 const StyledTable = styled(Table)`
 	.table-row {
@@ -197,6 +197,16 @@ const StyledTable = styled(Table)`
 		}
 		&:hover {
 			box-shadow: none;
+		}
+	}
+`;
+
+const PopoverContent = styled.div`
+	display: grid;
+	> * {
+		padding: 10px 15px;
+		&:hover {
+			background-color: ${({ theme }) => theme.colors.accentL1};
 		}
 	}
 `;
