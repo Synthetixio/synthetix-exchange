@@ -102,15 +102,13 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 		} else if (!twitterLoaded) {
 			return <span>Loading Twitter...</span>;
 		} else if (polling) {
-			return (
-				<>
-					<span>
-						<TweetListener>
-							<TweetLineChartIcon />
-							listening for your Tweet...
-						</TweetListener>
-					</span>
-				</>
+			return walletInfo.twitterFaucetError ? (
+				<span>Uh-oh, an error occurred: {walletInfo.twitterFaucetError}</span>
+			) : (
+				<TweetListener>
+					<TweetLineChartIcon />
+					listening for your Tweet...
+				</TweetListener>
 			);
 		} else {
 			return null;
