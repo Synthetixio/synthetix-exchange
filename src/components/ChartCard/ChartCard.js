@@ -40,7 +40,7 @@ export const ChartCard = memo(
 								<stop offset="95%" stopColor={colors.hyperlink} stopOpacity={0} />
 							</linearGradient>
 						</defs>
-						<XAxis dataKey="timestamp" reversed={true} hide={true} />
+						<XAxis dataKey="timestamp" hide={true} />
 						<YAxis type="number" domain={['auto', 'auto']} hide={true} />
 						<Area
 							dataKey="rate"

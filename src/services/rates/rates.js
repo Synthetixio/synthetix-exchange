@@ -49,7 +49,7 @@ export const fetchSynthRateUpdates = async (
 		const change = calculateRateChange(rates);
 
 		return {
-			rates,
+			rates: rates.reverse(),
 			low,
 			high,
 			change,

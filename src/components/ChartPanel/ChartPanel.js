@@ -135,7 +135,6 @@ const ChartPanel = ({ theme, synthPair: { base, quote }, exchangeRates, synthsMa
 									tickFormatter={val =>
 										period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
 									}
-									reversed={true}
 								/>
 								<YAxis
 									type="number"
