@@ -54,6 +54,8 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 				{
 					Header: t('assets.exchanges.table.buying-col'),
 					accessor: 'toAmount',
+					sortType: 'basic',
+					sortable: true,
 					Cell: cellProps => (
 						<Tooltip
 							title={formatCurrency(cellProps.row.original.toAmount, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -72,6 +74,8 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 				{
 					Header: t('assets.exchanges.table.selling-col'),
 					accessor: 'fromAmount',
+					sortType: 'basic',
+					sortable: true,
 					Cell: cellProps => (
 						<Tooltip
 							title={formatCurrency(
@@ -93,6 +97,8 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 				{
 					Header: t('assets.exchanges.table.price-col'),
 					accessor: 'price',
+					sortType: 'basic',
+					sortable: true,
 					Cell: cellProps => (
 						<span>
 							{formatCurrencyWithSign(
@@ -105,6 +111,8 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 				{
 					Header: t('assets.exchanges.table.total-col'),
 					accessor: 'amount',
+					sortType: 'basic',
+					sortable: true,
 					Cell: cellProps => (
 						<span>
 							{formatCurrencyWithSign(
@@ -113,7 +121,6 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 							)}
 						</span>
 					),
-					sortable: true,
 				},
 				{
 					Header: t('assets.exchanges.table.status-col'),

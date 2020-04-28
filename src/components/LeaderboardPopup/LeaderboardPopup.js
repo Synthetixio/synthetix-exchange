@@ -67,6 +67,7 @@ const LeaderboardPopup = ({
 						{
 							Header: 'ASSET VALUE',
 							accessor: 'assetValue',
+							sortType: 'basic',
 							Cell: cellProps => (
 								<span>{formatCurrencyWithSign('$', cellProps.cell.value)} USD</span>
 							),
