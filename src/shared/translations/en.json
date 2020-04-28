@@ -339,12 +339,16 @@
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
 			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
 			"borrow-currency": "Borrow {{currencyKey}}",
-			"crypto": "crypto",
-			"forex": "forex",
-			"commodities": "commodities",
-			"inverse": "inverse",
 			"synthetic-currency": "Synthetic {{currencyKey}}",
 			"fiat-synths": "sFiat"
+		},
+		"currency-category": {
+			"crypto": "crypto",
+			"forex": "forex",
+			"commodity": "commodity",
+			"equities": "equities",
+			"index": "index",
+			"inverse": "inverse"
 		},
 		"search": "search",
 		"features": {

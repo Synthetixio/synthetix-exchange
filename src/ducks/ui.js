@@ -1,11 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { persistState, getPersistedState } from '../config/store';
 import { isLightTheme, THEMES } from '../styles/theme';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP, ASSETS_MAP } from 'constants/currency';
+import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
 
 const userPrefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-const baseCategoryFilters = [ASSETS_MAP.crypto, ASSETS_MAP.forex];
 
 const initialState = {
 	theme: userPrefersDarkTheme ? THEMES.DARK : THEMES.LIGHT,
@@ -16,7 +14,7 @@ const initialState = {
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	blurBackgroundIsVisible: false,
-	synthsCategoryFilter: [...baseCategoryFilters, ASSETS_MAP.inverse],
+	synthsCategoryFilter: [],
 	...getPersistedState('ui'),
 };
 
@@ -58,12 +56,9 @@ export const uiSlice = createSlice({
 			const category = action.payload.category;
 
 			if (state.synthsCategoryFilter.includes(category)) {
-				const potentialNewState = state.synthsCategoryFilter.filter(
+				state.synthsCategoryFilter = state.synthsCategoryFilter.filter(
 					(existingCategory) => category !== existingCategory
 				);
-				if (potentialNewState.some((cat) => baseCategoryFilters.includes(cat))) {
-					state.synthsCategoryFilter = potentialNewState;
-				}
 			} else {
 				state.synthsCategoryFilter.push(category);
 			}

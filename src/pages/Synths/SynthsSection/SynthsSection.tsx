@@ -13,11 +13,13 @@ import {
 	getOrderedSynthsWithRates,
 	SynthDefinition,
 	SynthDefinitionWithRates,
+	getFilteredSynthsWithRates,
 } from 'ducks/synths';
 import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
+import { CATEGORY } from 'constants/currency';
 import { Z_INDEX } from 'constants/ui';
 import { FlexDivRow } from 'shared/commonStyles';
 
@@ -27,11 +29,12 @@ import { Button } from 'components/Button';
 import SynthsTable from './SynthsTable';
 import SynthsCharts from './SynthsCharts';
 
-import { SYNTHS_REFRESH_INTERVAL_MS, CATEGORY_FILTERS } from './constants';
+import { SYNTHS_REFRESH_INTERVAL_MS } from './constants';
 
 type StateProps = {
 	synths: SynthDefinition[];
 	synthsWithRates: SynthDefinitionWithRates[];
+	filteredSynthsWithRates: SynthDefinitionWithRates[];
 	synthsCategoryFilter: string[];
 };
 
@@ -48,6 +51,7 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 	({
 		synths,
 		synthsWithRates,
+		filteredSynthsWithRates,
 		fetchHistoricalRatesRequest,
 		synthsCategoryFilter,
 		setSynthsCategoryFilter,
@@ -67,7 +71,7 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 		const filteredSynths = useMemo(
 			() =>
 				assetSearch
-					? synthsWithRates.filter(({ name, desc }) => {
+					? filteredSynthsWithRates.filter(({ name, desc }) => {
 							const assetSearchL = assetSearch.toLowerCase();
 
 							return (
@@ -75,8 +79,8 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 								desc.toLowerCase().includes(assetSearchL)
 							);
 					  })
-					: synthsWithRates,
-			[synthsWithRates, assetSearch]
+					: filteredSynthsWithRates,
+			[filteredSynthsWithRates, assetSearch]
 		);
 
 		const topGainersLosersSynths = useMemo(
@@ -88,51 +92,49 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 		);
 
 		return (
-			<>
-				<ThemeProvider theme={lightTheme}>
-					<SynthsChartsContent>
-						<SynthsCharts synthsWithRates={topGainersLosersSynths} maxTopSynths={MAX_TOP_SYNTHS} />
-					</SynthsChartsContent>
-					<SynthsTableContainer>
-						<Content>
-							<FiltersRow>
-								<CategoryFilters>
-									{CATEGORY_FILTERS.map(({ category }) => (
-										<FilterButton
-											size="md"
-											palette="toggle"
-											isActive={synthsCategoryFilter.includes(category)}
-											onClick={() => setSynthsCategoryFilter({ category })}
-											key={category}
-										>
-											{t(`common.currency.${category}`)}
-										</FilterButton>
-									))}
-								</CategoryFilters>
-								<AssetSearchInput
-									// @ts-ignore
-									onChange={(e: any) => setAssetSearch(e.target.value)}
-									value={assetSearch}
-								/>
-							</FiltersRow>
-							<SynthsTable
-								synthsWithRates={filteredSynths}
-								noResultsMessage={
-									assetSearch && filteredSynths.length === 0 ? (
-										<NoResultsMessage>
-											<Trans
-												i18nKey="common.search-results.no-results-for-query"
-												values={{ searchQuery: assetSearch }}
-												components={[<strong />]}
-											/>
-										</NoResultsMessage>
-									) : undefined
-								}
+			<ThemeProvider theme={lightTheme}>
+				<SynthsChartsContent>
+					<SynthsCharts synthsWithRates={topGainersLosersSynths} maxTopSynths={MAX_TOP_SYNTHS} />
+				</SynthsChartsContent>
+				<SynthsTableContainer>
+					<Content>
+						<FiltersRow>
+							<CategoryFilters>
+								{CATEGORY.map((category) => (
+									<Button
+										size="md"
+										palette="toggle"
+										isActive={synthsCategoryFilter.includes(category)}
+										onClick={() => setSynthsCategoryFilter({ category })}
+										key={category}
+									>
+										{t(`common.currency-category.${category}`)}
+									</Button>
+								))}
+							</CategoryFilters>
+							<AssetSearchInput
+								// @ts-ignore
+								onChange={(e: any) => setAssetSearch(e.target.value)}
+								value={assetSearch}
 							/>
-						</Content>
-					</SynthsTableContainer>
-				</ThemeProvider>
-			</>
+						</FiltersRow>
+						<SynthsTable
+							synthsWithRates={filteredSynths}
+							noResultsMessage={
+								assetSearch && filteredSynths.length === 0 ? (
+									<NoResultsMessage>
+										<Trans
+											i18nKey="common.search-results.no-results-for-query"
+											values={{ searchQuery: assetSearch }}
+											components={[<strong />]}
+										/>
+									</NoResultsMessage>
+								) : undefined
+							}
+						/>
+					</Content>
+				</SynthsTableContainer>
+			</ThemeProvider>
 		);
 	}
 );
@@ -161,9 +163,11 @@ const CategoryFilters = styled.div`
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 8px;
+	${media.small`
+		grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+	`}
 `;
-
-const FilterButton = styled(Button)``;
 
 const FiltersRow = styled(FlexDivRow)`
 	align-items: center;
@@ -207,6 +211,7 @@ const SynthsChartsContent = styled(Content)`
 const mapStateToProps = (state: RootState): StateProps => ({
 	synths: getAvailableSynths(state),
 	synthsWithRates: getOrderedSynthsWithRates(state),
+	filteredSynthsWithRates: getFilteredSynthsWithRates(state),
 	synthsCategoryFilter: getSynthsCategoryFilter(state),
 });
 

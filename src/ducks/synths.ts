@@ -4,7 +4,7 @@ import orderBy from 'lodash/orderBy';
 
 import { synthWeight } from '../utils/synthOrdering';
 
-import { SYNTHS_MAP, ASSETS_MAP, CurrencyKeys, CurrencyKey } from '../constants/currency';
+import { SYNTHS_MAP, CATEGORY_MAP, CurrencyKeys, CurrencyKey } from '../constants/currency';
 
 import { RootState } from './types';
 import {
@@ -25,7 +25,11 @@ export type SynthDefinition = {
 	sign: string;
 	desc: string;
 	aggregator: string;
-	inverted: boolean;
+	inverted: {
+		entryPoint: number;
+		upperLimit: number;
+		lowerLimit: number;
+	};
 	isFrozen?: boolean;
 };
 
@@ -35,7 +39,7 @@ export type SynthDefinitionWithRates = SynthDefinition & {
 };
 
 const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
-	if (a.category === ASSETS_MAP.crypto && b.category === ASSETS_MAP.crypto) {
+	if (a.category === CATEGORY_MAP.crypto && b.category === CATEGORY_MAP.crypto) {
 		// @ts-ignore
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
 		if (!a.inverted && b.inverted) {
@@ -44,7 +48,7 @@ const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 			return nameOrder;
 		} else return 0;
 	}
-	if (a.category === ASSETS_MAP.crypto && b.category !== ASSETS_MAP.crypto) {
+	if (a.category === CATEGORY_MAP.crypto && b.category !== CATEGORY_MAP.crypto) {
 		return -1;
 	}
 	return 0;
@@ -63,8 +67,8 @@ export type SynthsSliceState = {
 
 const initialState: SynthsSliceState = {
 	availableSynths: {},
-	baseSynth: { name: DEFAULT_BASE_SYNTH, category: ASSETS_MAP.crypto } as SynthDefinition,
-	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: ASSETS_MAP.forex } as SynthDefinition,
+	baseSynth: { name: DEFAULT_BASE_SYNTH, category: CATEGORY_MAP.crypto } as SynthDefinition,
+	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: CATEGORY_MAP.forex } as SynthDefinition,
 };
 
 const sliceName = 'synths';
@@ -133,25 +137,12 @@ export const getAvailableSynths = createSelector(getSortedAvailableSynths, (avai
 	availableSynths.filter((synth) => !synth.isFrozen)
 );
 
-export const getFilteredAvailableSynths = createSelector(
-	getAvailableSynths,
-	getSynthsCategoryFilter,
-	(availableSynths, synthsCategoryFilter) =>
-		availableSynths.filter((synth) => {
-			const matchCategory = synthsCategoryFilter.includes(synth.category);
-			if (synth.inverted) {
-				return matchCategory && synthsCategoryFilter.includes(ASSETS_MAP.inverse);
-			}
-			return matchCategory;
-		})
-);
-
 export const getSynthsWithRates = createSelector(
-	getFilteredAvailableSynths,
+	getAvailableSynths,
 	getHistoricalRatesState,
 	getRatesExchangeRates,
-	(filteredAvailableSynths, historicalRates, exchangeRates) =>
-		filteredAvailableSynths.map((synth) => ({
+	(availableSynths, historicalRates, exchangeRates) =>
+		availableSynths.map((synth) => ({
 			...synth,
 			historicalRates: historicalRates[synth.name] || null,
 			lastPrice: exchangeRates != null ? exchangeRates[synth.name] : null,
@@ -165,6 +156,28 @@ export const getOrderedSynthsWithRates = createSelector(
 		historicalRatesIsOneDayPeriodLoaded
 			? orderBy(synthsWithRates, (synth) => synth.historicalRates.ONE_DAY.data?.change, 'desc')
 			: synthsWithRates
+);
+
+export const getFilteredSynthsWithRates = createSelector(
+	getOrderedSynthsWithRates,
+	getSynthsCategoryFilter,
+	(availableSynths, synthsCategoryFilter) =>
+		synthsCategoryFilter.length > 0
+			? availableSynths.filter((synth) => {
+					// since "inverse" is not really a category, we need a special case to handle it.
+					const hasInvertedCategory = synthsCategoryFilter.includes(CATEGORY_MAP.inverse);
+					const showOnlyInverted = synthsCategoryFilter.length === 1 && hasInvertedCategory;
+					if (showOnlyInverted) {
+						return !!synth.inverted;
+					}
+					const matches = [synthsCategoryFilter.includes(synth.category)];
+					// "inverse" still needs the special treatment
+					if (hasInvertedCategory) {
+						matches.push(!!synth.inverted);
+					}
+					return matches.some((match) => match);
+			  })
+			: availableSynths
 );
 
 export const getSynthPair = (state: RootState) => ({

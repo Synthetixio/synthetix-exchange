@@ -24,7 +24,7 @@ import { toggleGweiPopup } from 'ducks/ui';
 
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { BALANCE_FRACTIONS } from 'constants/order';
-import { SYNTHS_MAP, ASSETS_MAP } from 'constants/currency';
+import { SYNTHS_MAP, CATEGORY_MAP } from 'constants/currency';
 import { TRANSACTION_STATUS } from 'constants/transaction';
 
 import { getExchangeRatesForCurrencies } from 'utils/rates';
@@ -120,7 +120,7 @@ const CreateOrderCard = ({
 				console.log(e);
 			}
 		};
-		if ([base.category, quote.category].includes(ASSETS_MAP.equities)) {
+		if ([base.category, quote.category].includes(CATEGORY_MAP.equities)) {
 			getIsSuspended();
 		} else {
 			setHasMarketClosed(false);
