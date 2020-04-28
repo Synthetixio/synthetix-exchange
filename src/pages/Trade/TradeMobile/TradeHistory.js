@@ -16,14 +16,13 @@ import { SYNTHS_MAP } from 'src/constants/currency';
 import { TableNoResults } from 'src/shared/commonStyles';
 import ViewLink from '../../Trade/components/OrderBookCard/ViewLink';
 
-import { getEtherscanTxLink } from 'src/utils/explorers';
 import {
 	formatTxTimestamp,
 	formatCurrencyWithSign,
 	formatCurrencyPair,
 } from 'src/utils/formatters';
 
-const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => {
+const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -50,10 +49,12 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 							/>
 						);
 					},
+					sortable: true,
 				},
 				{
 					Header: t('assets.exchanges.table.price-col'),
 					accessor: 'price',
+					sortType: 'basic',
 					Cell: cellProps => (
 						<span>
 							{formatCurrencyWithSign(
@@ -62,19 +63,18 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 							)}
 						</span>
 					),
+					sortable: true,
 				},
 				{
 					Header: t('assets.exchanges.table.status-col'),
 					accessor: 'status',
-					Cell: cellProps => (
-						<ViewLink
-							isDisabled={!cellProps.row.original.hash}
-							href={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
-						>
-							Success
-						</ViewLink>
-					),
+					Cell: () => t('common.tx-status.complete'),
 					sortable: true,
+				},
+				{
+					Header: t('trade.order-book-card.table.verify'),
+					accessor: 'hash',
+					Cell: cellProps => <ViewLink hash={cellProps.cell.value} />,
 				},
 			]}
 			data={trades}
