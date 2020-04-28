@@ -77,7 +77,7 @@ const OrderBookCard = ({
 		fetchMyTradesRequest();
 		fetchAllTradesRequest();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentWallet]);
+	}, [currentWallet, activeTab]);
 
 	return (
 		<StyledCard>
