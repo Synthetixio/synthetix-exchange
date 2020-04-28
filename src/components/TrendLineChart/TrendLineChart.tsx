@@ -20,7 +20,7 @@ export const TrendLineChart: FC<TrendLineChartProps> = memo(
 				{/* https://github.com/recharts/recharts/issues/1423 */}
 				<ResponsiveContainer width="99%" height="100%">
 					<LineChart data={chartData}>
-						<XAxis dataKey="timestamp" reversed={true} hide={true} />
+						<XAxis dataKey="timestamp" hide={true} />
 						<YAxis type="number" domain={['auto', 'auto']} hide={true} />
 						<Line
 							dataKey="rate"
