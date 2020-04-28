@@ -122,19 +122,6 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 					Cell: () => t('common.tx-status.complete'),
 					sortable: true,
 				},
-				{
-					Header: t('assets.exchanges.table.verify-col'),
-					accessor: 'actions',
-					Cell: cellProps => (
-						<ViewLink
-							isDisabled={!cellProps.row.original.hash}
-							href={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
-						>
-							{t('common.transaction.view')}
-							<ArrowIcon width="8" height="8" />
-						</ViewLink>
-					),
-				},
 			]}
 			data={trades}
 			isLoading={isLoading}
