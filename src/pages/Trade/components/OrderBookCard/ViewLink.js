@@ -4,14 +4,8 @@ import styled, { css } from 'styled-components';
 
 import { showViewTxModal } from 'src/ducks/ui';
 
-import { ReactComponent as ArrowLinkIcon } from 'src/assets/images/l2/link-arrow.svg';
-
 const ViewLink = ({ hash, showViewTxModal }) =>
-	hash == null ? null : (
-		<ViewButton onClick={() => showViewTxModal({ hash })}>
-			View <ArrowLinkIcon />
-		</ViewButton>
-	);
+	hash == null ? null : <ViewButton onClick={() => showViewTxModal({ hash })}>View</ViewButton>;
 
 const ViewButton = styled.button`
 	border: none;
@@ -28,8 +22,6 @@ const ViewButton = styled.button`
 			pointer-events: none;
 		`}
 `;
-
-export const ArrowIcon = styled(ArrowLinkIcon)``;
 
 const mapDispatchToProps = {
 	showViewTxModal,

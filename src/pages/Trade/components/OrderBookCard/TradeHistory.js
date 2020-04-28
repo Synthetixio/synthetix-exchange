@@ -15,9 +15,8 @@ import Currency from 'src/components/Currency';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
 import { TableNoResults } from 'src/shared/commonStyles';
-import ViewLink, { ArrowIcon } from './ViewLink';
+import ViewLink from './ViewLink';
 
-import { getEtherscanTxLink } from 'src/utils/explorers';
 import {
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	SHORT_CRYPTO_CURRENCY_DECIMALS,
@@ -28,9 +27,9 @@ import {
 	formatCurrencyPair,
 } from 'src/utils/formatters';
 
-const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => {
+const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 	const { t } = useTranslation();
-
+	console.log(trades);
 	return (
 		<StyledTable
 			palette={TABLE_PALETTE.STRIPED}
@@ -121,6 +120,11 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 					accessor: 'status',
 					Cell: () => t('common.tx-status.complete'),
 					sortable: true,
+				},
+				{
+					Header: t('trade.order-book-card.table.verify'),
+					accessor: 'hash',
+					Cell: cellProps => <ViewLink hash={cellProps.cell.value} />,
 				},
 			]}
 			data={trades}
