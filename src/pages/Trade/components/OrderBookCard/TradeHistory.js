@@ -29,7 +29,7 @@ import {
 
 const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 	const { t } = useTranslation();
-	console.log(trades);
+
 	return (
 		<StyledTable
 			palette={TABLE_PALETTE.STRIPED}
