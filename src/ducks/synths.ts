@@ -162,20 +162,18 @@ export const getFilteredSynthsWithRates = createSelector(
 	getOrderedSynthsWithRates,
 	getSynthsCategoryFilter,
 	(availableSynths, synthsCategoryFilter) =>
-		synthsCategoryFilter.length > 0
+		synthsCategoryFilter != null
 			? availableSynths.filter((synth) => {
-					// since "inverse" is not really a category, we need a special case to handle it.
-					const hasInvertedCategory = synthsCategoryFilter.includes(CATEGORY_MAP.inverse);
-					const showOnlyInverted = synthsCategoryFilter.length === 1 && hasInvertedCategory;
-					if (showOnlyInverted) {
-						return !!synth.inverted;
+					let normalizedCategory;
+
+					// map certain categories to a larger top group category. (might need a "switch" if this list grows large)
+					if (synth.category === CATEGORY_MAP.index) {
+						normalizedCategory = CATEGORY_MAP.crypto;
+					} else {
+						normalizedCategory = synth.category;
 					}
-					const matches = [synthsCategoryFilter.includes(synth.category)];
-					// "inverse" still needs the special treatment
-					if (hasInvertedCategory) {
-						matches.push(!!synth.inverted);
-					}
-					return matches.some((match) => match);
+
+					return normalizedCategory === synthsCategoryFilter;
 			  })
 			: availableSynths
 );

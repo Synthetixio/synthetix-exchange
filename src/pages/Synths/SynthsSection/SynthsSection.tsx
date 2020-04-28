@@ -19,7 +19,6 @@ import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
-import { CATEGORY } from 'constants/currency';
 import { Z_INDEX } from 'constants/ui';
 import { FlexDivRow } from 'shared/commonStyles';
 
@@ -29,13 +28,13 @@ import { Button } from 'components/Button';
 import SynthsTable from './SynthsTable';
 import SynthsCharts from './SynthsCharts';
 
-import { SYNTHS_REFRESH_INTERVAL_MS } from './constants';
+import { SYNTHS_REFRESH_INTERVAL_MS, CATEGORY_FILTERS } from './constants';
 
 type StateProps = {
 	synths: SynthDefinition[];
 	synthsWithRates: SynthDefinitionWithRates[];
 	filteredSynthsWithRates: SynthDefinitionWithRates[];
-	synthsCategoryFilter: string[];
+	synthsCategoryFilter: string;
 };
 
 type DispatchProps = {
@@ -100,11 +99,19 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 					<Content>
 						<FiltersRow>
 							<CategoryFilters>
-								{CATEGORY.map((category) => (
+								<Button
+									size="md"
+									palette="toggle"
+									isActive={synthsCategoryFilter == null}
+									onClick={() => setSynthsCategoryFilter({ category: null })}
+								>
+									{t('common.filters.all')}
+								</Button>
+								{CATEGORY_FILTERS.map((category) => (
 									<Button
 										size="md"
 										palette="toggle"
-										isActive={synthsCategoryFilter.includes(category)}
+										isActive={synthsCategoryFilter === category}
 										onClick={() => setSynthsCategoryFilter({ category })}
 										key={category}
 									>

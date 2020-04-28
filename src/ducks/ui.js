@@ -14,7 +14,7 @@ const initialState = {
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	blurBackgroundIsVisible: false,
-	synthsCategoryFilter: [],
+	synthsCategoryFilter: null,
 	...getPersistedState('ui'),
 };
 
@@ -53,16 +53,7 @@ export const uiSlice = createSlice({
 			persistState('ui', { marketsAssetFilter: state.marketsAssetFilter });
 		},
 		setSynthsCategoryFilter: (state, action) => {
-			const category = action.payload.category;
-
-			if (state.synthsCategoryFilter.includes(category)) {
-				state.synthsCategoryFilter = state.synthsCategoryFilter.filter(
-					(existingCategory) => category !== existingCategory
-				);
-			} else {
-				state.synthsCategoryFilter.push(category);
-			}
-
+			state.synthsCategoryFilter = action.payload.category;
 			persistState('ui', { synthsCategoryFilter: state.synthsCategoryFilter });
 		},
 		setBlurBackgroundIsVisible: (state, action) => {

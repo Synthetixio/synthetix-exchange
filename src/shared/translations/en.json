@@ -345,9 +345,9 @@
 		"currency-category": {
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodity": "commodity",
+			"commodity": "commodities",
 			"equities": "equities",
-			"index": "index",
+			"index": "indices",
 			"inverse": "inverse"
 		},
 		"search": "search",
@@ -366,6 +366,9 @@
 					"market-closed": "Market closed"
 				}
 			}
+		},
+		"filters": {
+			"all": "all"
 		}
 	}
 }
