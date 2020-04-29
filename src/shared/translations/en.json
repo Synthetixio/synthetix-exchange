@@ -147,6 +147,7 @@
 			"sell-input-label": "Sell",
 			"buy-input-label": "Buy",
 			"confirm-trade-button": "Confirm trade",
+			"frozen-synth": "Synth is frozen",
 			"retry-button": "Retry",
 			"network-info": {
 				"usd-value": "USD Value",
@@ -340,7 +341,7 @@
 			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
 			"borrow-currency": "Borrow {{currencyKey}}",
 			"synthetic-currency": "Synthetic {{currencyKey}}",
-			"fiat-synths": "sFiat"
+			"fiat-synths": "sFiat"			
 		},
 		"currency-category": {
 			"crypto": "crypto",

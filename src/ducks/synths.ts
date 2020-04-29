@@ -112,10 +112,8 @@ export const synthsSlice = createSlice({
 		updateFrozenSynths: (state, action: PayloadAction<{ frozenSynths: CurrencyKeys }>) => {
 			const { frozenSynths } = action.payload;
 
-			frozenSynths.forEach((synth: CurrencyKey) => {
-				if (state.availableSynths[synth]) {
-					state.availableSynths[synth].isFrozen = true;
-				}
+			Object.values(state.availableSynths).forEach((synth) => {
+				state.availableSynths[synth.name].isFrozen = frozenSynths.includes(synth.name);
 			});
 		},
 	},
@@ -125,16 +123,8 @@ export const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSl
 
 export const getSynthsState = (state: RootState) => state[sliceName];
 export const getAvailableSynthsMap = (state: RootState) => getSynthsState(state).availableSynths;
-export const getSortedAvailableList = createSelector(getAvailableSynthsMap, (availableSynths) =>
-	Object.values(availableSynths)
-);
-
-export const getSortedAvailableSynths = createSelector(getSortedAvailableList, (availableSynths) =>
-	availableSynths.sort(sortSynths)
-);
-
-export const getAvailableSynths = createSelector(getSortedAvailableSynths, (availableSynths) =>
-	availableSynths.filter((synth) => !synth.isFrozen)
+export const getAvailableSynths = createSelector(getAvailableSynthsMap, (availableSynths) =>
+	Object.values(availableSynths).sort(sortSynths)
 );
 
 export const getSynthsWithRates = createSelector(

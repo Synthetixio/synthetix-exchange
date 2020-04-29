@@ -11,8 +11,9 @@ import { TradeInput } from 'components/Input';
 
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import { getSynthsWalletBalances } from 'ducks/wallet/walletBalances';
-import { getSynthPair } from 'ducks/synths';
+import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { getRatesExchangeRates, getEthRate } from 'ducks/rates';
+
 import {
 	getExchangeFeeRate,
 	getGasInfo,
@@ -60,6 +61,7 @@ const CreateOrderCard = ({
 	createTransaction,
 	updateTransaction,
 	transactions,
+	synthsMap,
 }) => {
 	const { t } = useTranslation();
 	const { colors } = useContext(ThemeContext);
@@ -357,6 +359,8 @@ const CreateOrderCard = ({
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>
 						{t('trade.trade-card.retry-button')}
 					</ButtonPrimary>
+				) : synthsMap[quote.name].isFrozen ? (
+					<ButtonPrimary disabled={true}>{t('trade.trade-card.frozen-synth')}</ButtonPrimary>
 				) : (
 					<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
 						{t('trade.trade-card.confirm-trade-button')}
@@ -437,6 +441,7 @@ const mapStateToProps = (state) => {
 		gasInfo: getGasInfo(state),
 		ethRate: getEthRate(state),
 		transactions: getTransactions(state),
+		synthsMap: getAvailableSynthsMap(state),
 	};
 };
 
