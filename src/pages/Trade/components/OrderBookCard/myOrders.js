@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import get from 'lodash/get';
+import orderBy from 'lodash/orderBy';
 
 import {
 	getPendingTransactions,
@@ -45,9 +46,12 @@ const getPrecision = (amount) => {
 
 const MyOrders = ({ transactions, networkId, synthsMap }) => {
 	const { t } = useTranslation();
+
+	const orderedTransactions = useMemo(() => orderBy(transactions, 'id', 'desc'), [transactions]);
+
 	return (
 		<StyledTable
-			data={transactions}
+			data={orderedTransactions}
 			palette={TABLE_PALETTE.STRIPED}
 			columns={[
 				{
@@ -155,7 +159,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					),
 				},
 			]}
-		></StyledTable>
+		/>
 	);
 };
 
