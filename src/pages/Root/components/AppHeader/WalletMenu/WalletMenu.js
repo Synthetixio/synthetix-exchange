@@ -115,6 +115,7 @@ const WalletMenu = ({
 							{
 								Header: t('assets.overview.your-synths.table.total-col'),
 								accessor: 'balance',
+								sortType: 'basic',
 								Cell: (cellProps) => (
 									<Tooltip
 										title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -131,6 +132,7 @@ const WalletMenu = ({
 							{
 								Header: t('assets.overview.your-synths.table.usd-value-col'),
 								accessor: 'usdBalance',
+								sortType: 'basic',
 								Cell: (cellProps) => (
 									<span>
 										{formatCurrencyWithSign(

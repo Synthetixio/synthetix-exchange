@@ -71,6 +71,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.buying'),
 					accessor: 'toAmount',
+					sortType: 'basic',
 					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -90,6 +91,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.selling'),
 					accessor: 'fromAmount',
+					sortType: 'basic',
 					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -109,6 +111,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.price'),
 					accessor: 'priceUSD',
+					sortType: 'basic',
 					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -128,6 +131,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.total'),
 					accessor: 'totalUSD',
+					sortType: 'basic',
 					Cell: (cellProps) => <span>${cellProps.cell.value}</span>,
 					sortable: true,
 				},

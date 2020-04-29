@@ -121,6 +121,7 @@ const PairListPanel = ({
 							{
 								Header: t('markets.table.last-price-col'),
 								accessor: 'lastPrice',
+								sortType: 'basic',
 								width: 100,
 								Cell: (cellProps) => (
 									<RightAlignedCell>

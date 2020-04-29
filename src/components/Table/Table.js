@@ -47,7 +47,11 @@ export const Table = ({
 			{headerGroups.map((headerGroup) => (
 				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map((column) => (
-						<TableCellHead {...column.getHeaderProps(column.getSortByToggleProps())}>
+						<TableCellHead
+							{...column.getHeaderProps(
+								column.sortable ? column.getSortByToggleProps() : undefined
+							)}
+						>
 							{column.render('Header')}
 							{column.sortable && (
 								<SortIconContainer>
