@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import get from 'lodash/get';
+import orderBy from 'lodash/orderBy';
 
 import { getPendingTransactions, getTransactions, updateTransaction } from 'src/ducks/transaction';
 import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
@@ -37,116 +38,162 @@ const getPrecision = amount => {
 	return 4;
 };
 
-const MyOrders = ({ transactions, synthsMap }) => {
+const MyOrders = ({ transactions, synthsMap, isMobile = false }) => {
 	const { t } = useTranslation();
+
+	const orderedTransactions = useMemo(() => orderBy(transactions, 'id', 'desc'), [transactions]);
+
+	const columns = useMemo(
+		() =>
+			isMobile
+				? [
+						{
+							Header: t('trade.order-book-card.table.date'),
+							accessor: 'date',
+							Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.pair'),
+							accessor: 'pair',
+							Cell: cellProps => (
+								<Currency.Pair
+									baseCurrencyKey={cellProps.row.original.base}
+									quoteCurrencyKey={cellProps.row.original.quote}
+									showIcon={false}
+								/>
+							),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.total'),
+							accessor: 'totalUSD',
+							Cell: cellProps => <span>${cellProps.cell.value}</span>,
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.status'),
+							accessor: 'status',
+							Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.verify'),
+							accessor: 'hash',
+							Cell: cellProps => <ViewLink hash={cellProps.cell.value} />,
+						},
+				  ]
+				: [
+						{
+							Header: t('trade.order-book-card.table.date'),
+							accessor: 'date',
+							Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.pair'),
+							accessor: 'pair',
+							Cell: cellProps => (
+								<Currency.Pair
+									baseCurrencyKey={cellProps.row.original.base}
+									quoteCurrencyKey={cellProps.row.original.quote}
+									showIcon={true}
+								/>
+							),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.buying'),
+							accessor: 'toAmount',
+							Cell: cellProps => (
+								<Tooltip
+									title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+									placement="top"
+								>
+									<span>
+										{formatCurrencyWithKey(
+											cellProps.row.original.base,
+											cellProps.cell.value,
+											getPrecision(cellProps.cell.value)
+										)}
+									</span>
+								</Tooltip>
+							),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.selling'),
+							accessor: 'fromAmount',
+							Cell: cellProps => (
+								<Tooltip
+									title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+									placement="top"
+								>
+									<span>
+										{formatCurrencyWithKey(
+											cellProps.row.original.quote,
+											cellProps.cell.value,
+											getPrecision(cellProps.cell.value)
+										)}
+									</span>
+								</Tooltip>
+							),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.price'),
+							accessor: 'priceUSD',
+							Cell: cellProps => (
+								<Tooltip
+									title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
+									placement="top"
+								>
+									<span>
+										{formatCurrencyWithSign(
+											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
+											cellProps.cell.value,
+											getPrecision(cellProps.cell.value)
+										)}
+									</span>
+								</Tooltip>
+							),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.total'),
+							accessor: 'totalUSD',
+							Cell: cellProps => <span>${cellProps.cell.value}</span>,
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.status'),
+							accessor: 'status',
+							Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
+							sortable: true,
+						},
+						{
+							Header: 'Confirmation time',
+							accessor: 'confirmTxTime',
+							Cell: cellProps => (
+								<span>{cellProps.cell.value != null && `${cellProps.cell.value}ms`}</span>
+							),
+							sortable: true,
+						},
+						{
+							Header: t('trade.order-book-card.table.verify'),
+							accessor: 'hash',
+							Cell: cellProps => <ViewLink hash={cellProps.cell.value} />,
+						},
+				  ],
+		[isMobile, synthsMap, t]
+	);
 
 	return (
 		<StyledTable
-			data={transactions}
+			data={orderedTransactions}
 			palette={TABLE_PALETTE.STRIPED}
-			columnsDeps={[transactions]}
-			columns={[
-				{
-					Header: t('trade.order-book-card.table.date'),
-					accessor: 'date',
-					Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.pair'),
-					accessor: 'pair',
-					Cell: cellProps => (
-						<Currency.Pair
-							baseCurrencyKey={cellProps.row.original.base}
-							quoteCurrencyKey={cellProps.row.original.quote}
-							showIcon={true}
-						/>
-					),
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.buying'),
-					accessor: 'toAmount',
-					Cell: cellProps => (
-						<Tooltip
-							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
-							placement="top"
-						>
-							<span>
-								{formatCurrencyWithKey(
-									cellProps.row.original.base,
-									cellProps.cell.value,
-									getPrecision(cellProps.cell.value)
-								)}
-							</span>
-						</Tooltip>
-					),
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.selling'),
-					accessor: 'fromAmount',
-					Cell: cellProps => (
-						<Tooltip
-							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
-							placement="top"
-						>
-							<span>
-								{formatCurrencyWithKey(
-									cellProps.row.original.quote,
-									cellProps.cell.value,
-									getPrecision(cellProps.cell.value)
-								)}
-							</span>
-						</Tooltip>
-					),
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.price'),
-					accessor: 'priceUSD',
-					Cell: cellProps => (
-						<Tooltip
-							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
-							placement="top"
-						>
-							<span>
-								{formatCurrencyWithSign(
-									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-									cellProps.cell.value,
-									getPrecision(cellProps.cell.value)
-								)}
-							</span>
-						</Tooltip>
-					),
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.total'),
-					accessor: 'totalUSD',
-					Cell: cellProps => <span>${cellProps.cell.value}</span>,
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.status'),
-					accessor: 'status',
-					Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
-					sortable: true,
-				},
-				{
-					Header: 'Confirmation time',
-					accessor: 'confirmTxTime',
-					Cell: cellProps => (
-						<span>{cellProps.cell.value != null && `${cellProps.cell.value}ms`}</span>
-					),
-					sortable: true,
-				},
-				{
-					Header: t('trade.order-book-card.table.verify'),
-					accessor: 'hash',
-					Cell: cellProps => <ViewLink hash={cellProps.cell.value} />,
-				},
-			]}
+			columnsDeps={[orderedTransactions]}
+			columns={columns}
 		/>
 	);
 };
