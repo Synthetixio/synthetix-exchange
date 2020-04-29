@@ -76,10 +76,6 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 								<TableCellDesc>{txDetails.to}</TableCellDesc>
 							</tr>
 							<tr>
-								<TableCellLabel>transaction fee</TableCellLabel>
-								<TableCellDesc>{+txDetails.gasUsed}</TableCellDesc>
-							</tr>
-							<tr>
 								<TableCellLabel>confirmations</TableCellLabel>
 								<TableCellDesc>{txDetails.confirmations}</TableCellDesc>
 							</tr>

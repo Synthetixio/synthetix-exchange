@@ -61,8 +61,8 @@ export const synthsSlice = createSlice({
 		updateFrozenSynths: (state, action) => {
 			const { frozenSynths } = action.payload;
 
-			frozenSynths.forEach(synth => {
-				delete state.availableSynths[synth];
+			Object.values(state.availableSynths).forEach(synth => {
+				state.availableSynths[synth.name].isFrozen = frozenSynths.includes(synth.name);
 			});
 
 			state.frozenSynths = frozenSynths;

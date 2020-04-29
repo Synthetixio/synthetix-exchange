@@ -65,7 +65,7 @@ import { media } from 'src/shared/media';
 
 const INPUT_DEFAULT_VALUE = '';
 
-const CONFIRM_TRADE_BUTTON_RATE_LIMIT_MS = 1500;
+const CONFIRM_TRADE_BUTTON_RATE_LIMIT_MS = 400;
 
 const CreateOrderCard = ({
 	synthPair,
@@ -433,9 +433,13 @@ const CreateOrderCard = ({
 						interactive={true}
 						tooltipPadding="20px"
 					>
-						<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
-							{t('trade.trade-card.confirm-trade-button')}
-						</ButtonPrimary>
+						{synthsMap[quote.name].isFrozen ? (
+							<ButtonPrimary disabled={true}>Synth is Frozen</ButtonPrimary>
+						) : (
+							<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
+								{t('trade.trade-card.confirm-trade-button')}
+							</ButtonPrimary>
+						)}
 					</Tooltip>
 				)}
 				{txErrorMessage && (
