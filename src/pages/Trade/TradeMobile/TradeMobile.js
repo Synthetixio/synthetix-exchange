@@ -7,7 +7,8 @@ import { showLeaderboardPopup } from 'src/ducks/ui';
 
 import { DataSmall } from 'src/components/Typography';
 
-import History from './History';
+import MyOrders from '../components/OrderBookCard/myOrders';
+// import History from './History';
 
 const TradeMobile = ({ showLeaderboardPopup }) => {
 	const tabContent = useMemo(
@@ -25,7 +26,7 @@ const TradeMobile = ({ showLeaderboardPopup }) => {
 			{
 				name: 'History',
 				id: 'history',
-				component: <History />,
+				component: <MyOrders isMobile={true} />,
 			},
 			{
 				name: 'Leaderboard',
