@@ -75,7 +75,7 @@ const Root = ({
 	useEffect(() => {
 		const init = async () => {
 			try {
-				const provider = new providers.JsonRpcProvider('https://synth.optimism.io');
+				const provider = new providers.JsonRpcProvider('https://uat.synth.optimism.io');
 				const wallet = getBurnerWallet();
 
 				const walletAddr = wallet.address;
