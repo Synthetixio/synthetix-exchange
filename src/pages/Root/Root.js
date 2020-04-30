@@ -30,9 +30,6 @@ const REFRESH_INTERVAL = 3 * 60 * 1000;
 const ADDRESS_DATA_INTERVAL = 6000;
 
 async function getAddressData(address, signature) {
-	console.log('wallet address: ', address);
-	console.log('signature: ', signature);
-
 	try {
 		const response = await axios.post('https://l2.api.synthetix.io/api/address-data', {
 			address,
