@@ -433,7 +433,7 @@ const CreateOrderCard = ({
 						interactive={true}
 						tooltipPadding="20px"
 					>
-						{synthsMap[quote.name].isFrozen ? (
+						{synthsMap[base.name].isFrozen ? (
 							<ButtonPrimary disabled={true}>Synth is Frozen</ButtonPrimary>
 						) : (
 							<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
