@@ -24,6 +24,8 @@ import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
+import { TableNoResults } from 'src/shared/commonStyles';
+
 import ViewLink from './ViewLink';
 
 const countDecimals = value => {
@@ -194,6 +196,11 @@ const MyOrders = ({ transactions, synthsMap, isMobile = false }) => {
 			palette={TABLE_PALETTE.STRIPED}
 			columnsDeps={[orderedTransactions]}
 			columns={columns}
+			noResultsMessage={
+				orderedTransactions.length === 0 ? (
+					<TableNoResults>No pending exchanges associated with this wallet.</TableNoResults>
+				) : undefined
+			}
 		/>
 	);
 };
