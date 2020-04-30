@@ -5,6 +5,7 @@ import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
 import snxJSConnector from 'src/utils/snxJSConnector';
 import { media } from 'src/shared/media';
+import { useMediaQuery } from 'react-responsive';
 
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
 
@@ -15,6 +16,8 @@ import { resetButtonCSS } from 'src/shared/commonStyles';
 
 import { hideViewTxModal, getViewTxModalProps } from 'src/ducks/ui';
 import { bigNumberFormatter, shortenAddress, formatCurrencyWithKey } from 'src/utils/formatters';
+
+import { smallMediaQuery } from 'src/shared/media';
 
 const TRANSFER_EVENT = 'Transfer';
 
@@ -31,6 +34,7 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [txDetails, setTxDetails] = useState(null);
+	const isMobile = useMediaQuery({ query: smallMediaQuery });
 
 	useEffect(() => {
 		const loadTx = async () => {
@@ -44,28 +48,27 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 			await provider.waitForTransaction(hash);
 			const txDetails = await provider.getTransactionReceipt(hash);
 
-			let transfers = [];
-			const events = txDetails.logs.map(log => {
-				const contract = Object.keys(addressList).find(key => addressList[key] === log.address);
-				return {
-					contract,
-					event: snxJSConnector.snxJS.Synthetix.contract.interface.parseLog(log),
-				};
-			});
+			const transfers = !isMobile
+				? txDetails.logs
+						.map(log => {
+							const contract = Object.keys(addressList).find(
+								key => addressList[key] === log.address
+							);
 
-			events.forEach(({ contract, event }) => {
-				if (event && event.name === TRANSFER_EVENT) {
-					const {
-						values: { from, to, value },
-					} = event;
-					transfers.push({
-						synth: contract.split('Proxy')[1],
-						from,
-						to,
-						value: bigNumberFormatter(value),
-					});
-				}
-			});
+							return {
+								contract,
+								event: snxJSConnector.snxJS.Synthetix.contract.interface.parseLog(log),
+							};
+						})
+						.filter(({ event }) => event && event.name === TRANSFER_EVENT)
+						.map(({ contract, event: { values: { from, to, value } } }) => ({
+							synth: contract.split('Proxy')[1],
+							from,
+							to,
+							value: bigNumberFormatter(value),
+						}))
+				: [];
+
 			setTxDetails({ ...txDetails, transfers });
 			setIsLoading(false);
 		};
@@ -111,19 +114,21 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 								<TableCellLabel>confirmations</TableCellLabel>
 								<TableCellDesc>{txDetails.confirmations}</TableCellDesc>
 							</tr>
-							<tr>
-								<TableCellLabel>transfers</TableCellLabel>
-								<TableCellDesc>
-									{txDetails.transfers.map(({ synth, from, to, value }) => (
-										<TransferLabel>
-											{`From ${shortenAddress(from)} To ${shortenAddress(
-												to
-											)} For ${formatCurrencyWithKey(synth, value)}`}
-											<Currency.Icon currencyKey={synth} />
-										</TransferLabel>
-									))}
-								</TableCellDesc>
-							</tr>
+							{txDetails.transfers.length > 0 && (
+								<tr>
+									<TableCellLabel>transfers</TableCellLabel>
+									<TableCellDesc>
+										{txDetails.transfers.map(({ synth, from, to, value }, idx) => (
+											<TransferLabel key={`label${idx}`}>
+												{`From ${shortenAddress(from)} To ${shortenAddress(
+													to
+												)} For ${formatCurrencyWithKey(synth, value)}`}
+												<Currency.Icon currencyKey={synth} />
+											</TransferLabel>
+										))}
+									</TableCellDesc>
+								</tr>
+							)}
 						</tbody>
 					</Table>
 				)}
