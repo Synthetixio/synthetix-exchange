@@ -42,7 +42,7 @@ export const MobileAppHeader = memo(
 						<MenuItemsLeft>
 							<MenuItem>
 								<StyledLogoLink to={ROUTES.Home}>
-									<Logo />
+									<Logo key="mobile-app-header" />
 								</StyledLogoLink>
 							</MenuItem>
 						</MenuItemsLeft>

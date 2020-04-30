@@ -6,7 +6,7 @@ import Logo from '../AppHeader/Logo';
 const SimpleAppHeader = ({ onClick }) => (
 	<Header onClick={onClick}>
 		<HeaderContent>
-			<Logo />
+			<Logo key="simple-logo-header" />
 		</HeaderContent>
 	</Header>
 );

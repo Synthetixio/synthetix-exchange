@@ -224,8 +224,8 @@ const StyledTable = styled(Table)`
 const Content = styled.div`
 	width: 100%;
 	height: 100%;
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-rows: auto auto 1fr;
 `;
 
 const StyledHeadingSmall = styled(HeadingSmall)`

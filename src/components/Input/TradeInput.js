@@ -76,6 +76,7 @@ const StyledGenericInput = styled(GenericInput)`
 			padding-right: 72px;
 		`};
 	color: ${props => props.theme.colors.fontPrimary};
+	border-radius: 0;
 `;
 
 const Label = styled(FlexDivCentered)`

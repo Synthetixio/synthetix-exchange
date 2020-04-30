@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
 
 import {
 	getTop10Leaders,
@@ -21,7 +22,7 @@ import { TABLE_PALETTE } from 'src/components/Table/constants';
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
 import { CenteredContent, Popup, textShadowCSS, resetButtonCSS } from 'src/shared/commonStyles';
 
-import { media } from 'src/shared/media';
+import { media, smallMediaQuery } from 'src/shared/media';
 
 const LeaderboardPopup = ({
 	hideLeaderboardPopup,
@@ -34,6 +35,9 @@ const LeaderboardPopup = ({
 		fetchLeaderboardRequest();
 		// eslint-disable-next-line
 	}, []);
+
+	const isMobile = useMediaQuery({ query: smallMediaQuery });
+
 	return (
 		<Popup>
 			<SimpleAppHeader onClick={hideLeaderboardPopup} />
@@ -62,7 +66,7 @@ const LeaderboardPopup = ({
 									@{cellProps.cell.value}
 								</StyledLink>
 							),
-							width: 250,
+							width: isMobile ? 140 : 250,
 						},
 						{
 							Header: 'ASSET VALUE',
@@ -71,9 +75,10 @@ const LeaderboardPopup = ({
 							Cell: cellProps => (
 								<span>{formatCurrencyWithSign('$', cellProps.cell.value)} USD</span>
 							),
-							width: 150,
+							width: isMobile ? 130 : 150,
 						},
 					]}
+					columnsDeps={[isMobile]}
 					data={top10leaders}
 					isLoading={isLoadingLeaderboard && !isLoadedLeaderboard}
 				/>

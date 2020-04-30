@@ -28,7 +28,7 @@ export const AppHeader = memo(props => {
 			<Content isOnSplashPage={isOnSplashPage}>
 				<MenuItemsLeft>
 					<MenuItem>
-						<Logo />
+						<Logo key="app-header" />
 					</MenuItem>
 				</MenuItemsLeft>
 				<MenuItemsRight>
