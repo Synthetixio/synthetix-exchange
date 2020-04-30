@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { getAvailableSynthsMap } from 'ducks/synths';
 import { navigateToTrade } from 'constants/routes';
 
+import { TableOverflowContainer } from 'shared/commonStyles';
+
 import ChangePercent from 'components/ChangePercent';
 import Table from 'components/Table';
 import { TABLE_PALETTE } from 'components/Table/constants';
@@ -17,100 +19,107 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 	const { t } = useTranslation();
 
 	return (
-		<Table
-			palette={TABLE_PALETTE.LIGHT}
-			columns={[
-				{
-					Header: t('markets.table.pair-col'),
-					accessor: 'pair',
-					Cell: (cellProps) => (
-						<Currency.Pair
-							baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
-							quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
-							showIcon={true}
-						/>
-					),
-					width: 150,
-					sortable: true,
-				},
-				{
-					Header: t('markets.table.last-price-col'),
-					accessor: 'lastPrice',
-					Cell: (cellProps) => (
-						<CurrencyCol
-							currencyKey={cellProps.row.original.quoteCurrencyKey}
-							synthsMap={synthsMap}
-							cellProps={cellProps}
-						/>
-					),
-					width: 150,
-					sortable: true,
-				},
-				{
-					Header: t('markets.table.24h-change-col'),
-					accessor: 'rates24hChange',
-					Cell: (cellProps) => (
-						<NullableCell cellProps={cellProps}>
-							{cellProps.cell.value != null && (
-								<ChangePercent isLabel={true} value={cellProps.cell.value} />
-							)}
-						</NullableCell>
-					),
-					width: 150,
-					sortable: true,
-				},
-				{
-					Header: t('markets.table.24h-low-col'),
-					accessor: 'rates24hLow',
-					Cell: (cellProps) => (
-						<CurrencyCol
-							currencyKey={cellProps.row.original.quoteCurrencyKey}
-							synthsMap={synthsMap}
-							cellProps={cellProps}
-						/>
-					),
-					width: 150,
-					sortable: true,
-				},
-				{
-					Header: t('markets.table.24h-high-col'),
-					accessor: 'rates24hHigh',
-					Cell: (cellProps) => (
-						<CurrencyCol
-							currencyKey={cellProps.row.original.quoteCurrencyKey}
-							synthsMap={synthsMap}
-							cellProps={cellProps}
-						/>
-					),
-					width: 150,
-					sortable: true,
-				},
-				{
-					Header: t('markets.table.24h-volume-col'),
-					accessor: 'rates24hVol',
-					Cell: (cellProps) => (
-						<CurrencyCol
-							currencyKey={cellProps.row.original.quoteCurrencyKey}
-							synthsMap={synthsMap}
-							cellProps={cellProps}
-						/>
-					),
-					width: 150,
-					sortable: true,
-				},
-			]}
-			columnsDeps={[synthsMap]}
-			data={markets}
-			onTableRowClick={(row) =>
-				navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey)
-			}
-			options={{
-				initialState: {
-					sortBy: marketsLoaded ? [{ id: 'rates24hVol', desc: true }] : [],
-				},
-			}}
-			noResultsMessage={noResultsMessage}
-		/>
+		<TableOverflowContainer>
+			<Table
+				palette={TABLE_PALETTE.LIGHT}
+				columns={[
+					{
+						Header: t('markets.table.pair-col'),
+						accessor: 'pair',
+						Cell: (cellProps) => (
+							<Currency.Pair
+								baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
+								quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
+								showIcon={true}
+							/>
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: t('markets.table.last-price-col'),
+						accessor: 'lastPrice',
+						sortType: 'basic',
+						Cell: (cellProps) => (
+							<CurrencyCol
+								currencyKey={cellProps.row.original.quoteCurrencyKey}
+								synthsMap={synthsMap}
+								cellProps={cellProps}
+							/>
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: t('markets.table.24h-change-col'),
+						accessor: 'rates24hChange',
+						sortType: 'basic',
+						Cell: (cellProps) => (
+							<NullableCell cellProps={cellProps}>
+								{cellProps.cell.value != null && (
+									<ChangePercent isLabel={true} value={cellProps.cell.value} />
+								)}
+							</NullableCell>
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: t('markets.table.24h-low-col'),
+						accessor: 'rates24hLow',
+						sortType: 'basic',
+						Cell: (cellProps) => (
+							<CurrencyCol
+								currencyKey={cellProps.row.original.quoteCurrencyKey}
+								synthsMap={synthsMap}
+								cellProps={cellProps}
+							/>
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: t('markets.table.24h-high-col'),
+						accessor: 'rates24hHigh',
+						sortType: 'basic',
+						Cell: (cellProps) => (
+							<CurrencyCol
+								currencyKey={cellProps.row.original.quoteCurrencyKey}
+								synthsMap={synthsMap}
+								cellProps={cellProps}
+							/>
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: t('markets.table.24h-volume-col'),
+						accessor: 'rates24hVol',
+						sortType: 'basic',
+						Cell: (cellProps) => (
+							<CurrencyCol
+								currencyKey={cellProps.row.original.quoteCurrencyKey}
+								synthsMap={synthsMap}
+								cellProps={cellProps}
+							/>
+						),
+						width: 150,
+						sortable: true,
+					},
+				]}
+				columnsDeps={[synthsMap]}
+				data={markets}
+				onTableRowClick={(row) =>
+					navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey)
+				}
+				options={{
+					initialState: {
+						sortBy: marketsLoaded ? [{ id: 'rates24hVol', desc: true }] : [],
+					},
+				}}
+				noResultsMessage={noResultsMessage}
+			/>
+		</TableOverflowContainer>
 	);
 });
 

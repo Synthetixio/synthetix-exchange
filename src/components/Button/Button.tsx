@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 type ButtonProps = {
 	size?: 'xs' | 'sm' | 'md' | 'lg';
-	palette?: 'primary' | 'secondary' | 'outline';
+	palette?: 'primary' | 'secondary' | 'outline' | 'toggle';
 	isActive?: boolean;
 };
 
@@ -96,6 +96,28 @@ const Button = styled.button<ButtonProps>`
 					background-color: ${(props) => props.theme.colors.buttonHover};
 				`}
 		`}	
+
+	${(props) =>
+		props.palette === 'toggle' &&
+		css`
+			border-radius: 1px;
+			color: ${(props) => props.theme.colors.fontTertiary};
+			background-color: ${(props) => props.theme.colors.white};
+			border: 1px solid ${(props) => props.theme.colors.accentL2};
+			&:hover {
+				&:not(:disabled) {
+					background-color: ${(props) => props.theme.colors.accentL1};
+					color: ${(props) => props.theme.colors.fontPrimary};
+				}
+			}
+			${(props) =>
+				(props as ButtonProps).isActive &&
+				css`
+					background-color: ${(props) => props.theme.colors.accentL1};
+					color: ${(props) => props.theme.colors.fontPrimary};
+					border-color: transparent;
+				`}
+		`}			
 `;
 
 export default Button;

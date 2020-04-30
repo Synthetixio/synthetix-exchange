@@ -57,8 +57,8 @@ import { ReactComponent as sCHFIcon } from '../assets/currencies/synths/sCHF.svg
 export type CurrencyKey = string;
 export type CurrencyKeys = string[];
 
-export const ASSETS = ['crypto', 'forex', 'fiat', 'equities'];
-export const ASSETS_MAP = keyBy(ASSETS);
+export const CATEGORY = ['crypto', 'forex', 'equities', 'index', 'commodity', 'inverse'];
+export const CATEGORY_MAP = keyBy(CATEGORY);
 
 export const SYNTHS = [
 	'sBTC',
@@ -211,6 +211,8 @@ export const FIAT_SYNTHS = [
 	SYNTHS_MAP.sGBP,
 	SYNTHS_MAP.sCHF,
 ];
+
+export const BASE_TRADING_PAIRS = [SYNTHS_MAP.sUSD, SYNTHS_MAP.sBTC, SYNTHS_MAP.sETH];
 
 export const getAvailableMarketNames = memoizeOne(() => {
 	const marketNames: Array<{

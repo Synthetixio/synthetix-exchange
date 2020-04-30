@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import get from 'lodash/get';
+import orderBy from 'lodash/orderBy';
 
 import {
 	getPendingTransactions,
@@ -45,9 +46,12 @@ const getPrecision = (amount) => {
 
 const MyOrders = ({ transactions, networkId, synthsMap }) => {
 	const { t } = useTranslation();
+
+	const orderedTransactions = useMemo(() => orderBy(transactions, 'id', 'desc'), [transactions]);
+
 	return (
 		<StyledTable
-			data={transactions}
+			data={orderedTransactions}
 			palette={TABLE_PALETTE.STRIPED}
 			columns={[
 				{
@@ -71,6 +75,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.buying'),
 					accessor: 'toAmount',
+					sortType: 'basic',
 					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -90,6 +95,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.selling'),
 					accessor: 'fromAmount',
+					sortType: 'basic',
 					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -109,6 +115,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.price'),
 					accessor: 'priceUSD',
+					sortType: 'basic',
 					Cell: (cellProps) => (
 						<Tooltip
 							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
@@ -128,6 +135,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 				{
 					Header: t('trade.order-book-card.table.total'),
 					accessor: 'totalUSD',
+					sortType: 'basic',
 					Cell: (cellProps) => <span>${cellProps.cell.value}</span>,
 					sortable: true,
 				},
@@ -151,7 +159,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					),
 				},
 			]}
-		></StyledTable>
+		/>
 	);
 };
 

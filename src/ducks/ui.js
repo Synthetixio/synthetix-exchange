@@ -14,6 +14,7 @@ const initialState = {
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	blurBackgroundIsVisible: false,
+	synthsCategoryFilter: null,
 	...getPersistedState('ui'),
 };
 
@@ -51,13 +52,18 @@ export const uiSlice = createSlice({
 			state.marketsAssetFilter = action.payload.marketsAssetFilter;
 			persistState('ui', { marketsAssetFilter: state.marketsAssetFilter });
 		},
+		setSynthsCategoryFilter: (state, action) => {
+			state.synthsCategoryFilter = action.payload.category;
+			persistState('ui', { synthsCategoryFilter: state.synthsCategoryFilter });
+		},
 		setBlurBackgroundIsVisible: (state, action) => {
 			state.blurBackgroundIsVisible = action.payload;
 		},
 	},
 });
 
-const {
+export const {
+	setSynthsCategoryFilter,
 	toggleWalletPopup,
 	showWalletPopup,
 	toggleGweiPopup,
@@ -79,19 +85,7 @@ export const depotPopupIsVisible = (state) => getUIState(state).depotPopupIsVisi
 export const getSynthSearch = (state) => getUIState(state).synthSearch;
 export const getHideSmallValueAssets = (state) => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = (state) => getUIState(state).marketsAssetFilter;
+export const getSynthsCategoryFilter = (state) => getUIState(state).synthsCategoryFilter;
 export const getBlurBackgroundIsVisible = (state) => getUIState(state).blurBackgroundIsVisible;
 
 export default uiSlice.reducer;
-
-export {
-	toggleWalletPopup,
-	showWalletPopup,
-	toggleGweiPopup,
-	showGweiPopup,
-	toggleTheme,
-	setSynthSearch,
-	setFiatCurrency,
-	toggleHideSmallValueAssets,
-	setMarketsAssetFilter,
-	setBlurBackgroundIsVisible,
-};

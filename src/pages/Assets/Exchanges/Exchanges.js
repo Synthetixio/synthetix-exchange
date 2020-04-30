@@ -93,6 +93,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.buying-col'),
 								accessor: 'toAmount',
+								sortType: 'basic',
 								Cell: (cellProps) => (
 									<Tooltip
 										title={formatCurrency(
@@ -115,6 +116,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.selling-col'),
 								accessor: 'fromAmount',
+								sortType: 'basic',
 								Cell: (cellProps) => (
 									<Tooltip
 										title={formatCurrency(
@@ -137,6 +139,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.price-col'),
 								accessor: 'price',
+								sortType: 'basic',
 								Cell: (cellProps) => (
 									<span>
 										{formatCurrencyWithSign(
@@ -150,6 +153,7 @@ export const Exchanges = memo(
 							{
 								Header: t('assets.exchanges.table.total-col'),
 								accessor: 'amount',
+								sortType: 'basic',
 								Cell: (cellProps) => (
 									<span>
 										{formatCurrencyWithSign(

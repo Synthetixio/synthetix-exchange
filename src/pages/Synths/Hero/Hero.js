@@ -12,7 +12,7 @@ export const Hero = memo(() => {
 	return (
 		<Container>
 			<Content>
-				<HeroTitle>{t('tokens.hero.title')}</HeroTitle>
+				<HeroTitle>{t('synths.hero.title')}</HeroTitle>
 			</Content>
 		</Container>
 	);

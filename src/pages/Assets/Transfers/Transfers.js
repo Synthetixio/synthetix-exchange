@@ -59,6 +59,7 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 						{
 							Header: t('assets.transfers.table.total-col'),
 							accessor: 'amount',
+							sortType: 'basic',
 							Cell: (cellProps) => <span>{formatCurrency(cellProps.cell.value)}</span>,
 							width: 150,
 							sortable: true,

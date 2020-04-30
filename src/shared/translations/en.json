@@ -5,7 +5,7 @@
 			"trade": "trade",
 			"loans": "loans",
 			"markets": "markets",
-			"tokens": "synths",
+			"synths": "synths",
 			"support": "support",
 			"assets": "assets"
 		},
@@ -105,16 +105,20 @@
 			}
 		}
 	},
-	"tokens": {
+	"synths": {
 		"hero": {
 			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
 		},
 		"table": {
-			"token-col": "token",
+			"synth-col": "synth",
 			"last-price-col": "last price",
 			"24h-change-col": "24hr change",
 			"24h-trend-col": "24h trend",
 			"trade-now-col": "trade now"
+		},
+		"charts": {
+			"biggest-gainers-24h": "biggest gainers (24h)",
+			"biggest-losers-24h": "biggest losers (24h)"
 		}
 	},
 	"exchange": {
@@ -143,6 +147,7 @@
 			"sell-input-label": "Sell",
 			"buy-input-label": "Buy",
 			"confirm-trade-button": "Confirm trade",
+			"frozen-synth": "Synth is frozen",
 			"retry-button": "Retry",
 			"network-info": {
 				"usd-value": "USD Value",
@@ -335,11 +340,16 @@
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
 			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
 			"borrow-currency": "Borrow {{currencyKey}}",
+			"synthetic-currency": "Synthetic {{currencyKey}}",
+			"fiat-synths": "sFiat"			
+		},
+		"currency-category": {
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodities": "commodities",
-			"synthetic-currency": "Synthetic {{currencyKey}}",
-			"fiat-synths": "sFiat"
+			"commodity": "commodities",
+			"equities": "equities",
+			"index": "indices",
+			"inverse": "inverse"
 		},
 		"search": "search",
 		"features": {
@@ -357,6 +367,9 @@
 					"market-closed": "Market closed"
 				}
 			}
+		},
+		"filters": {
+			"all": "all"
 		}
 	}
 }

@@ -1,15 +1,15 @@
 import React, { memo, FC } from 'react';
 
 import NewUserPromo from 'pages/shared/components/NewUserPromo';
-import TokensSection from './TokensSection';
+import SynthsSection from './SynthsSection';
 import Hero from './Hero';
 
-export const Tokens: FC = memo(() => (
+export const Synths: FC = memo(() => (
 	<>
 		<Hero />
-		<TokensSection />
+		<SynthsSection />
 		<NewUserPromo />
 	</>
 ));
 
-export default Tokens;
+export default Synths;

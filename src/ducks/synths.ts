@@ -4,7 +4,7 @@ import orderBy from 'lodash/orderBy';
 
 import { synthWeight } from '../utils/synthOrdering';
 
-import { SYNTHS_MAP, ASSETS_MAP, CurrencyKeys, CurrencyKey } from '../constants/currency';
+import { SYNTHS_MAP, CATEGORY_MAP, CurrencyKeys, CurrencyKey } from '../constants/currency';
 
 import { RootState } from './types';
 import {
@@ -14,6 +14,7 @@ import {
 } from './historicalRates';
 import { getRatesExchangeRates } from './rates';
 import { Period } from 'constants/period';
+import { getSynthsCategoryFilter } from './ui';
 
 const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
 
@@ -24,7 +25,11 @@ export type SynthDefinition = {
 	sign: string;
 	desc: string;
 	aggregator: string;
-	inverted: boolean;
+	inverted: {
+		entryPoint: number;
+		upperLimit: number;
+		lowerLimit: number;
+	};
 	isFrozen?: boolean;
 };
 
@@ -34,7 +39,7 @@ export type SynthDefinitionWithRates = SynthDefinition & {
 };
 
 const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
-	if (a.category === ASSETS_MAP.crypto && b.category === ASSETS_MAP.crypto) {
+	if (a.category === CATEGORY_MAP.crypto && b.category === CATEGORY_MAP.crypto) {
 		// @ts-ignore
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
 		if (!a.inverted && b.inverted) {
@@ -43,7 +48,7 @@ const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 			return nameOrder;
 		} else return 0;
 	}
-	if (a.category === ASSETS_MAP.crypto && b.category !== ASSETS_MAP.crypto) {
+	if (a.category === CATEGORY_MAP.crypto && b.category !== CATEGORY_MAP.crypto) {
 		return -1;
 	}
 	return 0;
@@ -62,8 +67,8 @@ export type SynthsSliceState = {
 
 const initialState: SynthsSliceState = {
 	availableSynths: {},
-	baseSynth: { name: DEFAULT_BASE_SYNTH, category: ASSETS_MAP.crypto } as SynthDefinition,
-	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: ASSETS_MAP.forex } as SynthDefinition,
+	baseSynth: { name: DEFAULT_BASE_SYNTH, category: CATEGORY_MAP.crypto } as SynthDefinition,
+	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: CATEGORY_MAP.forex } as SynthDefinition,
 };
 
 const sliceName = 'synths';
@@ -107,10 +112,8 @@ export const synthsSlice = createSlice({
 		updateFrozenSynths: (state, action: PayloadAction<{ frozenSynths: CurrencyKeys }>) => {
 			const { frozenSynths } = action.payload;
 
-			frozenSynths.forEach((synth: CurrencyKey) => {
-				if (state.availableSynths[synth]) {
-					state.availableSynths[synth].isFrozen = true;
-				}
+			Object.values(state.availableSynths).forEach((synth) => {
+				state.availableSynths[synth.name].isFrozen = frozenSynths.includes(synth.name);
 			});
 		},
 	},
@@ -120,16 +123,8 @@ export const { setAvailableSynths, setSynthPair, updateFrozenSynths } = synthsSl
 
 export const getSynthsState = (state: RootState) => state[sliceName];
 export const getAvailableSynthsMap = (state: RootState) => getSynthsState(state).availableSynths;
-export const getSortedAvailableList = createSelector(getAvailableSynthsMap, (availableSynths) =>
-	Object.values(availableSynths)
-);
-
-export const getSortedAvailableSynths = createSelector(getSortedAvailableList, (availableSynths) =>
-	availableSynths.sort(sortSynths)
-);
-
-export const getAvailableSynths = createSelector(getSortedAvailableSynths, (availableSynths) =>
-	availableSynths.filter((synth: SynthDefinition) => !synth.isFrozen)
+export const getAvailableSynths = createSelector(getAvailableSynthsMap, (availableSynths) =>
+	Object.values(availableSynths).sort(sortSynths)
 );
 
 export const getSynthsWithRates = createSelector(
@@ -151,6 +146,26 @@ export const getOrderedSynthsWithRates = createSelector(
 		historicalRatesIsOneDayPeriodLoaded
 			? orderBy(synthsWithRates, (synth) => synth.historicalRates.ONE_DAY.data?.change, 'desc')
 			: synthsWithRates
+);
+
+export const getFilteredSynthsWithRates = createSelector(
+	getOrderedSynthsWithRates,
+	getSynthsCategoryFilter,
+	(availableSynths, synthsCategoryFilter) =>
+		synthsCategoryFilter != null
+			? availableSynths.filter((synth) => {
+					let normalizedCategory;
+
+					// map certain categories to a larger top group category. (might need a "switch" if this list grows large)
+					if (synth.category === CATEGORY_MAP.index) {
+						normalizedCategory = CATEGORY_MAP.crypto;
+					} else {
+						normalizedCategory = synth.category;
+					}
+
+					return normalizedCategory === synthsCategoryFilter;
+			  })
+			: availableSynths
 );
 
 export const getSynthPair = (state: RootState) => ({

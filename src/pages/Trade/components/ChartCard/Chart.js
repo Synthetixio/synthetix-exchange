@@ -37,7 +37,8 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 							tickFormatter={(val) =>
 								period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
 							}
-							reversed={true}
+							axisLine={false}
+							tickLine={false}
 						/>
 						<YAxis
 							type="number"
@@ -45,6 +46,8 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 							tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
 							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 							orientation="right"
+							axisLine={false}
+							tickLine={false}
 						/>
 						<Area dataKey="rate" stroke={colors.hyperlink} fillOpacity={0.5} fill="url(#colorUv)" />
 						<Tooltip
