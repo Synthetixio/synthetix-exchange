@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
-import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
+import { AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,7 @@ import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
 
 import { DataLarge } from 'src/components/Typography';
 import Spinner from 'src/components/Spinner';
+import CustomResponsiveContainer from 'src/components/CustomResponsiveContainer';
 import { formatCurrencyWithPrecision } from 'src/utils/formatters';
 
 const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => {
@@ -23,7 +24,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 				<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
 			) : null}
 			{!isLoading && data.rates && data.rates.length > 0 ? (
-				<ResponsiveContainer width="99.9%" height={250}>
+				<CustomResponsiveContainer width="100%" height={250}>
 					<AreaChart data={data.rates} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
 						<defs>
 							<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -72,7 +73,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 							labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
 						/>
 					</AreaChart>
-				</ResponsiveContainer>
+				</CustomResponsiveContainer>
 			) : null}
 		</ChartContainer>
 	);
