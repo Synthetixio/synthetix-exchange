@@ -29,7 +29,6 @@ import GweiPopup from 'src/components/GweiPopup';
 import LeaderboardPopup from 'src/components/LeaderboardPopup';
 import TwitterPopup from 'src/components/TwitterPopup';
 import ViewTxModal from 'src/components/ViewTxModal';
-import Spinner from 'src/components/Spinner';
 
 import Trade from '../Trade';
 import Onboarding from '../Onboarding';
