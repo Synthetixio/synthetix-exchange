@@ -1,6 +1,10 @@
 import { takeLatest, put } from 'redux-saga/effects';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import get from 'lodash/get';
 import snxData from 'synthetix-data';
+
+import { getSortedLeaderboardMap, getLeaderboardData } from '../leaderboard';
+import { getAddress } from 'src/utils/formatters';
 
 export const allTradesSlice = createSlice({
 	name: 'allTrades',
@@ -43,6 +47,19 @@ export const getIsRefreshingAllTrades = state => getAllTradesState(state).isRefr
 export const getIsLoadedAllTrades = state => getAllTradesState(state).isLoaded;
 export const getAllTradesLoadingError = state => getAllTradesState(state).loadingError;
 export const getAllTrades = state => getAllTradesState(state).trades;
+
+export const getAllTradesWithTwitterHandles = createSelector(
+	getAllTrades,
+	getLeaderboardData,
+	getSortedLeaderboardMap,
+	(trades, leaderboardData, leaderboardMap) =>
+		leaderboardData.length > 0
+			? trades.map(trade => ({
+					...trade,
+					twitterHandle: get(leaderboardMap, [getAddress(trade.fromAddress), 'twitterHandle']),
+			  }))
+			: trades
+);
 
 const {
 	fetchAllTradesRequest,

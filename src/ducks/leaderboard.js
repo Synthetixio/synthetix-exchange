@@ -6,7 +6,7 @@ import keyBy from 'lodash/keyBy';
 
 import { L2_API_URL } from 'src/constants/l2';
 import snxJSConnector from 'src/utils/snxJSConnector';
-import { bytesFormatter } from 'src/utils/formatters';
+import { bytesFormatter, getAddress } from 'src/utils/formatters';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
 export const leaderboardSlice = createSlice({
@@ -56,7 +56,7 @@ export const getSortedLeaderboard = createSelector(getLeaderboardData, leaderboa
 );
 
 export const getSortedLeaderboardMap = createSelector(getSortedLeaderboard, sortedLeaderboardData =>
-	keyBy(sortedLeaderboardData, 'address')
+	keyBy(sortedLeaderboardData, item => getAddress(item.address))
 );
 
 export const getTop10Leaders = createSelector(getSortedLeaderboard, sortedLeaderboardData =>

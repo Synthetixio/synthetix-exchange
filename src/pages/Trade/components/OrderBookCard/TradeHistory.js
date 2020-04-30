@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -11,10 +11,12 @@ import { getNetworkId } from 'src/ducks/wallet/walletDetails';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
+import Link from 'src/components/Link';
 
 import { SYNTHS_MAP } from 'src/constants/currency';
 
 import { TableNoResults } from 'src/shared/commonStyles';
+
 import ViewLink from './ViewLink';
 
 import {
@@ -27,13 +29,12 @@ import {
 	formatCurrencyPair,
 } from 'src/utils/formatters';
 
-const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
-	const { t } = useTranslation();
+const TradeHistory = memo(
+	({ trades, isLoading, isLoaded, synthsMap, showTwitterHandle = false }) => {
+		const { t } = useTranslation();
 
-	return (
-		<StyledTable
-			palette={TABLE_PALETTE.STRIPED}
-			columns={[
+		const columns = useMemo(() => {
+			const cols = [
 				{
 					Header: t('assets.exchanges.table.date-time-col'),
 					accessor: 'timestamp',
@@ -127,25 +128,60 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap }) => {
 					accessor: 'status',
 					Cell: () => t('common.tx-status.complete'),
 					sortable: true,
+					width: 100,
 				},
 				{
 					Header: t('trade.order-book-card.table.verify'),
 					accessor: 'hash',
 					Cell: cellProps => <ViewLink hash={cellProps.cell.value} />,
+					width: 100,
 				},
-			]}
-			data={trades}
-			isLoading={isLoading}
-			noResultsMessage={
-				isLoaded && trades.length === 0 ? (
-					<TableNoResults>{t('assets.exchanges.table.no-results')}</TableNoResults>
-				) : undefined
+			];
+
+			if (showTwitterHandle) {
+				cols.push({
+					Header: <span>Twitter handle</span>,
+					accessor: 'twitterHandle',
+					show: false,
+					Cell: cellProps => {
+						const twitterHandle = cellProps.cell.value;
+
+						return twitterHandle ? (
+							<StyledLink to={`https://twitter.com/${cellProps.cell.value}`} isExternal={true}>
+								@{cellProps.cell.value}
+							</StyledLink>
+						) : (
+							'-'
+						);
+					},
+				});
 			}
-		/>
-	);
-};
+			return cols;
+			// eslint-disable-next-line
+		}, [showTwitterHandle]);
+
+		return (
+			<StyledTable
+				palette={TABLE_PALETTE.STRIPED}
+				columns={columns}
+				data={trades}
+				isLoading={isLoading && !isLoaded}
+				noResultsMessage={
+					isLoaded && trades.length === 0 ? (
+						<TableNoResults>{t('assets.exchanges.table.no-results')}</TableNoResults>
+					) : undefined
+				}
+			/>
+		);
+	}
+);
+
+const StyledLink = styled(Link)`
+	color: ${props => props.theme.colors.hyperlink};
+`;
 
 const StyledTable = styled(Table)`
+	position: initial;
 	.table-body-cell {
 		height: 38px;
 	}
