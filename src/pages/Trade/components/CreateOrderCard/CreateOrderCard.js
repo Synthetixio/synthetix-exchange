@@ -359,7 +359,7 @@ const CreateOrderCard = ({
 					<ButtonPrimary onClick={() => getMaxSecsLeftInWaitingPeriod()}>
 						{t('trade.trade-card.retry-button')}
 					</ButtonPrimary>
-				) : synthsMap[quote.name].isFrozen ? (
+				) : synthsMap[base.name].isFrozen ? (
 					<ButtonPrimary disabled={true}>{t('trade.trade-card.frozen-synth')}</ButtonPrimary>
 				) : (
 					<ButtonPrimary disabled={buttonDisabled} onClick={handleSubmit}>
