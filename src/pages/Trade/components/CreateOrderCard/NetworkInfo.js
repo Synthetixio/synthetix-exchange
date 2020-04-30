@@ -100,7 +100,7 @@ const QuestionMarkStyled = styled(QuestionMark)`
 `;
 
 const Container = styled.div`
-	margin: 18px 0;
+	margin: 29px 0;
 `;
 
 const NetworkData = styled(DataSmall)`
