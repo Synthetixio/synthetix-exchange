@@ -9,10 +9,14 @@ import { media } from 'src/shared/media';
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
 
 import Spinner from 'src/components/Spinner';
+import Currency from 'src/components/Currency';
 
 import { resetButtonCSS } from 'src/shared/commonStyles';
 
 import { hideViewTxModal, getViewTxModalProps } from 'src/ducks/ui';
+import { bigNumberFormatter, shortenAddress, formatCurrencyWithKey } from 'src/utils/formatters';
+
+const TRANSFER_EVENT = 'Transfer';
 
 const useStyles = makeStyles(() => ({
 	modal: {
@@ -30,11 +34,39 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 
 	useEffect(() => {
 		const loadTx = async () => {
-			const { provider } = snxJSConnector;
+			const {
+				provider,
+				snxJS: {
+					contractSettings: { addressList },
+				},
+			} = snxJSConnector;
+
 			await provider.waitForTransaction(hash);
 			const txDetails = await provider.getTransactionReceipt(hash);
 
-			setTxDetails(txDetails);
+			let transfers = [];
+			const events = txDetails.logs.map(log => {
+				const contract = Object.keys(addressList).find(key => addressList[key] === log.address);
+				return {
+					contract,
+					event: snxJSConnector.snxJS.Synthetix.contract.interface.parseLog(log),
+				};
+			});
+
+			events.forEach(({ contract, event }) => {
+				if (event && event.name === TRANSFER_EVENT) {
+					const {
+						values: { from, to, value },
+					} = event;
+					transfers.push({
+						synth: contract.split('Proxy')[1],
+						from,
+						to,
+						value: bigNumberFormatter(value),
+					});
+				}
+			});
+			setTxDetails({ ...txDetails, transfers });
 			setIsLoading(false);
 		};
 
@@ -78,6 +110,19 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 							<tr>
 								<TableCellLabel>confirmations</TableCellLabel>
 								<TableCellDesc>{txDetails.confirmations}</TableCellDesc>
+							</tr>
+							<tr>
+								<TableCellLabel>transfers</TableCellLabel>
+								<TableCellDesc>
+									{txDetails.transfers.map(({ synth, from, to, value }) => (
+										<TransferLabel>
+											{`From ${shortenAddress(from)} To ${shortenAddress(
+												to
+											)} For ${formatCurrencyWithKey(synth, value)}`}
+											<Currency.Icon currencyKey={synth} />
+										</TransferLabel>
+									))}
+								</TableCellDesc>
 							</tr>
 						</tbody>
 					</Table>
@@ -152,6 +197,16 @@ const TableCellDesc = styled(TableCell)`
 	color: #fff;
 `;
 
+const TransferLabel = styled.div`
+	&:not(:first-child) {
+		margin-top: 10px;
+	}
+	display: flex;
+	align-items: center;
+	& > svg {
+		margin-left: 5px;
+	}
+`;
 const mapStateToProps = state => ({
 	viewTxModalProps: getViewTxModalProps(state),
 });
