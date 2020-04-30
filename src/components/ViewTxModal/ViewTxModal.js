@@ -75,7 +75,6 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	console.log(txDetails);
 	return (
 		<Modal open={true} onClose={hideViewTxModal} className={classes.modal}>
 			<Container>
