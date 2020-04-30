@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { memo, useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -15,116 +15,79 @@ import {
 	updateTransaction,
 } from 'ducks/transaction';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
-import {
-	fetchAllTradesRequest,
-	getAllTrades,
-	getIsRefreshingAllTrades,
-	getIsLoadedAllTrades,
-} from 'ducks/trades/allTrades';
-import {
-	fetchMyTradesRequest,
-	getMyTrades,
-	getIsRefreshingMyTrades,
-	getIsLoadedMyTrades,
-} from 'ducks/trades/myTrades';
 
 import Card from 'components/Card';
 import MyOrders from './myOrders';
-import TradeHistory from './TradeHistory';
+import AllTrades from './AllTrades';
+import MyTrades from './MyTrades';
 
-const OrderBookCard = ({
-	walletInfo: { currentWallet },
-	pendingTransactions,
-	transactions,
-	removePendingTransaction,
-	updateTransaction,
-	fetchAllTradesRequest,
-	fetchMyTradesRequest,
-	myTrades,
-	isLoadedMyTrades,
-	isRefreshingMyTrades,
-	allTrades,
-	isLoadedAllTrades,
-	isRefreshingAllTrades,
-}) => {
-	const { t } = useTranslation();
+const OrderBookCard = memo(
+	({
+		walletInfo: { currentWallet },
+		pendingTransactions,
+		transactions,
+		removePendingTransaction,
+		updateTransaction,
+	}) => {
+		const { t } = useTranslation();
 
-	const tabContent = useMemo(
-		() => [
-			{
-				name: t('trade.order-book-card.tabs.your-orders'),
-				id: 'yourOrder',
-				component: <MyOrders />,
-			},
-			{
-				name: t('trade.order-book-card.tabs.your-trades'),
-				id: 'yourTrades',
-				component: (
-					<TradeHistory
-						trades={myTrades}
-						isLoading={isRefreshingMyTrades}
-						isLoaded={isLoadedMyTrades}
-					/>
-				),
-			},
-			{
-				name: t('trade.order-book-card.tabs.all-trades'),
-				id: 'allTrades',
-				component: (
-					<TradeHistory
-						trades={allTrades}
-						isLoading={isRefreshingAllTrades}
-						isLoaded={isLoadedAllTrades}
-					/>
-				),
-			},
-		],
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[myTrades, allTrades]
-	);
+		const tabContent = useMemo(
+			() => [
+				{
+					name: t('trade.order-book-card.tabs.your-orders'),
+					id: 'yourOrder',
+					component: <MyOrders />,
+				},
+				{
+					name: t('trade.order-book-card.tabs.your-trades'),
+					id: 'yourTrades',
+					component: <MyTrades />,
+				},
+				{
+					name: t('trade.order-book-card.tabs.all-trades'),
+					id: 'allTrades',
+					component: <AllTrades />,
+				},
+			],
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+			[]
+		);
 
-	const [activeTab, setActiveTab] = useState(tabContent[0]);
+		const [activeTab, setActiveTab] = useState(tabContent[0]);
 
-	// TODO: Move this logic into Redux
-	useEffect(() => {
-		const handlePendingTransactions = async () => {
-			const {
-				utils: { waitForTransaction },
-			} = snxJSConnector;
-			try {
-				if (pendingTransactions.length === 0) return;
-				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
-				removePendingTransaction(latestTransactionHash);
-				const status = await waitForTransaction(latestTransactionHash);
-				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
-				if (status) {
-					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
-				} else {
-					updateTransaction(
-						{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
-						matchingTransaction.id
-					);
+		// TODO: Move this logic into Redux
+		useEffect(() => {
+			const handlePendingTransactions = async () => {
+				const {
+					utils: { waitForTransaction },
+				} = snxJSConnector;
+				try {
+					if (pendingTransactions.length === 0) return;
+					const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
+					removePendingTransaction(latestTransactionHash);
+					const status = await waitForTransaction(latestTransactionHash);
+					const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
+					if (status) {
+						updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
+					} else {
+						updateTransaction(
+							{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
+							matchingTransaction.id
+						);
+					}
+				} catch (e) {
+					console.log(e);
 				}
-			} catch (e) {
-				console.log(e);
-			}
-		};
-		handlePendingTransactions();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pendingTransactions.length]);
+			};
+			handlePendingTransactions();
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [pendingTransactions.length]);
 
-	useEffect(() => {
-		fetchMyTradesRequest();
-		fetchAllTradesRequest();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentWallet]);
-
-	return (
-		<StyledCard>
-			<StyledCardBody>
-				<Tabs>
-					{tabContent.map((tab) => {
-						return (
+		return (
+			<StyledCard>
+				<StyledCardBody>
+					<Tabs>
+						{tabContent.map((tab) => (
 							<Tab
 								key={tab.id}
 								isDisabled={tab.id === 'yourTrades' && !currentWallet}
@@ -133,25 +96,27 @@ const OrderBookCard = ({
 							>
 								<DataSmall>{tab.name}</DataSmall>
 							</Tab>
-						);
-					})}
-				</Tabs>
-				{activeTab.component}
-			</StyledCardBody>
-		</StyledCard>
-	);
-};
+						))}
+					</Tabs>
+					{activeTab.component}
+				</StyledCardBody>
+			</StyledCard>
+		);
+	}
+);
 
 const StyledCard = styled(Card)`
 	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	position: relative;
 `;
 
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
 	overflow: hidden;
+	position: initial;
 `;
 
 const Tabs = styled.div`
@@ -185,19 +150,11 @@ const mapStateToProps = (state) => ({
 	transactions: getTransactions(state),
 	pendingTransactions: getPendingTransactions(state),
 	walletInfo: getWalletInfo(state),
-	allTrades: getAllTrades(state),
-	isRefreshingAllTrades: getIsRefreshingAllTrades(state),
-	isLoadedAllTrades: getIsLoadedAllTrades(state),
-	myTrades: getMyTrades(state),
-	isRefreshingMyTrades: getIsRefreshingMyTrades(state),
-	isLoadedMyTrades: getIsLoadedMyTrades(state),
 });
 
 const mapDispatchToProps = {
 	updateTransaction,
 	removePendingTransaction,
-	fetchAllTradesRequest,
-	fetchMyTradesRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderBookCard);
