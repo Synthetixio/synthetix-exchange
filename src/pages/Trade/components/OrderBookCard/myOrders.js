@@ -30,6 +30,8 @@ import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 import { SYNTHS_MAP } from 'constants/currency';
 
+import { TableNoResults } from 'shared/commonStyles';
+
 import ViewLink, { ArrowIcon } from './ViewLink';
 
 const countDecimals = (value) => {
@@ -159,6 +161,11 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					),
 				},
 			]}
+			noResultsMessage={
+				orderedTransactions.length === 0 ? (
+					<TableNoResults>{t('trade.order-book-card.table.no-results')}</TableNoResults>
+				) : undefined
+			}
 		/>
 	);
 };
