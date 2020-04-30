@@ -9,11 +9,11 @@ import Spinner from 'src/components/Spinner';
 
 import { FlexDiv } from 'src/shared/commonStyles';
 
-export const MainLayout = ({ children, isAppReady }) => (
+export const MainLayout = ({ children, isAppReady, showHeader = true, isOnSplashPage = false }) => (
 	<>
 		<GlobalStyle />
 		<FullScreenContainer>
-			<AppHeader />
+			{showHeader && <AppHeader isOnSplashPage={isOnSplashPage} />}
 			{isAppReady ? children : <Spinner fullscreen={true} size="sm" />}
 		</FullScreenContainer>
 	</>

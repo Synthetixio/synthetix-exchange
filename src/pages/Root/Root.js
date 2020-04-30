@@ -11,6 +11,8 @@ import { getExchangeData } from '../../dataFetcher';
 
 import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import { fetchLeaderboardRequest } from 'src/ducks/leaderboard';
+
 import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
 import { updateWalletReducer } from 'src/ducks/wallet/walletDetails';
 import { fetchRates } from '../../ducks/rates';
@@ -52,6 +54,7 @@ const Root = ({
 	fetchRates,
 	setAppReady,
 	isAppReady,
+	fetchLeaderboardRequest,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const [addressDataIntervalDelay, setAddressDataIntervalDelay] = useState(null);
@@ -99,7 +102,6 @@ const Root = ({
 					);
 
 					setAvailableSynths({ synths });
-					setAppReady();
 					fetchAndSetExchangeData(synths);
 
 					clearInterval(intervalId);
@@ -118,6 +120,8 @@ const Root = ({
 						permissionSignature,
 						...addressData,
 					});
+
+					setAppReady();
 
 					if (addressData.twitterFaucet === 0) {
 						setAddressDataIntervalDelay(ADDRESS_DATA_INTERVAL);
@@ -139,8 +143,11 @@ const Root = ({
 	}, []);
 
 	useEffect(() => {
-		if (isAppReady && currentWallet != null) {
-			fetchWalletBalancesRequest();
+		if (isAppReady) {
+			if (currentWallet != null) {
+				fetchWalletBalancesRequest();
+			}
+			fetchLeaderboardRequest();
 		}
 	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
 
@@ -188,6 +195,7 @@ const mapDispatchToProps = {
 	setExchangeFeeRate,
 	fetchWalletBalancesRequest,
 	fetchRates,
+	fetchLeaderboardRequest,
 	setAppReady,
 };
 

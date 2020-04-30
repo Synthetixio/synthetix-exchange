@@ -29,6 +29,7 @@ import GweiPopup from 'src/components/GweiPopup';
 import LeaderboardPopup from 'src/components/LeaderboardPopup';
 import TwitterPopup from 'src/components/TwitterPopup';
 import ViewTxModal from 'src/components/ViewTxModal';
+import Spinner from 'src/components/Spinner';
 
 import Trade from '../Trade';
 import Onboarding from '../Onboarding';
@@ -43,49 +44,54 @@ const App = ({
 	viewTxModalVisible,
 }) => (
 	<ThemeProvider theme={darkTheme}>
-		<Router history={history}>
-			{isAppReady && (
-				<>
-					<GlobalEventsGate />
-					{walletPopupIsVisible && <WalletPopup />}
-					{gweiPopupIsVisible && <GweiPopup />}
-					{leaderboardPopupIsVisible && <LeaderboardPopup />}
-					{twitterPopupIsVisible && <TwitterPopup />}
-					{viewTxModalVisible && <ViewTxModal />}
-				</>
-			)}
-			<Switch>
-				<Route
-					path={ROUTES.TradeMatch}
-					render={routeProps => (
-						<>
-							{walletInfo.twitterFaucet > 0 ? (
-								<MainLayout isAppReady={isAppReady}>
-									<Trade {...routeProps} />
-								</MainLayout>
-							) : (
-								<Redirect to={ROUTES.Home} />
+		{isAppReady ? (
+			<>
+				<GlobalEventsGate />
+				{walletPopupIsVisible && <WalletPopup />}
+				{gweiPopupIsVisible && <GweiPopup />}
+				{leaderboardPopupIsVisible && <LeaderboardPopup />}
+				{twitterPopupIsVisible && <TwitterPopup />}
+				{viewTxModalVisible && <ViewTxModal />}
+				<Router history={history}>
+					<Switch>
+						<Route
+							path={ROUTES.TradeMatch}
+							render={routeProps => (
+								<>
+									{walletInfo.twitterFaucet > 0 ? (
+										<MainLayout isAppReady={isAppReady}>
+											<Trade {...routeProps} />
+										</MainLayout>
+									) : (
+										<Redirect to={ROUTES.Home} />
+									)}
+								</>
 							)}
-						</>
-					)}
-				/>
-				<Route
-					path={ROUTES.Trade}
-					render={routeProps => (
-						<>
-							{walletInfo.twitterFaucet > 0 ? (
-								<MainLayout isAppReady={isAppReady}>
-									<Trade {...routeProps} />
-								</MainLayout>
-							) : (
-								<Redirect to={ROUTES.Home} />
+						/>
+						<Route
+							path={ROUTES.Trade}
+							render={routeProps => (
+								<>
+									{walletInfo.twitterFaucet > 0 ? (
+										<MainLayout isAppReady={isAppReady}>
+											<Trade {...routeProps} />
+										</MainLayout>
+									) : (
+										<Redirect to={ROUTES.Home} />
+									)}
+								</>
 							)}
-						</>
-					)}
-				/>
-				<Route path={ROUTES.Home} component={Onboarding} />
-			</Switch>
-		</Router>
+						/>
+						<Route path={ROUTES.Home} component={Onboarding} />
+					</Switch>
+				</Router>
+			</>
+		) : (
+			<MainLayout isAppReady={isAppReady} isOnSplashPage={true}>
+				<div />
+				{/* TODO: handle retries */}
+			</MainLayout>
+		)}
 	</ThemeProvider>
 );
 
