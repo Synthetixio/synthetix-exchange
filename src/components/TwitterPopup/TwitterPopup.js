@@ -8,9 +8,9 @@ import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
 import { ReactComponent as QuoteRIcon } from 'src/assets/images/l2/quoteL.svg';
 import { ReactComponent as QuoteLIcon } from 'src/assets/images/l2/quoteR.svg';
-import { ReactComponent as TweetLineChartIcon } from 'src/assets/images/l2/tweet-line-chart.svg';
 
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
+import HeartBeat from 'src/components/HeartBeat';
 
 import {
 	resetButtonCSS,
@@ -106,7 +106,9 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 				<span>Uh-oh, an error occurred: {walletInfo.twitterFaucetError}</span>
 			) : (
 				<TweetListener>
-					<TweetLineChartIcon />
+					<div style={{ position: 'relative' }}>
+						<HeartBeat surface={1} />
+					</div>
 					listening for your Tweet...
 				</TweetListener>
 			);
@@ -256,10 +258,11 @@ const StyledQuoteLIcon = styled(QuoteLIcon)`
 `;
 
 const TweetListener = styled.div`
+	position: relative;
 	color: ${props => props.theme.colors.fontPrimary};
 	display: grid;
 	grid-auto-flow: column;
-	grid-gap: 10px;
+	grid-gap: 50px;
 `;
 
 const mapStateToProps = state => ({

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import AppHeader from '../AppHeader';
 
-import Spinner from 'src/components/Spinner';
+import HeartBeat from 'src/components/HeartBeat';
 
 import { FlexDiv } from 'src/shared/commonStyles';
 
@@ -14,7 +14,7 @@ export const MainLayout = ({ children, isAppReady, showHeader = true, isOnSplash
 		<GlobalStyle />
 		<FullScreenContainer>
 			{showHeader && <AppHeader isOnSplashPage={isOnSplashPage} />}
-			{isAppReady ? children : <Spinner fullscreen={true} size="sm" />}
+			{isAppReady ? children : <HeartBeat surface={1} />}
 		</FullScreenContainer>
 	</>
 );
@@ -27,7 +27,7 @@ MainLayout.propTypes = {
 const GlobalStyle = createGlobalStyle`
   body {
 		color: ${props => props.theme.colors.fontPrimary};
-		background: linear-gradient(180deg, #020B29 0%, #0F0F33 100%);
+		background: #020B29;
   }
 `;
 

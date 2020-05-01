@@ -12,7 +12,7 @@ import { ReactComponent as SortIcon } from 'src/assets/images/sort.svg';
 import { lightTheme, darkTheme } from 'src/styles/theme';
 import { FlexDivCentered } from 'src/shared/commonStyles';
 
-import Spinner from 'src/components/Spinner';
+import HeartBeat from 'src/components/HeartBeat';
 
 import { TABLE_PALETTE } from './constants';
 
@@ -73,7 +73,7 @@ export const Table = ({
 			{noResultsMessage != null ? (
 				noResultsMessage
 			) : isLoading ? (
-				<Spinner size="sm" fullscreen={true} />
+				<HeartBeat />
 			) : (
 				<TableBody className="table-body" {...getTableBodyProps()}>
 					{rows.map(row => {

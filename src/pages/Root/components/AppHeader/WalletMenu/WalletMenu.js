@@ -15,11 +15,7 @@ import {
 	getSynthsWalletBalances,
 	getIsFetchingWalletBalances,
 } from 'src/ducks/wallet/walletBalances';
-import {
-	getIsLoadingLeaderboard,
-	fetchLeaderboardRequest,
-	getSortedLeaderboardMap,
-} from 'src/ducks/leaderboard';
+import { fetchLeaderboardRequest, getSortedLeaderboardMap } from 'src/ducks/leaderboard';
 import { showWalletPopup } from 'src/ducks/ui';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
@@ -39,7 +35,6 @@ import { gradientTextCSS, TableNoResults } from 'src/shared/commonStyles';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 import Currency from 'src/components/Currency';
-import Spinner from 'src/components/Spinner';
 import { Button } from 'src/components/Button';
 
 import { media } from 'src/shared/media';
@@ -51,7 +46,6 @@ const WalletMenu = ({
 	synthsWalletBalances,
 	isFetchingWalletBalances,
 	sortedLeaderboardMap,
-	isLoadingLeaderboard,
 	fetchLeaderboardRequest,
 	currentWallet,
 }) => {
@@ -106,9 +100,7 @@ const WalletMenu = ({
 				</Card.Header>
 				<Card.Body>
 					<CardData>
-						<GreenGradient>
-							{isLoadingLeaderboard ? <Spinner size="sm" /> : userRank ? `#${userRank}` : '-'}
-						</GreenGradient>
+						<GreenGradient>{userRank ? `#${userRank}` : '-'}</GreenGradient>
 					</CardData>
 				</Card.Body>
 			</Card>
@@ -262,7 +254,6 @@ const mapStateToProps = state => ({
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 	sortedLeaderboardMap: getSortedLeaderboardMap(state),
-	isLoadingLeaderboard: getIsLoadingLeaderboard(state),
 });
 
 const mapDispatchToProps = {

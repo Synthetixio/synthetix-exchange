@@ -9,7 +9,7 @@ import { useMediaQuery } from 'react-responsive';
 
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
 
-import Spinner from 'src/components/Spinner';
+import HeartBeat from 'src/components/HeartBeat';
 import Currency from 'src/components/Currency';
 
 import { resetButtonCSS } from 'src/shared/commonStyles';
@@ -86,7 +86,7 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 					<CloseCrossIcon />
 				</CloseButton>
 				{isLoading ? (
-					<Spinner size="sm" />
+					<HeartBeat surface={3} />
 				) : (
 					<Table cellSpacing={0} cellPadding={0}>
 						<tbody>
@@ -141,6 +141,7 @@ const Container = styled.div`
 	outline: 0;
 	position: relative;
 	width: 830px;
+	min-height: 300px;
 	background: ${props => props.theme.colors.surfaceL3};
 	border: 0.5px solid #cb5bf2;
 	padding: 48px;

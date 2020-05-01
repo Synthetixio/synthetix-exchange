@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
 
 import { DataLarge } from 'src/components/Typography';
-import Spinner from 'src/components/Spinner';
+import HeartBeat from 'src/components/HeartBeat';
 import CustomResponsiveContainer from 'src/components/CustomResponsiveContainer';
 import { formatCurrencyWithPrecision } from 'src/utils/formatters';
 
@@ -19,7 +19,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 
 	return (
 		<ChartContainer>
-			{isLoading ? <Spinner size="sm" /> : null}
+			{isLoading ? <HeartBeat /> : null}
 			{!isLoading && data.rates.length === 0 ? (
 				<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
 			) : null}
@@ -80,6 +80,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 };
 
 const ChartContainer = styled.div`
+	position: relative;
 	width: 100%;
 	height: 250px;
 	display: flex;
