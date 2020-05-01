@@ -24,7 +24,7 @@ const SignedUser = memo(({ twitterHandle }) => (
 				<SynthSIcon />
 				<SynthUSDICon />
 			</TokenSVG>
-			<TokensText>1,000 OVM sUSD</TokensText>
+			<TokensText>100,000 OVM sUSD</TokensText>
 		</Tokens>
 		<StyledButtonPrimary size="lg" onClick={() => navigateTo(ROUTES.Trade)}>
 			start trading now
