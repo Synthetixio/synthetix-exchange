@@ -104,7 +104,7 @@ const StyledTable = styled(Table)`
 
 const Content = styled(CenteredContent)`
 	max-width: 600px;
-	padding-top: 87px;
+	padding-top: 40px;
 	${media.small`
 		padding-top: 0;
 	`}

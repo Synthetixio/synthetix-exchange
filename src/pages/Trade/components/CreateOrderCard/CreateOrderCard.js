@@ -254,6 +254,9 @@ const CreateOrderCard = ({
 				fetchWalletBalancesRequest();
 				if (!seenTradeTooltipVisible) {
 					setOvmTradeTooltipVisible(true);
+					setTimeout(() => {
+						setOvmTradeTooltipVisible(false);
+					}, 5000);
 				}
 			} else {
 				updateTransaction(

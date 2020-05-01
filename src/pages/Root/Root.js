@@ -149,7 +149,7 @@ const Root = ({
 			}
 			fetchLeaderboardRequest();
 		}
-	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
+	}, [isAppReady, currentWallet, fetchWalletBalancesRequest, fetchLeaderboardRequest]);
 
 	useEffect(() => {
 		if (isAppReady) {
