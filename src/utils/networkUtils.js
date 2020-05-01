@@ -47,7 +47,7 @@ export const hasWeb3 = () => {
 export const defaultNetwork = { name: 'MAINNET', networkId: '1' };
 
 export async function getEthereumNetwork() {
-	return await new Promise(function(resolve) {
+	return await new Promise(function (resolve) {
 		if (!window.ethereum) resolve(defaultNetwork);
 		const networkId = window.ethereum.networkVersion;
 		const name = SUPPORTED_NETWORKS[parseInt(networkId)];
@@ -109,4 +109,4 @@ export function onMetamaskNetworkChange(cb) {
 	window.ethereum.on('networkChanged', listener);
 }
 
-export const isMainNet = networkId => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;
+export const isMainNet = (networkId) => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;

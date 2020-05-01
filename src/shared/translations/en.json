@@ -5,7 +5,7 @@
 			"trade": "trade",
 			"loans": "loans",
 			"markets": "markets",
-			"tokens": "tokens",
+			"synths": "synths",
 			"support": "support",
 			"assets": "assets"
 		},
@@ -105,6 +105,22 @@
 			}
 		}
 	},
+	"synths": {
+		"hero": {
+			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
+		},
+		"table": {
+			"synth-col": "synth",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"24h-trend-col": "24h trend",
+			"trade-now-col": "trade now"
+		},
+		"charts": {
+			"biggest-gainers-24h": "biggest gainers (24h)",
+			"biggest-losers-24h": "biggest losers (24h)"
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
@@ -131,6 +147,7 @@
 			"sell-input-label": "Sell",
 			"buy-input-label": "Buy",
 			"confirm-trade-button": "Confirm trade",
+			"frozen-synth": "Synth is frozen",
 			"retry-button": "Retry",
 			"network-info": {
 				"usd-value": "USD Value",
@@ -155,7 +172,8 @@
 				"price": "Price",
 				"total": "Total",
 				"status": "Status",
-				"verify": "verify"
+				"verify": "verify",
+				"no-results": "No pending exchanges associated with this wallet"
 			}
 		}
 	},
@@ -323,11 +341,16 @@
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
 			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
 			"borrow-currency": "Borrow {{currencyKey}}",
+			"synthetic-currency": "Synthetic {{currencyKey}}",
+			"fiat-synths": "sFiat"			
+		},
+		"currency-category": {
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodities": "commodities",
-			"synthetic-currency": "Synthetic {{currencyKey}}",
-			"fiat-synths": "sFiat"
+			"commodity": "commodities",
+			"equities": "equities",
+			"index": "indices",
+			"inverse": "inverse"
 		},
 		"search": "search",
 		"features": {
@@ -345,6 +368,9 @@
 					"market-closed": "Market closed"
 				}
 			}
+		},
+		"filters": {
+			"all": "all"
 		}
 	}
 }

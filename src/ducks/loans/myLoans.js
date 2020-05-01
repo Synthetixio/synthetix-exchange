@@ -22,7 +22,7 @@ export const myLoansSlice = createSlice({
 		isRefreshing: false,
 	},
 	reducers: {
-		fetchLoansRequest: state => {
+		fetchLoansRequest: (state) => {
 			state.loadingError = null;
 			state.isLoading = true;
 			if (state.isLoaded) {
@@ -69,14 +69,14 @@ export const myLoansSlice = createSlice({
 	},
 });
 
-export const getMyLoansState = state => state.loans.myLoans;
-export const getMyLoansMap = state => getMyLoansState(state).loans;
-export const getIsLoadingMyLoans = state => getMyLoansState(state).isLoading;
-export const getIsRefreshingMyLoans = state => getMyLoansState(state).isRefreshing;
-export const getIsLoadedMyLoans = state => getMyLoansState(state).isLoaded;
-export const getMyLoansLoadingError = state => getMyLoansState(state).loadingError;
+export const getMyLoansState = (state) => state.loans.myLoans;
+export const getMyLoansMap = (state) => getMyLoansState(state).loans;
+export const getIsLoadingMyLoans = (state) => getMyLoansState(state).isLoading;
+export const getIsRefreshingMyLoans = (state) => getMyLoansState(state).isRefreshing;
+export const getIsLoadedMyLoans = (state) => getMyLoansState(state).isLoaded;
+export const getMyLoansLoadingError = (state) => getMyLoansState(state).loadingError;
 
-export const getMyLoans = createSelector(getMyLoansMap, loansMap => Object.values(loansMap));
+export const getMyLoans = createSelector(getMyLoansMap, (loansMap) => Object.values(loansMap));
 
 const {
 	updateLoan,
@@ -105,8 +105,8 @@ export const fetchLoans = () => async (dispatch, getState) => {
 		};
 		const events = await contractSettings.provider.getLogs(filter);
 		const loanIDs = events
-			.map(log => EtherCollateral.contract.interface.parseLog(log))
-			.map(event => Number(event.values.loanID));
+			.map((log) => EtherCollateral.contract.interface.parseLog(log))
+			.map((event) => Number(event.values.loanID));
 
 		const loans = {};
 

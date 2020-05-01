@@ -1,7 +1,7 @@
 import React from 'react';
 
-import MarketsSection from 'src/pages/shared/components/MarketsSection';
-import NewUserPromo from 'src/pages/shared/components/NewUserPromo';
+import MarketsSection from 'pages/shared/components/MarketsSection';
+import NewUserPromo from 'pages/shared/components/NewUserPromo';
 
 export const Markets = () => (
 	<>

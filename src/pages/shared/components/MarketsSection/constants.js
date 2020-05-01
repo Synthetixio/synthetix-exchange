@@ -1,4 +1,4 @@
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
 
 export const ASSET_FILTERS = [
 	{
@@ -12,4 +12,4 @@ export const ASSET_FILTERS = [
 	},
 ];
 
-export const MARKETS_REFRESH_INTERVAL_MS = 300000;
+export const MARKETS_REFRESH_INTERVAL_MS = 30000;

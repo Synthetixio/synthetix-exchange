@@ -2,9 +2,9 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingLarge } from 'src/components/Typography/Heading';
-import { media } from 'src/shared/media';
-import { darkTheme } from 'src/styles/theme';
+import { HeadingLarge } from 'components/Typography/Heading';
+import { media } from 'shared/media';
+import { darkTheme } from 'styles/theme';
 
 export const Hero = memo(() => {
 	const { t } = useTranslation();
@@ -52,7 +52,7 @@ const HeroTitle = styled(HeadingLarge)`
 const HeroSubtitle = styled.div`
 	font-size: 24px;
 	color: ${darkTheme.colors.fontTertiary};
-	font-family: ${props => props.theme.fonts.regular};
+	font-family: ${(props) => props.theme.fonts.regular};
 	${media.large`
 		font-size: 16px;
 	`}

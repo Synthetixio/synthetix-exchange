@@ -6,14 +6,14 @@ export const appSlice = createSlice({
 		isReady: false,
 	},
 	reducers: {
-		setAppReady: state => {
+		setAppReady: (state) => {
 			state.isReady = true;
 		},
 	},
 });
 
-export const getAppState = state => state.app;
-export const getIsAppReady = state => getAppState(state).isReady;
+export const getAppState = (state) => state.app;
+export const getIsAppReady = (state) => getAppState(state).isReady;
 
 const { setAppReady } = appSlice.actions;
 

@@ -3,18 +3,18 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
-import { getRatesExchangeRates } from 'src/ducks/rates';
+import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
+import { getRatesExchangeRates } from 'ducks/rates';
 
-import { InfoBox, InfoBoxLabel, InfoBoxValue } from 'src/shared/commonStyles';
+import { InfoBox, InfoBoxLabel, InfoBoxValue } from 'shared/commonStyles';
 import {
 	formatCurrencyWithPrecision,
 	formatCurrency,
 	formatCurrencyWithSign,
-} from 'src/utils/formatters';
-import { getExchangeRatesForCurrencies } from 'src/utils/rates';
+} from 'utils/formatters';
+import { getExchangeRatesForCurrencies } from 'utils/rates';
 
-import ChangePercent from 'src/components/ChangePercent';
+import ChangePercent from 'components/ChangePercent';
 
 const InfoRow = ({
 	data: { low24H, high24H, change24H, volume24H },
@@ -67,7 +67,7 @@ const RowContainer = styled.div`
 	grid-auto-flow: column;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthPair: getSynthPair(state),
 	exchangeRates: getRatesExchangeRates(state),
 	synthsMap: getAvailableSynthsMap(state),

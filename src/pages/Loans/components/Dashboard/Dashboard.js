@@ -4,18 +4,18 @@ import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { ReactComponent as ArrowHyperlinkIcon } from 'src/assets/images/arrow-hyperlink.svg';
+import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperlink.svg';
 
-import Card from 'src/components/Card';
-import { HeadingSmall } from 'src/components/Typography';
-import { getIsRefreshingLoansContractInfo } from 'src/ducks/loans/contractInfo';
-import { getIsFetchingWalletBalances } from 'src/ducks/wallet/walletBalances';
-import { getWalletInfo, getNetworkId } from 'src/ducks/wallet/walletDetails';
+import Card from 'components/Card';
+import { HeadingSmall } from 'components/Typography';
+import { getIsRefreshingLoansContractInfo } from 'ducks/loans/contractInfo';
+import { getIsFetchingWalletBalances } from 'ducks/wallet/walletBalances';
+import { getWalletInfo, getNetworkId } from 'ducks/wallet/walletDetails';
 
-import { getCurrencyKeyBalance } from 'src/utils/balances';
-import { formatPercentage, formatCurrency, formatCurrencyWithKey } from 'src/utils/formatters';
+import { getCurrencyKeyBalance } from 'utils/balances';
+import { formatPercentage, formatCurrency, formatCurrencyWithKey } from 'utils/formatters';
 
-import { CARD_HEIGHT } from 'src/constants/ui';
+import { CARD_HEIGHT } from 'constants/ui';
 
 import {
 	InfoBox,
@@ -23,12 +23,12 @@ import {
 	InfoBoxValue,
 	CurrencyKey,
 	ExternalLink,
-} from 'src/shared/commonStyles';
-import { EMPTY_VALUE } from 'src/constants/placeholder';
-import Spinner from 'src/components/Spinner';
+} from 'shared/commonStyles';
+import { EMPTY_VALUE } from 'constants/placeholder';
+import Spinner from 'components/Spinner';
 
-import snxJSConnector from 'src/utils/snxJSConnector';
-import { getEtherscanAddressLink } from 'src/utils/explorers';
+import snxJSConnector from 'utils/snxJSConnector';
+import { getEtherscanAddressLink } from 'utils/explorers';
 
 export const Dashboard = ({
 	walletInfo: { balances, currentWallet },
@@ -176,7 +176,7 @@ Dashboard.propTypes = {
 };
 
 const StyledExternalLink = styled(ExternalLink)`
-	color: ${props => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.hyperlink};
 	text-transform: none;
 	margin-left: auto;
 	font-size: 13px;
@@ -207,14 +207,14 @@ const LoanInfoRow = styled.div`
 `;
 
 const Table = styled.table`
-	background-color: ${props => props.theme.colors.surfaceL2};
+	background-color: ${(props) => props.theme.colors.surfaceL2};
 	border-collapse: collapse;
 	width: 100%;
 	font-size: 12px;
 	tr {
 		text-align: left;
 		> * {
-			color: ${props => props.theme.colors.fontPrimary};
+			color: ${(props) => props.theme.colors.fontPrimary};
 			height: ${CARD_HEIGHT};
 			text-align: left;
 			&:first-child {
@@ -227,17 +227,17 @@ const Table = styled.table`
 		}
 		> th {
 			&:not(:first-child) {
-				color: ${props => props.theme.colors.fontTertiary};
+				color: ${(props) => props.theme.colors.fontTertiary};
 			}
 		}
 	}
 `;
 
 const TableRowHeader = styled.tr`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 	walletInfo: getWalletInfo(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),

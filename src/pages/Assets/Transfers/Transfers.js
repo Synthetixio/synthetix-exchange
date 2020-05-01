@@ -4,20 +4,20 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
+import { CRYPTO_CURRENCY_MAP } from 'constants/currency';
 
-import Table from 'src/components/Table';
-import { TABLE_PALETTE } from 'src/components/Table/constants';
-import Currency from 'src/components/Currency';
-import Card from 'src/components/Card';
-import Link from 'src/components/Link';
-import { HeadingSmall } from 'src/components/Typography';
-import { ButtonPrimary } from 'src/components/Button';
+import Table from 'components/Table';
+import { TABLE_PALETTE } from 'components/Table/constants';
+import Currency from 'components/Currency';
+import Card from 'components/Card';
+import Link from 'components/Link';
+import { HeadingSmall } from 'components/Typography';
+import { ButtonPrimary } from 'components/Button';
 
-import { getEtherscanTxLink } from 'src/utils/explorers';
-import { formatTxTimestamp, formatCurrency } from 'src/utils/formatters';
+import { getEtherscanTxLink } from 'utils/explorers';
+import { formatTxTimestamp, formatCurrency } from 'utils/formatters';
 
-import { getNetworkId } from 'src/ducks/wallet/walletDetails';
+import { getNetworkId } from 'ducks/wallet/walletDetails';
 
 const MOCK_TRANSFERS = [
 	{
@@ -44,14 +44,14 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 						{
 							Header: t('assets.transfers.table.date-time-col'),
 							accessor: 'time',
-							Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+							Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 							width: 150,
 							sortable: true,
 						},
 						{
 							Header: t('assets.transfers.table.asset-col'),
 							accessor: 'currencyKey',
-							Cell: cellProps => (
+							Cell: (cellProps) => (
 								<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 							),
 							width: 150,
@@ -59,21 +59,22 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 						{
 							Header: t('assets.transfers.table.total-col'),
 							accessor: 'amount',
-							Cell: cellProps => <span>{formatCurrency(cellProps.cell.value)}</span>,
+							sortType: 'basic',
+							Cell: (cellProps) => <span>{formatCurrency(cellProps.cell.value)}</span>,
 							width: 150,
 							sortable: true,
 						},
 						{
 							Header: t('assets.transfers.table.status-col'),
 							accessor: 'status',
-							Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
+							Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
 							width: 150,
 							sortable: true,
 						},
 						{
 							Header: t('assets.transfers.table.verify-col'),
 							accessor: 'actions',
-							Cell: cellProps => (
+							Cell: (cellProps) => (
 								<Link
 									to={getEtherscanTxLink(networkId, cellProps.row.original.txid)}
 									isExternal={true}
@@ -99,7 +100,7 @@ const StyledCardBody = styled(Card.Body)`
 	padding: 0;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 });
 

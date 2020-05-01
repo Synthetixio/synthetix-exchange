@@ -16,7 +16,7 @@ export const ratesSlice = createSlice({
 		isRefreshed: false,
 	},
 	reducers: {
-		fetchRatesRequest: state => {
+		fetchRatesRequest: (state) => {
 			state.loadingError = null;
 			state.isLoading = true;
 			if (state.isLoaded) {
@@ -37,19 +37,19 @@ export const ratesSlice = createSlice({
 	},
 });
 
-export const getRatesState = state => state.rates;
-export const getIsLoadingRates = state => getRatesState(state).isLoading;
-export const getIsRefreshingRates = state => getRatesState(state).isRefreshing;
-export const getIsLoadedRates = state => getRatesState(state).isLoaded;
-export const getRatesLoadingError = state => getRatesState(state).loadingError;
-export const getRatesExchangeRates = state => getRatesState(state).exchangeRates;
-export const getEthRate = createSelector(getRatesExchangeRates, exchangeRates =>
+export const getRatesState = (state) => state.rates;
+export const getIsLoadingRates = (state) => getRatesState(state).isLoading;
+export const getIsRefreshingRates = (state) => getRatesState(state).isRefreshing;
+export const getIsLoadedRates = (state) => getRatesState(state).isLoaded;
+export const getRatesLoadingError = (state) => getRatesState(state).loadingError;
+export const getRatesExchangeRates = (state) => getRatesState(state).exchangeRates;
+export const getEthRate = createSelector(getRatesExchangeRates, (exchangeRates) =>
 	get(exchangeRates, SYNTHS_MAP.sETH, null)
 );
 
 const { fetchRatesRequest, fetchRatesSuccess, fetchRatesFailure } = ratesSlice.actions;
 
-export const fetchRates = () => async dispatch => {
+export const fetchRates = () => async (dispatch) => {
 	const { synthSummaryUtilContract } = snxJSConnector;
 
 	dispatch(fetchRatesRequest());

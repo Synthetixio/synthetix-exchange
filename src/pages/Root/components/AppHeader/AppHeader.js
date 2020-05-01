@@ -6,17 +6,17 @@ import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import { labelMediumCSS } from 'src/components/Typography/Label';
-import Link from 'src/components/Link';
+import { labelMediumCSS } from 'components/Typography/Label';
+import Link from 'components/Link';
 
-import { ROUTES } from 'src/constants/routes';
-import { APP_HEADER_HEIGHT } from 'src/constants/ui';
+import { ROUTES } from 'constants/routes';
+import { APP_HEADER_HEIGHT } from 'constants/ui';
 
-import { FlexDivCentered } from 'src/shared/commonStyles';
+import { FlexDivCentered } from 'shared/commonStyles';
 
-import { mediumMediaQuery } from 'src/shared/media';
+import { mediumMediaQuery } from 'shared/media';
 
-import { getIsLoggedIn } from 'src/ducks/wallet/walletDetails';
+import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
@@ -25,7 +25,7 @@ import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
 
-export const AppHeader = memo(props => {
+export const AppHeader = memo((props) => {
 	const { showThemeToggle, isOnSplashPage, isLoggedIn, ...rest } = props;
 	const { t } = useTranslation();
 
@@ -46,6 +46,9 @@ export const AppHeader = memo(props => {
 					</MenuItem>
 					<MenuLinkItem>
 						<MenuLink to={ROUTES.Markets}>{t('header.links.markets')}</MenuLink>
+					</MenuLinkItem>
+					<MenuLinkItem>
+						<MenuLink to={ROUTES.Synths.Home}>{t('header.links.synths')}</MenuLink>
 					</MenuLinkItem>
 					<MenuLinkItem>
 						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
@@ -90,9 +93,9 @@ AppHeader.propTypes = {
 
 export const Container = styled.header`
 	height: ${APP_HEADER_HEIGHT};
-	background-color: ${props =>
+	background-color: ${(props) =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${props => props.theme.colors.accentL1};
+	border-color: ${(props) => props.theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 `;
@@ -118,16 +121,16 @@ const MenuLink = styled(Link)`
 	padding: 6px 10px;
 	display: flex;
 	align-items: center;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	text-transform: uppercase;
 	height: 32px;
 	&:hover {
-		color: ${props => props.theme.colors.fontPrimary};
-		background-color: ${props => props.theme.colors.accentL1};
+		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	&.active {
-		background-color: ${props => props.theme.colors.accentL2};
-		color: ${props => props.theme.colors.fontPrimary};
+		background-color: ${(props) => props.theme.colors.accentL2};
+		color: ${(props) => props.theme.colors.fontPrimary};
 	}
 `;
 
@@ -147,7 +150,7 @@ const MenuItemsRight = styled(MenuItems)`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
 

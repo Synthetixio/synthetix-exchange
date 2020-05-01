@@ -5,11 +5,11 @@ import { ResponsiveContainer, AreaChart, XAxis, YAxis, Area, Tooltip } from 'rec
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
+import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 
-import { DataLarge } from 'src/components/Typography';
-import Spinner from 'src/components/Spinner';
-import { formatCurrencyWithPrecision } from 'src/utils/formatters';
+import { DataLarge } from 'components/Typography';
+import Spinner from 'components/Spinner';
+import { formatCurrencyWithPrecision } from 'utils/formatters';
 
 const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => {
 	const { colors } = useContext(ThemeContext);
@@ -23,7 +23,7 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 				<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
 			) : null}
 			{!isLoading && data.rates && data.rates.length > 0 ? (
-				<ResponsiveContainer width="100%" height={250}>
+				<ResponsiveContainer width="99.9%" height={250}>
 					<AreaChart data={data.rates} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
 						<defs>
 							<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -34,17 +34,20 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 						<XAxis
 							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 							dataKey="timestamp"
-							tickFormatter={val =>
+							tickFormatter={(val) =>
 								period.value > 24 ? format(val, 'DD MMM') : format(val, 'h:mma')
 							}
-							reversed={true}
+							axisLine={false}
+							tickLine={false}
 						/>
 						<YAxis
 							type="number"
 							domain={['auto', 'auto']}
-							tickFormatter={val => `${synthSign}${formatCurrencyWithPrecision(val)}`}
+							tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
 							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 							orientation="right"
+							axisLine={false}
+							tickLine={false}
 						/>
 						<Area dataKey="rate" stroke={colors.hyperlink} fillOpacity={0.5} fill="url(#colorUv)" />
 						<Tooltip
@@ -63,8 +66,8 @@ const Chart = ({ synthPair: { quote }, data, isLoading, period, synthsMap }) => 
 								color: colors.fontTertiary,
 								fontSize: '12px',
 							}}
-							formatter={value => `${synthSign}${formatCurrencyWithPrecision(value)}`}
-							labelFormatter={label => format(label, 'Do MMM YY | HH:mm')}
+							formatter={(value) => `${synthSign}${formatCurrencyWithPrecision(value)}`}
+							labelFormatter={(label) => format(label, 'Do MMM YY | HH:mm')}
 						/>
 					</AreaChart>
 				</ResponsiveContainer>
@@ -85,7 +88,7 @@ const ChartContainer = styled.div`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthPair: getSynthPair(state),
 	synthsMap: getAvailableSynthsMap(state),
 });

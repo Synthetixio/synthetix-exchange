@@ -3,24 +3,24 @@ import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import snxJSConnector, { connectToWallet } from 'src/utils/snxJSConnector';
+import snxJSConnector, { connectToWallet } from 'utils/snxJSConnector';
 import {
 	hasWeb3,
 	SUPPORTED_WALLETS,
 	SUPPORTED_WALLETS_MAP,
 	onMetamaskAccountChange,
-} from 'src/utils/networkUtils';
-import { updateWalletReducer, resetWalletReducer } from 'src/ducks/wallet/walletDetails';
-import { toggleWalletPopup } from 'src/ducks/ui';
-import { getWalletInfo } from 'src/ducks/wallet/walletDetails';
+} from 'utils/networkUtils';
+import { updateWalletReducer, resetWalletReducer } from 'ducks/wallet/walletDetails';
+import { toggleWalletPopup } from 'ducks/ui';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
 import { HeadingMedium } from '../Typography';
 
-import { ReactComponent as CoinbaseWallet } from 'src/assets/images/wallets/coinbase.svg';
-import { ReactComponent as LedgerWallet } from 'src/assets/images/wallets/ledger.svg';
-import { ReactComponent as MetamaskWallet } from 'src/assets/images/wallets/metamask.svg';
-import { ReactComponent as TrezorWallet } from 'src/assets/images/wallets/trezor.svg';
-import { ReactComponent as WalletConnect } from 'src/assets/images/wallets/walletConnect.svg';
+import { ReactComponent as CoinbaseWallet } from 'assets/images/wallets/coinbase.svg';
+import { ReactComponent as LedgerWallet } from 'assets/images/wallets/ledger.svg';
+import { ReactComponent as MetamaskWallet } from 'assets/images/wallets/metamask.svg';
+import { ReactComponent as TrezorWallet } from 'assets/images/wallets/trezor.svg';
+import { ReactComponent as WalletConnect } from 'assets/images/wallets/walletConnect.svg';
 
 const { METAMASK, LEDGER, TREZOR, COINBASE, WALLET_CONNECT } = SUPPORTED_WALLETS_MAP;
 
@@ -46,7 +46,7 @@ const WalletTypeSelector = ({
 		updateWalletReducer({ ...walletStatus, availableWallets: [] });
 		if (walletStatus && walletStatus.unlocked && walletStatus.currentWallet) {
 			if (walletStatus.walletType === METAMASK) {
-				onMetamaskAccountChange(async accounts => {
+				onMetamaskAccountChange(async (accounts) => {
 					if (accounts && accounts.length > 0) {
 						const signer = new snxJSConnector.signers[METAMASK]({});
 						snxJSConnector.setContractSettings({
@@ -65,7 +65,7 @@ const WalletTypeSelector = ({
 		<Container>
 			<HeadingMedium>{t('modals.wallet.wallet-selector.title')}</HeadingMedium>
 			<Wallets>
-				{SUPPORTED_WALLETS.map(wallet => {
+				{SUPPORTED_WALLETS.map((wallet) => {
 					const noMetamask = wallet === METAMASK && !hasWeb3();
 					const Icon = walletTypeToIconMap[wallet];
 
@@ -105,7 +105,7 @@ const Wallets = styled.div`
 const Wallet = styled.button`
 	cursor: pointer;
 	border: none;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -123,13 +123,13 @@ const Wallet = styled.button`
 `;
 
 const WalletLabel = styled.h3`
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	font-family: 'apercu-light', sans-serif;
 	letter-spacing: 1px;
 	font-size: 24px;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 });
 

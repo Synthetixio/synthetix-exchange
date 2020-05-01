@@ -23,18 +23,18 @@ const ButtonPrimary = styled.button`
 	width: 100%;
 	font-size: 16px;
 	letter-spacing: 0.5px;
-	font-family: ${props => props.theme.fonts.medium};
-	color: ${props => props.theme.colors.white};
+	font-family: ${(props) => props.theme.fonts.medium};
+	color: ${(props) => props.theme.colors.white};
 	cursor: pointer;
 	padding: 0 6px;
-	background-color: ${props => props.theme.colors.buttonDefault};
+	background-color: ${(props) => props.theme.colors.buttonDefault};
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;
 	}
 	&:hover {
 		&:not(:disabled) {
-			background-color: ${props => props.theme.colors.buttonHover};
+			background-color: ${(props) => props.theme.colors.buttonHover};
 		}
 	}
 	border: none;
@@ -42,8 +42,8 @@ const ButtonPrimary = styled.button`
 	line-height: 44px;
 	white-space: nowrap;
 	${width};
-	${props => props.size === 'sm' && smallButtonCSS}
-	${props => props.size === 'xs' && extraSmallButtonCSS}
+	${(props) => props.size === 'sm' && smallButtonCSS}
+	${(props) => props.size === 'xs' && extraSmallButtonCSS}
 `;
 
 export const ButtonPrimarySmall = styled(ButtonPrimary)`

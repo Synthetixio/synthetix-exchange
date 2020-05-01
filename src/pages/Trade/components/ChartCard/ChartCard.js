@@ -5,17 +5,16 @@ import styled from 'styled-components';
 import Chart from './Chart';
 import InfoRow from './InfoRow';
 
-import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
-import { getRatesExchangeRates } from 'src/ducks/rates';
+import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
+import { getRatesExchangeRates } from 'ducks/rates';
 
-import { ButtonFilter } from 'src/components/Button';
+import { PERIOD_IN_HOURS } from 'constants/period';
+
+import { ButtonFilter } from 'components/Button';
 import PairListPanel from './PairListPanel';
 
-import {
-	fetchSynthVolumeInUSD,
-	PERIOD_IN_HOURS,
-	fetchSynthRateUpdates,
-} from 'src/services/rates/rates';
+import { fetchSynthVolumeInUSD, fetchSynthRateUpdates } from 'services/rates/rates';
+import Card from 'components/Card';
 
 const PERIODS = [
 	{ value: PERIOD_IN_HOURS.ONE_HOUR, label: '1H' },
@@ -24,8 +23,6 @@ const PERIODS = [
 	{ value: PERIOD_IN_HOURS.ONE_WEEK, label: '1W' },
 	{ value: PERIOD_IN_HOURS.ONE_MONTH, label: '1M' },
 ];
-
-import Card from 'src/components/Card';
 
 const ChartCard = ({ synthPair: { base, quote } }) => {
 	const [chartData, setChartData] = useState({
@@ -119,7 +116,7 @@ const Periods = styled.div`
 	}
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthPair: getSynthPair(state),
 	exchangeRates: getRatesExchangeRates(state),
 	synthsMap: getAvailableSynthsMap(state),

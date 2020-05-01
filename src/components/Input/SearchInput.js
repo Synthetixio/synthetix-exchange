@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { ReactComponent as SearchIcon } from 'src/assets/images/search.svg';
+import { ReactComponent as SearchIcon } from 'assets/images/search.svg';
 
 import GenericInput from './Input';
 

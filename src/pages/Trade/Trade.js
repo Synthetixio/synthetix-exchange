@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'src/shared/commonStyles';
+import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'shared/commonStyles';
 
 import ChartCard from './components/ChartCard';
 import CreateOrderCard from './components/CreateOrderCard';
@@ -10,7 +10,7 @@ import OrderBookCard from './components/OrderBookCard';
 import BlurBackground from './components/BlurBackground';
 
 import { getSynthPair, setSynthPair } from '../../ducks/synths';
-import { navigateToTrade } from 'src/constants/routes';
+import { navigateToTrade } from 'constants/routes';
 
 const Trade = ({ match, setSynthPair, synthPair }) => {
 	useEffect(() => {
@@ -58,6 +58,7 @@ const TradeContainer = styled.div`
 	flex: 1;
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 `;
 const ChartContainer = styled.div`
 	flex: 1;
@@ -67,7 +68,7 @@ const CreateOrderContainer = styled.div`
 	margin-left: 8px;
 `;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	synthPair: getSynthPair(state),
 });
 

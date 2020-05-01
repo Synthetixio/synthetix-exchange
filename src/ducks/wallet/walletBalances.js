@@ -3,7 +3,7 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import orderBy from 'lodash/orderBy';
 
 import { fetchSynthsBalance, fetchEthBalance } from '../../dataFetcher';
-import { CRYPTO_CURRENCY_MAP } from 'src/constants/currency';
+import { CRYPTO_CURRENCY_MAP } from 'constants/currency';
 import { toBigNumber } from '../../utils/formatters';
 import { getAvailableSynths } from '../synths';
 import { getHideSmallValueAssets } from '../ui';
@@ -20,7 +20,7 @@ export const walletBalancesSlice = createSlice({
 		isLoadedWalletBalances: false,
 	},
 	reducers: {
-		fetchWalletBalancesRequest: state => {
+		fetchWalletBalancesRequest: (state) => {
 			state.isFetchingWalletBalances = true;
 			if (state.isLoadedWalletBalances) {
 				state.isRefreshingWalletBalances = true;
@@ -34,14 +34,14 @@ export const walletBalancesSlice = createSlice({
 			state.isRefreshingWalletBalances = false;
 			state.isLoadedWalletBalances = true;
 		},
-		fetchWalletBalancesFailure: state => {
+		fetchWalletBalancesFailure: (state) => {
 			state.isFetchingWalletBalances = false;
 		},
 	},
 });
-export const getWalletBalancesState = state => state.wallet.walletBalances;
-export const getWalletBalancesMap = state => getWalletBalancesState(state).balances;
-export const getWalletBalances = createSelector(getWalletBalancesMap, walletBalancesMap => {
+export const getWalletBalancesState = (state) => state.wallet.walletBalances;
+export const getWalletBalancesMap = (state) => getWalletBalancesState(state).balances;
+export const getWalletBalances = createSelector(getWalletBalancesMap, (walletBalancesMap) => {
 	if (walletBalancesMap == null) {
 		return [];
 	}
@@ -70,28 +70,26 @@ export const getWalletBalances = createSelector(getWalletBalancesMap, walletBala
 		'desc'
 	);
 });
-export const getTotalETHBalanceUSD = createSelector(getWalletBalancesMap, walletBalancesMap =>
+export const getTotalETHBalanceUSD = createSelector(getWalletBalancesMap, (walletBalancesMap) =>
 	walletBalancesMap == null ? 0 : walletBalancesMap.eth.usdBalance
 );
-export const getTotalETHBalance = createSelector(getWalletBalancesMap, walletBalancesMap =>
+export const getTotalETHBalance = createSelector(getWalletBalancesMap, (walletBalancesMap) =>
 	walletBalancesMap == null ? 0 : walletBalancesMap.eth.balance
 );
-export const getTotalSynthsBalanceUSD = createSelector(getWalletBalancesMap, walletBalancesMap =>
+export const getTotalSynthsBalanceUSD = createSelector(getWalletBalancesMap, (walletBalancesMap) =>
 	walletBalancesMap == null ? 0 : walletBalancesMap.synths.usdBalance
 );
 export const getTotalWalletBalanceUSD = createSelector(
 	getTotalETHBalanceUSD,
 	getTotalSynthsBalanceUSD,
 	(totalWalletETHBalanceUSD, totalSynthsBalanceUSD) =>
-		toBigNumber(totalWalletETHBalanceUSD)
-			.plus(totalSynthsBalanceUSD)
-			.toNumber()
+		toBigNumber(totalWalletETHBalanceUSD).plus(totalSynthsBalanceUSD).toNumber()
 );
-export const getIsFetchingWalletBalances = state =>
+export const getIsFetchingWalletBalances = (state) =>
 	getWalletBalancesState(state).isFetchingWalletBalances;
-export const getIsRefreshingWalletBalances = state =>
+export const getIsRefreshingWalletBalances = (state) =>
 	getWalletBalancesState(state).isRefreshingWalletBalances;
-export const getIsLoadedWalletBalances = state =>
+export const getIsLoadedWalletBalances = (state) =>
 	getWalletBalancesState(state).isLoadedWalletBalances;
 
 export const getSynthsWalletBalances = createSelector(
