@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { ExternalLink } from 'shared/commonStyles';
 import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperlink.svg';
 
-const ViewLink = styled(ExternalLink)`
+const ViewLink = styled(ExternalLink)<{ isDisabled?: boolean }>`
 	color: ${(props) => props.theme.colors.hyperlink};
 	box-sizing: border-box;
 	flex: 150 0 auto;

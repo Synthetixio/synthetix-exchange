@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getAvailableSynthsMap } from 'ducks/synths';
+import { getAvailableSynthsMap, SynthDefinition } from 'ducks/synths';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 
 import Table from 'components/Table';
@@ -13,6 +13,9 @@ import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 
 import { SYNTHS_MAP } from 'constants/currency';
+
+import { RootState } from 'ducks/types';
+import { HistoricalTrades } from 'ducks/trades/types';
 
 import { TableNoResults } from 'shared/commonStyles';
 import ViewLink, { ArrowIcon } from './ViewLink';
@@ -28,23 +31,42 @@ import {
 	formatCurrencyPair,
 } from 'utils/formatters';
 
-const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => {
+type StateProps = {
+	networkId: number;
+	synthsMap: Record<string, SynthDefinition>;
+};
+
+type Props = {
+	trades: HistoricalTrades;
+	isLoading: boolean;
+	isLoaded: boolean;
+};
+
+type TradeHistoryProps = StateProps & Props;
+
+const TradeHistory: FC<TradeHistoryProps> = ({
+	trades,
+	isLoading,
+	isLoaded,
+	synthsMap,
+	networkId,
+}) => {
 	const { t } = useTranslation();
 
 	return (
-		<StyledTable
+		<StyledTable<any>
 			palette={TABLE_PALETTE.STRIPED}
 			columns={[
 				{
 					Header: t('assets.exchanges.table.date-time-col'),
 					accessor: 'timestamp',
-					Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
+					Cell: (cellProps: any) => formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
 				{
 					Header: t('assets.exchanges.table.pair-col'),
-					accessor: (d) => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
-					Cell: (cellProps) => {
+					accessor: (d: any) => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
+					Cell: (cellProps: any) => {
 						const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
 						return (
@@ -56,7 +78,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 					Header: t('assets.exchanges.table.buying-col'),
 					accessor: 'toAmount',
 					sortType: 'basic',
-					Cell: (cellProps) => (
+					Cell: (cellProps: any) => (
 						<Tooltip
 							title={formatCurrency(cellProps.row.original.toAmount, LONG_CRYPTO_CURRENCY_DECIMALS)}
 							placement="top"
@@ -76,7 +98,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 					Header: t('assets.exchanges.table.selling-col'),
 					accessor: 'fromAmount',
 					sortType: 'basic',
-					Cell: (cellProps) => (
+					Cell: (cellProps: any) => (
 						<Tooltip
 							title={formatCurrency(
 								cellProps.row.original.fromAmount,
@@ -99,7 +121,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 					Header: t('assets.exchanges.table.price-col'),
 					accessor: 'price',
 					sortType: 'basic',
-					Cell: (cellProps) => (
+					Cell: (cellProps: any) => (
 						<span>
 							{formatCurrencyWithSign(
 								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -113,7 +135,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 					Header: t('assets.exchanges.table.total-col'),
 					accessor: 'amount',
 					sortType: 'basic',
-					Cell: (cellProps) => (
+					Cell: (cellProps: any) => (
 						<span>
 							{formatCurrencyWithSign(
 								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -132,7 +154,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				{
 					Header: t('assets.exchanges.table.verify-col'),
 					accessor: 'actions',
-					Cell: (cellProps) => (
+					Cell: (cellProps: any) => (
 						<ViewLink
 							isDisabled={!cellProps.row.original.hash}
 							href={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
@@ -144,7 +166,7 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 				},
 			]}
 			data={trades}
-			isLoading={isLoading}
+			isLoading={isLoading && !isLoaded}
 			noResultsMessage={
 				isLoaded && trades.length === 0 ? (
 					<TableNoResults>{t('assets.exchanges.table.no-results')}</TableNoResults>
@@ -155,14 +177,16 @@ const TradeHistory = ({ trades, isLoading, isLoaded, synthsMap, networkId }) => 
 };
 
 const StyledTable = styled(Table)`
+	position: initial;
+
 	.table-body-cell {
 		height: 38px;
 	}
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState): StateProps => ({
 	synthsMap: getAvailableSynthsMap(state),
 	networkId: getNetworkId(state),
 });
 
-export default connect(mapStateToProps, null)(TradeHistory);
+export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(TradeHistory);

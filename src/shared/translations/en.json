@@ -172,7 +172,8 @@
 				"price": "Price",
 				"total": "Total",
 				"status": "Status",
-				"verify": "verify"
+				"verify": "verify",
+				"no-results": "No pending exchanges associated with this wallet"
 			}
 		}
 	},
