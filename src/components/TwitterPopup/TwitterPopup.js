@@ -26,7 +26,7 @@ import { L2_URL } from 'src/constants/l2';
 import { media } from 'src/shared/media';
 
 const getTweet = address => {
-	const text = `Hey @Synthetix_io it's ${address}, give me some sUSD tokens on Layer 2! @optimismPBC`;
+	const text = `Hey @synthetixl2demo it's ${address}, give me some sUSD tokens on Layer 2! @optimismPBC`;
 	const hashtags = 'synthetix';
 	const url = L2_URL;
 
