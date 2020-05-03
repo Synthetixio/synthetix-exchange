@@ -17,8 +17,6 @@ import { resetButtonCSS } from 'src/shared/commonStyles';
 import { hideViewTxModal, getViewTxModalProps } from 'src/ducks/ui';
 import { bigNumberFormatter, shortenAddress, formatCurrencyWithKey } from 'src/utils/formatters';
 
-import { smallMediaQuery } from 'src/shared/media';
-
 const TRANSFER_EVENT = 'Transfer';
 
 const useStyles = makeStyles(() => ({
@@ -34,7 +32,6 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [txDetails, setTxDetails] = useState(null);
-	const isMobile = useMediaQuery({ query: smallMediaQuery });
 
 	useEffect(() => {
 		const loadTx = async () => {
@@ -48,27 +45,22 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 			await provider.waitForTransaction(hash);
 			const txDetails = await provider.getTransactionReceipt(hash);
 
-			const transfers = !isMobile
-				? txDetails.logs
-						.map(log => {
-							const contract = Object.keys(addressList).find(
-								key => addressList[key] === log.address
-							);
+			const transfers = txDetails.logs
+				.map(log => {
+					const contract = Object.keys(addressList).find(key => addressList[key] === log.address);
 
-							return {
-								contract,
-								event: snxJSConnector.snxJS.Synthetix.contract.interface.parseLog(log),
-							};
-						})
-						.filter(({ event }) => event && event.name === TRANSFER_EVENT)
-						.map(({ contract, event: { values: { from, to, value } } }) => ({
-							synth: contract.split('Proxy')[1],
-							from,
-							to,
-							value: bigNumberFormatter(value),
-						}))
-				: [];
-
+					return {
+						contract,
+						event: snxJSConnector.snxJS.Synthetix.contract.interface.parseLog(log),
+					};
+				})
+				.filter(({ event }) => event && event.name === TRANSFER_EVENT)
+				.map(({ contract, event: { values: { from, to, value } } }) => ({
+					synth: contract.split('Proxy')[1],
+					from,
+					to,
+					value: bigNumberFormatter(value),
+				}));
 			setTxDetails({ ...txDetails, transfers });
 			setIsLoading(false);
 		};
@@ -88,48 +80,46 @@ const ViewTxModal = ({ viewTxModalProps: { hash }, hideViewTxModal }) => {
 				{isLoading ? (
 					<HeartBeat surface={3} />
 				) : (
-					<Table cellSpacing={0} cellPadding={0}>
-						<tbody>
-							<tr>
-								<TableCellLabel>transaction hash</TableCellLabel>
-								<TableCellDesc>{hash}</TableCellDesc>
-							</tr>
-							<tr>
-								<TableCellLabel>status</TableCellLabel>
-								<TableCellDesc>{txDetails.status === 1 && 'success'}</TableCellDesc>
-							</tr>
-							<tr>
-								<TableCellLabel>block</TableCellLabel>
-								<TableCellDesc>{txDetails.blockNumber}</TableCellDesc>
-							</tr>
-							<tr>
-								<TableCellLabel>from</TableCellLabel>
-								<TableCellDesc>{txDetails.from}</TableCellDesc>
-							</tr>
-							<tr>
-								<TableCellLabel>to</TableCellLabel>
-								<TableCellDesc>{txDetails.to}</TableCellDesc>
-							</tr>
-							<tr>
-								<TableCellLabel>confirmations</TableCellLabel>
-								<TableCellDesc>{txDetails.confirmations}</TableCellDesc>
-							</tr>
-							{txDetails.transfers.length > 0 && (
-								<tr>
-									<TableCellLabel>transfers</TableCellLabel>
-									<TableCellDesc>
-										{txDetails.transfers.map(({ synth, from, to, value }, idx) => (
-											<TransferLabel key={`label${idx}`}>
-												{`From ${shortenAddress(from)} To ${shortenAddress(
-													to
-												)} For ${formatCurrencyWithKey(synth, value)}`}
-												<Currency.Icon currencyKey={synth} />
-											</TransferLabel>
-										))}
-									</TableCellDesc>
-								</tr>
-							)}
-						</tbody>
+					<Table>
+						<TableCellRow>
+							<TableCellLabel>transaction hash</TableCellLabel>
+							<TableCellDesc>{hash}</TableCellDesc>
+						</TableCellRow>
+						<TableCellRow>
+							<TableCellLabel>status</TableCellLabel>
+							<TableCellDesc>{txDetails.status === 1 && 'success'}</TableCellDesc>
+						</TableCellRow>
+						<TableCellRow>
+							<TableCellLabel>block</TableCellLabel>
+							<TableCellDesc>{txDetails.blockNumber}</TableCellDesc>
+						</TableCellRow>
+						<TableCellRow>
+							<TableCellLabel>from</TableCellLabel>
+							<TableCellDesc>{txDetails.from}</TableCellDesc>
+						</TableCellRow>
+						<TableCellRow>
+							<TableCellLabel>to</TableCellLabel>
+							<TableCellDesc>{txDetails.to}</TableCellDesc>
+						</TableCellRow>
+						<TableCellRow>
+							<TableCellLabel>confirmations</TableCellLabel>
+							<TableCellDesc>{txDetails.confirmations}</TableCellDesc>
+						</TableCellRow>
+						{txDetails.transfers.length > 0 && (
+							<TableCellRow>
+								<TableCellLabel>transfers</TableCellLabel>
+								<TableCellDesc>
+									{txDetails.transfers.map(({ synth, from, to, value }, idx) => (
+										<TransferLabel key={`label${idx}`}>
+											{`From ${shortenAddress(from)} To ${shortenAddress(
+												to
+											)} For ${formatCurrencyWithKey(synth, value)}`}
+											<Currency.Icon currencyKey={synth} />
+										</TransferLabel>
+									))}
+								</TableCellDesc>
+							</TableCellRow>
+						)}
 					</Table>
 				)}
 			</Container>
@@ -147,7 +137,10 @@ const Container = styled.div`
 	padding: 48px;
 	${media.medium`
 		width: 100%;
+		height: 100%;
 		border: 0;
+		overflow-y: auto;
+		padding: 24px;
 	`}
 `;
 
@@ -157,9 +150,14 @@ const CloseButton = styled.button`
 	top: 35px;
 	right: 35px;
 	svg {
-		width: 15px;
-		height: 15px;
+		width: 20px;
+		height: 20px;
 	}
+	${media.medium`
+		position: fixed;
+		top: 20px;
+		right: 20px;
+	`}
 `;
 
 const Heading = styled.div`
@@ -171,14 +169,16 @@ const Heading = styled.div`
 	padding-bottom: 30px;
 `;
 
-const Table = styled.table`
+const Table = styled.div`
 	width: 100%;
-	border-collapse: collapse;
+	border-bottom: 1px solid #cb5bf2;
+	${media.medium`
+		border: 0;
+	`}
 `;
 
-const TableCell = styled.td`
+const TableCell = styled.div`
 	border: 1px solid #cb5bf2;
-	border-collapse: collapse;
 	padding: 8px 12px;
 	font-style: normal;
 	font-weight: 500;
@@ -187,6 +187,21 @@ const TableCell = styled.td`
 	letter-spacing: 0.2px;
 	text-transform: uppercase;
 	word-break: break-all;
+	${media.medium`
+		border: 0;
+		padding: 5px;
+	`}
+	border-bottom: 0;
+`;
+
+const TableCellRow = styled.div`
+	display: grid;
+	grid-template-columns: 165px 1fr;
+	${media.medium`
+		grid-template-columns: initial;
+		grid-template-rows: auto 1fr;
+		padding-bottom: 10px;
+	`}
 `;
 
 const TableCellLabel = styled(TableCell)`
@@ -200,6 +215,7 @@ const TableCellLabel = styled(TableCell)`
 `;
 
 const TableCellDesc = styled(TableCell)`
+	border-left: 0;
 	color: #fff;
 `;
 
@@ -207,11 +223,10 @@ const TransferLabel = styled.div`
 	&:not(:first-child) {
 		margin-top: 10px;
 	}
-	display: flex;
+	display: inline-grid;
 	align-items: center;
-	& > svg {
-		margin-left: 5px;
-	}
+	grid-auto-flow: column;
+	grid-gap: 10px;
 `;
 const mapStateToProps = state => ({
 	viewTxModalProps: getViewTxModalProps(state),
