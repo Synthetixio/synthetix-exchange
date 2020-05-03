@@ -5,7 +5,6 @@ import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
 import snxJSConnector from 'src/utils/snxJSConnector';
 import { media } from 'src/shared/media';
-import { useMediaQuery } from 'react-responsive';
 
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
 
