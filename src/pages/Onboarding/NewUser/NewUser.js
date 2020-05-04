@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { useMediaQuery } from 'react-responsive';
 
 import { ButtonPrimary } from 'src/components/Button';
 import Link from 'src/components/Link';
 
 import ChartLineSVG from 'src/assets/images/l2/chart-line.svg';
+import { ReactComponent as ChartLineSVGIcon } from 'src/assets/images/l2/chart-line.svg';
 
 import { showTwitterPopup } from 'src/ducks/ui';
 
@@ -13,25 +15,35 @@ import { textShadowCSS, gradientTextCSS } from 'src/shared/commonStyles';
 
 import { media } from 'src/shared/media';
 
-const NewUser = memo(({ showTwitterPopup }) => (
-	<>
-		<Hero>
-			<Welcome>Welcome to</Welcome>
-			<Heading>Synthetix.Exchange</Heading>
-			<Subtitle>
-				An L2 testnet trading competition powered by the{' '}
-				<Link to="https://optimism.io/ovm/" isExternal={true}>
-					OVM
-				</Link>
-				. Experience the speed of optimistic rollups.
-			</Subtitle>
-			<StyledButtonPrimary size="lg" onClick={showTwitterPopup}>
-				get your tokens now
-			</StyledButtonPrimary>
-		</Hero>
-		<ChartLineImage src={ChartLineSVG} />
-	</>
-));
+const NewUser = memo(({ showTwitterPopup }) => {
+	const isExtraWide = useMediaQuery({
+		query: `(min-width: 1921px)`,
+	});
+
+	return (
+		<>
+			<Hero>
+				<Welcome>Welcome to</Welcome>
+				<Heading>Synthetix.Exchange</Heading>
+				<Subtitle>
+					An L2 testnet trading competition powered by the{' '}
+					<Link to="https://optimism.io/ovm/" isExternal={true}>
+						OVM
+					</Link>
+					. Experience the speed of optimistic rollups.
+				</Subtitle>
+				<StyledButtonPrimary size="lg" onClick={showTwitterPopup}>
+					get your tokens now
+				</StyledButtonPrimary>
+			</Hero>
+			{isExtraWide ? (
+				<ChartLineImage src={ChartLineSVG} />
+			) : (
+				<ChartLineSVGIcon style={{ width: '100%' }} />
+			)}
+		</>
+	);
+});
 
 const ChartLineImage = styled.img`
 	width: 100%;
