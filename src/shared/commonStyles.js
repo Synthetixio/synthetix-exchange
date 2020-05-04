@@ -129,7 +129,7 @@ export const Message = styled(FlexDivCentered)`
 		switch (props.type) {
 			case 'error': {
 				return css`
-					background: ${props => props.theme.colors.red};
+					background: linear-gradient(360deg, #ea5281 0%, #f6635c 100%);
 				`;
 			}
 			case 'success': {
