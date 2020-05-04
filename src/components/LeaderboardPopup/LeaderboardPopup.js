@@ -19,10 +19,14 @@ import Link from 'src/components/Link';
 import Table from 'src/components/Table';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 
+import useInterval from 'src/shared/hooks/useInterval';
+
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
 import { CenteredContent, Popup, textShadowCSS, resetButtonCSS } from 'src/shared/commonStyles';
 
 import { media, smallMediaQuery } from 'src/shared/media';
+
+const REFRESH_INTERVAL = 30000;
 
 const LeaderboardPopup = ({
 	hideLeaderboardPopup,
@@ -35,6 +39,10 @@ const LeaderboardPopup = ({
 		fetchLeaderboardRequest();
 		// eslint-disable-next-line
 	}, []);
+
+	useInterval(() => {
+		fetchLeaderboardRequest();
+	}, REFRESH_INTERVAL);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
 
