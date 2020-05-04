@@ -45,7 +45,7 @@ const InfoRow = ({
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-volume'),
-			value: formatCurrency(volume24H),
+			value: formatCurrencyWithSign('$', volume24H),
 		},
 	];
 	return (
