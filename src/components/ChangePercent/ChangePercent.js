@@ -22,7 +22,8 @@ const Container = styled.span`
 						props.isPositive ? props.theme.colors.green : props.theme.colors.red};
 			  `
 			: css`
-					color: ${props => (props.isPositive ? props.theme.colors.green : props.theme.colors.red)};
+					color: ${props =>
+						props.isPositive ? props.theme.colors.greenColor : props.theme.colors.red};
 			  `}
 `;
 

@@ -158,6 +158,17 @@ export const InfoBoxLabel = styled(DataSmall)`
 export const InfoBoxValue = styled(DataLarge)`
 	text-transform: none;
 	font-size: 14px;
+	transition: all 0.3s ease-in-out;
+	${props =>
+		props.rateChange === 1 &&
+		css`
+			color: ${props.theme.colors.greenColor};
+		`}
+	${props =>
+		props.rateChange === -1 &&
+		css`
+			color: ${props.theme.colors.red};
+		`}
 `;
 
 export const CurrencyKey = styled.span`
