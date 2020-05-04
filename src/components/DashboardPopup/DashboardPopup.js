@@ -147,6 +147,7 @@ const CloseButton = styled.button`
 `;
 
 const mobileConfig = css`
+	padding: 0 24px;
 	grid-auto-flow: row;
 	grid-gap: 12px;
 	margin-bottom: 12px;

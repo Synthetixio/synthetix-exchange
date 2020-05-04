@@ -5,6 +5,9 @@ import CreateOrderCard from '../components/CreateOrderCard';
 import PairListPanel from '../components/ChartCard/PairListPanel';
 import { showLeaderboardPopup, showDashboardPopup } from 'src/ducks/ui';
 
+import { ReactComponent as LeaderboardIcon } from 'src/assets/images/l2/leaderboard.svg';
+import { ReactComponent as DashboardIcon } from 'src/assets/images/l2/dashboard.svg';
+
 import { DataSmall } from 'src/components/Typography';
 
 import MyOrders from '../components/OrderBookCard/myOrders';
@@ -29,16 +32,16 @@ const TradeMobile = ({ showLeaderboardPopup, showDashboardPopup }) => {
 				component: <MyOrders isMobile={true} />,
 			},
 			{
-				name: 'Leaderboard',
-				id: 'leaderboard',
-				component: null,
-				onClick: showLeaderboardPopup,
-			},
-			{
-				name: 'Dashboard',
+				name: <DashboardIcon />,
 				id: 'dashboard',
 				component: null,
 				onClick: showDashboardPopup,
+			},
+			{
+				name: <LeaderboardIcon />,
+				id: 'leaderboard',
+				component: null,
+				onClick: showLeaderboardPopup,
 			},
 		],
 		// eslint-disable-next-line

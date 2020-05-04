@@ -13,7 +13,10 @@ import { FlexDivCentered } from 'src/shared/commonStyles';
 
 import { showLeaderboardPopup, showDashboardPopup } from 'src/ducks/ui';
 
-import { mediumMediaQuery, media } from 'src/shared/media';
+import { ReactComponent as LeaderboardIcon } from 'src/assets/images/l2/leaderboard.svg';
+import { ReactComponent as DashboardIcon } from 'src/assets/images/l2/dashboard.svg';
+
+import { mediumMediaQuery, smallMediaQuery, media } from 'src/shared/media';
 
 import Logo from './Logo';
 import UserInfo from './UserInfo';
@@ -22,6 +25,7 @@ export const AppHeader = memo(props => {
 	const { isOnSplashPage, showLeaderboardPopup, showDashboardPopup, ...rest } = props;
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
+	const isMobile = useMediaQuery({ query: smallMediaQuery });
 
 	return (
 		<Container isOnSplashPage={isOnSplashPage} {...rest}>
@@ -35,10 +39,10 @@ export const AppHeader = memo(props => {
 					{(!isTabletOrMobile || isOnSplashPage) && (
 						<MenuItemButtons>
 							<Button onClick={showDashboardPopup} size="sm" palette="secondary">
-								Dashboard
+								{isMobile ? <DashboardIcon /> : 'Dashboard'}
 							</Button>
 							<Button onClick={showLeaderboardPopup} size="sm" palette="secondary">
-								Leaderboard
+								{isMobile ? <LeaderboardIcon /> : 'Leaderboard'}
 							</Button>
 						</MenuItemButtons>
 					)}
