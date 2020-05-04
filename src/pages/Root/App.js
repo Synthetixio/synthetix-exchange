@@ -12,6 +12,7 @@ import { ROUTES } from '../../constants/routes';
 import {
 	getCurrentTheme,
 	getLeaderboardPopupIsVisible,
+	getDashboardPopupIsVisible,
 	getTwitterPopupIsVisible,
 	gweiPopupIsVisible,
 	walletPopupIsVisible,
@@ -28,6 +29,7 @@ import MainLayout from './components/MainLayout';
 import WalletPopup from 'src/components/WalletPopup';
 import GweiPopup from 'src/components/GweiPopup';
 import LeaderboardPopup from 'src/components/LeaderboardPopup';
+import DashboardPopup from 'src/components/DashboardPopup';
 import TwitterPopup from 'src/components/TwitterPopup';
 import ViewTxModal from 'src/components/ViewTxModal';
 
@@ -37,6 +39,7 @@ import Onboarding from '../Onboarding';
 const App = ({
 	isAppReady,
 	leaderboardPopupIsVisible,
+	dashboardPopupIsVisible,
 	twitterPopupIsVisible,
 	gweiPopupIsVisible,
 	walletPopupIsVisible,
@@ -56,6 +59,7 @@ const App = ({
 					{walletPopupIsVisible && <WalletPopup />}
 					{gweiPopupIsVisible && <GweiPopup />}
 					{leaderboardPopupIsVisible && <LeaderboardPopup />}
+					{dashboardPopupIsVisible && <DashboardPopup />}
 					{twitterPopupIsVisible && <TwitterPopup />}
 					{viewTxModalVisible && <ViewTxModal />}
 					<Router history={history}>
@@ -111,6 +115,7 @@ const mapStateToProps = state => ({
 	walletInfo: getWalletInfo(state),
 	currentTheme: getCurrentTheme(state),
 	leaderboardPopupIsVisible: getLeaderboardPopupIsVisible(state),
+	dashboardPopupIsVisible: getDashboardPopupIsVisible(state),
 	twitterPopupIsVisible: getTwitterPopupIsVisible(state),
 	gweiPopupIsVisible: gweiPopupIsVisible(state),
 	walletPopupIsVisible: walletPopupIsVisible(state),
