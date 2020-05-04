@@ -1,7 +1,5 @@
 import React, { memo } from 'react';
-import { connect } from 'react-redux';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
-import AppHeader from 'src/pages/Root/components/AppHeader';
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
 import { darkTheme } from 'src/styles/theme';
 
