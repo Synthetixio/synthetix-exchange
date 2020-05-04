@@ -214,7 +214,7 @@ export const resetButtonCSS = css`
 `;
 
 export const CenteredContent = styled(FlexDivCentered)`
-	margin-top: -${APP_HEADER_HEIGHT};
+	margin-top: -56px;
 	width: 100%;
 	max-width: 624px;
 	margin: 0 auto;
