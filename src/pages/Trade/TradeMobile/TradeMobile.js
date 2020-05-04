@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CreateOrderCard from '../components/CreateOrderCard';
 import PairListPanel from '../components/ChartCard/PairListPanel';
-import { showLeaderboardPopup } from 'src/ducks/ui';
+import { showLeaderboardPopup, showDashboardPopup } from 'src/ducks/ui';
 
 import { DataSmall } from 'src/components/Typography';
 
 import MyOrders from '../components/OrderBookCard/myOrders';
 // import History from './History';
 
-const TradeMobile = ({ showLeaderboardPopup }) => {
+const TradeMobile = ({ showLeaderboardPopup, showDashboardPopup }) => {
 	const tabContent = useMemo(
 		() => [
 			{
@@ -33,6 +33,12 @@ const TradeMobile = ({ showLeaderboardPopup }) => {
 				id: 'leaderboard',
 				component: null,
 				onClick: showLeaderboardPopup,
+			},
+			{
+				name: 'Dashboard',
+				id: 'dashboard',
+				component: null,
+				onClick: showDashboardPopup,
 			},
 		],
 		// eslint-disable-next-line
@@ -94,6 +100,7 @@ const Tab = styled.button`
 
 const mapDispatchToProps = {
 	showLeaderboardPopup,
+	showDashboardPopup,
 };
 
 export default connect(null, mapDispatchToProps)(TradeMobile);

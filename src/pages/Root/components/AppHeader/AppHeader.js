@@ -11,7 +11,7 @@ import { APP_HEADER_HEIGHT } from 'src/constants/ui';
 
 import { FlexDivCentered } from 'src/shared/commonStyles';
 
-import { showLeaderboardPopup } from 'src/ducks/ui';
+import { showLeaderboardPopup, showDashboardPopup } from 'src/ducks/ui';
 
 import { mediumMediaQuery, media } from 'src/shared/media';
 
@@ -19,7 +19,7 @@ import Logo from './Logo';
 import UserInfo from './UserInfo';
 
 export const AppHeader = memo(props => {
-	const { isOnSplashPage, showLeaderboardPopup, ...rest } = props;
+	const { isOnSplashPage, showLeaderboardPopup, showDashboardPopup, ...rest } = props;
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
 
@@ -33,11 +33,14 @@ export const AppHeader = memo(props => {
 				</MenuItemsLeft>
 				<MenuItemsRight>
 					{(!isTabletOrMobile || isOnSplashPage) && (
-						<MenuItem>
+						<MenuItemButtons>
+							<Button onClick={showDashboardPopup} size="sm" palette="secondary">
+								Dashboard
+							</Button>
 							<Button onClick={showLeaderboardPopup} size="sm" palette="secondary">
 								Leaderboard
 							</Button>
-						</MenuItem>
+						</MenuItemButtons>
 					)}
 					{!isOnSplashPage && (
 						<MenuItem>
@@ -115,8 +118,15 @@ const MenuItemsRight = styled(MenuItems)`
 	}
 `;
 
+const MenuItemButtons = styled(MenuItems)`
+	& > button + button {
+		margin-left: 12px;
+	}
+`;
+
 const mapDispatchToProps = {
 	showLeaderboardPopup,
+	showDashboardPopup,
 };
 
 export default connect(null, mapDispatchToProps)(AppHeader);

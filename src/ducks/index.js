@@ -9,6 +9,7 @@ import app from './app';
 import markets from './markets';
 import trades from './trades';
 import leaderboard from './leaderboard';
+import dashboard from './dashboard';
 
 export default combineReducers({
 	app,
@@ -21,4 +22,5 @@ export default combineReducers({
 	markets,
 	trades,
 	leaderboard,
+	dashboard,
 });

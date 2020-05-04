@@ -15,6 +15,7 @@ const initialState = {
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
 	blurBackgroundIsVisible: false,
 	leaderboardPopupIsVisible: false,
+	dashboardPopupIsVisible: false,
 	twitterPopupIsVisible: false,
 	ovmTradeTooltipVisible: false,
 	seenOvmTradeTooltip: false,
@@ -44,6 +45,12 @@ export const uiSlice = createSlice({
 		},
 		hideLeaderboardPopup: state => {
 			state.leaderboardPopupIsVisible = false;
+		},
+		showDashboardPopup: state => {
+			state.dashboardPopupIsVisible = true;
+		},
+		hideDashboardPopup: state => {
+			state.dashboardPopupIsVisible = false;
 		},
 		showTwitterPopup: state => {
 			state.twitterPopupIsVisible = true;
@@ -107,6 +114,8 @@ export const {
 	setBlurBackgroundIsVisible,
 	showLeaderboardPopup,
 	hideLeaderboardPopup,
+	showDashboardPopup,
+	hideDashboardPopup,
 	showTwitterPopup,
 	hideTwitterPopup,
 } = uiSlice.actions;
@@ -122,6 +131,7 @@ export const getHideSmallValueAssets = state => getUIState(state).hideSmallValue
 export const getMarketsAssetFilter = state => getUIState(state).marketsAssetFilter;
 export const getBlurBackgroundIsVisible = state => getUIState(state).blurBackgroundIsVisible;
 export const getLeaderboardPopupIsVisible = state => getUIState(state).leaderboardPopupIsVisible;
+export const getDashboardPopupIsVisible = state => getUIState(state).dashboardPopupIsVisible;
 export const getTwitterPopupIsVisible = state => getUIState(state).twitterPopupIsVisible;
 export const getOvmTradeTooltipVisible = state => getUIState(state).ovmTradeTooltipVisible;
 export const getSeenTradeTooltipVisible = state => getUIState(state).seenOvmTradeTooltip;
