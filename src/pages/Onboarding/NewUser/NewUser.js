@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useMediaQuery } from 'react-responsive';
@@ -16,6 +16,16 @@ import { textShadowCSS, gradientTextCSS } from 'src/shared/commonStyles';
 import { media } from 'src/shared/media';
 
 const NewUser = memo(({ showTwitterPopup }) => {
+	// load twitter widget
+	useEffect(() => {
+		const script = document.createElement('script');
+
+		script.src = 'https://platform.twitter.com/widgets.js';
+		script.async = true;
+
+		document.body.appendChild(script);
+	}, []);
+
 	const isExtraWide = useMediaQuery({
 		query: `(min-width: 1921px)`,
 	});
