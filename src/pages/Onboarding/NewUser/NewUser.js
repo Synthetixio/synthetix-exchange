@@ -5,74 +5,13 @@ import styled from 'styled-components';
 import { ButtonPrimary } from 'src/components/Button';
 import Link from 'src/components/Link';
 
-import { ResponsiveContainer, LineChart, Line } from 'recharts';
+import ChartLineSVG from 'src/assets/images/l2/chart-line.svg';
 
 import { showTwitterPopup } from 'src/ducks/ui';
 
 import { textShadowCSS, gradientTextCSS } from 'src/shared/commonStyles';
 
 import { media } from 'src/shared/media';
-
-const data = [
-	{ price: 18.35 },
-	{ price: 22.48 },
-	{ price: 28.13 },
-	{ price: 27 },
-	{ price: 26.6 },
-	{ price: 27.13 },
-	{ price: 24.08 },
-	{ price: 26.35 },
-	{ price: 25.1 },
-	{ price: 27 },
-	{ price: 28 },
-	{ price: 29 },
-	{ price: 28.3 },
-	{ price: 28.1 },
-	{ price: 26.5 },
-	{ price: 25.9 },
-	{ price: 27 },
-	{ price: 28.1 },
-	{ price: 29 },
-	{ price: 29.5 },
-	{ price: 29.9 },
-	{ price: 31.9 },
-	{ price: 28 },
-	{ price: 27.5 },
-	{ price: 24.48 },
-	{ price: 26.13 },
-	{ price: 27 },
-	{ price: 26.6 },
-	{ price: 27.13 },
-	{ price: 28.13 },
-	{ price: 29.13 },
-	{ price: 24.08 },
-	{ price: 23.14 },
-	{ price: 27 },
-	{ price: 28 },
-	{ price: 25.5 },
-	{ price: 25.1 },
-	{ price: 27 },
-	{ price: 28 },
-	{ price: 29 },
-	{ price: 28.3 },
-	{ price: 28.1 },
-	{ price: 26.5 },
-	{ price: 25.9 },
-	{ price: 28.13 },
-	{ price: 27 },
-	{ price: 26.6 },
-	{ price: 27.13 },
-	{ price: 24.08 },
-	{ price: 26.35 },
-	{ price: 27 },
-	{ price: 28.1 },
-	{ price: 29 },
-	{ price: 29.5 },
-	{ price: 29.9 },
-	{ price: 31.9 },
-	{ price: 28 },
-	{ price: 27.5 },
-];
 
 const NewUser = memo(({ showTwitterPopup }) => (
 	<>
@@ -90,20 +29,13 @@ const NewUser = memo(({ showTwitterPopup }) => (
 				get your tokens now
 			</StyledButtonPrimary>
 		</Hero>
-		<ResponsiveContainer width="100%" height={200} id="onboarding-chart">
-			<LineChart data={data} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
-				<Line
-					dataKey="price"
-					stroke="#00E2DF"
-					fill="url(#splashChartArea)"
-					dot={false}
-					activeDot={false}
-					strokeWidth={1.5}
-				/>
-			</LineChart>
-		</ResponsiveContainer>
+		<ChartLineImage src={ChartLineSVG} />
 	</>
 ));
+
+const ChartLineImage = styled.img`
+	width: 100%;
+`;
 
 const Hero = styled.div`
 	text-align: center;

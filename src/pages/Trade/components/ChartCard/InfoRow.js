@@ -7,11 +7,7 @@ import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
 import { getRatesExchangeRates } from 'src/ducks/rates';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue } from 'src/shared/commonStyles';
-import {
-	formatCurrencyWithPrecision,
-	formatCurrency,
-	formatCurrencyWithSign,
-} from 'src/utils/formatters';
+import { formatCurrencyWithPrecision, formatCurrencyWithSign } from 'src/utils/formatters';
 import { getExchangeRatesForCurrencies } from 'src/utils/rates';
 
 import ChangePercent from 'src/components/ChangePercent';
@@ -29,7 +25,7 @@ const InfoRow = ({
 	const infoBoxItems = [
 		{
 			label: t('trade.chart-card.info-boxes.price'),
-			value: formatCurrencyWithPrecision(rate),
+			value: `${synthSign}${formatCurrencyWithPrecision(rate)}`,
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-change'),
@@ -45,7 +41,7 @@ const InfoRow = ({
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-volume'),
-			value: formatCurrency(volume24H),
+			value: formatCurrencyWithSign('$', volume24H),
 		},
 	];
 	return (

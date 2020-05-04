@@ -129,7 +129,7 @@ export const Message = styled(FlexDivCentered)`
 		switch (props.type) {
 			case 'error': {
 				return css`
-					background: ${props => props.theme.colors.red};
+					background: linear-gradient(360deg, #ea5281 0%, #f6635c 100%);
 				`;
 			}
 			case 'success': {
@@ -219,7 +219,7 @@ export const CenteredContent = styled(FlexDivCentered)`
 
 export const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background: ${props => props.theme.colors.surfaceL1};
+	background: ${props => props.theme.colors.surfaceL2};
 	position: absolute;
 	width: 100%;
 	height: 100vh;

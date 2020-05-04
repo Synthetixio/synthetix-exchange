@@ -26,15 +26,13 @@ import { L2_URL } from 'src/constants/l2';
 import { media } from 'src/shared/media';
 
 const getTweet = address => {
-	const text = `Hey @synthetixl2demo it's ${address}, give me some sUSD tokens on Layer 2! @optimismPBC`;
-	const hashtags = 'synthetix';
+	const text = `Hey @synthetixl2demo it's ${address}, let me in to the L2 testnet trading competition! @optimismPBC @synthetix_io`;
 	const url = L2_URL;
 
 	return {
 		text,
-		hashtags,
 		url,
-		composed: `${text} ${url} #${hashtags}`,
+		composed: `${text} ${url}`,
 	};
 };
 
@@ -107,7 +105,7 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 			) : (
 				<TweetListener>
 					<div style={{ position: 'relative' }}>
-						<HeartBeat surface={1} />
+						<HeartBeat surface={2} />
 					</div>
 					listening for your Tweet...
 				</TweetListener>
@@ -122,10 +120,10 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 			<SimpleAppHeader onClick={hideTwitterPopup} />
 			<CenteredContent>
 				<FlexDivCenteredCol style={{ padding: '0 20px' }}>
-					<Headline>Tweet @ us to get sUSD OVM tokens</Headline>
+					<Headline>Tweet @ us to get started</Headline>
 					<Subtitle>
-						To start trading on L2 you need to claim sUSD OVM tokens. Tweet the link to your wallet
-						and start trading now!
+						An L2 testnet trading competition powered by the OVM. Experience the speed of optimistic
+						rollups and compete to win 50k SNX.
 					</Subtitle>
 					<CloseButton onClick={hideTwitterPopup}>
 						<CloseCrossIcon />
@@ -140,7 +138,6 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 							className="twitter-share-button"
 							href="https://twitter.com/intent/tweet"
 							data-size="large"
-							data-hashtags={tweet.hashtags}
 							data-url={tweet.url}
 							data-text={tweet.text}
 							data-dnt="true"
@@ -193,7 +190,7 @@ const Subtitle = styled.div`
 	text-align: center;
 	letter-spacing: 0.2px;
 	padding-bottom: 50px;
-	max-width: 480px;
+	max-width: 510px;
 `;
 
 const CloseButton = styled.button`
