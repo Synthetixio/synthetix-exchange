@@ -8,6 +8,8 @@ import Root from './pages/Root';
 import './i18n';
 import './index.css';
 
+import Maintenance from 'src/pages/shared/components/Maintenance';
+
 import bugsnag from '@bugsnag/js';
 import bugsnagReact from '@bugsnag/plugin-react';
 
@@ -22,12 +24,14 @@ console.log(bugsnag.releaseStage);
 
 bugsnagClient.use(bugsnagReact, React);
 const ErrorBoundary = bugsnagClient.getPlugin('react');
+
+// KILL SWITCH
+const IS_ON_MAINTENANCE = false;
+
 const App = () => {
 	return (
 		<Suspense fallback={<div />}>
-			<Provider store={store}>
-				<Root />
-			</Provider>
+			<Provider store={store}>{IS_ON_MAINTENANCE ? <Maintenance /> : <Root />}</Provider>
 		</Suspense>
 	);
 };
