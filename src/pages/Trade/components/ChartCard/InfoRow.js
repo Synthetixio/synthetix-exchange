@@ -7,11 +7,7 @@ import { getSynthPair, getAvailableSynthsMap } from 'src/ducks/synths';
 import { getRatesExchangeRates } from 'src/ducks/rates';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue } from 'src/shared/commonStyles';
-import {
-	formatCurrencyWithPrecision,
-	formatCurrency,
-	formatCurrencyWithSign,
-} from 'src/utils/formatters';
+import { formatCurrencyWithPrecision, formatCurrencyWithSign } from 'src/utils/formatters';
 import { getExchangeRatesForCurrencies } from 'src/utils/rates';
 
 import ChangePercent from 'src/components/ChangePercent';
