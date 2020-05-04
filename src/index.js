@@ -26,7 +26,7 @@ bugsnagClient.use(bugsnagReact, React);
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 
 // KILL SWITCH
-const IS_ON_MAINTENANCE = true;
+const IS_ON_MAINTENANCE = false;
 
 const App = () => {
 	return (
