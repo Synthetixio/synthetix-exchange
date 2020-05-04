@@ -25,7 +25,7 @@ const InfoRow = ({
 	const infoBoxItems = [
 		{
 			label: t('trade.chart-card.info-boxes.price'),
-			value: formatCurrencyWithPrecision(rate),
+			value: `${synthSign}${formatCurrencyWithPrecision(rate)}`,
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-change'),
