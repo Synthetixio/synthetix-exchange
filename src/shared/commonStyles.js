@@ -219,7 +219,7 @@ export const CenteredContent = styled(FlexDivCentered)`
 
 export const Popup = styled.div`
 	z-index: ${Z_INDEX.MODAL};
-	background: ${props => props.theme.colors.surfaceL1};
+	background: ${props => props.theme.colors.surfaceL2};
 	position: absolute;
 	width: 100%;
 	height: 100vh;

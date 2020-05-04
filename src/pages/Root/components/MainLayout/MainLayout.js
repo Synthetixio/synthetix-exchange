@@ -11,10 +11,10 @@ import { FlexDiv } from 'src/shared/commonStyles';
 
 export const MainLayout = ({ children, isAppReady, showHeader = true, isOnSplashPage = false }) => (
 	<>
-		<GlobalStyle />
+		<GlobalStyle isOnSplashPage={isOnSplashPage} />
 		<FullScreenContainer>
 			{showHeader && <AppHeader isOnSplashPage={isOnSplashPage} />}
-			{isAppReady ? children : <HeartBeat surface={1} />}
+			{isAppReady ? children : <HeartBeat surface={2} />}
 		</FullScreenContainer>
 	</>
 );
@@ -27,7 +27,8 @@ MainLayout.propTypes = {
 const GlobalStyle = createGlobalStyle`
   body {
 		color: ${props => props.theme.colors.fontPrimary};
-		background: #020B29;
+		background: ${props =>
+			props.isOnSplashPage ? props.theme.colors.surfaceL2 : props.theme.colors.surfaceL1};
   }
 `;
 

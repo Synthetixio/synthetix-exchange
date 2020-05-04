@@ -65,7 +65,7 @@ export const Container = styled.header`
 	${props =>
 		props.isOnSplashPage
 			? css`
-					background: ${props => props.theme.colors.surfaceL1};
+					background: ${props => props.theme.colors.surfaceL2};
 			  `
 			: css`
 					border-color: ${props => props.theme.colors.accentL1};

@@ -40,7 +40,7 @@ const Container = styled.div`
 const GlobalStyle = createGlobalStyle`
   body {
 		color: ${props => props.theme.colors.fontPrimary};
-    background: #020B29;
+    background: #0F0F33;
   }
 `;
 

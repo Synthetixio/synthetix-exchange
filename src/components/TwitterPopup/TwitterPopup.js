@@ -107,7 +107,7 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 			) : (
 				<TweetListener>
 					<div style={{ position: 'relative' }}>
-						<HeartBeat surface={1} />
+						<HeartBeat surface={2} />
 					</div>
 					listening for your Tweet...
 				</TweetListener>
