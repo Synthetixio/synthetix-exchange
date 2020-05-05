@@ -37,7 +37,7 @@ const NewUser = memo(({ showTwitterPopup }) => {
 				<Heading>Synthetix.Exchange</Heading>
 				<Subtitle>
 					An L2 testnet trading competition powered by the{' '}
-					<Link to="https://optimism.io/ovm/" isExternal={true}>
+					<Link to="https://optimism.io/" isExternal={true}>
 						OVM
 					</Link>
 					. Experience the speed of optimistic rollups.
