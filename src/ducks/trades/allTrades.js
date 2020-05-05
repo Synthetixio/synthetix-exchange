@@ -2,6 +2,7 @@ import { takeLatest, put } from 'redux-saga/effects';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import get from 'lodash/get';
 import snxData from 'synthetix-data';
+import { SYNTHS_MAP } from 'src/constants/currency';
 
 import { getSortedLeaderboardMap, getLeaderboardData } from '../leaderboard';
 import { getAddress } from 'src/utils/formatters';
@@ -69,10 +70,19 @@ const {
 
 function* fetchAllTrades() {
 	try {
-		const trades = yield snxData.exchanges.since({
+		const transactions = yield snxData.exchanges.since({
 			maxBlock: Number.MAX_SAFE_INTEGER,
 			max: 100,
 		});
+
+		const trades = transactions.map(tx => ({
+			...tx,
+			price:
+				tx.toCurrencyKey === SYNTHS_MAP.sUSD
+					? tx.fromAmountInUSD / tx.fromAmount
+					: tx.toAmountInUSD / tx.toAmount,
+			amount: tx.toCurrencyKey === SYNTHS_MAP.sUSD ? tx.fromAmountInUSD : tx.toAmountInUSD,
+		}));
 
 		yield put(fetchAllTradesSuccess({ trades }));
 	} catch (e) {
