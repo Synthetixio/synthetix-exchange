@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
 import { tableDataSmallCSS, chartDataCSS } from 'src/components/Typography/Data';
 
-import { Z_INDEX, APP_HEADER_HEIGHT } from '../constants/ui';
+import { Z_INDEX } from '../constants/ui';
 
 import { media } from 'src/shared/media';
 
@@ -158,6 +158,17 @@ export const InfoBoxLabel = styled(DataSmall)`
 export const InfoBoxValue = styled(DataLarge)`
 	text-transform: none;
 	font-size: 14px;
+	transition: all 0.3s ease-in-out;
+	${props =>
+		props.rateChange === 1 &&
+		css`
+			color: ${props.theme.colors.greenColor};
+		`}
+	${props =>
+		props.rateChange === -1 &&
+		css`
+			color: ${props.theme.colors.red};
+		`}
 `;
 
 export const CurrencyKey = styled.span`
@@ -203,7 +214,7 @@ export const resetButtonCSS = css`
 `;
 
 export const CenteredContent = styled(FlexDivCentered)`
-	margin-top: -${APP_HEADER_HEIGHT};
+	margin-top: -56px;
 	width: 100%;
 	max-width: 624px;
 	margin: 0 auto;

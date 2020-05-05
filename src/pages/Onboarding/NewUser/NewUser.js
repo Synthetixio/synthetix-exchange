@@ -1,41 +1,57 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { ButtonPrimary } from 'src/components/Button';
 import Link from 'src/components/Link';
 
-import ChartLineSVG from 'src/assets/images/l2/chart-line.svg';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from 'recharts';
 
 import { showTwitterPopup } from 'src/ducks/ui';
 
 import { textShadowCSS, gradientTextCSS } from 'src/shared/commonStyles';
 
+import mockRates from './mockRates';
+
 import { media } from 'src/shared/media';
 
-const NewUser = memo(({ showTwitterPopup }) => (
-	<>
-		<Hero>
-			<Welcome>Welcome to</Welcome>
-			<Heading>Synthetix.Exchange</Heading>
-			<Subtitle>
-				An L2 testnet trading competition powered by the{' '}
-				<Link to="https://optimism.io/ovm/" isExternal={true}>
-					OVM
-				</Link>
-				. Experience the speed of optimistic rollups.
-			</Subtitle>
-			<StyledButtonPrimary size="lg" onClick={showTwitterPopup}>
-				get your tokens now
-			</StyledButtonPrimary>
-		</Hero>
-		<ChartLineImage src={ChartLineSVG} />
-	</>
-));
+const NewUser = memo(({ showTwitterPopup }) => {
+	// load twitter widget
+	useEffect(() => {
+		const script = document.createElement('script');
 
-const ChartLineImage = styled.img`
-	width: 100%;
-`;
+		script.src = 'https://platform.twitter.com/widgets.js';
+		script.async = true;
+
+		document.body.appendChild(script);
+	}, []);
+
+	return (
+		<>
+			<Hero>
+				<Welcome>Welcome to</Welcome>
+				<Heading>Synthetix.Exchange</Heading>
+				<Subtitle>
+					An L2 testnet trading competition powered by the{' '}
+					<Link to="https://optimism.io/" isExternal={true}>
+						OVM
+					</Link>
+					. Experience the speed of optimistic rollups.
+				</Subtitle>
+				<StyledButtonPrimary size="lg" onClick={showTwitterPopup}>
+					get your tokens now
+				</StyledButtonPrimary>
+			</Hero>
+			<ResponsiveContainer width="100%" height={200} id="onboarding-chart">
+				<LineChart data={mockRates} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
+					<Line dataKey="rate" stroke="#00E2DF" dot={false} activeDot={false} strokeWidth={2} />
+					<XAxis dataKey="timestamp" hide={true} />
+					<YAxis type="number" domain={['auto', 'auto']} orientation="right" hide={true} />
+				</LineChart>
+			</ResponsiveContainer>
+		</>
+	);
+});
 
 const Hero = styled.div`
 	text-align: center;

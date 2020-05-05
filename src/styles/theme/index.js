@@ -3,6 +3,7 @@ import ThemeLight from './light';
 
 const sharedColors = {
 	green: 'linear-gradient(357.51deg, #00E2DF 4.3%, #BFF360 94.52%);',
+	greenColor: '#00E2DF',
 	white: '#FFFFFF',
 	black: '#000000',
 	red: '#D94454',

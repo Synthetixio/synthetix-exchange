@@ -85,7 +85,7 @@ const OrderBookCard = ({ dashboardData, fetchDashboardRequest, synthsMap }) => {
 					{!isMobile ? (
 						<FlexDivCentered>
 							{metrics.map(metric => (
-								<StyledInfoBox>
+								<StyledInfoBox key={metric.label}>
 									<InfoBoxLabel>{metric.label}</InfoBoxLabel>
 									<StyledInfoBoxValue>{metric.value}</StyledInfoBoxValue>
 								</StyledInfoBox>
