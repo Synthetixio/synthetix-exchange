@@ -1,116 +1,32 @@
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import snxData from 'synthetix-data';
 
-import { updateLoan, swapTxHashWithLoanID, LOAN_STATUS } from '../ducks/loans/myLoans';
-import { fetchWalletBalancesRequest } from '../ducks/wallet/walletBalances';
-import { getWalletInfo } from '../ducks/wallet/walletDetails';
-import { fetchRates } from '../ducks/rates';
-import { fetchLoansContractInfo } from '../ducks/loans/contractInfo';
+import { updateRate } from '../ducks/rates';
+import { bigNumberFormatter } from '../utils/formatters';
 
-import snxJSConnector from '../utils/snxJSConnector';
-
-import { LOAN_EVENTS, EXCHANGE_RATES_EVENTS, EXCHANGE_EVENTS } from '../constants/events';
-
-const GlobalEventsGate = ({
-	updateLoan,
-	fetchWalletBalancesRequest,
-	fetchLoansContractInfo,
-	swapTxHashWithLoanID,
-	fetchRates,
-	walletInfo: { currentWallet },
-}) => {
+const GlobalEventsGate = ({ updateRate }) => {
 	useEffect(() => {
-		const {
-			snxJS: { EtherCollateral, ExchangeRates },
-		} = snxJSConnector;
+		const ratesSubscription = snxData.rate.observe().subscribe({
+			next(val) {
+				const synth = val.synth;
+				const rate = bigNumberFormatter(val.rate);
 
-		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CREATED, (_account, loanID, _amount, tx) => {
-			fetchLoansContractInfo();
-			fetchWalletBalancesRequest();
-
-			const { transactionHash } = tx;
-			const loanIDNumber = Number(loanID);
-
-			updateLoan({
-				transactionHash,
-				loanInfo: {
-					loanID: loanIDNumber,
-					status: LOAN_STATUS.OPEN,
-				},
-				swapTransactionHashWithLoanID: true,
-			});
-
-			swapTxHashWithLoanID({
-				transactionHash,
-				loanID: loanIDNumber,
-			});
+				updateRate({ synth, rate });
+			},
 		});
-
-		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_, loanID) => {
-			fetchLoansContractInfo();
-			fetchWalletBalancesRequest();
-			updateLoan({
-				loanID: Number(loanID),
-				loanInfo: {
-					status: LOAN_STATUS.CLOSED,
-				},
-			});
-		});
-
-		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRates);
 
 		return () => {
-			Object.values(LOAN_EVENTS).forEach(event =>
-				EtherCollateral.contract.removeAllListeners(event)
-			);
-			Object.values(EXCHANGE_RATES_EVENTS).forEach(event =>
-				ExchangeRates.contract.removeAllListeners(event)
-			);
+			ratesSubscription.unsubscribe();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	useEffect(() => {
-		if (!currentWallet) return;
-		const {
-			snxJS: { Synthetix },
-		} = snxJSConnector;
-
-		Synthetix.contract.on(EXCHANGE_EVENTS.SYNTH_EXCHANGE, address => {
-			if (address === currentWallet) {
-				fetchWalletBalancesRequest();
-			}
-		});
-
-		return () => {
-			Object.values(EXCHANGE_EVENTS).forEach(event => Synthetix.contract.removeAllListeners(event));
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentWallet]);
-
 	return null;
 };
 
-GlobalEventsGate.propTypes = {
-	updateLoan: PropTypes.func,
-	fetchWalletBalancesRequest: PropTypes.func,
-	fetchLoansContractInfo: PropTypes.func,
-	fetchRates: PropTypes.func,
-};
-
-const mapStateToProps = state => {
-	return {
-		walletInfo: getWalletInfo(state),
-	};
-};
-
 const mapDispatchToProps = {
-	swapTxHashWithLoanID,
-	updateLoan,
-	fetchWalletBalancesRequest,
-	fetchLoansContractInfo,
-	fetchRates,
+	updateRate,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GlobalEventsGate);
+export default connect(null, mapDispatchToProps)(GlobalEventsGate);
