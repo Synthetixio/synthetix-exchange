@@ -20,7 +20,6 @@ import {
 	textShadowCSS,
 } from 'src/shared/commonStyles';
 
-import { shortenAddress } from 'src/utils/formatters';
 import { L2_URL } from 'src/constants/l2';
 
 import { media } from 'src/shared/media';
@@ -131,7 +130,7 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 					</CloseButton>
 					<TweetPreview>
 						<StyledQuoteRIcon />
-						{tweet.composed.replace(currentWallet, shortenAddress(currentWallet))}
+						{tweet.composed}
 						<StyledQuoteLIcon />
 					</TweetPreview>
 					<TweetContainer hide={alreadyFauceted || polling || !twitterLoaded}>
