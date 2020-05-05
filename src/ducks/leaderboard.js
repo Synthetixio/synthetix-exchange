@@ -70,25 +70,24 @@ export const {
 } = leaderboardSlice.actions;
 
 function* fetchLeaderboard() {
-	// const { synthSummaryUtilContract } = snxJSConnector;
+	const { synthSummaryUtilContract } = snxJSConnector;
 	try {
-		throw Error('Leaderboard is currently down. We are working on a fix - should be up shortly');
-		// const results = yield axios.get(`${L2_API_URL}/api/holders`);
-		// const holders = results.data;
+		const results = yield axios.get(`${L2_API_URL}/api/holders`);
+		const holders = results.data;
 
-		// const balances = yield synthSummaryUtilContract.totalSynthsInKeyForAccounts(
-		// 	holders.map(holder => holder.address),
-		// 	bytesFormatter(SYNTHS_MAP.sUSD)
-		// );
+		const balances = yield synthSummaryUtilContract.totalSynthsInKeyForAccounts(
+			holders.map(holder => holder.address),
+			bytesFormatter(SYNTHS_MAP.sUSD)
+		);
 
-		// yield put(
-		// 	fetchLeaderboardSuccess({
-		// 		data: holders.map((holder, idx) => ({
-		// 			...holder,
-		// 			assetValue: balances[idx] / 1e18,
-		// 		})),
-		// 	})
-		// );
+		yield put(
+			fetchLeaderboardSuccess({
+				data: holders.map((holder, idx) => ({
+					...holder,
+					assetValue: balances[idx] / 1e18,
+				})),
+			})
+		);
 	} catch (e) {
 		yield put(fetchLeaderboardFailure({ error: e.message }));
 	}
