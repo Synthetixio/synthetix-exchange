@@ -123,7 +123,8 @@ const TwitterPopup = ({ hideTwitterPopup, walletInfo }) => {
 					<Headline>Tweet @ us to get started</Headline>
 					<Subtitle>
 						An L2 testnet trading competition powered by the OVM. Experience the speed of optimistic
-						rollups and compete to win 50k SNX.
+						rollups and compete to win 50k SNX. A new wallet in the Tweet preview below has been
+						generated for you to use in the competition.
 					</Subtitle>
 					<CloseButton onClick={hideTwitterPopup}>
 						<CloseCrossIcon />
