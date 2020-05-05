@@ -1,17 +1,17 @@
 import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { useMediaQuery } from 'react-responsive';
 
 import { ButtonPrimary } from 'src/components/Button';
 import Link from 'src/components/Link';
 
-import ChartLineSVG from 'src/assets/images/l2/chart-line.svg';
-import { ReactComponent as ChartLineSVGIcon } from 'src/assets/images/l2/chart-line.svg';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from 'recharts';
 
 import { showTwitterPopup } from 'src/ducks/ui';
 
 import { textShadowCSS, gradientTextCSS } from 'src/shared/commonStyles';
+
+import mockRates from './mockRates';
 
 import { media } from 'src/shared/media';
 
@@ -25,10 +25,6 @@ const NewUser = memo(({ showTwitterPopup }) => {
 
 		document.body.appendChild(script);
 	}, []);
-
-	const isExtraWide = useMediaQuery({
-		query: `(min-width: 1921px)`,
-	});
 
 	return (
 		<>
@@ -46,18 +42,16 @@ const NewUser = memo(({ showTwitterPopup }) => {
 					get your tokens now
 				</StyledButtonPrimary>
 			</Hero>
-			{isExtraWide ? (
-				<ChartLineImage src={ChartLineSVG} />
-			) : (
-				<ChartLineSVGIcon style={{ width: '100%' }} />
-			)}
+			<ResponsiveContainer width="100%" height={200} id="onboarding-chart">
+				<LineChart data={mockRates} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
+					<Line dataKey="rate" stroke="#00E2DF" dot={false} activeDot={false} strokeWidth={2} />
+					<XAxis dataKey="timestamp" hide={true} />
+					<YAxis type="number" domain={['auto', 'auto']} orientation="right" hide={true} />
+				</LineChart>
+			</ResponsiveContainer>
 		</>
 	);
 });
-
-const ChartLineImage = styled.img`
-	width: 100%;
-`;
 
 const Hero = styled.div`
 	text-align: center;
