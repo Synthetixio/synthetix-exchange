@@ -53,7 +53,9 @@ const LeaderboardPopup = ({
 				<Headline>
 					<span>SYNTHETIX.</span>EXCHANGE L2
 				</Headline>
-				<Description>Trading Comp Top 10 Leaderboard</Description>
+				<Description>
+					Notice: We are working on a fix to the leaderboard. Please stand by.
+				</Description>
 				<CloseButton onClick={hideLeaderboardPopup}>
 					<CloseCrossIcon />
 				</CloseButton>
