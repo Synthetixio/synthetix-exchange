@@ -29,7 +29,7 @@ import { ROUTES } from 'src/constants/routes';
 import App from './App';
 
 const REFRESH_INTERVAL = 3 * 60 * 1000;
-const ADDRESS_DATA_INTERVAL = 6000;
+const ADDRESS_DATA_INTERVAL = 15000;
 
 async function getAddressData(address, signature) {
 	try {
