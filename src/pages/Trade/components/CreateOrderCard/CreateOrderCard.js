@@ -252,6 +252,7 @@ const CreateOrderCard = ({
 					transactionId
 				);
 				fetchWalletBalancesRequest();
+				resetInputAmounts();
 				if (!seenTradeTooltipVisible) {
 					setOvmTradeTooltipVisible(true);
 					setTimeout(() => {
