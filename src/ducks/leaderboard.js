@@ -5,9 +5,7 @@ import orderBy from 'lodash/orderBy';
 import keyBy from 'lodash/keyBy';
 
 import { L2_API_URL } from 'src/constants/l2';
-import snxJSConnector from 'src/utils/snxJSConnector';
-import { bytesFormatter, getAddress } from 'src/utils/formatters';
-import { SYNTHS_MAP } from 'src/constants/currency';
+import { getAddress } from 'src/utils/formatters';
 
 export const leaderboardSlice = createSlice({
 	name: 'leaderboard',
@@ -70,24 +68,10 @@ export const {
 } = leaderboardSlice.actions;
 
 function* fetchLeaderboard() {
-	const { synthSummaryUtilContract } = snxJSConnector;
 	try {
-		const results = yield axios.get(`${L2_API_URL}/api/holders`);
-		const holders = results.data;
+		const results = yield axios.get(`${L2_API_URL}/api/leaderboard`);
 
-		const balances = yield synthSummaryUtilContract.totalSynthsInKeyForAccounts(
-			holders.map(holder => holder.address),
-			bytesFormatter(SYNTHS_MAP.sUSD)
-		);
-
-		yield put(
-			fetchLeaderboardSuccess({
-				data: holders.map((holder, idx) => ({
-					...holder,
-					assetValue: balances[idx] / 1e18,
-				})),
-			})
-		);
+		yield put(fetchLeaderboardSuccess(results));
 	} catch (e) {
 		yield put(fetchLeaderboardFailure({ error: e.message }));
 	}
