@@ -34,6 +34,11 @@ export const ratesSlice = createSlice({
 			state.isRefreshing = false;
 			state.isLoaded = true;
 		},
+		updateRate: (state, action) => {
+			if (state.exchangeRates[action.payload.synth]) {
+				state.exchangeRates[action.payload.synth] = action.payload.rate;
+			}
+		},
 	},
 });
 
@@ -47,7 +52,12 @@ export const getEthRate = createSelector(getRatesExchangeRates, exchangeRates =>
 	get(exchangeRates, SYNTHS_MAP.sETH, null)
 );
 
-const { fetchRatesRequest, fetchRatesSuccess, fetchRatesFailure } = ratesSlice.actions;
+export const {
+	updateRate,
+	fetchRatesRequest,
+	fetchRatesSuccess,
+	fetchRatesFailure,
+} = ratesSlice.actions;
 
 export const fetchRates = () => async dispatch => {
 	const { synthSummaryUtilContract } = snxJSConnector;
