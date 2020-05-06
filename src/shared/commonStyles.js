@@ -238,6 +238,7 @@ export const Popup = styled.div`
 	left: 0;
 	display: flex;
 	flex-flow: column;
+	overflow: hidden;
 `;
 
 export const textShadowCSS = css`
