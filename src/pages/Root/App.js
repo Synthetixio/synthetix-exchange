@@ -13,8 +13,6 @@ import {
 	getLeaderboardPopupIsVisible,
 	getDashboardPopupIsVisible,
 	getTwitterPopupIsVisible,
-	gweiPopupIsVisible,
-	walletPopupIsVisible,
 	getViewTxModalVisible,
 } from '../../ducks/ui';
 
@@ -25,8 +23,6 @@ import GlobalEventsGate from '../../gates/GlobalEventsGate';
 import { darkTheme } from '../../styles/theme';
 
 import MainLayout from './components/MainLayout';
-import WalletPopup from 'src/components/WalletPopup';
-import GweiPopup from 'src/components/GweiPopup';
 import LeaderboardPopup from 'src/components/LeaderboardPopup';
 import DashboardPopup from 'src/components/DashboardPopup';
 import TwitterPopup from 'src/components/TwitterPopup';
@@ -40,8 +36,6 @@ const App = ({
 	leaderboardPopupIsVisible,
 	dashboardPopupIsVisible,
 	twitterPopupIsVisible,
-	gweiPopupIsVisible,
-	walletPopupIsVisible,
 	walletInfo,
 	viewTxModalVisible,
 }) => (
@@ -49,8 +43,6 @@ const App = ({
 		{isAppReady ? (
 			<>
 				<GlobalEventsGate />
-				{walletPopupIsVisible && <WalletPopup />}
-				{gweiPopupIsVisible && <GweiPopup />}
 				{leaderboardPopupIsVisible && <LeaderboardPopup />}
 				{dashboardPopupIsVisible && <DashboardPopup />}
 				{twitterPopupIsVisible && <TwitterPopup />}
@@ -109,8 +101,6 @@ const mapStateToProps = state => ({
 	leaderboardPopupIsVisible: getLeaderboardPopupIsVisible(state),
 	dashboardPopupIsVisible: getDashboardPopupIsVisible(state),
 	twitterPopupIsVisible: getTwitterPopupIsVisible(state),
-	gweiPopupIsVisible: gweiPopupIsVisible(state),
-	walletPopupIsVisible: walletPopupIsVisible(state),
 	viewTxModalVisible: getViewTxModalVisible(state),
 });
 

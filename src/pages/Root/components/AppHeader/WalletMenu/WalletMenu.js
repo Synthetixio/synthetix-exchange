@@ -104,11 +104,13 @@ const WalletMenu = ({
 					</CardData>
 				</Card.Body>
 			</Card>
-			<Card style={{ flexGrow: '1', height: '100%' }}>
-				<Card.Header>
+			<Card style={{ flexGrow: '1', height: '100%', overflow: 'hidden' }}>
+				<Card.Header style={{ flexShrink: '0' }}>
 					<StyledHeadingSmall>{t('header.wallet-menu.cards.synth-balance')}</StyledHeadingSmall>
 				</Card.Header>
-				<StyleCardBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+				<StyleCardBody
+					style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}
+				>
 					<StyledTable
 						palette={TABLE_PALETTE.STRIPED}
 						data={synthsWalletBalances}
@@ -194,7 +196,6 @@ const StyledTable = styled(Table)`
 		}
 	}
 	.table-body {
-		height: 256px;
 		overflow-x: hidden;
 		${media.medium`
 			width: 100%;

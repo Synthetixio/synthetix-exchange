@@ -258,6 +258,9 @@ ${props =>
 				background: ${darkTheme.colors.surfaceL3};
 				border: 0.5px solid #cb5bf2;
 				border-radius: 2px;
+				/* &:hover {
+					background: #282862;
+				} */
 			}
 		`}		
 `;
