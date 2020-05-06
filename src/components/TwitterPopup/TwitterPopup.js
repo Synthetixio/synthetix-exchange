@@ -226,9 +226,9 @@ const TweetPreview = styled.div`
 	margin-bottom: 40px;
 
 	${media.small`
-		font-size: 16px;
+		font-size: 13px;
 		line-height: 20px;
-		padding: 26px 43px;
+		padding: 19px;
 	`}
 `;
 

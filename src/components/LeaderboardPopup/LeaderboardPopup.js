@@ -81,61 +81,59 @@ const LeaderboardPopup = ({
 					value={twitterHandleSearch}
 					placeholder="e.g @VitalikButerin"
 				/>
-				<TableContainer>
-					<StyledTable
-						palette={TABLE_PALETTE.LEADERBOARD}
-						columns={[
-							{
-								Header: 'RANK',
-								accessor: 'rank',
-								Cell: cellProps => (
-									<Rank isCurrentWallet={cellProps.row.original.address === currentWallet}>
-										{cellProps.cell.value}
-									</Rank>
-								),
-								width: 80,
-							},
-							{
-								Header: 'TWITTER HANDLE',
-								accessor: 'twitterHandle',
-								Cell: cellProps => {
-									const isCurrentWallet = cellProps.row.original.address === currentWallet;
+				<StyledTable
+					palette={TABLE_PALETTE.LEADERBOARD}
+					columns={[
+						{
+							Header: 'RANK',
+							accessor: 'rank',
+							Cell: cellProps => (
+								<Rank isCurrentWallet={cellProps.row.original.address === currentWallet}>
+									{cellProps.cell.value}
+								</Rank>
+							),
+							width: 80,
+						},
+						{
+							Header: 'TWITTER HANDLE',
+							accessor: 'twitterHandle',
+							Cell: cellProps => {
+								const isCurrentWallet = cellProps.row.original.address === currentWallet;
 
-									return (
-										<StyledLink
-											to={`https://twitter.com/${cellProps.cell.value}`}
-											isExternal={true}
-											isCurrentWallet={isCurrentWallet}
-										>
-											@{cellProps.cell.value}{' '}
-											{isCurrentWallet && <StarIcon style={{ marginLeft: '5px' }} />}
-										</StyledLink>
-									);
-								},
-								width: isMobile ? 140 : 250,
+								return (
+									<StyledLink
+										to={`https://twitter.com/${cellProps.cell.value}`}
+										isExternal={true}
+										isCurrentWallet={isCurrentWallet}
+									>
+										@{cellProps.cell.value}{' '}
+										{isCurrentWallet && <StarIcon style={{ marginLeft: '5px' }} />}
+									</StyledLink>
+								);
 							},
-							{
-								Header: 'ASSET VALUE',
-								accessor: 'assetValue',
-								sortType: 'basic',
-								Cell: cellProps => (
-									<AssetValue isCurrentWallet={cellProps.row.original.address === currentWallet}>
-										{formatCurrencyWithSign('$', cellProps.cell.value)} USD
-									</AssetValue>
-								),
-								width: isMobile ? 130 : 150,
-							},
-						]}
-						columnsDeps={[isMobile]}
-						data={filteredLeaderboard}
-						isLoading={isLoadingLeaderboard && !isLoadedLeaderboard}
-						noResultsMessage={
-							twitterHandleSearch && filteredLeaderboard.length === 0 ? (
-								<NoResultsMessage>No results for {twitterHandleSearch}</NoResultsMessage>
-							) : undefined
-						}
-					/>
-				</TableContainer>
+							width: isMobile ? 140 : 250,
+						},
+						{
+							Header: 'ASSET VALUE',
+							accessor: 'assetValue',
+							sortType: 'basic',
+							Cell: cellProps => (
+								<AssetValue isCurrentWallet={cellProps.row.original.address === currentWallet}>
+									{formatCurrencyWithSign('$', cellProps.cell.value)} USD
+								</AssetValue>
+							),
+							width: isMobile ? 130 : 150,
+						},
+					]}
+					columnsDeps={[isMobile]}
+					data={filteredLeaderboard}
+					isLoading={isLoadingLeaderboard && !isLoadedLeaderboard}
+					noResultsMessage={
+						twitterHandleSearch && filteredLeaderboard.length === 0 ? (
+							<NoResultsMessage>No results for {twitterHandleSearch}</NoResultsMessage>
+						) : undefined
+					}
+				/>
 			</Content>
 		</Popup>
 	);
@@ -143,11 +141,6 @@ const LeaderboardPopup = ({
 
 const NoResultsMessage = styled.div`
 	padding: 18px;
-`;
-
-const TableContainer = styled.div`
-	overflow: hidden;
-	width: 100%;
 `;
 
 const TwitterHandleSearchInput = styled(SearchInput)`
@@ -169,9 +162,6 @@ const AssetValue = styled.span`
 
 const StyledTable = styled(Table)`
 	overflow: hidden;
-	.table-body-row {
-	}
-
 	${media.small`
 		.table-body-row {
 			margin: 0;
@@ -187,11 +177,12 @@ const StyledTable = styled(Table)`
 `;
 
 const Content = styled(CenteredContent)`
+	height: calc(100vh - 56px);
+	overflow: auto;
 	justify-content: initial;
 	max-width: 600px;
 	padding-top: 40px;
 	padding-bottom: 20px;
-	overflow: hidden;
 	${media.small`
 		padding-top: 0;
 	`}
