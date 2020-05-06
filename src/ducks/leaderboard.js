@@ -57,10 +57,6 @@ export const getSortedLeaderboardMap = createSelector(getSortedLeaderboard, sort
 	keyBy(sortedLeaderboardData, item => getAddress(item.address))
 );
 
-export const getTop10Leaders = createSelector(getSortedLeaderboard, sortedLeaderboardData =>
-	sortedLeaderboardData.slice(0, 10)
-);
-
 export const {
 	fetchRequest: fetchLeaderboardRequest,
 	fetchSuccess: fetchLeaderboardSuccess,

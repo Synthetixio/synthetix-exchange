@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useMemo, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 
 import {
-	getTop10Leaders,
+	getSortedLeaderboard,
 	getIsLoadingLeaderboard,
 	getIsLoadedLeaderboard,
 	fetchLeaderboardRequest,
 } from 'src/ducks/leaderboard';
 import { hideLeaderboardPopup } from 'src/ducks/ui';
+import { getCurrentWalletAddress } from 'src/ducks/wallet/walletDetails';
 
 import { ReactComponent as CloseCrossIcon } from 'src/assets/images/close-cross.svg';
+import { ReactComponent as StarIcon } from 'src/assets/images/l2/star.svg';
 
 import { formatCurrencyWithSign } from 'src/utils/formatters';
 
 import Link from 'src/components/Link';
 import Table from 'src/components/Table';
+import { SearchInput } from 'src/components/Input';
 import { TABLE_PALETTE } from 'src/components/Table/constants';
 
 import useInterval from 'src/shared/hooks/useInterval';
@@ -32,9 +35,12 @@ const LeaderboardPopup = ({
 	hideLeaderboardPopup,
 	isLoadingLeaderboard,
 	isLoadedLeaderboard,
-	top10leaders,
+	leaderboard,
 	fetchLeaderboardRequest,
+	currentWallet,
 }) => {
+	const [twitterHandleSearch, setTwitterHandleSearch] = useState('');
+
 	useEffect(() => {
 		fetchLeaderboardRequest();
 		// eslint-disable-next-line
@@ -46,6 +52,19 @@ const LeaderboardPopup = ({
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
 
+	const filteredLeaderboard = useMemo(
+		() =>
+			twitterHandleSearch.length > 0
+				? leaderboard.filter(({ twitterHandle }) => {
+						const twitterHandleLowered = twitterHandle.toLowerCase();
+						const searchQueryLowered = twitterHandleSearch.toLowerCase().replace('@', '');
+
+						return twitterHandleLowered.includes(searchQueryLowered);
+				  })
+				: leaderboard.slice(0, 50),
+		[leaderboard, twitterHandleSearch]
+	);
+
 	return (
 		<Popup>
 			<SimpleAppHeader onClick={hideLeaderboardPopup} />
@@ -53,49 +72,106 @@ const LeaderboardPopup = ({
 				<Headline>
 					<span>SYNTHETIX.</span>EXCHANGE L2
 				</Headline>
-				<Description>Trading Comp Top 10 Leaderboard</Description>
+				<Description>Trading Comp Top 50 Leaderboard</Description>
 				<CloseButton onClick={hideLeaderboardPopup}>
 					<CloseCrossIcon />
 				</CloseButton>
-				<StyledTable
-					palette={TABLE_PALETTE.LEADERBOARD}
-					columns={[
-						{
-							Header: 'RANK',
-							accessor: 'rank',
-							Cell: cellProps => <Rank>{cellProps.cell.value}</Rank>,
-							width: 80,
-						},
-						{
-							Header: 'TWITTER HANDLE',
-							accessor: 'twitterHandle',
-							Cell: cellProps => (
-								<StyledLink to={`https://twitter.com/${cellProps.cell.value}`} isExternal={true}>
-									@{cellProps.cell.value}
-								</StyledLink>
-							),
-							width: isMobile ? 140 : 250,
-						},
-						{
-							Header: 'ASSET VALUE',
-							accessor: 'assetValue',
-							sortType: 'basic',
-							Cell: cellProps => (
-								<span>{formatCurrencyWithSign('$', cellProps.cell.value)} USD</span>
-							),
-							width: isMobile ? 130 : 150,
-						},
-					]}
-					columnsDeps={[isMobile]}
-					data={top10leaders}
-					isLoading={isLoadingLeaderboard && !isLoadedLeaderboard}
+				<TwitterHandleSearchInput
+					onChange={e => setTwitterHandleSearch(e.target.value)}
+					value={twitterHandleSearch}
+					placeholder="e.g @VitalikButerin"
 				/>
+				<TableContainer>
+					<StyledTable
+						palette={TABLE_PALETTE.LEADERBOARD}
+						columns={[
+							{
+								Header: 'RANK',
+								accessor: 'rank',
+								Cell: cellProps => (
+									<Rank isCurrentWallet={cellProps.row.original.address === currentWallet}>
+										{cellProps.cell.value}
+									</Rank>
+								),
+								width: 80,
+							},
+							{
+								Header: 'TWITTER HANDLE',
+								accessor: 'twitterHandle',
+								Cell: cellProps => {
+									const isCurrentWallet = cellProps.row.original.address === currentWallet;
+
+									return (
+										<StyledLink
+											to={`https://twitter.com/${cellProps.cell.value}`}
+											isExternal={true}
+											isCurrentWallet={isCurrentWallet}
+										>
+											@{cellProps.cell.value}{' '}
+											{isCurrentWallet && <StarIcon style={{ marginLeft: '5px' }} />}
+										</StyledLink>
+									);
+								},
+								width: isMobile ? 140 : 250,
+							},
+							{
+								Header: 'ASSET VALUE',
+								accessor: 'assetValue',
+								sortType: 'basic',
+								Cell: cellProps => (
+									<AssetValue isCurrentWallet={cellProps.row.original.address === currentWallet}>
+										{formatCurrencyWithSign('$', cellProps.cell.value)} USD
+									</AssetValue>
+								),
+								width: isMobile ? 130 : 150,
+							},
+						]}
+						columnsDeps={[isMobile]}
+						data={filteredLeaderboard}
+						isLoading={isLoadingLeaderboard && !isLoadedLeaderboard}
+						noResultsMessage={
+							twitterHandleSearch && filteredLeaderboard.length === 0 ? (
+								<NoResultsMessage>No results for {twitterHandleSearch}</NoResultsMessage>
+							) : undefined
+						}
+					/>
+				</TableContainer>
 			</Content>
 		</Popup>
 	);
 };
 
+const NoResultsMessage = styled.div`
+	padding: 18px;
+`;
+
+const TableContainer = styled.div`
+	overflow: hidden;
+	width: 100%;
+`;
+
+const TwitterHandleSearchInput = styled(SearchInput)`
+	max-width: 540px;
+	width: 100%;
+	margin: 30px 0;
+	${media.small`
+		max-width: 300px;
+	`}
+`;
+
+const currentUserTextCSS = css`
+	color: #68ec9b;
+`;
+
+const AssetValue = styled.span`
+	${props => props.isCurrentWallet && currentUserTextCSS};
+`;
+
 const StyledTable = styled(Table)`
+	overflow: hidden;
+	.table-body-row {
+	}
+
 	${media.small`
 		.table-body-row {
 			margin: 0;
@@ -111,9 +187,11 @@ const StyledTable = styled(Table)`
 `;
 
 const Content = styled(CenteredContent)`
+	justify-content: initial;
 	max-width: 600px;
 	padding-top: 40px;
 	padding-bottom: 20px;
+	overflow: hidden;
 	${media.small`
 		padding-top: 0;
 	`}
@@ -142,7 +220,6 @@ const Description = styled.div`
 	text-transform: uppercase;
 	font-weight: normal;
 	font-size: 30px;
-	padding-bottom: 50px;
 	text-align: center;
 	${media.small`
 		max-width: 280px;
@@ -170,14 +247,19 @@ const CloseButton = styled.button`
 
 const Rank = styled.span`
 	color: ${props => props.theme.colors.hyperlink};
+	${props => props.isCurrentWallet && currentUserTextCSS};
 `;
 
 const StyledLink = styled(Link)`
+	display: flex;
+	align-items: center;
 	color: ${props => props.theme.colors.fontPrimary};
+	${props => props.isCurrentWallet && currentUserTextCSS};
 `;
 
 const mapStateToProps = state => ({
-	top10leaders: getTop10Leaders(state),
+	currentWallet: getCurrentWalletAddress(state),
+	leaderboard: getSortedLeaderboard(state),
 	isLoadingLeaderboard: getIsLoadingLeaderboard(state),
 	isLoadedLeaderboard: getIsLoadedLeaderboard(state),
 });
