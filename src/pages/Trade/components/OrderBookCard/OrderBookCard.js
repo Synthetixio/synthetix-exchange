@@ -110,6 +110,7 @@ const StyledCard = styled(Card)`
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
 	flex-grow: 1;
+	height: 100%;
 	overflow: hidden;
 	position: initial;
 	display: flex;
