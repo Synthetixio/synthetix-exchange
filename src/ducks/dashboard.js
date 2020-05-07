@@ -1,9 +1,6 @@
 import { takeLatest, put, all } from 'redux-saga/effects';
 import { createSlice } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
-import axios from 'axios';
-
-import { L2_API_URL } from 'src/constants/l2';
 
 import { calculateTimestampForPeriod } from 'src/services/rates/utils';
 
@@ -69,8 +66,7 @@ function* fetchDashboard() {
 	const now = new Date().getTime();
 
 	try {
-		const [holders, dailyExchanges, totalExchanges] = yield all([
-			axios.get(`${L2_API_URL}/api/holders`),
+		const [dailyExchanges, totalExchanges] = yield all([
 			snxData.exchanges.since({
 				minTimestamp: calculateTimestampForPeriod(24),
 				maxTimestamp: Math.trunc(now / 1000),
@@ -81,7 +77,6 @@ function* fetchDashboard() {
 		yield put(
 			fetchDashboardSuccess({
 				data: {
-					totalWallets: (holders.data && holders.data.length) || 0,
 					daily: getExchangeStats(dailyExchanges),
 					total: getExchangeStats(totalExchanges),
 				},

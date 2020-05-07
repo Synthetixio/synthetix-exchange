@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import snxData from 'synthetix-data';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
-import { getSortedLeaderboardMap, getLeaderboardData } from '../leaderboard';
+import { getHoldersData } from '../holders';
 import { getAddress } from 'src/utils/formatters';
 
 export const allTradesSlice = createSlice({
@@ -51,13 +51,15 @@ export const getAllTrades = state => getAllTradesState(state).trades;
 
 export const getAllTradesWithTwitterHandles = createSelector(
 	getAllTrades,
-	getLeaderboardData,
-	getSortedLeaderboardMap,
-	(trades, leaderboardData, leaderboardMap) =>
-		leaderboardData.length > 0
+	getHoldersData,
+	(trades, holdersData) =>
+		holdersData.total > 0
 			? trades.map(trade => ({
 					...trade,
-					twitterHandle: get(leaderboardMap, [getAddress(trade.fromAddress), 'twitterHandle']),
+					twitterHandle: get(holdersData.byAddress, [
+						getAddress(trade.fromAddress),
+						'twitterHandle',
+					]),
 			  }))
 			: trades
 );
