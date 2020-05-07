@@ -11,6 +11,7 @@ import { getExchangeData } from '../../dataFetcher';
 
 import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import { fetchLeaderboardRequest } from 'src/ducks/leaderboard';
 
 import { fetchWalletBalancesRequest } from 'src/ducks/wallet/walletBalances';
 import { updateWalletReducer } from 'src/ducks/wallet/walletDetails';
@@ -53,6 +54,7 @@ const Root = ({
 	fetchRates,
 	setAppReady,
 	isAppReady,
+	fetchLeaderboardRequest,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const [addressDataIntervalDelay, setAddressDataIntervalDelay] = useState(null);
@@ -145,8 +147,9 @@ const Root = ({
 			if (currentWallet != null) {
 				fetchWalletBalancesRequest();
 			}
+			fetchLeaderboardRequest();
 		}
-	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
+	}, [isAppReady, currentWallet, fetchWalletBalancesRequest, fetchLeaderboardRequest]);
 
 	useEffect(() => {
 		if (isAppReady) {
@@ -192,6 +195,7 @@ const mapDispatchToProps = {
 	setExchangeFeeRate,
 	fetchWalletBalancesRequest,
 	fetchRates,
+	fetchLeaderboardRequest,
 	setAppReady,
 };
 
