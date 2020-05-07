@@ -68,8 +68,8 @@ const RowContainer = styled(FlexDiv)`
 `;
 const TradeContainer = styled.div`
 	flex: 1;
-	display: flex;
-	flex-direction: column;
+	grid-template-rows: auto auto 1fr;
+	display: grid;
 	width: 100%;
 `;
 const ChartContainer = styled.div`
