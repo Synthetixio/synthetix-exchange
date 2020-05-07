@@ -35,7 +35,7 @@ export const ratesSlice = createSlice({
 			state.isLoaded = true;
 		},
 		updateRate: (state, action) => {
-			if (state.exchangeRates[action.payload.synth]) {
+			if (state.exchangeRates && state.exchangeRates[action.payload.synth]) {
 				state.exchangeRates[action.payload.synth] = action.payload.rate;
 			}
 		},
