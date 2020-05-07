@@ -77,33 +77,37 @@ const DashboardPopup = ({
 				<CloseButton onClick={hideDashboardPopup}>
 					<CloseCrossIcon />
 				</CloseButton>
-				<InfoBoxRow isMobile={isMobile}>
-					{topRowData.map(element => (
-						<StyledInfoBox key={`infobox-${element.heading}`}>
-							<StyledInfoBoxLabel>{element.heading}</StyledInfoBoxLabel>
-							<StyledInfoBoxValue>{element.data}</StyledInfoBoxValue>
-						</StyledInfoBox>
-					))}
-				</InfoBoxRow>
-				<InfoBoxRow isMobile={isMobile}>
-					{bottomRowData.map(element => (
-						<StyledInfoBox key={`infobox-${element.heading}`}>
-							<StyledInfoBoxLabel>{element.heading}</StyledInfoBoxLabel>
-							<StyledInfoBoxValue>{element.data}</StyledInfoBoxValue>
-						</StyledInfoBox>
-					))}
-				</InfoBoxRow>
-				<InfoBoxRow>
-					<PieChart data={synthData.totalSupplyPerSynth} />
-				</InfoBoxRow>
+				<InfoBoxContainer>
+					<InfoBoxRow isMobile={isMobile}>
+						{topRowData.map(element => (
+							<StyledInfoBox key={`infobox-${element.heading}`}>
+								<StyledInfoBoxLabel>{element.heading}</StyledInfoBoxLabel>
+								<StyledInfoBoxValue>{element.data}</StyledInfoBoxValue>
+							</StyledInfoBox>
+						))}
+					</InfoBoxRow>
+					<InfoBoxRow isMobile={isMobile}>
+						{bottomRowData.map(element => (
+							<StyledInfoBox key={`infobox-${element.heading}`}>
+								<StyledInfoBoxLabel>{element.heading}</StyledInfoBoxLabel>
+								<StyledInfoBoxValue>{element.data}</StyledInfoBoxValue>
+							</StyledInfoBox>
+						))}
+					</InfoBoxRow>
+					<InfoBoxRow>
+						<PieChart data={synthData && synthData.totalSupplyPerSynth.slice(0, 6)} />
+					</InfoBoxRow>
+				</InfoBoxContainer>
 			</Content>
 		</Popup>
 	);
 };
 
 const Content = styled(CenteredContent)`
+	height: 100%;
+	overflow: auto;
 	max-width: 912px;
-	padding-top: 40px;
+	padding-bottom: 20px;
 	${media.small`
 		padding-top: 0;
 	`}
@@ -166,6 +170,10 @@ const mobileConfig = css`
 	& > div {
 		padding: 16px;
 	}
+`;
+
+const InfoBoxContainer = styled.div`
+	width: 100%;
 `;
 
 const InfoBoxRow = styled.div`

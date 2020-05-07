@@ -1,10 +1,11 @@
 import { takeLatest, put, all } from 'redux-saga/effects';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
 import axios from 'axios';
 
 import { L2_API_URL } from 'src/constants/l2';
 
+import { getRatesExchangeRates } from './rates';
 import { calculateTimestampForPeriod } from 'src/services/rates/utils';
 
 export const dashboardSlice = createSlice({
@@ -47,13 +48,22 @@ export const getIsLoadingDashboard = state => getDashboardState(state).isLoading
 export const getIsRefreshingDashboard = state => getDashboardState(state).isRefreshing;
 export const getIsLoadedDashboard = state => getDashboardState(state).isLoaded;
 export const getDashboardLoadingError = state => getDashboardState(state).loadingError;
-export const getDashboardData = state => getDashboardState(state).data;
+export const getDashboardDataTest = state => getDashboardState(state).data;
 
 export const {
 	fetchRequest: fetchDashboardRequest,
 	fetchSuccess: fetchDashboardSuccess,
 	fetchFailure: fetchDashboardFailure,
 } = dashboardSlice.actions;
+
+export const getDashboardData = createSelector(
+	getDashboardDataTest,
+	getRatesExchangeRates,
+	(dashboardData, rates) => {
+		console.log(dashboardData, rates);
+		return dashboardData;
+	}
+);
 
 const getExchangeStats = exchanges => {
 	return {
