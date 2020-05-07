@@ -24,6 +24,7 @@ import {
 	InfoBoxLabel,
 	InfoBoxValue,
 } from 'src/shared/commonStyles';
+import PieChart from './PieChart';
 
 import { media, smallMediaQuery } from 'src/shared/media';
 
@@ -45,7 +46,7 @@ const DashboardPopup = ({
 	}, REFRESH_INTERVAL);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
-	const { totalWallets, daily, total } = dashboardData;
+	const { totalWallets, daily, total, synthData } = dashboardData;
 
 	const topRowData = [
 		{ heading: 'Total Wallets', data: formatCurrency(totalWallets) },
@@ -91,6 +92,9 @@ const DashboardPopup = ({
 							<StyledInfoBoxValue>{element.data}</StyledInfoBoxValue>
 						</StyledInfoBox>
 					))}
+				</InfoBoxRow>
+				<InfoBoxRow>
+					<PieChart data={synthData.totalSupplyPerSynth} />
 				</InfoBoxRow>
 			</Content>
 		</Popup>

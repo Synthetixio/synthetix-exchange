@@ -69,8 +69,9 @@ function* fetchDashboard() {
 	const now = new Date().getTime();
 
 	try {
-		const [holders, dailyExchanges, totalExchanges] = yield all([
+		const [holders, synthData, dailyExchanges, totalExchanges] = yield all([
 			axios.get(`${L2_API_URL}/api/holders`),
+			axios.get(`${L2_API_URL}/api/openinterest`),
 			snxData.exchanges.since({
 				minTimestamp: calculateTimestampForPeriod(24),
 				maxTimestamp: Math.trunc(now / 1000),
@@ -81,6 +82,7 @@ function* fetchDashboard() {
 		yield put(
 			fetchDashboardSuccess({
 				data: {
+					synthData: synthData.data,
 					totalWallets: (holders.data && holders.data.length) || 0,
 					daily: getExchangeStats(dailyExchanges),
 					total: getExchangeStats(totalExchanges),
