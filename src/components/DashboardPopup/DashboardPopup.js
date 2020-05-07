@@ -39,7 +39,7 @@ const DashboardPopup = ({
 	}, []);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
-	const { totalWallets, daily, total, synthData } = dashboardData;
+	const { totalWallets, daily, total, synthData, topSynths } = dashboardData;
 
 	const topRowData = [
 		{ heading: 'Total Wallets', data: formatCurrency(totalWallets) },
@@ -88,7 +88,7 @@ const DashboardPopup = ({
 						))}
 					</InfoBoxRow>
 					<InfoBoxRow>
-						<PieChart data={synthData && synthData.totalSupplyPerSynth.slice(0, 6)} />
+						<PieChart data={topSynths} />
 					</InfoBoxRow>
 				</InfoBoxContainer>
 			</Content>

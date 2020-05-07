@@ -1,4 +1,6 @@
 import { takeLatest, put, all } from 'redux-saga/effects';
+import isEmpty from 'lodash/isEmpty';
+import orderBy from 'lodash/orderBy';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
 import axios from 'axios';
@@ -60,8 +62,29 @@ export const getDashboardData = createSelector(
 	getDashboardDataTest,
 	getRatesExchangeRates,
 	(dashboardData, rates) => {
-		console.log(dashboardData, rates);
-		return dashboardData;
+		if (isEmpty(dashboardData) || !rates) return {};
+		const { synthData } = dashboardData;
+		let topSynths = [];
+		let totalRemainingSynths = 0;
+		const topSynthsInUSD = orderBy(
+			synthData.totalSupplyPerSynth.map(synth => {
+				return {
+					name: synth.name,
+					total: synth.total * rates[synth.name],
+				};
+			}),
+			'total',
+			'desc'
+		);
+		topSynthsInUSD.forEach((synth, i) => {
+			if (i <= 5) {
+				topSynths.push(synth);
+			} else {
+				totalRemainingSynths += synth.total;
+			}
+		});
+		topSynths.push({ name: 'Other', total: totalRemainingSynths });
+		return { ...dashboardData, topSynths };
 	}
 );
 
@@ -86,7 +109,7 @@ function* fetchDashboard() {
 				minTimestamp: calculateTimestampForPeriod(24),
 				maxTimestamp: Math.trunc(now / 1000),
 			}),
-			snxData.exchanges.since(),
+			snxData.exchanges.since({ max: 10 }),
 		]);
 
 		yield put(
