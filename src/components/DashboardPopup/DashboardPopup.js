@@ -13,7 +13,6 @@ import { formatCurrencyWithSign, formatCurrency } from 'src/utils/formatters';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
-import useInterval from 'src/shared/hooks/useInterval';
 
 import {
 	CenteredContent,
@@ -28,8 +27,6 @@ import PieChart from './PieChart';
 
 import { media, smallMediaQuery } from 'src/shared/media';
 
-const REFRESH_INTERVAL = 30000;
-
 const DashboardPopup = ({
 	hideDashboardPopup,
 	fetchDashboardRequest,
@@ -40,10 +37,6 @@ const DashboardPopup = ({
 		fetchDashboardRequest();
 		// eslint-disable-next-line
 	}, []);
-
-	useInterval(() => {
-		fetchDashboardRequest();
-	}, REFRESH_INTERVAL);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
 	const { totalWallets, daily, total, synthData } = dashboardData;
