@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 
 import { getDashboardData, fetchDashboardRequest } from 'src/ducks/dashboard';
+import { getHoldersData, fetchHoldersRequest } from 'src/ducks/holders';
 import { hideDashboardPopup } from 'src/ducks/ui';
 import { getAvailableSynthsMap } from 'src/ducks/synths';
 
@@ -31,17 +32,20 @@ const DashboardPopup = ({
 	fetchDashboardRequest,
 	dashboardData,
 	synthsMap,
+	fetchHoldersRequest,
+	holdersData,
 }) => {
 	useEffect(() => {
 		fetchDashboardRequest();
+		fetchHoldersRequest();
 		// eslint-disable-next-line
 	}, []);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
-	const { totalWallets, daily, total } = dashboardData;
+	const { daily, total } = dashboardData;
 
 	const topRowData = [
-		{ heading: 'Total Wallets', data: formatCurrency(totalWallets) },
+		{ heading: 'Total Wallets', data: formatCurrency(holdersData.total) },
 		{ heading: 'Daily Trades', data: (daily && formatCurrency(daily.trades)) || 0 },
 
 		{
@@ -194,12 +198,14 @@ const StyledInfoBoxValue = styled(InfoBoxValue)`
 
 const mapStateToProps = state => ({
 	dashboardData: getDashboardData(state),
+	holdersData: getHoldersData(state),
 	synthsMap: getAvailableSynthsMap(state),
 });
 
 const mapDispatchToProps = {
 	hideDashboardPopup,
 	fetchDashboardRequest,
+	fetchHoldersRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardPopup);
