@@ -40,8 +40,7 @@ const Chart = ({ data = [] }) => {
 };
 
 const ChartContainer = styled.div`
-	width: 250px;
-	height: 250px;
+	width: 100%;
 `;
 
 const Legend = styled(FlexDivCentered)`

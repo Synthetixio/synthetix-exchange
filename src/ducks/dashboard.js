@@ -10,6 +10,8 @@ import { L2_API_URL } from 'src/constants/l2';
 import { getRatesExchangeRates } from './rates';
 import { calculateTimestampForPeriod } from 'src/services/rates/utils';
 
+const TOP_SYNTHS_LIMIT = 4;
+
 export const dashboardSlice = createSlice({
 	name: 'dashboard',
 	initialState: {
@@ -77,7 +79,7 @@ export const getDashboardData = createSelector(
 			'desc'
 		);
 		topSynthsInUSD.forEach((synth, i) => {
-			if (i <= 5) {
+			if (i <= TOP_SYNTHS_LIMIT) {
 				topSynths.push(synth);
 			} else {
 				totalRemainingSynths += synth.total;

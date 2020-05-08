@@ -13,6 +13,8 @@ import { formatCurrencyWithSign, formatCurrency } from 'src/utils/formatters';
 import { SYNTHS_MAP } from 'src/constants/currency';
 
 import SimpleAppHeader from 'src/pages/Root/components/SimpleAppHeader';
+import PieChart from './PieChart';
+import BarChart from './BarChart';
 
 import {
 	CenteredContent,
@@ -23,7 +25,6 @@ import {
 	InfoBoxLabel,
 	InfoBoxValue,
 } from 'src/shared/commonStyles';
-import PieChart from './PieChart';
 
 import { media, smallMediaQuery } from 'src/shared/media';
 
@@ -51,7 +52,7 @@ const DashboardPopup = ({
 		},
 	];
 
-	const bottomRowData = [
+	const middleRowData = [
 		{ heading: 'Cumulative Trades', data: (total && formatCurrency(total.trades)) || 0 },
 		{
 			heading: 'Cumulative Volume ($USD)',
@@ -80,16 +81,23 @@ const DashboardPopup = ({
 						))}
 					</InfoBoxRow>
 					<InfoBoxRow isMobile={isMobile}>
-						{bottomRowData.map(element => (
+						{middleRowData.map(element => (
 							<StyledInfoBox key={`infobox-${element.heading}`}>
 								<StyledInfoBoxLabel>{element.heading}</StyledInfoBoxLabel>
 								<StyledInfoBoxValue>{element.data}</StyledInfoBoxValue>
 							</StyledInfoBox>
 						))}
 					</InfoBoxRow>
-					<InfoBoxRow>
-						<PieChart data={topSynths} />
-					</InfoBoxRow>
+					<ChartBoxRow isMobile={isMobile}>
+						<StyledInfoBox>
+							<StyledInfoBoxLabel>Open Interest</StyledInfoBoxLabel>
+							<BarChart data={topSynths} />
+						</StyledInfoBox>
+						<StyledInfoBox>
+							<StyledInfoBoxLabel>Synths Distribution</StyledInfoBoxLabel>
+							<PieChart data={topSynths} />
+						</StyledInfoBox>
+					</ChartBoxRow>
 				</InfoBoxContainer>
 			</Content>
 		</Popup>
@@ -176,6 +184,15 @@ const InfoBoxRow = styled.div`
 	grid-gap: 40px;
 	margin-bottom: 40px;
 	grid-auto-columns: 1fr;
+	${props => props.isMobile && mobileConfig}
+`;
+
+const ChartBoxRow = styled.div`
+	width: 100%;
+	display: grid;
+	grid-auto-flow: column;
+	grid-gap: 40px;
+	grid-auto-columns: 1.5fr 1fr;
 	${props => props.isMobile && mobileConfig}
 `;
 
