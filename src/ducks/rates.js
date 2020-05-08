@@ -39,6 +39,15 @@ export const ratesSlice = createSlice({
 				state.exchangeRates[action.payload.synth] = action.payload.rate;
 			}
 		},
+		updateRates: (state, action) => {
+			if (state.exchangeRates) {
+				action.payload.rates.forEach(({ synth, rate }) => {
+					if (state.exchangeRates[synth]) {
+						state.exchangeRates[synth] = rate;
+					}
+				});
+			}
+		},
 	},
 });
 
@@ -53,6 +62,7 @@ export const getEthRate = createSelector(getRatesExchangeRates, exchangeRates =>
 );
 
 export const {
+	updateRates,
 	updateRate,
 	fetchRatesRequest,
 	fetchRatesSuccess,

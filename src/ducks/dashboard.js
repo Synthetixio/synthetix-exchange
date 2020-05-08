@@ -1,8 +1,13 @@
-import { takeLatest, put, all } from 'redux-saga/effects';
-import { createSlice } from '@reduxjs/toolkit';
-import snxData from 'synthetix-data';
+import { takeLatest, put } from 'redux-saga/effects';
+import axios from 'axios';
+import isEmpty from 'lodash/isEmpty';
+import orderBy from 'lodash/orderBy';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
-import { calculateTimestampForPeriod } from 'src/services/rates/utils';
+import { getRatesExchangeRates } from './rates';
+import { L2_API_URL } from 'src/constants/l2';
+
+const TOP_SYNTHS_LIMIT = 4;
 
 export const dashboardSlice = createSlice({
 	name: 'dashboard',
@@ -44,7 +49,7 @@ export const getIsLoadingDashboard = state => getDashboardState(state).isLoading
 export const getIsRefreshingDashboard = state => getDashboardState(state).isRefreshing;
 export const getIsLoadedDashboard = state => getDashboardState(state).isLoaded;
 export const getDashboardLoadingError = state => getDashboardState(state).loadingError;
-export const getDashboardData = state => getDashboardState(state).data;
+export const getDashboardDataState = state => getDashboardState(state).data;
 
 export const {
 	fetchRequest: fetchDashboardRequest,
@@ -52,33 +57,45 @@ export const {
 	fetchFailure: fetchDashboardFailure,
 } = dashboardSlice.actions;
 
-const getExchangeStats = exchanges => {
-	return {
-		trades: exchanges.length,
-		volume: exchanges.reduce((totalVolume, exchange) => {
-			totalVolume += exchange.fromAmountInUSD;
-			return totalVolume;
-		}, 0),
-	};
-};
+export const getDashboardData = createSelector(
+	getDashboardDataState,
+	getRatesExchangeRates,
+	(dashboardData, rates) => {
+		if (isEmpty(dashboardData) || !rates) return {};
+
+		const { totalSupplyPerSynth } = dashboardData;
+		let topSynths = [];
+		let totalRemainingSynths = 0;
+		const topSynthsInUSD = orderBy(
+			totalSupplyPerSynth.map(synth => {
+				return {
+					name: synth.name,
+					total: synth.total * rates[synth.name],
+				};
+			}),
+			'total',
+			'desc'
+		);
+		topSynthsInUSD.forEach((synth, i) => {
+			if (i <= TOP_SYNTHS_LIMIT) {
+				topSynths.push(synth);
+			} else {
+				totalRemainingSynths += synth.total;
+			}
+		});
+		topSynths.push({ name: 'Other', total: totalRemainingSynths });
+		return { ...dashboardData, topSynths };
+	}
+);
 
 function* fetchDashboard() {
-	const now = new Date().getTime();
-
 	try {
-		const [dailyExchanges, totalExchanges] = yield all([
-			snxData.exchanges.since({
-				minTimestamp: calculateTimestampForPeriod(24),
-				maxTimestamp: Math.trunc(now / 1000),
-			}),
-			snxData.exchanges.since(),
-		]);
+		const dashboardData = yield axios.get(`${L2_API_URL}/api/dashboard`);
 
 		yield put(
 			fetchDashboardSuccess({
 				data: {
-					daily: getExchangeStats(dailyExchanges),
-					total: getExchangeStats(totalExchanges),
+					...dashboardData.data,
 				},
 			})
 		);
