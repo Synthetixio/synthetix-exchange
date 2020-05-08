@@ -1,12 +1,10 @@
-import { takeLatest, put, all } from 'redux-saga/effects';
+import { takeLatest, put } from 'redux-saga/effects';
 import axios from 'axios';
 import isEmpty from 'lodash/isEmpty';
 import orderBy from 'lodash/orderBy';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-import snxData from 'synthetix-data';
 
 import { getRatesExchangeRates } from './rates';
-import { calculateTimestampForPeriod } from 'src/services/rates/utils';
 import { L2_API_URL } from 'src/constants/l2';
 
 const TOP_SYNTHS_LIMIT = 4;
@@ -90,35 +88,14 @@ export const getDashboardData = createSelector(
 	}
 );
 
-const getExchangeStats = exchanges => {
-	return {
-		trades: exchanges.length,
-		volume: exchanges.reduce((totalVolume, exchange) => {
-			totalVolume += exchange.fromAmountInUSD;
-			return totalVolume;
-		}, 0),
-	};
-};
-
 function* fetchDashboard() {
-	const now = new Date().getTime();
-
 	try {
-		const [synthData, dailyExchanges, totalExchanges] = yield all([
-			axios.get(`${L2_API_URL}/api/openinterest`),
-			snxData.exchanges.since({
-				minTimestamp: calculateTimestampForPeriod(24),
-				maxTimestamp: Math.trunc(now / 1000),
-			}),
-			snxData.exchanges.since(),
-		]);
+		const dashboardData = yield axios.get(`${L2_API_URL}/api/dashboard`);
 
 		yield put(
 			fetchDashboardSuccess({
 				data: {
-					...synthData.data,
-					daily: getExchangeStats(dailyExchanges),
-					total: getExchangeStats(totalExchanges),
+					...dashboardData.data,
 				},
 			})
 		);
