@@ -1,14 +1,13 @@
 import { takeLatest, put, all } from 'redux-saga/effects';
+import axios from 'axios';
 import isEmpty from 'lodash/isEmpty';
 import orderBy from 'lodash/orderBy';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
-import axios from 'axios';
-
-import { L2_API_URL } from 'src/constants/l2';
 
 import { getRatesExchangeRates } from './rates';
 import { calculateTimestampForPeriod } from 'src/services/rates/utils';
+import { L2_API_URL } from 'src/constants/l2';
 
 const TOP_SYNTHS_LIMIT = 4;
 
@@ -104,8 +103,7 @@ function* fetchDashboard() {
 	const now = new Date().getTime();
 
 	try {
-		const [holders, synthData, dailyExchanges, totalExchanges] = yield all([
-			axios.get(`${L2_API_URL}/api/holders`),
+		const [synthData, dailyExchanges, totalExchanges] = yield all([
 			axios.get(`${L2_API_URL}/api/openinterest`),
 			snxData.exchanges.since({
 				minTimestamp: calculateTimestampForPeriod(24),
@@ -118,7 +116,7 @@ function* fetchDashboard() {
 			fetchDashboardSuccess({
 				data: {
 					synthData: synthData.data,
-					totalWallets: (holders.data && holders.data.length) || 0,
+
 					daily: getExchangeStats(dailyExchanges),
 					total: getExchangeStats(totalExchanges),
 				},
