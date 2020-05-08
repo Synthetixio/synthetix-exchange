@@ -44,11 +44,14 @@ const DashboardPopup = ({
 	}, []);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
-	const { daily, total, openInterest, topSynths } = dashboardData;
+	const { exchanges: { daily, total } = {}, openInterest, topSynths } = dashboardData;
 
 	const topRowData = [
 		{ heading: 'Total Wallets', data: formatCurrency(holdersData.total) },
-		{ heading: 'Daily Trades', data: (daily && formatCurrency(daily.trades)) || 0 },
+		{
+			heading: 'Daily Trades',
+			data: (daily && formatCurrency(daily.trades)) || 0,
+		},
 
 		{
 			heading: 'Daily Volume ($USD)',
@@ -57,7 +60,10 @@ const DashboardPopup = ({
 	];
 
 	const middleRowData = [
-		{ heading: 'Cumulative Trades', data: (total && formatCurrency(total.trades)) || 0 },
+		{
+			heading: 'Cumulative Trades',
+			data: (total && formatCurrency(total.trades)) || 0,
+		},
 		{
 			heading: 'Cumulative Volume ($USD)',
 			data: (total && formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, total.volume)) || 0,
