@@ -51,7 +51,7 @@ export const getIsLoadingDashboard = state => getDashboardState(state).isLoading
 export const getIsRefreshingDashboard = state => getDashboardState(state).isRefreshing;
 export const getIsLoadedDashboard = state => getDashboardState(state).isLoaded;
 export const getDashboardLoadingError = state => getDashboardState(state).loadingError;
-export const getDashboardDataTest = state => getDashboardState(state).data;
+export const getDashboardDataState = state => getDashboardState(state).data;
 
 export const {
 	fetchRequest: fetchDashboardRequest,
@@ -60,7 +60,7 @@ export const {
 } = dashboardSlice.actions;
 
 export const getDashboardData = createSelector(
-	getDashboardDataTest,
+	getDashboardDataState,
 	getRatesExchangeRates,
 	(dashboardData, rates) => {
 		if (isEmpty(dashboardData) || !rates) return {};
