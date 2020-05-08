@@ -44,7 +44,7 @@ const DashboardPopup = ({
 	}, []);
 
 	const isMobile = useMediaQuery({ query: smallMediaQuery });
-	const { daily, total, synthData, topSynths } = dashboardData;
+	const { daily, total, openInterest, topSynths } = dashboardData;
 
 	const topRowData = [
 		{ heading: 'Total Wallets', data: formatCurrency(holdersData.total) },
@@ -95,9 +95,9 @@ const DashboardPopup = ({
 					<ChartBoxRow isMobile={isMobile}>
 						<StyledInfoBox>
 							<StyledInfoBoxLabel>Open Interest</StyledInfoBoxLabel>
-							<BarChart data={topSynths} />
+							<BarChart data={openInterest} />
 						</StyledInfoBox>
-						<StyledInfoBox>
+						<StyledInfoBox style={{ height: '370px' }}>
 							<StyledInfoBoxLabel>Synths Distribution</StyledInfoBoxLabel>
 							<PieChart data={topSynths} />
 						</StyledInfoBox>
@@ -112,6 +112,7 @@ const Content = styled(CenteredContent)`
 	height: 100%;
 	overflow: auto;
 	max-width: 912px;
+	justify-content: flex-start;
 	padding-bottom: 20px;
 	${media.small`
 		padding-top: 0;

@@ -64,11 +64,12 @@ export const getDashboardData = createSelector(
 	getRatesExchangeRates,
 	(dashboardData, rates) => {
 		if (isEmpty(dashboardData) || !rates) return {};
-		const { synthData } = dashboardData;
+
+		const { totalSupplyPerSynth } = dashboardData;
 		let topSynths = [];
 		let totalRemainingSynths = 0;
 		const topSynthsInUSD = orderBy(
-			synthData.totalSupplyPerSynth.map(synth => {
+			totalSupplyPerSynth.map(synth => {
 				return {
 					name: synth.name,
 					total: synth.total * rates[synth.name],
@@ -109,14 +110,13 @@ function* fetchDashboard() {
 				minTimestamp: calculateTimestampForPeriod(24),
 				maxTimestamp: Math.trunc(now / 1000),
 			}),
-			snxData.exchanges.since({ max: 10 }),
+			snxData.exchanges.since(),
 		]);
 
 		yield put(
 			fetchDashboardSuccess({
 				data: {
-					synthData: synthData.data,
-
+					...synthData.data,
 					daily: getExchangeStats(dailyExchanges),
 					total: getExchangeStats(totalExchanges),
 				},
