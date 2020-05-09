@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
@@ -9,6 +9,7 @@ import ChartCard from './components/ChartCard';
 import CreateOrderCard from './components/CreateOrderCard';
 import OrderBookCard from './components/OrderBookCard';
 import BlurBackground from './components/BlurBackground';
+import HeartBeat from 'src/components/HeartBeat';
 
 import { getSynthPair, setSynthPair } from '../../ducks/synths';
 import { navigateToTrade } from 'src/constants/routes';
@@ -18,6 +19,8 @@ import { mediumMediaQuery } from 'src/shared/media';
 import TradeMobile from './TradeMobile';
 
 const Trade = ({ match, setSynthPair, synthPair }) => {
+	const [ready, setReady] = useState(false);
+
 	useEffect(() => {
 		const { params } = match;
 
@@ -26,6 +29,7 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 				baseCurrencyKey: params.baseCurrencyKey,
 				quoteCurrencyKey: params.quoteCurrencyKey,
 			});
+			setReady(true);
 		} else {
 			navigateToTrade(synthPair.base.name, synthPair.quote.name, true);
 		}
@@ -33,6 +37,10 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 	}, [match, setSynthPair]);
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
+
+	if (!ready) {
+		return <HeartBeat surface={1} />;
+	}
 
 	if (isTabletOrMobile) {
 		return <TradeMobile />;
