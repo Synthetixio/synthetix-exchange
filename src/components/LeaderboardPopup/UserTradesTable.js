@@ -195,19 +195,6 @@ const StyledTable = styled(Table)`
 	.table-head-cell {
 		background: none;
 	}
-	${media.small`
-		.table-body-row {
-			height: 32px;
-			margin: 0;
-			border-radius: initial;
-			border-left: 0;
-			border-right: 0;
-			border-bottom: 0;
-			&:last-child {
-				border-bottom: 0.5px solid #cb5bf2;
-			}
-		}
-	`}
 `;
 
 const StyledLink = styled(Link)`
