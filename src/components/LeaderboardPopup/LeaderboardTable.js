@@ -85,7 +85,7 @@ const LeaderboardTable = ({
 							const isCurrentWallet = cellProps.row.original.address === currentWallet;
 
 							return (
-								<TwitterHandle>
+								<TwitterHandle isCurrentWallet={isCurrentWallet}>
 									@{cellProps.cell.value}{' '}
 									{isCurrentWallet && <StarIcon style={{ marginLeft: '5px' }} />}
 								</TwitterHandle>
