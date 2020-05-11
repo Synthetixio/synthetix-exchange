@@ -48,6 +48,7 @@ export const Table = ({
 				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map(column => (
 						<TableCellHead
+							className="table-head-cell"
 							{...column.getHeaderProps(
 								column.sortable ? column.getSortByToggleProps() : undefined
 							)}
@@ -258,9 +259,9 @@ ${props =>
 				background: ${darkTheme.colors.surfaceL3};
 				border: 0.5px solid #cb5bf2;
 				border-radius: 2px;
-				/* &:hover {
+				&:hover {
 					background: #282862;
-				} */
+				}
 			}
 		`}		
 `;
