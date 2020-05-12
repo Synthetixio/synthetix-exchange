@@ -1,37 +1,31 @@
-import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import snxData from 'synthetix-data';
-import { debounceReduce } from 'src/utils/mixins';
 
 import { updateRates } from '../ducks/rates';
-import { bigNumberFormatter } from '../utils/formatters';
+import useInterval from 'src/shared/hooks/useInterval';
 
-const DEBOUNCE_TIMEOUT = 3000;
+const RATE_UPDATES = 10000;
 
 const GlobalEventsGate = ({ updateRates }) => {
-	useEffect(() => {
-		const batchedUpdateRate = debounceReduce(
-			(...args) => {
-				updateRates({ rates: args });
-			},
-			DEBOUNCE_TIMEOUT,
-			(acc = [], args = []) => [...acc, ...args]
-		);
+	useInterval(() => {
+		const getRates = async () => {
+			try {
+				// grab last 100 rate updates
+				const rateUpdates = await snxData.rate.updates();
 
-		const ratesSubscription = snxData.rate.observe().subscribe({
-			next(val) {
-				const synth = val.synth;
-				const rate = bigNumberFormatter(val.rate);
-
-				batchedUpdateRate({ synth, rate });
-			},
-		});
-
-		return () => {
-			ratesSubscription.unsubscribe();
+				updateRates({
+					rates: rateUpdates.reverse().map(rateUpdate => ({
+						synth: rateUpdate.synth,
+						rate: rateUpdate.rate,
+					})),
+				});
+			} catch (e) {
+				console.error(e);
+			}
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+
+		getRates();
+	}, RATE_UPDATES);
 
 	return null;
 };
