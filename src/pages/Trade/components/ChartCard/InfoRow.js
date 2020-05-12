@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -25,12 +25,30 @@ const InfoRow = ({
 	const { t } = useTranslation();
 	const rate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name) || 0;
 	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
+	const [prevRate, setPrevRate] = useState(rate);
+	const [rateChange, setRateChange] = useState(0);
+
+	useEffect(() => {
+		if (rate > 0 && prevRate > 0) {
+			if (rate > prevRate) {
+				setRateChange(1);
+			} else if (rate < prevRate) {
+				setRateChange(-1);
+			} else {
+				setRateChange(0);
+			}
+		}
+		setPrevRate(rate);
+		// eslint-disable-next-line
+	}, [rate]);
+
+	useEffect(() => {
+		setPrevRate(rate);
+		setRateChange(0);
+		// eslint-disable-next-line
+	}, [base.name, quote.name]);
 
 	const infoBoxItems = [
-		{
-			label: t('trade.chart-card.info-boxes.price'),
-			value: formatCurrencyWithPrecision(rate),
-		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-change'),
 			value: <ChangePercent value={change24H} />,
@@ -50,6 +68,12 @@ const InfoRow = ({
 	];
 	return (
 		<RowContainer>
+			<InfoBox>
+				<InfoBoxLabel>{t('trade.chart-card.info-boxes.price')}</InfoBoxLabel>
+				<InfoBoxValue rateChange={rateChange}>{`${synthSign}${formatCurrencyWithPrecision(
+					rate
+				)}`}</InfoBoxValue>
+			</InfoBox>
 			{infoBoxItems.map(({ label, value }, id) => (
 				<InfoBox key={`chartInfo-${id}`}>
 					<InfoBoxLabel>{label}</InfoBoxLabel>
@@ -73,6 +97,4 @@ const mapStateToProps = (state) => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(InfoRow);
+export default connect(mapStateToProps, null)(InfoRow);
