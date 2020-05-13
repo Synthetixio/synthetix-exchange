@@ -78,6 +78,7 @@ const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
 
 const Container = styled.div`
 	height: 100%;
+	overflow: hidden;
 `;
 const RowContainer = styled(FlexDiv)`
 	width: 100%;
