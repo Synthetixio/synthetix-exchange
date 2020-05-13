@@ -3,15 +3,13 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
+import { SYNTHS_MAP } from 'constants/currency';
+
 import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { getRatesExchangeRates } from 'ducks/rates';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue } from 'shared/commonStyles';
-import {
-	formatCurrencyWithPrecision,
-	formatCurrency,
-	formatCurrencyWithSign,
-} from 'utils/formatters';
+import { formatCurrencyWithPrecision, formatCurrencyWithSign } from 'utils/formatters';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 import ChangePercent from 'components/ChangePercent';
@@ -63,7 +61,7 @@ const InfoRow = ({
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-volume'),
-			value: formatCurrency(volume24H),
+			value: formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, volume24H),
 		},
 	];
 	return (
