@@ -19,6 +19,7 @@ import HomeLayout from './components/HomeLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
+// import AppBanner from './components/AppBanner';
 
 import Trade from '../Trade';
 import Loans from '../Loans';
@@ -26,8 +27,6 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 import Synths from '../Synths';
-
-import Banner from 'components/Banner';
 
 const App = ({ isAppReady, currentTheme }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
@@ -40,7 +39,7 @@ const App = ({ isAppReady, currentTheme }) => {
 						<GlobalEventsGate />
 						<WalletPopup />
 						<GweiPopup />
-						<Banner />
+						{/* <AppBanner /> */}
 					</>
 				)}
 				<Switch>

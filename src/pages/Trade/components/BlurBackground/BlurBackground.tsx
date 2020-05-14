@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { FC, memo } from 'react';
 import { connect } from 'react-redux';
 
 import { getBlurBackgroundIsVisible } from 'ducks/ui';
 import styled, { keyframes, css } from 'styled-components';
 import { Z_INDEX } from 'constants/ui';
+import { RootState } from 'ducks/types';
 
-const BlurBackground = ({ blurBackgroundIsVisible }) => (
+type StateProps = {
+	blurBackgroundIsVisible: boolean;
+};
+
+type BlurBackgroundProps = StateProps;
+
+const BlurBackground: FC<BlurBackgroundProps> = memo(({ blurBackgroundIsVisible }) => (
 	<Blur isVisible={blurBackgroundIsVisible} />
-);
+));
 
 const keyf = keyframes`
 from {
@@ -24,7 +31,7 @@ const isBlurred = css`
 	animation: ${keyf} 0.1s linear forwards;
 `;
 
-const Blur = styled.div`
+const Blur = styled.div<{ isVisible: boolean }>`
 	backdrop-filter: blur(0px);
 	pointer-events: none;
 	position: absolute;
@@ -37,8 +44,8 @@ const Blur = styled.div`
 	${(props) => props.isVisible && isBlurred}
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState): StateProps => ({
 	blurBackgroundIsVisible: getBlurBackgroundIsVisible(state),
 });
 
-export default connect(mapStateToProps, null)(BlurBackground);
+export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(BlurBackground);

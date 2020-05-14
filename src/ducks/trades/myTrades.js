@@ -2,7 +2,7 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import { createSlice } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
 
-import { SYNTHS_MAP } from 'constants/currency';
+import { normalizeTrades } from './utils';
 
 import { getCurrentWalletAddress } from '../wallet/walletDetails';
 
@@ -57,22 +57,13 @@ function* fetchMyTrades() {
 		yield put(fetchMyTradesFailure({ error: 'you need to be connected to a wallet' }));
 	} else {
 		try {
-			const transactions = yield snxData.exchanges.since({
+			const trades = yield snxData.exchanges.since({
 				fromAddress: currentWalletAddress,
 				maxBlock: Number.MAX_SAFE_INTEGER,
 				max: 100,
 			});
 
-			const trades = transactions.map((tx) => ({
-				...tx,
-				price:
-					tx.toCurrencyKey === SYNTHS_MAP.sUSD
-						? tx.fromAmountInUSD / tx.fromAmount
-						: tx.toAmountInUSD / tx.toAmount,
-				amount: tx.toCurrencyKey === SYNTHS_MAP.sUSD ? tx.fromAmountInUSD : tx.toAmountInUSD,
-			}));
-
-			yield put(fetchMyTradesSuccess({ trades }));
+			yield put(fetchMyTradesSuccess({ trades: normalizeTrades(trades) }));
 		} catch (e) {
 			yield put(fetchMyTradesFailure({ error: e.message }));
 		}

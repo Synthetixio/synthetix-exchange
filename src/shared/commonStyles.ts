@@ -152,9 +152,20 @@ export const InfoBoxLabel = styled(DataSmall)`
 	text-transform: uppercase;
 `;
 
-export const InfoBoxValue = styled(DataLarge)`
+export const InfoBoxValue = styled(DataLarge)<{ rateChange: number }>`
 	text-transform: none;
 	font-size: 14px;
+	transition: all 0.3s ease-in-out;
+	${(props) =>
+		props.rateChange === 1 &&
+		css`
+			color: ${props.theme.colors.green};
+		`}
+	${(props) =>
+		props.rateChange === -1 &&
+		css`
+			color: ${props.theme.colors.red};
+		`}
 `;
 
 export const CurrencyKey = styled.span`
@@ -200,4 +211,11 @@ export const shiftUpHoverEffectCSS = css`
 
 export const TableOverflowContainer = styled.div`
 	overflow: auto;
+`;
+
+export const resetButtonCSS = css`
+	border: none;
+	background: none;
+	outline: none;
+	cursor: pointer;
 `;

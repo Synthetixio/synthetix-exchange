@@ -2,6 +2,8 @@ import { takeLatest, put } from 'redux-saga/effects';
 import { createSlice } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
 
+import { normalizeTrades } from './utils';
+
 export const allTradesSlice = createSlice({
 	name: 'allTrades',
 	initialState: {
@@ -57,7 +59,7 @@ function* fetchAllTrades() {
 			max: 100,
 		});
 
-		yield put(fetchAllTradesSuccess({ trades }));
+		yield put(fetchAllTradesSuccess({ trades: normalizeTrades(trades) }));
 	} catch (e) {
 		yield put(fetchAllTradesFailure({ error: e.message }));
 	}
