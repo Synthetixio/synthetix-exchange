@@ -1,5 +1,29 @@
 # Changelog
 
+## 14 May 2020 (Gypsum release)
+
+### Added
+
+- **Added Synths page.**
+- 🔥 **Adopted TypeScript. (slowly migrating all our JS files)** 🔥
+- Added "Synth is frozen" indication on the Create Order Card.
+- Added "No results" message for open orders tab.
+- Added subtle price animation for when the rate changes (the price underneath the Price Chart).
+
+### Changed:
+
+- **Switched off google analytics.**
+- Fixed sorting on all our tables (numeric sorting wasn't working well).
+- Draw the price chart from left -> right.
+- Fix frozen synths logic.
+- Fix symbol rendering on iOS (safari).
+- Lazy load MyTrades/AllTrades.
+- Add missing price/amount fields from All Trades.
+- Fixed a bug that caused the price chart to fallback to sBTC/sUSD at certain conditions.
+- Fixed a bug that caused the price chart to not resize properly.
+- Removed unused components.
+- Removed unneeded page scroll on the Trade page.
+
 ## 2 April 2020
 
 ### Added
