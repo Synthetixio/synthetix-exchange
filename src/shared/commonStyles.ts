@@ -201,3 +201,10 @@ export const shiftUpHoverEffectCSS = css`
 export const TableOverflowContainer = styled.div`
 	overflow: auto;
 `;
+
+export const resetButtonCSS = css`
+	border: none;
+	background: none;
+	outline: none;
+	cursor: pointer;
+`;
