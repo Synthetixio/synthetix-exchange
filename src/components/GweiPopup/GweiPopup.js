@@ -216,6 +216,7 @@ const CloseButton = styled.button`
 	position: absolute;
 	right: 5%;
 	top: 5%;
+	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
 
 const InputRow = styled.div`
