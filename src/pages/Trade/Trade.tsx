@@ -1,18 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { memo, FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'shared/commonStyles';
+
+import { RootState } from 'ducks/types';
+
+import { CurrencyKey } from 'constants/currency';
+import Spinner from 'components/Spinner';
 
 import ChartCard from './components/ChartCard';
 import CreateOrderCard from './components/CreateOrderCard';
 import OrderBookCard from './components/OrderBookCard';
 import BlurBackground from './components/BlurBackground';
 
-import { getSynthPair, setSynthPair } from '../../ducks/synths';
+import { getSynthPair, setSynthPair, SynthPair } from 'ducks/synths';
 import { navigateToTrade } from 'constants/routes';
 
-const Trade = ({ match, setSynthPair, synthPair }) => {
+type StateProps = {
+	synthPair: SynthPair;
+};
+
+type DispatchProps = {
+	setSynthPair: typeof setSynthPair;
+};
+
+type Props = RouteComponentProps<{
+	baseCurrencyKey: CurrencyKey;
+	quoteCurrencyKey: CurrencyKey;
+}>;
+
+type TradeProps = StateProps & DispatchProps & Props;
+
+const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
+	const [isReady, setIsReady] = useState<boolean>(false);
+
 	useEffect(() => {
 		const { params } = match;
 
@@ -21,11 +44,16 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 				baseCurrencyKey: params.baseCurrencyKey,
 				quoteCurrencyKey: params.quoteCurrencyKey,
 			});
+			setIsReady(true);
 		} else {
 			navigateToTrade(synthPair.base.name, synthPair.quote.name, true);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [match, setSynthPair]);
+
+	if (!isReady) {
+		return <Spinner size="sm" fullscreen={true} />;
+	}
 
 	return (
 		<Container>
@@ -46,10 +74,11 @@ const Trade = ({ match, setSynthPair, synthPair }) => {
 			</CenteredPageLayout>
 		</Container>
 	);
-};
+});
 
 const Container = styled.div`
 	height: 100%;
+	overflow: hidden;
 `;
 const RowContainer = styled(FlexDiv)`
 	width: 100%;
@@ -68,12 +97,15 @@ const CreateOrderContainer = styled.div`
 	margin-left: 8px;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState): StateProps => ({
 	synthPair: getSynthPair(state),
 });
 
-const mapDispatchToProps = {
+const mapDispatchToProps: DispatchProps = {
 	setSynthPair,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Trade);
+export default connect<StateProps, DispatchProps, TradeProps, RootState>(
+	mapStateToProps,
+	mapDispatchToProps
+)(Trade);

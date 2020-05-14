@@ -115,8 +115,11 @@ const StyledCard = styled(Card)`
 
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
+	flex-grow: 1;
 	overflow: hidden;
 	position: initial;
+	display: flex;
+	flex-direction: column;
 `;
 
 const Tabs = styled.div`

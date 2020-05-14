@@ -38,6 +38,11 @@ export type SynthDefinitionWithRates = SynthDefinition & {
 	lastPrice: number | null;
 };
 
+export type SynthPair = {
+	base: SynthDefinition;
+	quote: SynthDefinition;
+};
+
 const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 	if (a.category === CATEGORY_MAP.crypto && b.category === CATEGORY_MAP.crypto) {
 		// @ts-ignore
@@ -168,7 +173,7 @@ export const getFilteredSynthsWithRates = createSelector(
 			: availableSynths
 );
 
-export const getSynthPair = (state: RootState) => ({
+export const getSynthPair = (state: RootState): SynthPair => ({
 	base: getSynthsState(state).baseSynth,
 	quote: getSynthsState(state).quoteSynth,
 });
