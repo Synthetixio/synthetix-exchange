@@ -141,6 +141,8 @@ const CreateOrderCard = ({
 	const buttonDisabled =
 		!baseAmount || !currentWallet || inputError || isSubmitting || feeReclamationError;
 
+	const isEmptyQuoteBalance = !quoteBalance || !quoteBalance.balance;
+
 	useEffect(() => {
 		setInputError(null);
 		if (!quoteAmount || !baseAmount) return;
@@ -179,6 +181,14 @@ const CreateOrderCard = ({
 	useEffect(() => {
 		getMaxSecsLeftInWaitingPeriod();
 	}, [getMaxSecsLeftInWaitingPeriod]);
+
+	const setMaxBalance = () => {
+		if (!isEmptyQuoteBalance) {
+			setTradeAllBalance(true);
+			setBaseAmount(quoteBalance.balance * rate);
+			setQuoteAmount(quoteBalance.balance);
+		}
+	};
 
 	const handleSubmit = async () => {
 		const {
@@ -279,7 +289,10 @@ const CreateOrderCard = ({
 						label={
 							<>
 								<FormInputLabel>{t('trade.trade-card.sell-input-label')}:</FormInputLabel>
-								<FormInputLabelSmall>
+								<StyledFormInputLabelSmall
+									isInteractive={!isEmptyQuoteBalance}
+									onClick={setMaxBalance}
+								>
 									{t('common.wallet.balance-currency', {
 										balance: quoteBalance
 											? formatCurrency(quoteBalance.balance)
@@ -287,7 +300,7 @@ const CreateOrderCard = ({
 											? 0
 											: EMPTY_VALUE,
 									})}
-								</FormInputLabelSmall>
+								</StyledFormInputLabelSmall>
 							</>
 						}
 						onChange={(_, value) => {
@@ -305,7 +318,10 @@ const CreateOrderCard = ({
 						label={
 							<>
 								<FormInputLabel>{t('trade.trade-card.buy-input-label')}:</FormInputLabel>
-								<FormInputLabelSmall>
+								<StyledFormInputLabelSmall
+									isInteractive={!isEmptyQuoteBalance}
+									onClick={setMaxBalance}
+								>
 									{t('common.wallet.balance-currency', {
 										balance: baseBalance
 											? formatCurrency(baseBalance.balance)
@@ -313,7 +329,7 @@ const CreateOrderCard = ({
 											? 0
 											: EMPTY_VALUE,
 									})}
-								</FormInputLabelSmall>
+								</StyledFormInputLabelSmall>
 							</>
 						}
 						onChange={(_, value) => {
@@ -326,7 +342,7 @@ const CreateOrderCard = ({
 				<BalanceFractionRow>
 					{BALANCE_FRACTIONS.map((fraction, id) => (
 						<ButtonAmount
-							disabled={!quoteBalance || !quoteBalance.balance}
+							disabled={isEmptyQuoteBalance}
 							key={`button-fraction-${id}`}
 							onClick={() => {
 								const balance = quoteBalance.balance;
@@ -408,6 +424,10 @@ const ButtonAmount = styled.button`
 	border: none;
 	background-color: ${(props) => props.theme.colors.accentL2};
 	height: 24px;
+`;
+
+const StyledFormInputLabelSmall = styled(FormInputLabelSmall)`
+	cursor: ${(props) => (props.isInteractive ? 'pointer' : 'default')};
 `;
 
 const HeaderContainer = styled.div`
