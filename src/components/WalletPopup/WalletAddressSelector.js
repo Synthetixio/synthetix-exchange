@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import snxJSConnector from 'utils/snxJSConnector';
 import {
@@ -32,6 +33,8 @@ const useGetWallets = () => {
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const { t } = useTranslation();
+
 	useEffect(() => {
 		const walletIndex = walletPaginatorIndex * WALLET_PAGE_SIZE;
 		if (availableWallets[walletIndex]) return;
@@ -42,7 +45,7 @@ const useGetWallets = () => {
 					walletIndex,
 					WALLET_PAGE_SIZE
 				);
-				if (!nextWalletAddresses) throw new Error('Could not get addresses from wallet');
+				if (!nextWalletAddresses) throw new Error(t('modals.wallet.errors.could-not-get-address'));
 
 				const nextWallets = nextWalletAddresses.map((address) => ({
 					address,
@@ -97,21 +100,22 @@ const useGetWallets = () => {
 };
 
 const ErrorMessage = ({ error, isLedger, onRetry }) => {
+	const { t } = useTranslation();
+
 	return (
 		<ErrorContainer>
-			<HeadingMedium>Error</HeadingMedium>
+			<HeadingMedium>{t('modals.wallet.errors.generic-error')}</HeadingMedium>
 			<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
 				{error}
 			</HeadingMedium>
 			{isLedger ? (
 				<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-					Please make sure your Ledger is unlocked, on Ethereum app with contract data setting
-					allowed
+					{t('modals.wallet.errors.ledger-error')}
 				</HeadingMedium>
 			) : null}
 
 			<ButtonPrimary onClick={() => onRetry()} width="250px">
-				Retry
+				{t('modals.wallet.retry')}
 			</ButtonPrimary>
 		</ErrorContainer>
 	);
@@ -134,6 +138,7 @@ const WalletAddressSelector = ({
 	},
 }) => {
 	const { isLoading, getAddressError } = useGetWallets(walletPaginatorIndex, derivationPath);
+	const { t } = useTranslation();
 	const isHardwareWallet = ['Ledger', 'Trezor'].includes(walletType);
 	const isLedger = walletType === 'Ledger';
 	const selectedDerivationPath = derivationPath
@@ -148,7 +153,7 @@ const WalletAddressSelector = ({
 	if (error) return <ErrorMessage error={error} isLedger={isLedger} onRetry={onRetry} />;
 	return (
 		<Container>
-			<HeadingMedium>Select your wallet</HeadingMedium>
+			<HeadingMedium>{t('modals.wallet.select-your-wallet')}</HeadingMedium>
 			<Body>
 				{isLedger && (
 					<SelectWrapper>
