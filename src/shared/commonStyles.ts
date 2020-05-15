@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
 import { tableDataSmallCSS, chartDataCSS } from 'components/Typography/Data';
@@ -218,4 +218,22 @@ export const resetButtonCSS = css`
 	background: none;
 	outline: none;
 	cursor: pointer;
+`;
+
+export const fadeInAnimation = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+export const fadeOutAnimation = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 `;

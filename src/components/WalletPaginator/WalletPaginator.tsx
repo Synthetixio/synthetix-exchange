@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { FC, memo } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+
 import { Arrow } from '../Icons';
 import { DataLarge } from '../Typography';
 
-const Paginator = ({ currentIndex, disabled, onIndexChange }) => {
+type PaginatorProps = {
+	currentIndex: number;
+	disabled: boolean;
+	onIndexChange: (index: number) => void;
+};
+
+const Paginator: FC<PaginatorProps> = memo(({ currentIndex, disabled, onIndexChange }) => {
+	const { t } = useTranslation();
+
 	return (
 		<Wrapper disabled={disabled}>
 			<Button
@@ -15,7 +25,7 @@ const Paginator = ({ currentIndex, disabled, onIndexChange }) => {
 			>
 				<Arrow direction="left" />
 			</Button>
-			<DataLarge>Page {currentIndex + 1}</DataLarge>
+			<DataLarge>{t('common.pagination.page-number', { pageNumber: currentIndex + 1 })}</DataLarge>
 			<Button
 				onClick={() => {
 					onIndexChange(currentIndex + 1);
@@ -25,9 +35,9 @@ const Paginator = ({ currentIndex, disabled, onIndexChange }) => {
 			</Button>
 		</Wrapper>
 	);
-};
+});
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ disabled: boolean }>`
 	width: 100%;
 	margin: 30px 0;
 	display: flex;
@@ -38,7 +48,7 @@ const Wrapper = styled.div`
 	pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
-const Button = styled.button`
+const Button = styled.button<{ active?: boolean }>`
 	margin: 0 20px;
 	padding: 0;
 	border: none;
