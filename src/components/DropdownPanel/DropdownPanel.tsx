@@ -1,11 +1,20 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import styled, { css } from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 import { APP_HEADER_HEIGHT, CARD_HEIGHT, SECTION_MARGIN, Z_INDEX } from 'constants/ui';
 
-const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose, ...rest }) => {
-	return (
+type DropdownPanelProps = {
+	header: React.ReactNode;
+	body: React.ReactNode;
+	isOpen: boolean;
+	width?: string;
+	onHeaderClick: () => void;
+	handleClose: () => void;
+};
+
+const DropdownPanel: FC<DropdownPanelProps> = memo(
+	({ header, body, isOpen, onHeaderClick, handleClose, ...rest }) => (
 		<OutsideClickHandler onOutsideClick={handleClose}>
 			<Container isOpen={isOpen} {...rest}>
 				<Header isOpen={isOpen} onClick={onHeaderClick} {...rest}>
@@ -16,10 +25,10 @@ const DropdownPanel = memo(({ header, body, isOpen, onHeaderClick, handleClose, 
 				</Body>
 			</Container>
 		</OutsideClickHandler>
-	);
-});
+	)
+);
 
-const isOpen = css`
+const isOpen = css<{ height?: string }>`
 	height: ${(props) =>
 		props.height ||
 		`calc(100vh  - 6px - ${APP_HEADER_HEIGHT} - ${SECTION_MARGIN} - ${CARD_HEIGHT})`};
@@ -29,7 +38,7 @@ const contentIsVisible = css`
 	overflow: visible;
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ width?: string; isOpen: boolean }>`
 	position: relative;
 	width: ${(props) => props.width || '100%'};
 	overflow: hidden;
@@ -37,15 +46,19 @@ const Container = styled.div`
 	z-index: ${Z_INDEX.DROPDOWN_PANEL};
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ isOpen: boolean }>`
 	cursor: pointer;
 	& svg {
 		transition: transform 0.3s ease-in-out;
-		transform: ${(props) => `rotate(${props.isOpen ? -Math.PI : -Math.Pi}rad)`};
+		${(props) =>
+			props.isOpen &&
+			css`
+				transform: rotate(${Math.PI}rad);
+			`}
 	}
 `;
 
-const Body = styled.div`
+const Body = styled.div<{ isOpen: boolean }>`
 	position: absolute;
 	width: 100%;
 	top: 100%;

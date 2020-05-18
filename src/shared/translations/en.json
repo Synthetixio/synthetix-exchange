@@ -394,6 +394,8 @@
 		"pagination": {
 			"page": "Page",
 			"page-number": "Page {{pageNumber}}"
-		}
+		},
+		"buy": "buy",
+		"sell": "sell"
 	}
 }
