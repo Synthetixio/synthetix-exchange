@@ -63,9 +63,21 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 			]}
 			data={markets}
 			onTableRowClick={onTableRowClick}
+			noResultsMessage={
+				markets.length === 0 ? (
+					<NoResults>{t('trade.chart-card.pair-list.table.no-results')}</NoResults>
+				) : undefined
+			}
 		/>
 	);
 });
+
+const NoResults = styled.div`
+	padding: 18px;
+	text-align: center;
+	color: ${(props) => props.theme.colors.fontPrimary};
+	text-transform: none;
+`;
 
 const StyledTable = styled(Table)`
 	.table-row {

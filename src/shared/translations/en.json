@@ -157,6 +157,11 @@
 				"24h-high": "24h high",
 				"24h-low": "24h low",
 				"24h-volume": "24h volume"
+			},
+			"pair-list": {
+				"table": {
+					"no-results": "No pairs found"
+				}
 			}
 		},
 		"trade-card": {
