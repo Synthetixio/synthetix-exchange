@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { updateLoan, swapTxHashWithLoanID, LOAN_STATUS } from '../ducks/loans/myLoans';
 import { fetchWalletBalancesRequest } from '../ducks/wallet/walletBalances';
 import { getWalletInfo } from '../ducks/wallet/walletDetails';
-import { fetchRates } from '../ducks/rates';
+import { fetchRatesRequest } from '../ducks/rates';
 import { fetchLoansContractInfo } from '../ducks/loans/contractInfo';
 
 import snxJSConnector from '../utils/snxJSConnector';
@@ -17,7 +17,7 @@ const GlobalEventsGate = ({
 	fetchWalletBalancesRequest,
 	fetchLoansContractInfo,
 	swapTxHashWithLoanID,
-	fetchRates,
+	fetchRatesRequest,
 	walletInfo: { currentWallet },
 }) => {
 	useEffect(() => {
@@ -58,7 +58,7 @@ const GlobalEventsGate = ({
 			});
 		});
 
-		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRates);
+		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRatesRequest);
 
 		return () => {
 			Object.values(LOAN_EVENTS).forEach((event) =>
@@ -98,7 +98,7 @@ GlobalEventsGate.propTypes = {
 	updateLoan: PropTypes.func,
 	fetchWalletBalancesRequest: PropTypes.func,
 	fetchLoansContractInfo: PropTypes.func,
-	fetchRates: PropTypes.func,
+	fetchRatesRequest: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
@@ -112,7 +112,7 @@ const mapDispatchToProps = {
 	updateLoan,
 	fetchWalletBalancesRequest,
 	fetchLoansContractInfo,
-	fetchRates,
+	fetchRatesRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalEventsGate);

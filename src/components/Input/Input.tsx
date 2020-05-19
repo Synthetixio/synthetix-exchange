@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { color } from 'styled-system';
 
-const Input = styled.input`
+const Input = styled.input<{ padding?: string }>`
 	width: 100%;
 	font-family: 'apercu-regular', sans-serif;
 	background-color: ${(props) => props.theme.colors.surfaceL3};

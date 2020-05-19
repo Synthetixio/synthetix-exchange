@@ -9,7 +9,7 @@ import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
 import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
-import { fetchRates } from '../../ducks/rates';
+import { fetchRatesRequest } from '../../ducks/rates';
 import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
 
 import { setAppReady, getIsAppReady } from '../../ducks/app';
@@ -26,7 +26,7 @@ const Root = ({
 	updateNetworkSettings,
 	walletInfo: { currentWallet },
 	fetchWalletBalancesRequest,
-	fetchRates,
+	fetchRatesRequest,
 	setAppReady,
 	isAppReady,
 }) => {
@@ -47,9 +47,9 @@ const Root = ({
 
 	useEffect(() => {
 		if (isAppReady) {
-			fetchRates();
+			fetchRatesRequest();
 		}
-	}, [isAppReady, fetchRates]);
+	}, [isAppReady, fetchRatesRequest]);
 
 	useEffect(() => {
 		const init = async () => {
@@ -96,7 +96,7 @@ const mapDispatchToProps = {
 	updateNetworkSettings,
 	setExchangeFeeRate,
 	fetchWalletBalancesRequest,
-	fetchRates,
+	fetchRatesRequest,
 	setAppReady,
 };
 

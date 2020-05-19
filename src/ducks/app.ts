@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from './types';
 
 export const appSlice = createSlice({
 	name: 'app',
@@ -12,11 +13,9 @@ export const appSlice = createSlice({
 	},
 });
 
-export const getAppState = (state) => state.app;
-export const getIsAppReady = (state) => getAppState(state).isReady;
+export const getAppState = (state: RootState) => state.app;
+export const getIsAppReady = (state: RootState) => getAppState(state).isReady;
 
-const { setAppReady } = appSlice.actions;
+export const { setAppReady } = appSlice.actions;
 
 export default appSlice.reducer;
-
-export { setAppReady };
