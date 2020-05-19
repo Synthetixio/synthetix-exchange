@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 
 import Dashboard from './Dashboard';
 import YourSynths from './YourSynths';
 
-export const Overview = memo(() => (
+export const Overview: FC = memo(() => (
 	<>
 		<Dashboard />
 		<YourSynths />
