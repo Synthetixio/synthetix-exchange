@@ -7,7 +7,7 @@ import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'shared/commo
 
 import { RootState } from 'ducks/types';
 
-import { CurrencyKey } from 'constants/currency';
+import { CurrencyKey, getMarketPairByMC } from 'constants/currency';
 import Spinner from 'components/Spinner';
 
 import ChartCard from './components/ChartCard';
@@ -40,9 +40,17 @@ const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
 		const { params } = match;
 
 		if (params && params.baseCurrencyKey && params.quoteCurrencyKey) {
+			const { base, quote, reversed } = getMarketPairByMC(
+				params.baseCurrencyKey,
+				params.quoteCurrencyKey
+			);
+
+			console.log(reversed);
+
 			setSynthPair({
-				baseCurrencyKey: params.baseCurrencyKey,
-				quoteCurrencyKey: params.quoteCurrencyKey,
+				baseCurrencyKey: base,
+				quoteCurrencyKey: quote,
+				isPairReversed: reversed,
 			});
 			setIsReady(true);
 		} else {
