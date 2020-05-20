@@ -38,6 +38,7 @@ import {
 	SYNTHS_MAP,
 	BASE_TRADING_PAIRS,
 	CurrencyKey,
+	getMarketPairByMC,
 } from 'constants/currency';
 import { LINKS } from 'constants/links';
 import Spinner from 'components/Spinner';
@@ -224,15 +225,25 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 				>
 					<PopoverContent>
 						{selectedSynth &&
-							BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => (
-								<Link to={buildTradeLink(selectedSynth, quote)} key={`${selectedSynth}-${quote}`}>
-									<Currency.Pair
-										key={quote}
-										baseCurrencyKey={selectedSynth}
-										quoteCurrencyKey={quote}
-									/>
-								</Link>
-							))}
+							BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => {
+								const { base: baseCurrencyKey, quote: quoteCurrencyKey } = getMarketPairByMC(
+									selectedSynth,
+									quote
+								);
+
+								return (
+									<Link
+										to={buildTradeLink(baseCurrencyKey, quoteCurrencyKey)}
+										key={`${selectedSynth}-${quote}`}
+									>
+										<Currency.Pair
+											key={quote}
+											baseCurrencyKey={baseCurrencyKey}
+											quoteCurrencyKey={quoteCurrencyKey}
+										/>
+									</Link>
+								);
+							})}
 					</PopoverContent>
 				</StyledPopover>
 			</>

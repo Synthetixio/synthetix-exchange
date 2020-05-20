@@ -11,7 +11,7 @@ import { SynthDefinitionMap, getAvailableSynthsMap, SynthDefinitionWithRates } f
 
 import { RootState } from 'ducks/types';
 
-import { SYNTHS_MAP, CurrencyKey, BASE_TRADING_PAIRS } from 'constants/currency';
+import { SYNTHS_MAP, CurrencyKey, BASE_TRADING_PAIRS, getMarketPairByMC } from 'constants/currency';
 import { RateUpdates } from 'constants/rates';
 import { buildTradeLink } from 'constants/routes';
 import { EMPTY_VALUE } from 'constants/placeholder';
@@ -175,15 +175,25 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 				>
 					<PopoverContent>
 						{selectedSynth &&
-							BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => (
-								<Link to={buildTradeLink(selectedSynth, quote)} key={`${selectedSynth}-${quote}`}>
-									<Currency.Pair
-										key={quote}
-										baseCurrencyKey={selectedSynth}
-										quoteCurrencyKey={quote}
-									/>
-								</Link>
-							))}
+							BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => {
+								const { base: baseCurrencyKey, quote: quoteCurrencyKey } = getMarketPairByMC(
+									selectedSynth,
+									quote
+								);
+
+								return (
+									<Link
+										to={buildTradeLink(baseCurrencyKey, quoteCurrencyKey)}
+										key={`${selectedSynth}-${quote}`}
+									>
+										<Currency.Pair
+											key={quote}
+											baseCurrencyKey={baseCurrencyKey}
+											quoteCurrencyKey={quoteCurrencyKey}
+										/>
+									</Link>
+								);
+							})}
 					</PopoverContent>
 				</Popover>
 			</>
