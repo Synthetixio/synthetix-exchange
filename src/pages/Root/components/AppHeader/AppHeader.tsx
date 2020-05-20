@@ -1,10 +1,8 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-
-import PropTypes from 'prop-types';
 
 import { labelMediumCSS } from 'components/Typography/Label';
 import Link from 'components/Link';
@@ -24,8 +22,21 @@ import UserInfo from './UserInfo';
 import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
+import { RootState } from 'ducks/types';
 
-export const AppHeader = memo((props) => {
+type StateProps = {
+	isLoggedIn: boolean;
+};
+
+type Props = {
+	showThemeToggle?: boolean;
+	className?: string;
+	isOnSplashPage?: boolean;
+};
+
+type AppHeaderProps = StateProps & Props;
+
+export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 	const { showThemeToggle, isOnSplashPage, isLoggedIn, ...rest } = props;
 	const { t } = useTranslation();
 
@@ -37,12 +48,12 @@ export const AppHeader = memo((props) => {
 
 	return (
 		<Container isOnSplashPage={isOnSplashPage} {...rest}>
-			<Content isOnSplashPage={isOnSplashPage}>
+			<Content>
 				<MenuItemsLeft>
 					<MenuItem>
-						<Link to={ROUTES.Home}>
+						<StyledLogoLink to={ROUTES.Home}>
 							<Logo />
-						</Link>
+						</StyledLogoLink>
 					</MenuItem>
 					<MenuLinkItem>
 						<MenuLink to={ROUTES.Markets}>{t('header.links.markets')}</MenuLink>
@@ -64,7 +75,7 @@ export const AppHeader = memo((props) => {
 				</MenuItemsLeft>
 				<MenuItemsRight>
 					<MenuItem>
-						<SupportLink />
+						<SupportLink isOnSplashPage={isOnSplashPage} />
 					</MenuItem>
 					{showThemeToggle && (
 						<MenuItem>
@@ -72,7 +83,7 @@ export const AppHeader = memo((props) => {
 						</MenuItem>
 					)}
 					<MenuItem>
-						<UserInfo />
+						<UserInfo isOnSplashPage={isOnSplashPage} />
 					</MenuItem>
 				</MenuItemsRight>
 			</Content>
@@ -84,18 +95,15 @@ AppHeader.defaultProps = {
 	showThemeToggle: true,
 };
 
-AppHeader.propTypes = {
-	showThemeToggle: PropTypes.bool,
-	className: PropTypes.string,
-	isOnSplashPage: PropTypes.bool,
-	isLoggedIn: PropTypes.bool,
-};
+const StyledLogoLink = styled(Link)`
+	height: 24px;
+`;
 
-export const Container = styled.header`
+export const Container = styled.header<{ isOnSplashPage?: boolean }>`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${(props) =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
-	border-color: ${(props) => props.theme.colors.accentL1};
+	border-color: ${({ theme }) => theme.colors.accentL1};
 	border-style: solid;
 	border-width: 1px 0;
 `;
@@ -105,7 +113,7 @@ const Content = styled(FlexDivCentered)`
 	height: 100%;
 	justify-content: space-between;
 	margin: 0 auto;
-	padding: 0 16px;
+	padding: 0 8px;
 `;
 
 const MenuItem = styled(FlexDivCentered)`
@@ -121,16 +129,16 @@ const MenuLink = styled(Link)`
 	padding: 6px 10px;
 	display: flex;
 	align-items: center;
-	color: ${(props) => props.theme.colors.fontTertiary};
+	color: ${({ theme }) => theme.colors.fontTertiary};
 	text-transform: uppercase;
 	height: 32px;
 	&:hover {
-		color: ${(props) => props.theme.colors.fontPrimary};
-		background-color: ${(props) => props.theme.colors.accentL1};
+		color: ${({ theme }) => theme.colors.fontPrimary};
+		background-color: ${({ theme }) => theme.colors.accentL1};
 	}
 	&.active {
-		background-color: ${(props) => props.theme.colors.accentL2};
-		color: ${(props) => props.theme.colors.fontPrimary};
+		background-color: ${({ theme }) => theme.colors.accentL2};
+		color: ${({ theme }) => theme.colors.fontPrimary};
 	}
 `;
 
@@ -140,6 +148,9 @@ const MenuItems = styled(FlexDivCentered)`
 
 const MenuItemsLeft = styled(MenuItems)`
 	${MenuItem} {
+		&:first-child {
+			padding-left: 12px;
+		}
 		padding-right: 18px;
 	}
 `;
@@ -150,8 +161,8 @@ const MenuItemsRight = styled(MenuItems)`
 	}
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState): StateProps => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
 
-export default connect(mapStateToProps, null)(AppHeader);
+export default connect<StateProps, undefined, Props, RootState>(mapStateToProps)(AppHeader);

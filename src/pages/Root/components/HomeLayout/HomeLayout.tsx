@@ -1,12 +1,15 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
-import PropTypes from 'prop-types';
 import { darkTheme } from 'styles/theme';
 
 import Footer from './Footer';
 import AppHeader from '../AppHeader';
 
-const HomeLayout = memo(({ children }) => (
+type MainLayoutProps = {
+	children: React.ReactNode;
+};
+
+const HomeLayout: FC<MainLayoutProps> = memo(({ children }) => (
 	<>
 		<GlobalStyle />
 		{/* force the app header to be in dark mode */}
@@ -17,10 +20,6 @@ const HomeLayout = memo(({ children }) => (
 		<Footer />
 	</>
 ));
-
-HomeLayout.propTypes = {
-	children: PropTypes.node.isRequired,
-};
 
 const GlobalStyle = createGlobalStyle`
   body {

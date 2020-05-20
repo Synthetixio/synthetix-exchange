@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
-import PropTypes from 'prop-types';
 
 import AppHeader from '../AppHeader';
 
@@ -9,7 +8,12 @@ import Spinner from 'components/Spinner';
 
 import { FlexDiv } from 'shared/commonStyles';
 
-export const MainLayout = ({ children, isAppReady }) => (
+type MainLayoutProps = {
+	children: React.ReactNode;
+	isAppReady: boolean;
+};
+
+export const MainLayout: FC<MainLayoutProps> = ({ children, isAppReady }) => (
 	<>
 		<GlobalStyle />
 		<FullScreenContainer>
@@ -19,14 +23,9 @@ export const MainLayout = ({ children, isAppReady }) => (
 	</>
 );
 
-MainLayout.propTypes = {
-	children: PropTypes.node.isRequired,
-	isAppReady: PropTypes.bool.isRequired,
-};
-
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${(props) => props.theme.colors.surfaceL1};
+    background-color: ${({ theme }) => theme.colors.surfaceL1};
   }
 `;
 

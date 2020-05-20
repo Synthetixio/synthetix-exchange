@@ -133,7 +133,7 @@ const PairListPanel: FC<PairListPanelProps> = memo(
 							quoteCurrencyKey={quote.name}
 							showIcon={true}
 						/>
-						<MenuArrowDownIcon />
+						<MenuArrowDownIcon className="arrow" />
 					</DropdownPanelHeader>
 				}
 				body={
