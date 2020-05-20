@@ -1,16 +1,17 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
-import { CARD_HEIGHT } from '../../constants/ui';
+import { CARD_HEIGHT } from 'constants/ui';
 
-import { FlexDivCentered } from '../../shared/commonStyles';
+import { FlexDivCentered } from 'shared/commonStyles';
 
-const CardHeader = memo(({ children, ...rest }) => <Container {...rest}>{children}</Container>);
-
-CardHeader.propTypes = {
-	children: PropTypes.node.isRequired,
+export type CardHeaderProps = {
+	children: React.ReactNode;
 };
+
+const CardHeader: FC<CardHeaderProps> = memo(({ children, ...rest }) => (
+	<Container {...rest}>{children}</Container>
+));
 
 const Container = styled(FlexDivCentered)`
 	background-color: ${(props) => props.theme.colors.surfaceL3};

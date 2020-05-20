@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import Overview from './Overview';
 import Exchanges from './Exchanges';
 // import Transfers from './Transfers';
 
-const Assets = memo(() => (
+const Assets: FC = memo(() => (
 	<CenteredPageLayout>
 		<AssetsNavigation />
 		<Content>

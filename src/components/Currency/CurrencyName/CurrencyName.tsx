@@ -1,12 +1,20 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import CurrencyIcon from '../CurrencyIcon';
 
 import { Container } from '../commonStyles';
 
-export const CurrencyName = memo(
+import { CurrencyKey } from 'constants/currency';
+
+type CurrencyNameProps = {
+	currencyKey: CurrencyKey;
+	showIcon?: boolean;
+	iconProps?: object;
+	currencyDesc?: string | null;
+};
+
+export const CurrencyName: FC<CurrencyNameProps> = memo(
 	({ currencyKey, currencyDesc = null, showIcon = false, iconProps = {}, ...rest }) => (
 		<Container showIcon={showIcon} {...rest}>
 			{showIcon && <CurrencyIcon currencyKey={currencyKey} {...iconProps} />}
@@ -15,12 +23,6 @@ export const CurrencyName = memo(
 		</Container>
 	)
 );
-
-CurrencyName.propTypes = {
-	currencyKey: PropTypes.string.isRequired,
-	showIcon: PropTypes.bool,
-	iconProps: PropTypes.object,
-};
 
 const Desc = styled.span`
 	padding-left: 5px;
