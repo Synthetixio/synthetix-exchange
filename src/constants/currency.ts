@@ -116,36 +116,37 @@ export const CRYPTO_CURRENCY_MAP = keyBy(CRYPTO_CURRENCY);
 export const FIAT_CURRENCY = ['USD', 'AUD'];
 export const FIAT_CURRENCY_MAP = keyBy(FIAT_CURRENCY);
 
-const CRYPTO_SYNTHS_BY_MC = [
-	SYNTHS_MAP.sBTC,
-	SYNTHS_MAP.sETH,
-	SYNTHS_MAP.sXRP,
-	SYNTHS_MAP.sBCH,
-	SYNTHS_MAP.sLTC,
-	SYNTHS_MAP.sEOS,
-	SYNTHS_MAP.sBNB,
-	SYNTHS_MAP.sXTZ,
-	SYNTHS_MAP.sXMR,
-	SYNTHS_MAP.sADA,
-	SYNTHS_MAP.sLINK,
-	SYNTHS_MAP.sTRX,
-	SYNTHS_MAP.sDASH,
-	SYNTHS_MAP.sETC,
-	SYNTHS_MAP.iBTC,
-	SYNTHS_MAP.iETH,
-	SYNTHS_MAP.iXRP,
-	SYNTHS_MAP.iBCH,
-	SYNTHS_MAP.iLTC,
-	SYNTHS_MAP.iEOS,
-	SYNTHS_MAP.iBNB,
-	SYNTHS_MAP.iXTZ,
-	SYNTHS_MAP.iXMR,
-	SYNTHS_MAP.iADA,
-	SYNTHS_MAP.iLINK,
-	SYNTHS_MAP.iTRX,
-	SYNTHS_MAP.iDASH,
-	SYNTHS_MAP.iETC,
-];
+// lower rank -> higher MC
+export const CRYPTO_SYNTHS_BY_MC = {
+	[SYNTHS_MAP.sBTC]: 1,
+	[SYNTHS_MAP.sETH]: 2,
+	[SYNTHS_MAP.sXRP]: 3,
+	[SYNTHS_MAP.sBCH]: 4,
+	[SYNTHS_MAP.sLTC]: 5,
+	[SYNTHS_MAP.sEOS]: 6,
+	[SYNTHS_MAP.sBNB]: 7,
+	[SYNTHS_MAP.sXTZ]: 8,
+	[SYNTHS_MAP.sXMR]: 9,
+	[SYNTHS_MAP.sADA]: 10,
+	[SYNTHS_MAP.sLINK]: 11,
+	[SYNTHS_MAP.sTRX]: 12,
+	[SYNTHS_MAP.sDASH]: 13,
+	[SYNTHS_MAP.sETC]: 14,
+	[SYNTHS_MAP.iBTC]: 15,
+	[SYNTHS_MAP.iETH]: 16,
+	[SYNTHS_MAP.iXRP]: 17,
+	[SYNTHS_MAP.iBCH]: 18,
+	[SYNTHS_MAP.iLTC]: 19,
+	[SYNTHS_MAP.iEOS]: 20,
+	[SYNTHS_MAP.iBNB]: 21,
+	[SYNTHS_MAP.iXTZ]: 22,
+	[SYNTHS_MAP.iXMR]: 23,
+	[SYNTHS_MAP.iADA]: 24,
+	[SYNTHS_MAP.iLINK]: 25,
+	[SYNTHS_MAP.iTRX]: 26,
+	[SYNTHS_MAP.iDASH]: 27,
+	[SYNTHS_MAP.iETC]: 28,
+};
 
 export const currencyKeyToIconMap = {
 	[CRYPTO_CURRENCY_MAP.ETH]: ETHIcon,
@@ -220,49 +221,61 @@ export const getAvailableMarketNames = memoizeOne(() => {
 		quoteCurrencyKey: CurrencyKey;
 		pair: string;
 	}> = [];
+
 	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
 	const synths = SYNTHS.filter((synth) => !excludedSynths.includes(synth));
 
-	// fiat markets trade against all synths
-	FIAT_SYNTHS.forEach((quoteCurrencyKey) => {
-		synths
-			// ignore self
-			.filter((baseCurrencyKey) => quoteCurrencyKey !== baseCurrencyKey)
-			.forEach((baseCurrencyKey) => {
+	for (let i = 0; i < synths.length; i++) {
+		const currencyA = SYNTHS[i];
+		for (let j = 0; j < synths.length; j++) {
+			const currencyB = SYNTHS[j];
+			if (currencyA !== currencyB) {
 				marketNames.push({
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+					baseCurrencyKey: currencyA,
+					quoteCurrencyKey: currencyB,
+					pair: toMarketPair(currencyA, currencyB),
 				});
-			});
-	});
-
-	// Each iteration a crypto synth is added to be skipped in the next one
-	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC
-	const skipCryptoQuotes: CurrencyKeys = [];
-
-	// crypto markets trade against all synths (ex fiat, ex existing crypto market)
-	CRYPTO_SYNTHS_BY_MC.forEach((quoteCurrencyKey: CurrencyKey) => {
-		synths
-			.filter(
-				(baseCurrencyKey: CurrencyKey) =>
-					quoteCurrencyKey !== baseCurrencyKey &&
-					![...FIAT_SYNTHS, ...skipCryptoQuotes].includes(baseCurrencyKey)
-			)
-			.forEach((baseCurrencyKey: CurrencyKey) => {
-				marketNames.push({
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
-				});
-			});
-
-		skipCryptoQuotes.push(quoteCurrencyKey);
-	});
+			}
+		}
+	}
 
 	return marketNames;
 });
 
 export const getFilteredMarketNames = memoizeOne((quoteCurrencyKey: CurrencyKey) =>
 	getAvailableMarketNames().filter((marketName) => marketName.quoteCurrencyKey === quoteCurrencyKey)
+);
+
+// sBTC / sUSD
+// sUSD / sBTC
+
+export const getMarketPairByMC = memoizeOne(
+	(baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) => {
+		const marketPair = {
+			base: baseCurrencyKey,
+			quote: quoteCurrencyKey,
+			reversed: false,
+		};
+
+		const marketPairReversed = {
+			base: quoteCurrencyKey,
+			quote: baseCurrencyKey,
+			reversed: true,
+		};
+
+		// handle fiat first - it must always be the quote
+		if (FIAT_SYNTHS.includes(quoteCurrencyKey)) {
+			return marketPair;
+		}
+		if (FIAT_SYNTHS.includes(baseCurrencyKey)) {
+			return marketPairReversed;
+		}
+
+		// set a really high rank for low MC coins
+		const baseCurrencyKeyRank = CRYPTO_SYNTHS_BY_MC[baseCurrencyKey] || Number.MAX_SAFE_INTEGER;
+		const quoteCurrencyKeyRank = CRYPTO_SYNTHS_BY_MC[quoteCurrencyKey] || Number.MAX_SAFE_INTEGER;
+
+		// lower rank -> higher MC
+		return quoteCurrencyKeyRank <= baseCurrencyKeyRank ? marketPair : marketPairReversed;
+	}
 );

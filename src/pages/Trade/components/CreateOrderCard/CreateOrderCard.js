@@ -68,7 +68,9 @@ const CreateOrderCard = ({
 	const [baseAmount, setBaseAmount] = useState(INPUT_DEFAULT_VALUE);
 	const [quoteAmount, setQuoteAmount] = useState(INPUT_DEFAULT_VALUE);
 	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
-	const [{ base, quote }, setPair] = useState(synthPair);
+	const [{ base, quote }, setPair] = useState(
+		synthPair.reversed ? { base: synthPair.quote, quote: synthPair.base } : synthPair
+	);
 	const [tradeAllBalance, setTradeAllBalance] = useState(false);
 	const [gasLimit, setGasLimit] = useState(gasInfo.gasLimit);
 	const [inputError, setInputError] = useState(null);
@@ -100,12 +102,16 @@ const CreateOrderCard = ({
 				console.log(e);
 			}
 		};
-		setPair(synthPair);
+		if (synthPair.reversed) {
+			setPair({ base: synthPair.quote, quote: synthPair.base });
+		} else {
+			setPair(synthPair);
+		}
 		resetInputAmounts();
 		getFeeRateForExchange();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synthPair.base.name, synthPair.quote.name]);
+	}, [synthPair.base.name, synthPair.quote.name, synthPair.reversed]);
 
 	useEffect(() => {
 		const {
