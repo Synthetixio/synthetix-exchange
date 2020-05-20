@@ -1,20 +1,31 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { ReactComponent as Sun } from 'assets/images/sun.svg';
 import { ReactComponent as Moon } from 'assets/images/moon.svg';
 
 import { ELEMENT_BORDER_RADIUS } from 'constants/ui';
 
+import { RootState } from 'ducks/types';
 import { toggleTheme, getCurrentTheme } from 'ducks/ui';
 
 import { isLightTheme } from 'styles/theme';
+import { Theme } from 'styles/theme/types';
 
 import { Dot } from 'shared/commonStyles';
 
-export const ThemeToggle = memo(({ currentTheme, toggleTheme }) => (
+type StateProps = {
+	currentTheme: Theme;
+};
+
+type DispatchProps = {
+	toggleTheme: typeof toggleTheme;
+};
+
+type ThemeToggleProps = StateProps & DispatchProps;
+
+export const ThemeToggle: FC<ThemeToggleProps> = memo(({ currentTheme, toggleTheme }) => (
 	<StyledButton onClick={toggleTheme}>
 		{isLightTheme(currentTheme) ? (
 			<>
@@ -30,16 +41,11 @@ export const ThemeToggle = memo(({ currentTheme, toggleTheme }) => (
 	</StyledButton>
 ));
 
-ThemeToggle.propTypes = {
-	currentTheme: PropTypes.string.isRequired,
-	toggleTheme: PropTypes.func.isRequired,
-};
-
 const StyledButton = styled.button`
 	width: 52px;
 	height: 32px;
-	background-color: ${(props) => props.theme.colors.accentL1};
-	color: ${(props) => props.theme.colors.fontTertiary};
+	background-color: ${({ theme }) => theme.colors.accentL1};
+	color: ${({ theme }) => theme.colors.fontTertiary};
 	display: flex;
 	align-items: center;
 	padding: 0 8px;
@@ -50,12 +56,15 @@ const StyledButton = styled.button`
 	outline: none;
 `;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState): StateProps => ({
 	currentTheme: getCurrentTheme(state),
 });
 
-const mapDispatchToProps = {
+const mapDispatchToProps: DispatchProps = {
 	toggleTheme,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ThemeToggle);
+export default connect<StateProps, DispatchProps, {}, RootState>(
+	mapStateToProps,
+	mapDispatchToProps
+)(ThemeToggle);

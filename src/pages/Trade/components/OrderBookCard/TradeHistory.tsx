@@ -32,7 +32,7 @@ import {
 } from 'utils/formatters';
 
 type StateProps = {
-	networkId: number;
+	networkId: string | number;
 	synthsMap: Record<string, SynthDefinition>;
 };
 
