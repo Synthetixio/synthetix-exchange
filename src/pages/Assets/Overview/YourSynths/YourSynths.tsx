@@ -33,17 +33,12 @@ import {
 	getIsFetchingWalletBalances,
 } from 'ducks/wallet/walletBalances';
 
-import {
-	CRYPTO_CURRENCY_MAP,
-	SYNTHS_MAP,
-	BASE_TRADING_PAIRS,
-	CurrencyKey,
-	getMarketPairByMC,
-} from 'constants/currency';
-import { LINKS } from 'constants/links';
+import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP, CurrencyKey } from 'constants/currency';
 import Spinner from 'components/Spinner';
-import { buildTradeLink } from 'constants/routes';
+import BaseTradingPairs from 'components/BaseTradingPairs';
+
 import { BigNumberish } from 'ethers/utils';
+import { LINKS } from 'constants/links';
 
 type SynthWalletBalance = {
 	balance: number;
@@ -224,26 +219,7 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 					}}
 				>
 					<PopoverContent>
-						{selectedSynth &&
-							BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => {
-								const { base: baseCurrencyKey, quote: quoteCurrencyKey } = getMarketPairByMC(
-									selectedSynth,
-									quote
-								);
-
-								return (
-									<Link
-										to={buildTradeLink(baseCurrencyKey, quoteCurrencyKey)}
-										key={`${selectedSynth}-${quote}`}
-									>
-										<Currency.Pair
-											key={quote}
-											baseCurrencyKey={baseCurrencyKey}
-											quoteCurrencyKey={quoteCurrencyKey}
-										/>
-									</Link>
-								);
-							})}
+						{selectedSynth && <BaseTradingPairs currencyKey={selectedSynth} />}
 					</PopoverContent>
 				</StyledPopover>
 			</>
@@ -296,4 +272,4 @@ const mapStateToProps = (state: RootState): StateProps => ({
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
 });
 
-export default connect(mapStateToProps)(YourSynths);
+export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(YourSynths);

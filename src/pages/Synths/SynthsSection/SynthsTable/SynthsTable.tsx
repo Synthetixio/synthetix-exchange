@@ -5,15 +5,13 @@ import { connect } from 'react-redux';
 import { CellProps } from 'react-table';
 import get from 'lodash/get';
 import Popover from '@material-ui/core/Popover';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 import { SynthDefinitionMap, getAvailableSynthsMap, SynthDefinitionWithRates } from 'ducks/synths';
 
 import { RootState } from 'ducks/types';
 
-import { SYNTHS_MAP, CurrencyKey, BASE_TRADING_PAIRS, getMarketPairByMC } from 'constants/currency';
+import { SYNTHS_MAP, CurrencyKey } from 'constants/currency';
 import { RateUpdates } from 'constants/rates';
-import { buildTradeLink } from 'constants/routes';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
 import Table from 'components/Table';
@@ -21,23 +19,12 @@ import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 import { NullableCell, CurrencyCol } from 'components/Table/common';
 import ChangePercent from 'components/ChangePercent';
-import Link from 'components/Link';
 
 import TrendLineChart from 'components/TrendLineChart';
 import { Button } from 'components/Button';
 import { TableOverflowContainer } from 'shared/commonStyles';
 
-const useStyles = makeStyles(() =>
-	createStyles({
-		popover: {
-			marginTop: '8px',
-		},
-		paper: {
-			boxShadow: '0px 4px 11px rgba(188,99,255,0.15442)',
-			border: '1px solid #F2F2F6',
-		},
-	})
-);
+import BaseTradingPairs from 'components/BaseTradingPairs';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -53,7 +40,6 @@ type SynthsTableProps = StateProps & Props;
 export const SynthsTable: FC<SynthsTableProps> = memo(
 	({ synthsMap, synthsWithRates, noResultsMessage }) => {
 		const { t } = useTranslation();
-		const classes = useStyles();
 		const [selectedSynth, setSelectedSynth] = useState<CurrencyKey | null>(null);
 		const [tradeButtonAnchorEl, setTradeButtonAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -155,10 +141,9 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 						noResultsMessage={noResultsMessage}
 					/>
 				</TableOverflowContainer>
-				<Popover
-					className={classes.popover}
+				<StyledPopover
 					classes={{
-						paper: classes.paper,
+						paper: 'paper',
 					}}
 					id={id}
 					open={tradeButtonPopoverOpen}
@@ -174,28 +159,9 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 					}}
 				>
 					<PopoverContent>
-						{selectedSynth &&
-							BASE_TRADING_PAIRS.filter((quote) => quote !== selectedSynth).map((quote) => {
-								const { base: baseCurrencyKey, quote: quoteCurrencyKey } = getMarketPairByMC(
-									selectedSynth,
-									quote
-								);
-
-								return (
-									<Link
-										to={buildTradeLink(baseCurrencyKey, quoteCurrencyKey)}
-										key={`${selectedSynth}-${quote}`}
-									>
-										<Currency.Pair
-											key={quote}
-											baseCurrencyKey={baseCurrencyKey}
-											quoteCurrencyKey={quoteCurrencyKey}
-										/>
-									</Link>
-								);
-							})}
+						{selectedSynth && <BaseTradingPairs currencyKey={selectedSynth} />}
 					</PopoverContent>
-				</Popover>
+				</StyledPopover>
 			</>
 		);
 	}
@@ -215,6 +181,14 @@ const StyledTable = styled(Table)`
 		&:hover {
 			box-shadow: none;
 		}
+	}
+`;
+
+const StyledPopover = styled(Popover)`
+	margin-top: 8px;
+	.paper {
+		box-shadow: 0px 4px 11px rgba(188, 99, 255, 0.15442);
+		border: 1px solid #f2f2f6;
 	}
 `;
 
