@@ -7,7 +7,10 @@ import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'shared/commo
 
 import { RootState } from 'ducks/types';
 
-import { CurrencyKey } from 'constants/currency';
+import { CurrencyKey, getMarketPairByMC } from 'constants/currency';
+import { navigateToTrade } from 'constants/routes';
+import { CREATE_ORDER_CARD_WIDTH } from 'constants/ui';
+
 import Spinner from 'components/Spinner';
 
 import ChartCard from './components/ChartCard';
@@ -16,7 +19,6 @@ import OrderBookCard from './components/OrderBookCard';
 import BlurBackground from './components/BlurBackground';
 
 import { getSynthPair, setSynthPair, SynthPair } from 'ducks/synths';
-import { navigateToTrade } from 'constants/routes';
 
 type StateProps = {
 	synthPair: SynthPair;
@@ -40,9 +42,15 @@ const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
 		const { params } = match;
 
 		if (params && params.baseCurrencyKey && params.quoteCurrencyKey) {
+			const { base, quote, reversed } = getMarketPairByMC(
+				params.baseCurrencyKey,
+				params.quoteCurrencyKey
+			);
+
 			setSynthPair({
-				baseCurrencyKey: params.baseCurrencyKey,
-				quoteCurrencyKey: params.quoteCurrencyKey,
+				baseCurrencyKey: base,
+				quoteCurrencyKey: quote,
+				isPairReversed: reversed,
 			});
 			setIsReady(true);
 		} else {
@@ -93,7 +101,7 @@ const ChartContainer = styled.div`
 	flex: 1;
 `;
 const CreateOrderContainer = styled.div`
-	width: 282px;
+	width: ${CREATE_ORDER_CARD_WIDTH};
 	margin-left: 8px;
 `;
 

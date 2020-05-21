@@ -74,6 +74,7 @@ const Button = styled.button<ButtonProps>`
 			${(props) =>
 				(props as ButtonProps).isActive &&
 				css`
+					color: ${(props) => props.theme.colors.fontSecondary};
 					background-color: ${(props) => props.theme.colors.accentL2};
 				`}
 		`}

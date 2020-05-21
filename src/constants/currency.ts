@@ -2,57 +2,57 @@ import keyBy from 'lodash/keyBy';
 import memoizeOne from 'memoize-one';
 
 // Crypto
-import { ReactComponent as ETHIcon } from '../assets/currencies/crypto/ETH.svg';
+import { ReactComponent as ETHIcon } from 'assets/currencies/crypto/ETH.svg';
 // Crypto Synths
-import { ReactComponent as sBTCIcon } from '../assets/currencies/synths/sBTC.svg';
-import { ReactComponent as sETHIcon } from '../assets/currencies/synths/sETH.svg';
-import { ReactComponent as sXRPIcon } from '../assets/currencies/synths/sXRP.svg';
-import { ReactComponent as sBCHIcon } from '../assets/currencies/synths/sBCH.svg';
-import { ReactComponent as sLTCIcon } from '../assets/currencies/synths/sLTC.svg';
-import { ReactComponent as sEOSIcon } from '../assets/currencies/synths/sEOS.svg';
-import { ReactComponent as sBNBIcon } from '../assets/currencies/synths/sBNB.svg';
-import { ReactComponent as sXTZIcon } from '../assets/currencies/synths/sXTZ.svg';
-import { ReactComponent as sXMRIcon } from '../assets/currencies/synths/sXMR.svg';
-import { ReactComponent as sADAIcon } from '../assets/currencies/synths/sADA.svg';
-import { ReactComponent as sLINKIcon } from '../assets/currencies/synths/sLINK.svg';
-import { ReactComponent as sTRXIcon } from '../assets/currencies/synths/sTRX.svg';
-import { ReactComponent as sDASHIcon } from '../assets/currencies/synths/sDASH.svg';
-import { ReactComponent as sETCIcon } from '../assets/currencies/synths/sETC.svg';
-import { ReactComponent as sMKRIcon } from '../assets/currencies/synths/sMKR.svg';
-import { ReactComponent as iBTCIcon } from '../assets/currencies/synths/iBTC.svg';
-import { ReactComponent as iETHIcon } from '../assets/currencies/synths/iETH.svg';
-import { ReactComponent as iXRPIcon } from '../assets/currencies/synths/iXRP.svg';
-import { ReactComponent as iBCHIcon } from '../assets/currencies/synths/iBCH.svg';
-import { ReactComponent as iLTCIcon } from '../assets/currencies/synths/iLTC.svg';
-import { ReactComponent as iEOSIcon } from '../assets/currencies/synths/iEOS.svg';
-import { ReactComponent as iBNBIcon } from '../assets/currencies/synths/iBNB.svg';
-import { ReactComponent as iXTZIcon } from '../assets/currencies/synths/iXTZ.svg';
-import { ReactComponent as iXMRIcon } from '../assets/currencies/synths/iXMR.svg';
-import { ReactComponent as iADAIcon } from '../assets/currencies/synths/iADA.svg';
-import { ReactComponent as iLINKIcon } from '../assets/currencies/synths/iLINK.svg';
-import { ReactComponent as iTRXIcon } from '../assets/currencies/synths/iTRX.svg';
-import { ReactComponent as iDASHIcon } from '../assets/currencies/synths/iDASH.svg';
-import { ReactComponent as iETCIcon } from '../assets/currencies/synths/iETC.svg';
-import { ReactComponent as iMKRIcon } from '../assets/currencies/synths/iMKR.svg';
+import { ReactComponent as sBTCIcon } from '@synthetixio/assets/synths/sBTC.svg';
+import { ReactComponent as sETHIcon } from '@synthetixio/assets/synths/sETH.svg';
+import { ReactComponent as sXRPIcon } from '@synthetixio/assets/synths/sXRP.svg';
+import { ReactComponent as sBCHIcon } from '@synthetixio/assets/synths/sBCH.svg';
+import { ReactComponent as sLTCIcon } from '@synthetixio/assets/synths/sLTC.svg';
+import { ReactComponent as sEOSIcon } from '@synthetixio/assets/synths/sEOS.svg';
+import { ReactComponent as sBNBIcon } from '@synthetixio/assets/synths/sBNB.svg';
+import { ReactComponent as sXTZIcon } from '@synthetixio/assets/synths/sXTZ.svg';
+import { ReactComponent as sXMRIcon } from '@synthetixio/assets/synths/sXMR.svg';
+import { ReactComponent as sADAIcon } from '@synthetixio/assets/synths/sADA.svg';
+import { ReactComponent as sLINKIcon } from '@synthetixio/assets/synths/sLINK.svg';
+import { ReactComponent as sTRXIcon } from '@synthetixio/assets/synths/sTRX.svg';
+import { ReactComponent as sDASHIcon } from '@synthetixio/assets/synths/sDASH.svg';
+import { ReactComponent as sETCIcon } from '@synthetixio/assets/synths/sETC.svg';
+import { ReactComponent as sMKRIcon } from '@synthetixio/assets/synths/sMKR.svg';
+import { ReactComponent as iBTCIcon } from '@synthetixio/assets/synths/iBTC.svg';
+import { ReactComponent as iETHIcon } from '@synthetixio/assets/synths/iETH.svg';
+import { ReactComponent as iXRPIcon } from '@synthetixio/assets/synths/iXRP.svg';
+import { ReactComponent as iBCHIcon } from '@synthetixio/assets/synths/iBCH.svg';
+import { ReactComponent as iLTCIcon } from '@synthetixio/assets/synths/iLTC.svg';
+import { ReactComponent as iEOSIcon } from '@synthetixio/assets/synths/iEOS.svg';
+import { ReactComponent as iBNBIcon } from '@synthetixio/assets/synths/iBNB.svg';
+import { ReactComponent as iXTZIcon } from '@synthetixio/assets/synths/iXTZ.svg';
+import { ReactComponent as iXMRIcon } from '@synthetixio/assets/synths/iXMR.svg';
+import { ReactComponent as iADAIcon } from '@synthetixio/assets/synths/iADA.svg';
+import { ReactComponent as iLINKIcon } from '@synthetixio/assets/synths/iLINK.svg';
+import { ReactComponent as iTRXIcon } from '@synthetixio/assets/synths/iTRX.svg';
+import { ReactComponent as iDASHIcon } from '@synthetixio/assets/synths/iDASH.svg';
+import { ReactComponent as iETCIcon } from '@synthetixio/assets/synths/iETC.svg';
+import { ReactComponent as iMKRIcon } from '@synthetixio/assets/synths/iMKR.svg';
 // Commoditiy Synths
-import { ReactComponent as sXAUIcon } from '../assets/currencies/synths/sXAU.svg';
-import { ReactComponent as sXAGIcon } from '../assets/currencies/synths/sXAG.svg';
-import { ReactComponent as sBZIcon } from '../assets/currencies/synths/sBZ.svg';
+import { ReactComponent as sXAUIcon } from '@synthetixio/assets/synths/sXAU.svg';
+import { ReactComponent as sXAGIcon } from '@synthetixio/assets/synths/sXAG.svg';
+import { ReactComponent as sBZIcon } from '@synthetixio/assets/synths/sBZ.svg';
 // Crypto Index Synths
-import { ReactComponent as sDEFIIcon } from '../assets/currencies/synths/sDEFI.svg';
-import { ReactComponent as sCEXIcon } from '../assets/currencies/synths/sCEX.svg';
-import { ReactComponent as iDEFIIcon } from '../assets/currencies/synths/iDEFI.svg';
-import { ReactComponent as iCEXIcon } from '../assets/currencies/synths/iCEX.svg';
+import { ReactComponent as sDEFIIcon } from '@synthetixio/assets/synths/sDEFI.svg';
+import { ReactComponent as sCEXIcon } from '@synthetixio/assets/synths/sCEX.svg';
+import { ReactComponent as iDEFIIcon } from '@synthetixio/assets/synths/iDEFI.svg';
+import { ReactComponent as iCEXIcon } from '@synthetixio/assets/synths/iCEX.svg';
 // Equity Synths
-import { ReactComponent as sFTSEIcon } from '../assets/currencies/synths/sFTSE.svg';
-import { ReactComponent as sNIKKEIIcon } from '../assets/currencies/synths/sNIKKEI.svg';
+import { ReactComponent as sFTSEIcon } from '@synthetixio/assets/synths/sFTSE.svg';
+import { ReactComponent as sNIKKEIIcon } from '@synthetixio/assets/synths/sNIKKEI.svg';
 // Forex Synths
-import { ReactComponent as sEURIcon } from '../assets/currencies/synths/sEUR.svg';
-import { ReactComponent as sJPYIcon } from '../assets/currencies/synths/sJPY.svg';
-import { ReactComponent as sUSDIcon } from '../assets/currencies/synths/sUSD.svg';
-import { ReactComponent as sAUDIcon } from '../assets/currencies/synths/sAUD.svg';
-import { ReactComponent as sGBPIcon } from '../assets/currencies/synths/sGBP.svg';
-import { ReactComponent as sCHFIcon } from '../assets/currencies/synths/sCHF.svg';
+import { ReactComponent as sEURIcon } from '@synthetixio/assets/synths/sEUR.svg';
+import { ReactComponent as sJPYIcon } from '@synthetixio/assets/synths/sJPY.svg';
+import { ReactComponent as sUSDIcon } from '@synthetixio/assets/synths/sUSD.svg';
+import { ReactComponent as sAUDIcon } from '@synthetixio/assets/synths/sAUD.svg';
+import { ReactComponent as sGBPIcon } from '@synthetixio/assets/synths/sGBP.svg';
+import { ReactComponent as sCHFIcon } from '@synthetixio/assets/synths/sCHF.svg';
 
 export type CurrencyKey = string;
 export type CurrencyKeys = string[];
@@ -116,36 +116,37 @@ export const CRYPTO_CURRENCY_MAP = keyBy(CRYPTO_CURRENCY);
 export const FIAT_CURRENCY = ['USD', 'AUD'];
 export const FIAT_CURRENCY_MAP = keyBy(FIAT_CURRENCY);
 
-const CRYPTO_SYNTHS_BY_MC = [
-	SYNTHS_MAP.sBTC,
-	SYNTHS_MAP.sETH,
-	SYNTHS_MAP.sXRP,
-	SYNTHS_MAP.sBCH,
-	SYNTHS_MAP.sLTC,
-	SYNTHS_MAP.sEOS,
-	SYNTHS_MAP.sBNB,
-	SYNTHS_MAP.sXTZ,
-	SYNTHS_MAP.sXMR,
-	SYNTHS_MAP.sADA,
-	SYNTHS_MAP.sLINK,
-	SYNTHS_MAP.sTRX,
-	SYNTHS_MAP.sDASH,
-	SYNTHS_MAP.sETC,
-	SYNTHS_MAP.iBTC,
-	SYNTHS_MAP.iETH,
-	SYNTHS_MAP.iXRP,
-	SYNTHS_MAP.iBCH,
-	SYNTHS_MAP.iLTC,
-	SYNTHS_MAP.iEOS,
-	SYNTHS_MAP.iBNB,
-	SYNTHS_MAP.iXTZ,
-	SYNTHS_MAP.iXMR,
-	SYNTHS_MAP.iADA,
-	SYNTHS_MAP.iLINK,
-	SYNTHS_MAP.iTRX,
-	SYNTHS_MAP.iDASH,
-	SYNTHS_MAP.iETC,
-];
+// lower rank -> higher MC
+export const CRYPTO_SYNTHS_BY_MC = {
+	[SYNTHS_MAP.sBTC]: 1,
+	[SYNTHS_MAP.sETH]: 2,
+	[SYNTHS_MAP.sXRP]: 3,
+	[SYNTHS_MAP.sBCH]: 4,
+	[SYNTHS_MAP.sLTC]: 5,
+	[SYNTHS_MAP.sEOS]: 6,
+	[SYNTHS_MAP.sBNB]: 7,
+	[SYNTHS_MAP.sXTZ]: 8,
+	[SYNTHS_MAP.sXMR]: 9,
+	[SYNTHS_MAP.sADA]: 10,
+	[SYNTHS_MAP.sLINK]: 11,
+	[SYNTHS_MAP.sTRX]: 12,
+	[SYNTHS_MAP.sDASH]: 13,
+	[SYNTHS_MAP.sETC]: 14,
+	[SYNTHS_MAP.iBTC]: 15,
+	[SYNTHS_MAP.iETH]: 16,
+	[SYNTHS_MAP.iXRP]: 17,
+	[SYNTHS_MAP.iBCH]: 18,
+	[SYNTHS_MAP.iLTC]: 19,
+	[SYNTHS_MAP.iEOS]: 20,
+	[SYNTHS_MAP.iBNB]: 21,
+	[SYNTHS_MAP.iXTZ]: 22,
+	[SYNTHS_MAP.iXMR]: 23,
+	[SYNTHS_MAP.iADA]: 24,
+	[SYNTHS_MAP.iLINK]: 25,
+	[SYNTHS_MAP.iTRX]: 26,
+	[SYNTHS_MAP.iDASH]: 27,
+	[SYNTHS_MAP.iETC]: 28,
+};
 
 export const currencyKeyToIconMap = {
 	[CRYPTO_CURRENCY_MAP.ETH]: ETHIcon,
@@ -220,49 +221,61 @@ export const getAvailableMarketNames = memoizeOne(() => {
 		quoteCurrencyKey: CurrencyKey;
 		pair: string;
 	}> = [];
+
 	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
 	const synths = SYNTHS.filter((synth) => !excludedSynths.includes(synth));
 
-	// fiat markets trade against all synths
-	FIAT_SYNTHS.forEach((quoteCurrencyKey) => {
-		synths
-			// ignore self
-			.filter((baseCurrencyKey) => quoteCurrencyKey !== baseCurrencyKey)
-			.forEach((baseCurrencyKey) => {
+	for (let i = 0; i < synths.length; i++) {
+		const currencyA = SYNTHS[i];
+		for (let j = 0; j < synths.length; j++) {
+			const currencyB = SYNTHS[j];
+			if (currencyA !== currencyB) {
 				marketNames.push({
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
+					baseCurrencyKey: currencyA,
+					quoteCurrencyKey: currencyB,
+					pair: toMarketPair(currencyA, currencyB),
 				});
-			});
-	});
-
-	// Each iteration a crypto synth is added to be skipped in the next one
-	// So for [sBTC, sETH] crypto pairs, we would only end up with sETH/sBTC
-	const skipCryptoQuotes: CurrencyKeys = [];
-
-	// crypto markets trade against all synths (ex fiat, ex existing crypto market)
-	CRYPTO_SYNTHS_BY_MC.forEach((quoteCurrencyKey: CurrencyKey) => {
-		synths
-			.filter(
-				(baseCurrencyKey: CurrencyKey) =>
-					quoteCurrencyKey !== baseCurrencyKey &&
-					![...FIAT_SYNTHS, ...skipCryptoQuotes].includes(baseCurrencyKey)
-			)
-			.forEach((baseCurrencyKey: CurrencyKey) => {
-				marketNames.push({
-					baseCurrencyKey,
-					quoteCurrencyKey,
-					pair: toMarketPair(baseCurrencyKey, quoteCurrencyKey),
-				});
-			});
-
-		skipCryptoQuotes.push(quoteCurrencyKey);
-	});
+			}
+		}
+	}
 
 	return marketNames;
 });
 
 export const getFilteredMarketNames = memoizeOne((quoteCurrencyKey: CurrencyKey) =>
 	getAvailableMarketNames().filter((marketName) => marketName.quoteCurrencyKey === quoteCurrencyKey)
+);
+
+// sBTC / sUSD
+// sUSD / sBTC
+
+export const getMarketPairByMC = memoizeOne(
+	(baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) => {
+		const marketPair = {
+			base: baseCurrencyKey,
+			quote: quoteCurrencyKey,
+			reversed: false,
+		};
+
+		const marketPairReversed = {
+			base: quoteCurrencyKey,
+			quote: baseCurrencyKey,
+			reversed: true,
+		};
+
+		// handle fiat first - it must always be the quote
+		if (FIAT_SYNTHS.includes(quoteCurrencyKey)) {
+			return marketPair;
+		}
+		if (FIAT_SYNTHS.includes(baseCurrencyKey)) {
+			return marketPairReversed;
+		}
+
+		// set a really high rank for low MC coins
+		const baseCurrencyKeyRank = CRYPTO_SYNTHS_BY_MC[baseCurrencyKey] || Number.MAX_SAFE_INTEGER;
+		const quoteCurrencyKeyRank = CRYPTO_SYNTHS_BY_MC[quoteCurrencyKey] || Number.MAX_SAFE_INTEGER;
+
+		// lower rank -> higher MC
+		return quoteCurrencyKeyRank <= baseCurrencyKeyRank ? marketPair : marketPairReversed;
+	}
 );

@@ -41,6 +41,7 @@ export type SynthDefinitionWithRates = SynthDefinition & {
 export type SynthPair = {
 	base: SynthDefinition;
 	quote: SynthDefinition;
+	reversed: boolean;
 };
 
 const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
@@ -68,12 +69,14 @@ export type SynthsSliceState = {
 	availableSynths: SynthDefinitionMap;
 	baseSynth: SynthDefinition;
 	quoteSynth: SynthDefinition;
+	isPairReversed: boolean;
 };
 
 const initialState: SynthsSliceState = {
 	availableSynths: {},
 	baseSynth: { name: DEFAULT_BASE_SYNTH, category: CATEGORY_MAP.crypto } as SynthDefinition,
 	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: CATEGORY_MAP.forex } as SynthDefinition,
+	isPairReversed: false,
 };
 
 const sliceName = 'synths';
@@ -107,12 +110,17 @@ export const synthsSlice = createSlice({
 		},
 		setSynthPair: (
 			state,
-			action: PayloadAction<{ baseCurrencyKey: CurrencyKey; quoteCurrencyKey: CurrencyKey }>
+			action: PayloadAction<{
+				baseCurrencyKey: CurrencyKey;
+				quoteCurrencyKey: CurrencyKey;
+				isPairReversed: boolean;
+			}>
 		) => {
-			const { baseCurrencyKey, quoteCurrencyKey } = action.payload;
+			const { baseCurrencyKey, quoteCurrencyKey, isPairReversed } = action.payload;
 
 			state.baseSynth = state.availableSynths[baseCurrencyKey];
 			state.quoteSynth = state.availableSynths[quoteCurrencyKey];
+			state.isPairReversed = isPairReversed;
 		},
 		updateFrozenSynths: (state, action: PayloadAction<{ frozenSynths: CurrencyKeys }>) => {
 			const { frozenSynths } = action.payload;
@@ -176,6 +184,7 @@ export const getFilteredSynthsWithRates = createSelector(
 export const getSynthPair = (state: RootState): SynthPair => ({
 	base: getSynthsState(state).baseSynth,
 	quote: getSynthsState(state).quoteSynth,
+	reversed: getSynthsState(state).isPairReversed,
 });
 
 export default synthsSlice.reducer;

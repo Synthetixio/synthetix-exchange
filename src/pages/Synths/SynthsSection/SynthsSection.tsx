@@ -34,7 +34,7 @@ type StateProps = {
 	synths: SynthDefinition[];
 	synthsWithRates: SynthDefinitionWithRates[];
 	filteredSynthsWithRates: SynthDefinitionWithRates[];
-	synthsCategoryFilter: string;
+	synthsCategoryFilter: string | null;
 };
 
 type DispatchProps = {

@@ -63,7 +63,7 @@ const WalletTypeSelector = ({
 
 	return (
 		<Container>
-			<HeadingMedium>{t('modals.wallet.wallet-selector.title')}</HeadingMedium>
+			<HeadingMedium>{t('modals.wallet.connect-your-wallet')}</HeadingMedium>
 			<Wallets>
 				{SUPPORTED_WALLETS.map((wallet) => {
 					const noMetamask = wallet === METAMASK && !hasWeb3();

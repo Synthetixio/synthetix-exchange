@@ -32,9 +32,27 @@
 	},
 	"modals": {
 		"wallet": {
-			"wallet-selector": {
-				"title": "Connect your wallet"
-			}
+			"back-to-wallet-selection": "Back to wallet selection",
+			"select-your-wallet": "Select your wallet",
+			"connect-your-wallet": "Connect your wallet",
+			"errors": {
+				"could-not-get-address": "Could not get addresses from wallet",
+				"ledger-error": "Please make sure your Ledger is unlocked, on Ethereum app with contract data setting allowed",
+				"generic-error": "Error"
+			},
+			"retry": "Retry"
+		},
+		"gwei": {
+			"title": "Set transaction speed & price",
+			"desc": "Adjust the slider below, or use the input field to set the transaction speed.",
+			"table": {
+				"speed-allowed": "Speed (allowed)",
+				"slow": "Slow",
+				"average": "Average",
+				"fast": "fast",
+				"price": "price"				
+			},			
+			"submit": "Submit changes"
 		}
 	},
 	"home": {
@@ -139,6 +157,11 @@
 				"24h-high": "24h high",
 				"24h-low": "24h low",
 				"24h-volume": "24h volume"
+			},
+			"pair-list": {
+				"table": {
+					"no-results": "No pairs found"
+				}
 			}
 		},
 		"trade-card": {
@@ -293,6 +316,7 @@
 		"max": "max",
 		"gas-limit": "gas limit",
 		"gas-price-gwei": "gas price (gwei)",
+		"gwei": "gwei",
 		"transaction": {
 			"view": "View"
 		},
@@ -371,6 +395,12 @@
 		},
 		"filters": {
 			"all": "all"
-		}
+		},
+		"pagination": {
+			"page": "Page",
+			"page-number": "Page {{pageNumber}}"
+		},
+		"buy": "buy",
+		"sell": "sell"
 	}
 }

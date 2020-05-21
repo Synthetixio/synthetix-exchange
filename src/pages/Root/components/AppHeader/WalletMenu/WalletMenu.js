@@ -57,9 +57,9 @@ const WalletMenu = ({
 	return (
 		<Content>
 			<Card>
-				<Card.Header>
+				<StyledCardHeader>
 					<StyledHeadingSmall>{t('header.wallet-menu.cards.wallet-details')}</StyledHeadingSmall>
-				</Card.Header>
+				</StyledCardHeader>
 				<Card.Body>
 					<StyledFlexCentered>
 						<InfoBoxLabel>{t('header.wallet-menu.cards.account')}</InfoBoxLabel>
@@ -71,11 +71,11 @@ const WalletMenu = ({
 				</Card.Body>
 			</Card>
 			<Card>
-				<Card.Header>
+				<StyledCardHeader>
 					<StyledHeadingSmall>
 						{t('header.wallet-menu.cards.estimated-wallet-value')}
 					</StyledHeadingSmall>
-				</Card.Header>
+				</StyledCardHeader>
 				<Card.Body>
 					<CardData>
 						{isLoadedWalletBalances
@@ -88,9 +88,9 @@ const WalletMenu = ({
 				</Card.Body>
 			</Card>
 			<Card>
-				<Card.Header>
+				<StyledCardHeader>
 					<StyledHeadingSmall>{t('header.wallet-menu.cards.synth-balance')}</StyledHeadingSmall>
-				</Card.Header>
+				</StyledCardHeader>
 				<StyleCardBody>
 					<StyledTable
 						palette={TABLE_PALETTE.STRIPED}
@@ -108,7 +108,7 @@ const WalletMenu = ({
 								Cell: (cellProps) => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 								),
-								width: 100,
+								width: 90,
 								sortable: true,
 							},
 
@@ -126,7 +126,7 @@ const WalletMenu = ({
 										</span>
 									</Tooltip>
 								),
-								width: 100,
+								width: 90,
 								sortable: true,
 							},
 							{
@@ -141,7 +141,7 @@ const WalletMenu = ({
 										)}
 									</span>
 								),
-								width: 100,
+								width: 90,
 								sortable: true,
 							},
 						]}
@@ -158,6 +158,10 @@ const WalletMenu = ({
 	);
 };
 
+const StyledCardHeader = styled(Card.Header)`
+	padding: 0 12px;
+`;
+
 const StyledTable = styled(Table)`
 	.table-row {
 		width: 100%;
@@ -166,7 +170,7 @@ const StyledTable = styled(Table)`
 		}
 	}
 	.table-body {
-		width: 300px;
+		width: 100%;
 		height: 256px;
 		overflow-x: hidden;
 	}

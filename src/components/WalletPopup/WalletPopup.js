@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import { getWalletInfo } from '../../ducks/wallet/walletDetails';
 import { toggleWalletPopup, walletPopupIsVisible } from '../../ducks/ui';
@@ -15,6 +16,7 @@ import { Z_INDEX } from '../../constants/ui';
 const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 	const { currentWallet } = walletInfo;
 	const [CurrentScreen, setCurrentScreen] = useState(WalletTypeSelector);
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (popupIsVisible) {
@@ -28,7 +30,7 @@ const WalletPopup = ({ popupIsVisible, toggleWalletPopup, walletInfo }) => {
 			<Container>
 				{CurrentScreen === WalletAddressSelector ? (
 					<BackButton onClick={() => setCurrentScreen(WalletTypeSelector)}>
-						<LabelMedium>Back to wallet selection</LabelMedium>
+						<LabelMedium>{t('modals.wallet.back-to-wallet-selection')}</LabelMedium>
 					</BackButton>
 				) : null}
 				<CloseButton onClick={() => toggleWalletPopup(false)}>

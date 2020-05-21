@@ -48,7 +48,7 @@ export const MobileAppHeader = memo(
 						</MenuItemsLeft>
 						<MenuItemsRight>
 							<MenuItem>
-								<UserInfo />
+								<UserInfo isOnSplashPage={isOnSplashPage} />
 							</MenuItem>
 							<MenuItem>
 								<MenuToggleButton onClick={toggleMenu}>
