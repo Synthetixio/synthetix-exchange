@@ -1,5 +1,21 @@
 # Changelog
 
+## 21 May 2020 (Sulfur release)
+
+### Added
+
+- **Market selection advanced search**.
+- Added a "max balance" click on the balance label (Create order card).
+- Added a market pairs dropdown on the trade button (Assets page).
+- Added missing translation keys for the English translation.
+
+### Changed:
+
+- Refactored markets logic to always be on the market with the largest liquidity.
+- Refactored/redesigned the user info section in the app bar.
+- Switched to using hash router to support IPFS.
+- Switched to using @synthetixio/assets for synths SVGs.
+
 ## 14 May 2020 (Gypsum release)
 
 ### Added
