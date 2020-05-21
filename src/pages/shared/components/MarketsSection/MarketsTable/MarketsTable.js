@@ -10,7 +10,6 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 import ChangePercent from 'components/ChangePercent';
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import { CurrencyCol, NullableCell } from 'components/Table/common';
 
 import Currency from 'components/Currency';
@@ -21,10 +20,10 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 	return (
 		<TableOverflowContainer>
 			<Table
-				palette={TABLE_PALETTE.LIGHT}
+				palette="light-secondary"
 				columns={[
 					{
-						Header: t('markets.table.pair-col'),
+						Header: <>{t('markets.table.pair-col')}</>,
 						accessor: 'pair',
 						Cell: (cellProps) => (
 							<Currency.Pair
@@ -37,7 +36,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 						sortable: true,
 					},
 					{
-						Header: t('markets.table.last-price-col'),
+						Header: <>{t('markets.table.last-price-col')}</>,
 						accessor: 'lastPrice',
 						sortType: 'basic',
 						Cell: (cellProps) => (
@@ -51,7 +50,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 						sortable: true,
 					},
 					{
-						Header: t('markets.table.24h-change-col'),
+						Header: <>{t('markets.table.24h-change-col')}</>,
 						accessor: 'rates24hChange',
 						sortType: 'basic',
 						Cell: (cellProps) => (
@@ -65,7 +64,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 						sortable: true,
 					},
 					{
-						Header: t('markets.table.24h-low-col'),
+						Header: <>{t('markets.table.24h-low-col')}</>,
 						accessor: 'rates24hLow',
 						sortType: 'basic',
 						Cell: (cellProps) => (
@@ -79,7 +78,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 						sortable: true,
 					},
 					{
-						Header: t('markets.table.24h-high-col'),
+						Header: <>{t('markets.table.24h-high-col')}</>,
 						accessor: 'rates24hHigh',
 						sortType: 'basic',
 						Cell: (cellProps) => (
@@ -93,7 +92,7 @@ export const MarketsTable = memo(({ markets, synthsMap, marketsLoaded, noResults
 						sortable: true,
 					},
 					{
-						Header: t('markets.table.24h-volume-col'),
+						Header: <>{t('markets.table.24h-volume-col')}</>,
 						accessor: 'rates24hVol',
 						sortType: 'basic',
 						Cell: (cellProps) => (

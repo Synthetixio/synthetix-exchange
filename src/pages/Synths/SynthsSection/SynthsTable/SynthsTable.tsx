@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { CellProps } from 'react-table';
-import get from 'lodash/get';
 import Popover from '@material-ui/core/Popover';
 
 import { SynthDefinitionMap, getAvailableSynthsMap, SynthDefinitionWithRates } from 'ducks/synths';
@@ -15,9 +14,8 @@ import { RateUpdates } from 'constants/rates';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
-import { NullableCell, CurrencyCol } from 'components/Table/common';
+import { CurrencyCol } from 'components/Table/common';
 import ChangePercent from 'components/ChangePercent';
 
 import TrendLineChart from 'components/TrendLineChart';
@@ -58,15 +56,16 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 		return (
 			<>
 				<TableOverflowContainer>
-					<StyledTable<any>
-						palette={TABLE_PALETTE.LIGHT}
+					<StyledTable
+						palette="light-secondary"
 						columns={[
 							{
-								Header: t('synths.table.synth-col'),
+								Header: <>{t('synths.table.synth-col')}</>,
 								accessor: 'name',
-								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
+								Cell: (
+									cellProps: CellProps<SynthDefinitionWithRates, SynthDefinitionWithRates['name']>
+								) => (
 									<Currency.Name
-										// @ts-ignore
 										currencyKey={cellProps.cell.value}
 										currencyDesc={cellProps.row.original.desc}
 										showIcon={true}
@@ -76,10 +75,15 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								sortable: true,
 							},
 							{
-								Header: t('synths.table.last-price-col'),
+								Header: <>{t('synths.table.last-price-col')}</>,
 								accessor: 'lastPrice',
 								sortType: 'basic',
-								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
+								Cell: (
+									cellProps: CellProps<
+										SynthDefinitionWithRates,
+										SynthDefinitionWithRates['lastPrice']
+									>
+								) => (
 									<CurrencyCol
 										currencyKey={SYNTHS_MAP.sUSD}
 										synthsMap={synthsMap}
@@ -90,23 +94,27 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								sortable: true,
 							},
 							{
-								Header: t('synths.table.24h-change-col'),
+								Header: <>{t('synths.table.24h-change-col')}</>,
 								sortType: 'basic',
-								accessor: (d: SynthDefinitionWithRates) =>
-									get(d.historicalRates, 'ONE_DAY.data.change', null),
-								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
-									<NullableCell cellProps={cellProps}>
-										<ChangePercent isLabel={true} value={cellProps.cell.value} />
-									</NullableCell>
-								),
+								id: '24change-col',
+								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
+									const change = cellProps.row.original.historicalRates?.ONE_DAY.data?.change;
+
+									return change ? (
+										<ChangePercent isLabel={true} value={change} />
+									) : (
+										<span>{EMPTY_VALUE}</span>
+									);
+								},
+
 								sortable: true,
 								width: 100,
 							},
 							{
-								Header: t('synths.table.24h-trend-col'),
-								id: 'seven-day-trend',
+								Header: <>{t('synths.table.24h-trend-col')}</>,
+								id: '24trend-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
-									const data = get(cellProps.row.original.historicalRates, 'ONE_DAY.data', null);
+									const data = cellProps.row.original.historicalRates?.ONE_DAY?.data;
 									if (!data || data.rates.length === 0) {
 										return <span>{EMPTY_VALUE}</span>;
 									}
@@ -120,7 +128,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								width: 150,
 							},
 							{
-								Header: t('synths.table.trade-now-col'),
+								Header: <>{t('synths.table.trade-now-col')}</>,
 								id: 'trade-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
 									<Button

@@ -25,7 +25,6 @@ import {
 import { getEtherscanTxLink } from 'utils/explorers';
 
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 
 import Currency from 'components/Currency';
 import { SYNTHS_MAP } from 'constants/currency';
@@ -54,16 +53,16 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 	return (
 		<StyledTable
 			data={orderedTransactions}
-			palette={TABLE_PALETTE.STRIPED}
+			palette="striped"
 			columns={[
 				{
-					Header: t('trade.order-book-card.table.date'),
+					Header: <>{t('trade.order-book-card.table.date')}</>,
 					accessor: 'date',
 					Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.pair'),
+					Header: <>{t('trade.order-book-card.table.pair')}</>,
 					accessor: 'pair',
 					Cell: (cellProps) => (
 						<Currency.Pair
@@ -75,7 +74,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.buying'),
+					Header: <>{t('trade.order-book-card.table.buying')}</>,
 					accessor: 'toAmount',
 					sortType: 'basic',
 					Cell: (cellProps) => (
@@ -95,7 +94,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.selling'),
+					Header: <>{t('trade.order-book-card.table.selling')}</>,
 					accessor: 'fromAmount',
 					sortType: 'basic',
 					Cell: (cellProps) => (
@@ -115,7 +114,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.price'),
+					Header: <>{t('trade.order-book-card.table.price')}</>,
 					accessor: 'priceUSD',
 					sortType: 'basic',
 					Cell: (cellProps) => (
@@ -135,20 +134,20 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.total'),
+					Header: <>{t('trade.order-book-card.table.total')}</>,
 					accessor: 'totalUSD',
 					sortType: 'basic',
 					Cell: (cellProps) => <span>${cellProps.cell.value}</span>,
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.status'),
+					Header: <>{t('trade.order-book-card.table.status')}</>,
 					accessor: 'status',
 					Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
 					sortable: true,
 				},
 				{
-					Header: t('trade.order-book-card.table.verify'),
+					Header: <>{t('trade.order-book-card.table.verify')}</>,
 					accessor: 'hash',
 					Cell: (cellProps) => (
 						<ViewLink

@@ -9,12 +9,12 @@ import { RootState } from 'ducks/types';
 import get from 'lodash/get';
 
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 import Card from 'components/Card';
 import { HeadingSmall } from 'components/Typography';
 import { Button } from 'components/Button';
 import Link from 'components/Link';
+import { CellProps } from 'react-table';
 
 import { TableNoResults } from 'shared/commonStyles';
 
@@ -91,21 +91,21 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 					</Card.Header>
 					<StyledCardBody>
 						<Table
-							palette={TABLE_PALETTE.STRIPED}
+							palette="striped"
 							columns={[
 								{
-									Header: t('assets.overview.your-synths.table.asset-col'),
+									Header: <>{t('assets.overview.your-synths.table.asset-col')}</>,
 									accessor: 'name',
-									Cell: (cellProps: { cell: { value: SynthWalletBalance['name'] } }) => (
+									Cell: (cellProps: CellProps<SynthWalletBalance, SynthWalletBalance['name']>) => (
 										<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
 									),
 									width: 150,
 									sortable: true,
 								},
 								{
-									Header: t('assets.overview.your-synths.table.asset-description-col'),
+									Header: <>{t('assets.overview.your-synths.table.asset-description-col')}</>,
 									id: 'asset-desc',
-									Cell: (cellProps: { row: { original: SynthWalletBalance } }) => {
+									Cell: (cellProps: CellProps<SynthWalletBalance>) => {
 										const currencyKey = cellProps.row.original.name;
 
 										return (
@@ -119,10 +119,12 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 									width: 150,
 								},
 								{
-									Header: t('assets.overview.your-synths.table.total-col'),
+									Header: <>{t('assets.overview.your-synths.table.total-col')}</>,
 									accessor: 'balance',
 									sortType: 'basic',
-									Cell: (cellProps: { cell: { value: SynthWalletBalance['balance'] } }) => (
+									Cell: (
+										cellProps: CellProps<SynthWalletBalance, SynthWalletBalance['balance']>
+									) => (
 										<Tooltip
 											title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
 											placement="top"
@@ -136,10 +138,12 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 									sortable: true,
 								},
 								{
-									Header: t('assets.overview.your-synths.table.usd-value-col'),
+									Header: <>{t('assets.overview.your-synths.table.usd-value-col')}</>,
 									accessor: 'usdBalance',
 									sortType: 'basic',
-									Cell: (cellProps: { cell: { value: SynthWalletBalance['usdBalance'] } }) => (
+									Cell: (
+										cellProps: CellProps<SynthWalletBalance, SynthWalletBalance['usdBalance']>
+									) => (
 										<span>
 											{formatCurrencyWithSign(
 												get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -151,10 +155,10 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 									sortable: true,
 								},
 								{
-									Header: t('assets.overview.your-synths.table.actions-col'),
+									Header: <>{t('assets.overview.your-synths.table.actions-col')}</>,
 									accessor: 'actions',
 									width: 250,
-									Cell: (cellProps: { row: { original: SynthWalletBalance } }) => {
+									Cell: (cellProps: CellProps<SynthWalletBalance>) => {
 										const currencyKey = cellProps.row.original.name;
 
 										return (

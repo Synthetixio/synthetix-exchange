@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { CRYPTO_CURRENCY_MAP } from 'constants/currency';
 
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 import Card from 'components/Card';
 import Link from 'components/Link';
@@ -39,17 +38,17 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 			</Card.Header>
 			<StyledCardBody>
 				<Table
-					palette={TABLE_PALETTE.STRIPED}
+					palette="striped"
 					columns={[
 						{
-							Header: t('assets.transfers.table.date-time-col'),
+							Header: <>{t('assets.transfers.table.date-time-col')}</>,
 							accessor: 'time',
 							Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 							width: 150,
 							sortable: true,
 						},
 						{
-							Header: t('assets.transfers.table.asset-col'),
+							Header: <>{t('assets.transfers.table.asset-col')}</>,
 							accessor: 'currencyKey',
 							Cell: (cellProps) => (
 								<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
@@ -57,7 +56,7 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 							width: 150,
 						},
 						{
-							Header: t('assets.transfers.table.total-col'),
+							Header: <>{t('assets.transfers.table.total-col')}</>,
 							accessor: 'amount',
 							sortType: 'basic',
 							Cell: (cellProps) => <span>{formatCurrency(cellProps.cell.value)}</span>,
@@ -65,14 +64,14 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 							sortable: true,
 						},
 						{
-							Header: t('assets.transfers.table.status-col'),
+							Header: <>{t('assets.transfers.table.status-col')}</>,
 							accessor: 'status',
 							Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
 							width: 150,
 							sortable: true,
 						},
 						{
-							Header: t('assets.transfers.table.verify-col'),
+							Header: <>{t('assets.transfers.table.verify-col')}</>,
 							accessor: 'actions',
 							Cell: (cellProps) => (
 								<Link

@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { FC, useMemo, DependencyList } from 'react';
 import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
-import { useTable, useFlexLayout, useSortBy } from 'react-table';
+import { useTable, useFlexLayout, useSortBy, Column, Row, TableOptions } from 'react-table';
 
 import { CARD_HEIGHT } from 'constants/ui';
 
@@ -14,16 +13,33 @@ import { FlexDivCentered } from 'shared/commonStyles';
 
 import Spinner from 'components/Spinner';
 
-import { TABLE_PALETTE } from './constants';
+type TablePalette = 'primary' | 'light-secondary' | 'striped';
 
-export const Table = ({
+type ColumnWithSorting<D extends object = {}> = Column<D> & {
+	sortType?: string;
+	sortable?: boolean;
+};
+
+type TableProps = {
+	palette?: TablePalette;
+	data: object[];
+	columns: ColumnWithSorting<object>[];
+	columnsDeps?: DependencyList;
+	options?: TableOptions<object>;
+	onTableRowClick?: (row: Row<any>) => void;
+	className?: string;
+	isLoading?: boolean;
+	noResultsMessage?: React.ReactNode;
+};
+
+export const Table: FC<TableProps> = ({
 	columns = [],
 	columnsDeps = [],
 	data = [],
 	options = {},
 	noResultsMessage = null,
 	onTableRowClick = undefined,
-	palette = TABLE_PALETTE.PRIMARY,
+	palette = 'primary',
 	isLoading = false,
 	className,
 }) => {
@@ -46,7 +62,7 @@ export const Table = ({
 		<ReactTable {...getTableProps()} palette={palette} className={className}>
 			{headerGroups.map((headerGroup) => (
 				<TableRow className="table-row" {...headerGroup.getHeaderGroupProps()}>
-					{headerGroup.headers.map((column) => (
+					{headerGroup.headers.map((column: any) => (
 						<TableCellHead
 							{...column.getHeaderProps(
 								column.sortable ? column.getSortByToggleProps() : undefined
@@ -99,16 +115,6 @@ export const Table = ({
 	);
 };
 
-Table.propTypes = {
-	data: PropTypes.array.isRequired,
-	columns: PropTypes.array.isRequired,
-	columnsDeps: PropTypes.array,
-	options: PropTypes.object,
-	onTableRowClick: PropTypes.func,
-	palette: PropTypes.string,
-	className: PropTypes.string,
-};
-
 export const TableRow = styled.div``;
 
 const TableBody = styled.div`
@@ -141,14 +147,14 @@ const SortIconContainer = styled.span`
 	margin-left: 5px;
 `;
 
-const ReactTable = styled.div`
+const ReactTable = styled.div<{ palette: TablePalette }>`
 	width: 100%;
 	height: 100%;
 	overflow-x: auto;
 	position: relative;
 
 	${(props) =>
-		props.palette === TABLE_PALETTE.PRIMARY &&
+		props.palette === 'primary' &&
 		css`
 			${TableBody} {
 				max-height: calc(100% - ${CARD_HEIGHT});
@@ -179,7 +185,7 @@ const ReactTable = styled.div`
 		`}
 
 ${(props) =>
-	props.palette === TABLE_PALETTE.STRIPED &&
+	props.palette === 'striped' &&
 	css`
 		${TableBody} {
 			max-height: calc(100% - 48px);
@@ -205,7 +211,7 @@ ${(props) =>
 	`}
 
 	${(props) =>
-		props.palette === TABLE_PALETTE.LIGHT &&
+		props.palette === 'light-secondary' &&
 		css`
 			${TableBody} {
 				max-height: calc(100% - 56px);
