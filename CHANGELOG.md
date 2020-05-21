@@ -1,6 +1,5 @@
 # Changelog
 
-<<<<<<< HEAD
 ## 21 May 2020 (Sulfur release)
 
 ### Added
@@ -18,9 +17,6 @@
 - Switched to using @synthetixio/assets for synths SVGs.
 
 ## 14 May 2020 (Gypsum release)
-=======
-## 14 May 2020 (Gypsum Release)
->>>>>>> 50e01526283c50b1205b853a9b4ac9a0e87edd81
 
 ### Added
 
