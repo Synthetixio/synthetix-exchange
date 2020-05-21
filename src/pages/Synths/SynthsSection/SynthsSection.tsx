@@ -6,6 +6,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { breakpoint, media } from 'shared/media';
 import { lightTheme } from 'styles/theme';
 import useInterval from 'shared/hooks/useInterval';
+import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { RootState } from 'ducks/types';
 import {
@@ -19,7 +20,7 @@ import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
-import { Z_INDEX } from 'constants/ui';
+import { Z_INDEX, SEARCH_DEBOUNCE_MS } from 'constants/ui';
 import { FlexDivRow } from 'shared/commonStyles';
 
 import { SearchInput } from 'components/Input';
@@ -67,7 +68,7 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
 		}, SYNTHS_REFRESH_INTERVAL_MS);
 
-		const filteredSynths = useMemo(
+		const filteredSynths = useDebouncedMemo(
 			() =>
 				assetSearch
 					? filteredSynthsWithRates.filter(({ name, desc }) => {
@@ -79,7 +80,8 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 							);
 					  })
 					: filteredSynthsWithRates,
-			[filteredSynthsWithRates, assetSearch]
+			[filteredSynthsWithRates, assetSearch],
+			SEARCH_DEBOUNCE_MS
 		);
 
 		const topGainersLosersSynths = useMemo(

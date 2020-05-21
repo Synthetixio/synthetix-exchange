@@ -14,3 +14,5 @@ export const Z_INDEX = {
 	MODAL: 200,
 	APP_HEADER: 1000,
 };
+
+export const SEARCH_DEBOUNCE_MS = 300;

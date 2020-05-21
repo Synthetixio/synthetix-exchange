@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -13,8 +13,10 @@ import { getMarketsAssetFilter, setMarketsAssetFilter } from 'ducks/ui';
 import { lightTheme } from 'styles/theme';
 
 import { getFilteredMarketNames, FIAT_SYNTHS } from 'constants/currency';
+import { SEARCH_DEBOUNCE_MS } from 'constants/ui';
 import { navigateTo, ROUTES } from 'constants/routes';
 import useInterval from 'shared/hooks/useInterval';
+import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button, ButtonFilterWithDropdown } from 'components/Button';
 import { SearchInput } from 'components/Input';
@@ -47,12 +49,13 @@ export const MarketsSection = ({
 		fetchMarketsRequest({ pairs: marketPairs });
 	}, MARKETS_REFRESH_INTERVAL_MS);
 
-	const filteredMarkets = useMemo(
+	const filteredMarkets = useDebouncedMemo(
 		() =>
 			markets.filter(({ baseCurrencyKey }) =>
 				baseCurrencyKey.toLowerCase().includes(assetSearch.toLowerCase())
 			),
-		[markets, assetSearch]
+		[markets, assetSearch],
+		SEARCH_DEBOUNCE_MS
 	);
 
 	return (

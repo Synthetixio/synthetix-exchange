@@ -3,7 +3,7 @@ import React, { memo, FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { CARD_HEIGHT } from 'constants/ui';
+import { CARD_HEIGHT, SEARCH_DEBOUNCE_MS } from 'constants/ui';
 import { navigateToTrade } from 'constants/routes';
 
 import { getSynthPair, SynthPair } from 'ducks/synths';
@@ -40,7 +40,6 @@ type DispatchProps = {
 
 type PairListPanelProps = StateProps & DispatchProps;
 
-const DEBOUNCE_MS = 300;
 const PairListPanel: FC<PairListPanelProps> = memo(
 	({
 		synthPair: { base, quote },
@@ -95,7 +94,7 @@ const PairListPanel: FC<PairListPanelProps> = memo(
 				baseCurrencySearch,
 				quoteCurrencySearch,
 			],
-			DEBOUNCE_MS
+			SEARCH_DEBOUNCE_MS
 		);
 
 		const resetSearch = () => {
