@@ -10,7 +10,7 @@ import RechartsResponsiveContainer from '../RechartsResponsiveContainer';
 import { FlexDivRow, GridDivCenteredCol, GridDivRow } from 'shared/commonStyles';
 
 import { EMPTY_VALUE } from 'constants/placeholder';
-import { RateUpdates } from 'constants/rates';
+import { BaseRateUpdates } from 'constants/rates';
 import { PERIOD_LABELS, PeriodLabel, PERIOD_IN_HOURS } from 'constants/period';
 import { Button } from 'components/Button';
 import Spinner from 'components/Spinner';
@@ -20,7 +20,7 @@ import { media } from 'shared/media';
 type ChartCardProps = {
 	currencyLabel: React.ReactNode;
 	change: number | null;
-	chartData: RateUpdates;
+	chartData: BaseRateUpdates;
 	price: number | string | null;
 	onClick?: () => void;
 	variableGradient?: boolean;

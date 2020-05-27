@@ -1,5 +1,6 @@
 import React, { memo, FC, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import get from 'lodash/get';
 
 import {
@@ -11,17 +12,22 @@ import {
 } from 'ducks/synths';
 import { RootState } from 'ducks/types';
 import { fetchHistoricalRatesRequest, HistoricalRatesData } from 'ducks/historicalRates';
-import ChartCard from 'components/ChartCard';
-import styled from 'styled-components';
-import useInterval from 'shared/hooks/useInterval';
+
+import { SYNTHS_MAP, sUSD_EXCHANGE_RATE } from 'constants/currency';
+import { BaseRateUpdates } from 'constants/rates';
+import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 import { PeriodLabel, PERIOD_LABELS_MAP } from 'constants/period';
-import Currency from 'components/Currency';
+
+import ChartCard from 'components/ChartCard';
+import useInterval from 'shared/hooks/useInterval';
+
 import { formatCurrencyWithSign } from 'utils/formatters';
-import { SYNTHS_MAP } from 'constants/currency';
-import { RateUpdates } from 'constants/rates';
+
 import { darkTheme } from 'styles/theme';
 import { media } from 'shared/media';
-import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
+
+import Currency from 'components/Currency';
+import { mockRates } from 'pages/Synths/mockData';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -41,33 +47,47 @@ type SynthChartProps = StateProps & DispatchProps & Props;
 export const SynthChart: FC<SynthChartProps> = memo(
 	({ synth, fetchHistoricalRatesRequest, synthsWithRatesMap, synthsMap }) => {
 		const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
-		const [historicalRateUpdates, setHistoricalRatesUpdates] = useState<RateUpdates>([]);
-		const [historicalRateChange, setHistoricalRatesChange] = useState<number | null>(null);
+		const [historicalRateUpdates, setHistoricalRatesUpdates] = useState<BaseRateUpdates>([]);
+		const [historicalRateChange, setHistoricalRatesChange] = useState<number | null>(0);
 		const [loading, setLoading] = useState<boolean>(true);
 
-		useEffect(() => {
-			fetchHistoricalRatesRequest({ synths: [synth], periods: [selectedPeriod.period] });
-		}, [fetchHistoricalRatesRequest, synth, selectedPeriod.period]);
-
-		useInterval(() => {
-			fetchHistoricalRatesRequest({ synths: [synth], periods: [selectedPeriod.period] });
-		}, DEFAULT_REQUEST_REFRESH_INTERVAL);
+		const isUSD = synth.name === SYNTHS_MAP.sUSD;
 
 		useEffect(() => {
-			const historicalRates: HistoricalRatesData | null = get(
-				synthsWithRatesMap,
-				[synth.name, 'historicalRates', selectedPeriod.period, 'data'],
-				null
-			);
-
-			if (historicalRates != null) {
-				setLoading(false);
-				setHistoricalRatesUpdates(historicalRates?.rates || []);
-				setHistoricalRatesChange(historicalRates?.change || null);
-			} else {
-				setLoading(true);
+			if (!isUSD) {
+				fetchHistoricalRatesRequest({ synths: [synth], periods: [selectedPeriod.period] });
 			}
-		}, [synthsWithRatesMap, selectedPeriod.period, synth.name]);
+		}, [fetchHistoricalRatesRequest, synth, selectedPeriod.period, isUSD]);
+
+		useInterval(
+			() => {
+				fetchHistoricalRatesRequest({ synths: [synth], periods: [selectedPeriod.period] });
+			},
+			isUSD ? null : DEFAULT_REQUEST_REFRESH_INTERVAL
+		);
+
+		useEffect(() => {
+			if (isUSD) {
+				const rates = mockRates(selectedPeriod.value, sUSD_EXCHANGE_RATE);
+
+				setLoading(false);
+				setHistoricalRatesUpdates(rates);
+			} else {
+				const historicalRates: HistoricalRatesData | null = get(
+					synthsWithRatesMap,
+					[synth.name, 'historicalRates', selectedPeriod.period, 'data'],
+					null
+				);
+
+				if (historicalRates != null) {
+					setLoading(false);
+					setHistoricalRatesUpdates(historicalRates?.rates || []);
+					setHistoricalRatesChange(historicalRates?.change || 0);
+				} else {
+					setLoading(true);
+				}
+			}
+		}, [synthsWithRatesMap, selectedPeriod, synth.name, isUSD]);
 
 		const lastPrice = get(synthsWithRatesMap, [synth.name, 'lastPrice'], null);
 		const synthSign = synthsMap[SYNTHS_MAP.sUSD].sign;

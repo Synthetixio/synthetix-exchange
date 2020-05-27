@@ -3,15 +3,18 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { CellProps } from 'react-table';
+import get from 'lodash/get';
 import Popover from '@material-ui/core/Popover';
 
 import { SynthDefinitionMap, getAvailableSynthsMap, SynthDefinitionWithRates } from 'ducks/synths';
 
 import { RootState } from 'ducks/types';
 
-import { SYNTHS_MAP, CurrencyKey } from 'constants/currency';
+import { SYNTHS_MAP, CurrencyKey, sUSD_EXCHANGE_RATE } from 'constants/currency';
 import { RateUpdates } from 'constants/rates';
 import { EMPTY_VALUE } from 'constants/placeholder';
+import { PERIOD_IN_HOURS } from 'constants/period';
+import { navigateToSynthOverview } from 'constants/routes';
 
 import Table from 'components/Table';
 import Currency from 'components/Currency';
@@ -20,10 +23,11 @@ import ChangePercent from 'components/ChangePercent';
 
 import TrendLineChart from 'components/TrendLineChart';
 import { Button } from 'components/Button';
+import BaseTradingPairs from 'components/BaseTradingPairs';
+
 import { TableOverflowContainer } from 'shared/commonStyles';
 
-import BaseTradingPairs from 'components/BaseTradingPairs';
-import { navigateToSynthOverview } from 'constants/routes';
+import { mockRates } from 'pages/Synths/mockData';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -98,12 +102,16 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								sortType: 'basic',
 								id: '24change-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
-									const change = cellProps.row.original.historicalRates?.ONE_DAY.data?.change;
+									const change: number | null = get(
+										cellProps.row.original.historicalRates,
+										'ONE_DAY.data.change',
+										null
+									);
 
-									return change ? (
-										<ChangePercent isLabel={true} value={change} />
-									) : (
+									return change == null ? (
 										<span>{EMPTY_VALUE}</span>
+									) : (
+										<ChangePercent isLabel={true} value={change} />
 									);
 								},
 
@@ -114,15 +122,25 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								Header: <>{t('synths.home.table.24h-trend-col')}</>,
 								id: '24trend-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
-									const data = cellProps.row.original.historicalRates?.ONE_DAY?.data;
-									if (!data || data.rates.length === 0) {
-										return <span>{EMPTY_VALUE}</span>;
+									if (cellProps.row.original.name === SYNTHS_MAP.sUSD) {
+										return (
+											<TrendLineChart
+												change={0}
+												chartData={mockRates(PERIOD_IN_HOURS.ONE_DAY, sUSD_EXCHANGE_RATE)}
+											/>
+										);
 									}
-									return (
-										<TrendLineChart
-											change={data.change as number}
-											chartData={data.rates as RateUpdates}
-										/>
+
+									const data: { change: number; rates: RateUpdates } | null = get(
+										cellProps.row.original.historicalRates,
+										'ONE_DAY.data',
+										null
+									);
+
+									return data == null ? (
+										<span>{EMPTY_VALUE}</span>
+									) : (
+										<TrendLineChart change={data.change} chartData={data.rates || []} />
 									);
 								},
 								width: 150,

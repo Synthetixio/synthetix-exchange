@@ -218,6 +218,8 @@ export const toMarketPair = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: Cur
 export const toInverseSynth = (currencyKey: CurrencyKey) => currencyKey.replace(/^s/i, 'i');
 export const toStandardSynth = (currencyKey: CurrencyKey) => currencyKey.replace(/^i/i, 's');
 
+export const sUSD_EXCHANGE_RATE = 1;
+
 export const FIAT_SYNTHS = [
 	SYNTHS_MAP.sEUR,
 	SYNTHS_MAP.sJPY,

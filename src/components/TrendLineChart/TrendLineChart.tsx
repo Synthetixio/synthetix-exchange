@@ -2,12 +2,12 @@ import React, { FC, memo, useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { LineChart, Line, XAxis, YAxis } from 'recharts';
 
-import { RateUpdates } from 'constants/rates';
+import { BaseRateUpdates } from 'constants/rates';
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
 
 type TrendLineChartProps = {
 	change: number;
-	chartData: RateUpdates;
+	chartData: BaseRateUpdates;
 	onClick?: () => void;
 	className?: string;
 };

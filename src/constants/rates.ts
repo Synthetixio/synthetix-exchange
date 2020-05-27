@@ -1,12 +1,17 @@
 import { CurrencyKey } from './currency';
 
-export type RateUpdate = {
+export type BaseRateUpdate = {
+	timestamp: number;
+	rate: number;
+};
+
+export type BaseRateUpdates = BaseRateUpdate[];
+
+export type RateUpdate = BaseRateUpdate & {
 	block: number;
 	synth: CurrencyKey;
-	timestamp: number;
 	date: string;
 	hash: string;
-	rate: number;
 };
 
 export type RateUpdates = RateUpdate[];
