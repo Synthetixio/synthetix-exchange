@@ -49,12 +49,11 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 					accessor: 'lastPrice',
 					sortType: 'basic',
 					width: 100,
-					Cell: (cellProps: CellProps<MarketPair>) => (
+					Cell: (cellProps: CellProps<MarketPair, MarketPair['lastPrice']>) => (
 						<RightAlignedCell>
 							<CurrencyCol
-								currencyKey={cellProps.row.original.quoteCurrencyKey}
-								synthsMap={synthsMap}
-								cellProps={cellProps}
+								sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
+								value={cellProps.cell.value}
 							/>
 						</RightAlignedCell>
 					),

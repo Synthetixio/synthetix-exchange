@@ -5,6 +5,8 @@ import { CellProps, Row } from 'react-table';
 
 import { getAvailableSynthsMap, SynthDefinitionMap } from 'ducks/synths';
 import { navigateToTrade } from 'constants/routes';
+import { EMPTY_VALUE } from 'constants/placeholder';
+import { SYNTHS_MAP } from 'constants/currency';
 
 import { MarketPair, MarketPairs } from 'ducks/markets';
 import { RootState } from 'ducks/types';
@@ -13,7 +15,7 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 import ChangePercent from 'components/ChangePercent';
 import Table from 'components/Table';
-import { CurrencyCol, NullableCell } from 'components/Table/common';
+import { CurrencyCol } from 'components/Table/common';
 
 import Currency from 'components/Currency';
 
@@ -57,9 +59,8 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							sortType: 'basic',
 							Cell: (cellProps: CellProps<MarketPair>) => (
 								<CurrencyCol
-									currencyKey={cellProps.row.original.quoteCurrencyKey}
-									synthsMap={synthsMap}
-									cellProps={cellProps}
+									sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
+									value={cellProps.cell.value}
 								/>
 							),
 							width: 150,
@@ -69,13 +70,12 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('markets.table.24h-change-col')}</>,
 							accessor: 'rates24hChange',
 							sortType: 'basic',
-							Cell: (cellProps: CellProps<MarketPair, MarketPair['rates24hChange']>) => (
-								<NullableCell cellProps={cellProps}>
-									{cellProps.cell.value != null && (
-										<ChangePercent isLabel={true} value={cellProps.cell.value} />
-									)}
-								</NullableCell>
-							),
+							Cell: (cellProps: CellProps<MarketPair, MarketPair['rates24hChange']>) =>
+								cellProps.cell.value == null ? (
+									<span>{EMPTY_VALUE}</span>
+								) : (
+									<ChangePercent isLabel={true} value={cellProps.cell.value} />
+								),
 							width: 150,
 							sortable: true,
 						},
@@ -83,11 +83,10 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('markets.table.24h-low-col')}</>,
 							accessor: 'rates24hLow',
 							sortType: 'basic',
-							Cell: (cellProps: CellProps<MarketPair>) => (
+							Cell: (cellProps: CellProps<MarketPair, MarketPair['rates24hLow']>) => (
 								<CurrencyCol
-									currencyKey={cellProps.row.original.quoteCurrencyKey}
-									synthsMap={synthsMap}
-									cellProps={cellProps}
+									sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
+									value={cellProps.cell.value}
 								/>
 							),
 							width: 150,
@@ -97,11 +96,10 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('markets.table.24h-high-col')}</>,
 							accessor: 'rates24hHigh',
 							sortType: 'basic',
-							Cell: (cellProps: CellProps<MarketPair>) => (
+							Cell: (cellProps: CellProps<MarketPair, MarketPair['rates24hHigh']>) => (
 								<CurrencyCol
-									currencyKey={cellProps.row.original.quoteCurrencyKey}
-									synthsMap={synthsMap}
-									cellProps={cellProps}
+									sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
+									value={cellProps.cell.value}
 								/>
 							),
 							width: 150,
@@ -111,12 +109,8 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('markets.table.24h-volume-col')}</>,
 							accessor: 'rates24hVol',
 							sortType: 'basic',
-							Cell: (cellProps: CellProps<MarketPair>) => (
-								<CurrencyCol
-									currencyKey={cellProps.row.original.quoteCurrencyKey}
-									synthsMap={synthsMap}
-									cellProps={cellProps}
-								/>
+							Cell: (cellProps: CellProps<MarketPair, MarketPair['rates24hVol']>) => (
+								<CurrencyCol sign={synthsMap[SYNTHS_MAP.sUSD]?.sign} value={cellProps.cell.value} />
 							),
 							width: 150,
 							sortable: true,

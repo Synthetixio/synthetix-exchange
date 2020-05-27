@@ -86,9 +86,8 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 									>
 								) => (
 									<CurrencyCol
-										currencyKey={SYNTHS_MAP.sUSD}
-										synthsMap={synthsMap}
-										cellProps={cellProps}
+										sign={synthsMap[SYNTHS_MAP.sUSD]?.sign}
+										value={cellProps.cell.value}
 									/>
 								),
 								width: 100,
