@@ -23,7 +23,7 @@ import useInterval from 'shared/hooks/useInterval';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button, ButtonFilterWithDropdown } from 'components/Button';
-import { FlexDivRow, AssetSearchInput } from 'shared/commonStyles';
+import { FlexDivRow, AssetSearchInput, NoResultsMessage } from 'shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
@@ -222,10 +222,6 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
 	padding: 0 70px;
-`;
-
-const NoResultsMessage = styled.div`
-	padding: 18px;
 `;
 
 const mapStateToProps = (state: RootState, ownProps: Props): StateProps => ({

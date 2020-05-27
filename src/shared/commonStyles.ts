@@ -275,3 +275,7 @@ export const AssetSearchInput = styled(SearchInput)`
 		width: 100%;
 	`}
 `;
+
+export const NoResultsMessage = styled.div`
+	padding: 18px;
+`;

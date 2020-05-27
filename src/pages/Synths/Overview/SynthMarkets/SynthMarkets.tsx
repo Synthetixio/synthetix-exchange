@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 import orderBy from 'lodash/orderBy';
@@ -20,7 +20,7 @@ import ROUTES, { navigateTo } from 'constants/routes';
 
 import useInterval from 'shared/hooks/useInterval';
 import { media } from 'shared/media';
-import { GridDivCenteredCol, AssetSearchInput } from 'shared/commonStyles';
+import { GridDivCenteredCol, AssetSearchInput, NoResultsMessage } from 'shared/commonStyles';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button } from 'components/Button';
@@ -133,6 +133,17 @@ export const SynthMarkets: FC<MarketSectionProps> = ({
 			<MarketsTable
 				markets={showTopRanking && !topRankingDisabled ? topMarkets : filteredMarkets}
 				marketsLoaded={marketsLoaded}
+				noResultsMessage={
+					assetSearch && filteredMarkets.length === 0 ? (
+						<NoResultsMessage>
+							<Trans
+								i18nKey="common.search-results.no-results-for-query"
+								values={{ searchQuery: assetSearch }}
+								components={[<strong />]}
+							/>
+						</NoResultsMessage>
+					) : undefined
+				}
 			/>
 			<ButtonContainer>
 				<StyledButton palette="outline" onClick={() => navigateTo(ROUTES.Synths.Home, false, true)}>

@@ -21,7 +21,7 @@ import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
 import { Z_INDEX, SEARCH_DEBOUNCE_MS } from 'constants/ui';
-import { FlexDivRow, AssetSearchInput } from 'shared/commonStyles';
+import { FlexDivRow, AssetSearchInput, NoResultsMessage } from 'shared/commonStyles';
 
 import { Button } from 'components/Button';
 
@@ -160,10 +160,6 @@ const SynthsTableContainer = styled.div`
 const Content = styled.div`
 	max-width: ${breakpoint.large}px;
 	margin: 0 auto;
-`;
-
-const NoResultsMessage = styled.div`
-	padding: 18px;
 `;
 
 const CategoryFilters = styled.div`
