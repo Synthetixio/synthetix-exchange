@@ -19,7 +19,7 @@ import { bodyMediumCSS } from 'components/Typography/Body';
 import { subtitleLargeCSS } from 'components/Typography/Heading';
 
 import { getNetworkId } from 'ducks/wallet/walletDetails';
-import { getEtherscanAddressLink } from 'utils/explorers';
+import { getEtherscanTokenLink } from 'utils/explorers';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -121,7 +121,7 @@ export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, synthsMap, networkId
 							<td>
 								<StyledLink
 									isExternal={true}
-									to={getEtherscanAddressLink(networkId, contractAddress)}
+									to={getEtherscanTokenLink(networkId, contractAddress)}
 								>
 									{contractAddress}
 								</StyledLink>
