@@ -1,14 +1,16 @@
 import React, { memo, FC } from 'react';
+import { Switch, Route } from 'react-router-dom';
 
-import NewUserPromo from 'pages/shared/components/NewUserPromo';
-import SynthsSection from './SynthsSection';
-import Hero from './Hero';
+import Home from './Home';
+import Overview from './Overview';
+import ROUTES from 'constants/routes';
 
 export const Synths: FC = memo(() => (
 	<>
-		<Hero />
-		<SynthsSection />
-		<NewUserPromo />
+		<Switch>
+			<Route exact path={ROUTES.Synths.OverviewMatch} component={Overview} />
+			<Route component={Home} />
+		</Switch>
 	</>
 ));
 

@@ -2,7 +2,8 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingMedium, BodyLarge } from 'components/Typography';
+import { HeadingMedium } from 'components/Typography';
+import { bodyLargeCSS } from 'components/Typography/Body';
 import { dataLargeCSS } from 'components/Typography/Data';
 import Link from 'components/Link';
 
@@ -81,7 +82,8 @@ const Title = styled(HeadingMedium)`
 	margin-bottom: 16px;
 `;
 
-const Subtitle = styled(BodyLarge)`
+const Subtitle = styled.span`
+	${bodyLargeCSS};
 	color: ${lightTheme.colors.fontPrimary};
 `;
 

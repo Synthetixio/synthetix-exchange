@@ -21,9 +21,8 @@ import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
 import { Z_INDEX, SEARCH_DEBOUNCE_MS } from 'constants/ui';
-import { FlexDivRow } from 'shared/commonStyles';
+import { FlexDivRow, AssetSearchInput } from 'shared/commonStyles';
 
-import { SearchInput } from 'components/Input';
 import { Button } from 'components/Button';
 
 import SynthsTable from './SynthsTable';
@@ -122,8 +121,7 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 								))}
 							</CategoryFilters>
 							<AssetSearchInput
-								// @ts-ignore
-								onChange={(e: any) => setAssetSearch(e.target.value)}
+								onChange={(e) => setAssetSearch(e.target.value)}
 								value={assetSearch}
 							/>
 						</FiltersRow>
@@ -192,13 +190,6 @@ const FiltersRow = styled(FlexDivRow)`
 		    flex-basis: 100%;
 		`}
 	}
-`;
-
-const AssetSearchInput = styled(SearchInput)`
-	width: 240px;
-	${media.small`
-		width: 100%;
-	`}
 `;
 
 const SynthsChartsContent = styled(Content)`

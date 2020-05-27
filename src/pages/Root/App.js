@@ -4,8 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import history from '../../utils/history';
-
 import { ROUTES } from '../../constants/routes';
 
 import { getCurrentTheme } from '../../ducks/ui';
@@ -33,7 +31,7 @@ const App = ({ isAppReady, currentTheme }) => {
 
 	return (
 		<ThemeProvider theme={themeStyle}>
-			<Router history={history}>
+			<Router>
 				{isAppReady && (
 					<>
 						<GlobalEventsGate />

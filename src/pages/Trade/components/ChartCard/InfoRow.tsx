@@ -1,21 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { SYNTHS_MAP } from 'constants/currency';
 
-import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
-import { getRatesExchangeRates } from 'ducks/rates';
+import { getAvailableSynthsMap, SynthDefinitionMap, SynthPair } from 'ducks/synths';
+import { getRatesExchangeRates, Rates } from 'ducks/rates';
+import { RootState } from 'ducks/types';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue } from 'shared/commonStyles';
 import { formatCurrencyWithPrecision, formatCurrencyWithSign } from 'utils/formatters';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 import ChangePercent from 'components/ChangePercent';
+import { ChartData } from './types';
 
-const InfoRow = ({
-	data: { low24H, high24H, change24H, volume24H },
+type StateProps = {
+	exchangeRates: Rates | null;
+	synthsMap: SynthDefinitionMap;
+};
+
+type Props = {
+	synthPair: SynthPair;
+	data: ChartData;
+	volume24H: number;
+};
+
+type InfoRowProps = StateProps & Props;
+
+const InfoRow: FC<InfoRowProps> = ({
+	data: { low24H, high24H, change24H },
+	volume24H,
 	exchangeRates,
 	synthPair: { base, quote },
 	synthsMap,
@@ -23,8 +39,8 @@ const InfoRow = ({
 	const { t } = useTranslation();
 	const rate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name) || 0;
 	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
-	const [prevRate, setPrevRate] = useState(rate);
-	const [rateChange, setRateChange] = useState(0);
+	const [prevRate, setPrevRate] = useState<number>(rate);
+	const [rateChange, setRateChange] = useState<number>(0);
 
 	useEffect(() => {
 		if (rate > 0 && prevRate > 0) {
@@ -64,6 +80,7 @@ const InfoRow = ({
 			value: formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, volume24H),
 		},
 	];
+
 	return (
 		<RowContainer>
 			<InfoBox>
@@ -89,10 +106,9 @@ const RowContainer = styled.div`
 	grid-auto-flow: column;
 `;
 
-const mapStateToProps = (state) => ({
-	synthPair: getSynthPair(state),
+const mapStateToProps = (state: RootState): StateProps => ({
 	exchangeRates: getRatesExchangeRates(state),
 	synthsMap: getAvailableSynthsMap(state),
 });
 
-export default connect(mapStateToProps, null)(InfoRow);
+export default connect(mapStateToProps)(InfoRow);

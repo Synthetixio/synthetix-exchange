@@ -57,7 +57,17 @@ import { ReactComponent as sCHFIcon } from '@synthetixio/assets/synths/sCHF.svg'
 export type CurrencyKey = string;
 export type CurrencyKeys = string[];
 
-export const CATEGORY = ['crypto', 'forex', 'equities', 'index', 'commodity', 'inverse'];
+// TODO: standardize this
+export type Category = 'crypto' | 'forex' | 'equities' | 'index' | 'commodity' | 'inverse';
+
+export const CATEGORY: Category[] = [
+	'crypto',
+	'forex',
+	'equities',
+	'index',
+	'commodity',
+	'inverse',
+];
 export const CATEGORY_MAP = keyBy(CATEGORY);
 
 export const SYNTHS = [
@@ -204,6 +214,10 @@ export const isFiatCurrency = (currencyKey: CurrencyKey) => !!FIAT_CURRENCY_MAP[
 export const toMarketPair = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
 	`${baseCurrencyKey}-${quoteCurrencyKey}`;
 
+// TODO: replace this with a more robust logic (like checking the asset field)
+export const toInverseSynth = (currencyKey: CurrencyKey) => currencyKey.replace(/^s/i, 'i');
+export const toStandardSynth = (currencyKey: CurrencyKey) => currencyKey.replace(/^i/i, 's');
+
 export const FIAT_SYNTHS = [
 	SYNTHS_MAP.sEUR,
 	SYNTHS_MAP.sJPY,
@@ -242,12 +256,14 @@ export const getAvailableMarketNames = memoizeOne(() => {
 	return marketNames;
 });
 
-export const getFilteredMarketNames = memoizeOne((quoteCurrencyKey: CurrencyKey) =>
-	getAvailableMarketNames().filter((marketName) => marketName.quoteCurrencyKey === quoteCurrencyKey)
+export const getFilteredMarketNames = memoizeOne(
+	(currencyKey: CurrencyKey, type: 'base' | 'quote') =>
+		getAvailableMarketNames().filter((marketName) =>
+			type === 'base'
+				? marketName.baseCurrencyKey === currencyKey
+				: marketName.quoteCurrencyKey === currencyKey
+		)
 );
-
-// sBTC / sUSD
-// sUSD / sBTC
 
 export const getMarketPairByMC = memoizeOne(
 	(baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) => {

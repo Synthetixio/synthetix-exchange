@@ -39,6 +39,7 @@ import BaseTradingPairs from 'components/BaseTradingPairs';
 
 import { BigNumberish } from 'ethers/utils';
 import { LINKS } from 'constants/links';
+import { navigateToSynthOverview } from 'constants/routes';
 
 type SynthWalletBalance = {
 	balance: number;
@@ -163,11 +164,13 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 
 										return (
 											<ActionsCol>
-												<Link to={LINKS.Tokens} isExternal={true}>
-													<Button palette="primary" size="xs" disabled={true}>
-														{t('common.actions.info')}
-													</Button>
-												</Link>
+												<Button
+													palette="primary"
+													size="xs"
+													onClick={() => navigateToSynthOverview(currencyKey)}
+												>
+													{t('common.actions.info')}
+												</Button>
 												<Button
 													palette="primary"
 													size="xs"

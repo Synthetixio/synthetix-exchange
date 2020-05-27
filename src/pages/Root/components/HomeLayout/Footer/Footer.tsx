@@ -1,8 +1,8 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { bodyMediumCSS, bodyMediumSecondaryCSS } from 'components/Typography/Body';
+import { bodyMediumCSS } from 'components/Typography/Body';
 import Link from 'components/Link';
 
 import { breakpoint, media } from 'shared/media';
@@ -111,7 +111,7 @@ const MISC_LINKS = [
 	},
 ];
 
-export const Footer = memo(() => {
+export const Footer: FC = memo(() => {
 	const { t } = useTranslation();
 
 	return (
@@ -230,7 +230,8 @@ const MenuLinkItem = styled.li`
 `;
 
 const FooterLink = styled(Link)`
-	${bodyMediumSecondaryCSS};
+	${bodyMediumCSS};
+	color: ${(props) => props.theme.colors.fontSecondary};
 	&:hover {
 		color: ${(props) => props.theme.colors.white};
 	}

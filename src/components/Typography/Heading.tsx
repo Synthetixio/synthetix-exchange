@@ -6,6 +6,13 @@ const headingCSS = css`
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
+export const headingH4CSS = css`
+	font-family: ${(props) => props.theme.fonts.medium};
+	font-size: 24px;
+	line-height: 29px;
+	letter-spacing: 0.2px;
+`;
+
 export const headingH5CSS = css`
 	font-family: ${(props) => props.theme.fonts.medium};
 	font-size: 20px;
@@ -51,4 +58,10 @@ export const HeadingSmall = styled.h3`
 	${headingSmallCSS};
 	margin: 0;
 	${typography}
+`;
+
+export const subtitleLargeCSS = css`
+	font-family: ${(props) => props.theme.fonts.regular};
+	font-size: 24px;
+	letter-spacing: 0.2px;
 `;

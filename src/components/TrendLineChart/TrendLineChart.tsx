@@ -1,8 +1,9 @@
 import React, { FC, memo, useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from 'recharts';
+import { LineChart, Line, XAxis, YAxis } from 'recharts';
 
 import { RateUpdates } from 'constants/rates';
+import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
 
 type TrendLineChartProps = {
 	change: number;
@@ -17,8 +18,7 @@ export const TrendLineChart: FC<TrendLineChartProps> = memo(
 
 		return (
 			<Container onClick={onClick} className={className}>
-				{/* https://github.com/recharts/recharts/issues/1423 */}
-				<ResponsiveContainer width="99%" height="100%">
+				<RechartsResponsiveContainer width="100%" height="100%">
 					<LineChart data={chartData}>
 						<XAxis dataKey="timestamp" hide={true} />
 						<YAxis type="number" domain={['auto', 'auto']} hide={true} />
@@ -31,7 +31,7 @@ export const TrendLineChart: FC<TrendLineChartProps> = memo(
 							isAnimationActive={false}
 						/>
 					</LineChart>
-				</ResponsiveContainer>
+				</RechartsResponsiveContainer>
 			</Container>
 		);
 	}

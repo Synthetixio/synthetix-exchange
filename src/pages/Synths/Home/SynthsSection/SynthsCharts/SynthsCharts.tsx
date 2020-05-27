@@ -8,7 +8,7 @@ import { getAvailableSynthsMap, SynthDefinitionWithRates, SynthDefinitionMap } f
 
 import ChartCard from 'components/ChartCard/ChartCard';
 
-import { navigateToTrade } from 'constants/routes';
+import { navigateToSynthOverview } from 'constants/routes';
 
 import { media } from 'shared/media';
 
@@ -51,7 +51,7 @@ export const SynthsCharts: FC<SynthsCharts> = memo(
 					}
 					change={change}
 					chartData={chartData || []}
-					onClick={() => navigateToTrade(name, SYNTHS_MAP.sUSD)}
+					onClick={() => navigateToSynthOverview(name)}
 					variableGradient={true}
 					labelPosition="down"
 				/>
@@ -64,11 +64,11 @@ export const SynthsCharts: FC<SynthsCharts> = memo(
 		return (
 			<GridContainer>
 				<GridItem>
-					<Gainers>{t('synths.charts.biggest-gainers-24h')}</Gainers>
+					<Gainers>{t('synths.home.charts.biggest-gainers-24h')}</Gainers>
 					<Charts>{gainers}</Charts>
 				</GridItem>
 				<GridItem>
-					<Losers>{t('synths.charts.biggest-losers-24h')}</Losers>
+					<Losers>{t('synths.home.charts.biggest-losers-24h')}</Losers>
 					<Charts>{losers}</Charts>
 				</GridItem>
 			</GridContainer>

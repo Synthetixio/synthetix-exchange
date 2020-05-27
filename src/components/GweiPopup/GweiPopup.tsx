@@ -20,7 +20,8 @@ import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg'
 
 import { fadeInAnimation, fadeOutAnimation } from 'shared/commonStyles';
 
-import { HeadingMedium, BodyMedium, DataSmall } from '../Typography';
+import { HeadingMedium, DataSmall } from '../Typography';
+import { bodyMediumCSS } from '../Typography/Body';
 import Slider from '../Slider';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../deprecated/Table';
@@ -200,6 +201,11 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 		);
 	}
 );
+
+const BodyMedium = styled.span`
+	${bodyMediumCSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
 
 const Popup = styled.div<{ isVisible?: boolean }>`
 	z-index: ${Z_INDEX.MODAL};

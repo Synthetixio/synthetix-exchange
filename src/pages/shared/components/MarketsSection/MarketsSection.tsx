@@ -1,33 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
-import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import { Z_INDEX } from 'constants/ui';
+import { Z_INDEX, DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 import { breakpoint, media } from 'shared/media';
 
-import { getIsLoadedFilteredMarkets, fetchMarketsRequest, getOrderedMarkets } from 'ducks/markets';
+import {
+	getIsLoadedFilteredMarkets,
+	fetchMarketsRequest,
+	getOrderedMarkets,
+	MarketPairs,
+} from 'ducks/markets';
 
 import { getMarketsAssetFilter, setMarketsAssetFilter } from 'ducks/ui';
 
 import { lightTheme } from 'styles/theme';
 
-import { getFilteredMarketNames, FIAT_SYNTHS } from 'constants/currency';
+import { getFilteredMarketNames, FIAT_SYNTHS, CurrencyKey } from 'constants/currency';
 import { SEARCH_DEBOUNCE_MS } from 'constants/ui';
 import { navigateTo, ROUTES } from 'constants/routes';
 import useInterval from 'shared/hooks/useInterval';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button, ButtonFilterWithDropdown } from 'components/Button';
-import { SearchInput } from 'components/Input';
-import { FlexDivRow } from 'shared/commonStyles';
+import { FlexDivRow, AssetSearchInput } from 'shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
 
-import { ASSET_FILTERS, MARKETS_REFRESH_INTERVAL_MS } from './constants';
+import { ASSET_FILTERS } from './constants';
+import { RootState } from 'ducks/types';
 
-export const MarketsSection = ({
+type StateProps = {
+	markets: MarketPairs;
+	marketsLoaded: boolean;
+	marketsAssetFilter: CurrencyKey;
+};
+
+type Props = {
+	isOnSplashPage?: boolean;
+};
+
+type DispatchProps = {
+	fetchMarketsRequest: typeof fetchMarketsRequest;
+	setMarketsAssetFilter: typeof setMarketsAssetFilter;
+};
+
+type MarketSectionProps = StateProps & DispatchProps & Props;
+
+export const MarketsSection: FC<MarketSectionProps> = ({
 	fetchMarketsRequest,
 	markets,
 	marketsLoaded,
@@ -35,9 +56,9 @@ export const MarketsSection = ({
 	setMarketsAssetFilter,
 	isOnSplashPage,
 }) => {
-	const marketPairs = getFilteredMarketNames(marketsAssetFilter);
+	const marketPairs = getFilteredMarketNames(marketsAssetFilter, 'quote');
 
-	const [assetSearch, setAssetSearch] = useState('');
+	const [assetSearch, setAssetSearch] = useState<string>('');
 
 	const { t } = useTranslation();
 
@@ -47,7 +68,7 @@ export const MarketsSection = ({
 
 	useInterval(() => {
 		fetchMarketsRequest({ pairs: marketPairs });
-	}, MARKETS_REFRESH_INTERVAL_MS);
+	}, DEFAULT_REQUEST_REFRESH_INTERVAL);
 
 	const filteredMarkets = useDebouncedMemo(
 		() =>
@@ -80,7 +101,9 @@ export const MarketsSection = ({
 							))}
 							<StyledButtonFilterWithDropdown
 								quote={marketsAssetFilter}
-								onClick={(synth) => setMarketsAssetFilter({ marketsAssetFilter: synth.name })}
+								onClick={(synth: { name: CurrencyKey }) =>
+									setMarketsAssetFilter({ marketsAssetFilter: synth.name })
+								}
 								synths={FIAT_SYNTHS.map((currency) => ({ name: currency }))}
 							>
 								{t('common.currency.fiat-synths')}
@@ -126,14 +149,6 @@ export const MarketsSection = ({
 	);
 };
 
-MarketsSection.propTypes = {
-	synthsMap: PropTypes.object,
-	fetchMarketsRequest: PropTypes.func.isRequired,
-	marketsLoaded: PropTypes.bool.isRequired,
-	markets: PropTypes.array.isRequired,
-	isOnSplashPage: PropTypes.bool,
-};
-
 const AssetFilters = styled.div`
 	display: inline-grid;
 	grid-auto-flow: column;
@@ -167,13 +182,6 @@ const StyledButtonFilterWithDropdown = styled(ButtonFilterWithDropdown)`
 	span {
 		font-size: 14px;
 	}
-`;
-
-const AssetSearchInput = styled(SearchInput)`
-	width: 240px;
-	${media.small`
-		width: 100%;
-	`}
 `;
 
 const MarketsTableContainer = styled.div`
@@ -220,7 +228,7 @@ const NoResultsMessage = styled.div`
 	padding: 18px;
 `;
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state: RootState, ownProps: Props): StateProps => ({
 	markets: ownProps.isOnSplashPage
 		? getOrderedMarkets(state).slice(0, 10)
 		: getOrderedMarkets(state),
@@ -228,9 +236,12 @@ const mapStateToProps = (state, ownProps) => ({
 	marketsAssetFilter: getMarketsAssetFilter(state),
 });
 
-const mapDispatchToProps = {
+const mapDispatchToProps: DispatchProps = {
 	fetchMarketsRequest,
 	setMarketsAssetFilter,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MarketsSection);
+export default connect<StateProps, DispatchProps, Props, RootState>(
+	mapStateToProps,
+	mapDispatchToProps
+)(MarketsSection);

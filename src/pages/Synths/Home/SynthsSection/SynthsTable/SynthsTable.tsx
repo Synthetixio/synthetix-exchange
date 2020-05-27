@@ -23,6 +23,7 @@ import { Button } from 'components/Button';
 import { TableOverflowContainer } from 'shared/commonStyles';
 
 import BaseTradingPairs from 'components/BaseTradingPairs';
+import { navigateToSynthOverview } from 'constants/routes';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -60,7 +61,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 						palette="light-secondary"
 						columns={[
 							{
-								Header: <>{t('synths.table.synth-col')}</>,
+								Header: <>{t('synths.home.table.synth-col')}</>,
 								accessor: 'name',
 								Cell: (
 									cellProps: CellProps<SynthDefinitionWithRates, SynthDefinitionWithRates['name']>
@@ -75,7 +76,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								sortable: true,
 							},
 							{
-								Header: <>{t('synths.table.last-price-col')}</>,
+								Header: <>{t('synths.home.table.last-price-col')}</>,
 								accessor: 'lastPrice',
 								sortType: 'basic',
 								Cell: (
@@ -94,7 +95,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								sortable: true,
 							},
 							{
-								Header: <>{t('synths.table.24h-change-col')}</>,
+								Header: <>{t('synths.home.table.24h-change-col')}</>,
 								sortType: 'basic',
 								id: '24change-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
@@ -111,7 +112,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								width: 100,
 							},
 							{
-								Header: <>{t('synths.table.24h-trend-col')}</>,
+								Header: <>{t('synths.home.table.24h-trend-col')}</>,
 								id: '24trend-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
 									const data = cellProps.row.original.historicalRates?.ONE_DAY?.data;
@@ -128,13 +129,14 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								width: 150,
 							},
 							{
-								Header: <>{t('synths.table.trade-now-col')}</>,
+								Header: <>{t('synths.home.table.trade-now-col')}</>,
 								id: 'trade-col',
 								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => (
 									<Button
 										size="sm"
 										palette="outline"
 										onClick={(e) => {
+											e.stopPropagation();
 											handleTradeButtonClick(e);
 											setSelectedSynth(cellProps.row.original.name);
 										}}
@@ -147,6 +149,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 						columnsDeps={[synthsMap]}
 						data={synthsWithRates}
 						noResultsMessage={noResultsMessage}
+						onTableRowClick={(row) => navigateToSynthOverview(row.original.name)}
 					/>
 				</TableOverflowContainer>
 				<StyledPopover
@@ -185,9 +188,6 @@ const StyledTable = styled(Table)`
 	.table-body-row {
 		& > :last-child {
 			justify-content: flex-end;
-		}
-		&:hover {
-			box-shadow: none;
 		}
 	}
 `;

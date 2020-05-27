@@ -1,6 +1,6 @@
 import React, { FC, useMemo, DependencyList } from 'react';
 import styled, { css } from 'styled-components';
-import { useTable, useFlexLayout, useSortBy, Column, Row, TableOptions } from 'react-table';
+import { useTable, useFlexLayout, useSortBy, Column, Row } from 'react-table';
 
 import { CARD_HEIGHT } from 'constants/ui';
 
@@ -25,7 +25,7 @@ type TableProps = {
 	data: object[];
 	columns: ColumnWithSorting<object>[];
 	columnsDeps?: DependencyList;
-	options?: TableOptions<object>;
+	options?: any;
 	onTableRowClick?: (row: Row<any>) => void;
 	className?: string;
 	isLoading?: boolean;
@@ -89,7 +89,7 @@ export const Table: FC<TableProps> = ({
 			{noResultsMessage != null ? (
 				noResultsMessage
 			) : isLoading ? (
-				<Spinner size="sm" fullscreen={true} />
+				<Spinner size="sm" centered={true} />
 			) : (
 				<TableBody className="table-body" {...getTableBodyProps()}>
 					{rows.map((row) => {

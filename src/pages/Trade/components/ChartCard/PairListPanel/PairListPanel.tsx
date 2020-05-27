@@ -218,7 +218,7 @@ const mapDispatchToProps: DispatchProps = {
 	setBlurBackgroundIsVisible,
 };
 
-export default connect<StateProps, DispatchProps, undefined, RootState>(
+export default connect<StateProps, DispatchProps, {}, RootState>(
 	mapStateToProps,
 	mapDispatchToProps
 )(PairListPanel);

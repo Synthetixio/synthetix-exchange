@@ -11,5 +11,3 @@ export const ASSET_FILTERS = [
 		asset: SYNTHS_MAP.sETH,
 	},
 ];
-
-export const MARKETS_REFRESH_INTERVAL_MS = 30000;
