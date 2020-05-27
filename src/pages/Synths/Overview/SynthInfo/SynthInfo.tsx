@@ -125,7 +125,6 @@ export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, synthsMap, networkId
 								>
 									{contractAddress}
 								</StyledLink>
-								)
 							</td>
 						</TableRowBody>
 					</tbody>
