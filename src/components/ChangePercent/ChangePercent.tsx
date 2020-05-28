@@ -36,6 +36,7 @@ const Container = styled.span<{ isLabel: boolean; isPositive: boolean; labelSize
 					border-radius: 1px;
 					color: ${(props) => props.theme.colors.white};
 					padding: 4px 8px;
+					text-align: center;
 					${(props) =>
 						// @ts-ignore
 						props.labelSize === 'sm' &&

@@ -17,6 +17,8 @@ export type HistoricalTrade = {
 	toAmountInUSD: number;
 	toCurrencyKey: CurrencyKey;
 	toCurrencyKeyBytes: string;
+	price: number;
+	amount: number;
 };
 
 export type HistoricalTrades = HistoricalTrade[];

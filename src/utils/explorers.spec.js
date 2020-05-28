@@ -1,4 +1,4 @@
-import { getEtherscanTxLink, getEtherscanAddressLink } from './explorers';
+import { getEtherscanTxLink, getEtherscanAddressLink, getEtherscanTokenLink } from './explorers';
 
 describe('Explorers', () => {
 	describe('Etherscan', () => {
@@ -14,6 +14,9 @@ describe('Explorers', () => {
 			expect(getEtherscanAddressLink(networkId, address)).toEqual(
 				'https://etherscan.io/address/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
 			);
+			expect(getEtherscanTokenLink(networkId, address)).toEqual(
+				'https://etherscan.io/token/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
+			);
 		});
 
 		it('returns the correct etherscan links for ROPSTEN', () => {
@@ -24,6 +27,9 @@ describe('Explorers', () => {
 			);
 			expect(getEtherscanAddressLink(networkId, address)).toEqual(
 				'https://ropsten.etherscan.io/address/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
+			);
+			expect(getEtherscanTokenLink(networkId, address)).toEqual(
+				'https://ropsten.etherscan.io/token/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
 			);
 		});
 
@@ -36,6 +42,9 @@ describe('Explorers', () => {
 			expect(getEtherscanAddressLink(networkId, address)).toEqual(
 				'https://rinkeby.etherscan.io/address/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
 			);
+			expect(getEtherscanTokenLink(networkId, address)).toEqual(
+				'https://rinkeby.etherscan.io/token/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
+			);
 		});
 
 		it('returns the correct etherscan links for KOVAN', () => {
@@ -47,6 +56,9 @@ describe('Explorers', () => {
 			expect(getEtherscanAddressLink(networkId, address)).toEqual(
 				'https://kovan.etherscan.io/address/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
 			);
+			expect(getEtherscanTokenLink(networkId, address)).toEqual(
+				'https://kovan.etherscan.io/token/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
+			);
 		});
 
 		it('returns MAINNET if the network is invalid', () => {
@@ -57,6 +69,9 @@ describe('Explorers', () => {
 			);
 			expect(getEtherscanAddressLink(networkId, address)).toEqual(
 				'https://etherscan.io/address/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
+			);
+			expect(getEtherscanTokenLink(networkId, address)).toEqual(
+				'https://etherscan.io/token/0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4'
 			);
 		});
 	});

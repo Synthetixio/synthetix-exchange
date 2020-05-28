@@ -124,19 +124,44 @@
 		}
 	},
 	"synths": {
-		"hero": {
-			"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
+		"home": {
+			"hero": {
+				"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
+			},
+			"table": {
+				"synth-col": "synth",
+				"last-price-col": "last price",
+				"24h-change-col": "24hr change",
+				"24h-trend-col": "24h trend",
+				"trade-now-col": "trade now"
+			},
+			"charts": {
+				"biggest-gainers-24h": "biggest gainers (24h)",
+				"biggest-losers-24h": "biggest losers (24h)"
+			}
 		},
-		"table": {
-			"synth-col": "synth",
-			"last-price-col": "last price",
-			"24h-change-col": "24hr change",
-			"24h-trend-col": "24h trend",
-			"trade-now-col": "trade now"
-		},
-		"charts": {
-			"biggest-gainers-24h": "biggest gainers (24h)",
-			"biggest-losers-24h": "biggest losers (24h)"
+		"overview": {
+			"chart": {
+				"back-to-synths": "Back to Synths",
+				"toggle": {
+					"standard": "standard",
+					"inverse": "inverse"
+				}
+			},
+			"synth-markets": {
+				"title": "Explore {{currencyKey}} markets:",
+				"back-button-label": "back to all synths",
+				"top-rank-synth-tooltip": "Based on 24HR volume. Click on a pair to trade."
+			},
+			"info": {
+				"title": "{{name}} | <0>{{desc}}</0>",
+				"sUSD": "Tracks the price of a single US Dollar (USD). This Synth always remains constant at 1.",
+				"iSynth": "Inversely tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. The entry point is {{entryPoint}} (the approximate market price at time of creation). This Synth freezes when it reaches its upper limit of {{upperLimit}} (i.e. when {{assetDesc}}'s value reaches {{roundedUpper}} or its lower limit of {{lowerLimit}} (i.e. when {{assetDesc}}’s value reaches {{roundedLower}}. If it reaches either of its limits and gets frozen, it will no longer be able to be purchased on Synthetix.Exchange, but can still be traded for other Synths at its frozen value. At some point after it has reached either of its limits, it will be substituted for another {{synthName}} with different limits.",
+				"index": "Tracks the price of the index: {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. This index is made up of the following assets and weights: {{assets}}.",
+				"units-of-symbol-name": "{{units}} of {{symbol}} ({{name}})",
+				"units-of-symbol": "{{units}} of {{symbol}}",
+				"generic": "Tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle."
+			}
 		}
 	},
 	"exchange": {
@@ -366,7 +391,12 @@
 			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
 			"borrow-currency": "Borrow {{currencyKey}}",
 			"synthetic-currency": "Synthetic {{currencyKey}}",
-			"fiat-synths": "sFiat"			
+			"fiat-synths": "sFiat",
+			"decimals": "decimals",
+			"contract-address": "contract address",
+			"lower-limit": "lower limit",
+			"upper-limit": "upper limit",
+			"entry": "entry"
 		},
 		"currency-category": {
 			"crypto": "crypto",
@@ -401,6 +431,14 @@
 			"page-number": "Page {{pageNumber}}"
 		},
 		"buy": "buy",
-		"sell": "sell"
+		"sell": "sell",
+		"chart-periods": {
+			"1H": "1H",
+			"4H": "4H",
+			"1D": "1D",
+			"1W": "1W",
+			"1M": "1M"
+		},
+		"top-number": "top {{number}}"
 	}
 }

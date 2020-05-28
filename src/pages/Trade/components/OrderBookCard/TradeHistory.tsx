@@ -9,13 +9,12 @@ import { getAvailableSynthsMap, SynthDefinition } from 'ducks/synths';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 
 import { SYNTHS_MAP } from 'constants/currency';
 
 import { RootState } from 'ducks/types';
-import { HistoricalTrades } from 'ducks/trades/types';
+import { HistoricalTrade, HistoricalTrades } from 'ducks/trades/types';
 
 import { TableNoResults } from 'shared/commonStyles';
 import ViewLink, { ArrowIcon } from './ViewLink';
@@ -28,8 +27,8 @@ import {
 	formatTxTimestamp,
 	formatCurrency,
 	formatCurrencyWithSign,
-	formatCurrencyPair,
 } from 'utils/formatters';
+import { CellProps } from 'react-table';
 
 type StateProps = {
 	networkId: string | number;
@@ -54,19 +53,20 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 	const { t } = useTranslation();
 
 	return (
-		<StyledTable<any>
-			palette={TABLE_PALETTE.STRIPED}
+		<StyledTable
+			palette="striped"
 			columns={[
 				{
-					Header: t('assets.exchanges.table.date-time-col'),
+					Header: <>{t('assets.exchanges.table.date-time-col')}</>,
 					accessor: 'timestamp',
-					Cell: (cellProps: any) => formatTxTimestamp(cellProps.cell.value),
+					Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['timestamp']>) =>
+						formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
 				{
-					Header: t('assets.exchanges.table.pair-col'),
-					accessor: (d: any) => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
-					Cell: (cellProps: any) => {
+					Header: <>{t('assets.exchanges.table.pair-col')}</>,
+					id: 'trade-pair',
+					Cell: (cellProps: CellProps<HistoricalTrade>) => {
 						const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
 						return (
@@ -75,10 +75,10 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					},
 				},
 				{
-					Header: t('assets.exchanges.table.buying-col'),
+					Header: <>{t('assets.exchanges.table.buying-col')}</>,
 					accessor: 'toAmount',
 					sortType: 'basic',
-					Cell: (cellProps: any) => (
+					Cell: (cellProps: CellProps<HistoricalTrade>) => (
 						<Tooltip
 							title={formatCurrency(cellProps.row.original.toAmount, LONG_CRYPTO_CURRENCY_DECIMALS)}
 							placement="top"
@@ -95,10 +95,10 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					sortable: true,
 				},
 				{
-					Header: t('assets.exchanges.table.selling-col'),
+					Header: <>{t('assets.exchanges.table.selling-col')}</>,
 					accessor: 'fromAmount',
 					sortType: 'basic',
-					Cell: (cellProps: any) => (
+					Cell: (cellProps: CellProps<HistoricalTrade>) => (
 						<Tooltip
 							title={formatCurrency(
 								cellProps.row.original.fromAmount,
@@ -118,10 +118,10 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					sortable: true,
 				},
 				{
-					Header: t('assets.exchanges.table.price-col'),
+					Header: <>{t('assets.exchanges.table.price-col')}</>,
 					accessor: 'price',
 					sortType: 'basic',
-					Cell: (cellProps: any) => (
+					Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['price']>) => (
 						<span>
 							{formatCurrencyWithSign(
 								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -132,10 +132,10 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					sortable: true,
 				},
 				{
-					Header: t('assets.exchanges.table.total-col'),
+					Header: <>{t('assets.exchanges.table.total-col')}</>,
 					accessor: 'amount',
 					sortType: 'basic',
-					Cell: (cellProps: any) => (
+					Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['amount']>) => (
 						<span>
 							{formatCurrencyWithSign(
 								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
@@ -146,15 +146,15 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					sortable: true,
 				},
 				{
-					Header: t('assets.exchanges.table.status-col'),
+					Header: <>{t('assets.exchanges.table.status-col')}</>,
 					accessor: 'status',
 					Cell: () => t('common.tx-status.complete'),
 					sortable: true,
 				},
 				{
-					Header: t('assets.exchanges.table.verify-col'),
+					Header: <>{t('assets.exchanges.table.verify-col')}</>,
 					accessor: 'actions',
-					Cell: (cellProps: any) => (
+					Cell: (cellProps: CellProps<HistoricalTrade>) => (
 						<ViewLink
 							isDisabled={!cellProps.row.original.hash}
 							href={getEtherscanTxLink(networkId, cellProps.row.original.hash)}

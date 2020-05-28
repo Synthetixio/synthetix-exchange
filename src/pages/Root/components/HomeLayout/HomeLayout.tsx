@@ -5,11 +5,11 @@ import { darkTheme } from 'styles/theme';
 import Footer from './Footer';
 import AppHeader from '../AppHeader';
 
-type MainLayoutProps = {
+type HomeLayoutProps = {
 	children: React.ReactNode;
 };
 
-const HomeLayout: FC<MainLayoutProps> = memo(({ children }) => (
+const HomeLayout: FC<HomeLayoutProps> = memo(({ children }) => (
 	<>
 		<GlobalStyle />
 		{/* force the app header to be in dark mode */}

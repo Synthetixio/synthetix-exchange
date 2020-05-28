@@ -18,7 +18,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, isAppReady }) => (
 		<GlobalStyle />
 		<FullScreenContainer>
 			<AppHeader />
-			{isAppReady ? children : <Spinner fullscreen={true} size="sm" />}
+			{isAppReady ? children : <Spinner centered={true} size="sm" />}
 		</FullScreenContainer>
 	</>
 );
