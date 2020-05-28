@@ -16,7 +16,7 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 import ChangePercent from 'components/ChangePercent';
 import Table from 'components/Table';
-import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
+import { CurrencyCol } from 'components/Table/common';
 
 import Currency from 'components/Currency';
 
