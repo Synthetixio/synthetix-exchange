@@ -1,4 +1,5 @@
 import React, { FC, memo } from 'react';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { CellProps, Row } from 'react-table';
@@ -15,7 +16,7 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 import ChangePercent from 'components/ChangePercent';
 import Table from 'components/Table';
-import { CurrencyCol } from 'components/Table/common';
+import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
 
 import Currency from 'components/Currency';
 
@@ -37,7 +38,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 
 		return (
 			<TableOverflowContainer>
-				<Table
+				<StyledTable
 					palette="light-secondary"
 					columns={[
 						{
@@ -133,6 +134,15 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 		);
 	}
 );
+
+const StyledTable = styled(Table)`
+	.table-row,
+	.table-body-row {
+		& > :last-child {
+			justify-content: flex-end;
+		}
+	}
+`;
 
 const mapStateToProps = (state: RootState): StateProps => ({
 	synthsMap: getAvailableSynthsMap(state),

@@ -9,6 +9,8 @@ import { CurrencyKey, toStandardSynth, toInverseSynth } from 'constants/currency
 import ROUTES, { navigateTo, navigateToSynthOverview } from 'constants/routes';
 
 import Spinner from 'components/Spinner';
+import { buttonLargeCSS } from 'components/Typography/Button';
+import { labelMediumCSS } from 'components/Typography/Label';
 
 import { breakpoint, media } from 'shared/media';
 import { resetButtonCSS, FlexDivRow } from 'shared/commonStyles';
@@ -24,7 +26,6 @@ import { lightTheme, darkTheme } from 'styles/theme';
 
 import SynthChart from './SynthChart/SynthChart';
 import SynthInfo from './SynthInfo';
-import { buttonLargeCSS } from 'components/Typography/Button';
 import SynthMarkets from './SynthMarkets';
 
 type StateProps = {
@@ -130,14 +131,14 @@ const SynthsChartsContent = styled(Content)`
 const SynthChartActions = styled(FlexDivRow)`
 	padding: 20px 0;
 	${media.large`
-		padding: 20px 10px;
+		padding: 20px 13px;
 	`}
 `;
 
 const BackLinkButton = styled.button`
 	${resetButtonCSS};
+	${labelMediumCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
-	font-size: 14px;
 	> svg {
 		margin-right: 8px;
 	}

@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-const buttonCSS = css`
+export const buttonCSS = css`
 	font-family: ${(props) => props.theme.fonts.regular};
 	letter-spacing: 0.5px;
 `;

@@ -196,12 +196,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 );
 
 const StyledTable = styled(Table)`
-	.table-row {
-		& > :last-child {
-			justify-content: flex-end;
-		}
-	}
-
+	.table-row,
 	.table-body-row {
 		& > :last-child {
 			justify-content: flex-end;

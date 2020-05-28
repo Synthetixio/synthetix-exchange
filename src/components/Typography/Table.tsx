@@ -2,6 +2,7 @@ import { css } from 'styled-components';
 
 const tableBaseCSS = css`
 	font-family: ${(props) => props.theme.fonts.regular};
+	font-weight: 400;
 	letter-spacing: 0.2px;
 `;
 

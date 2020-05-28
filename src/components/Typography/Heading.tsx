@@ -8,6 +8,7 @@ const headingCSS = css`
 
 export const headingH4CSS = css`
 	font-family: ${(props) => props.theme.fonts.medium};
+	font-weight: 400;
 	font-size: 24px;
 	line-height: 29px;
 	letter-spacing: 0.2px;
@@ -62,6 +63,7 @@ export const HeadingSmall = styled.h3`
 
 export const subtitleLargeCSS = css`
 	font-family: ${(props) => props.theme.fonts.regular};
+	font-weight: 400;
 	font-size: 24px;
 	letter-spacing: 0.2px;
 `;

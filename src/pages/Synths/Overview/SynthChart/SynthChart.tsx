@@ -95,7 +95,13 @@ export const SynthChart: FC<SynthChartProps> = memo(
 		return (
 			<StyledChartCard
 				tooltipVisible={true}
-				currencyLabel={<Currency.Name currencyKey={synth.name} showIcon={true} />}
+				currencyLabel={
+					<Currency.Name
+						currencyKey={synth.name}
+						showIcon={true}
+						iconProps={{ width: '24px', height: '24px' }}
+					/>
+				}
 				price={lastPrice != null ? formatCurrencyWithSign(synthSign, lastPrice) : null}
 				change={historicalRateChange}
 				chartData={historicalRateUpdates}
@@ -112,16 +118,29 @@ export const SynthChart: FC<SynthChartProps> = memo(
 
 const StyledChartCard = styled(ChartCard)`
 	height: 450px;
+	padding: 0;
 	${media.large`
 		border-radius: 0;
 		height: 340px;
 	`}
-	.currency-key {
-		font-size: 20px;
+	.labels-container {
+		padding: 24px 24px 0 24px;
 	}
-
-	.currency-price {
+	.chart-data {
+		padding: 0 24px 24px 24px;
+		${media.large`
+		padding: 0 0 10px 0;
+		`}
+	}
+	.currency-price,
+	.currency-key > * {
 		font-size: 24px;
+		${media.large`
+			font-size: 20px;
+		`}
+	}
+	.currency-key > * {
+		color: ${darkTheme.colors.accentL1};
 	}
 	.change-percent {
 		min-width: 60px;

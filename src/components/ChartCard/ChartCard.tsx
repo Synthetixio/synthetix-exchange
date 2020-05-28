@@ -54,7 +54,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 		yAxisVisible = false,
 	}) => {
 		const { t } = useTranslation();
-		const { colors } = useContext(ThemeContext);
+		const { colors, fonts } = useContext(ThemeContext);
 
 		let linearGradientId = 'cardChartArea';
 		let chartColor = colors.hyperlink;
@@ -68,9 +68,16 @@ export const ChartCard: FC<ChartCardProps> = memo(
 				chartColor = colors.red;
 			}
 		}
+
+		const fontStyle = {
+			fontSize: '12px',
+			fill: colors.fontTertiary,
+			fontFamily: fonts.regular,
+		};
+
 		return (
 			<Container onClick={onClick} className={className}>
-				<LabelsContainer>
+				<LabelsContainer className="labels-container">
 					{labelPosition === 'up' ? (
 						<UpperLabels>
 							<Currency className="currency-key">{currencyLabel}</Currency>
@@ -109,7 +116,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 				</LabelsContainer>
 				<ChartData className="chart-data" tooltipVisible={tooltipVisible} showLoader={showLoader}>
 					<RechartsResponsiveContainer width="100%" height="100%">
-						<AreaChart data={chartData}>
+						<AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
 							<defs>
 								<linearGradient id={linearGradientId} x1="0" y1="0" x2="0" y2="1">
 									<stop offset="5%" stopColor={chartColor} stopOpacity={0.5} />
@@ -118,7 +125,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 							</defs>
 							<XAxis
 								dataKey="timestamp"
-								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+								tick={fontStyle}
 								axisLine={false}
 								tickLine={false}
 								hide={!xAxisVisible}
@@ -132,7 +139,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 							<YAxis
 								type="number"
 								domain={['auto', 'auto']}
-								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+								tick={fontStyle}
 								orientation="right"
 								axisLine={false}
 								tickLine={false}
@@ -156,14 +163,10 @@ export const ChartCard: FC<ChartCardProps> = memo(
 									backgroundColor: colors.surfaceL1,
 								}}
 								itemStyle={{
-									color: colors.fontTertiary,
-									fontSize: '12px',
+									...fontStyle,
 									textTransform: 'capitalize',
 								}}
-								labelStyle={{
-									color: colors.fontTertiary,
-									fontSize: '12px',
-								}}
+								labelStyle={fontStyle}
 								formatter={(val: string | number) => formatCurrencyWithSign(synthSign, val)}
 								labelFormatter={(label) => format(label, 'Do MMM YY | HH:mm')}
 							/>
