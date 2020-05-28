@@ -396,7 +396,11 @@
 			"contract-address": "contract address",
 			"lower-limit": "lower limit",
 			"upper-limit": "upper limit",
-			"entry": "entry"
+			"entry": "entry",
+			"lower-limit-price": "lower {{price}}",
+			"upper-limit-price": "upper {{price}}",
+			"entry-limit-price": "entry {{price}}",
+			"frozen-synth": "Synth is frozen"
 		},
 		"currency-category": {
 			"crypto": "crypto",

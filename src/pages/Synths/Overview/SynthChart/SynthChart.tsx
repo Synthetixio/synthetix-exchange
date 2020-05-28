@@ -2,6 +2,7 @@ import React, { memo, FC, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import get from 'lodash/get';
+import { useTranslation } from 'react-i18next';
 
 import {
 	SynthDefinition,
@@ -46,6 +47,7 @@ type SynthChartProps = StateProps & DispatchProps & Props;
 
 export const SynthChart: FC<SynthChartProps> = memo(
 	({ synth, fetchHistoricalRatesRequest, synthsWithRatesMap, synthsMap }) => {
+		const { t } = useTranslation();
 		const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
 		const [historicalRateUpdates, setHistoricalRatesUpdates] = useState<BaseRateUpdates>([]);
 		const [historicalRateChange, setHistoricalRatesChange] = useState<number | null>(0);
@@ -111,6 +113,34 @@ export const SynthChart: FC<SynthChartProps> = memo(
 				showLoader={loading}
 				synthSign={synthSign}
 				xAxisVisible={true}
+				yAxisDomain={
+					synth.inverted ? [synth.inverted.lowerLimit, synth.inverted.upperLimit] : undefined
+				}
+				yAxisRefLines={
+					synth.inverted
+						? [
+								{
+									label: t('common.currency.lower-limit-price', {
+										price: `${synthSign}${synth.inverted.lowerLimit}`,
+									}),
+									value: synth.inverted.lowerLimit,
+								},
+								{
+									label: t('common.currency.entry-limit-price', {
+										price: `${synthSign}${synth.inverted.entryPoint}`,
+									}),
+									value: synth.inverted.entryPoint,
+								},
+								{
+									label: t('common.currency.upper-limit-price', {
+										price: `${synthSign}${synth.inverted.upperLimit}`,
+									}),
+									value: synth.inverted.upperLimit - synth.inverted.upperLimit * 0.05,
+								},
+						  ]
+						: undefined
+				}
+				overlayMessage={synth.isFrozen ? t('common.currency.frozen-synth') : undefined}
 			/>
 		);
 	}
@@ -152,6 +182,13 @@ const StyledChartCard = styled(ChartCard)`
 	.recharts-tooltip-label,
 	.recharts-tooltip-item {
 		color: ${darkTheme.colors.white} !important;
+	}
+
+	.recharts-reference-line .recharts-label {
+		font-size: 10px;
+		fill: ${darkTheme.colors.fontTertiary};
+		font-family: ${(props) => props.theme.fonts.regular};
+		text-transform: uppercase;
 	}
 `;
 
