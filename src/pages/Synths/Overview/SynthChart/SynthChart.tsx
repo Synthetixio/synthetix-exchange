@@ -135,7 +135,8 @@ export const SynthChart: FC<SynthChartProps> = memo(
 									label: t('common.currency.upper-limit-price', {
 										price: `${synthSign}${synth.inverted.upperLimit}`,
 									}),
-									value: synth.inverted.upperLimit - synth.inverted.upperLimit * 0.05,
+									// TODO: this isn't an optimal solution... the label is cut when its using the true upper limit
+									value: synth.inverted.upperLimit * 0.95,
 								},
 						  ]
 						: undefined
