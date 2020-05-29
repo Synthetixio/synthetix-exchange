@@ -20,7 +20,7 @@ import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
 import {
-	shortenAddress,
+	truncateAddress,
 	formatCurrencyWithSign,
 	formatCurrency,
 	LONG_CRYPTO_CURRENCY_DECIMALS,
@@ -66,7 +66,7 @@ const WalletMenu = ({
 							{t('header.wallet-menu.buttons.change')}
 						</ButtonPrimaryExtraSmall>
 					</StyledFlexCentered>
-					<CardData>{shortenAddress(currentWallet)}</CardData>
+					<CardData>{truncateAddress(currentWallet)}</CardData>
 				</Card.Body>
 			</Card>
 			<Card>

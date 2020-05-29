@@ -1,4 +1,4 @@
-import React, { useContext, FC, memo, ReactText } from 'react';
+import React, { useContext, FC, memo } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +42,7 @@ type ChartCardProps = {
 	yAxisVisible?: boolean;
 	yAxisDomain?: AxisDomain;
 	yAxisRefLines?: Array<{
-		label: string | number | ReactText | React.ReactNode;
+		label: string | number | React.ReactNode;
 		value: string | number;
 	}>;
 	overlayMessage?: React.ReactNode;
@@ -98,6 +98,8 @@ export const ChartCard: FC<ChartCardProps> = memo(
 
 		const showOverlayMessage = !!overlayMessage;
 
+		const disabledInteraction = showLoader || !tooltipVisible || showOverlayMessage;
+
 		return (
 			<Container onClick={onClick} className={className}>
 				<LabelsContainer className="labels-container">
@@ -121,6 +123,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 										size="xs"
 										isActive={period.value === selectedPeriod?.value}
 										onClick={() => onPeriodClick(period)}
+										disabled={disabledInteraction}
 									>
 										{t(period.i18nLabel)}
 									</Button>
@@ -139,11 +142,11 @@ export const ChartCard: FC<ChartCardProps> = memo(
 				</LabelsContainer>
 				<ChartData
 					className="chart-data"
-					disabledInteraction={showLoader || !tooltipVisible || showOverlayMessage}
+					disabledInteraction={disabledInteraction}
 					semiTransparent={showLoader || showOverlayMessage}
 				>
 					<RechartsResponsiveContainer width="100%" height="100%">
-						<AreaChart data={chartData} margin={{ right: 0, bottom: 0, left: 0 }}>
+						<AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
 							<defs>
 								<linearGradient id={linearGradientId} x1="0" y1="0" x2="0" y2="1">
 									<stop offset="5%" stopColor={chartColor} stopOpacity={0.5} />
@@ -237,7 +240,6 @@ const OverlayMessage = styled.div`
 	${absoluteCenteredCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
 	font-size: 20px;
-	text-transform: uppercase;
 `;
 
 const Container = styled.div`
@@ -300,6 +302,7 @@ const ChartData = styled.div<{ disabledInteraction: boolean; semiTransparent: bo
 		props.semiTransparent &&
 		css`
 			opacity: 0.5;
+			filter: blur(3px);
 		`}
 `;
 
