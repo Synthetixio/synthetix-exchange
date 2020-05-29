@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ELEMENT_BORDER_RADIUS, CREATE_ORDER_CARD_WIDTH } from 'constants/ui';
 
-import { shortenAddress } from 'utils/formatters';
+import { truncateAddress } from 'utils/formatters';
 
 import { RootState } from 'ducks/types';
 import { showWalletPopup, setBlurBackgroundIsVisible } from 'ducks/ui';
@@ -68,7 +68,7 @@ export const UserInfo: FC<UserInfoProps> = memo(
 					<UserInfoContainer isOnSplashPage={isOnSplashPage}>
 						<WalletInfo>
 							<StatusDot />
-							<WalletAddress>{shortenAddress(currentWallet)}</WalletAddress>
+							<WalletAddress>{truncateAddress(currentWallet)}</WalletAddress>
 							<NetworkLabel>{networkName}</NetworkLabel>
 						</WalletInfo>
 						<WalletIconContainer isOnSplashPage={isOnSplashPage}>

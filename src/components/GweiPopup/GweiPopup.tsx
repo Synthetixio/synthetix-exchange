@@ -100,7 +100,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 										<TooltipInner>
 											<TooltipValue>{gasSettings.gasPrice} </TooltipValue>
 											<TooltipValue>
-												{formatCurrencyWithSign(usdPriceSign, gasSettings.usdPrice)}
+												{formatCurrencyWithSign(usdPriceSign, gasSettings.usdPrice || 0)}
 											</TooltipValue>
 										</TooltipInner>
 									)}

@@ -248,6 +248,7 @@ export const GridDiv = styled.div`
 
 export const GridDivCentered = styled(GridDiv)`
 	align-items: center;
+	justify-items: center;
 `;
 
 export const GridDivRow = styled(GridDiv)`

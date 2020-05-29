@@ -61,6 +61,13 @@ export const HeadingSmall = styled.h3`
 	${typography}
 `;
 
+export const subtitleSmallCSS = css`
+	font-family: ${(props) => props.theme.fonts.regular};
+	font-weight: 400;
+	font-size: 20px;
+	letter-spacing: 0.2px;
+`;
+
 export const subtitleLargeCSS = css`
 	font-family: ${(props) => props.theme.fonts.regular};
 	font-weight: 400;

@@ -20,6 +20,7 @@ import { subtitleLargeCSS } from 'components/Typography/Heading';
 
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 import { getEtherscanTokenLink } from 'utils/explorers';
+import { getDecimalPlaces } from 'utils/formatters';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -35,9 +36,7 @@ type SynthInfoProps = StateProps & Props;
 export const roundedLimit = (entry: number, limit: number) => {
 	const num = entry * 2 - limit;
 
-	const decimals = (limit.toString().split('.')[1] || '').length;
-
-	return Number(num).toFixed(decimals);
+	return Number(num).toFixed(getDecimalPlaces(limit));
 };
 
 const SYNTH_CONTRACT_DECIMALS = 18;

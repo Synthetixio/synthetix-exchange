@@ -1,13 +1,18 @@
 import React, { useContext, FC, memo } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
-import { AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import ChangePercent from '../ChangePercent';
 import RechartsResponsiveContainer from '../RechartsResponsiveContainer';
 
-import { FlexDivRow, GridDivCenteredCol, GridDivRow } from 'shared/commonStyles';
+import {
+	FlexDivRow,
+	GridDivCenteredCol,
+	GridDivRow,
+	absoluteCenteredCSS,
+} from 'shared/commonStyles';
 
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { BaseRateUpdates } from 'constants/rates';
@@ -16,6 +21,8 @@ import { Button } from 'components/Button';
 import Spinner from 'components/Spinner';
 import { formatCurrencyWithSign } from 'utils/formatters';
 import { media } from 'shared/media';
+import { AxisDomain } from 'recharts/types/util/types';
+import { darkTheme, lightTheme } from 'styles/theme';
 
 type ChartCardProps = {
 	currencyLabel: React.ReactNode;
@@ -33,6 +40,12 @@ type ChartCardProps = {
 	synthSign?: string;
 	xAxisVisible?: boolean;
 	yAxisVisible?: boolean;
+	yAxisDomain?: AxisDomain;
+	yAxisRefLines?: Array<{
+		label: string | number | React.ReactNode;
+		value: string | number;
+	}>;
+	overlayMessage?: React.ReactNode;
 };
 
 export const ChartCard: FC<ChartCardProps> = memo(
@@ -52,28 +65,40 @@ export const ChartCard: FC<ChartCardProps> = memo(
 		synthSign,
 		xAxisVisible = false,
 		yAxisVisible = false,
+		yAxisDomain,
+		yAxisRefLines,
+		overlayMessage,
 	}) => {
 		const { t } = useTranslation();
-		const { colors, fonts } = useContext(ThemeContext);
+		const theme = useContext(ThemeContext);
 
 		let linearGradientId = 'cardChartArea';
-		let chartColor = colors.hyperlink;
+		let chartColor = theme.colors.hyperlink;
 
 		if (change != null && variableGradient) {
 			if (change >= 0) {
 				linearGradientId = 'cardChartAreaGreen';
-				chartColor = colors.green;
+				chartColor = theme.colors.green;
 			} else {
 				linearGradientId = 'cardChartAreaRed';
-				chartColor = colors.red;
+				chartColor = theme.colors.red;
 			}
 		}
 
 		const fontStyle = {
 			fontSize: '12px',
-			fill: colors.fontTertiary,
-			fontFamily: fonts.regular,
+			fill: theme.colors.fontTertiary,
+			fontFamily: theme.fonts.regular,
 		};
+
+		const fontStyleMedium = {
+			...fontStyle,
+			fontFamily: theme.fonts.medium,
+		};
+
+		const showOverlayMessage = !!overlayMessage;
+
+		const disabledInteraction = showLoader || !tooltipVisible || showOverlayMessage;
 
 		return (
 			<Container onClick={onClick} className={className}>
@@ -98,6 +123,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 										size="xs"
 										isActive={period.value === selectedPeriod?.value}
 										onClick={() => onPeriodClick(period)}
+										disabled={disabledInteraction}
 									>
 										{t(period.i18nLabel)}
 									</Button>
@@ -114,7 +140,11 @@ export const ChartCard: FC<ChartCardProps> = memo(
 						)}
 					</PeriodsAndChange>
 				</LabelsContainer>
-				<ChartData className="chart-data" tooltipVisible={tooltipVisible} showLoader={showLoader}>
+				<ChartData
+					className="chart-data"
+					disabledInteraction={disabledInteraction}
+					semiTransparent={showLoader || showOverlayMessage}
+				>
 					<RechartsResponsiveContainer width="100%" height="100%">
 						<AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
 							<defs>
@@ -125,7 +155,8 @@ export const ChartCard: FC<ChartCardProps> = memo(
 							</defs>
 							<XAxis
 								dataKey="timestamp"
-								tick={fontStyle}
+								allowDataOverflow={true}
+								tick={fontStyleMedium}
 								axisLine={false}
 								tickLine={false}
 								hide={!xAxisVisible}
@@ -138,8 +169,9 @@ export const ChartCard: FC<ChartCardProps> = memo(
 							/>
 							<YAxis
 								type="number"
-								domain={['auto', 'auto']}
-								tick={fontStyle}
+								allowDataOverflow={true}
+								domain={yAxisDomain ? yAxisDomain : ['auto', 'auto']}
+								tick={fontStyleMedium}
 								orientation="right"
 								axisLine={false}
 								tickLine={false}
@@ -153,14 +185,29 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								fill={`url(#${linearGradientId})`}
 								isAnimationActive={false}
 							/>
+							{yAxisRefLines &&
+								yAxisRefLines.map((refLine) => (
+									<ReferenceLine
+										key={refLine.value}
+										y={refLine.value}
+										stroke={
+											theme.name === 'light'
+												? darkTheme.colors.fontSecondary
+												: lightTheme.colors.fontSecondary
+										}
+										strokeDasharray="5 2"
+									>
+										<Label position="insideBottomRight">{refLine.label}</Label>
+									</ReferenceLine>
+								))}
 							<Tooltip
 								className="tooltip"
 								// @ts-ignore
-								cursor={{ strokeWidth: 1, stroke: colors.fontTertiary }}
+								cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
 								contentStyle={{
-									border: `none`,
+									border: 'none',
 									borderRadius: '3px',
-									backgroundColor: colors.surfaceL1,
+									backgroundColor: theme.colors.surfaceL1,
 								}}
 								itemStyle={{
 									...fontStyle,
@@ -173,7 +220,11 @@ export const ChartCard: FC<ChartCardProps> = memo(
 						</AreaChart>
 					</RechartsResponsiveContainer>
 				</ChartData>
-				{showLoader && <Spinner size="sm" centered={true} />}
+				{showOverlayMessage ? (
+					<OverlayMessage>{overlayMessage}</OverlayMessage>
+				) : showLoader ? (
+					<Spinner size="sm" centered={true} />
+				) : undefined}
 				{labelPosition === 'down' && (
 					<BottomLabels>
 						<Currency>{currencyLabel}</Currency>
@@ -184,6 +235,10 @@ export const ChartCard: FC<ChartCardProps> = memo(
 		);
 	}
 );
+
+const OverlayMessage = styled.div`
+	${absoluteCenteredCSS};
+`;
 
 const Container = styled.div`
 	position: relative;
@@ -234,18 +289,18 @@ const CurrencyPrice = styled.span`
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const ChartData = styled.div<{ tooltipVisible: boolean; showLoader: boolean }>`
+const ChartData = styled.div<{ disabledInteraction: boolean; semiTransparent: boolean }>`
 	${(props) =>
-		(!props.tooltipVisible || props.showLoader) &&
+		props.disabledInteraction &&
 		css`
 			pointer-events: none;
 		`};
 
 	${(props) =>
-		props.showLoader &&
+		props.semiTransparent &&
 		css`
-			pointer-events: none;
 			opacity: 0.5;
+			filter: blur(3px);
 		`}
 `;
 
