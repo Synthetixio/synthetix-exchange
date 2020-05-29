@@ -73,6 +73,7 @@ const CreateOrderCard = ({
 	);
 	const [tradeAllBalance, setTradeAllBalance] = useState(false);
 	const [gasLimit, setGasLimit] = useState(gasInfo.gasLimit);
+	const [hasSetGasLimit, setHasSetGasLimit] = useState(false);
 	const [inputError, setInputError] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [feeReclamationError, setFeeReclamationError] = useState(null);
@@ -187,6 +188,31 @@ const CreateOrderCard = ({
 	useEffect(() => {
 		getMaxSecsLeftInWaitingPeriod();
 	}, [getMaxSecsLeftInWaitingPeriod]);
+
+	useEffect(() => {
+		const getGasEstimate = async () => {
+			const {
+				snxJS: { Synthetix },
+				utils,
+			} = snxJSConnector;
+
+			if (!quoteAmount || !quoteBalance || hasSetGasLimit) return;
+			const amountToExchange = tradeAllBalance
+				? quoteBalance.balanceBN
+				: utils.parseEther(quoteAmount.toString());
+
+			const gasEstimate = await Synthetix.contract.estimate.exchange(
+				bytesFormatter(quote.name),
+				amountToExchange,
+				bytesFormatter(base.name)
+			);
+			const rectifiedGasLimit = normalizeGasLimit(Number(gasEstimate));
+			setGasLimit(rectifiedGasLimit);
+			setHasSetGasLimit(true);
+		};
+		getGasEstimate();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [quoteAmount]);
 
 	const setMaxBalance = () => {
 		if (!isEmptyQuoteBalance) {
