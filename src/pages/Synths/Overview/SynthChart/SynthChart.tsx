@@ -14,6 +14,8 @@ import {
 import { RootState } from 'ducks/types';
 import { fetchHistoricalRatesRequest, HistoricalRatesData } from 'ducks/historicalRates';
 
+import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
+
 import { SYNTHS_MAP, sUSD_EXCHANGE_RATE } from 'constants/currency';
 import { BaseRateUpdates } from 'constants/rates';
 import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
@@ -24,11 +26,14 @@ import useInterval from 'shared/hooks/useInterval';
 
 import { formatCurrencyWithSign } from 'utils/formatters';
 
-import { darkTheme } from 'styles/theme';
+import { darkTheme, lightTheme } from 'styles/theme';
 import { media } from 'shared/media';
 
 import Currency from 'components/Currency';
 import { mockRates } from 'pages/Synths/mockData';
+import { subtitleSmallCSS } from 'components/Typography/Heading';
+import { bodyMediumCSS } from 'components/Typography/Body';
+import { GridDivCenteredRow } from 'shared/commonStyles';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -141,11 +146,40 @@ export const SynthChart: FC<SynthChartProps> = memo(
 						  ]
 						: undefined
 				}
-				overlayMessage={synth.isFrozen ? t('common.currency.frozen-synth') : undefined}
+				overlayMessage={
+					synth.inverted && synth.isFrozen ? (
+						<FrozenMessage>
+							<SnowflakeIcon />
+							<FrozenMessageTitle>{t('common.currency.frozen-synth')}</FrozenMessageTitle>
+							<FrozenMessageSubtitle>
+								{lastPrice === synth.inverted.lowerLimit
+									? t('common.currency.lower-limit-reached-reset')
+									: t('common.currency.upper-limit-reached-reset')}
+							</FrozenMessageSubtitle>
+						</FrozenMessage>
+					) : undefined
+				}
 			/>
 		);
 	}
 );
+
+const FrozenMessage = styled(GridDivCenteredRow)`
+	svg {
+		color: ${(props) => props.theme.colors.icons};
+	}
+`;
+
+const FrozenMessageTitle = styled.div`
+	${subtitleSmallCSS};
+	color: ${lightTheme.colors.fontPrimary};
+	padding-top: 5px;
+`;
+
+const FrozenMessageSubtitle = styled.div`
+	${bodyMediumCSS};
+	color: ${darkTheme.colors.accentL2};
+`;
 
 const StyledChartCard = styled(ChartCard)`
 	height: 450px;

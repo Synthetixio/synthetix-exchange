@@ -238,8 +238,6 @@ export const ChartCard: FC<ChartCardProps> = memo(
 
 const OverlayMessage = styled.div`
 	${absoluteCenteredCSS};
-	color: ${(props) => props.theme.colors.fontPrimary};
-	font-size: 20px;
 `;
 
 const Container = styled.div`
