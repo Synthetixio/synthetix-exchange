@@ -15,7 +15,6 @@ import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { getRatesExchangeRates, getEthRate } from 'ducks/rates';
 
 import {
-	getExchangeFeeRate,
 	getGasInfo,
 	createTransaction,
 	updateTransaction,
@@ -54,7 +53,6 @@ const CreateOrderCard = ({
 	walletInfo: { currentWallet, walletType },
 	synthsWalletBalances,
 	exchangeRates,
-	exchangeFeeRate,
 	gasInfo,
 	ethRate,
 	toggleGweiPopup,
@@ -67,7 +65,7 @@ const CreateOrderCard = ({
 	const { colors } = useContext(ThemeContext);
 	const [baseAmount, setBaseAmount] = useState(INPUT_DEFAULT_VALUE);
 	const [quoteAmount, setQuoteAmount] = useState(INPUT_DEFAULT_VALUE);
-	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
+	const [feeRate, setFeeRate] = useState(0);
 	const [{ base, quote }, setPair] = useState(
 		synthPair.reversed ? { base: synthPair.quote, quote: synthPair.base } : synthPair
 	);
@@ -99,7 +97,6 @@ const CreateOrderCard = ({
 				);
 				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
 			} catch (e) {
-				setFeeRate(exchangeFeeRate);
 				console.log(e);
 			}
 		};
@@ -489,7 +486,6 @@ const mapStateToProps = (state) => {
 		walletInfo: getWalletInfo(state),
 		synthsWalletBalances: getSynthsWalletBalances(state),
 		exchangeRates: getRatesExchangeRates(state),
-		exchangeFeeRate: getExchangeFeeRate(state),
 		gasInfo: getGasInfo(state),
 		ethRate: getEthRate(state),
 		transactions: getTransactions(state),

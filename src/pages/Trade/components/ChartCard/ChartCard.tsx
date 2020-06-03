@@ -92,6 +92,7 @@ const ChartCard: FC<ChartCardProps> = memo(({ synthPair }) => {
 					<Periods>
 						{PERIOD_LABELS.map((period) => (
 							<Button
+								key={period.value}
 								palette="secondary"
 								size="xs"
 								isActive={period.value === selectedPeriod.value}
