@@ -10,7 +10,7 @@ import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
 import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
 import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
 import { fetchRatesRequest } from '../../ducks/rates';
-import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
+import { setNetworkGasInfo } from '../../ducks/transaction';
 
 import { setAppReady, getIsAppReady } from '../../ducks/app';
 
@@ -21,7 +21,6 @@ const REFRESH_INTERVAL = 3 * 60 * 1000;
 const Root = ({
 	setAvailableSynths,
 	setNetworkGasInfo,
-	setExchangeFeeRate,
 	updateFrozenSynths,
 	updateNetworkSettings,
 	walletInfo: { currentWallet },
@@ -31,9 +30,8 @@ const Root = ({
 	isAppReady,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
-	const fetchAndSetExchangeData = useCallback(async (synths) => {
-		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
-		setExchangeFeeRate(exchangeFeeRate);
+	const fetchAndSetExchangeData = useCallback(async () => {
+		const { networkPrices, frozenSynths } = await getExchangeData();
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths({ frozenSynths });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,10 +62,10 @@ const Root = ({
 
 			setAvailableSynths({ synths });
 			setAppReady();
-			fetchAndSetExchangeData(synths);
+			fetchAndSetExchangeData();
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
-				fetchAndSetExchangeData(synths);
+				fetchAndSetExchangeData();
 				fetchWalletBalancesRequest();
 			}, REFRESH_INTERVAL);
 			setIntervalId(_intervalId);
@@ -94,7 +92,6 @@ const mapDispatchToProps = {
 	setNetworkGasInfo,
 	updateFrozenSynths,
 	updateNetworkSettings,
-	setExchangeFeeRate,
 	fetchWalletBalancesRequest,
 	fetchRatesRequest,
 	setAppReady,

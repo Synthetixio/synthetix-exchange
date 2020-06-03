@@ -6,7 +6,6 @@ import { TRANSACTION_STATUS } from 'constants/transaction';
 
 const SET_GAS_PRICE = 'TRANSACTION/SET_GAS_PRICE';
 const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';
-const SET_EXCHANGE_FEE_RATE = 'TRANSACTION/SET_FEE_RATE';
 const SET_NETWORK_GAS_INFO = 'TRANSACTION/NETWORK_GAS_INFO';
 const CREATE_TRANSACTION = 'TRANSACTION/CREATE';
 const UPDATE_TRANSACTION = 'TRANSACTION/UPDATE';
@@ -33,12 +32,6 @@ const reducer = (state = defaultState, action = {}) => {
 			return {
 				...state,
 				gasLimit: action.payload,
-			};
-		}
-		case SET_EXCHANGE_FEE_RATE: {
-			return {
-				...state,
-				exchangeFeeRate: action.payload,
 			};
 		}
 		case SET_NETWORK_GAS_INFO: {
@@ -115,13 +108,6 @@ export const setGasLimit = (gasLimit) => {
 	};
 };
 
-export const setExchangeFeeRate = (feeRate) => {
-	return {
-		type: SET_EXCHANGE_FEE_RATE,
-		payload: feeRate,
-	};
-};
-
 export const setNetworkGasInfo = (gasInfo) => {
 	return {
 		type: SET_NETWORK_GAS_INFO,
@@ -155,7 +141,6 @@ export const getGasInfo = (state) => {
 	const { gasPrice, gasLimit, gasSpeed } = getTransactionState(state);
 	return { gasPrice, gasLimit, gasSpeed };
 };
-export const getExchangeFeeRate = (state) => getTransactionState(state).exchangeFeeRate;
 export const getTransactions = (state) => getTransactionState(state).transactions;
 export const getPendingTransactions = (state) => getTransactionState(state).pendingTransactions;
 
