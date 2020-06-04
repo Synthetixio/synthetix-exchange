@@ -92,8 +92,8 @@ const CreateOrderCard = ({
 					snxJS: { Exchanger },
 				} = snxJSConnector;
 				const feeRateForExchange = await Exchanger.feeRateForExchange(
-					bytesFormatter(quote.name),
-					bytesFormatter(base.name)
+					bytesFormatter(synthPair.quote.name),
+					bytesFormatter(synthPair.base.name)
 				);
 				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
 			} catch (e) {
