@@ -86,30 +86,34 @@ const CreateOrderCard = ({
 	const showGweiPopup = () => toggleGweiPopup(true);
 
 	useEffect(() => {
-		const getFeeRateForExchange = async () => {
-			try {
-				const {
-					snxJS: { Exchanger },
-				} = snxJSConnector;
-				const feeRateForExchange = await Exchanger.feeRateForExchange(
-					bytesFormatter(synthPair.quote.name),
-					bytesFormatter(synthPair.base.name)
-				);
-				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
-			} catch (e) {
-				console.log(e);
-			}
-		};
 		if (synthPair.reversed) {
 			setPair({ base: synthPair.quote, quote: synthPair.base });
 		} else {
 			setPair(synthPair);
 		}
 		resetInputAmounts();
-		getFeeRateForExchange();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [synthPair.base.name, synthPair.quote.name, synthPair.reversed]);
+
+	useEffect(() => {
+		const getFeeRateForExchange = async () => {
+			try {
+				const {
+					snxJS: { Exchanger },
+				} = snxJSConnector;
+				const feeRateForExchange = await Exchanger.feeRateForExchange(
+					bytesFormatter(quote.name),
+					bytesFormatter(base.name)
+				);
+				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		getFeeRateForExchange();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [base.name, quote.name]);
 
 	useEffect(() => {
 		const {
