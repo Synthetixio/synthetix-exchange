@@ -2,25 +2,31 @@ import { takeLatest, put, all } from 'redux-saga/effects';
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import orderBy from 'lodash/orderBy';
 import merge from 'lodash/merge';
-import { getMarketsAssetFilter } from './ui';
+import keyBy from 'lodash/keyBy';
 
 import { getRatesExchangeRates, Rates } from './rates';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 import { PERIOD_IN_HOURS } from 'constants/period';
+import { RateUpdates } from 'constants/rates';
+import { getAvailableMarketNames, CurrencyKey } from 'constants/currency';
 
 import { fetchSynthRateUpdates, fetchSynthVolumeInUSD } from 'services/rates/rates';
 
-import { getAvailableMarketNames, CurrencyKey } from 'constants/currency';
 import { RootState } from './types';
-import { HistoricalRatesData } from './historicalRates';
+import { getMarketsAssetFilter } from './ui';
 
-export type MarketPair = {
+export type BaseMarketPair = {
 	pair: string;
 	baseCurrencyKey: CurrencyKey;
 	quoteCurrencyKey: CurrencyKey;
+};
+
+export type BaseMarketPairs = BaseMarketPair[];
+
+export type MarketPair = BaseMarketPair & {
 	lastPrice: number | null;
-	rates: HistoricalRatesData[];
+	rates: RateUpdates;
 	rates24hChange: number | null;
 	rates24hLow: number | null;
 	rates24hHigh: number | null;
@@ -32,9 +38,7 @@ export type MarketPair = {
 export type MarketPairsMap = Record<string, MarketPair>;
 export type MarketPairs = MarketPair[];
 
-const getMarketDefaults = (
-	marketPairs: Array<Pick<MarketPair, 'baseCurrencyKey' | 'quoteCurrencyKey' | 'pair'>>
-) =>
+const getMarketDefaults = (marketPairs: BaseMarketPairs) =>
 	marketPairs.reduce((markets: MarketPairsMap, marketPair) => {
 		const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
 
@@ -73,7 +77,7 @@ export const marketsSlice = createSlice({
 	name: sliceName,
 	initialState,
 	reducers: {
-		fetchMarketsRequest: (state) => {
+		fetchMarketsRequest: (state, action: PayloadAction<{ pairs: BaseMarketPairs }>) => {
 			state.loadingError = null;
 			state.isLoading = true;
 		},
@@ -127,6 +131,10 @@ export const getAllMarkets = createSelector(
 	(marketsList, exchangeRates) => mapExchangeRatesToMarkets(marketsList, exchangeRates)
 );
 
+export const getAllMarketsMap = createSelector(getAllMarkets, (allMarketsList) =>
+	keyBy(allMarketsList, 'pair')
+);
+
 export const getIsLoadedFilteredMarkets = createSelector(getFilteredMarkets, (filteredMarkets) =>
 	filteredMarkets.every((market) => market.isLoaded)
 );
@@ -141,7 +149,7 @@ export const getOrderedMarkets = createSelector(
 const { fetchMarketsRequest, fetchMarketSuccess, fetchMarketsFailure } = marketsSlice.actions;
 
 // @ts-ignore
-function* fetchMarket(marketPair: MarketPair) {
+function* fetchMarket(marketPair: BaseMarketPair) {
 	const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
 
 	const [rates24H, volume24H] = yield all([
@@ -162,7 +170,11 @@ function* fetchMarket(marketPair: MarketPair) {
 	yield put(fetchMarketSuccess({ market: { [pair]: market } }));
 }
 
-function* fetchMarkets(action: PayloadAction<{ pairs: MarketPairs }>) {
+function* fetchMarkets(
+	action: PayloadAction<{
+		pairs: BaseMarketPairs;
+	}>
+) {
 	const { pairs: marketPairs } = action.payload;
 
 	try {

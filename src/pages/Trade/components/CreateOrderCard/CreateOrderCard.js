@@ -15,7 +15,6 @@ import { getSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { getRatesExchangeRates, getEthRate } from 'ducks/rates';
 
 import {
-	getExchangeFeeRate,
 	getGasInfo,
 	createTransaction,
 	updateTransaction,
@@ -54,7 +53,6 @@ const CreateOrderCard = ({
 	walletInfo: { currentWallet, walletType },
 	synthsWalletBalances,
 	exchangeRates,
-	exchangeFeeRate,
 	gasInfo,
 	ethRate,
 	toggleGweiPopup,
@@ -67,7 +65,7 @@ const CreateOrderCard = ({
 	const { colors } = useContext(ThemeContext);
 	const [baseAmount, setBaseAmount] = useState(INPUT_DEFAULT_VALUE);
 	const [quoteAmount, setQuoteAmount] = useState(INPUT_DEFAULT_VALUE);
-	const [feeRate, setFeeRate] = useState(exchangeFeeRate);
+	const [feeRate, setFeeRate] = useState(0);
 	const [{ base, quote }, setPair] = useState(
 		synthPair.reversed ? { base: synthPair.quote, quote: synthPair.base } : synthPair
 	);
@@ -88,6 +86,17 @@ const CreateOrderCard = ({
 	const showGweiPopup = () => toggleGweiPopup(true);
 
 	useEffect(() => {
+		if (synthPair.reversed) {
+			setPair({ base: synthPair.quote, quote: synthPair.base });
+		} else {
+			setPair(synthPair);
+		}
+		resetInputAmounts();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [synthPair.base.name, synthPair.quote.name, synthPair.reversed]);
+
+	useEffect(() => {
 		const getFeeRateForExchange = async () => {
 			try {
 				const {
@@ -99,20 +108,12 @@ const CreateOrderCard = ({
 				);
 				setFeeRate(100 * bigNumberFormatter(feeRateForExchange));
 			} catch (e) {
-				setFeeRate(exchangeFeeRate);
 				console.log(e);
 			}
 		};
-		if (synthPair.reversed) {
-			setPair({ base: synthPair.quote, quote: synthPair.base });
-		} else {
-			setPair(synthPair);
-		}
-		resetInputAmounts();
 		getFeeRateForExchange();
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synthPair.base.name, synthPair.quote.name, synthPair.reversed]);
+	}, [base.name, quote.name]);
 
 	useEffect(() => {
 		const {
@@ -489,7 +490,6 @@ const mapStateToProps = (state) => {
 		walletInfo: getWalletInfo(state),
 		synthsWalletBalances: getSynthsWalletBalances(state),
 		exchangeRates: getRatesExchangeRates(state),
-		exchangeFeeRate: getExchangeFeeRate(state),
 		gasInfo: getGasInfo(state),
 		ethRate: getEthRate(state),
 		transactions: getTransactions(state),

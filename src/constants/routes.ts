@@ -15,11 +15,14 @@ export const ROUTES = {
 	Markets: '/markets',
 	Synths: {
 		Home: '/synths',
-		SynthInfo: '/synths/:currencyKey',
+		OverviewMatch: '/synths/:currencyKey',
 	},
 };
 
-export const buildTradeLink = (baseCurrencyKey: string, quoteCurrencyKey: string) =>
+export const buildSynthOverviewLink = (currencyKey: CurrencyKey) =>
+	`${ROUTES.Synths.Home}/${currencyKey}`;
+
+export const buildTradeLink = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
 	`${ROUTES.Trade}/${baseCurrencyKey}-${quoteCurrencyKey}`;
 
 export const navigateTo = (
@@ -38,5 +41,11 @@ export const navigateToTrade = (
 	quoteCurrencyKey: CurrencyKey,
 	replacePath: boolean = false
 ) => navigateTo(buildTradeLink(baseCurrencyKey, quoteCurrencyKey), replacePath);
+
+export const navigateToSynthOverview = (
+	currencyKey: CurrencyKey,
+	replacePath: boolean = false,
+	scrollToTop: boolean = true
+) => navigateTo(buildSynthOverviewLink(currencyKey), replacePath, scrollToTop);
 
 export default ROUTES;

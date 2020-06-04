@@ -22,6 +22,8 @@ export const SearchInput: FC<SearchInputProps> = memo(
 			<Container {...rest}>
 				<StyledSearchIcon />
 				<StyledInput
+					className="search-input"
+					type="search"
 					placeholder={placeholder || t('common.search')}
 					onChange={onChange}
 					value={value}

@@ -9,7 +9,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { SYNTHS_MAP } from 'constants/currency';
 
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 import Card from 'components/Card';
 import Link from 'components/Link';
@@ -25,7 +24,6 @@ import {
 	formatCurrency,
 	formatCurrencyWithSign,
 	formatCurrencyWithKey,
-	formatCurrencyPair,
 } from 'utils/formatters';
 
 import { TableNoResults } from 'shared/commonStyles';
@@ -66,18 +64,18 @@ export const Exchanges = memo(
 				</Card.Header>
 				<StyledCardBody>
 					<Table
-						palette={TABLE_PALETTE.STRIPED}
+						palette="striped"
 						columns={[
 							{
-								Header: t('assets.exchanges.table.date-time-col'),
+								Header: <>{t('assets.exchanges.table.date-time-col')}</>,
 								accessor: 'timestamp',
 								Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 								width: 150,
 								sortable: true,
 							},
 							{
-								Header: t('assets.exchanges.table.pair-col'),
-								accessor: (d) => formatCurrencyPair(d.toCurrencyKey, d.fromCurrencyKey),
+								Header: <>{t('assets.exchanges.table.pair-col')}</>,
+								id: 'trade-pair',
 								Cell: (cellProps) => {
 									const { fromCurrencyKey, toCurrencyKey } = cellProps.row.original;
 
@@ -91,7 +89,7 @@ export const Exchanges = memo(
 								width: 150,
 							},
 							{
-								Header: t('assets.exchanges.table.buying-col'),
+								Header: <>{t('assets.exchanges.table.buying-col')}</>,
 								accessor: 'toAmount',
 								sortType: 'basic',
 								Cell: (cellProps) => (
@@ -114,7 +112,7 @@ export const Exchanges = memo(
 								width: 150,
 							},
 							{
-								Header: t('assets.exchanges.table.selling-col'),
+								Header: <>{t('assets.exchanges.table.selling-col')}</>,
 								accessor: 'fromAmount',
 								sortType: 'basic',
 								Cell: (cellProps) => (
@@ -137,7 +135,7 @@ export const Exchanges = memo(
 								width: 150,
 							},
 							{
-								Header: t('assets.exchanges.table.price-col'),
+								Header: <>{t('assets.exchanges.table.price-col')}</>,
 								accessor: 'price',
 								sortType: 'basic',
 								Cell: (cellProps) => (
@@ -151,7 +149,7 @@ export const Exchanges = memo(
 								width: 150,
 							},
 							{
-								Header: t('assets.exchanges.table.total-col'),
+								Header: <>{t('assets.exchanges.table.total-col')}</>,
 								accessor: 'amount',
 								sortType: 'basic',
 								Cell: (cellProps) => (
@@ -166,14 +164,14 @@ export const Exchanges = memo(
 								sortable: true,
 							},
 							{
-								Header: t('assets.exchanges.table.status-col'),
+								Header: <>{t('assets.exchanges.table.status-col')}</>,
 								accessor: 'status',
 								Cell: () => t('common.tx-status.complete'),
 								width: 150,
 								sortable: true,
 							},
 							{
-								Header: t('assets.exchanges.table.verify-col'),
+								Header: <>{t('assets.exchanges.table.verify-col')}</>,
 								accessor: 'actions',
 								Cell: (cellProps) => (
 									<Link

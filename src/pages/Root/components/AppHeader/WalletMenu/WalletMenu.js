@@ -20,7 +20,7 @@ import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
 import {
-	shortenAddress,
+	truncateAddress,
 	formatCurrencyWithSign,
 	formatCurrency,
 	LONG_CRYPTO_CURRENCY_DECIMALS,
@@ -33,7 +33,6 @@ import { HeadingSmall, DataMedium } from 'components/Typography';
 import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'shared/commonStyles';
 import Link from 'components/Link';
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import Currency from 'components/Currency';
 
 const WalletMenu = ({
@@ -67,7 +66,7 @@ const WalletMenu = ({
 							{t('header.wallet-menu.buttons.change')}
 						</ButtonPrimaryExtraSmall>
 					</StyledFlexCentered>
-					<CardData>{shortenAddress(currentWallet)}</CardData>
+					<CardData>{truncateAddress(currentWallet)}</CardData>
 				</Card.Body>
 			</Card>
 			<Card>
@@ -93,7 +92,7 @@ const WalletMenu = ({
 				</StyledCardHeader>
 				<StyleCardBody>
 					<StyledTable
-						palette={TABLE_PALETTE.STRIPED}
+						palette="striped"
 						data={synthsWalletBalances}
 						noResultsMessage={
 							isLoadedWalletBalances && synthsWalletBalances.length === 0 ? (
@@ -103,7 +102,7 @@ const WalletMenu = ({
 						isLoading={isFetchingWalletBalances && !isLoadedWalletBalances}
 						columns={[
 							{
-								Header: t('assets.overview.your-synths.table.asset-col'),
+								Header: <>{t('assets.overview.your-synths.table.asset-col')}</>,
 								accessor: 'name',
 								Cell: (cellProps) => (
 									<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
@@ -113,7 +112,7 @@ const WalletMenu = ({
 							},
 
 							{
-								Header: t('assets.overview.your-synths.table.total-col'),
+								Header: <>{t('assets.overview.your-synths.table.total-col')}</>,
 								accessor: 'balance',
 								sortType: 'basic',
 								Cell: (cellProps) => (
@@ -130,7 +129,7 @@ const WalletMenu = ({
 								sortable: true,
 							},
 							{
-								Header: t('assets.overview.your-synths.table.usd-value-col'),
+								Header: <>{t('assets.overview.your-synths.table.usd-value-col')}</>,
 								accessor: 'usdBalance',
 								sortType: 'basic',
 								Cell: (cellProps) => (
