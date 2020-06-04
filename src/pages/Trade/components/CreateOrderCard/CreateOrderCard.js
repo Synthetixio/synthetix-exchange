@@ -86,6 +86,17 @@ const CreateOrderCard = ({
 	const showGweiPopup = () => toggleGweiPopup(true);
 
 	useEffect(() => {
+		if (synthPair.reversed) {
+			setPair({ base: synthPair.quote, quote: synthPair.base });
+		} else {
+			setPair(synthPair);
+		}
+		resetInputAmounts();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [synthPair.base.name, synthPair.quote.name, synthPair.reversed]);
+
+	useEffect(() => {
 		const getFeeRateForExchange = async () => {
 			try {
 				const {
@@ -100,16 +111,9 @@ const CreateOrderCard = ({
 				console.log(e);
 			}
 		};
-		if (synthPair.reversed) {
-			setPair({ base: synthPair.quote, quote: synthPair.base });
-		} else {
-			setPair(synthPair);
-		}
-		resetInputAmounts();
 		getFeeRateForExchange();
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [synthPair.base.name, synthPair.quote.name, synthPair.reversed]);
+	}, [base.name, quote.name]);
 
 	useEffect(() => {
 		const {
