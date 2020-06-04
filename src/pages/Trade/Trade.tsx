@@ -60,7 +60,7 @@ const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
 	}, [match, setSynthPair]);
 
 	if (!isReady) {
-		return <Spinner size="sm" fullscreen={true} />;
+		return <Spinner size="sm" centered={true} />;
 	}
 
 	return (

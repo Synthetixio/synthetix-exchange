@@ -1,5 +1,16 @@
 # Changelog
 
+## 4 June 2020 (Halite release)
+
+### Added
+
+- **Synths overview page**
+
+### Changed
+
+- Show correct network fees on the Create Order Card.
+- Remove usage of getExchangeFeeRate via FeePool.
+
 ## 21 May 2020 (Sulfur release)
 
 ### Added
@@ -40,7 +51,7 @@
 - Removed unused components.
 - Removed unneeded page scroll on the Trade page.
 
-## 2 April 2020 (Graphite Release)
+## 2 April 2020 (Graphite release)
 
 ### Added
 

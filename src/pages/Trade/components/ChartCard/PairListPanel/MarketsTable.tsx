@@ -1,17 +1,17 @@
 import React, { memo, FC } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { CellProps, Row } from 'react-table';
 
 import { MarketPairs, MarketPair } from 'ducks/markets';
 import { getAvailableSynthsMap } from 'ducks/synths';
+import { RootState } from 'ducks/types';
 
 import Currency from 'components/Currency';
 import Table from 'components/Table';
-import { TABLE_PALETTE } from 'components/Table/constants';
 import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
 import { SynthDefinitionMap } from 'ducks/synths';
-import { connect } from 'react-redux';
-import { RootState } from 'ducks/types';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -19,7 +19,7 @@ type StateProps = {
 
 type Props = {
 	markets: MarketPairs;
-	onTableRowClick: (row: { original: MarketPair }) => void;
+	onTableRowClick: (row: Row<MarketPair>) => void;
 };
 
 type MarketsTableProps = StateProps & Props;
@@ -28,14 +28,14 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 	const { t } = useTranslation();
 
 	return (
-		<StyledTable<any>
-			palette={TABLE_PALETTE.PRIMARY}
+		<StyledTable
+			palette="primary"
 			columns={[
 				{
-					Header: t('markets.table.pair-col'),
+					Header: <>{t('markets.table.pair-col')}</>,
 					accessor: 'pair',
 					width: 150,
-					Cell: (cellProps: { row: { original: MarketPair } }) => (
+					Cell: (cellProps: CellProps<MarketPair>) => (
 						<Currency.Pair
 							baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 							quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
@@ -45,16 +45,15 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 					sortable: true,
 				},
 				{
-					Header: t('markets.table.last-price-col'),
+					Header: <>{t('markets.table.last-price-col')}</>,
 					accessor: 'lastPrice',
 					sortType: 'basic',
 					width: 100,
-					Cell: (cellProps: { row: { original: MarketPair } }) => (
+					Cell: (cellProps: CellProps<MarketPair, MarketPair['lastPrice']>) => (
 						<RightAlignedCell>
 							<CurrencyCol
-								currencyKey={cellProps.row.original.quoteCurrencyKey}
-								synthsMap={synthsMap}
-								cellProps={cellProps}
+								sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
+								value={cellProps.cell.value}
 							/>
 						</RightAlignedCell>
 					),

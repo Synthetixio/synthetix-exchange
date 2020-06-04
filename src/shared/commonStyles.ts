@@ -4,6 +4,9 @@ import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
 import { tableDataSmallCSS, chartDataCSS } from 'components/Typography/Data';
 
 import { Z_INDEX } from '../constants/ui';
+import { media } from './media';
+
+import SearchInput from 'components/Input/SearchInput';
 
 export const FlexDiv = styled.div`
 	display: flex;
@@ -152,7 +155,7 @@ export const InfoBoxLabel = styled(DataSmall)`
 	text-transform: uppercase;
 `;
 
-export const InfoBoxValue = styled(DataLarge)<{ rateChange: number }>`
+export const InfoBoxValue = styled(DataLarge)<{ rateChange?: number }>`
 	text-transform: none;
 	font-size: 14px;
 	transition: all 0.3s ease-in-out;
@@ -218,6 +221,7 @@ export const resetButtonCSS = css`
 	background: none;
 	outline: none;
 	cursor: pointer;
+	padding: 0;
 `;
 
 export const fadeInAnimation = keyframes`
@@ -236,4 +240,43 @@ export const fadeOutAnimation = keyframes`
   to {
     opacity: 0;
   }
+`;
+
+export const GridDiv = styled.div`
+	display: grid;
+`;
+
+export const GridDivCentered = styled(GridDiv)`
+	align-items: center;
+	justify-items: center;
+`;
+
+export const GridDivRow = styled(GridDiv)`
+	grid-auto-flow: row;
+`;
+
+export const GridDivCenteredRow = styled(GridDivCentered)`
+	grid-auto-flow: row;
+`;
+
+export const GridDivCol = styled(GridDiv)`
+	grid-auto-flow: column;
+`;
+
+export const GridDivCenteredCol = styled(GridDivCentered)`
+	grid-auto-flow: column;
+`;
+
+export const AssetSearchInput = styled(SearchInput)`
+	width: 240px;
+	.search-input {
+		height: 40px;
+	}
+	${media.small`
+		width: 100%;
+	`}
+`;
+
+export const NoResultsMessage = styled.div`
+	padding: 18px;
 `;

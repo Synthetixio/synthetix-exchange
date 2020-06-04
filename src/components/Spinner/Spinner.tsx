@@ -11,23 +11,21 @@ type ImageSize = 'lg' | 'sm';
 type SpinnerProps = {
 	size?: ImageSize;
 	className?: string;
-	fullscreen?: boolean;
+	centered?: boolean;
 };
 
-const Spinner: FC<SpinnerProps> = memo(
-	({ size = 'lg', className, fullscreen = false, ...rest }) => (
-		<Container className={className} fullscreen={fullscreen} {...rest}>
-			{size === 'sm' ? (
-				<Img src={spinnerSmall} alt="spinner" width="20" height="20" />
-			) : (
-				<Img src={spinnerBig} alt="spinner" />
-			)}
-		</Container>
-	)
-);
+const Spinner: FC<SpinnerProps> = memo(({ size = 'lg', className, centered = false, ...rest }) => (
+	<Container className={className} centered={centered} {...rest}>
+		{size === 'sm' ? (
+			<Img src={spinnerSmall} alt="spinner" width="20" height="20" />
+		) : (
+			<Img src={spinnerBig} alt="spinner" />
+		)}
+	</Container>
+));
 
-const Container = styled.div<{ fullscreen: boolean }>`
-	${(props) => props.fullscreen && absoluteCenteredCSS}
+const Container = styled.div<{ centered: boolean }>`
+	${(props) => props.centered && absoluteCenteredCSS}
 `;
 
 const imageRotation = keyframes`

@@ -29,7 +29,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo }) => {
 	}, []);
 
 	if (collateralPair == null) {
-		return <Spinner fullscreen={true} size="sm" />;
+		return <Spinner centered={true} size="sm" />;
 	}
 
 	return (

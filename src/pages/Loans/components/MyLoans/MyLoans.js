@@ -54,28 +54,28 @@ export const MyLoans = ({
 	const columns = useMemo(
 		() => [
 			{
-				Header: t('loans.my-loans.table.amount-borrowed-col'),
+				Header: <>{t('loans.my-loans.table.amount-borrowed-col')}</>,
 				accessor: 'loanAmount',
 				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.collateral-col'),
+				Header: <>{t('loans.my-loans.table.collateral-col')}</>,
 				accessor: 'collateralAmount',
 				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.time-opened-col'),
+				Header: <>{t('loans.my-loans.table.time-opened-col')}</>,
 				accessor: 'timeCreated',
 				Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.current-interest-fee-col'),
+				Header: <>{t('loans.my-loans.table.current-interest-fee-col')}</>,
 				accessor: 'currentInterest',
 				Cell: (cellProps) => (
 					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
@@ -86,7 +86,7 @@ export const MyLoans = ({
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.fees-payable-col'),
+				Header: <>{t('loans.my-loans.table.fees-payable-col')}</>,
 				accessor: 'feesPayable',
 				Cell: (cellProps) => (
 					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
@@ -97,7 +97,7 @@ export const MyLoans = ({
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.status-col'),
+				Header: <>{t('loans.my-loans.table.status-col')}</>,
 				accessor: 'status',
 				Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
 				width: 100,

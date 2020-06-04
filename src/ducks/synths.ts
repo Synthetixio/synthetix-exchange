@@ -1,10 +1,11 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import keyBy from 'lodash/keyBy';
 import orderBy from 'lodash/orderBy';
+import get from 'lodash/get';
 
 import { synthWeight } from '../utils/synthOrdering';
 
-import { SYNTHS_MAP, CATEGORY_MAP, CurrencyKeys, CurrencyKey } from '../constants/currency';
+import { SYNTHS_MAP, CurrencyKeys, CurrencyKey, Category } from '../constants/currency';
 
 import { RootState } from './types';
 import {
@@ -21,15 +22,20 @@ const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
 export type SynthDefinition = {
 	name: CurrencyKey;
 	asset: string;
-	category: string;
+	category: Category;
 	sign: string;
 	desc: string;
 	aggregator: string;
-	inverted: {
+	inverted?: {
 		entryPoint: number;
 		upperLimit: number;
 		lowerLimit: number;
 	};
+	index?: Array<{
+		symbol: CurrencyKey;
+		name: string;
+		units: number;
+	}>;
 	isFrozen?: boolean;
 };
 
@@ -38,6 +44,8 @@ export type SynthDefinitionWithRates = SynthDefinition & {
 	lastPrice: number | null;
 };
 
+export type SynthDefinitionWithRatesMap = Record<CurrencyKey, SynthDefinitionWithRates>;
+
 export type SynthPair = {
 	base: SynthDefinition;
 	quote: SynthDefinition;
@@ -45,7 +53,7 @@ export type SynthPair = {
 };
 
 const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
-	if (a.category === CATEGORY_MAP.crypto && b.category === CATEGORY_MAP.crypto) {
+	if (a.category === 'crypto' && b.category === 'crypto') {
 		// @ts-ignore
 		const nameOrder = synthWeight[a.name.slice(1)] - synthWeight[b.name.slice(1)];
 		if (!a.inverted && b.inverted) {
@@ -54,7 +62,7 @@ const sortSynths = (a: SynthDefinition, b: SynthDefinition): number => {
 			return nameOrder;
 		} else return 0;
 	}
-	if (a.category === CATEGORY_MAP.crypto && b.category !== CATEGORY_MAP.crypto) {
+	if (a.category === 'crypto' && b.category !== 'crypto') {
 		return -1;
 	}
 	return 0;
@@ -74,8 +82,8 @@ export type SynthsSliceState = {
 
 const initialState: SynthsSliceState = {
 	availableSynths: {},
-	baseSynth: { name: DEFAULT_BASE_SYNTH, category: CATEGORY_MAP.crypto } as SynthDefinition,
-	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: CATEGORY_MAP.forex } as SynthDefinition,
+	baseSynth: { name: DEFAULT_BASE_SYNTH, category: 'crypto' } as SynthDefinition,
+	quoteSynth: { name: DEFAULT_QUOTE_SYNTH, category: 'forex' } as SynthDefinition,
 	isPairReversed: false,
 };
 
@@ -152,12 +160,20 @@ export const getSynthsWithRates = createSelector(
 		}))
 );
 
+export const getSynthsWithRatesMap = createSelector(getSynthsWithRates, (synthsWithRates) =>
+	keyBy(synthsWithRates, 'name')
+);
+
 export const getOrderedSynthsWithRates = createSelector(
 	getSynthsWithRates,
 	getHistoricalRatesIsOneDayPeriodLoaded,
 	(synthsWithRates, historicalRatesIsOneDayPeriodLoaded) =>
 		historicalRatesIsOneDayPeriodLoaded
-			? orderBy(synthsWithRates, (synth) => synth.historicalRates.ONE_DAY.data?.change, 'desc')
+			? orderBy(
+					synthsWithRates,
+					(synth) => get(synth, 'historicalRates.ONE_DAY.data.change', 0),
+					'desc'
+			  )
 			: synthsWithRates
 );
 
@@ -170,8 +186,8 @@ export const getFilteredSynthsWithRates = createSelector(
 					let normalizedCategory;
 
 					// map certain categories to a larger top group category. (might need a "switch" if this list grows large)
-					if (synth.category === CATEGORY_MAP.index) {
-						normalizedCategory = CATEGORY_MAP.crypto;
+					if (synth.category === 'index') {
+						normalizedCategory = 'crypto';
 					} else {
 						normalizedCategory = synth.category;
 					}
