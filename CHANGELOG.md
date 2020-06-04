@@ -51,7 +51,7 @@
 - Removed unused components.
 - Removed unneeded page scroll on the Trade page.
 
-## 2 April 2020
+## 2 April 2020 (Graphite release)
 
 ### Added
 
