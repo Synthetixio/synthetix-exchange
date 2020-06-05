@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import snxJSConnector from '../../utils/snxJSConnector';
-import { getEthereumNetwork } from '../../utils/metamaskTools';
-import { getExchangeData } from '../../dataFetcher';
+import snxJSConnector from 'utils/snxJSConnector';
+import { getEthereumNetwork } from 'utils/metamaskTools';
+import { getExchangeData } from 'dataFetcher';
 
-import { getWalletInfo } from '../../ducks/wallet/walletDetails';
-import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { setAvailableSynths, updateFrozenSynths } from 'ducks/synths';
 import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
 import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
-import { fetchRatesRequest } from '../../ducks/rates';
-import { setNetworkGasInfo } from '../../ducks/transaction';
+import { fetchRatesRequest } from 'ducks/rates';
+import { setNetworkGasInfo } from 'ducks/transaction';
 
-import { setAppReady, getIsAppReady } from '../../ducks/app';
+import { setAppReady, getIsAppReady, setSystemSuspended } from 'ducks/app';
 
 import App from './App';
 
@@ -28,6 +28,7 @@ const Root = ({
 	fetchRatesRequest,
 	setAppReady,
 	isAppReady,
+	setSystemSuspended,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const fetchAndSetExchangeData = useCallback(async () => {
@@ -46,8 +47,22 @@ const Root = ({
 	useEffect(() => {
 		if (isAppReady) {
 			fetchRatesRequest();
+
+			const checkSystemStatus = async () => {
+				const {
+					snxJS: { SystemStatus },
+				} = snxJSConnector;
+				try {
+					const isSystemUpgrading = await SystemStatus.isSystemUpgrading();
+					if (isSystemUpgrading) {
+						setSystemSuspended({ status: true });
+					}
+				} catch (e) {}
+			};
+
+			checkSystemStatus();
 		}
-	}, [isAppReady, fetchRatesRequest]);
+	}, [isAppReady, fetchRatesRequest, setSystemSuspended]);
 
 	useEffect(() => {
 		const init = async () => {
@@ -56,6 +71,7 @@ const Root = ({
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({ networkId });
 			}
+
 			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
 
 			const synths = snxJSConnector.snxJS.contractSettings.synths.filter((synth) => synth.asset);
@@ -63,6 +79,7 @@ const Root = ({
 			setAvailableSynths({ synths });
 			setAppReady();
 			fetchAndSetExchangeData();
+			// TODO: stop fetching data when system is suspended
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
 				fetchAndSetExchangeData();
@@ -95,6 +112,7 @@ const mapDispatchToProps = {
 	fetchWalletBalancesRequest,
 	fetchRatesRequest,
 	setAppReady,
+	setSystemSuspended,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

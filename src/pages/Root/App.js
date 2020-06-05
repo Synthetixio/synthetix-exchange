@@ -4,14 +4,16 @@ import { ThemeProvider } from 'styled-components';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { ROUTES } from '../../constants/routes';
+import { ROUTES } from 'constants/routes';
 
-import { getCurrentTheme } from '../../ducks/ui';
+import { getCurrentTheme } from 'ducks/ui';
+import { getIsSystemSuspended } from 'ducks/app';
 
-import GlobalEventsGate from '../../gates/GlobalEventsGate';
+import GlobalEventsGate from 'gates/GlobalEventsGate';
 
-import { isDarkTheme, lightTheme, darkTheme } from '../../styles/theme';
+import { isDarkTheme, lightTheme, darkTheme } from 'styles/theme';
 
+import MaintenanceMessage from './components/MaintenanceMessage';
 import MainLayout from './components/MainLayout';
 import HomeLayout from './components/HomeLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -26,79 +28,88 @@ import Home from '../Home';
 import Markets from '../Markets';
 import Synths from '../Synths';
 
-const App = ({ isAppReady, currentTheme }) => {
+const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
 		<ThemeProvider theme={themeStyle}>
-			<Router>
-				{isAppReady && (
-					<>
-						<GlobalEventsGate />
-						<WalletPopup />
-						<GweiPopup />
-						{/* <AppBanner /> */}
-					</>
-				)}
-				<Switch>
-					<Route
-						path={ROUTES.TradeMatch}
-						render={(routeProps) => (
-							<MainLayout isAppReady={isAppReady}>
-								<Trade {...routeProps} />
-							</MainLayout>
+			{isSystemSuspended ? (
+				<>
+					<GlobalEventsGate />
+					<MaintenanceMessage />
+				</>
+			) : (
+				<>
+					<Router>
+						{isAppReady && (
+							<>
+								<GlobalEventsGate />
+								<WalletPopup />
+								<GweiPopup />
+								{/* <AppBanner /> */}
+							</>
 						)}
-					/>
-					<Route
-						path={ROUTES.Trade}
-						render={(routeProps) => (
-							<MainLayout isAppReady={isAppReady}>
-								<Trade {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Loans}
-						render={(routeProps) => (
-							<MainLayout isAppReady={isAppReady}>
-								<Loans {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<ProtectedRoute
-						path={ROUTES.Assets.Home}
-						render={(routeProps) => (
-							<MainLayout isAppReady={isAppReady}>
-								<Assets {...routeProps} />
-							</MainLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Markets}
-						render={(routeProps) => (
-							<HomeLayout>
-								<Markets {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Synths.Home}
-						render={(routeProps) => (
-							<HomeLayout>
-								<Synths {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
-					<Route
-						path={ROUTES.Home}
-						render={(routeProps) => (
-							<HomeLayout>
-								<Home {...routeProps} />
-							</HomeLayout>
-						)}
-					/>
-				</Switch>
-			</Router>
+						<Switch>
+							<Route
+								path={ROUTES.TradeMatch}
+								render={(routeProps) => (
+									<MainLayout isAppReady={isAppReady}>
+										<Trade {...routeProps} />
+									</MainLayout>
+								)}
+							/>
+							<Route
+								path={ROUTES.Trade}
+								render={(routeProps) => (
+									<MainLayout isAppReady={isAppReady}>
+										<Trade {...routeProps} />
+									</MainLayout>
+								)}
+							/>
+							<Route
+								path={ROUTES.Loans}
+								render={(routeProps) => (
+									<MainLayout isAppReady={isAppReady}>
+										<Loans {...routeProps} />
+									</MainLayout>
+								)}
+							/>
+							<ProtectedRoute
+								path={ROUTES.Assets.Home}
+								render={(routeProps) => (
+									<MainLayout isAppReady={isAppReady}>
+										<Assets {...routeProps} />
+									</MainLayout>
+								)}
+							/>
+							<Route
+								path={ROUTES.Markets}
+								render={(routeProps) => (
+									<HomeLayout>
+										<Markets {...routeProps} />
+									</HomeLayout>
+								)}
+							/>
+							<Route
+								path={ROUTES.Synths.Home}
+								render={(routeProps) => (
+									<HomeLayout>
+										<Synths {...routeProps} />
+									</HomeLayout>
+								)}
+							/>
+							<Route
+								path={ROUTES.Home}
+								render={(routeProps) => (
+									<HomeLayout>
+										<Home {...routeProps} />
+									</HomeLayout>
+								)}
+							/>
+						</Switch>
+					</Router>
+				</>
+			)}
 		</ThemeProvider>
 	);
 };
@@ -110,6 +121,7 @@ App.propTypes = {
 
 const mapStateToProps = (state) => ({
 	currentTheme: getCurrentTheme(state),
+	isSystemSuspended: getIsSystemSuspended(state),
 });
 
 export default connect(mapStateToProps, null)(App);
