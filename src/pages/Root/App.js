@@ -34,7 +34,10 @@ const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	return (
 		<ThemeProvider theme={themeStyle}>
 			{isSystemSuspended ? (
-				<MaintenanceMessage />
+				<>
+					<GlobalEventsGate />
+					<MaintenanceMessage />
+				</>
 			) : (
 				<>
 					<Router>
