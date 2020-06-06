@@ -54,18 +54,18 @@ const Chart: FC<ChartProps> = memo(
 							<XAxis
 								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 								dataKey="timestamp"
-								tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
+								tickFormatter={(val) =>
+									period.value > PERIOD_IN_HOURS.ONE_DAY
+										? format(val, 'DD MMM')
+										: format(val, 'h:mma')
+								}
 								axisLine={false}
 								tickLine={false}
 							/>
 							<YAxis
 								type="number"
 								domain={['auto', 'auto']}
-								tickFormatter={(val) =>
-									period.value > PERIOD_IN_HOURS.ONE_DAY
-										? format(val, 'DD MMM')
-										: format(val, 'h:mma')
-								}
+								tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
 								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 								orientation="right"
 								axisLine={false}
