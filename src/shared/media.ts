@@ -1,10 +1,12 @@
 import { css } from 'styled-components';
 
+const cssUntyped = css as any;
+
 // https://github.com/JohnAlbin/styled-media-queries/blob/master/index.js
-export const mediaQuery = (...query) => (...rules) =>
-	css`
-		@media ${css(...query)} {
-			${css(...rules)}
+export const mediaQuery = (...query: any) => (...rules: any) =>
+	cssUntyped`
+		@media ${cssUntyped(...query)} {
+			${cssUntyped(...rules)}
 		}
 	`;
 

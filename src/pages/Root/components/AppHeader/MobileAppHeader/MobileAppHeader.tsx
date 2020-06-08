@@ -1,9 +1,8 @@
-import React, { useState, memo } from 'react';
-import styled, { css } from 'styled-components';
+import React, { FC, useState, memo, useContext } from 'react';
+import styled, { css, ThemeContext } from 'styled-components';
 import { connect } from 'react-redux';
 
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
 
 import { labelMediumCSS } from 'components/Typography/Label';
 import Link from 'components/Link';
@@ -18,9 +17,8 @@ import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/
 import { FlexDivCentered } from 'shared/commonStyles';
 import { media } from 'shared/media';
 
-import { getCurrentTheme, toggleTheme } from 'ducks/ui';
-
-import { isLightTheme } from 'styles/theme';
+import { toggleTheme } from 'ducks/ui';
+import { RootState } from 'ducks/types';
 
 import Logo from '../Logo';
 import UserInfo from '../UserInfo';
@@ -28,12 +26,28 @@ import UserInfo from '../UserInfo';
 import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
-export const MobileAppHeader = memo(
-	({ showThemeToggle, currentTheme, toggleTheme, isOnSplashPage, isLoggedIn, ...rest }) => {
+import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from '../constants';
+
+type DispatchProps = {
+	toggleTheme: typeof toggleTheme;
+};
+
+type Props = {
+	isLoggedIn: boolean;
+	showThemeToggle?: boolean;
+	className?: string;
+	isOnSplashPage?: boolean;
+};
+
+type MobileAppHeaderProps = DispatchProps & Props;
+
+export const MobileAppHeader: FC<MobileAppHeaderProps> = memo(
+	({ showThemeToggle = true, toggleTheme, isOnSplashPage, isLoggedIn, ...rest }) => {
 		const [menuOpen, setMenuOpen] = useState(false);
 		const { t } = useTranslation();
 
 		const toggleMenu = () => setMenuOpen(!menuOpen);
+		const theme = useContext(ThemeContext);
 
 		return (
 			<>
@@ -63,23 +77,17 @@ export const MobileAppHeader = memo(
 					<>
 						<Overlay onClick={toggleMenu} />
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
-							<DropdownMenuLink to={ROUTES.Markets} onClick={toggleMenu}>
-								{t('header.links.markets')}
-							</DropdownMenuLink>
-							<DropdownMenuLink to={ROUTES.Synths.Home} onClick={toggleMenu}>
-								{t('header.links.synths')}
-							</DropdownMenuLink>
-							<DropdownMenuLink to={ROUTES.Trade} onClick={toggleMenu}>
-								{t('header.links.trade')}
-							</DropdownMenuLink>
-							<DropdownMenuLink to={ROUTES.Loans} onClick={toggleMenu}>
-								{t('header.links.loans')}
-							</DropdownMenuLink>
-							{isLoggedIn && (
-								<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
-									{t('header.links.assets')}
+							{MENU_LINKS.map(({ i18nLabel, link }) => (
+								<DropdownMenuLink to={link} onClick={toggleMenu} key={link}>
+									{t(i18nLabel)}
 								</DropdownMenuLink>
-							)}
+							))}
+							{isLoggedIn &&
+								MENU_LINKS_LOGGED_IN.map(({ i18nLabel, link }) => (
+									<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
+										{t(i18nLabel)}
+									</DropdownMenuLink>
+								))}
 							<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
 								{t('header.links.support')}
 							</DropdownMenuLink>
@@ -90,7 +98,7 @@ export const MobileAppHeader = memo(
 										toggleTheme();
 									}}
 								>
-									{isLightTheme(currentTheme) ? t('header.theme.dark') : t('header.theme.light')}
+									{theme.isLightTheme ? t('header.theme.dark') : t('header.theme.light')}
 								</DropdownMenuItem>
 							)}
 						</StyledDropdown>
@@ -101,20 +109,7 @@ export const MobileAppHeader = memo(
 	}
 );
 
-MobileAppHeader.defaultProps = {
-	showThemeToggle: true,
-};
-
-MobileAppHeader.propTypes = {
-	showThemeToggle: PropTypes.bool,
-	currentTheme: PropTypes.string.isRequired,
-	toggleTheme: PropTypes.func.isRequired,
-	className: PropTypes.string,
-	isOnSplashPage: PropTypes.bool,
-	isLoggedIn: PropTypes.bool,
-};
-
-const Container = styled.header`
+const Container = styled.header<{ isOnSplashPage?: boolean }>`
 	height: ${APP_HEADER_HEIGHT};
 	background-color: ${(props) =>
 		props.isOnSplashPage ? props.theme.colors.surfaceL1 : props.theme.colors.surfaceL3};
@@ -169,7 +164,7 @@ const MenuItemsRight = styled(MenuItems)`
 	}
 `;
 
-const StyledDropdown = styled(Dropdown)`
+const StyledDropdown = styled(Dropdown)<{ isOnSplashPage?: boolean }>`
 	${(props) =>
 		props.isOnSplashPage &&
 		css`
@@ -237,12 +232,11 @@ const MenuPusher = styled.div`
 	`}
 `;
 
-const mapStateToProps = (state) => ({
-	currentTheme: getCurrentTheme(state),
-});
-
-const mapDispatchToProps = {
+const mapDispatchToProps: DispatchProps = {
 	toggleTheme,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MobileAppHeader);
+export default connect<{}, DispatchProps, Props, RootState>(
+	null,
+	mapDispatchToProps
+)(MobileAppHeader);

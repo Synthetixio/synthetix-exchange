@@ -14,6 +14,7 @@ import { FlexDivCentered } from 'shared/commonStyles';
 
 import { mediumMediaQuery } from 'shared/media';
 
+import { RootState } from 'ducks/types';
 import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 import Logo from './Logo';
@@ -22,7 +23,8 @@ import UserInfo from './UserInfo';
 import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
-import { RootState } from 'ducks/types';
+
+import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from './constants';
 
 type StateProps = {
 	isLoggedIn: boolean;
@@ -37,7 +39,7 @@ type Props = {
 type AppHeaderProps = StateProps & Props;
 
 export const AppHeader: FC<AppHeaderProps> = memo((props) => {
-	const { showThemeToggle, isOnSplashPage, isLoggedIn, ...rest } = props;
+	const { showThemeToggle = true, isOnSplashPage, isLoggedIn, ...rest } = props;
 	const { t } = useTranslation();
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -55,23 +57,17 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 							<Logo />
 						</StyledLogoLink>
 					</MenuItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Markets}>{t('header.links.markets')}</MenuLink>
-					</MenuLinkItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Synths.Home}>{t('header.links.synths')}</MenuLink>
-					</MenuLinkItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Trade}>{t('header.links.trade')}</MenuLink>
-					</MenuLinkItem>
-					<MenuLinkItem>
-						<MenuLink to={ROUTES.Loans}>{t('header.links.loans')}</MenuLink>
-					</MenuLinkItem>
-					{isLoggedIn && (
-						<MenuLinkItem>
-							<MenuLink to={ROUTES.Assets.Home}>{t('header.links.assets')}</MenuLink>
+					{MENU_LINKS.map(({ i18nLabel, link }) => (
+						<MenuLinkItem key={link}>
+							<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
 						</MenuLinkItem>
-					)}
+					))}
+					{isLoggedIn &&
+						MENU_LINKS_LOGGED_IN.map(({ i18nLabel, link }) => (
+							<MenuLinkItem key={link}>
+								<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
+							</MenuLinkItem>
+						))}
 				</MenuItemsLeft>
 				<MenuItemsRight>
 					<MenuItem>
@@ -90,10 +86,6 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 		</Container>
 	);
 });
-
-AppHeader.defaultProps = {
-	showThemeToggle: true,
-};
 
 const StyledLogoLink = styled(Link)`
 	height: 24px;

@@ -2,7 +2,7 @@ import React, { useContext, FC, memo } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
 import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 
 import ChangePercent from '../ChangePercent';
 import RechartsResponsiveContainer from '../RechartsResponsiveContainer';
@@ -164,7 +164,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 									const periodOverOneDay =
 										selectedPeriod != null && selectedPeriod.value > PERIOD_IN_HOURS.ONE_DAY;
 
-									return format(val, periodOverOneDay ? 'DD MMM' : 'h:mma');
+									return format(val, periodOverOneDay ? 'dd MMM' : 'h:mma');
 								}}
 							/>
 							<YAxis

@@ -4,7 +4,7 @@ import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
 import { tableDataSmallCSS, chartDataCSS } from 'components/Typography/Data';
 
 import { Z_INDEX } from '../constants/ui';
-import { media } from './media';
+import { media, breakpoint } from './media';
 
 import SearchInput from 'components/Input/SearchInput';
 
@@ -22,6 +22,10 @@ export const FlexDivCol = styled(FlexDiv)`
 
 export const FlexDivRow = styled(FlexDiv)`
 	justify-content: space-between;
+`;
+
+export const FlexDivRowCentered = styled(FlexDivRow)`
+	align-items: center;
 `;
 
 export const PageLayout = styled(FlexDiv)`
@@ -279,4 +283,9 @@ export const AssetSearchInput = styled(SearchInput)`
 
 export const NoResultsMessage = styled.div`
 	padding: 18px;
+`;
+
+export const PageContent = styled.div`
+	max-width: ${breakpoint.large}px;
+	margin: 0 auto;
 `;

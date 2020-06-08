@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import styled, { ThemeProvider } from 'styled-components';
 import { Z_INDEX, DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
-import { breakpoint, media } from 'shared/media';
+import { media } from 'shared/media';
 
 import {
 	getIsLoadedFilteredMarkets,
@@ -23,7 +23,7 @@ import useInterval from 'shared/hooks/useInterval';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button, ButtonFilterWithDropdown } from 'components/Button';
-import { FlexDivRow, AssetSearchInput, NoResultsMessage } from 'shared/commonStyles';
+import { FlexDivRow, AssetSearchInput, NoResultsMessage, PageContent } from 'shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
@@ -85,7 +85,7 @@ export const MarketsSection: FC<MarketSectionProps> = ({
 				<MarketsCharts markets={markets} marketsLoaded={marketsLoaded} />
 			</MarketChartsContent>
 			<MarketsTableContainer>
-				<Content>
+				<PageContent>
 					<FiltersRow>
 						<AssetFilters>
 							{ASSET_FILTERS.map(({ asset }) => (
@@ -143,7 +143,7 @@ export const MarketsSection: FC<MarketSectionProps> = ({
 							</StyledButton>
 						)}
 					</ButtonContainer>
-				</Content>
+				</PageContent>
 			</MarketsTableContainer>
 		</ThemeProvider>
 	);
@@ -196,12 +196,7 @@ const MarketsTableContainer = styled.div`
 	`}
 `;
 
-const Content = styled.div`
-	max-width: ${breakpoint.large}px;
-	margin: 0 auto;
-`;
-
-const MarketChartsContent = styled(Content)`
+const MarketChartsContent = styled(PageContent)`
 	position: relative;
 	z-index: ${Z_INDEX.BASE};
 	transform: translateY(50%);

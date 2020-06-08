@@ -7,7 +7,8 @@
 			"markets": "markets",
 			"synths": "synths",
 			"support": "support",
-			"assets": "assets"
+			"assets": "assets",
+			"options": "options"
 		},
 		"theme": {
 			"light": "light mode",
@@ -161,6 +162,43 @@
 				"units-of-symbol-name": "{{units}} of {{symbol}} ({{name}})",
 				"units-of-symbol": "{{units}} of {{symbol}}",
 				"generic": "Tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle."
+			}
+		}
+	},
+	"options": {
+		"phases": {
+			"bidding": "bidding",
+			"trading": "trading",
+			"maturity": "maturity",
+			"destruction": "destruction"
+		},
+		"home": {
+			"your-markets": {
+				"has-markets": {
+					"title": "Your Markets"
+				},
+				"no-markets": {
+					"title": "Create a market or place a bid to get started",
+					"subtitle": "Get fees for creating markets, win big without actually holding the asset"
+				},
+				"create-market-button-label": "create a new market"			
+			},			
+			"explore-markets": {
+				"title": "Bid on open markets:"
+			},
+			"markets-table": {
+				"asset-col": "asset",
+				"strike-price-col": "strike price $(usd)",
+				"long-short-col": "long / short",
+				"phase-col": "phase",
+				"pool-size-col": "pool size ($sUSD)",
+				"maturity-date-col": "maturity date",
+				"bidding-ends-col": "bidding ends in"
+			}			
+		},
+		"common": {
+			"time-remaining": {
+				"ended": "bidding ended"
 			}
 		}
 	},
@@ -445,6 +483,8 @@
 			"1W": "1W",
 			"1M": "1M"
 		},
-		"top-number": "top {{number}}"
+		"top-number": "top {{number}}",
+		"by-date": "by {{date}}",
+		"val-in-cents": "{{val}}c"
 	}
 }

@@ -27,6 +27,7 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 import Synths from '../Synths';
+import Options from '../Options';
 
 const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
@@ -95,6 +96,14 @@ const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 								render={(routeProps) => (
 									<HomeLayout>
 										<Synths {...routeProps} />
+									</HomeLayout>
+								)}
+							/>
+							<Route
+								path={ROUTES.Options.Home}
+								render={(routeProps) => (
+									<HomeLayout>
+										<Options {...routeProps} />
 									</HomeLayout>
 								)}
 							/>

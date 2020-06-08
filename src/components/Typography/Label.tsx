@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 
 export const labelCSS = css`
 	font-family: ${(props) => props.theme.fonts.medium};
-	color: ${(props) => props.theme.colors.fontPrimary};
 	letter-spacing: 0.2px;
 `;
 

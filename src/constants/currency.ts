@@ -156,6 +156,7 @@ export const CRYPTO_SYNTHS_BY_MC = {
 
 export const currencyKeyToIconMap = {
 	[CRYPTO_CURRENCY_MAP.ETH]: ETHIcon,
+	[CRYPTO_CURRENCY_MAP.BTC]: ETHIcon,
 
 	[SYNTHS_MAP.sBTC]: sBTCIcon,
 	[SYNTHS_MAP.sETH]: sETHIcon,

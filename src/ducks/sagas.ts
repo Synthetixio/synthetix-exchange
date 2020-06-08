@@ -6,6 +6,7 @@ import { watchFetchMyTradesRequest } from './trades/myTrades';
 import { watchFetchAllTradesRequest } from './trades/allTrades';
 import { watchFetchHistoricalRatesRequest } from './historicalRates';
 import { watchFetchRatesRequest } from './rates';
+import { watchFetchOptionsMarketsRequest } from './options/optionsMarkets';
 
 const rootSaga = function* () {
 	yield all([
@@ -15,6 +16,7 @@ const rootSaga = function* () {
 		watchFetchMyTradesRequest(),
 		watchFetchAllTradesRequest(),
 		watchFetchRatesRequest(),
+		watchFetchOptionsMarketsRequest(),
 	]);
 };
 

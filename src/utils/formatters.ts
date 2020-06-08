@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import numbro from 'numbro';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
+
 import snxJSConnector from './snxJSConnector';
 import { CurrencyKey } from 'constants/currency';
 import { BigNumberish } from 'ethers/utils';
@@ -36,7 +37,7 @@ export const formatCurrency = (value: NumericValue, decimals = DEFAULT_CURRENCY_
 
 	return numbro(value).format({
 		thousandSeparated: true,
-		trimMantissa: true,
+		trimMantissa: decimals > 2 ? true : false,
 		mantissa: Number.isInteger(value as number) ? 0 : decimals,
 	});
 };
@@ -77,7 +78,8 @@ export const bigNumberFormatter = (value: BigNumberish) =>
 
 export const getAddress = (addr: string) => (snxJSConnector as any).ethersUtils.getAddress(addr);
 
-export const formatTxTimestamp = (timestamp: NumericValue) => format(timestamp, 'DD-MM-YY | HH:mm');
+export const formatTxTimestamp = (timestamp: number | Date) =>
+	format(timestamp, 'dd-MM-yy | HH:mm');
 
 export const toJSTimestamp = (timestamp: number) => timestamp * 1000;
 
@@ -93,3 +95,28 @@ export const formatCurrencyPair = (baseCurrencyKey: CurrencyKey, quoteCurrencyKe
 
 export const getDecimalPlaces = (value: NumericValue) =>
 	(value.toString().split('.')[1] || '').length;
+
+// date-fns formatDuration does not let us customize the actual string, so we need to write this custom formatter.
+// TODO: support translations
+export const formattedDuration = (duration: Duration, delimiter = ' ') => {
+	const formatted = [];
+	if (duration.years) {
+		formatted.push(`${duration.years}y`);
+	}
+	if (duration.months) {
+		formatted.push(`${duration.months}mo`);
+	}
+	if (duration.days) {
+		formatted.push(`${duration.months}d`);
+	}
+	if (duration.hours) {
+		formatted.push(`${duration.hours}h`);
+	}
+	if (duration.minutes) {
+		formatted.push(`${duration.minutes}m`);
+	}
+	if (duration.seconds) {
+		formatted.push(`${duration.seconds}s`);
+	}
+	return formatted.join(delimiter);
+};

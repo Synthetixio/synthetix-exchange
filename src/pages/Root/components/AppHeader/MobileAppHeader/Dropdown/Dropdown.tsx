@@ -1,30 +1,27 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 import { media } from 'shared/media';
 import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/ui';
 
-export const Overlay = memo(({ onClick }) =>
-	ReactDOM.createPortal(<Container onClick={onClick} />, document.body)
-);
-
-Overlay.propTypes = {
-	onClick: PropTypes.func,
+type DropdownProps = {
+	children: React.ReactNode;
 };
+
+export const Dropdown: FC<DropdownProps> = memo(({ children, ...rest }) =>
+	ReactDOM.createPortal(<Container {...rest}>{children}</Container>, document.body)
+);
 
 const Container = styled.div`
 	top: ${APP_HEADER_HEIGHT};
-	bottom: 0;
-	left: 0;
-	right: 0;
+	width: 100%;
 	position: fixed;
-	background-color: ${(props) => props.theme.colors.surfaceL1};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 	z-index: ${Z_INDEX.BASE};
 	${media.small`
 		top: ${MOBILE_APP_HEADER_HEIGHT}
 	`}
 `;
 
-export default Overlay;
+export default Dropdown;

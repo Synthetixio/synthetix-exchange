@@ -11,7 +11,7 @@ export type HistoricalTrade = {
 	fromCurrencyKeyBytes: string;
 	gasPrice: number;
 	hash: string;
-	timestamp: string;
+	timestamp: number;
 	toAddress: string;
 	toAmount: number;
 	toAmountInUSD: number;
