@@ -1,8 +1,8 @@
 import { CurrencyKey } from 'constants/currency';
 
-export type Phase = 'Bidding' | 'Trading' | 'Maturity' | 'Destruction';
+export type Phase = 'bidding' | 'trading' | 'maturity' | 'destruction';
 
-export type Side = 'Long' | 'Short';
+export type Side = 'long' | 'short';
 
 export type OptionsTransaction = {
 	type: 'refund' | 'bid';
