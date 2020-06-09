@@ -2,7 +2,20 @@ import keyBy from 'lodash/keyBy';
 import memoizeOne from 'memoize-one';
 
 // Crypto
+import { ReactComponent as BTCIcon } from 'assets/currencies/crypto/BTC.svg';
 import { ReactComponent as ETHIcon } from 'assets/currencies/crypto/ETH.svg';
+import { ReactComponent as XRPIcon } from 'assets/currencies/crypto/XRP.svg';
+import { ReactComponent as BCHIcon } from 'assets/currencies/crypto/BCH.svg';
+import { ReactComponent as LTCIcon } from 'assets/currencies/crypto/LTC.svg';
+import { ReactComponent as EOSIcon } from 'assets/currencies/crypto/EOS.svg';
+import { ReactComponent as BNBIcon } from 'assets/currencies/crypto/BNB.svg';
+import { ReactComponent as XTZIcon } from 'assets/currencies/crypto/XTZ.svg';
+import { ReactComponent as XMRIcon } from 'assets/currencies/crypto/XMR.svg';
+import { ReactComponent as ADAIcon } from 'assets/currencies/crypto/ADA.svg';
+import { ReactComponent as LINKIcon } from 'assets/currencies/crypto/LINK.svg';
+import { ReactComponent as TRXIcon } from 'assets/currencies/crypto/TRX.svg';
+import { ReactComponent as DASHIcon } from 'assets/currencies/crypto/DASH.svg';
+import { ReactComponent as ETCIcon } from 'assets/currencies/crypto/ETC.svg';
 // Crypto Synths
 import { ReactComponent as sBTCIcon } from '@synthetixio/assets/synths/sBTC.svg';
 import { ReactComponent as sETHIcon } from '@synthetixio/assets/synths/sETH.svg';
@@ -116,7 +129,22 @@ export const SYNTHS = [
 
 export const SYNTHS_MAP = keyBy(SYNTHS);
 
-export const CRYPTO_CURRENCY = ['ETH', 'BTC'];
+export const CRYPTO_CURRENCY = [
+	'BTC',
+	'ETH',
+	'XRP',
+	'BCH',
+	'LTC',
+	'EOS',
+	'BNB',
+	'XTZ',
+	'XMR',
+	'ADA',
+	'LINK',
+	'TRX',
+	'DASH',
+	'ETC',
+];
 export const CRYPTO_CURRENCY_MAP = keyBy(CRYPTO_CURRENCY);
 
 export const FIAT_CURRENCY = ['USD', 'AUD'];
@@ -155,52 +183,64 @@ export const CRYPTO_SYNTHS_BY_MC = {
 };
 
 export const currencyKeyToIconMap = {
-	[CRYPTO_CURRENCY_MAP.ETH]: ETHIcon,
-	[CRYPTO_CURRENCY_MAP.BTC]: ETHIcon,
+	[CRYPTO_CURRENCY_MAP.ETH]: { CryptoIcon: ETHIcon },
+	[CRYPTO_CURRENCY_MAP.BTC]: { CryptoIcon: BTCIcon },
+	[CRYPTO_CURRENCY_MAP.XRP]: { CryptoIcon: XRPIcon },
+	[CRYPTO_CURRENCY_MAP.BCH]: { CryptoIcon: BCHIcon },
+	[CRYPTO_CURRENCY_MAP.LTC]: { CryptoIcon: LTCIcon },
+	[CRYPTO_CURRENCY_MAP.EOS]: { CryptoIcon: EOSIcon },
+	[CRYPTO_CURRENCY_MAP.BNB]: { CryptoIcon: BNBIcon },
+	[CRYPTO_CURRENCY_MAP.XTZ]: { CryptoIcon: XTZIcon },
+	[CRYPTO_CURRENCY_MAP.XMR]: { CryptoIcon: XMRIcon },
+	[CRYPTO_CURRENCY_MAP.ADA]: { CryptoIcon: ADAIcon },
+	[CRYPTO_CURRENCY_MAP.LINK]: { CryptoIcon: LINKIcon },
+	[CRYPTO_CURRENCY_MAP.TRX]: { CryptoIcon: TRXIcon },
+	[CRYPTO_CURRENCY_MAP.DASH]: { CryptoIcon: DASHIcon },
+	[CRYPTO_CURRENCY_MAP.ETC]: { CryptoIcon: ETCIcon },
 
-	[SYNTHS_MAP.sBTC]: sBTCIcon,
-	[SYNTHS_MAP.sETH]: sETHIcon,
-	[SYNTHS_MAP.sXRP]: sXRPIcon,
-	[SYNTHS_MAP.sBCH]: sBCHIcon,
-	[SYNTHS_MAP.sLTC]: sLTCIcon,
-	[SYNTHS_MAP.sEOS]: sEOSIcon,
-	[SYNTHS_MAP.sBNB]: sBNBIcon,
-	[SYNTHS_MAP.sXTZ]: sXTZIcon,
-	[SYNTHS_MAP.sXMR]: sXMRIcon,
-	[SYNTHS_MAP.sADA]: sADAIcon,
-	[SYNTHS_MAP.sLINK]: sLINKIcon,
-	[SYNTHS_MAP.sTRX]: sTRXIcon,
-	[SYNTHS_MAP.sDASH]: sDASHIcon,
-	[SYNTHS_MAP.sETC]: sETCIcon,
-	[SYNTHS_MAP.iBTC]: iBTCIcon,
-	[SYNTHS_MAP.iETH]: iETHIcon,
-	[SYNTHS_MAP.iXRP]: iXRPIcon,
-	[SYNTHS_MAP.iBCH]: iBCHIcon,
-	[SYNTHS_MAP.iLTC]: iLTCIcon,
-	[SYNTHS_MAP.iEOS]: iEOSIcon,
-	[SYNTHS_MAP.iBNB]: iBNBIcon,
-	[SYNTHS_MAP.iXTZ]: iXTZIcon,
-	[SYNTHS_MAP.iXMR]: iXMRIcon,
-	[SYNTHS_MAP.iADA]: iADAIcon,
-	[SYNTHS_MAP.iLINK]: iLINKIcon,
-	[SYNTHS_MAP.iTRX]: iTRXIcon,
-	[SYNTHS_MAP.iDASH]: iDASHIcon,
-	[SYNTHS_MAP.iETC]: iETCIcon,
-	[SYNTHS_MAP.sEUR]: sEURIcon,
-	[SYNTHS_MAP.sJPY]: sJPYIcon,
-	[SYNTHS_MAP.sUSD]: sUSDIcon,
-	[SYNTHS_MAP.sAUD]: sAUDIcon,
-	[SYNTHS_MAP.sGBP]: sGBPIcon,
-	[SYNTHS_MAP.sCHF]: sCHFIcon,
-	[SYNTHS_MAP.sXAU]: sXAUIcon,
-	[SYNTHS_MAP.sXAG]: sXAGIcon,
-	[SYNTHS_MAP.sBZ]: sBZIcon,
-	[SYNTHS_MAP.sCEX]: sCEXIcon,
-	[SYNTHS_MAP.sDEFI]: sDEFIIcon,
-	[SYNTHS_MAP.iCEX]: iCEXIcon,
-	[SYNTHS_MAP.iDEFI]: iDEFIIcon,
-	[SYNTHS_MAP.sFTSE]: sFTSEIcon,
-	[SYNTHS_MAP.sNIKKEI]: sNIKKEIIcon,
+	[SYNTHS_MAP.sBTC]: { SynthIcon: sBTCIcon, CryptoIcon: BTCIcon },
+	[SYNTHS_MAP.sETH]: { SynthIcon: sETHIcon, CryptoIcon: ETHIcon },
+	[SYNTHS_MAP.sXRP]: { SynthIcon: sXRPIcon, CryptoIcon: XRPIcon },
+	[SYNTHS_MAP.sBCH]: { SynthIcon: sBCHIcon, CryptoIcon: BCHIcon },
+	[SYNTHS_MAP.sLTC]: { SynthIcon: sLTCIcon, CryptoIcon: LTCIcon },
+	[SYNTHS_MAP.sEOS]: { SynthIcon: sEOSIcon, CryptoIcon: EOSIcon },
+	[SYNTHS_MAP.sBNB]: { SynthIcon: sBNBIcon, CryptoIcon: BNBIcon },
+	[SYNTHS_MAP.sXTZ]: { SynthIcon: sXTZIcon, CryptoIcon: XTZIcon },
+	[SYNTHS_MAP.sXMR]: { SynthIcon: sXMRIcon, CryptoIcon: XMRIcon },
+	[SYNTHS_MAP.sADA]: { SynthIcon: sADAIcon, CryptoIcon: ADAIcon },
+	[SYNTHS_MAP.sLINK]: { SynthIcon: sLINKIcon, CryptoIcon: LINKIcon },
+	[SYNTHS_MAP.sTRX]: { SynthIcon: sTRXIcon, CryptoIcon: TRXIcon },
+	[SYNTHS_MAP.sDASH]: { SynthIcon: sDASHIcon, CryptoIcon: DASHIcon },
+	[SYNTHS_MAP.sETC]: { SynthIcon: sETCIcon, CryptoIcon: ETCIcon },
+	[SYNTHS_MAP.iBTC]: { SynthIcon: iBTCIcon, CryptoIcon: BTCIcon },
+	[SYNTHS_MAP.iETH]: { SynthIcon: iETHIcon, CryptoIcon: ETHIcon },
+	[SYNTHS_MAP.iXRP]: { SynthIcon: iXRPIcon, CryptoIcon: XRPIcon },
+	[SYNTHS_MAP.iBCH]: { SynthIcon: iBCHIcon, CryptoIcon: BCHIcon },
+	[SYNTHS_MAP.iLTC]: { SynthIcon: iLTCIcon, CryptoIcon: LTCIcon },
+	[SYNTHS_MAP.iEOS]: { SynthIcon: iEOSIcon, CryptoIcon: EOSIcon },
+	[SYNTHS_MAP.iBNB]: { SynthIcon: iBNBIcon, CryptoIcon: BNBIcon },
+	[SYNTHS_MAP.iXTZ]: { SynthIcon: iXTZIcon, CryptoIcon: XTZIcon },
+	[SYNTHS_MAP.iXMR]: { SynthIcon: iXMRIcon, CryptoIcon: XMRIcon },
+	[SYNTHS_MAP.iADA]: { SynthIcon: iADAIcon, CryptoIcon: ADAIcon },
+	[SYNTHS_MAP.iLINK]: { SynthIcon: iLINKIcon, CryptoIcon: LINKIcon },
+	[SYNTHS_MAP.iTRX]: { SynthIcon: iTRXIcon, CryptoIcon: TRXIcon },
+	[SYNTHS_MAP.iDASH]: { SynthIcon: iDASHIcon, CryptoIcon: DASHIcon },
+	[SYNTHS_MAP.iETC]: { SynthIcon: iETCIcon, CryptoIcon: ETCIcon },
+	[SYNTHS_MAP.sEUR]: { SynthIcon: sEURIcon },
+	[SYNTHS_MAP.sJPY]: { SynthIcon: sJPYIcon },
+	[SYNTHS_MAP.sUSD]: { SynthIcon: sUSDIcon },
+	[SYNTHS_MAP.sAUD]: { SynthIcon: sAUDIcon },
+	[SYNTHS_MAP.sGBP]: { SynthIcon: sGBPIcon },
+	[SYNTHS_MAP.sCHF]: { SynthIcon: sCHFIcon },
+	[SYNTHS_MAP.sXAU]: { SynthIcon: sXAUIcon },
+	[SYNTHS_MAP.sXAG]: { SynthIcon: sXAGIcon },
+	[SYNTHS_MAP.sBZ]: { SynthIcon: sBZIcon },
+	[SYNTHS_MAP.sCEX]: { SynthIcon: sCEXIcon },
+	[SYNTHS_MAP.sDEFI]: { SynthIcon: sDEFIIcon },
+	[SYNTHS_MAP.iCEX]: { SynthIcon: iCEXIcon },
+	[SYNTHS_MAP.iDEFI]: { SynthIcon: iDEFIIcon },
+	[SYNTHS_MAP.sFTSE]: { SynthIcon: sFTSEIcon },
+	[SYNTHS_MAP.sNIKKEI]: { SynthIcon: sNIKKEIIcon },
 };
 
 export const isSynth = (currencyKey: CurrencyKey) => !!SYNTHS_MAP[currencyKey];
