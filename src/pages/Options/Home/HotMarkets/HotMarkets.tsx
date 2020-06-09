@@ -56,7 +56,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets, synthsMap
 							{formatCurrencyWithSign(usdSign, optionsMarket.strikePrice)} {FIAT_CURRENCY_MAP.USD}
 						</StrikePrice>
 						<MaturityDate>
-							{t('common.by-date', { date: format(optionsMarket.maturityDate, 'dd-MM-yyyy') })}
+							{t('common.by-date', { date: format(optionsMarket.maturityDate, 'yyyy-MM-dd') })}
 						</MaturityDate>
 					</MarketDetailsRow>
 					<MarketPriceRow>
@@ -108,6 +108,7 @@ const Card = styled(FlexDivCol)`
 
 const StyledCurrencyName = styled(Currency.Name)`
 	${headingH5CSS};
+	line-height: normal;
 	color: ${darkTheme.colors.accentL1};
 `;
 

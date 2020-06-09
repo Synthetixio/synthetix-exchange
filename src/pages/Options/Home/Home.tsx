@@ -81,9 +81,6 @@ const YourMarketsContainer = styled(Container)`
 	padding-bottom: 65px;
 	padding-top: 140px;
 	${media.large`
-		padding-top: 0;
-	`}
-	${media.medium`
 		padding-top: 40px;
 	`}
 `;

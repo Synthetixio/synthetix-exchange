@@ -9,7 +9,6 @@ import ROUTES, { navigateTo } from 'constants/routes';
 
 import { RootState } from 'ducks/types';
 import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
-import { getOrderedYourOptionsMarkets } from 'ducks/options/optionsMarkets';
 
 import { Button } from 'components/Button';
 import { headingH4CSS } from 'components/Typography/Heading';
@@ -17,7 +16,6 @@ import { bodyMediumCSS } from 'components/Typography/Body';
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
-	optionsMarkets: getOrderedYourOptionsMarkets(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -26,23 +24,17 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type YourMarketsProps = PropsFromRedux;
 
-const YourMarkets: FC<YourMarketsProps> = memo(({ isLoggedIn, optionsMarkets }) => {
+const YourMarkets: FC<YourMarketsProps> = memo(({ isLoggedIn }) => {
 	const { t } = useTranslation();
 
 	return (
 		<Container>
 			{!isLoggedIn ? (
-				<div>Please login to see your markets</div>
+				<div>Please login to create markets</div>
 			) : (
 				<>
-					{optionsMarkets.length === 0 ? (
-						<>
-							<Title>{t('options.home.your-markets.no-markets.title')}</Title>
-							<Subtitle>{t('options.home.your-markets.no-markets.subtitle')}</Subtitle>
-						</>
-					) : (
-						<div>table</div>
-					)}
+					<Title>{t('options.home.your-markets.no-markets.title')}</Title>
+					<Subtitle>{t('options.home.your-markets.no-markets.subtitle')}</Subtitle>
 					<StyledButton
 						palette="primary"
 						onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}

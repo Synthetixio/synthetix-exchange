@@ -48,6 +48,7 @@ export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
 
 const Container = styled.div<{ label?: 'ending-soon' }>`
 	${bodyMediumCSS};
+	font-size: 14px;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	text-align: center;
 

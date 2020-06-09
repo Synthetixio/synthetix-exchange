@@ -1,17 +1,17 @@
 import React, { FC, memo } from 'react';
 import styled, { css } from 'styled-components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { CellProps, Row } from 'react-table';
 
 import { getAvailableSynthsMap } from 'ducks/synths';
 import { navigateToOptionsMarket } from 'constants/routes';
 // import { EMPTY_VALUE } from 'constants/placeholder';
-import { SYNTHS_MAP } from 'constants/currency';
+import { SYNTHS_MAP, FIAT_CURRENCY_MAP } from 'constants/currency';
 
 import { RootState } from 'ducks/types';
 
-import { TableOverflowContainer } from 'shared/commonStyles';
+import { TableOverflowContainer, CurrencyKey } from 'shared/commonStyles';
 
 import Table from 'components/Table';
 import { CurrencyCol } from 'components/Table/common';
@@ -56,7 +56,13 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							sortable: true,
 						},
 						{
-							Header: <>{t('options.home.markets-table.strike-price-col')}</>,
+							Header: (
+								<>
+									{t('options.home.markets-table.strike-price-col', {
+										currencyKeyWithSymbol: `${usdSign}${FIAT_CURRENCY_MAP.USD}`,
+									})}
+								</>
+							),
 							accessor: 'strikePrice',
 							sortType: 'basic',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['strikePrice']>) => (
@@ -92,7 +98,13 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							width: 150,
 						},
 						{
-							Header: <>{t('options.home.markets-table.pool-size-col')}</>,
+							Header: (
+								<Trans
+									i18nKey="options.home.markets-table.pool-size-col"
+									values={{ currencyKeyWithSymbol: `${usdSign}${SYNTHS_MAP.sUSD}` }}
+									components={[<CurrencyKey />]}
+								/>
+							),
 							accessor: 'poolSize',
 							sortType: 'basic',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['poolSize']>) => (
@@ -105,7 +117,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
 							accessor: 'maturityDate',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
-								<span>{format(cellProps.cell.value, 'dd-MM-yyyy')}</span>
+								<span>{format(cellProps.cell.value, 'yyyy-MM-dd')}</span>
 							),
 							width: 150,
 						},

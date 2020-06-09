@@ -6,6 +6,7 @@ import { OptionsMarkets } from 'ducks/options/types';
 import { headingH4CSS } from 'components/Typography/Heading';
 
 import MarketsTable from '../MarketsTable';
+import { media } from 'shared/media';
 
 type Props = {
 	optionsMarkets: OptionsMarkets;
@@ -30,6 +31,9 @@ const Title = styled.div`
 	${headingH4CSS};
 	color: ${(props) => props.theme.colors.brand};
 	padding-bottom: 32px;
+	${media.large`
+		padding: 0 24px 32px 24px;
+	`}
 `;
 
 export default ExploreMarkets;
