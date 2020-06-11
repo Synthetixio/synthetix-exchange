@@ -1,6 +1,6 @@
 import React, { memo, FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { CenteredPageLayout, SectionVerticalSpacer, FlexDiv } from 'shared/commonStyles';
@@ -18,30 +18,40 @@ import CreateOrderCard from './components/CreateOrderCard';
 import OrderBookCard from './components/OrderBookCard';
 import BlurBackground from './components/BlurBackground';
 
-import { getSynthPair, setSynthPair, SynthPair } from 'ducks/synths';
+import { getSynthPair, setSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 
-type StateProps = {
-	synthPair: SynthPair;
+const mapStateToProps = (state: RootState) => ({
+	synthPair: getSynthPair(state),
+	synthsMap: getAvailableSynthsMap(state),
+});
+
+const mapDispatchToProps = {
+	setSynthPair,
 };
 
-type DispatchProps = {
-	setSynthPair: typeof setSynthPair;
-};
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
-type Props = RouteComponentProps<{
-	baseCurrencyKey: CurrencyKey;
-	quoteCurrencyKey: CurrencyKey;
-}>;
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type TradeProps = StateProps & DispatchProps & Props;
+type TradeProps = PropsFromRedux &
+	RouteComponentProps<{
+		baseCurrencyKey: CurrencyKey;
+		quoteCurrencyKey: CurrencyKey;
+	}>;
 
-const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
+const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair, synthsMap }) => {
 	const [isReady, setIsReady] = useState<boolean>(false);
 
 	useEffect(() => {
 		const { params } = match;
 
-		if (params && params.baseCurrencyKey && params.quoteCurrencyKey) {
+		if (
+			params &&
+			params.baseCurrencyKey &&
+			params.quoteCurrencyKey &&
+			synthsMap[params.baseCurrencyKey] &&
+			synthsMap[params.quoteCurrencyKey]
+		) {
 			const { base, quote, reversed } = getMarketPairByMC(
 				params.baseCurrencyKey,
 				params.quoteCurrencyKey
@@ -52,6 +62,7 @@ const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair }) => {
 				quoteCurrencyKey: quote,
 				isPairReversed: reversed,
 			});
+
 			setIsReady(true);
 		} else {
 			navigateToTrade(synthPair.base.name, synthPair.quote.name, true);
@@ -105,15 +116,4 @@ const CreateOrderContainer = styled.div`
 	margin-left: 8px;
 `;
 
-const mapStateToProps = (state: RootState): StateProps => ({
-	synthPair: getSynthPair(state),
-});
-
-const mapDispatchToProps: DispatchProps = {
-	setSynthPair,
-};
-
-export default connect<StateProps, DispatchProps, TradeProps, RootState>(
-	mapStateToProps,
-	mapDispatchToProps
-)(Trade);
+export default connector(Trade);

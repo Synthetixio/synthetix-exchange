@@ -7,7 +7,6 @@ export const synthWeight = {
 	XTZ: 6,
 	TRX: 7,
 	LINK: 8,
-	MKR: 9,
 };
 
 // Ugly. Needs to find a better solution.
@@ -22,7 +21,6 @@ export const pairWeight = (synth) => {
 	if (synth.name === 'sXTZ') return 8;
 	if (synth.name === 'sTRX') return 9;
 	if (synth.name === 'sLINK') return 10;
-	if (synth.name === 'sMKR') return 11;
 	if (synth.name === 'iBTC') return 12;
 	if (synth.name === 'iETH') return 13;
 	if (synth.name === 'iXRP') return 14;
@@ -31,7 +29,6 @@ export const pairWeight = (synth) => {
 	if (synth.name === 'iXTZ') return 17;
 	if (synth.name === 'iTRX') return 18;
 	if (synth.name === 'iLINK') return 19;
-	if (synth.name === 'iMKR') return 20;
 	if (synth.category === 'index') return 21;
 	return 22;
 };

@@ -18,7 +18,6 @@ import { ReactComponent as sLINKIcon } from '@synthetixio/assets/synths/sLINK.sv
 import { ReactComponent as sTRXIcon } from '@synthetixio/assets/synths/sTRX.svg';
 import { ReactComponent as sDASHIcon } from '@synthetixio/assets/synths/sDASH.svg';
 import { ReactComponent as sETCIcon } from '@synthetixio/assets/synths/sETC.svg';
-import { ReactComponent as sMKRIcon } from '@synthetixio/assets/synths/sMKR.svg';
 import { ReactComponent as iBTCIcon } from '@synthetixio/assets/synths/iBTC.svg';
 import { ReactComponent as iETHIcon } from '@synthetixio/assets/synths/iETH.svg';
 import { ReactComponent as iXRPIcon } from '@synthetixio/assets/synths/iXRP.svg';
@@ -33,7 +32,6 @@ import { ReactComponent as iLINKIcon } from '@synthetixio/assets/synths/iLINK.sv
 import { ReactComponent as iTRXIcon } from '@synthetixio/assets/synths/iTRX.svg';
 import { ReactComponent as iDASHIcon } from '@synthetixio/assets/synths/iDASH.svg';
 import { ReactComponent as iETCIcon } from '@synthetixio/assets/synths/iETC.svg';
-import { ReactComponent as iMKRIcon } from '@synthetixio/assets/synths/iMKR.svg';
 // Commoditiy Synths
 import { ReactComponent as sXAUIcon } from '@synthetixio/assets/synths/sXAU.svg';
 import { ReactComponent as sXAGIcon } from '@synthetixio/assets/synths/sXAG.svg';
@@ -85,7 +83,6 @@ export const SYNTHS = [
 	'sTRX',
 	'sDASH',
 	'sETC',
-	'sMKR',
 	'iBTC',
 	'iETH',
 	'iXRP',
@@ -100,7 +97,6 @@ export const SYNTHS = [
 	'iTRX',
 	'iDASH',
 	'iETC',
-	'iMKR',
 	'sFTSE',
 	'sNIKKEI',
 	'sXAU',
@@ -189,8 +185,6 @@ export const currencyKeyToIconMap = {
 	[SYNTHS_MAP.iTRX]: iTRXIcon,
 	[SYNTHS_MAP.iDASH]: iDASHIcon,
 	[SYNTHS_MAP.iETC]: iETCIcon,
-	[SYNTHS_MAP.sMKR]: sMKRIcon,
-	[SYNTHS_MAP.iMKR]: iMKRIcon,
 	[SYNTHS_MAP.sEUR]: sEURIcon,
 	[SYNTHS_MAP.sJPY]: sJPYIcon,
 	[SYNTHS_MAP.sUSD]: sUSDIcon,
@@ -238,12 +232,9 @@ export const getAvailableMarketNames = memoizeOne(() => {
 		pair: string;
 	}> = [];
 
-	const excludedSynths = [SYNTHS_MAP.iMKR, SYNTHS_MAP.sMKR];
-	const synths = SYNTHS.filter((synth) => !excludedSynths.includes(synth));
-
-	for (let i = 0; i < synths.length; i++) {
+	for (let i = 0; i < SYNTHS.length; i++) {
 		const currencyA = SYNTHS[i];
-		for (let j = 0; j < synths.length; j++) {
+		for (let j = 0; j < SYNTHS.length; j++) {
 			const currencyB = SYNTHS[j];
 			if (currencyA !== currencyB) {
 				marketNames.push({
