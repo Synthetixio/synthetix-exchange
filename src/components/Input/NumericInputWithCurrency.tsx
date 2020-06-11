@@ -1,47 +1,54 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
 
-import { SYNTHS_MAP } from '../../constants/currency';
+import { SYNTHS_MAP, CurrencyKey } from 'constants/currency';
 
-import { FlexDivCentered, FlexDiv, Message } from '../../shared/commonStyles';
+import { FlexDivCentered, FlexDiv, Message } from 'shared/commonStyles';
 
 import { ButtonPrimary } from '../Button';
 import Currency from '../Currency';
 
-import GenericInput from './Input';
+import { NumericInput } from './Input';
 
-const TradeInput = ({
+type TradeInputProps = {
+	label?: React.ReactNode;
+	errorMessage?: React.ReactNode;
+	currencyKey?: CurrencyKey;
+	inputProps?: object;
+	onMaxButtonClick?: () => void;
+	value: string | number;
+	onChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
+};
+
+const TradeInput: FC<TradeInputProps> = ({
 	label,
-	synth = SYNTHS_MAP.sUSD,
+	currencyKey = SYNTHS_MAP.sUSD,
 	onChange,
-	amount,
+	value,
 	inputProps,
 	errorMessage,
 	onMaxButtonClick,
 }) => {
 	const { t } = useTranslation();
-	const handleOnChange = (e) => onChange(e, e.target.value);
 	const hasMaxButton = onMaxButtonClick != null;
 
 	return (
 		<>
 			{label != null && <Label>{label}</Label>}
 			<Container>
-				<Synth>
-					<StyledCurrencyName currencyKey={synth} showIcon={true} />
-				</Synth>
-				<StyledGenericInput
-					type="number"
-					value={amount}
+				<CurrencyContainer>
+					<StyledCurrencyName currencyKey={currencyKey} showIcon={true} />
+				</CurrencyContainer>
+				<StyledNumericInput
+					value={value}
 					placeholder="0"
-					onChange={handleOnChange}
-					{...inputProps}
+					onChange={(e) => onChange(e, e.target.value)}
 					hasMaxButton={hasMaxButton}
+					{...inputProps}
 				/>
 				{errorMessage && (
-					<StyledMessage type="error" floating={true}>
+					<StyledMessage type="error" floating={true} size="sm">
 						{errorMessage}
 					</StyledMessage>
 				)}
@@ -49,15 +56,6 @@ const TradeInput = ({
 			</Container>
 		</>
 	);
-};
-
-TradeInput.propTypes = {
-	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-	synth: PropTypes.string.isRequired,
-	onChange: PropTypes.func.isRequired,
-	amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	errorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-	onMaxButtonClick: PropTypes.func,
 };
 
 const MaxButton = styled(ButtonPrimary).attrs({ size: 'sm' })`
@@ -69,7 +67,7 @@ const MaxButton = styled(ButtonPrimary).attrs({ size: 'sm' })`
 	line-height: unset;
 `;
 
-const StyledGenericInput = styled(GenericInput)`
+const StyledNumericInput = styled(NumericInput)<{ hasMaxButton?: boolean }>`
 	${(props) =>
 		props.hasMaxButton &&
 		css`
@@ -89,7 +87,7 @@ const Container = styled(FlexDiv)`
 	position: relative;
 `;
 
-const Synth = styled(FlexDivCentered)`
+const CurrencyContainer = styled(FlexDivCentered)`
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
 	border-right: none;
 	padding: 0 10px;

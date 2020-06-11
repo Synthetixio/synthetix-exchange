@@ -196,10 +196,31 @@
 				"bidding-ends-col": "bidding ends in"
 			}			
 		},
+		"create-market-modal": {
+			"title": "Create a new Options Market",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Est tempor, sed et ultrices porttitor sit justo fringilla. Massa quis sit arcu tellus.",
+			"details": {
+				"select-asset-label": "select asset:",
+				"strike-price-label": "strike price:",
+				"bidding-end-date-label": "bidding end date:",
+				"market-maturity-date-label": "market maturity date:",
+				"long-short-skew-label": "long/short price skew:",
+				"funding-amount-label": "choose market funding amount:"
+			},
+			"summary": {
+				"title": "market creation summary:",
+				"creator-fee": "Creator fee",
+				"refund-fee": "Refund fee",
+				"trading-fee": "Trading fee",
+				"create-market-button-label": "create market"
+			}
+		},
 		"common": {
 			"time-remaining": {
 				"ended": "bidding ended"
-			}
+			},
+			"long": "long",
+			"short": "short"
 		}
 	},
 	"exchange": {
@@ -485,6 +506,7 @@
 		},
 		"top-number": "top {{number}}",
 		"by-date": "by {{date}}",
-		"val-in-cents": "{{val}}c"
+		"val-in-cents": "{{val}}c",
+		"e.g-val": "e.g. {{val}}"
 	}
 }

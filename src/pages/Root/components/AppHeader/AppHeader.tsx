@@ -157,4 +157,4 @@ const mapStateToProps = (state: RootState): StateProps => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
 
-export default connect<StateProps, undefined, Props, RootState>(mapStateToProps)(AppHeader);
+export default connect<StateProps, {}, Props, RootState>(mapStateToProps)(AppHeader);

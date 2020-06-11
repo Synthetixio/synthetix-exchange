@@ -1,24 +1,36 @@
 import styled, { css } from 'styled-components';
 import { typography } from 'styled-system';
 
+import { baseTypographyCSS } from './Base';
+
 const headingCSS = css`
+	${baseTypographyCSS};
 	font-family: ${(props) => props.theme.fonts.regular};
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-export const headingH4CSS = css`
+export const headingH3CSS = css`
+	${headingCSS};
 	font-family: ${(props) => props.theme.fonts.medium};
-	font-weight: 400;
+	font-size: 32px;
+`;
+
+export const headingH4CSS = css`
+	${headingCSS};
+	font-family: ${(props) => props.theme.fonts.medium};
 	font-size: 24px;
-	line-height: 29px;
-	letter-spacing: 0.2px;
 `;
 
 export const headingH5CSS = css`
+	${headingCSS};
 	font-family: ${(props) => props.theme.fonts.medium};
 	font-size: 20px;
-	line-height: 25px;
-	letter-spacing: 0.2px;
+`;
+
+export const headingH6CSS = css`
+	${headingCSS};
+	font-family: ${(props) => props.theme.fonts.medium};
+	font-size: 16px;
 `;
 
 export const headingLargeCSS = css`

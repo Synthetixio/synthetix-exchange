@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, lazy } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { ROUTES } from 'constants/routes';
 
@@ -27,9 +26,24 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 import Synths from '../Synths';
-import Options from '../Options';
+import { RootState } from 'ducks/types';
 
-const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
+const Options = lazy(() => import('../Options'));
+
+const mapStateToProps = (state: RootState) => ({
+	currentTheme: getCurrentTheme(state),
+	isSystemSuspended: getIsSystemSuspended(state),
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type AppProps = PropsFromRedux & {
+	isAppReady: boolean;
+};
+
+const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
@@ -69,49 +83,49 @@ const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 							/>
 							<Route
 								path={ROUTES.Loans}
-								render={(routeProps) => (
+								render={() => (
 									<MainLayout isAppReady={isAppReady}>
-										<Loans {...routeProps} />
+										<Loans />
 									</MainLayout>
 								)}
 							/>
 							<ProtectedRoute
 								path={ROUTES.Assets.Home}
-								render={(routeProps) => (
+								render={() => (
 									<MainLayout isAppReady={isAppReady}>
-										<Assets {...routeProps} />
+										<Assets />
 									</MainLayout>
 								)}
 							/>
 							<Route
 								path={ROUTES.Markets}
-								render={(routeProps) => (
+								render={() => (
 									<HomeLayout>
-										<Markets {...routeProps} />
+										<Markets />
 									</HomeLayout>
 								)}
 							/>
 							<Route
 								path={ROUTES.Synths.Home}
-								render={(routeProps) => (
+								render={() => (
 									<HomeLayout>
-										<Synths {...routeProps} />
+										<Synths />
 									</HomeLayout>
 								)}
 							/>
 							<Route
 								path={ROUTES.Options.Home}
-								render={(routeProps) => (
+								render={() => (
 									<HomeLayout>
-										<Options {...routeProps} />
+										<Options />
 									</HomeLayout>
 								)}
 							/>
 							<Route
 								path={ROUTES.Home}
-								render={(routeProps) => (
+								render={() => (
 									<HomeLayout>
-										<Home {...routeProps} />
+										<Home />
 									</HomeLayout>
 								)}
 							/>
@@ -123,14 +137,4 @@ const App = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	);
 };
 
-App.propTypes = {
-	isAppReady: PropTypes.bool.isRequired,
-	currentTheme: PropTypes.string.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-	currentTheme: getCurrentTheme(state),
-	isSystemSuspended: getIsSystemSuspended(state),
-});
-
-export default connect(mapStateToProps, null)(App);
+export default connector(App);

@@ -1,9 +1,11 @@
-import React, { FC, memo } from 'react';
+import React, { Suspense, FC, memo } from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { darkTheme } from 'styles/theme';
 
 import Footer from './Footer';
 import AppHeader from '../AppHeader';
+
+import Spinner from 'components/Spinner';
 
 type HomeLayoutProps = {
 	children: React.ReactNode;
@@ -16,7 +18,7 @@ const HomeLayout: FC<HomeLayoutProps> = memo(({ children }) => (
 		<ThemeProvider theme={darkTheme}>
 			<AppHeader showThemeToggle={false} isOnSplashPage={true} />
 		</ThemeProvider>
-		{children}
+		<Suspense fallback={<Spinner size="sm" centered={true} />}>{children}</Suspense>
 		<Footer />
 	</>
 ));

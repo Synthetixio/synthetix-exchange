@@ -281,7 +281,7 @@ const mapDispatchToProps: DispatchProps = {
 	setGasPrice,
 };
 
-export default connect<StateProps, DispatchProps, undefined, RootState>(
+export default connect<StateProps, DispatchProps, {}, RootState>(
 	mapStateToProps,
 	mapDispatchToProps
 )(GweiPopup);
