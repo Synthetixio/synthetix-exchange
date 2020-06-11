@@ -17,8 +17,6 @@ import { getRatesExchangeRates } from './rates';
 import { Period } from 'constants/period';
 import { getSynthsCategoryFilter } from './ui';
 
-const FROZEN_SYNTHS = [SYNTHS_MAP.sMKR, SYNTHS_MAP.iMKR];
-
 export type SynthDefinition = {
 	name: CurrencyKey;
 	asset: string;
@@ -99,7 +97,7 @@ export const synthsSlice = createSlice({
 			const availableSynths: SynthDefinitionMap = keyBy(
 				synths.map((synth) => ({
 					...synth,
-					isFrozen: FROZEN_SYNTHS.includes(synth.name),
+					isFrozen: false,
 				})),
 				'name'
 			);
