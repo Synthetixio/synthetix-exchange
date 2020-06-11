@@ -4,20 +4,22 @@ import { useTranslation } from 'react-i18next';
 
 import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
+import { withStyles } from '@material-ui/core/styles';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
 import ROUTES, { navigateTo } from 'constants/routes';
 import { lightTheme } from 'styles/theme';
+import colors from 'styles/theme/colors';
 import { headingH3CSS, headingH6CSS } from 'components/Typography/Heading';
 import { bodyMediumCSS } from 'components/Typography/Body';
+import { NumericInput, TextInput, DateInput } from 'components/Input/Input';
+import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
+import { formLabelLargeCSS } from 'components/Typography/Form';
 
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
 
 import { CurrencyKey, SYNTHS_MAP } from 'constants/currency';
-import { NumericInput, TextInput, DateInput } from 'components/Input/Input';
-import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-import { formLabelLargeCSS } from 'components/Typography/Form';
 
 /*
 sAUDKey,
@@ -26,6 +28,32 @@ sAUDKey,
 			[initialLongBid, initialShortBid],
 			{ from: initialBidder }
 */
+
+const StyledSlider = withStyles({
+	root: {
+		color: colors.green,
+		height: 16,
+	},
+	thumb: {
+		height: 24,
+		width: 24,
+		background: colors.white,
+		boxShadow: '0px 1px 4px rgba(202, 202, 241, 0.5)',
+		'&:focus, &:hover, &$active': {
+			boxShadow: '0px 1px 4px rgba(202, 202, 241, 0.5)',
+		},
+	},
+	track: {
+		height: 16,
+		borderRadius: 2,
+	},
+	rail: {
+		height: 16,
+		backgroundColor: colors.red,
+		opacity: 1,
+		borderRadius: 2,
+	},
+})(Slider);
 
 export const CreateMarketModal: FC = memo(() => {
 	const { t } = useTranslation();
@@ -127,9 +155,6 @@ export const CreateMarketModal: FC = memo(() => {
 										</div>
 									</FlexDivRowCentered>
 									<StyledSlider
-										classes={{
-											root: 'root',
-										}}
 										value={initialLongShorts.long}
 										onChange={(_, newValue) => {
 											const long = newValue as number;
@@ -246,12 +271,6 @@ const CloseButton = styled.button`
 	right: 5%;
 	top: 5%;
 	color: ${({ theme }) => theme.colors.fontTertiary};
-`;
-
-const StyledSlider = styled(Slider)`
-	.root {
-		display: none;
-	}
 `;
 
 export default CreateMarketModal;
