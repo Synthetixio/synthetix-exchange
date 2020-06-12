@@ -251,16 +251,20 @@ const Social = styled.div`
 
 const StyledFlexDivRow = styled(FlexDivRow)`
 	align-items: center;
+	flex-wrap: wrap;
 	${media.small`
 		flex-direction: column;
 		align-items: flex-start;
-	`}
+	`};
 `;
 
 const VersionLabel = styled.div`
 	font-size: 12px;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	${media.small`
+		margin-top: 15px;
+	`}
+	${media.medium`
 		margin-top: 15px;
 	`}
 `;
