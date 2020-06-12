@@ -261,9 +261,6 @@ const StyledFlexDivRow = styled(FlexDivRow)`
 const VersionLabel = styled.div`
 	font-size: 12px;
 	color: ${(props) => props.theme.colors.fontPrimary};
-	${media.small`
-		margin-top: 15px;
-	`}
 	${media.medium`
 		margin-top: 15px;
 	`}
