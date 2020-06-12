@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Input = styled.input<{ padding?: string }>`
+export const inputCSS = css`
 	width: 100%;
 	font-family: ${(props) => props.theme.fonts.regular};
 	background-color: ${(props) => props.theme.colors.surfaceL3};
@@ -16,12 +16,8 @@ export const Input = styled.input<{ padding?: string }>`
 	outline: none;
 `;
 
-export const TextInput = styled(Input).attrs({ type: 'text' })``;
-export const NumericInput = styled(Input).attrs({ type: 'number' })``;
-export const DateInput = styled(Input).attrs({ type: 'date' })`
-	&::placeholder {
-		text-transform: uppercase;
-	}
+export const Input = styled.input`
+	${inputCSS};
 `;
 
 export default Input;

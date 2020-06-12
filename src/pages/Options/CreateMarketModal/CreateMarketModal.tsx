@@ -13,13 +13,17 @@ import { lightTheme } from 'styles/theme';
 import colors from 'styles/theme/colors';
 import { headingH3CSS, headingH6CSS } from 'components/Typography/Heading';
 import { bodyMediumCSS } from 'components/Typography/Body';
-import { NumericInput, TextInput, DateInput } from 'components/Input/Input';
+import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
 import { formLabelLargeCSS } from 'components/Typography/Form';
 
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
 
 import { CurrencyKey, SYNTHS_MAP } from 'constants/currency';
+import DatePicker from 'components/Input/DatePicker';
+import Select from 'components/Select';
+import { ValueType } from 'react-select';
+import { media } from 'shared/media';
 
 /*
 sAUDKey,
@@ -57,10 +61,10 @@ const StyledSlider = withStyles({
 
 export const CreateMarketModal: FC = memo(() => {
 	const { t } = useTranslation();
-	const [currencyKey, setCurrencyKey] = useState<CurrencyKey>('');
+	const [currencyKey, setCurrencyKey] = useState<ValueType<{ value: string; label: string }>>();
 	const [strikePrice, setStrikePrice] = useState<number | string>('');
-	const [endOfBidding, setEndOfBidding] = useState<string>('');
-	const [maturityDate, setMaturityDate] = useState<string>('');
+	const [endOfBidding, setEndOfBidding] = useState<Date | null | undefined>(null);
+	const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
 	const [initialLongShorts, setInitialLongShorts] = useState<{ long: number; short: number }>({
 		long: 50,
 		short: 50,
@@ -96,18 +100,25 @@ export const CreateMarketModal: FC = memo(() => {
 										<FormInputLabel htmlFor="asset">
 											{t('options.create-market-modal.details.select-asset-label')}
 										</FormInputLabel>
-										<TextInput
-											id="asset"
+										<Select
+											options={[
+												{
+													label: 'BTC',
+													value: 'BTC',
+												},
+											]}
+											placeholder="e.g. BTC"
 											value={currencyKey}
-											onChange={(e) => setCurrencyKey(e.target.value)}
-											placeholder={t('')}
+											onChange={(option) => {
+												setCurrencyKey(option);
+											}}
 										/>
 									</FormControl>
 									<FormControl>
 										<FormInputLabel htmlFor="strike-price">
 											{t('options.create-market-modal.details.strike-price-label')}
 										</FormInputLabel>
-										<NumericInput
+										<StyledNumericInput
 											id="strike-price"
 											value={strikePrice}
 											onChange={(e) => setStrikePrice(e.target.value)}
@@ -122,22 +133,20 @@ export const CreateMarketModal: FC = memo(() => {
 										<FormInputLabel htmlFor="end-of-bidding">
 											{t('options.create-market-modal.details.bidding-end-date-label')}
 										</FormInputLabel>
-										<DateInput
+										<StyledDatePicker
 											id="end-of-bidding"
-											placeholder="select date"
-											value={endOfBidding}
-											onChange={(e) => setEndOfBidding(e.target.value)}
+											selected={endOfBidding}
+											onChange={(d) => setEndOfBidding(d)}
 										/>
 									</FormControl>
 									<FormControl>
 										<FormInputLabel htmlFor="maturity-date">
 											{t('options.create-market-modal.details.market-maturity-date-label')}
 										</FormInputLabel>
-										<DateInput
+										<StyledDatePicker
 											id="maturity-date"
-											placeholder="select date"
-											value={maturityDate}
-											onChange={(e) => setMaturityDate(e.target.value)}
+											selected={maturityDate}
+											onChange={(d) => setMaturityDate(d)}
 										/>
 									</FormControl>
 								</FormControlGroup>
@@ -168,13 +177,16 @@ export const CreateMarketModal: FC = memo(() => {
 							</FormRow>
 							<FormRow>
 								<FormControl>
-									<FormInputLabel>
+									<FormInputLabel htmlFor="funding-amount">
 										{t('options.create-market-modal.details.funding-amount-label')}
 									</FormInputLabel>
-									<NumericInputWithCurrency
+									<StyledNumericInputWithCurrency
 										currencyKey={SYNTHS_MAP.sUSD}
 										value={initialFundingAmount}
 										onChange={(e) => setInitialFundingAmount(e.target.value)}
+										inputProps={{
+											id: 'funding-amount',
+										}}
 									/>
 								</FormControl>
 							</FormRow>
@@ -203,6 +215,11 @@ const StyledModal = styled(Modal)`
 	align-items: center;
 	justify-content: center;
 	opacity: 1;
+	${media.medium`
+		display: block;
+		padding: 80px 24px;
+	`}
+	overflow: auto;
 `;
 
 const Title = styled.div`
@@ -221,14 +238,23 @@ const Subtitle = styled.div`
 
 const Content = styled(GridDivCol)`
 	grid-gap: 57px;
+	${media.large`
+		grid-auto-flow: row;
+	`}
 `;
 
 const MarketDetails = styled.div`
 	width: 570px;
+	${media.medium`
+		width: 100%;
+	`}
 `;
 
 const MarketSummary = styled.div`
 	width: 330px;
+	${media.medium`
+		width: 100%;
+	`}
 `;
 
 const FormInputLabel = styled.label`
@@ -244,6 +270,11 @@ const FormRow = styled.div`
 
 const FormControlGroup = styled(GridDivCol)`
 	grid-gap: 24px;
+	grid-template-columns: 1fr 1fr;
+	${media.medium`
+		grid-template-columns: unset;
+		grid-auto-flow: row;
+	`}
 `;
 
 const FormControl = styled(GridDivRow)`
@@ -271,6 +302,28 @@ const CloseButton = styled.button`
 	right: 5%;
 	top: 5%;
 	color: ${({ theme }) => theme.colors.fontTertiary};
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+	.react-datepicker__input-container input {
+		border-color: transparent;
+	}
+`;
+
+const StyledNumericInput = styled(NumericInput)`
+	border-color: transparent;
+`;
+
+const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
+	.input {
+		border-top-color: transparent;
+		border-bottom-color: transparent;
+		border-right-color: transparent;
+	}
+
+	.currency-container {
+		border-color: transparent;
+	}
 `;
 
 export default CreateMarketModal;

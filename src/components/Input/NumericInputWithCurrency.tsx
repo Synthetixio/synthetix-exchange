@@ -4,14 +4,17 @@ import { useTranslation } from 'react-i18next';
 
 import { SYNTHS_MAP, CurrencyKey } from 'constants/currency';
 
-import { FlexDivCentered, FlexDiv, Message } from 'shared/commonStyles';
+import { FlexDivCentered, Message } from 'shared/commonStyles';
 
 import { ButtonPrimary } from '../Button';
 import Currency from '../Currency';
 
-import { NumericInput } from './Input';
+import NumericInput from './NumericInput';
 
-type TradeInputProps = {
+import { Label, InputContainer } from './common';
+
+type NumericInputWithCurrencyProps = {
+	className?: string;
 	label?: React.ReactNode;
 	errorMessage?: React.ReactNode;
 	currencyKey?: CurrencyKey;
@@ -21,7 +24,8 @@ type TradeInputProps = {
 	onChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
 };
 
-const TradeInput: FC<TradeInputProps> = ({
+const TradeInput: FC<NumericInputWithCurrencyProps> = ({
+	className,
 	label,
 	currencyKey = SYNTHS_MAP.sUSD,
 	onChange,
@@ -36,11 +40,12 @@ const TradeInput: FC<TradeInputProps> = ({
 	return (
 		<>
 			{label != null && <Label>{label}</Label>}
-			<Container>
-				<CurrencyContainer>
+			<Container className={className}>
+				<CurrencyContainer className="currency-container">
 					<StyledCurrencyName currencyKey={currencyKey} showIcon={true} />
 				</CurrencyContainer>
 				<StyledNumericInput
+					className="input"
 					value={value}
 					placeholder="0"
 					onChange={(e) => onChange(e, e.target.value)}
@@ -76,15 +81,9 @@ const StyledNumericInput = styled(NumericInput)<{ hasMaxButton?: boolean }>`
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const Label = styled(FlexDivCentered)`
-	justify-content: space-between;
-	margin-bottom: 6px;
-`;
-
-const Container = styled(FlexDiv)`
-	width: 100%;
+const Container = styled(InputContainer)`
+	display: flex;
 	background-color: ${(props) => props.theme.colors.surfaceL3};
-	position: relative;
 `;
 
 const CurrencyContainer = styled(FlexDivCentered)`

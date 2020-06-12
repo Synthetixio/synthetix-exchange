@@ -507,6 +507,7 @@
 		"top-number": "top {{number}}",
 		"by-date": "by {{date}}",
 		"val-in-cents": "{{val}}c",
-		"e.g-val": "e.g. {{val}}"
+		"e.g-val": "e.g. {{val}}",
+		"select-date": "select date"
 	}
 }

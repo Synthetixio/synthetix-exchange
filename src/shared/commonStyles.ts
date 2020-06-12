@@ -107,6 +107,7 @@ export const Message = styled(FlexDivCentered)<{
 	floating: boolean;
 	type: 'error' | 'success';
 }>`
+	color: ${(props) => props.theme.colors.white};
 	border-radius: 1px;
 	transition: opacity 0.2s ease-out;
 	width: 100%;
@@ -114,7 +115,7 @@ export const Message = styled(FlexDivCentered)<{
 	${(props) =>
 		props.size === 'sm'
 			? css`
-					font-size: 11px;
+					font-size: 12px;
 					padding: 5px 10px;
 			  `
 			: css`
