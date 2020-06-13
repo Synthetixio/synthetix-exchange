@@ -252,6 +252,7 @@ export const toMarketPair = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: Cur
 // TODO: replace this with a more robust logic (like checking the asset field)
 export const toInverseSynth = (currencyKey: CurrencyKey) => currencyKey.replace(/^s/i, 'i');
 export const toStandardSynth = (currencyKey: CurrencyKey) => currencyKey.replace(/^i/i, 's');
+export const synthToAsset = (currencyKey: CurrencyKey) => currencyKey.replace(/^(i|s)/i, '');
 
 export const sUSD_EXCHANGE_RATE = 1;
 

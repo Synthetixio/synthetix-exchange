@@ -4,6 +4,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
 import format from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
+import isNumber from 'lodash/isNumber';
 
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
 
@@ -54,11 +55,14 @@ const Chart: FC<ChartProps> = memo(
 							<XAxis
 								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
 								dataKey="timestamp"
-								tickFormatter={(val) =>
-									period.value > PERIOD_IN_HOURS.ONE_DAY
+								tickFormatter={(val) => {
+									if (!isNumber(val)) {
+										return '';
+									}
+									return period.value > PERIOD_IN_HOURS.ONE_DAY
 										? format(val, 'dd MMM')
-										: format(val, 'h:mma')
-								}
+										: format(val, 'h:mma');
+								}}
 								axisLine={false}
 								tickLine={false}
 							/>

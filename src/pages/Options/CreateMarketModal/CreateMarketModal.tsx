@@ -1,28 +1,35 @@
-import React, { useState, memo, FC } from 'react';
+import React, { useState, memo, FC, useMemo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { connect, ConnectedProps } from 'react-redux';
 
 import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
+import { ValueType } from 'react-select';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
 import ROUTES, { navigateTo } from 'constants/routes';
+import DatePicker from 'components/Input/DatePicker';
+import { SYNTHS_MAP, CRYPTO_CURRENCY_MAP, FIAT_CURRENCY_MAP } from 'constants/currency';
+
 import { lightTheme } from 'styles/theme';
 import colors from 'styles/theme/colors';
+
+import { RootState } from 'ducks/types';
+import { getAvailableSynthsMap, getAvailableSynths } from 'ducks/synths';
+
 import { headingH3CSS, headingH6CSS } from 'components/Typography/Heading';
 import { bodyMediumCSS } from 'components/Typography/Body';
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
 import { formLabelLargeCSS } from 'components/Typography/Form';
+import Select from 'components/Select';
+import Currency from 'components/Currency';
+import { Container as ContainerC } from 'components/Currency/commonStyles';
 
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
-
-import { CurrencyKey, SYNTHS_MAP } from 'constants/currency';
-import DatePicker from 'components/Input/DatePicker';
-import Select from 'components/Select';
-import { ValueType } from 'react-select';
 import { media } from 'shared/media';
 
 /*
@@ -59,7 +66,18 @@ const StyledSlider = withStyles({
 	},
 })(Slider);
 
-export const CreateMarketModal: FC = memo(() => {
+const mapStateToProps = (state: RootState) => ({
+	synthsMap: getAvailableSynthsMap(state),
+	synths: getAvailableSynths(state),
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type CreateMarketModalProps = PropsFromRedux;
+
+export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, synthsMap }) => {
 	const { t } = useTranslation();
 	const [currencyKey, setCurrencyKey] = useState<ValueType<{ value: string; label: string }>>();
 	const [strikePrice, setStrikePrice] = useState<number | string>('');
@@ -70,10 +88,18 @@ export const CreateMarketModal: FC = memo(() => {
 		short: 50,
 	});
 	const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
+	const filteredSynths = useMemo(
+		() => synths.filter((synth) => !synth.inverted && synth.category !== 'forex'),
+		[synths]
+	);
+
 	// from
 	// if the values are x, y (where x+y=1), then the bids are x * funding y * funding
 
 	const handleClose = () => navigateTo(ROUTES.Options.Home);
+
+	const usdSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
+	const strikePricePlaceholderVal = `${usdSign}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
 
 	return (
 		<ThemeProvider theme={lightTheme}>
@@ -100,19 +126,25 @@ export const CreateMarketModal: FC = memo(() => {
 										<FormInputLabel htmlFor="asset">
 											{t('options.create-market-modal.details.select-asset-label')}
 										</FormInputLabel>
-										<Select
-											options={[
-												{
-													label: 'BTC',
-													value: 'BTC',
-												},
-											]}
-											placeholder="e.g. BTC"
-											value={currencyKey}
-											onChange={(option) => {
-												setCurrencyKey(option);
-											}}
-										/>
+										<SelectContainer>
+											<Select
+												formatOptionLabel={(option) => (
+													<ContainerC showIcon={true}>
+														<Currency.Icon currencyKey={option.value} type="crypto" />
+														<Currency.Name currencyKey={option.label} />
+													</ContainerC>
+												)}
+												options={filteredSynths.map((synth) => ({
+													label: synth.asset,
+													value: synth.name,
+												}))}
+												placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
+												value={currencyKey}
+												onChange={(option) => {
+													setCurrencyKey(option);
+												}}
+											/>
+										</SelectContainer>
 									</FormControl>
 									<FormControl>
 										<FormInputLabel htmlFor="strike-price">
@@ -122,7 +154,9 @@ export const CreateMarketModal: FC = memo(() => {
 											id="strike-price"
 											value={strikePrice}
 											onChange={(e) => setStrikePrice(e.target.value)}
-											placeholder="e.g. $10000.00 USD"
+											placeholder={t('common.eg-val', {
+												val: strikePricePlaceholderVal,
+											})}
 										/>
 									</FormControl>
 								</FormControlGroup>
@@ -137,6 +171,7 @@ export const CreateMarketModal: FC = memo(() => {
 											id="end-of-bidding"
 											selected={endOfBidding}
 											onChange={(d) => setEndOfBidding(d)}
+											maxDate={maturityDate}
 										/>
 									</FormControl>
 									<FormControl>
@@ -319,6 +354,7 @@ const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
 		border-top-color: transparent;
 		border-bottom-color: transparent;
 		border-right-color: transparent;
+		border-left-color: ${(props) => props.theme.colors.accentL1};
 	}
 
 	.currency-container {
@@ -326,4 +362,13 @@ const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
 	}
 `;
 
-export default CreateMarketModal;
+const SelectContainer = styled.div`
+	.react-select__control {
+		border-color: transparent;
+		&:hover {
+			border-color: transparent;
+		}
+	}
+`;
+
+export default connector(CreateMarketModal);

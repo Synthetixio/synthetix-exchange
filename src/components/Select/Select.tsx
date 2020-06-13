@@ -5,7 +5,7 @@ import { ThemeContext } from 'styled-components';
 const IndicatorSeparator: FC = () => null;
 
 function Select<T>(props: Props<T>) {
-	const { colors } = useContext(ThemeContext);
+	const { colors, fonts } = useContext(ThemeContext);
 
 	const computedStyles = useMemo(() => {
 		const styles: StylesConfig = {
@@ -23,6 +23,7 @@ function Select<T>(props: Props<T>) {
 			}),
 			control: (provided) => ({
 				...provided,
+				fontFamily: fonts.regular,
 				color: colors.fontPrimary,
 				cursor: 'pointer',
 				boxShadow: 'none',
@@ -33,6 +34,7 @@ function Select<T>(props: Props<T>) {
 				'&:hover': {
 					border: `1px solid ${colors.accentL2}`,
 				},
+				fontSize: '14px',
 			}),
 			menu: (provided) => ({
 				...provided,
@@ -57,11 +59,24 @@ function Select<T>(props: Props<T>) {
 					backgroundColor: colors.accentL2,
 				},
 			}),
+			placeholder: (provided) => ({
+				...provided,
+				fontSize: '14px',
+				opacity: 0.5,
+				color: colors.fontTertiary,
+			}),
 		};
 		return styles;
-	}, [colors]);
+	}, [colors, fonts]);
 
-	return <ReactSelect styles={computedStyles} components={{ IndicatorSeparator }} {...props} />;
+	return (
+		<ReactSelect
+			styles={computedStyles}
+			classNamePrefix="react-select"
+			components={{ IndicatorSeparator }}
+			{...props}
+		/>
+	);
 }
 
 export default Select;

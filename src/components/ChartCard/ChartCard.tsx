@@ -3,6 +3,7 @@ import styled, { css, ThemeContext } from 'styled-components';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import format from 'date-fns/format';
+import isNumber from 'lodash/isNumber';
 
 import ChangePercent from '../ChangePercent';
 import RechartsResponsiveContainer from '../RechartsResponsiveContainer';
@@ -161,6 +162,9 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								tickLine={false}
 								hide={!xAxisVisible}
 								tickFormatter={(val) => {
+									if (!isNumber(val)) {
+										return '';
+									}
 									const periodOverOneDay =
 										selectedPeriod != null && selectedPeriod.value > PERIOD_IN_HOURS.ONE_DAY;
 
@@ -215,7 +219,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								}}
 								labelStyle={fontStyle}
 								formatter={(val: string | number) => formatCurrencyWithSign(synthSign, val)}
-								labelFormatter={(label) => format(label, 'Do MMM YY | HH:mm')}
+								labelFormatter={(label) => format(label, 'do MMM yy | HH:mm')}
 							/>
 						</AreaChart>
 					</RechartsResponsiveContainer>
