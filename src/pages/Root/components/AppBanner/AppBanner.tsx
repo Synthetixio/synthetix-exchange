@@ -12,7 +12,8 @@ const { APP_BANNER_DISMISSED } = LOCAL_STORAGE_KEYS;
 
 // Since we currently can have only one "active" banner, all we need to do is to keep incrementing
 // the BANNER_ID which will be persisted to local storage (no need to keep an array of the banners the user saw)
-const BANNER_ID = 1;
+
+const BANNER_ID = '1_eth_collat'; // set on 15 June, 2020
 
 const AppBanner = memo(() => {
 	const [bannerDismissed, setBannerDismissed] = useLocalStorage(APP_BANNER_DISMISSED, null);
@@ -21,7 +22,8 @@ const AppBanner = memo(() => {
 
 	return shouldDisplayBanner ? (
 		<Container>
-			dismissible banner message...
+			The Ether collateral trial is complete — please close your loans before the APR is raised to
+			10% on June 19
 			<CloseButton onClick={() => setBannerDismissed(BANNER_ID)}>
 				<CloseCrossIcon width={10} />
 			</CloseButton>
