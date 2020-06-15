@@ -6,6 +6,7 @@ import { bodyMediumCSS } from 'components/Typography/Body';
 import Link from 'components/Link';
 
 import { breakpoint, media } from 'shared/media';
+import { FlexDivRow } from 'shared/commonStyles';
 
 import { LINKS } from 'constants/links';
 import { ROUTES } from 'constants/routes';
@@ -142,13 +143,16 @@ export const Footer: FC = memo(() => {
 						))}
 					</Social>
 				</FooterMenu>
-				<MiscLinks>
-					{MISC_LINKS.map(({ icon, link }) => (
-						<FooterLink key={link} to={link} isExternal={true}>
-							{icon}
-						</FooterLink>
-					))}
-				</MiscLinks>
+				<StyledFlexDivRow>
+					<MiscLinks>
+						{MISC_LINKS.map(({ icon, link }) => (
+							<FooterLink key={link} to={link} isExternal={true}>
+								{icon}
+							</FooterLink>
+						))}
+					</MiscLinks>
+					<VersionLabel>v{process.env.REACT_APP_VERSION}</VersionLabel>
+				</StyledFlexDivRow>
 			</Content>
 		</Container>
 	);
@@ -243,6 +247,23 @@ const Social = styled.div`
 	grid-auto-flow: column;
 	grid-gap: 15px;
 	align-items: center;
+`;
+
+const StyledFlexDivRow = styled(FlexDivRow)`
+	align-items: center;
+	flex-wrap: wrap;
+	${media.small`
+		flex-direction: column;
+		align-items: flex-start;
+	`};
+`;
+
+const VersionLabel = styled.div`
+	font-size: 12px;
+	color: ${(props) => props.theme.colors.fontPrimary};
+	${media.medium`
+		margin-top: 15px;
+	`}
 `;
 
 export default Footer;
