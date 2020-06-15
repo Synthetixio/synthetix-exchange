@@ -1,12 +1,14 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 
-import { FlexDivCentered, resetButtonCSS } from 'shared/commonStyles';
+import { resetButtonCSS } from 'shared/commonStyles';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
 import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 import { useLocalStorage } from 'shared/hooks/useLocalStorage';
+
+import { media } from 'shared/media';
 
 const { APP_BANNER_DISMISSED } = LOCAL_STORAGE_KEYS;
 
@@ -22,8 +24,10 @@ const AppBanner = memo(() => {
 
 	return shouldDisplayBanner ? (
 		<Container>
+			{/* <Message> */}
 			The Ether collateral trial is complete — please close your loans before the APR is raised to
 			10% on June 19
+			{/* </Message> */}
 			<CloseButton onClick={() => setBannerDismissed(BANNER_ID)}>
 				<CloseCrossIcon width={10} />
 			</CloseButton>
@@ -31,26 +35,31 @@ const AppBanner = memo(() => {
 	) : null;
 });
 
-const Container = styled(FlexDivCentered)`
+const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.buttonDefault};
 	color: ${(props) => props.theme.colors.white};
-	height: 36px;
-	display: flex;
-	justify-content: center;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	min-height: 36px;
+	justify-items: center;
 	align-items: center;
-	letter-spacing: 0.5px;
+	letter-spacing: 0.2px;
 	font-size: 14px;
 	text-transform: uppercase;
 	width: 100%;
-	position: relative;
+	grid-gap: 10px;
+	padding: 2px 12px;
+	${media.medium`
+		font-size: 12px;
+	`}
+	${media.small`
+		font-size: 11px;
+	`}
 `;
 
 const CloseButton = styled.button`
 	${resetButtonCSS};
-	position: absolute;
-	right: 12px;
 	color: ${(props) => props.theme.colors.white};
-	padding: 0 4px;
 `;
 
 export default AppBanner;
