@@ -11,7 +11,7 @@ const Button = styled.button<ButtonProps>`
 	border-radius: 1px;
 	height: 48px;
 	font-size: 16px;
-	letter-spacing: 0.5px;
+	letter-spacing: 0.2px;
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;

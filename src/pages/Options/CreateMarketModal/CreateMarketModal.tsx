@@ -2,11 +2,12 @@ import React, { useState, memo, FC, useMemo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
+import { ValueType } from 'react-select';
+import intervalToDuration from 'date-fns/intervalToDuration';
 
 import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
-import { ValueType } from 'react-select';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
@@ -14,31 +15,44 @@ import ROUTES, { navigateTo } from 'constants/routes';
 import DatePicker from 'components/Input/DatePicker';
 import { SYNTHS_MAP, CRYPTO_CURRENCY_MAP, FIAT_CURRENCY_MAP } from 'constants/currency';
 
-import { lightTheme } from 'styles/theme';
+import { lightTheme, darkTheme } from 'styles/theme';
 import colors from 'styles/theme/colors';
 
 import { RootState } from 'ducks/types';
 import { getAvailableSynthsMap, getAvailableSynths } from 'ducks/synths';
 
-import { headingH3CSS, headingH6CSS } from 'components/Typography/Heading';
-import { bodyMediumCSS } from 'components/Typography/Body';
+import { headingH3CSS, headingH6CSS, headingH5CSS } from 'components/Typography/Heading';
+import { bodyCSS, sectionTitleCSS } from 'components/Typography/General';
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-import { formLabelLargeCSS } from 'components/Typography/Form';
+import { formLabelLargeCSS, formDataCSS, formLabelSmallCSS } from 'components/Typography/Form';
 import Select from 'components/Select';
 import Currency from 'components/Currency';
-import { Container as ContainerC } from 'components/Currency/commonStyles';
+import { Container as CurrencyContainer } from 'components/Currency/commonStyles';
+import Button from 'components/Button/Button';
 
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
 import { media } from 'shared/media';
 
+import { formatPercentage, formatShortDate, formattedDuration } from 'utils/formatters';
+import MarketPriceRow from '../components/MarketPriceRow';
+
 /*
+TODO: 
 sAUDKey,
 			initialTargetPrice,
 			[creationTime + biddingTime, creationTime + timeToMaturity],
 			[initialLongBid, initialShortBid],
 			{ from: initialBidder }
+	from
+	if the values are x, y (where x+y=1), then the bids are x * funding y * funding
 */
+
+const FEES = {
+	CREATOR: 0.1 / 100,
+	REFUND: 0.1 / 100,
+	TRADING: 0.1 / 100,
+};
 
 const StyledSlider = withStyles({
 	root: {
@@ -89,17 +103,24 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 	});
 	const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
 	const filteredSynths = useMemo(
-		() => synths.filter((synth) => !synth.inverted && synth.category !== 'forex'),
+		() => synths.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD),
 		[synths]
 	);
 
-	// from
-	// if the values are x, y (where x+y=1), then the bids are x * funding y * funding
-
-	const handleClose = () => navigateTo(ROUTES.Options.Home);
+	const isButtonDisabled =
+		currencyKey == null ||
+		strikePrice === '' ||
+		endOfBidding === null ||
+		maturityDate === null ||
+		initialFundingAmount === '';
 
 	const usdSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
 	const strikePricePlaceholderVal = `${usdSign}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
+
+	const handleClose = () => navigateTo(ROUTES.Options.Home);
+	const handleMarketCreation = () => {
+		console.log('TODO');
+	};
 
 	return (
 		<ThemeProvider theme={lightTheme}>
@@ -129,10 +150,10 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 										<SelectContainer>
 											<Select
 												formatOptionLabel={(option) => (
-													<ContainerC showIcon={true}>
+													<CurrencyContainer showIcon={true}>
 														<Currency.Icon currencyKey={option.value} type="crypto" />
-														<Currency.Name currencyKey={option.label} />
-													</ContainerC>
+														{option.label}
+													</CurrencyContainer>
 												)}
 												options={filteredSynths.map((synth) => ({
 													label: synth.asset,
@@ -230,6 +251,63 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 							<MarketSummaryTitle>
 								{t('options.create-market-modal.summary.title')}
 							</MarketSummaryTitle>
+							<MarketSummaryPreview>
+								<PreviewAssetRow>
+									{currencyKey ? (
+										<StyledCurrencyContainer showIcon={true}>
+											<Currency.Icon currencyKey={(currencyKey as any).value} type="crypto" />
+											{(currencyKey as any).label}
+										</StyledCurrencyContainer>
+									) : (
+										'?'
+									)}
+									<span>&gt;</span>
+									<StrikePrice>{`${usdSign}${strikePrice !== '' ? strikePrice : 0} ${
+										FIAT_CURRENCY_MAP.USD
+									}`}</StrikePrice>
+								</PreviewAssetRow>
+								<PreviewDatesRow>
+									<div>
+										{t('options.create-market-modal.summary.dates.bids-end', {
+											date: endOfBidding ? formatShortDate(endOfBidding) : '',
+										})}
+									</div>
+									<div>
+										{t('options.create-market-modal.summary.dates.trading-period', {
+											period: endOfBidding
+												? formattedDuration(
+														intervalToDuration({ start: Date.now(), end: endOfBidding })
+												  )
+												: '',
+										})}
+									</div>
+								</PreviewDatesRow>
+								<PreviewMarketPriceRow>
+									<MarketPriceRow long={initialLongShorts.long} short={initialLongShorts.short} />
+								</PreviewMarketPriceRow>
+								<PreviewFeesRow>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.fees.creator')}</span>
+										<span>{formatPercentage(FEES.CREATOR)}</span>
+									</FlexDivRowCentered>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.fees.refund')}</span>
+										<span>{formatPercentage(FEES.REFUND)}</span>
+									</FlexDivRowCentered>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.fees.trading')}</span>
+										<span>{formatPercentage(FEES.TRADING)}</span>
+									</FlexDivRowCentered>
+								</PreviewFeesRow>
+								<CreateMarketButton
+									palette="primary"
+									size="lg"
+									disabled={isButtonDisabled}
+									onClick={handleMarketCreation}
+								>
+									{t('options.create-market-modal.summary.create-market-button-label')}
+								</CreateMarketButton>
+							</MarketSummaryPreview>
 						</MarketSummary>
 					</Content>
 				</Container>
@@ -264,7 +342,7 @@ const Title = styled.div`
 `;
 
 const Subtitle = styled.div`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontSecondary};
 	padding-bottom: 57px;
 	max-width: 520px;
@@ -273,20 +351,13 @@ const Subtitle = styled.div`
 
 const Content = styled(GridDivCol)`
 	grid-gap: 57px;
-	${media.large`
+	${media.medium`
 		grid-auto-flow: row;
 	`}
 `;
 
 const MarketDetails = styled.div`
 	width: 570px;
-	${media.medium`
-		width: 100%;
-	`}
-`;
-
-const MarketSummary = styled.div`
-	width: 330px;
 	${media.medium`
 		width: 100%;
 	`}
@@ -325,10 +396,67 @@ const Shorts = styled.span`
 	color: ${(props) => props.theme.colors.red};
 `;
 
+const MarketSummary = styled.div`
+	width: 330px;
+	background-color: ${(props) => props.theme.colors.surfaceL2};
+	${media.medium`
+		width: 100%;
+	`}
+`;
+
 const MarketSummaryTitle = styled.div`
+	${sectionTitleCSS};
 	text-align: center;
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 	height: 48px;
+	color: ${(props) => props.theme.colors.fontPrimary};
+	padding: 15px;
+	text-transform: uppercase;
+`;
+
+const MarketSummaryPreview = styled.div`
+	padding: 20px;
+`;
+const PreviewAssetRow = styled.div`
+	display: inline-grid;
+	grid-auto-flow: column;
+	align-items: center;
+	grid-gap: 9px;
+	${headingH5CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+	padding-bottom: 14px;
+`;
+
+const StyledCurrencyContainer = styled(CurrencyContainer)`
+	${headingH5CSS};
+	color: ${darkTheme.colors.accentL1};
+`;
+
+const StrikePrice = styled.div``;
+
+const PreviewDatesRow = styled.div`
+	${formLabelSmallCSS};
+	color: ${(props) => props.theme.colors.fontSecondary};
+	padding-bottom: 11px;
+	display: grid;
+	grid-gap: 4px;
+	text-transform: none;
+`;
+const PreviewMarketPriceRow = styled.div`
+	padding-bottom: 18px;
+`;
+const PreviewFeesRow = styled.div`
+	${formDataCSS};
+	display: grid;
+	padding: 12px 0;
+	border-top: 1px solid ${(props) => props.theme.colors.surfaceL1};
+	border-bottom: 1px solid ${(props) => props.theme.colors.surfaceL1};
+	color: ${(props) => props.theme.colors.fontSecondary};
+	margin-bottom: 18px;
+	grid-gap: 4px;
+`;
+const CreateMarketButton = styled(Button)`
+	width: 100%;
 `;
 
 const CloseButton = styled.button`

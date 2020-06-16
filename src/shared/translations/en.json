@@ -209,9 +209,15 @@
 			},
 			"summary": {
 				"title": "market creation summary:",
-				"creator-fee": "Creator fee",
-				"refund-fee": "Refund fee",
-				"trading-fee": "Trading fee",
+				"dates": {
+					"bids-end": "Bids end: {{date}}",
+					"trading-period": "Trading period: {{period}}"
+				},
+				"fees": {
+					"creator": "Creator fee",
+					"refund": "Refund fee",
+					"trading": "Trading fee"
+				},
 				"create-market-button-label": "create market"
 			}
 		},

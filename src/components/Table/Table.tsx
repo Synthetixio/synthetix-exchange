@@ -228,7 +228,7 @@ ${(props) =>
 			${TableCellHead} {
 				background-color: ${lightTheme.colors.brand};
 				color: ${darkTheme.colors.fontSecondary};
-				font-family: ${(props) => props.theme.fonts.bold};
+				font-family: ${(props) => props.theme.fonts.medium};
 				font-size: 12px;
 			}
 			${TableBodyRow} {

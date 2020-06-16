@@ -18,7 +18,7 @@ import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
 import { SYNTHS_MAP } from 'constants/currency';
 import { RootState } from 'ducks/types';
 import { HistoricalRatesData } from 'ducks/historicalRates';
-import { captionCSS } from 'components/Typography/Caption';
+import { captionCSS } from 'components/Typography/General';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;

@@ -38,13 +38,15 @@ function Select<T>(props: Props<T>) {
 			}),
 			menu: (provided) => ({
 				...provided,
-				backgroundColor: colors.accentL1,
+				backgroundColor: colors.surfaceL3,
 				border: `1px solid ${colors.accentL2}`,
-				borderRadius: '1px',
+				borderRadius: '2px',
+				boxShadow: '0px 4px 11px rgba(188, 99, 255, 0.15442)',
+				padding: '10px',
 			}),
 			menuList: (provided) => ({
 				...provided,
-				borderRadius: '3px',
+				borderRadius: 0,
 				paddingBottom: 0,
 				paddingTop: 0,
 				textAlign: 'left',
@@ -54,7 +56,7 @@ function Select<T>(props: Props<T>) {
 				color: colors.fontPrimary,
 				cursor: 'pointer',
 				fontSize: '14px',
-				backgroundColor: colors.accentL1,
+				backgroundColor: colors.surfaceL3,
 				'&:hover': {
 					backgroundColor: colors.accentL2,
 				},

@@ -1,7 +1,8 @@
 import styled, { keyframes, css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
-import { tableDataSmallCSS, chartDataCSS } from 'components/Typography/Data';
+import { tableDataSmallCSS } from 'components/Typography/Table';
+import { chartDataCSS } from 'components/Typography/General';
 
 import { Z_INDEX } from '../constants/ui';
 import { media, breakpoint } from './media';

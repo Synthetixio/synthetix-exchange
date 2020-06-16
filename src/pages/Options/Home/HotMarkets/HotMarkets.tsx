@@ -1,7 +1,6 @@
 import React, { memo, FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import format from 'date-fns/format';
 import { ConnectedProps, connect } from 'react-redux';
 
 import { OptionsMarkets } from 'ducks/options/types';
@@ -16,11 +15,12 @@ import { media } from 'shared/media';
 import { darkTheme } from 'styles/theme';
 
 import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
-import { formatCurrencyWithSign } from 'utils/formatters';
+import { formatCurrencyWithSign, formatShortDate } from 'utils/formatters';
 
-import { GridDivCentered, FlexDivRow, FlexDivRowCentered, FlexDivCol } from 'shared/commonStyles';
+import { GridDivCentered, FlexDivRow, FlexDivCol } from 'shared/commonStyles';
 
 import TimeRemaining from '../components/TimeRemaining';
+import MarketPriceRow from '../../components/MarketPriceRow';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -56,19 +56,10 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets, synthsMap
 							{formatCurrencyWithSign(usdSign, optionsMarket.strikePrice)} {FIAT_CURRENCY_MAP.USD}
 						</StrikePrice>
 						<MaturityDate>
-							{t('common.by-date', { date: format(optionsMarket.maturityDate, 'yyyy-MM-dd') })}
+							{t('common.by-date', { date: formatShortDate(optionsMarket.maturityDate) })}
 						</MaturityDate>
 					</MarketDetailsRow>
-					<MarketPriceRow>
-						<FlexDivRowCentered>
-							<Longs>{t('common.val-in-cents', { val: optionsMarket.prices.long })}</Longs>
-							<Shorts>{t('common.val-in-cents', { val: optionsMarket.prices.short })}</Shorts>
-						</FlexDivRowCentered>
-						<FlexDivRowCentered>
-							<LongsPercent style={{ width: `calc(${optionsMarket.prices.long}% - 2px)` }} />
-							<ShortsPercent style={{ width: `calc(${optionsMarket.prices.short}% - 2px)` }} />
-						</FlexDivRowCentered>
-					</MarketPriceRow>
+					<MarketPriceRow long={optionsMarket.prices.long} short={optionsMarket.prices.short} />
 				</Card>
 			))}
 		</Cards>
@@ -130,35 +121,6 @@ const MaturityDate = styled.div`
 	letter-spacing: 0.2px;
 	text-transform: uppercase;
 	color: ${(props) => props.theme.colors.fontSecondary};
-`;
-
-const MarketPriceRow = styled(GridDivCentered)`
-	grid-gap: 4px;
-	> * {
-		width: 100%;
-	}
-`;
-
-const Longs = styled.div`
-	${labelSmallCSS};
-	color: ${(props) => props.theme.colors.green};
-`;
-const Shorts = styled.div`
-	${labelSmallCSS};
-	color: ${(props) => props.theme.colors.red};
-`;
-
-const LongsPercent = styled.div`
-	height: 16px;
-	background-color: ${(props) => props.theme.colors.green};
-	border-top-left-radius: 2px;
-	border-bottom-left-radius: 2px;
-`;
-const ShortsPercent = styled.div`
-	height: 16px;
-	background-color: ${(props) => props.theme.colors.red};
-	border-top-right-radius: 2px;
-	border-bottom-right-radius: 2px;
 `;
 
 const StyledTimeRemaining = styled(TimeRemaining)`

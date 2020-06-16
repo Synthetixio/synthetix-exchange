@@ -19,8 +19,8 @@ import { CurrencyCol } from 'components/Table/common';
 import Currency from 'components/Currency';
 import { OptionsMarkets, OptionsMarket, Phase } from 'ducks/options/types';
 import { darkTheme } from 'styles/theme';
-import { format } from 'date-fns';
 import TimeRemaining from '../components/TimeRemaining';
+import { formatShortDate } from 'utils/formatters';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -117,7 +117,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
 							accessor: 'maturityDate',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
-								<span>{format(cellProps.cell.value, 'yyyy-MM-dd')}</span>
+								<span>{formatShortDate(cellProps.cell.value)}</span>
 							),
 							width: 150,
 						},

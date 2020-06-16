@@ -178,7 +178,6 @@ const dropdownItemCSS = css`
 	display: flex;
 	align-items: center;
 	color: ${(props) => props.theme.colors.fontTertiary};
-	text-transform: uppercase;
 	&:hover {
 		color: ${(props) => props.theme.colors.fontPrimary};
 		background-color: ${(props) => props.theme.colors.accentL1};

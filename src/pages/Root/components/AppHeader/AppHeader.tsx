@@ -122,7 +122,6 @@ const MenuLink = styled(Link)`
 	display: flex;
 	align-items: center;
 	color: ${({ theme }) => theme.colors.fontTertiary};
-	text-transform: uppercase;
 	height: 32px;
 	&:hover {
 		color: ${({ theme }) => theme.colors.fontPrimary};

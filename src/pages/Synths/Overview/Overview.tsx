@@ -9,7 +9,6 @@ import { CurrencyKey, toStandardSynth, toInverseSynth } from 'constants/currency
 import ROUTES, { navigateTo, navigateToSynthOverview } from 'constants/routes';
 
 import Spinner from 'components/Spinner';
-import { buttonLargeCSS } from 'components/Typography/Button';
 import { labelMediumCSS } from 'components/Typography/Label';
 
 import { media } from 'shared/media';
@@ -133,6 +132,7 @@ const SynthChartActions = styled(FlexDivRow)`
 const BackLinkButton = styled.button`
 	${resetButtonCSS};
 	${labelMediumCSS};
+	text-transform: none;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	> svg {
 		margin-right: 8px;
@@ -172,7 +172,7 @@ const InverseToggleContainer = styled.div`
 
 const ToggleButton = styled.button<{ isActive: boolean }>`
 	${resetButtonCSS};
-	${buttonLargeCSS};
+	${labelMediumCSS};
 	padding: 5px 13px;
 	color: ${(props) => props.theme.colors.fontSecondary};
 	&:hover {

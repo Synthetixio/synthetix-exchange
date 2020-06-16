@@ -60,7 +60,6 @@ const Message = styled.div`
 	${absoluteCenteredCSS};
 	${labelMediumCSS};
 	color: ${(props) => props.theme.colors.fontSecondary};
-	text-transform: uppercase;
 `;
 
 const StyledResponsiveContainer = styled(ResponsiveContainer)`

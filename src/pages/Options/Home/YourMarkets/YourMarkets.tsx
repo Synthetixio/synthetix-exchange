@@ -12,7 +12,7 @@ import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 import { Button } from 'components/Button';
 import { headingH4CSS } from 'components/Typography/Heading';
-import { bodyMediumCSS } from 'components/Typography/Body';
+import { bodyCSS } from 'components/Typography/General';
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
@@ -54,7 +54,7 @@ const Title = styled.div`
 `;
 
 const Subtitle = styled.div`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${darkTheme.colors.accentL1};
 	padding-bottom: 32px;
 `;

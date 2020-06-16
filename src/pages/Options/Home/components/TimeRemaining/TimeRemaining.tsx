@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import intervalToDuration from 'date-fns/intervalToDuration';
 import differenceInHours from 'date-fns/differenceInHours';
 
-import { bodyMediumCSS } from 'components/Typography/Body';
+import { bodyCSS } from 'components/Typography/General';
 
 import useInterval from 'shared/hooks/useInterval';
 import { formattedDuration } from 'utils/formatters';
@@ -47,7 +47,7 @@ export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
 };
 
 const Container = styled.div<{ label?: 'ending-soon' }>`
-	${bodyMediumCSS};
+	${bodyCSS};
 	font-size: 14px;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	text-align: center;

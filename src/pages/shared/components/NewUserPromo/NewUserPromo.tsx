@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { HeadingMedium } from 'components/Typography';
-import { bodyLargeCSS } from 'components/Typography/Body';
+import { bodyCSS } from 'components/Typography/General';
 import { dataLargeCSS } from 'components/Typography/Data';
 import Link from 'components/Link';
 
@@ -83,7 +83,8 @@ const Title = styled(HeadingMedium)`
 `;
 
 const Subtitle = styled.span`
-	${bodyLargeCSS};
+	${bodyCSS};
+	font-size: 18px;
 	color: ${lightTheme.colors.fontPrimary};
 `;
 

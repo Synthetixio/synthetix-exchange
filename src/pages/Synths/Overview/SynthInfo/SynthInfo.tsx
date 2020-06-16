@@ -15,8 +15,8 @@ import { GridDiv } from 'shared/commonStyles';
 
 import Link from 'components/Link';
 import { tableHeaderSmallCSS, tableDataSmallCSS } from 'components/Typography/Table';
-import { bodyMediumCSS } from 'components/Typography/Body';
-import { subtitleLargeCSS } from 'components/Typography/Heading';
+import { bodyCSS } from 'components/Typography/General';
+import { subtitleLargeCSS } from 'components/Typography/General';
 
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 import { getEtherscanTokenLink } from 'utils/explorers';
@@ -173,7 +173,7 @@ const Description = styled.span`
 `;
 
 const Info = styled.div`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 

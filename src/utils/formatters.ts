@@ -107,7 +107,7 @@ export const formattedDuration = (duration: Duration, delimiter = ' ') => {
 		formatted.push(`${duration.months}mo`);
 	}
 	if (duration.days) {
-		formatted.push(`${duration.months}d`);
+		formatted.push(`${duration.days}d`);
 	}
 	if (duration.hours) {
 		formatted.push(`${duration.hours}h`);
@@ -120,3 +120,5 @@ export const formattedDuration = (duration: Duration, delimiter = ' ') => {
 	}
 	return formatted.join(delimiter);
 };
+
+export const formatShortDate = (date: Date | number) => format(date, 'yyyy-MM-dd');

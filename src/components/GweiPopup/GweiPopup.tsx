@@ -21,7 +21,7 @@ import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg'
 import { fadeInAnimation, fadeOutAnimation } from 'shared/commonStyles';
 
 import { HeadingMedium, DataSmall } from '../Typography';
-import { bodyMediumCSS } from '../Typography/Body';
+import { bodyCSS } from '../Typography/General';
 import Slider from '../Slider';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../deprecated/Table';
@@ -203,7 +203,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 );
 
 const BodyMedium = styled.span`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 

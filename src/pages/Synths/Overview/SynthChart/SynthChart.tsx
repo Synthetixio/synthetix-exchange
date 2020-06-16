@@ -31,8 +31,7 @@ import { media } from 'shared/media';
 
 import Currency from 'components/Currency';
 import { mockRates } from 'pages/Synths/mockData';
-import { subtitleSmallCSS } from 'components/Typography/Heading';
-import { bodyMediumCSS } from 'components/Typography/Body';
+import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
 import { GridDivCenteredRow } from 'shared/commonStyles';
 
 type StateProps = {
@@ -177,7 +176,7 @@ const FrozenMessageTitle = styled.div`
 `;
 
 const FrozenMessageSubtitle = styled.div`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${darkTheme.colors.accentL2};
 `;
 
