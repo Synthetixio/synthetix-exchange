@@ -157,6 +157,7 @@ export const SynthMarkets: FC<MarketSectionProps> = ({
 const Header = styled(GridDivCenteredCol)`
 	padding-bottom: 40px;
 	grid-template-columns: 1fr auto;
+	justify-items: initial;
 	${media.large`
 		padding: 0 20px 40px 20px;
 	`}
