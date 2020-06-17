@@ -41,6 +41,7 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 /*
 TODO: 
 
+BinaryOptionMarketManager.durations()
 sAUDKey,
 			initialTargetPrice,
 			[creationTime + biddingTime, creationTime + timeToMaturity],

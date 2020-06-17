@@ -198,7 +198,7 @@
 		},
 		"create-market-modal": {
 			"title": "Create a new Options Market",
-			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Est tempor, sed et ultrices porttitor sit justo fringilla. Massa quis sit arcu tellus.",
+			"subtitle": "Here you can create a new binary options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
 			"details": {
 				"select-asset-label": "select asset:",
 				"strike-price-label": "strike price:",
