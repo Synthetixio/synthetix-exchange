@@ -36,9 +36,11 @@ import { media } from 'shared/media';
 
 import { formatPercentage, formatShortDate, formattedDuration } from 'utils/formatters';
 import MarketPriceRow from '../components/MarketPriceRow';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 /*
 TODO: 
+
 sAUDKey,
 			initialTargetPrice,
 			[creationTime + biddingTime, creationTime + timeToMaturity],
@@ -259,7 +261,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 											{(currencyKey as any).label}
 										</StyledCurrencyContainer>
 									) : (
-										'?'
+										EMPTY_VALUE
 									)}
 									<span>&gt;</span>
 									<StrikePrice>{`${usdSign}${strikePrice !== '' ? strikePrice : 0} ${
@@ -269,7 +271,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 								<PreviewDatesRow>
 									<div>
 										{t('options.create-market-modal.summary.dates.bids-end', {
-											date: endOfBidding ? formatShortDate(endOfBidding) : '',
+											date: endOfBidding ? formatShortDate(endOfBidding) : EMPTY_VALUE,
 										})}
 									</div>
 									<div>
@@ -278,7 +280,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 												? formattedDuration(
 														intervalToDuration({ start: Date.now(), end: endOfBidding })
 												  )
-												: '',
+												: EMPTY_VALUE,
 										})}
 									</div>
 								</PreviewDatesRow>

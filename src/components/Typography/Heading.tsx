@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { typography } from 'styled-system';
 
 const headingCSS = css`
 	font-family: ${(props) => props.theme.fonts.medium};
@@ -55,20 +54,14 @@ export const headingSmallCSS = css`
 	font-size: 14px;
 `;
 
-export const HeadingLarge = styled.h1`
+export const HeadingLarge = styled.div`
 	${headingLargeCSS};
-	margin: 0;
-	${typography}
 `;
 
-export const HeadingMedium = styled.h2`
+export const HeadingMedium = styled.div`
 	${headingMediumCSS};
-	margin: 0;
-	${typography}
 `;
 
-export const HeadingSmall = styled.h3`
+export const HeadingSmall = styled.div`
 	${headingSmallCSS};
-	margin: 0;
-	${typography}
 `;

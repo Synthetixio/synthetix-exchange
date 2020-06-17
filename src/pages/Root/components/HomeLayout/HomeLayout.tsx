@@ -1,6 +1,6 @@
 import React, { Suspense, FC, memo } from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { darkTheme } from 'styles/theme';
+import { darkTheme, lightTheme } from 'styles/theme';
 
 import Footer from './Footer';
 import AppHeader from '../AppHeader';
@@ -25,7 +25,8 @@ const HomeLayout: FC<HomeLayoutProps> = memo(({ children }) => (
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${darkTheme.colors.surfaceL1};
+		background-color: ${darkTheme.colors.surfaceL1};
+		color: ${lightTheme.colors.fontPrimary};
   }
 `;
 

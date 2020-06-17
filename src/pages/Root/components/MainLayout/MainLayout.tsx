@@ -28,6 +28,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, isAppReady }) => (
 const GlobalStyle = createGlobalStyle`
   body {
     background-color: ${({ theme }) => theme.colors.surfaceL1};
+    color: ${({ theme }) => theme.colors.fontPrimary};
   }
 `;
 
