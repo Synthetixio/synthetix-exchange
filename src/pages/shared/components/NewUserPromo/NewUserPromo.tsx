@@ -2,9 +2,9 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingMedium } from 'components/Typography';
 import { bodyCSS } from 'components/Typography/General';
 import { dataLargeCSS } from 'components/Typography/Data';
+import { headingH3CSS } from 'components/Typography/Heading';
 import Link from 'components/Link';
 
 import { ReactComponent as BorrowsETHIcon } from 'assets/images/splash/borrow-sETH.svg';
@@ -77,7 +77,8 @@ const Container = styled.div`
 	`}
 `;
 
-const Title = styled(HeadingMedium)`
+const Title = styled.div`
+	${headingH3CSS};
 	color: ${lightTheme.colors.brand};
 	margin-bottom: 16px;
 `;

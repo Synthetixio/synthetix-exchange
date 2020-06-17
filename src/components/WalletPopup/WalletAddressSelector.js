@@ -105,13 +105,9 @@ const ErrorMessage = ({ error, isLedger, onRetry }) => {
 	return (
 		<ErrorContainer>
 			<HeadingMedium>{t('modals.wallet.errors.generic-error')}</HeadingMedium>
-			<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-				{error}
-			</HeadingMedium>
+			<HeadingMedium fontSize={'18px'}>{error}</HeadingMedium>
 			{isLedger ? (
-				<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-					{t('modals.wallet.errors.ledger-error')}
-				</HeadingMedium>
+				<HeadingMedium fontSize={'18px'}>{t('modals.wallet.errors.ledger-error')}</HeadingMedium>
 			) : null}
 
 			<ButtonPrimary onClick={() => onRetry()} width="250px">

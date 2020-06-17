@@ -38,24 +38,14 @@ export const headingH6CSS = css`
 
 // TODO: deprecate these
 
-export const headingLargeCSS = css`
-	${headingCSS};
-	font-size: 56px;
-`;
-
 export const headingMediumCSS = css`
 	${headingCSS};
-	line-height: 32px;
 	font-size: 32px;
 `;
 
 export const headingSmallCSS = css`
 	${headingCSS};
 	font-size: 14px;
-`;
-
-export const HeadingLarge = styled.div`
-	${headingLargeCSS};
 `;
 
 export const HeadingMedium = styled.div`

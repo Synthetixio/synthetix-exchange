@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingMedium } from 'components/Typography';
+import { headingH3CSS } from 'components/Typography/Heading';
 import { bodyCSS } from 'components/Typography/General';
 import { dataLargeCSS, dataMediumCSS } from 'components/Typography/Data';
 import { ButtonPrimary } from 'components/Button';
@@ -76,7 +76,8 @@ const Container = styled.div`
 	`}
 `;
 
-const Title = styled(HeadingMedium)`
+const Title = styled.div`
+	${headingH3CSS};
 	color: ${darkTheme.colors.brand};
 	margin-bottom: 16px;
 `;

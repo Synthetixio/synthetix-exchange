@@ -7,6 +7,7 @@ import { ROUTES } from 'constants/routes';
 
 import { getCurrentTheme } from 'ducks/ui';
 import { getIsSystemSuspended } from 'ducks/app';
+import { RootState } from 'ducks/types';
 
 import GlobalEventsGate from 'gates/GlobalEventsGate';
 
@@ -26,7 +27,6 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 import Synths from '../Synths';
-import { RootState } from 'ducks/types';
 
 const Options = lazy(() => import('../Options'));
 
@@ -116,7 +116,7 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 							<Route
 								path={ROUTES.Options.Home}
 								render={() => (
-									<HomeLayout>
+									<HomeLayout isAppReady={isAppReady}>
 										<Options />
 									</HomeLayout>
 								)}
