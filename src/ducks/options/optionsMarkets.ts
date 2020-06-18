@@ -18,7 +18,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 		data: {
 			ad1: {
 				timestamp: Date.now(),
-				currencyKey: 'BTC',
+				currencyKey: 'sBTC',
 				marketAddress: 'ad1',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
@@ -35,7 +35,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			},
 			ad2: {
 				timestamp: Date.now(),
-				currencyKey: 'BTC',
+				currencyKey: 'sBTC',
 				marketAddress: 'ad2',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
@@ -52,7 +52,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			},
 			ad3: {
 				timestamp: Date.now(),
-				currencyKey: 'BTC',
+				currencyKey: 'sBTC',
 				marketAddress: 'ad3',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
@@ -69,7 +69,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			},
 			ad4: {
 				timestamp: Date.now(),
-				currencyKey: 'BTC',
+				currencyKey: 'sBTC',
 				marketAddress: 'ad4',
 				creatorAddress: 'xxx',
 				phase: 'bidding',

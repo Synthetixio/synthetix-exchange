@@ -12,8 +12,13 @@ import { withStyles } from '@material-ui/core/styles';
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
 import ROUTES, { navigateTo } from 'constants/routes';
-import DatePicker from 'components/Input/DatePicker';
-import { SYNTHS_MAP, CRYPTO_CURRENCY_MAP, FIAT_CURRENCY_MAP } from 'constants/currency';
+import {
+	SYNTHS_MAP,
+	CRYPTO_CURRENCY_MAP,
+	FIAT_CURRENCY_MAP,
+	CurrencyKey,
+} from 'constants/currency';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 import { lightTheme, darkTheme } from 'styles/theme';
 import colors from 'styles/theme/colors';
@@ -21,6 +26,7 @@ import colors from 'styles/theme/colors';
 import { RootState } from 'ducks/types';
 import { getAvailableSynthsMap, getAvailableSynths } from 'ducks/synths';
 
+import DatePicker from 'components/Input/DatePicker';
 import { headingH3CSS, headingH6CSS, headingH5CSS } from 'components/Typography/Heading';
 import { bodyCSS, sectionTitleCSS } from 'components/Typography/General';
 import NumericInput from 'components/Input/NumericInput';
@@ -28,7 +34,6 @@ import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency'
 import { formLabelLargeCSS, formDataCSS, formLabelSmallCSS } from 'components/Typography/Form';
 import Select from 'components/Select';
 import Currency from 'components/Currency';
-import { Container as CurrencyContainer } from 'components/Currency/commonStyles';
 import Button from 'components/Button/Button';
 
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
@@ -36,7 +41,6 @@ import { media } from 'shared/media';
 
 import { formatPercentage, formatShortDate, formattedDuration } from 'utils/formatters';
 import MarketPriceRow from '../components/MarketPriceRow';
-import { EMPTY_VALUE } from 'constants/placeholder';
 
 /*
 TODO: 
@@ -94,9 +98,11 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type CreateMarketModalProps = PropsFromRedux;
 
+type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
+
 export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, synthsMap }) => {
 	const { t } = useTranslation();
-	const [currencyKey, setCurrencyKey] = useState<ValueType<{ value: string; label: string }>>();
+	const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
 	const [strikePrice, setStrikePrice] = useState<number | string>('');
 	const [endOfBidding, setEndOfBidding] = useState<Date | null | undefined>(null);
 	const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
@@ -153,10 +159,12 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 										<SelectContainer>
 											<Select
 												formatOptionLabel={(option) => (
-													<CurrencyContainer showIcon={true}>
-														<Currency.Icon currencyKey={option.value} type="crypto" />
-														{option.label}
-													</CurrencyContainer>
+													<Currency.Name
+														currencyKey={option.value}
+														name={synthsMap[option.value]?.asset}
+														showIcon={true}
+														iconProps={{ type: 'asset' }}
+													/>
 												)}
 												options={filteredSynths.map((synth) => ({
 													label: synth.asset,
@@ -257,10 +265,12 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 							<MarketSummaryPreview>
 								<PreviewAssetRow>
 									{currencyKey ? (
-										<StyledCurrencyContainer showIcon={true}>
-											<Currency.Icon currencyKey={(currencyKey as any).value} type="crypto" />
-											{(currencyKey as any).label}
-										</StyledCurrencyContainer>
+										<StyledCurrencyName
+											showIcon={true}
+											currencyKey={(currencyKey as CurrencyKeyOptionType).value}
+											name={(currencyKey as CurrencyKeyOptionType).label}
+											iconProps={{ type: 'asset' }}
+										/>
 									) : (
 										EMPTY_VALUE
 									)}
@@ -430,7 +440,7 @@ const PreviewAssetRow = styled.div`
 	padding-bottom: 14px;
 `;
 
-const StyledCurrencyContainer = styled(CurrencyContainer)`
+const StyledCurrencyName = styled(Currency.Name)`
 	${headingH5CSS};
 	color: ${darkTheme.colors.accentL1};
 `;

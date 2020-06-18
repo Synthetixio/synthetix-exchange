@@ -50,7 +50,12 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('options.home.markets-table.asset-col')}</>,
 							accessor: 'currencyKey',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['currencyKey']>) => (
-								<Currency.Name currencyKey={cellProps.cell.value} showIcon={true} />
+								<Currency.Name
+									currencyKey={cellProps.cell.value}
+									name={synthsMap[cellProps.cell.value]?.asset}
+									showIcon={true}
+									iconProps={{ type: 'asset' }}
+								/>
 							),
 							width: 150,
 							sortable: true,
@@ -72,6 +77,15 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							sortable: true,
 						},
 						{
+							Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
+							accessor: 'maturityDate',
+							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
+								<span>{formatShortDate(cellProps.cell.value)}</span>
+							),
+							width: 150,
+						},
+
+						{
 							Header: <>{t('options.home.markets-table.long-short-col')}</>,
 							id: 'long-short',
 							Cell: (cellProps: CellProps<OptionsMarket>) => (
@@ -84,16 +98,6 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 										{t('common.val-in-cents', { val: cellProps.row.original.prices.short })}
 									</Shorts>
 								</LongShorts>
-							),
-							width: 150,
-						},
-						{
-							Header: <>{t('options.home.markets-table.phase-col')}</>,
-							accessor: 'phase',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['phase']>) => (
-								<PhaseDiv phase={cellProps.cell.value}>
-									{t(`options.phases.${cellProps.cell.value}`)}
-								</PhaseDiv>
 							),
 							width: 150,
 						},
@@ -114,15 +118,17 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							sortable: true,
 						},
 						{
-							Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
-							accessor: 'maturityDate',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
-								<span>{formatShortDate(cellProps.cell.value)}</span>
+							Header: <>{t('options.home.markets-table.phase-col')}</>,
+							accessor: 'phase',
+							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['phase']>) => (
+								<PhaseDiv phase={cellProps.cell.value}>
+									{t(`options.phases.${cellProps.cell.value}`)}
+								</PhaseDiv>
 							),
 							width: 150,
 						},
 						{
-							Header: <>{t('options.home.markets-table.bidding-ends-col')}</>,
+							Header: <>{t('options.home.markets-table.time-remaining-col')}</>,
 							accessor: 'endOfBidding',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['endOfBidding']>) => (
 								<TimeRemaining end={cellProps.cell.value} />

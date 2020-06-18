@@ -46,8 +46,9 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets, synthsMap
 					<MarketHeadingRow>
 						<StyledCurrencyName
 							currencyKey={optionsMarket.currencyKey}
+							name={synthsMap[optionsMarket.currencyKey]?.asset}
 							showIcon={true}
-							iconProps={{ width: '24px', height: '24px', type: 'crypto' }}
+							iconProps={{ width: '24px', height: '24px', type: 'asset' }}
 						/>
 						<StyledTimeRemaining end={optionsMarket.endOfBidding} />
 					</MarketHeadingRow>

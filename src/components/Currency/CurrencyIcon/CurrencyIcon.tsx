@@ -5,33 +5,22 @@ import { CurrencyKey } from 'constants/currency';
 
 type CurrencyIconProps = {
 	currencyKey: CurrencyKey;
-	type?: 'synth' | 'crypto';
+	type?: 'synth' | 'asset';
 };
 
 export const CurrencyIcon: FC<CurrencyIconProps> = memo(
 	({ currencyKey, type = 'synth', ...rest }) => {
 		const currencyIcon = getCurrencyKeyIcon(currencyKey);
+
 		if (!currencyIcon) {
 			return null;
 		}
 
-		const iconProps = {
-			width: '22',
-			height: '22',
-			...rest,
-		};
-		const { SynthIcon, CryptoIcon } = currencyIcon;
-		// synth wants to render as crypto
-		if (type === 'crypto' && CryptoIcon) {
-			return <CryptoIcon {...iconProps} />;
-		}
+		const { SynthIcon, AssetIcon } = currencyIcon;
 
-		const Icon = SynthIcon || CryptoIcon;
-		if (Icon) {
-			return <Icon {...iconProps} />;
-		}
+		const Icon = type === 'synth' ? SynthIcon : AssetIcon;
 
-		return null;
+		return <Icon width="22" height="22" {...rest} />;
 	}
 );
 
