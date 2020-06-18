@@ -189,11 +189,11 @@
 			"markets-table": {
 				"asset-col": "asset",
 				"strike-price-col": "strike price ({{currencyKeyWithSymbol}})",
+				"maturity-date-col": "maturity date",
 				"long-short-col": "long / short",
 				"phase-col": "phase",
 				"pool-size-col": "pool size (<0>{{currencyKeyWithSymbol}}</0>)",
-				"maturity-date-col": "maturity date",
-				"bidding-ends-col": "bidding ends in"
+				"time-remaining-col": "time remaining"
 			}			
 		},
 		"create-market-modal": {
@@ -221,12 +221,93 @@
 				"create-market-button-label": "create market"
 			}
 		},
+		"market": {
+			"meta": {
+				"all-markets": "all markets",
+				"market-sentiment": "market sentiment"
+			},
+			"chart-card": {
+
+			},
+			"transactions-card": {
+				"recent-market-tab-title": "recent market activity",
+				"your-activity-tab-title": "your activity",
+				"table": {
+					"date-time-col": "date | time",
+					"type-col": "type",
+					"position-col": "position",
+					"bid-amount-col": "bid amount",
+					"tx-status-col": "tx status"
+				}
+			},
+			"trade-card": {
+				"bidding": {
+					"bid": {
+						"title": "place bid",
+						"subtitle": "choose your side:",
+						"amount-label": "bid amount",
+						"price-label": "price",
+						"confirm-bid": "confirm-bid",
+						"confirm-button": {
+							"label": "confirm bid",
+							"progress-label": "bidding in progress..."
+						}	
+					},
+					"withdraw": {
+						"title": "withdraw",
+						"subtitle": "from your existing bid:",
+						"amount-label": "withdrawal amount",
+						"price-label": "updated price",
+						"confirm-button": {
+							"label": "confirm withdrawal",
+							"progress-label": "withdrawal in progress..."
+						}	
+					},
+					"common": {
+						"current-position": "current-position",						
+						"bid": "bid",
+						"payoff": "payoff"
+					},
+					"footer": {
+						"end-label": "bidding period closing in:"
+					}
+				},
+				"trading": {
+					"title": "bidding has closed",
+					"subtitle": "Number of tokens available:",
+					"confirm-button": {
+						"label": "claim options",
+						"progress-label": "claiming in progress...",
+						"success-label": "already claimed"
+					},
+					"price-you-paid-in-cents": "price you paid:",
+					"footer": {
+						"end-label": "trading period closing in:"
+					}
+				},
+				"maturity": {
+					"title": "market has closed",
+					"subtitle": "Options available to exercise",
+					"payout-amount": "payout amount",
+					"confirm-button": {
+						"label": "exercise options",
+						"progress-label": "exercise options",
+						"success-label": "already exercised"
+					},
+					"footer": {
+						"end-label": "time left to exercise"
+					}
+				}
+			}
+		},
 		"common": {
 			"time-remaining": {
-				"ended": "bidding ended"
+				"ended": "ended"
 			},
 			"long": "long",
-			"short": "short"
+			"short": "short",
+			"price-long": "{{price}} long",
+			"price-short": "{{price}} short"
 		}
 	},
 	"exchange": {
