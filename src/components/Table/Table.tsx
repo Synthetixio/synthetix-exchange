@@ -12,6 +12,8 @@ import { lightTheme, darkTheme } from 'styles/theme';
 import { FlexDivCentered } from 'shared/commonStyles';
 
 import Spinner from 'components/Spinner';
+import { tableHeaderLargeCSS } from 'components/Typography/Table';
+import { bodyCSS } from 'components/Typography/General';
 
 type TablePalette = 'primary' | 'light-secondary' | 'striped';
 
@@ -217,7 +219,7 @@ ${(props) =>
 				max-height: calc(100% - 56px);
 			}
 			${TableCell} {
-				font-size: 14px;
+				${bodyCSS};
 				color: ${lightTheme.colors.fontPrimary};
 				height: 56px;
 			}
@@ -229,7 +231,7 @@ ${(props) =>
 				background-color: ${lightTheme.colors.brand};
 				color: ${darkTheme.colors.fontSecondary};
 				font-family: ${(props) => props.theme.fonts.medium};
-				font-size: 12px;
+				${tableHeaderLargeCSS};
 			}
 			${TableBodyRow} {
 				background-color: ${darkTheme.colors.brand};
