@@ -4,19 +4,13 @@ import styled from 'styled-components';
 import get from 'lodash/get';
 import { useTranslation } from 'react-i18next';
 
-import {
-	SynthDefinition,
-	getSynthsWithRatesMap,
-	SynthDefinitionWithRatesMap,
-	getAvailableSynthsMap,
-	SynthDefinitionMap,
-} from 'ducks/synths';
+import { SynthDefinition, getSynthsWithRatesMap, SynthDefinitionWithRatesMap } from 'ducks/synths';
 import { RootState } from 'ducks/types';
 import { fetchHistoricalRatesRequest, HistoricalRatesData } from 'ducks/historicalRates';
 
 import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
 
-import { SYNTHS_MAP, sUSD_EXCHANGE_RATE } from 'constants/currency';
+import { SYNTHS_MAP, sUSD_EXCHANGE_RATE, USD_SIGN } from 'constants/currency';
 import { BaseRateUpdates } from 'constants/rates';
 import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 import { PeriodLabel, PERIOD_LABELS_MAP } from 'constants/period';
@@ -35,7 +29,6 @@ import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
 import { GridDivCenteredRow } from 'shared/commonStyles';
 
 type StateProps = {
-	synthsMap: SynthDefinitionMap;
 	synthsWithRatesMap: SynthDefinitionWithRatesMap;
 };
 
@@ -50,7 +43,7 @@ type Props = {
 type SynthChartProps = StateProps & DispatchProps & Props;
 
 export const SynthChart: FC<SynthChartProps> = memo(
-	({ synth, fetchHistoricalRatesRequest, synthsWithRatesMap, synthsMap }) => {
+	({ synth, fetchHistoricalRatesRequest, synthsWithRatesMap }) => {
 		const { t } = useTranslation();
 		const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
 		const [historicalRateUpdates, setHistoricalRatesUpdates] = useState<BaseRateUpdates>([]);
@@ -61,13 +54,19 @@ export const SynthChart: FC<SynthChartProps> = memo(
 
 		useEffect(() => {
 			if (!isUSD) {
-				fetchHistoricalRatesRequest({ synths: [synth], periods: [selectedPeriod.period] });
+				fetchHistoricalRatesRequest({
+					currencyKeys: [synth.name],
+					periods: [selectedPeriod.period],
+				});
 			}
 		}, [fetchHistoricalRatesRequest, synth, selectedPeriod.period, isUSD]);
 
 		useInterval(
 			() => {
-				fetchHistoricalRatesRequest({ synths: [synth], periods: [selectedPeriod.period] });
+				fetchHistoricalRatesRequest({
+					currencyKeys: [synth.name],
+					periods: [selectedPeriod.period],
+				});
 			},
 			isUSD ? null : DEFAULT_REQUEST_REFRESH_INTERVAL
 		);
@@ -96,7 +95,7 @@ export const SynthChart: FC<SynthChartProps> = memo(
 		}, [synthsWithRatesMap, selectedPeriod, synth.name, isUSD]);
 
 		const lastPrice = get(synthsWithRatesMap, [synth.name, 'lastPrice'], null);
-		const synthSign = synthsMap[SYNTHS_MAP.sUSD].sign;
+		const synthSign = USD_SIGN;
 
 		return (
 			<StyledChartCard
@@ -227,7 +226,6 @@ const StyledChartCard = styled(ChartCard)`
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	synthsMap: getAvailableSynthsMap(state),
 	synthsWithRatesMap: getSynthsWithRatesMap(state),
 });
 

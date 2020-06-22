@@ -16,6 +16,7 @@ import { ReactComponent as LINKIcon } from 'assets/currencies/crypto/LINK.svg';
 import { ReactComponent as TRXIcon } from 'assets/currencies/crypto/TRX.svg';
 import { ReactComponent as DASHIcon } from 'assets/currencies/crypto/DASH.svg';
 import { ReactComponent as ETCIcon } from 'assets/currencies/crypto/ETC.svg';
+import { ReactComponent as SNXIcon } from 'assets/currencies/crypto/SNX.svg';
 // Commodity
 import { ReactComponent as GOLDIcon } from 'assets/currencies/commodity/GOLD.svg';
 import { ReactComponent as SILVERIcon } from 'assets/currencies/commodity/SILVER.svg';
@@ -149,6 +150,7 @@ export const SYNTHS = [
 export const SYNTHS_MAP = keyBy(SYNTHS);
 
 export const CRYPTO_CURRENCY = [
+	'SNX',
 	'BTC',
 	'ETH',
 	'XRP',
@@ -169,6 +171,12 @@ export const CRYPTO_CURRENCY_MAP = keyBy(CRYPTO_CURRENCY);
 
 export const FIAT_CURRENCY = ['USD', 'AUD'];
 export const FIAT_CURRENCY_MAP = keyBy(FIAT_CURRENCY);
+
+export const FIAT_CURRENCY_SIGN = {
+	[FIAT_CURRENCY_MAP.USD]: '$',
+};
+
+export const USD_SIGN = FIAT_CURRENCY_SIGN[FIAT_CURRENCY_MAP.USD];
 
 // lower rank -> higher MC
 export const CRYPTO_SYNTHS_BY_MC = {
@@ -203,6 +211,8 @@ export const CRYPTO_SYNTHS_BY_MC = {
 };
 
 export const currencyKeyToIconMap = {
+	[CRYPTO_CURRENCY_MAP.SNX]: { AssetIcon: SNXIcon },
+
 	[SYNTHS_MAP.sBTC]: { SynthIcon: sBTCIcon, AssetIcon: BTCIcon },
 	[SYNTHS_MAP.sETH]: { SynthIcon: sETHIcon, AssetIcon: ETHIcon },
 	[SYNTHS_MAP.sXRP]: { SynthIcon: sXRPIcon, AssetIcon: XRPIcon },

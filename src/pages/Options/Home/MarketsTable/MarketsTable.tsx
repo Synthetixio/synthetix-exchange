@@ -1,15 +1,11 @@
 import React, { FC, memo } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation, Trans } from 'react-i18next';
-import { connect, ConnectedProps } from 'react-redux';
 import { CellProps, Row } from 'react-table';
 
-import { getAvailableSynthsMap } from 'ducks/synths';
 import { navigateToOptionsMarket } from 'constants/routes';
 // import { EMPTY_VALUE } from 'constants/placeholder';
-import { SYNTHS_MAP, FIAT_CURRENCY_MAP } from 'constants/currency';
-
-import { RootState } from 'ducks/types';
+import { SYNTHS_MAP, FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 
 import { TableOverflowContainer, CurrencyKey } from 'shared/commonStyles';
 
@@ -22,24 +18,15 @@ import { darkTheme } from 'styles/theme';
 import TimeRemaining from '../components/TimeRemaining';
 import { formatShortDate } from 'utils/formatters';
 
-const mapStateToProps = (state: RootState) => ({
-	synthsMap: getAvailableSynthsMap(state),
-});
-
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-type MarketsTableProps = PropsFromRedux & {
+type MarketsTableProps = {
 	optionsMarkets: OptionsMarkets;
 	marketsLoaded?: boolean;
 	noResultsMessage?: React.ReactNode;
 };
 
 export const MarketsTable: FC<MarketsTableProps> = memo(
-	({ optionsMarkets, synthsMap, marketsLoaded, noResultsMessage }) => {
+	({ optionsMarkets, marketsLoaded, noResultsMessage }) => {
 		const { t } = useTranslation();
-		const usdSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
 
 		return (
 			<TableOverflowContainer>
@@ -52,7 +39,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['currencyKey']>) => (
 								<Currency.Name
 									currencyKey={cellProps.cell.value}
-									name={synthsMap[cellProps.cell.value]?.asset}
+									name={cellProps.row.original.asset}
 									showIcon={true}
 									iconProps={{ type: 'asset' }}
 								/>
@@ -64,14 +51,14 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: (
 								<>
 									{t('options.home.markets-table.strike-price-col', {
-										currencyKeyWithSymbol: `${usdSign}${FIAT_CURRENCY_MAP.USD}`,
+										currencyKeyWithSymbol: `${USD_SIGN}${FIAT_CURRENCY_MAP.USD}`,
 									})}
 								</>
 							),
 							accessor: 'strikePrice',
 							sortType: 'basic',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['strikePrice']>) => (
-								<CurrencyCol sign={usdSign} value={cellProps.cell.value} />
+								<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
 							),
 							width: 150,
 							sortable: true,
@@ -91,11 +78,11 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Cell: (cellProps: CellProps<OptionsMarket>) => (
 								<LongShorts>
 									<Longs>
-										{t('common.val-in-cents', { val: cellProps.row.original.prices.long })}
+										{t('common.val-in-cents', { val: cellProps.row.original.prices.long * 100 })}
 									</Longs>
 									{' / '}
 									<Shorts>
-										{t('common.val-in-cents', { val: cellProps.row.original.prices.short })}
+										{t('common.val-in-cents', { val: cellProps.row.original.prices.short * 100 })}
 									</Shorts>
 								</LongShorts>
 							),
@@ -105,14 +92,14 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: (
 								<Trans
 									i18nKey="options.home.markets-table.pool-size-col"
-									values={{ currencyKeyWithSymbol: `${usdSign}${SYNTHS_MAP.sUSD}` }}
+									values={{ currencyKeyWithSymbol: `${USD_SIGN}${SYNTHS_MAP.sUSD}` }}
 									components={[<CurrencyKey />]}
 								/>
 							),
 							accessor: 'poolSize',
 							sortType: 'basic',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['poolSize']>) => (
-								<CurrencyCol sign={usdSign} value={cellProps.cell.value} />
+								<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
 							),
 							width: 150,
 							sortable: true,
@@ -136,7 +123,6 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							width: 150,
 						},
 					]}
-					columnsDeps={[synthsMap]}
 					data={optionsMarkets}
 					onTableRowClick={(row: Row<OptionsMarket>) => {
 						navigateToOptionsMarket(row.original.marketAddress);
@@ -195,4 +181,4 @@ const PhaseDiv = styled.div<{ phase: Phase }>`
 			`}
 `;
 
-export default connector(MarketsTable);
+export default MarketsTable;

@@ -7,6 +7,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { getPhase } from './constants';
 import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import orderBy from 'lodash/orderBy';
+import { mapValues } from 'lodash';
+import { getAvailableSynthsMap } from 'ducks/synths';
 
 export type OptionsMarketsSliceState = RequestSliceFactoryState<OptionsMarketsMap>;
 
@@ -19,16 +21,17 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			ad1: {
 				timestamp: Date.now(),
 				currencyKey: 'sBTC',
+				asset: 'BTC',
 				marketAddress: 'ad1',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
-				maturityDate: Date.now() + 100000,
-				destructionDate: Date.now() + 1000000,
+				endOfBidding: Date.now() + 100000000,
+				maturityDate: Date.now() + 1000000000,
+				destructionDate: Date.now() + 10000000000,
 				strikePrice: 10000,
-				endOfBidding: Date.now() + 10000000,
 				prices: {
-					long: 10,
-					short: 90,
+					long: 0.1,
+					short: 0.9,
 				},
 				poolSize: 1000,
 				transactions: [],
@@ -36,6 +39,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			ad2: {
 				timestamp: Date.now(),
 				currencyKey: 'sBTC',
+				asset: 'BTC',
 				marketAddress: 'ad2',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
@@ -44,8 +48,8 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 				strikePrice: 10000,
 				endOfBidding: Date.now() + 10000000,
 				prices: {
-					long: 10,
-					short: 90,
+					long: 0.1,
+					short: 0.9,
 				},
 				poolSize: 1000,
 				transactions: [],
@@ -53,6 +57,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			ad3: {
 				timestamp: Date.now(),
 				currencyKey: 'sBTC',
+				asset: 'BTC',
 				marketAddress: 'ad3',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
@@ -61,8 +66,8 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 				strikePrice: 10000,
 				endOfBidding: Date.now() + 1000000,
 				prices: {
-					long: 10,
-					short: 90,
+					long: 0.1,
+					short: 0.9,
 				},
 				poolSize: 1000,
 				transactions: [],
@@ -70,6 +75,7 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 			ad4: {
 				timestamp: Date.now(),
 				currencyKey: 'sBTC',
+				asset: 'BTC',
 				marketAddress: 'ad4',
 				creatorAddress: 'xxx',
 				phase: 'bidding',
@@ -78,8 +84,8 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 				strikePrice: 10000,
 				endOfBidding: Date.now() + 10000000,
 				prices: {
-					long: 50,
-					short: 50,
+					long: 0.5,
+					short: 0.5,
 				},
 				poolSize: 1000,
 				transactions: [],
@@ -101,13 +107,21 @@ const orderByBiddingEndDate = (optionsMarkets: OptionsMarkets) =>
 	orderBy(optionsMarkets, 'endOfBidding', 'desc');
 
 export const getOptionsMarketsState = (state: RootState) => state.options[optionsMarketsSliceName];
+export const getOptionsMarketsData = (state: RootState) => getOptionsMarketsState(state).data;
 
-export const getOptionsMarketsMap = (state: RootState) => getOptionsMarketsState(state).data;
+export const getOptionsMarketsMap = createSelector(
+	getOptionsMarketsData,
+	getAvailableSynthsMap,
+	(optionsMarketsData, synthsMap) =>
+		mapValues(optionsMarketsData, (optionsMarket) => ({
+			...optionsMarket,
+			phase: getPhase(optionsMarket),
+			asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
+		}))
+);
+
 export const getOptionsMarkets = createSelector(getOptionsMarketsMap, (optionsMarketMap) =>
-	Object.values(optionsMarketMap).map((optionsMarket) => ({
-		...optionsMarket,
-		phase: getPhase(optionsMarket),
-	}))
+	Object.values(optionsMarketMap)
 );
 
 export const getOrderedOptionsMarkets = createSelector(getOptionsMarkets, (optionsMarkets) =>

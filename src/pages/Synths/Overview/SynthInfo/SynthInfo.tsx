@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
-import { SynthDefinition, SynthDefinitionMap, getAvailableSynthsMap } from 'ducks/synths';
+import { SynthDefinition } from 'ducks/synths';
 import { RootState } from 'ducks/types';
 
-import { SYNTHS_MAP } from 'constants/currency';
+import { SYNTHS_MAP, USD_SIGN } from 'constants/currency';
 
 import { media } from 'shared/media';
 import { GridDiv } from 'shared/commonStyles';
@@ -23,7 +23,6 @@ import { getEtherscanTokenLink } from 'utils/explorers';
 import { getDecimalPlaces } from 'utils/formatters';
 
 type StateProps = {
-	synthsMap: SynthDefinitionMap;
 	networkId: string | number;
 };
 
@@ -41,7 +40,7 @@ export const roundedLimit = (entry: number, limit: number) => {
 
 const SYNTH_CONTRACT_DECIMALS = 18;
 
-export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, synthsMap, networkId }) => {
+export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, networkId }) => {
 	const { t } = useTranslation();
 
 	const assetDesc = synth.desc.replace(/^Inverse /, '');
@@ -51,7 +50,7 @@ export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, synthsMap, networkId
 	const { snxJS } = snxJSConnector;
 	const contractAddress = snxJS[synth.name].contract.address;
 
-	const synthSign = synthsMap[SYNTHS_MAP.sUSD].sign;
+	const synthSign = USD_SIGN;
 
 	const addSign = (num: number | string) => `${synthSign}${num}`;
 
@@ -228,7 +227,6 @@ const StyledLink = styled(Link)`
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	synthsMap: getAvailableSynthsMap(state),
 	networkId: getNetworkId(state),
 });
 

@@ -1,16 +1,48 @@
-import React, { memo, FC } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React, { memo, FC, lazy } from 'react';
+import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 
-import Home from './Home';
-import Market from './Market';
-import CreateMarketModal from './CreateMarketModal';
 import ROUTES from 'constants/routes';
 
-export const Options: FC = memo(() => (
+import HomeLayout from 'pages/Root/components/HomeLayout';
+import MainLayout from 'pages/Root/components/MainLayout';
+
+const Home = lazy(() => import('./Home'));
+const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
+const Market = lazy(() => import('./Market'));
+
+type OptionsProps = RouteComponentProps & {
+	isAppReady: boolean;
+};
+
+export const Options: FC<OptionsProps> = memo(({ isAppReady }) => (
 	<Switch>
-		<Route exact path={ROUTES.Options.Home} component={Home} />
-		<Route exact path={ROUTES.Options.CreateMarketModal} component={CreateMarketModal} />
-		<Route exact path={ROUTES.Options.MarketMatch} component={Market} />
+		<Route
+			exact
+			path={ROUTES.Options.Home}
+			render={() => (
+				<HomeLayout isAppReady={isAppReady}>
+					<Home />
+				</HomeLayout>
+			)}
+		/>
+		<Route
+			exact
+			path={ROUTES.Options.CreateMarketModal}
+			render={() => (
+				<HomeLayout isAppReady={isAppReady}>
+					<CreateMarketModal />
+				</HomeLayout>
+			)}
+		/>
+		<Route
+			exact
+			path={ROUTES.Options.MarketMatch}
+			render={(routeProps) => (
+				<MainLayout isAppReady={isAppReady}>
+					<Market {...routeProps} />
+				</MainLayout>
+			)}
+		/>
 		<Route component={Home} />
 	</Switch>
 ));

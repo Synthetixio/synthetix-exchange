@@ -18,7 +18,7 @@ export const CurrencyIcon: FC<CurrencyIconProps> = memo(
 
 		const { SynthIcon, AssetIcon } = currencyIcon;
 
-		const Icon = type === 'synth' ? SynthIcon : AssetIcon;
+		const Icon = type === 'synth' && SynthIcon ? SynthIcon : AssetIcon;
 
 		return <Icon width="22" height="22" {...rest} />;
 	}

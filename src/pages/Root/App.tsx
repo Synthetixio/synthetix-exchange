@@ -1,4 +1,4 @@
-import React, { FC, lazy } from 'react';
+import React, { FC } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
@@ -27,8 +27,7 @@ import Assets from '../Assets';
 import Home from '../Home';
 import Markets from '../Markets';
 import Synths from '../Synths';
-
-const Options = lazy(() => import('../Options'));
+import Options from '../Options';
 
 const mapStateToProps = (state: RootState) => ({
 	currentTheme: getCurrentTheme(state),
@@ -115,11 +114,7 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 							/>
 							<Route
 								path={ROUTES.Options.Home}
-								render={() => (
-									<HomeLayout isAppReady={isAppReady}>
-										<Options />
-									</HomeLayout>
-								)}
+								render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
 							/>
 							<Route
 								path={ROUTES.Home}

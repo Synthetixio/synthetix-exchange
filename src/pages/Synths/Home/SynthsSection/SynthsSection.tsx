@@ -59,12 +59,20 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 
 		const { t } = useTranslation();
 
+		const currencyKeys = useMemo(() => synths.map((synth) => synth.name), [synths]);
+
 		useEffect(() => {
-			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
-		}, [fetchHistoricalRatesRequest, synths]);
+			fetchHistoricalRatesRequest({
+				currencyKeys,
+				periods: ['ONE_DAY'],
+			});
+		}, [fetchHistoricalRatesRequest, currencyKeys]);
 
 		useInterval(() => {
-			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
+			fetchHistoricalRatesRequest({
+				currencyKeys,
+				periods: ['ONE_DAY'],
+			});
 		}, SYNTHS_REFRESH_INTERVAL_MS);
 
 		const filteredSynths = useDebouncedMemo(

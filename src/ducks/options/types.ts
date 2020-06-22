@@ -18,6 +18,7 @@ export type OptionsTransactions = OptionsTransaction[];
 export type OptionsMarket = {
 	timestamp: number;
 	currencyKey: CurrencyKey;
+	asset: string;
 	marketAddress: string;
 	creatorAddress: string;
 	phase: Phase;

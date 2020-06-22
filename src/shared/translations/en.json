@@ -222,12 +222,9 @@
 			}
 		},
 		"market": {
-			"meta": {
+			"heading": {
 				"all-markets": "all markets",
 				"market-sentiment": "market sentiment"
-			},
-			"chart-card": {
-
 			},
 			"transactions-card": {
 				"recent-market-tab-title": "recent market activity",
@@ -306,6 +303,7 @@
 			},
 			"long": "long",
 			"short": "short",
+			"price": "price",
 			"price-long": "{{price}} long",
 			"price-short": "{{price}} short"
 		}

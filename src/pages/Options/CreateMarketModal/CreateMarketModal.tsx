@@ -17,6 +17,7 @@ import {
 	CRYPTO_CURRENCY_MAP,
 	FIAT_CURRENCY_MAP,
 	CurrencyKey,
+	USD_SIGN,
 } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
@@ -40,7 +41,7 @@ import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shar
 import { media } from 'shared/media';
 
 import { formatPercentage, formatShortDate, formattedDuration } from 'utils/formatters';
-import MarketPriceRow from '../components/MarketPriceRow';
+import MarketSentiment from '../components/MarketSentiment';
 
 /*
 TODO: 
@@ -111,8 +112,19 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 		short: 50,
 	});
 	const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
-	const filteredSynths = useMemo(
-		() => synths.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD),
+	const assetsOptions = useMemo(
+		() => [
+			{
+				label: CRYPTO_CURRENCY_MAP.SNX,
+				value: CRYPTO_CURRENCY_MAP.SNX,
+			},
+			...synths
+				.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
+				.map((synth) => ({
+					label: synth.asset,
+					value: synth.name,
+				})),
+		],
 		[synths]
 	);
 
@@ -123,8 +135,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 		maturityDate === null ||
 		initialFundingAmount === '';
 
-	const usdSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
-	const strikePricePlaceholderVal = `${usdSign}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
+	const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
 
 	const handleClose = () => navigateTo(ROUTES.Options.Home);
 	const handleMarketCreation = () => {
@@ -161,15 +172,12 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 												formatOptionLabel={(option) => (
 													<Currency.Name
 														currencyKey={option.value}
-														name={synthsMap[option.value]?.asset}
+														name={option.label}
 														showIcon={true}
 														iconProps={{ type: 'asset' }}
 													/>
 												)}
-												options={filteredSynths.map((synth) => ({
-													label: synth.asset,
-													value: synth.name,
-												}))}
+												options={assetsOptions}
 												placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
 												value={currencyKey}
 												onChange={(option) => {
@@ -275,7 +283,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 										EMPTY_VALUE
 									)}
 									<span>&gt;</span>
-									<StrikePrice>{`${usdSign}${strikePrice !== '' ? strikePrice : 0} ${
+									<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
 										FIAT_CURRENCY_MAP.USD
 									}`}</StrikePrice>
 								</PreviewAssetRow>
@@ -296,7 +304,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 									</div>
 								</PreviewDatesRow>
 								<PreviewMarketPriceRow>
-									<MarketPriceRow long={initialLongShorts.long} short={initialLongShorts.short} />
+									<MarketSentiment long={initialLongShorts.long} short={initialLongShorts.short} />
 								</PreviewMarketPriceRow>
 								<PreviewFeesRow>
 									<FlexDivRowCentered>

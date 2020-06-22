@@ -1,11 +1,8 @@
 import React, { memo, FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { ConnectedProps, connect } from 'react-redux';
 
 import { OptionsMarkets } from 'ducks/options/types';
-import { RootState } from 'ducks/types';
-import { getAvailableSynthsMap } from 'ducks/synths';
 
 import Currency from 'components/Currency';
 import { labelSmallCSS } from 'components/Typography/Label';
@@ -14,30 +11,20 @@ import { headingH5CSS } from 'components/Typography/Heading';
 import { media } from 'shared/media';
 import { darkTheme } from 'styles/theme';
 
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 import { formatCurrencyWithSign, formatShortDate } from 'utils/formatters';
 
 import { GridDivCentered, FlexDivRow, FlexDivCol } from 'shared/commonStyles';
 
 import TimeRemaining from '../components/TimeRemaining';
-import MarketPriceRow from '../../components/MarketPriceRow';
+import MarketSentiment from '../../components/MarketSentiment';
 
-const mapStateToProps = (state: RootState) => ({
-	synthsMap: getAvailableSynthsMap(state),
-});
-
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-type HotMarketsProps = PropsFromRedux & {
+type HotMarketsProps = {
 	optionsMarkets: OptionsMarkets;
 };
 
-export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets, synthsMap }) => {
+export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 	const { t } = useTranslation();
-
-	const usdSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
 
 	return (
 		<Cards>
@@ -46,7 +33,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets, synthsMap
 					<MarketHeadingRow>
 						<StyledCurrencyName
 							currencyKey={optionsMarket.currencyKey}
-							name={synthsMap[optionsMarket.currencyKey]?.asset}
+							name={optionsMarket.asset}
 							showIcon={true}
 							iconProps={{ width: '24px', height: '24px', type: 'asset' }}
 						/>
@@ -54,13 +41,13 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets, synthsMap
 					</MarketHeadingRow>
 					<MarketDetailsRow>
 						<StrikePrice>
-							{formatCurrencyWithSign(usdSign, optionsMarket.strikePrice)} {FIAT_CURRENCY_MAP.USD}
+							{formatCurrencyWithSign(USD_SIGN, optionsMarket.strikePrice)} {FIAT_CURRENCY_MAP.USD}
 						</StrikePrice>
 						<MaturityDate>
 							{t('common.by-date', { date: formatShortDate(optionsMarket.maturityDate) })}
 						</MaturityDate>
 					</MarketDetailsRow>
-					<MarketPriceRow long={optionsMarket.prices.long} short={optionsMarket.prices.short} />
+					<MarketSentiment long={optionsMarket.prices.long} short={optionsMarket.prices.short} />
 				</Card>
 			))}
 		</Cards>
@@ -130,4 +117,4 @@ const StyledTimeRemaining = styled(TimeRemaining)`
 	width: 90px;
 `;
 
-export default connector(HotMarkets);
+export default HotMarkets;
