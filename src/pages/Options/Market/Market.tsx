@@ -10,6 +10,7 @@ import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 
 import ROUTES, { navigateTo } from 'constants/routes';
 
+import { USD_SIGN } from 'constants/currency';
 import {
 	GridDivCenteredCol,
 	CenteredPageLayout,
@@ -21,10 +22,11 @@ import { formatCurrencyWithSign, formatShortDate } from 'utils/formatters';
 
 import Spinner from 'components/Spinner';
 import Link from 'components/Link';
-import { USD_SIGN } from 'constants/currency';
 import MarketSentiment from '../components/MarketSentiment';
-import ChartCard from './ChartCard';
 import { captionCSS } from 'components/Typography/General';
+
+import ChartCard from './ChartCard';
+import TradeCard from './TradeCard';
 
 const mapStateToProps = (state: RootState) => ({
 	optionsMarketsMap: getOptionsMarketsMap(state),
@@ -80,18 +82,17 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
 						/>
 					</StyledHeadingItem>
 				</Heading>
-				<ChartContainer>
-					<ChartCard optionsMarket={optionsMarket} />
-				</ChartContainer>
+				<ChartCard optionsMarket={optionsMarket} />
 			</LeftCol>
 			<RightCol>
-				<PhasesContainer>
+				<GridDivCenteredCol>
 					{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
 						<PhaseItem key={phase} isActive={phase === optionsMarket.phase}>
 							{t(`options.phases.${phase}`)}
 						</PhaseItem>
 					))}
-				</PhasesContainer>
+				</GridDivCenteredCol>
+				<TradeCard optionsMarket={optionsMarket} />
 			</RightCol>
 		</StyledCenteredPageLayout>
 	) : (
@@ -100,10 +101,6 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
 		</LoaderContainer>
 	);
 });
-
-// const Container = styled(GridDivCenteredCol)`
-// 	grid-gap: 8px;
-// `;
 
 const StyledCenteredPageLayout = styled(CenteredPageLayout)`
 	display: grid;
@@ -154,13 +151,9 @@ const HeadingTitle = styled.div`
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const ChartContainer = styled.div``;
-
-const RightCol = styled.div`
+const RightCol = styled(LeftCol)`
 	width: 414px;
 `;
-
-const PhasesContainer = styled(GridDivCenteredCol)``;
 
 const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`
 	${captionCSS};

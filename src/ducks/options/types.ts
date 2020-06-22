@@ -10,7 +10,7 @@ export type OptionsTransaction = {
 	address: string;
 	currencyKey: CurrencyKey;
 	side: Side;
-	amount: number;
+	amount: number | string;
 };
 
 export type OptionsTransactions = OptionsTransaction[];

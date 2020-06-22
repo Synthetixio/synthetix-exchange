@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 type ButtonProps = {
 	size?: 'xs' | 'sm' | 'md' | 'lg';
-	palette?: 'primary' | 'secondary' | 'outline' | 'toggle' | 'outline-secondary';
+	palette?: 'primary' | 'secondary' | 'outline' | 'toggle' | 'outline-secondary' | 'tab';
 	isActive?: boolean;
 };
 
@@ -79,6 +79,25 @@ const Button = styled.button<ButtonProps>`
 					background-color: ${(props) => props.theme.colors.accentL2};
 				`}
 		`}
+
+		${(props) =>
+			props.palette === 'tab' &&
+			css`
+				color: ${(props) => props.theme.colors.fontTertiary};
+				background-color: ${(props) => props.theme.colors.surfaceL3};
+				&:hover {
+					&:not(:disabled) {
+						background-color: ${(props) => props.theme.colors.accentL1};
+					}
+				}
+				${(props) =>
+					(props as ButtonProps).isActive &&
+					css`
+						color: ${(props) => props.theme.colors.fontPrimary};
+						background-color: ${(props) => props.theme.colors.accentL1};
+					`}
+			`}
+
 
 	${(props) =>
 		props.palette === 'outline' &&

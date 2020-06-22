@@ -250,7 +250,7 @@
 							"progress-label": "bidding in progress..."
 						}	
 					},
-					"withdraw": {
+					"refund": {
 						"title": "withdraw",
 						"subtitle": "from your existing bid:",
 						"amount-label": "withdrawal amount",

@@ -8,10 +8,10 @@ const getCryptoCurrencyBalancePath = (currencyKey, field) => [currencyKey.toLowe
 
 export const getCurrencyKeyBalance = (balances, currencyKey) =>
 	isSynth(currencyKey)
-		? get(balances, getSynthBalancePath(currencyKey, 'balance'), 0)
-		: get(balances, getCryptoCurrencyBalancePath(currencyKey, 'balance'), 0);
+		? get(balances, getSynthBalancePath(currencyKey, 'balance'))
+		: get(balances, getCryptoCurrencyBalancePath(currencyKey, 'balance'));
 
 export const getCurrencyKeyUSDBalance = (balances, currencyKey) =>
 	isSynth(currencyKey)
-		? get(balances, getSynthBalancePath(currencyKey, 'usdBalance'), 0)
-		: get(balances, getCryptoCurrencyBalancePath(currencyKey, 'usdBalance'), 0);
+		? get(balances, getSynthBalancePath(currencyKey, 'usdBalance'))
+		: get(balances, getCryptoCurrencyBalancePath(currencyKey, 'usdBalance'));
