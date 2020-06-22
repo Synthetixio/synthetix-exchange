@@ -1,16 +1,21 @@
 import React, { memo, FC, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { RouteComponentProps } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { OptionsMarket } from 'ducks/options/types';
+import { OptionsMarket, Phase } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 
 import ROUTES, { navigateTo } from 'constants/routes';
 
-import { GridDivCenteredCol, CenteredPageLayout, GridDivRow } from 'shared/commonStyles';
+import {
+	GridDivCenteredCol,
+	CenteredPageLayout,
+	GridDivRow,
+	FlexDivCentered,
+} from 'shared/commonStyles';
 
 import { formatCurrencyWithSign, formatShortDate } from 'utils/formatters';
 
@@ -19,6 +24,7 @@ import Link from 'components/Link';
 import { USD_SIGN } from 'constants/currency';
 import MarketSentiment from '../components/MarketSentiment';
 import ChartCard from './ChartCard';
+import { captionCSS } from 'components/Typography/General';
 
 const mapStateToProps = (state: RootState) => ({
 	optionsMarketsMap: getOptionsMarketsMap(state),
@@ -74,11 +80,19 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
 						/>
 					</StyledHeadingItem>
 				</Heading>
-				<ChardContainer>
+				<ChartContainer>
 					<ChartCard optionsMarket={optionsMarket} />
-				</ChardContainer>
+				</ChartContainer>
 			</LeftCol>
-			<RightCol></RightCol>
+			<RightCol>
+				<PhasesContainer>
+					{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
+						<PhaseItem key={phase} isActive={phase === optionsMarket.phase}>
+							{t(`options.phases.${phase}`)}
+						</PhaseItem>
+					))}
+				</PhasesContainer>
+			</RightCol>
 		</StyledCenteredPageLayout>
 	) : (
 		<LoaderContainer>
@@ -140,10 +154,26 @@ const HeadingTitle = styled.div`
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const ChardContainer = styled.div``;
+const ChartContainer = styled.div``;
 
 const RightCol = styled.div`
 	width: 414px;
+`;
+
+const PhasesContainer = styled(GridDivCenteredCol)``;
+
+const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`
+	${captionCSS};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
+	color: ${(props) => props.theme.colors.fontSecondary};
+	height: 30px;
+	justify-content: center;
+	${(props) =>
+		props.isActive &&
+		css`
+			background-color: ${(props) => props.theme.colors.accentL2};
+			color: ${(props) => props.theme.colors.fontPrimary};
+		`}
 `;
 
 const LoaderContainer = styled.div`
