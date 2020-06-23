@@ -4,18 +4,19 @@ import { useTranslation, Trans } from 'react-i18next';
 import { CellProps, Row } from 'react-table';
 
 import { navigateToOptionsMarket } from 'constants/routes';
-// import { EMPTY_VALUE } from 'constants/placeholder';
 import { SYNTHS_MAP, FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 
 import { TableOverflowContainer, CurrencyKey } from 'shared/commonStyles';
 import { formatShortDate, formatCurrency } from 'utils/formatters';
+import { darkTheme } from 'styles/theme';
 
 import Table from 'components/Table';
 import { CurrencyCol } from 'components/Table/common';
 
 import Currency from 'components/Currency';
+import { bodyCSS } from 'components/Typography/General';
+
 import { OptionsMarkets, OptionsMarket, Phase } from 'ducks/options/types';
-import { darkTheme } from 'styles/theme';
 import TimeRemaining from '../components/TimeRemaining';
 
 type MarketsTableProps = {
@@ -37,11 +38,11 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('options.home.markets-table.asset-col')}</>,
 							accessor: 'currencyKey',
 							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['currencyKey']>) => (
-								<Currency.Name
+								<StyledCurrencyName
 									currencyKey={cellProps.cell.value}
 									name={cellProps.row.original.asset}
 									showIcon={true}
-									iconProps={{ type: 'asset' }}
+									iconProps={{ type: 'asset', width: '24px', height: '24px' }}
 								/>
 							),
 							width: 150,
@@ -153,6 +154,10 @@ const StyledTable = styled(Table)`
 			justify-content: flex-end;
 		}
 	}
+`;
+
+const StyledCurrencyName = styled(Currency.Name)`
+	${bodyCSS};
 `;
 
 const LongShorts = styled.div``;
