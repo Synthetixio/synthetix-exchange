@@ -3,8 +3,12 @@ import styled, { css } from 'styled-components';
 import { RouteComponentProps } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
+import snxJSConnector from 'utils/snxJSConnector';
+import { ethers } from 'ethers';
 
-import { OptionsMarket, Phase } from 'ducks/options/types';
+import { binaryOptionMarket } from 'utils/contracts';
+
+import { OptionsMarketInfo, Phase } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 
@@ -18,7 +22,12 @@ import {
 	FlexDivCentered,
 } from 'shared/commonStyles';
 
-import { formatCurrencyWithSign, formatShortDate } from 'utils/formatters';
+import {
+	formatCurrencyWithSign,
+	formatShortDate,
+	bigNumberFormatter,
+	parseBytes32String,
+} from 'utils/formatters';
 
 import Spinner from 'components/Spinner';
 import Link from 'components/Link';
@@ -44,19 +53,65 @@ type MarketProps = PropsFromRedux &
 	}>;
 
 const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
-	const [optionsMarket, setOptionsMarket] = useState<OptionsMarket | null>(null);
+	const [optionsMarket, setOptionsMarket] = useState<OptionsMarketInfo | null>(null);
+	const [BOMContract, setBOMContract] = useState<ethers.Contract>();
+
 	const { t } = useTranslation();
 
 	useEffect(() => {
 		const { params } = match;
-		// console.log(params);
-		if (params && params.marketAddress && optionsMarketsMap[params.marketAddress]) {
-			setOptionsMarket(optionsMarketsMap[params.marketAddress]);
+
+		if (params && params.marketAddress) {
+			setBOMContract(
+				new ethers.Contract(
+					params.marketAddress,
+					binaryOptionMarket.abi,
+					// @ts-ignore
+					snxJSConnector.provider
+				)
+			);
 		} else {
 			navigateTo(ROUTES.Options.Home);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [match]);
+
+	useEffect(() => {
+		if (BOMContract) {
+			const getMarketInfo = async () => {
+				const [oracleDetails, times, prices, totalBids, totalSupplies] = await Promise.all([
+					BOMContract.oracleDetails(),
+					BOMContract.times(),
+					BOMContract.prices(),
+					BOMContract.totalBids(),
+					BOMContract.totalSupplies(),
+				]);
+
+				const [biddingEnd, maturity, expiry] = times;
+				const [oracleKey, strikePrice] = oracleDetails;
+				const [longPrice, shortPrice] = prices;
+
+				const market: OptionsMarketInfo = {
+					biddingEndDate: Number(biddingEnd) * 1000,
+					maturityDate: Number(maturity) * 1000,
+					expiryDate: Number(expiry) * 1000,
+					currencyKey: parseBytes32String(oracleKey),
+					asset: parseBytes32String(oracleKey),
+					strikePrice: bigNumberFormatter(strikePrice),
+					longPrice: bigNumberFormatter(longPrice),
+					shortPrice: bigNumberFormatter(shortPrice),
+					// TODO: compute these
+					phase: 'bidding',
+					timeRemaining: Date.now() + 1000,
+				};
+
+				console.log(market);
+
+				setOptionsMarket(market);
+			};
+			getMarketInfo();
+		}
+	}, [BOMContract]);
 
 	return optionsMarket ? (
 		<StyledCenteredPageLayout>
@@ -153,6 +208,7 @@ const HeadingTitle = styled.div`
 
 const RightCol = styled(LeftCol)`
 	width: 414px;
+	grid-template-rows: auto 1fr;
 `;
 
 const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`

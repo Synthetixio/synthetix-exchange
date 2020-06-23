@@ -1,12 +1,12 @@
 import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { OptionsMarket } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'ducks/options/types';
 
 import Card from 'components/Card';
 
 type MaturityPhaseCardProps = {
-	optionsMarket: OptionsMarket;
+	optionsMarket: OptionsMarketInfo;
 };
 
 const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket }) => {

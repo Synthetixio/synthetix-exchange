@@ -1,6 +1,6 @@
 import { CurrencyKey } from 'constants/currency';
 
-export type Phase = 'bidding' | 'trading' | 'maturity' | 'destruction';
+export type Phase = 'bidding' | 'trading' | 'maturity' | 'expiry';
 
 export type Side = 'long' | 'short';
 
@@ -32,6 +32,19 @@ export type OptionsMarket = {
 	longPrice: number;
 	shortPrice: number;
 	poolSize: number;
+	asset: string;
+	phase: Phase;
+	timeRemaining: number;
+};
+
+export type OptionsMarketInfo = {
+	currencyKey: CurrencyKey;
+	strikePrice: number;
+	biddingEndDate: number;
+	maturityDate: number;
+	expiryDate: number;
+	longPrice: number;
+	shortPrice: number;
 	asset: string;
 	phase: Phase;
 	timeRemaining: number;

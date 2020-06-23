@@ -2,11 +2,10 @@ import { takeLatest, put } from 'redux-saga/effects';
 import { RootState } from 'ducks/types';
 
 import { createRequestSliceFactory, RequestSliceFactoryState } from '../requestSliceFactory';
-import { OptionsMarketsMap, OptionsMarkets } from './types';
+import { OptionsMarketsMap } from './types';
 import { createSelector } from '@reduxjs/toolkit';
 import { getPhase } from './constants';
 import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
-import orderBy from 'lodash/orderBy';
 import keyBy from 'lodash/keyBy';
 import mapValues from 'lodash/mapValues';
 import { getAvailableSynthsMap } from 'ducks/synths';

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as WalletIcon } from 'assets/images/wallet.svg';
 
-import { OptionsMarket, OptionsTransaction } from 'ducks/options/types';
+import { OptionsMarketInfo, OptionsTransaction } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
@@ -26,6 +26,7 @@ import TimeRemaining from 'pages/Options/Home/components/TimeRemaining';
 import TradeSide from './TradeSide';
 
 import { CurrentPosition } from './types';
+import NetworkFees from '../components/NetworkFees';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
@@ -39,7 +40,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type BiddingPhaseCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarket;
+	optionsMarket: OptionsMarketInfo;
 };
 
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
@@ -131,6 +132,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						/>
 					</TradeSides>
 					<CardContent>
+						<NetworkFees />
 						<ActionButton
 							size="lg"
 							palette="primary"

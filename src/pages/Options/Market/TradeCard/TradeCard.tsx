@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 
-import { OptionsMarket } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'ducks/options/types';
 
 import BiddingPhaseCard from './BiddingPhaseCard';
 import TradingPhaseCard from './TradingPhaseCard';
 import MaturityPhaseCard from './MaturityPhaseCard';
 
 type TradeCardProps = {
-	optionsMarket: OptionsMarket;
+	optionsMarket: OptionsMarketInfo;
 };
 
 const TradeCard: FC<TradeCardProps> = ({ optionsMarket }) => (

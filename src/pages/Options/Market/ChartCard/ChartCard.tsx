@@ -7,7 +7,7 @@ import format from 'date-fns/format';
 import isNumber from 'lodash/isNumber';
 import get from 'lodash/get';
 
-import { OptionsMarket } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 import {
@@ -43,7 +43,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type ChartCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarket;
+	optionsMarket: OptionsMarketInfo;
 };
 
 const Market: FC<ChartCardProps> = memo(

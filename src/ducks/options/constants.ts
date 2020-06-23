@@ -6,7 +6,7 @@ export const PHASE: Record<Phase, BigNumber> = {
 	bidding: toBigNumber(0),
 	trading: toBigNumber(1),
 	maturity: toBigNumber(2),
-	destruction: toBigNumber(3),
+	expiry: toBigNumber(3),
 };
 
 export const SIDE: Record<Side, BigNumber> = {
@@ -29,5 +29,5 @@ export const getPhase = (optionsMarket: OptionsMarket): Phase => {
 		return 'maturity';
 	}
 
-	return 'destruction';
+	return 'expiry';
 };
