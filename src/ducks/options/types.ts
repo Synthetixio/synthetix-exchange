@@ -34,6 +34,7 @@ export type OptionsMarket = {
 	poolSize: number;
 	asset: string;
 	phase: Phase;
+	timeRemaining: number;
 };
 
 export type OptionsMarkets = OptionsMarket[];

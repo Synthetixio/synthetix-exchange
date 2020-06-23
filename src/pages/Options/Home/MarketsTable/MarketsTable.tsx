@@ -120,8 +120,8 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 						},
 						{
 							Header: <>{t('options.home.markets-table.time-remaining-col')}</>,
-							accessor: 'biddingEndDate',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['biddingEndDate']>) => (
+							accessor: 'timeRemaining',
+							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['timeRemaining']>) => (
 								<TimeRemaining end={cellProps.cell.value} />
 							),
 							width: 150,

@@ -37,7 +37,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 							showIcon={true}
 							iconProps={{ width: '24px', height: '24px', type: 'asset' }}
 						/>
-						<StyledTimeRemaining end={optionsMarket.biddingEndDate} />
+						<StyledTimeRemaining end={optionsMarket.timeRemaining} />
 					</MarketHeadingRow>
 					<MarketDetailsRow>
 						<StrikePrice>

@@ -20,24 +20,7 @@ const optionsMarketsSliceName = 'optionsMarkets';
 const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 	name: optionsMarketsSliceName,
 	initialState: {
-		data: {
-			'0x62bf0c296872b5b67c781cdbab4656ac63c76750': {
-				address: '0x62bf0c296872b5b67c781cdbab4656ac63c76750',
-				timestamp: 1592802444000,
-				creator: '0x133675afe710dd0da4a61e99e039c225671cc9a3',
-				currencyKey: 'sDEFI',
-				strikePrice: 1900,
-				biddingEndDate: 1592975160000,
-				maturityDate: 1593148020000,
-				expiryDate: 1608872820000,
-				isOpen: true,
-				longPrice: 0.6734006734006734,
-				shortPrice: 0.05611672278338945,
-				poolSize: 18,
-				asset: 'DEFI',
-				phase: 'bidding',
-			},
-		},
+		data: {},
 	},
 	options: {
 		mergeData: true,
@@ -60,11 +43,25 @@ export const getOptionsMarketsMap = createSelector(
 	getOptionsMarketsData,
 	getAvailableSynthsMap,
 	(optionsMarketsData, synthsMap) =>
-		mapValues(optionsMarketsData, (optionsMarket) => ({
-			...optionsMarket,
-			phase: getPhase(optionsMarket),
-			asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
-		}))
+		mapValues(optionsMarketsData, (optionsMarket) => {
+			const phase = getPhase(optionsMarket);
+			let timeRemaining;
+
+			if (phase === 'bidding') {
+				timeRemaining = optionsMarket.biddingEndDate;
+			} else if (phase === 'trading') {
+				timeRemaining = optionsMarket.maturityDate;
+			} else {
+				timeRemaining = optionsMarket.expiryDate;
+			}
+
+			return {
+				...optionsMarket,
+				phase: getPhase(optionsMarket),
+				asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
+				timeRemaining,
+			};
+		})
 );
 
 export const getOptionsMarkets = createSelector(getOptionsMarketsMap, (optionsMarketMap) =>
