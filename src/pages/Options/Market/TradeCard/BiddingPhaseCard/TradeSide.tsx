@@ -1,14 +1,24 @@
-import React, { FC, memo } from 'react';
-import styled, { css } from 'styled-components';
+import React, { FC, memo, useContext } from 'react';
+import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+
 import { OptionsTransaction } from 'ducks/options/types';
-import { GridDivCol, GridDivRow } from 'shared/commonStyles';
-import NumericInput from 'components/Input/NumericInput';
-import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
+
+import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
+import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
+
+import { GridDivRow, CurrencyKey } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
+
 import { formatCurrencyWithKey } from 'utils/formatters';
-import { formLabelLargeCSS } from 'components/Typography/Form';
+
+import NumericInput from 'components/Input/NumericInput';
+import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
+import { formLabelSmallCSS } from 'components/Typography/Form';
+
+import { CurrentPosition } from './types';
+import { labelMediumCSS } from 'components/Typography/Label';
 
 type TradeSideProps = {
 	isActive: boolean;
@@ -19,18 +29,25 @@ type TradeSideProps = {
 	onPriceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onClick: () => void;
+	transKey?: string;
+	currentPosition: CurrentPosition;
 };
 
 const TradeSide: FC<TradeSideProps> = memo(
-	({ isActive, type, side, amount, price, onPriceChange, onAmountChange, onClick }) => {
+	({
+		isActive,
+		type,
+		side,
+		amount,
+		price,
+		onPriceChange,
+		onAmountChange,
+		onClick,
+		transKey,
+		currentPosition,
+	}) => {
 		const { t } = useTranslation();
-
-		const transKey =
-			type === 'bid'
-				? 'options.market.trade-card.bidding.bid'
-				: 'options.market.trade-card.bidding.refund';
-
-		const getTranslation = (key: string) => t(`${transKey}.${key}`);
+		const theme = useContext(ThemeContext);
 
 		const amountInputId = `${type}-${side}-amount`;
 		const priceInputId = `${type}-${side}-price`;
@@ -39,12 +56,10 @@ const TradeSide: FC<TradeSideProps> = memo(
 			<Container isActive={isActive} onClick={onClick}>
 				<Section>
 					<FormRow>
-						<FormControlGroup>
-							<FormControl>
-								<FormInputLabel htmlFor={amountInputId}>
-									{getTranslation('amount-label')}
-								</FormInputLabel>
-							</FormControl>
+						<FormControl>
+							<FormInputLabel htmlFor={amountInputId}>
+								{t(`${transKey}.amount-label`)}
+							</FormInputLabel>
 							<StyledNumericInputWithCurrency
 								currencyKey={SYNTHS_MAP.sUSD}
 								value={amount}
@@ -54,13 +69,11 @@ const TradeSide: FC<TradeSideProps> = memo(
 									id: amountInputId,
 								}}
 							/>
-						</FormControlGroup>
+						</FormControl>
 					</FormRow>
-					<FormControlGroup>
+					<FormRow>
 						<FormControl>
-							<FormInputLabel htmlFor={priceInputId}>
-								{getTranslation('price-label')}
-							</FormInputLabel>
+							<FormInputLabel htmlFor={priceInputId}>{t(`${transKey}.price-label`)}</FormInputLabel>
 							<StyledNumericInput
 								id={priceInputId}
 								value={price}
@@ -68,28 +81,76 @@ const TradeSide: FC<TradeSideProps> = memo(
 								placeholder="0"
 							/>
 						</FormControl>
-					</FormControlGroup>
+					</FormRow>
+					<FormRow>
+						{side === 'long' && (
+							<LongSideIndication>
+								{t('options.common.long')} <TrendUpIcon />
+							</LongSideIndication>
+						)}
+						{side === 'short' && (
+							<ShortSideIndication>
+								{t('options.common.short')} <TrendDownIcon />
+							</ShortSideIndication>
+						)}
+					</FormRow>
 				</Section>
-				<Section>
-					<div>{t('options.market.trade-card.bidding.common.current-position')}</div>
-					<div>
-						{t('options.market.trade-card.bidding.common.bid')}
-						{formatCurrencyWithKey(SYNTHS_MAP.sUSD, 0)}
-					</div>
-					<div>
-						{t('options.market.trade-card.bidding.common.payoff')}
-						{formatCurrencyWithKey(SYNTHS_MAP.sUSD, 0)}
-					</div>
-				</Section>
+				<CurrentPositionSection>
+					<SectionTitle>
+						{t('options.market.trade-card.bidding.common.current-position')}
+					</SectionTitle>
+					<SectionBody>
+						{t('options.market.trade-card.bidding.common.bid')}{' '}
+						<StyledCurrencyKey>
+							{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.bid)}
+						</StyledCurrencyKey>
+					</SectionBody>
+					<SectionBody>
+						{t('options.market.trade-card.bidding.common.payoff')}{' '}
+						<StyledCurrencyKey>
+							{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.payoff)}
+						</StyledCurrencyKey>
+					</SectionBody>
+				</CurrentPositionSection>
+				<ToggleIcon>
+					<svg
+						width="8"
+						height="8"
+						viewBox="0 0 8 8"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						key={type}
+					>
+						{isActive ? (
+							<>
+								<circle cx="4" cy="4" r="4" fill={theme.colors.brand} />
+								<circle cx="4" cy="4" r="2" fill={theme.colors.accentL1} />
+							</>
+						) : (
+							<circle cx="4" cy="4" r="4" fill={theme.colors.accentL1} />
+						)}
+					</svg>
+				</ToggleIcon>
 			</Container>
 		);
 	}
 );
 
+const ToggleIcon = styled.div`
+	position: absolute;
+	top: 12px;
+	right: 18px;
+`;
+
+const Section = styled.div`
+	${formLabelSmallCSS};
+`;
+
 const Container = styled(GridDivRow)<{ isActive: boolean }>`
+	position: relative;
 	padding: 12px;
 	grid-gap: 12px;
-	> div {
+	> ${Section} {
 		padding: 12px;
 		background-color: ${(props) =>
 			props.isActive ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
@@ -99,21 +160,14 @@ const Container = styled(GridDivRow)<{ isActive: boolean }>`
 	}
 `;
 
-const Section = styled.div``;
-
 const FormInputLabel = styled.label`
-	${formLabelLargeCSS};
 	color: ${(props) => props.theme.colors.fontSecondary};
 	text-align: left;
 	cursor: pointer;
 `;
 
 const FormRow = styled.div`
-	padding-bottom: 24px;
-`;
-
-const FormControlGroup = styled(GridDivRow)`
-	grid-gap: 24px;
+	padding-bottom: 10px;
 `;
 
 const FormControl = styled(GridDivRow)`
@@ -121,20 +175,57 @@ const FormControl = styled(GridDivRow)`
 `;
 
 const StyledNumericInput = styled(NumericInput)`
-	border-color: transparent;
+	background-color: ${(props) => props.theme.colors.surfaceL2};
+	border-color: ${(props) => props.theme.colors.accentL1};
 `;
 
 const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
 	.input {
-		border-top-color: transparent;
-		border-bottom-color: transparent;
-		border-right-color: transparent;
-		border-left-color: ${(props) => props.theme.colors.accentL1};
+		background-color: ${(props) => props.theme.colors.surfaceL2};
+		border-color: ${(props) => props.theme.colors.accentL1};
 	}
 
 	.currency-container {
-		border-color: transparent;
+		background-color: ${(props) => props.theme.colors.surfaceL3};
+		border-color: ${(props) => props.theme.colors.accentL1};
+		> span {
+			color: ${(props) => props.theme.colors.fontPrimary};
+		}
 	}
+`;
+
+const SideIndication = styled.div`
+	${labelMediumCSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+	border-radius: 1px;
+	height: 32px;
+	padding: 8px;
+	text-align: center;
+	cursor: default;
+`;
+
+const LongSideIndication = styled(SideIndication)`
+	background-color: ${(props) => props.theme.colors.green};
+`;
+const ShortSideIndication = styled(SideIndication)`
+	background-color: ${(props) => props.theme.colors.red};
+`;
+
+const CurrentPositionSection = styled(Section)`
+	text-align: center;
+	color: ${(props) => props.theme.colors.fontTertiary};
+`;
+
+const SectionTitle = styled.div`
+	padding-bottom: 8px;
+`;
+
+const StyledCurrencyKey = styled(CurrencyKey)`
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
+const SectionBody = styled.div`
+	padding-bottom: 3px;
 `;
 
 export default TradeSide;

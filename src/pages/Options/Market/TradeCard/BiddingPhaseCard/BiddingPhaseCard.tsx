@@ -1,6 +1,6 @@
 import React, { FC, memo, useState, useEffect } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as WalletIcon } from 'assets/images/wallet.svg';
@@ -24,6 +24,8 @@ import { formLabelSmallCSS } from 'components/Typography/Form';
 import TimeRemaining from 'pages/Options/Home/components/TimeRemaining';
 
 import TradeSide from './TradeSide';
+
+import { CurrentPosition } from './types';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
@@ -49,6 +51,15 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		const [shortSideAmount, setShortSideAmount] = useState<OptionsTransaction['amount']>('');
 		const [longPriceAmount, setLongPriceAmount] = useState<string | number>('');
 		const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
+		const [shortCurrentPosition, setShortCurrentPosition] = useState<CurrentPosition>({
+			bid: 0,
+			payoff: 0,
+		});
+		const [longCurrentPosition, setLongCurrentPosition] = useState<CurrentPosition>({
+			bid: 0,
+			payoff: 0,
+		});
+
 		const [side, setSide] = useState<OptionsTransaction['side']>('long');
 
 		useEffect(() => {
@@ -62,8 +73,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			type === 'bid'
 				? 'options.market.trade-card.bidding.bid'
 				: 'options.market.trade-card.bidding.refund';
-
-		const getTranslation = (key: string) => t(`${transKey}.${key}`);
 
 		const handleBidding = () => {
 			console.log('TODO');
@@ -85,7 +94,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				<StyledCardBody>
 					<CardContent>
 						<FlexDivRowCentered>
-							<Title>{getTranslation('title')}</Title>
+							<Title>{t(`${transKey}.title`)}</Title>
 							<WalletBalance>
 								<WalletIcon />
 								{isLoggedIn ? formatCurrencyWithKey(SYNTHS_MAP.sUSD, sUSDBalance) : EMPTY_VALUE}
@@ -102,6 +111,8 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							price={longPriceAmount}
 							onPriceChange={(e) => setLongPriceAmount(e.target.value)}
 							onClick={() => setSide('long')}
+							transKey={transKey}
+							currentPosition={shortCurrentPosition}
 						/>
 						<TradeSideSeparator />
 						<TradeSide
@@ -113,6 +124,8 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							price={shortPriceAmount}
 							onPriceChange={(e) => setShortPriceAmount(e.target.value)}
 							onClick={() => setSide('short')}
+							transKey={transKey}
+							currentPosition={longCurrentPosition}
 						/>
 					</TradeSides>
 					<CardContent>
@@ -123,8 +136,8 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onClick={handleBidding}
 						>
 							{!isBidding
-								? getTranslation('confirm-button.label')
-								: getTranslation('confirm-button.progress-label')}
+								? t(`${transKey}.confirm-button.label`)
+								: t(`${transKey}.confirm-button.progress-label`)}
 						</ActionButton>
 						<PhaseEnd>
 							{t('options.market.trade-card.bidding.footer.end-label')}{' '}
@@ -178,11 +191,16 @@ const ActionButton = styled(Button)`
 `;
 
 const TradeSides = styled(GridDivCenteredCol)`
-	grid-gap: 12px;
 	grid-auto-flow: initial;
 	grid-template-columns: 1fr auto 1fr;
+	border-bottom: 1px solid ${(props) => props.theme.colors.accentL1};
 `;
-const TradeSideSeparator = styled.div``;
+
+const TradeSideSeparator = styled.div`
+	width: 1px;
+	height: 100%;
+	background-color: ${(props) => props.theme.colors.accentL1};
+`;
 
 const PhaseEnd = styled.div`
 	font-size: 12px;

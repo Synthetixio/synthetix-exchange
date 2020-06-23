@@ -242,8 +242,8 @@
 					"bid": {
 						"title": "place bid",
 						"subtitle": "choose your side:",
-						"amount-label": "bid amount",
-						"price-label": "price",
+						"amount-label": "bid amount:",
+						"price-label": "price:",
 						"confirm-bid": "confirm-bid",
 						"confirm-button": {
 							"label": "confirm bid",
@@ -253,17 +253,17 @@
 					"refund": {
 						"title": "withdraw",
 						"subtitle": "from your existing bid:",
-						"amount-label": "withdrawal amount",
-						"price-label": "updated price",
+						"amount-label": "withdrawal amount:",
+						"price-label": "updated price:",
 						"confirm-button": {
 							"label": "confirm withdrawal",
 							"progress-label": "withdrawal in progress..."
 						}	
 					},
 					"common": {
-						"current-position": "current-position",						
-						"bid": "bid",
-						"payoff": "payoff"
+						"current-position": "current position:",						
+						"bid": "bid:",
+						"payoff": "payoff:"
 					},
 					"footer": {
 						"end-label": "bidding period closing in:"
