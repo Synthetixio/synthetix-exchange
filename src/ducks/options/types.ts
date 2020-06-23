@@ -4,34 +4,36 @@ export type Phase = 'bidding' | 'trading' | 'maturity' | 'destruction';
 
 export type Side = 'long' | 'short';
 
+export type OptionsTransactionType = 'refund' | 'bid';
+
 export type OptionsTransaction = {
-	type: 'refund' | 'bid';
-	timestamp: number;
-	address: string;
+	hash: string;
+	type: OptionsTransactionType;
+	account: string;
 	currencyKey: CurrencyKey;
+	timestamp: number;
 	side: Side;
-	amount: number | string;
+	amount: number;
+	market: string;
 };
 
 export type OptionsTransactions = OptionsTransaction[];
 
 export type OptionsMarket = {
+	address: string;
 	timestamp: number;
+	creator: string;
 	currencyKey: CurrencyKey;
-	asset: string;
-	marketAddress: string;
-	creatorAddress: string;
-	phase: Phase;
+	strikePrice: number;
+	biddingEndDate: number;
 	maturityDate: number;
-	destructionDate: number;
-	strikePrice: number; // strike price
-	endOfBidding: number;
-	prices: {
-		long: number;
-		short: number;
-	};
-	poolSize: number; // deposited in smart contract,
-	transactions: OptionsTransactions;
+	expiryDate: number;
+	isOpen: boolean;
+	longPrice: number;
+	shortPrice: number;
+	poolSize: number;
+	asset: string;
+	phase: Phase;
 };
 
 export type OptionsMarkets = OptionsMarket[];

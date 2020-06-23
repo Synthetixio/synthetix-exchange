@@ -76,8 +76,8 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
 					<StyledHeadingItem>
 						<HeadingTitle>{t('options.market.heading.market-sentiment')}</HeadingTitle>
 						<StyledMarketSentiment
-							short={optionsMarket.prices.short}
-							long={optionsMarket.prices.long}
+							short={optionsMarket.shortPrice}
+							long={optionsMarket.longPrice}
 							display="col"
 						/>
 					</StyledHeadingItem>

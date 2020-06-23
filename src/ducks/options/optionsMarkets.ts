@@ -7,8 +7,11 @@ import { createSelector } from '@reduxjs/toolkit';
 import { getPhase } from './constants';
 import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import orderBy from 'lodash/orderBy';
-import { mapValues } from 'lodash';
+import keyBy from 'lodash/keyBy';
+import mapValues from 'lodash/mapValues';
 import { getAvailableSynthsMap } from 'ducks/synths';
+
+import snxData from 'synthetix-data';
 
 export type OptionsMarketsSliceState = RequestSliceFactoryState<OptionsMarketsMap>;
 
@@ -18,77 +21,21 @@ const optionsMarketsSlice = createRequestSliceFactory<OptionsMarketsMap>({
 	name: optionsMarketsSliceName,
 	initialState: {
 		data: {
-			ad1: {
-				timestamp: Date.now(),
-				currencyKey: 'sBTC',
-				asset: 'BTC',
-				marketAddress: 'ad1',
-				creatorAddress: 'xxx',
+			'0x62bf0c296872b5b67c781cdbab4656ac63c76750': {
+				address: '0x62bf0c296872b5b67c781cdbab4656ac63c76750',
+				timestamp: 1592802444000,
+				creator: '0x133675afe710dd0da4a61e99e039c225671cc9a3',
+				currencyKey: 'sDEFI',
+				strikePrice: 1900,
+				biddingEndDate: 1592975160000,
+				maturityDate: 1593148020000,
+				expiryDate: 1608872820000,
+				isOpen: true,
+				longPrice: 0.6734006734006734,
+				shortPrice: 0.05611672278338945,
+				poolSize: 18,
+				asset: 'DEFI',
 				phase: 'bidding',
-				endOfBidding: Date.now() + 100000000,
-				maturityDate: Date.now() + 1000000000,
-				destructionDate: Date.now() + 10000000000,
-				strikePrice: 10000,
-				prices: {
-					long: 0.1,
-					short: 0.9,
-				},
-				poolSize: 1000,
-				transactions: [],
-			},
-			ad2: {
-				timestamp: Date.now(),
-				currencyKey: 'sBTC',
-				asset: 'BTC',
-				marketAddress: 'ad2',
-				creatorAddress: 'xxx',
-				phase: 'bidding',
-				maturityDate: Date.now() + 100000,
-				destructionDate: Date.now() + 1000000,
-				strikePrice: 10000,
-				endOfBidding: Date.now() + 10000000,
-				prices: {
-					long: 0.1,
-					short: 0.9,
-				},
-				poolSize: 1000,
-				transactions: [],
-			},
-			ad3: {
-				timestamp: Date.now(),
-				currencyKey: 'sBTC',
-				asset: 'BTC',
-				marketAddress: 'ad3',
-				creatorAddress: 'xxx',
-				phase: 'bidding',
-				maturityDate: Date.now() + 100000000,
-				destructionDate: Date.now() + 100000000,
-				strikePrice: 10000,
-				endOfBidding: Date.now() + 1000000,
-				prices: {
-					long: 0.1,
-					short: 0.9,
-				},
-				poolSize: 1000,
-				transactions: [],
-			},
-			ad4: {
-				timestamp: Date.now(),
-				currencyKey: 'sBTC',
-				asset: 'BTC',
-				marketAddress: 'ad4',
-				creatorAddress: 'xxx',
-				phase: 'bidding',
-				maturityDate: Date.now() + 100000,
-				destructionDate: Date.now() + 1000000,
-				strikePrice: 10000,
-				endOfBidding: Date.now() + 10000000,
-				prices: {
-					long: 0.5,
-					short: 0.5,
-				},
-				poolSize: 1000,
-				transactions: [],
 			},
 		},
 	},
@@ -104,7 +51,7 @@ export const {
 } = optionsMarketsSlice.actions;
 
 const orderByBiddingEndDate = (optionsMarkets: OptionsMarkets) =>
-	orderBy(optionsMarkets, 'endOfBidding', 'desc');
+	orderBy(optionsMarkets, 'biddingEndDate', 'desc');
 
 export const getOptionsMarketsState = (state: RootState) => state.options[optionsMarketsSliceName];
 export const getOptionsMarketsData = (state: RootState) => getOptionsMarketsState(state).data;
@@ -134,9 +81,7 @@ export const getYourOptionsMarkets = createSelector(
 	(optionsMarkets, currentWalletAddress) =>
 		currentWalletAddress == null
 			? []
-			: optionsMarkets.filter(
-					(optionsMarkets) => optionsMarkets.creatorAddress === currentWalletAddress
-			  )
+			: optionsMarkets.filter((optionsMarkets) => optionsMarkets.creator === currentWalletAddress)
 );
 
 export const getOrderedYourOptionsMarkets = createSelector(
@@ -146,9 +91,11 @@ export const getOrderedYourOptionsMarkets = createSelector(
 
 function* fetchOptionsMarkets() {
 	try {
+		const markets = yield snxData.binaryOptions.markets();
+
 		yield put(
 			fetchOptionsMarketsSuccess({
-				data: {},
+				data: keyBy(markets, 'address'),
 			})
 		);
 	} catch (e) {

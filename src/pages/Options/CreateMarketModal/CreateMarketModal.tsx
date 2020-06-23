@@ -105,7 +105,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 	const { t } = useTranslation();
 	const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
 	const [strikePrice, setStrikePrice] = useState<number | string>('');
-	const [endOfBidding, setEndOfBidding] = useState<Date | null | undefined>(null);
+	const [biddingEndDate, setEndOfBidding] = useState<Date | null | undefined>(null);
 	const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
 	const [initialLongShorts, setInitialLongShorts] = useState<{ long: number; short: number }>({
 		long: 50,
@@ -131,7 +131,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 	const isButtonDisabled =
 		currencyKey == null ||
 		strikePrice === '' ||
-		endOfBidding === null ||
+		biddingEndDate === null ||
 		maturityDate === null ||
 		initialFundingAmount === '';
 
@@ -209,7 +209,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 										</FormInputLabel>
 										<StyledDatePicker
 											id="end-of-bidding"
-											selected={endOfBidding}
+											selected={biddingEndDate}
 											onChange={(d) => setEndOfBidding(d)}
 											maxDate={maturityDate}
 										/>
@@ -290,14 +290,14 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 								<PreviewDatesRow>
 									<div>
 										{t('options.create-market-modal.summary.dates.bids-end', {
-											date: endOfBidding ? formatShortDate(endOfBidding) : EMPTY_VALUE,
+											date: biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE,
 										})}
 									</div>
 									<div>
 										{t('options.create-market-modal.summary.dates.trading-period', {
-											period: endOfBidding
+											period: biddingEndDate
 												? formattedDuration(
-														intervalToDuration({ start: Date.now(), end: endOfBidding })
+														intervalToDuration({ start: Date.now(), end: biddingEndDate })
 												  )
 												: EMPTY_VALUE,
 										})}

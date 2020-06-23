@@ -17,7 +17,7 @@ export const SIDE: Record<Side, BigNumber> = {
 export const getPhase = (optionsMarket: OptionsMarket): Phase => {
 	const now = Date.now();
 
-	if (optionsMarket.endOfBidding > now) {
+	if (optionsMarket.biddingEndDate > now) {
 		return 'bidding';
 	}
 
@@ -25,7 +25,7 @@ export const getPhase = (optionsMarket: OptionsMarket): Phase => {
 		return 'trading';
 	}
 
-	if (optionsMarket.destructionDate > now) {
+	if (optionsMarket.expiryDate > now) {
 		return 'maturity';
 	}
 

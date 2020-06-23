@@ -24,7 +24,7 @@ type TradeSideProps = {
 	isActive: boolean;
 	side: OptionsTransaction['side'];
 	type: OptionsTransaction['type'];
-	amount: OptionsTransaction['amount'];
+	amount: OptionsTransaction['amount'] | string;
 	price: string | number;
 	onPriceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

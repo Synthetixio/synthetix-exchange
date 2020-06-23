@@ -213,17 +213,17 @@ const Market: FC<ChartCardProps> = memo(
 								)}
 								<ReferenceLine
 									yAxisId="price"
-									y={optionsMarket.prices.long}
+									y={optionsMarket.longPrice}
 									stroke={theme.colors.green}
 									strokeDasharray="5 2"
 								>
 									<Label position="insideBottomLeft" className="ref-line-label ref-line-label-long">
-										{t('common.val-in-cents', { val: optionsMarket.prices.long * 100 })}
+										{t('common.val-in-cents', { val: optionsMarket.longPrice * 100 })}
 									</Label>
 								</ReferenceLine>
 								<ReferenceLine
 									yAxisId="price"
-									y={optionsMarket.prices.short}
+									y={optionsMarket.shortPrice}
 									stroke={theme.colors.red}
 									strokeDasharray="5 2"
 								>
@@ -231,7 +231,7 @@ const Market: FC<ChartCardProps> = memo(
 										position="insideBottomLeft"
 										className="ref-line-label ref-line-label-short"
 									>
-										{t('common.val-in-cents', { val: optionsMarket.prices.short * 100 })}
+										{t('common.val-in-cents', { val: optionsMarket.shortPrice * 100 })}
 									</Label>
 								</ReferenceLine>
 								<ReferenceLine
@@ -249,11 +249,11 @@ const Market: FC<ChartCardProps> = memo(
 								</ReferenceLine>
 								{/* <ReferenceLine
 									yAxisId="rate"
-									x={optionsMarket.endOfBidding}
+									x={optionsMarket.biddingEndDate}
 									stroke={theme.colors.red}
 									strokeDasharray="5 2"
 								>
-									<Label position="insideBottomLeft">{optionsMarket.endOfBidding}</Label>
+									<Label position="insideBottomLeft">{optionsMarket.biddingEndDate}</Label>
 								</ReferenceLine>
 								<ReferenceLine
 									yAxisId="rate"

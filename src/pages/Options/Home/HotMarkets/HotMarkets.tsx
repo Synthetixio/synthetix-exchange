@@ -29,7 +29,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 	return (
 		<Cards>
 			{optionsMarkets.map((optionsMarket) => (
-				<Card key={optionsMarket.marketAddress}>
+				<Card key={optionsMarket.address}>
 					<MarketHeadingRow>
 						<StyledCurrencyName
 							currencyKey={optionsMarket.currencyKey}
@@ -37,7 +37,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 							showIcon={true}
 							iconProps={{ width: '24px', height: '24px', type: 'asset' }}
 						/>
-						<StyledTimeRemaining end={optionsMarket.endOfBidding} />
+						<StyledTimeRemaining end={optionsMarket.biddingEndDate} />
 					</MarketHeadingRow>
 					<MarketDetailsRow>
 						<StrikePrice>
@@ -47,7 +47,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 							{t('common.by-date', { date: formatShortDate(optionsMarket.maturityDate) })}
 						</MaturityDate>
 					</MarketDetailsRow>
-					<MarketSentiment long={optionsMarket.prices.long} short={optionsMarket.prices.short} />
+					<MarketSentiment long={optionsMarket.longPrice} short={optionsMarket.shortPrice} />
 				</Card>
 			))}
 		</Cards>

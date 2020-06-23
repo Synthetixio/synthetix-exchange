@@ -484,6 +484,7 @@
 	"common": {
 		"max": "max",
 		"gas-limit": "gas limit",
+		"network-fee-gas": "network fee (gas)",
 		"gas-price-gwei": "gas price (gwei)",
 		"gwei": "gwei",
 		"transaction": {

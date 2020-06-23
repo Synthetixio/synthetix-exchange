@@ -8,6 +8,7 @@ import { navigateToOptionsMarket } from 'constants/routes';
 import { SYNTHS_MAP, FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 
 import { TableOverflowContainer, CurrencyKey } from 'shared/commonStyles';
+import { formatShortDate, formatCurrency } from 'utils/formatters';
 
 import Table from 'components/Table';
 import { CurrencyCol } from 'components/Table/common';
@@ -16,7 +17,6 @@ import Currency from 'components/Currency';
 import { OptionsMarkets, OptionsMarket, Phase } from 'ducks/options/types';
 import { darkTheme } from 'styles/theme';
 import TimeRemaining from '../components/TimeRemaining';
-import { formatShortDate } from 'utils/formatters';
 
 type MarketsTableProps = {
 	optionsMarkets: OptionsMarkets;
@@ -78,11 +78,15 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Cell: (cellProps: CellProps<OptionsMarket>) => (
 								<LongShorts>
 									<Longs>
-										{t('common.val-in-cents', { val: cellProps.row.original.prices.long * 100 })}
+										{t('common.val-in-cents', {
+											val: formatCurrency(cellProps.row.original.longPrice * 100),
+										})}
 									</Longs>
 									{' / '}
 									<Shorts>
-										{t('common.val-in-cents', { val: cellProps.row.original.prices.short * 100 })}
+										{t('common.val-in-cents', {
+											val: formatCurrency(cellProps.row.original.shortPrice * 100),
+										})}
 									</Shorts>
 								</LongShorts>
 							),
@@ -116,8 +120,8 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 						},
 						{
 							Header: <>{t('options.home.markets-table.time-remaining-col')}</>,
-							accessor: 'endOfBidding',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['endOfBidding']>) => (
+							accessor: 'biddingEndDate',
+							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['biddingEndDate']>) => (
 								<TimeRemaining end={cellProps.cell.value} />
 							),
 							width: 150,
@@ -125,12 +129,14 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 					]}
 					data={optionsMarkets}
 					onTableRowClick={(row: Row<OptionsMarket>) => {
-						navigateToOptionsMarket(row.original.marketAddress);
+						navigateToOptionsMarket(row.original.address);
 					}}
 					options={{
 						initialState: {
 							sortBy:
-								marketsLoaded != null && marketsLoaded ? [{ id: 'endOfBidding', desc: true }] : [],
+								marketsLoaded != null && marketsLoaded
+									? [{ id: 'biddingEndDate', desc: true }]
+									: [],
 						},
 					}}
 					noResultsMessage={noResultsMessage}

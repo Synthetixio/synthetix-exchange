@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { labelSmallCSS } from 'components/Typography/Label';
 
 import { GridDivCentered, FlexDivRowCentered } from 'shared/commonStyles';
+import { formatCurrency } from 'utils/formatters';
 
 type Display = 'row' | 'col';
 
@@ -20,22 +21,29 @@ export const MarketSentiment: FC<MarketSentimentProps> = memo(
 
 		const priceLong = long * 100;
 		const priceShort = short * 100;
+		const range = priceLong + priceShort;
 
-		const longs = <Longs className="longs">{t('common.val-in-cents', { val: priceLong })}</Longs>;
+		const longs = (
+			<Longs className="longs">
+				{t('common.val-in-cents', { val: formatCurrency(priceLong) })}
+			</Longs>
+		);
 		const shorts = (
-			<Shorts className="shorts">{t('common.val-in-cents', { val: priceShort })}</Shorts>
+			<Shorts className="shorts">
+				{t('common.val-in-cents', { val: formatCurrency(priceShort) })}
+			</Shorts>
 		);
 
 		const longsPercent = (
 			<LongsPercent
 				className="longs-percent percent"
-				style={{ width: `calc(${priceLong}% - 2px)` }}
+				style={{ width: `calc(${(priceLong / range) * 100}% - 2px)` }}
 			/>
 		);
 		const shortsPercent = (
 			<ShortsPercent
 				className="shorts-percent percent"
-				style={{ width: `calc(${priceShort}% - 2px)` }}
+				style={{ width: `calc(${(priceShort / range) * 100}% - 2px)` }}
 			/>
 		);
 		return (

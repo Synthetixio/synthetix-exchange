@@ -47,8 +47,10 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		const { t } = useTranslation();
 		const [type, setType] = useState<OptionsTransaction['type']>('bid');
 		const [isBidding, setIsBidding] = useState<boolean>(false);
-		const [longSideAmount, setLongSideAmount] = useState<OptionsTransaction['amount']>('');
-		const [shortSideAmount, setShortSideAmount] = useState<OptionsTransaction['amount']>('');
+		const [longSideAmount, setLongSideAmount] = useState<OptionsTransaction['amount'] | string>('');
+		const [shortSideAmount, setShortSideAmount] = useState<OptionsTransaction['amount'] | string>(
+			''
+		);
 		const [longPriceAmount, setLongPriceAmount] = useState<string | number>('');
 		const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
 		const [shortCurrentPosition, setShortCurrentPosition] = useState<CurrentPosition>({
@@ -141,7 +143,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						</ActionButton>
 						<PhaseEnd>
 							{t('options.market.trade-card.bidding.footer.end-label')}{' '}
-							<StyledTimeRemaining end={optionsMarket.endOfBidding} />
+							<StyledTimeRemaining end={optionsMarket.biddingEndDate} />
 						</PhaseEnd>
 					</CardContent>
 				</StyledCardBody>
