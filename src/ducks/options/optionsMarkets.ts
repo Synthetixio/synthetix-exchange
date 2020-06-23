@@ -33,9 +33,6 @@ export const {
 	fetchRequest: fetchOptionsMarketsRequest,
 } = optionsMarketsSlice.actions;
 
-const orderByBiddingEndDate = (optionsMarkets: OptionsMarkets) =>
-	orderBy(optionsMarkets, 'biddingEndDate', 'desc');
-
 export const getOptionsMarketsState = (state: RootState) => state.options[optionsMarketsSliceName];
 export const getOptionsMarketsData = (state: RootState) => getOptionsMarketsState(state).data;
 
@@ -68,10 +65,6 @@ export const getOptionsMarkets = createSelector(getOptionsMarketsMap, (optionsMa
 	Object.values(optionsMarketMap)
 );
 
-export const getOrderedOptionsMarkets = createSelector(getOptionsMarkets, (optionsMarkets) =>
-	orderByBiddingEndDate(optionsMarkets)
-);
-
 export const getYourOptionsMarkets = createSelector(
 	getOptionsMarkets,
 	getCurrentWalletAddress,
@@ -79,11 +72,6 @@ export const getYourOptionsMarkets = createSelector(
 		currentWalletAddress == null
 			? []
 			: optionsMarkets.filter((optionsMarkets) => optionsMarkets.creator === currentWalletAddress)
-);
-
-export const getOrderedYourOptionsMarkets = createSelector(
-	getYourOptionsMarkets,
-	(optionsMarkets) => orderByBiddingEndDate(optionsMarkets)
 );
 
 function* fetchOptionsMarkets() {

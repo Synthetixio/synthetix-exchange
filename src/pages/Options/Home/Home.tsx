@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from 'ducks/types';
-import { fetchOptionsMarketsRequest, getOrderedOptionsMarkets } from 'ducks/options/optionsMarkets';
+import { fetchOptionsMarketsRequest, getOptionsMarkets } from 'ducks/options/optionsMarkets';
 
 import HotMarkets from './HotMarkets';
 import ExploreMarkets from './ExploreMarkets';
@@ -17,7 +17,7 @@ import { Z_INDEX } from 'constants/ui';
 import YourMarkets from './YourMarkets';
 
 const mapStateToProps = (state: RootState) => ({
-	optionsMarkets: getOrderedOptionsMarkets(state),
+	optionsMarkets: getOptionsMarkets(state),
 });
 
 const mapDispatchToProps = {
