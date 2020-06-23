@@ -19,7 +19,7 @@ import {
 import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 import { BaseRateUpdates } from 'constants/rates';
 
-import { formatCurrencyWithSign } from 'utils/formatters';
+import { formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
 import { GridDivCenteredCol, Dot } from 'shared/commonStyles';
 
 import Card from 'components/Card';
@@ -165,6 +165,7 @@ const Market: FC<ChartCardProps> = memo(
 								<YAxis
 									type="number"
 									domain={['auto', (d: number) => Math.max(d, optionsMarket.strikePrice * 1.1)]}
+									// domain={['auto', 'auto']}
 									tick={fontStyleMedium}
 									orientation="right"
 									axisLine={false}
@@ -218,7 +219,9 @@ const Market: FC<ChartCardProps> = memo(
 									strokeDasharray="5 2"
 								>
 									<Label position="insideBottomLeft" className="ref-line-label ref-line-label-long">
-										{t('common.val-in-cents', { val: optionsMarket.longPrice * 100 })}
+										{t('common.val-in-cents', {
+											val: formatCurrency(optionsMarket.longPrice * 100),
+										})}
 									</Label>
 								</ReferenceLine>
 								<ReferenceLine
@@ -231,7 +234,9 @@ const Market: FC<ChartCardProps> = memo(
 										position="insideBottomLeft"
 										className="ref-line-label ref-line-label-short"
 									>
-										{t('common.val-in-cents', { val: optionsMarket.shortPrice * 100 })}
+										{t('common.val-in-cents', {
+											val: formatCurrency(optionsMarket.shortPrice * 100),
+										})}
 									</Label>
 								</ReferenceLine>
 								<ReferenceLine
