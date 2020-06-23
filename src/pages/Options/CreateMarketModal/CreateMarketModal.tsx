@@ -304,7 +304,10 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 									</div>
 								</PreviewDatesRow>
 								<PreviewMarketPriceRow>
-									<MarketSentiment long={initialLongShorts.long} short={initialLongShorts.short} />
+									<MarketSentiment
+										long={initialLongShorts.long / 100}
+										short={initialLongShorts.short / 100}
+									/>
 								</PreviewMarketPriceRow>
 								<PreviewFeesRow>
 									<FlexDivRowCentered>
