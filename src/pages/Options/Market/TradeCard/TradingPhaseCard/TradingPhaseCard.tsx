@@ -14,8 +14,8 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(({ optionsMarket }) => 
 
 	return (
 		<Card>
-			<Card.Header>Hello</Card.Header>
-			<Card.Body>Hello world</Card.Body>
+			<Card.Header>Trading</Card.Header>
+			<Card.Body>Trading</Card.Body>
 		</Card>
 	);
 });

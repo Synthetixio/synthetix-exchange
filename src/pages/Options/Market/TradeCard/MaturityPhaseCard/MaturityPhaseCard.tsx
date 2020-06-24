@@ -14,8 +14,8 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket }) =
 
 	return (
 		<Card>
-			<Card.Header>Hello</Card.Header>
-			<Card.Body>Hello world</Card.Body>
+			<Card.Header>Maturity</Card.Header>
+			<Card.Body>Maturity</Card.Body>
 		</Card>
 	);
 });
