@@ -171,6 +171,7 @@ const ReactTable = styled.div<{ palette: TablePalette }>`
 				margin-bottom: 8px;
 			}
 			${TableCellHead} {
+				font-family: ${(props) => props.theme.fonts.medium};
 				color: ${(props) => props.theme.colors.fontTertiary};
 				background-color: ${(props) => props.theme.colors.surfaceL3};
 			}
@@ -204,6 +205,7 @@ ${(props) =>
 			}
 		}
 		${TableCellHead} {
+			font-family: ${(props) => props.theme.fonts.medium};
 			color: ${(props) => props.theme.colors.fontTertiary};
 			background-color: ${(props) => props.theme.colors.surfaceL3};
 		}

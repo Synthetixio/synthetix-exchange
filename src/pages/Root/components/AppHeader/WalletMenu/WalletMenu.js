@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { resetWalletReducer, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';

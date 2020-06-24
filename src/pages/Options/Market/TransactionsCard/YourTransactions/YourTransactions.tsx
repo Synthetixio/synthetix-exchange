@@ -1,48 +1,76 @@
-import React, { FC, memo, useState, useEffect } from 'react';
-import snxData from 'synthetix-data';
+import React, { FC, memo, useEffect } from 'react';
+import { ConnectedProps, connect } from 'react-redux';
 
-// import useInterval from 'shared/hooks/useInterval';
+import { RootState } from 'ducks/types';
+import { OptionsMarketInfo } from 'ducks/options/types';
 
-import { OptionsTransactions, OptionsMarketInfo } from 'ducks/options/types';
+import {
+	getUserOptionsTransactionsMap,
+	getIsLoadingUserOptionsTransactions,
+	getIsLoadedUserOptionsTransactions,
+	fetchUserOptionsTransactionsRequest,
+} from 'ducks/options/userOptionsTransactions';
+
+import useInterval from 'shared/hooks/useInterval';
+import { NoResultsMessage } from 'shared/commonStyles';
 
 import TransactionsTable from '../components/TransactionsTable';
+import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 
-type YourTransactionsProps = {
-	max?: number;
+const mapStateToProps = (state: RootState) => ({
+	isLoading: getIsLoadingUserOptionsTransactions(state),
+	isLoaded: getIsLoadedUserOptionsTransactions(state),
+	optionsTransactionsMap: getUserOptionsTransactionsMap(state),
+});
+
+const mapDispatchToProps = {
+	fetchUserOptionsTransactionsRequest,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type YourTransactionsProps = PropsFromRedux & {
 	marketAddress: OptionsMarketInfo['address'];
 };
 
-const YourTransactions: FC<YourTransactionsProps> = memo(({ marketAddress, max = 100 }) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [isLoaded, setIsLoaded] = useState<boolean>(false);
-	const [optionsTransactions, setOptionsTransactions] = useState<OptionsTransactions>([]);
+const YourTransactions: FC<YourTransactionsProps> = memo(
+	({
+		marketAddress,
+		optionsTransactionsMap,
+		isLoading,
+		isLoaded,
+		fetchUserOptionsTransactionsRequest,
+	}) => {
+		useEffect(() => {
+			fetchUserOptionsTransactionsRequest({
+				marketAddress,
+			});
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
 
-	useEffect(() => {
-		const getTransactions = async () => {
-			try {
-				setIsLoading(true);
-				const transactions = await snxData.binaryOptions.optionTransactions(max, marketAddress);
-				setIsLoaded(true);
-				setOptionsTransactions(transactions);
-			} catch (e) {
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		getTransactions();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		useInterval(() => {
+			fetchUserOptionsTransactionsRequest({
+				marketAddress,
+			});
+		}, DEFAULT_REQUEST_REFRESH_INTERVAL);
 
-	// useInterval(() => {
-	// 	fetchMyTradesRequest();
-	// }, DEFAULT_REQUEST_REFRESH_INTERVAL);
-	return (
-		<TransactionsTable
-			optionsTransactions={optionsTransactions}
-			isLoading={isLoading}
-			noResultsMessage={isLoaded && optionsTransactions.length === 0 && <div>No results</div>}
-		/>
-	);
-});
+		const optionsTransactions = optionsTransactionsMap[marketAddress] || [];
 
-export default YourTransactions;
+		return (
+			<TransactionsTable
+				key="your-tx"
+				optionsTransactions={optionsTransactions}
+				isLoading={isLoading && !isLoaded}
+				noResultsMessage={
+					isLoaded && optionsTransactions.length === 0 ? (
+						<NoResultsMessage>No transactions</NoResultsMessage>
+					) : undefined
+				}
+			/>
+		);
+	}
+);
+
+export default connector(YourTransactions);

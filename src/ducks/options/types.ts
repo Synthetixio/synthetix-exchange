@@ -19,6 +19,8 @@ export type OptionsTransaction = {
 
 export type OptionsTransactions = OptionsTransaction[];
 
+export type OptionsTransactionsMap = Record<string, OptionsTransactions>;
+
 export type OptionsMarket = {
 	address: string;
 	timestamp: number;

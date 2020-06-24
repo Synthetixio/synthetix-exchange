@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import get from 'lodash/get';
 
 import PropTypes from 'prop-types';
 

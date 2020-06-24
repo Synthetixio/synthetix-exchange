@@ -233,7 +233,7 @@
 					"date-time-col": "date | time",
 					"type-col": "type",
 					"position-col": "position",
-					"bid-amount-col": "bid amount",
+					"amount-col": "bid amount",
 					"tx-status-col": "tx status"
 				}
 			},

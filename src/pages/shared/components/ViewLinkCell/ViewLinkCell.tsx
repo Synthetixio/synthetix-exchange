@@ -29,7 +29,12 @@ export const ViewLinkCell: FC<ViewLinkCellProps> = ({ isDisabled, networkId, has
 	const { t } = useTranslation();
 
 	return (
-		<StyledLink isDisabled={isDisabled} to={getEtherscanTxLink(networkId, hash)} {...rest}>
+		<StyledLink
+			isDisabled={isDisabled}
+			to={getEtherscanTxLink(networkId, hash)}
+			isExternal={true}
+			{...rest}
+		>
 			{t('common.transaction.view')}
 			<ArrowIcon width="8" height="8" />
 		</StyledLink>

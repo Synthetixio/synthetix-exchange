@@ -2,11 +2,15 @@ import React, { FC, memo, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
+import { FlexDiv } from 'shared/commonStyles';
+
+import { CARD_HEIGHT } from 'constants/ui';
+import { OptionsMarketInfo } from 'ducks/options/types';
+
 import Card from 'components/Card';
 
 import RecentTransactions from './RecentTransactions';
 import YourTransactions from './YourTransactions';
-import { OptionsMarketInfo } from 'ducks/options/types';
 
 type TransactionsCardProps = {
 	optionsMarket: OptionsMarketInfo;
@@ -18,12 +22,13 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ optionsMarket }) => 
 	const tabContent = useMemo(
 		() => [
 			{
-				name: 'recent',
+				name: t('options.market.transactions-card.recent-market-tab-title'),
 				id: 'recent-transactions',
 				component: <RecentTransactions marketAddress={optionsMarket.address} />,
 			},
+			// disable tab if not logged in
 			{
-				name: 'your',
+				name: t('options.market.transactions-card.your-activity-tab-title'),
 				id: 'your-transactions',
 				component: <YourTransactions marketAddress={optionsMarket.address} />,
 			},
@@ -37,13 +42,17 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ optionsMarket }) => 
 	return (
 		<StyledCard>
 			<StyledCardBody>
-				<Tabs>
+				<FlexDiv>
 					{tabContent.map((tab) => (
-						<Tab key={tab.id} onClick={() => setActiveTab(tab)} isActive={tab.id === activeTab.id}>
-							<span>{tab.name}</span>
-						</Tab>
+						<TabButton
+							key={tab.id}
+							onClick={() => setActiveTab(tab)}
+							isActive={tab.id === activeTab.id}
+						>
+							{tab.name}
+						</TabButton>
 					))}
-				</Tabs>
+				</FlexDiv>
 				{activeTab.component}
 			</StyledCardBody>
 		</StyledCard>
@@ -65,14 +74,11 @@ const StyledCardBody = styled(Card.Body)`
 	position: initial;
 	display: flex;
 	flex-direction: column;
+	height: 100%;
 `;
 
-const Tabs = styled.div`
-	display: flex;
-`;
-
-const Tab = styled.button<{ isActive: boolean }>`
-	height: 42px;
+const TabButton = styled.button<{ isActive: boolean }>`
+	height: ${CARD_HEIGHT};
 	padding: 0 18px;
 	display: flex;
 	justify-content: center;
@@ -80,6 +86,10 @@ const Tab = styled.button<{ isActive: boolean }>`
 	outline: none;
 	border: none;
 	cursor: pointer;
+	font-size: 12px;
+	text-transform: uppercase;
+	font-family: ${(props) => props.theme.fonts.medium};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	background-color: ${(props) =>
 		props.isActive ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 	&:hover {

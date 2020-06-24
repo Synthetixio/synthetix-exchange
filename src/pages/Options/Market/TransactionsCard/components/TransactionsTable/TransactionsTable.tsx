@@ -25,12 +25,12 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 		const { t } = useTranslation();
 
 		return (
-			<TableOverflowContainer>
+			<StyledTableOverflowContainer>
 				<StyledTable
 					palette="striped"
 					columns={[
 						{
-							Header: <>{t('options.market.transactions-card.table.asset-col')}</>,
+							Header: <>{t('options.market.transactions-card.table.date-time-col')}</>,
 							accessor: 'timestamp',
 							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['timestamp']>) =>
 								formatTxTimestamp(cellProps.cell.value),
@@ -60,7 +60,7 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 							sortType: 'basic',
 							accessor: 'amount',
 							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['amount']>) => (
-								<span>{`${USD_SIGN} ${formatCurrencyWithKey(
+								<span>{`${USD_SIGN}${formatCurrencyWithKey(
 									SYNTHS_MAP.sUSD,
 									cellProps.cell.value
 								)}`}</span>
@@ -78,11 +78,17 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 						},
 					]}
 					data={optionsTransactions}
+					isLoading={isLoading}
+					noResultsMessage={noResultsMessage}
 				/>
-			</TableOverflowContainer>
+			</StyledTableOverflowContainer>
 		);
 	}
 );
+
+const StyledTableOverflowContainer = styled(TableOverflowContainer)`
+	height: 100%;
+`;
 
 const StyledTable = styled(Table)`
 	.table-row,

@@ -183,6 +183,7 @@ const StyledCenteredPageLayout = styled(CenteredPageLayout)`
 const LeftCol = styled(GridDivRow)`
 	grid-gap: 8px;
 	align-content: start;
+	grid-template-rows: auto auto 1fr;
 `;
 
 const Heading = styled(GridDivCenteredCol)`
@@ -224,7 +225,9 @@ const HeadingTitle = styled.div`
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const RightCol = styled(LeftCol)`
+const RightCol = styled(GridDivRow)`
+	grid-gap: 8px;
+	align-content: start;
 	width: 414px;
 	grid-template-rows: auto 1fr;
 `;
