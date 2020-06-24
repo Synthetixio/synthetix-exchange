@@ -115,7 +115,7 @@ export const formattedDuration = (duration: Duration, delimiter = ' ') => {
 	if (duration.minutes) {
 		formatted.push(`${duration.minutes}m`);
 	}
-	if (duration.seconds) {
+	if (duration.seconds != null) {
 		formatted.push(`${duration.seconds}s`);
 	}
 	return formatted.join(delimiter);
