@@ -29,6 +29,9 @@ import {
 	parseBytes32String,
 } from 'utils/formatters';
 
+import { getPhaseAndEndDate } from 'ducks/options/constants';
+import { getAvailableSynthsMap } from 'ducks/synths';
+
 import Spinner from 'components/Spinner';
 import Link from 'components/Link';
 import MarketSentiment from '../components/MarketSentiment';
@@ -39,6 +42,7 @@ import TradeCard from './TradeCard';
 
 const mapStateToProps = (state: RootState) => ({
 	optionsMarketsMap: getOptionsMarketsMap(state),
+	synthsMap: getAvailableSynthsMap(state),
 });
 
 const mapDispatchToProps = {};
@@ -52,7 +56,7 @@ type MarketProps = PropsFromRedux &
 		marketAddress: string;
 	}>;
 
-const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
+const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) => {
 	const [optionsMarket, setOptionsMarket] = useState<OptionsMarketInfo | null>(null);
 	const [BOMContract, setBOMContract] = useState<ethers.Contract>();
 
@@ -78,6 +82,8 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
 
 	useEffect(() => {
 		if (BOMContract) {
+			// TODO: move this to redux
+
 			const getMarketInfo = async () => {
 				const [oracleDetails, times, prices, totalBids, totalSupplies] = await Promise.all([
 					BOMContract.oracleDetails(),
@@ -91,27 +97,36 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap }) => {
 				const [oracleKey, strikePrice] = oracleDetails;
 				const [longPrice, shortPrice] = prices;
 
+				const biddingEndDate = Number(biddingEnd) * 1000;
+				const maturityDate = Number(maturity) * 1000;
+				const expiryDate = Number(expiry) * 1000;
+
+				const { phase, timeRemaining } = getPhaseAndEndDate(
+					biddingEndDate,
+					maturityDate,
+					expiryDate
+				);
+
+				const currencyKey = parseBytes32String(oracleKey);
+
 				const market: OptionsMarketInfo = {
-					biddingEndDate: Number(biddingEnd) * 1000,
-					maturityDate: Number(maturity) * 1000,
-					expiryDate: Number(expiry) * 1000,
+					biddingEndDate,
+					maturityDate,
+					expiryDate,
 					currencyKey: parseBytes32String(oracleKey),
-					asset: parseBytes32String(oracleKey),
+					asset: synthsMap[currencyKey]?.asset || currencyKey,
 					strikePrice: bigNumberFormatter(strikePrice),
 					longPrice: bigNumberFormatter(longPrice),
 					shortPrice: bigNumberFormatter(shortPrice),
-					// TODO: compute these
-					phase: 'bidding',
-					timeRemaining: Date.now() + 1000,
+					phase,
+					timeRemaining,
 				};
-
-				console.log(market);
 
 				setOptionsMarket(market);
 			};
 			getMarketInfo();
 		}
-	}, [BOMContract]);
+	}, [BOMContract, synthsMap]);
 
 	return optionsMarket ? (
 		<StyledCenteredPageLayout>

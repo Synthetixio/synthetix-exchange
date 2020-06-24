@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { toBigNumber } from 'utils/formatters';
-import { Phase, Side, OptionsMarket } from './types';
+import { Phase, Side } from './types';
 
 export const PHASE: Record<Phase, BigNumber> = {
 	bidding: toBigNumber(0),
@@ -14,20 +14,38 @@ export const SIDE: Record<Side, BigNumber> = {
 	short: toBigNumber(1),
 };
 
-export const getPhase = (optionsMarket: OptionsMarket): Phase => {
+export const getPhaseAndEndDate = (
+	biddingEndDate: number,
+	maturityDate: number,
+	expiryDate: number
+): { phase: Phase; timeRemaining: number } => {
 	const now = Date.now();
 
-	if (optionsMarket.biddingEndDate > now) {
-		return 'bidding';
+	if (biddingEndDate > now) {
+		return {
+			phase: 'bidding',
+			timeRemaining: biddingEndDate,
+		};
 	}
 
-	if (optionsMarket.maturityDate > now) {
-		return 'trading';
+	if (maturityDate > now) {
+		return {
+			phase: 'trading',
+			timeRemaining: maturityDate,
+		};
 	}
 
-	if (optionsMarket.expiryDate > now) {
-		return 'maturity';
+	if (expiryDate > now) {
+		return {
+			phase: 'maturity',
+			timeRemaining: expiryDate,
+		};
 	}
 
-	return 'expiry';
+	// TODO: need to check if this is correct
+
+	return {
+		phase: 'expiry',
+		timeRemaining: expiryDate,
+	};
 };

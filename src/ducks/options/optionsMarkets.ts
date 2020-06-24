@@ -4,7 +4,7 @@ import { RootState } from 'ducks/types';
 import { createRequestSliceFactory, RequestSliceFactoryState } from '../requestSliceFactory';
 import { OptionsMarketsMap } from './types';
 import { createSelector } from '@reduxjs/toolkit';
-import { getPhase } from './constants';
+import { getPhaseAndEndDate } from './constants';
 import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import keyBy from 'lodash/keyBy';
 import mapValues from 'lodash/mapValues';
@@ -40,20 +40,15 @@ export const getOptionsMarketsMap = createSelector(
 	getAvailableSynthsMap,
 	(optionsMarketsData, synthsMap) =>
 		mapValues(optionsMarketsData, (optionsMarket) => {
-			const phase = getPhase(optionsMarket);
-			let timeRemaining;
-
-			if (phase === 'bidding') {
-				timeRemaining = optionsMarket.biddingEndDate;
-			} else if (phase === 'trading') {
-				timeRemaining = optionsMarket.maturityDate;
-			} else {
-				timeRemaining = optionsMarket.expiryDate;
-			}
+			const { phase, timeRemaining } = getPhaseAndEndDate(
+				optionsMarket.biddingEndDate,
+				optionsMarket.maturityDate,
+				optionsMarket.expiryDate
+			);
 
 			return {
 				...optionsMarket,
-				phase: getPhase(optionsMarket),
+				phase,
 				asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
 				timeRemaining,
 			};
