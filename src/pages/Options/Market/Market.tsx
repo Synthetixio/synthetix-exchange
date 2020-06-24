@@ -39,6 +39,7 @@ import { captionCSS } from 'components/Typography/General';
 
 import ChartCard from './ChartCard';
 import TradeCard from './TradeCard';
+import TransactionsCard from './TransactionsCard';
 
 const mapStateToProps = (state: RootState) => ({
 	optionsMarketsMap: getOptionsMarketsMap(state),
@@ -110,6 +111,7 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) =
 				const currencyKey = parseBytes32String(oracleKey);
 
 				const market: OptionsMarketInfo = {
+					address: match.params.marketAddress,
 					biddingEndDate,
 					maturityDate,
 					expiryDate,
@@ -126,7 +128,7 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) =
 			};
 			getMarketInfo();
 		}
-	}, [BOMContract, synthsMap]);
+	}, [BOMContract, synthsMap, match]);
 
 	return optionsMarket ? (
 		<StyledCenteredPageLayout>
@@ -153,6 +155,7 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) =
 					</StyledHeadingItem>
 				</Heading>
 				<ChartCard optionsMarket={optionsMarket} />
+				<TransactionsCard optionsMarket={optionsMarket} />
 			</LeftCol>
 			<RightCol>
 				<GridDivCenteredCol>

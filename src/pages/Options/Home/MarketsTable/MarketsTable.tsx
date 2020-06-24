@@ -21,132 +21,121 @@ import TimeRemaining from '../components/TimeRemaining';
 
 type MarketsTableProps = {
 	optionsMarkets: OptionsMarkets;
-	marketsLoaded?: boolean;
 	noResultsMessage?: React.ReactNode;
 };
 
-export const MarketsTable: FC<MarketsTableProps> = memo(
-	({ optionsMarkets, marketsLoaded, noResultsMessage }) => {
-		const { t } = useTranslation();
+export const MarketsTable: FC<MarketsTableProps> = memo(({ optionsMarkets, noResultsMessage }) => {
+	const { t } = useTranslation();
 
-		return (
-			<TableOverflowContainer>
-				<StyledTable
-					palette="light-secondary"
-					columns={[
-						{
-							Header: <>{t('options.home.markets-table.asset-col')}</>,
-							accessor: 'currencyKey',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['currencyKey']>) => (
-								<StyledCurrencyName
-									currencyKey={cellProps.cell.value}
-									name={cellProps.row.original.asset}
-									showIcon={true}
-									iconProps={{ type: 'asset', width: '24px', height: '24px' }}
-								/>
-							),
-							width: 150,
-							sortable: true,
-						},
-						{
-							Header: (
-								<>
-									{t('options.home.markets-table.strike-price-col', {
-										currencyKeyWithSymbol: `${USD_SIGN}${FIAT_CURRENCY_MAP.USD}`,
+	return (
+		<TableOverflowContainer>
+			<StyledTable
+				palette="light-secondary"
+				columns={[
+					{
+						Header: <>{t('options.home.markets-table.asset-col')}</>,
+						accessor: 'currencyKey',
+						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['currencyKey']>) => (
+							<StyledCurrencyName
+								currencyKey={cellProps.cell.value}
+								name={cellProps.row.original.asset}
+								showIcon={true}
+								iconProps={{ type: 'asset', width: '24px', height: '24px' }}
+							/>
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: (
+							<>
+								{t('options.home.markets-table.strike-price-col', {
+									currencyKeyWithSymbol: `${USD_SIGN}${FIAT_CURRENCY_MAP.USD}`,
+								})}
+							</>
+						),
+						accessor: 'strikePrice',
+						sortType: 'basic',
+						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['strikePrice']>) => (
+							<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
+						accessor: 'maturityDate',
+						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
+							<span>{formatShortDate(cellProps.cell.value)}</span>
+						),
+						width: 150,
+						sortable: true,
+					},
+
+					{
+						Header: <>{t('options.home.markets-table.long-short-col')}</>,
+						id: 'long-short',
+						Cell: (cellProps: CellProps<OptionsMarket>) => (
+							<LongShorts>
+								<Longs>
+									{t('common.val-in-cents', {
+										val: formatCurrency(cellProps.row.original.longPrice * 100),
 									})}
-								</>
-							),
-							accessor: 'strikePrice',
-							sortType: 'basic',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['strikePrice']>) => (
-								<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
-							),
-							width: 150,
-							sortable: true,
-						},
-						{
-							Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
-							accessor: 'maturityDate',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
-								<span>{formatShortDate(cellProps.cell.value)}</span>
-							),
-							width: 150,
-							sortable: true,
-						},
-
-						{
-							Header: <>{t('options.home.markets-table.long-short-col')}</>,
-							id: 'long-short',
-							Cell: (cellProps: CellProps<OptionsMarket>) => (
-								<LongShorts>
-									<Longs>
-										{t('common.val-in-cents', {
-											val: formatCurrency(cellProps.row.original.longPrice * 100),
-										})}
-									</Longs>
-									{' / '}
-									<Shorts>
-										{t('common.val-in-cents', {
-											val: formatCurrency(cellProps.row.original.shortPrice * 100),
-										})}
-									</Shorts>
-								</LongShorts>
-							),
-							width: 150,
-						},
-						{
-							Header: (
-								<Trans
-									i18nKey="options.home.markets-table.pool-size-col"
-									values={{ currencyKeyWithSymbol: `${USD_SIGN}${SYNTHS_MAP.sUSD}` }}
-									components={[<CurrencyKey />]}
-								/>
-							),
-							accessor: 'poolSize',
-							sortType: 'basic',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['poolSize']>) => (
-								<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
-							),
-							width: 150,
-							sortable: true,
-						},
-						{
-							Header: <>{t('options.home.markets-table.phase-col')}</>,
-							accessor: 'phase',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['phase']>) => (
-								<PhaseDiv phase={cellProps.cell.value}>
-									{t(`options.phases.${cellProps.cell.value}`)}
-								</PhaseDiv>
-							),
-							width: 150,
-						},
-						{
-							Header: <>{t('options.home.markets-table.time-remaining-col')}</>,
-							accessor: 'timeRemaining',
-							Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['timeRemaining']>) => (
-								<TimeRemaining end={cellProps.cell.value} />
-							),
-							width: 150,
-						},
-					]}
-					data={optionsMarkets}
-					onTableRowClick={(row: Row<OptionsMarket>) => {
-						navigateToOptionsMarket(row.original.address);
-					}}
-					options={{
-						initialState: {
-							sortBy:
-								marketsLoaded != null && marketsLoaded
-									? [{ id: 'biddingEndDate', desc: true }]
-									: [],
-						},
-					}}
-					noResultsMessage={noResultsMessage}
-				/>
-			</TableOverflowContainer>
-		);
-	}
-);
+								</Longs>
+								{' / '}
+								<Shorts>
+									{t('common.val-in-cents', {
+										val: formatCurrency(cellProps.row.original.shortPrice * 100),
+									})}
+								</Shorts>
+							</LongShorts>
+						),
+						width: 150,
+					},
+					{
+						Header: (
+							<Trans
+								i18nKey="options.home.markets-table.pool-size-col"
+								values={{ currencyKeyWithSymbol: `${USD_SIGN}${SYNTHS_MAP.sUSD}` }}
+								components={[<CurrencyKey />]}
+							/>
+						),
+						accessor: 'poolSize',
+						sortType: 'basic',
+						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['poolSize']>) => (
+							<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
+						),
+						width: 150,
+						sortable: true,
+					},
+					{
+						Header: <>{t('options.home.markets-table.phase-col')}</>,
+						accessor: 'phase',
+						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['phase']>) => (
+							<PhaseDiv phase={cellProps.cell.value}>
+								{t(`options.phases.${cellProps.cell.value}`)}
+							</PhaseDiv>
+						),
+						width: 150,
+					},
+					{
+						Header: <>{t('options.home.markets-table.time-remaining-col')}</>,
+						accessor: 'timeRemaining',
+						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['timeRemaining']>) => (
+							<TimeRemaining end={cellProps.cell.value} />
+						),
+						width: 150,
+					},
+				]}
+				data={optionsMarkets}
+				onTableRowClick={(row: Row<OptionsMarket>) => {
+					navigateToOptionsMarket(row.original.address);
+				}}
+				noResultsMessage={noResultsMessage}
+			/>
+		</TableOverflowContainer>
+	);
+});
 
 const StyledTable = styled(Table)`
 	.table-row,

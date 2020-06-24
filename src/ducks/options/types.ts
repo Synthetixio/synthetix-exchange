@@ -39,6 +39,7 @@ export type OptionsMarket = {
 };
 
 export type OptionsMarketInfo = {
+	address: string;
 	currencyKey: CurrencyKey;
 	strikePrice: number;
 	biddingEndDate: number;

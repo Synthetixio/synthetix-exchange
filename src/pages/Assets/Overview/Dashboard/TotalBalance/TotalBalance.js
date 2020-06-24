@@ -16,10 +16,9 @@ import {
 	getWalletBalances,
 	getTotalETHBalance,
 } from 'ducks/wallet/walletBalances';
-import { getAvailableSynthsMap } from 'ducks/synths';
 
 import { formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
-import { FIAT_CURRENCY_MAP, CRYPTO_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { FIAT_CURRENCY_MAP, CRYPTO_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { FlexDivRow } from 'shared/commonStyles';
 
@@ -36,10 +35,9 @@ export const TotalBalance = memo(
 					<Card.Body>
 						<Balance>
 							{isLoadedWalletBalances
-								? `${formatCurrencyWithSign(
-										get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-										totalSynthsBalanceUSD
-								  )} ${FIAT_CURRENCY_MAP.USD}`
+								? `${formatCurrencyWithSign(USD_SIGN, totalSynthsBalanceUSD)} ${
+										FIAT_CURRENCY_MAP.USD
+								  }`
 								: EMPTY_VALUE}
 						</Balance>
 					</Card.Body>
@@ -64,7 +62,6 @@ export const TotalBalance = memo(
 );
 
 TotalBalance.propTypes = {
-	synthsMap: PropTypes.object,
 	isLoadedWalletBalances: PropTypes.bool.isRequired,
 	totalSynthsBalanceUSD: PropTypes.number,
 };
@@ -85,7 +82,6 @@ const ETHBalance = styled(HeadingSmall)`
 `;
 
 const mapStateToProps = (state) => ({
-	synthsMap: getAvailableSynthsMap(state),
 	walletBalances: getWalletBalances(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
 	totalSynthsBalanceUSD: getTotalSynthsBalanceUSD(state),
