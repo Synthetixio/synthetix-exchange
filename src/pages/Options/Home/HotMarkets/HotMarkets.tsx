@@ -125,8 +125,8 @@ const MaturityDate = styled.div`
 
 const StyledTimeRemaining = styled(TimeRemaining)`
 	${labelSmallCSS};
-	padding: 2px 10px;
-	width: 90px;
+	padding: 5px 10px;
+	width: 110px;
 `;
 
 export default HotMarkets;

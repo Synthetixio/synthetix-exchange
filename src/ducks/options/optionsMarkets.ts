@@ -1,14 +1,18 @@
+import { createSelector } from '@reduxjs/toolkit';
 import { takeLatest, put } from 'redux-saga/effects';
+import keyBy from 'lodash/keyBy';
+import mapValues from 'lodash/mapValues';
+import orderBy from 'lodash/orderBy';
+
 import { RootState } from 'ducks/types';
+import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+
+import { getAvailableSynthsMap } from 'ducks/synths';
 
 import { createRequestSliceFactory, RequestSliceFactoryState } from '../requestSliceFactory';
 import { OptionsMarketsMap } from './types';
-import { createSelector } from '@reduxjs/toolkit';
-import { getPhaseAndEndDate } from './constants';
-import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
-import keyBy from 'lodash/keyBy';
-import mapValues from 'lodash/mapValues';
-import { getAvailableSynthsMap } from 'ducks/synths';
+
+import { getPhaseAndEndDate, PHASE } from './constants';
 
 import snxData from 'synthetix-data';
 
@@ -51,12 +55,13 @@ export const getOptionsMarketsMap = createSelector(
 				phase,
 				asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
 				timeRemaining,
+				phaseNum: PHASE[phase],
 			};
 		})
 );
 
 export const getOptionsMarkets = createSelector(getOptionsMarketsMap, (optionsMarketMap) =>
-	Object.values(optionsMarketMap)
+	orderBy(Object.values(optionsMarketMap), ['phaseNum', 'timeRemaining'])
 );
 
 export const getYourOptionsMarkets = createSelector(

@@ -1,17 +1,15 @@
-import BigNumber from 'bignumber.js';
-import { toBigNumber } from 'utils/formatters';
 import { Phase, Side } from './types';
 
-export const PHASE: Record<Phase, BigNumber> = {
-	bidding: toBigNumber(0),
-	trading: toBigNumber(1),
-	maturity: toBigNumber(2),
-	expiry: toBigNumber(3),
+export const PHASE: Record<Phase, number> = {
+	bidding: 0,
+	trading: 1,
+	maturity: 2,
+	expiry: 3,
 };
 
-export const SIDE: Record<Side, BigNumber> = {
-	long: toBigNumber(0),
-	short: toBigNumber(1),
+export const SIDE: Record<Side, number> = {
+	long: 0,
+	short: 1,
 };
 
 export const getPhaseAndEndDate = (

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import intervalToDuration from 'date-fns/intervalToDuration';
 import differenceInHours from 'date-fns/differenceInHours';
+import differenceInWeeks from 'date-fns/differenceInWeeks';
 
 import { bodyCSS } from 'components/Typography/General';
 
@@ -21,10 +22,15 @@ const ENDING_SOON_IN_HOURS = 24;
 export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
 	const now = Date.now();
 	const timeElapsed = now >= end;
+	const endingSoon = Math.abs(differenceInHours(now, end)) < ENDING_SOON_IN_HOURS;
+	const weeksDiff = Math.abs(differenceInWeeks(now, end));
+	const showRemainingInWeeks = weeksDiff > 4;
+	const countdownDisabled = timeElapsed || showRemainingInWeeks;
 
 	const [timeInterval, setTimeInterval] = useState<number | null>(
-		timeElapsed ? null : ONE_SECOND_IN_MS
+		countdownDisabled ? null : ONE_SECOND_IN_MS
 	);
+
 	const [duration, setDuration] = useState<Duration>(intervalToDuration({ start: now, end }));
 	const { t } = useTranslation();
 
@@ -35,13 +41,14 @@ export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
 			setTimeInterval(null);
 		}
 	}, timeInterval);
-
+	console.log(weeksDiff);
 	return (
-		<Container
-			label={differenceInHours(now, end) < ENDING_SOON_IN_HOURS ? 'ending-soon' : undefined}
-			{...rest}
-		>
-			{timeElapsed ? t('options.common.time-remaining.ended') : formattedDuration(duration)}
+		<Container label={endingSoon ? 'ending-soon' : undefined} {...rest}>
+			{timeElapsed
+				? t('options.common.time-remaining.ended')
+				: showRemainingInWeeks
+				? `${weeksDiff} weeks`
+				: formattedDuration(duration)}
 		</Container>
 	);
 };
