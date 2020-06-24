@@ -52,7 +52,7 @@ const Home: FC<HomeProps> = memo(({ fetchOptionsMarketsRequest, optionsMarkets }
 			</YourMarketsContainer>
 			<ExploreMarketsContainer>
 				<PageContent>
-					<ExploreMarkets optionsMarkets={hotMarkets} />
+					<ExploreMarkets optionsMarkets={optionsMarkets} />
 				</PageContent>
 			</ExploreMarketsContainer>
 		</ThemeProvider>

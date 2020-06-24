@@ -71,6 +71,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 								<span>{formatShortDate(cellProps.cell.value)}</span>
 							),
 							width: 150,
+							sortable: true,
 						},
 
 						{

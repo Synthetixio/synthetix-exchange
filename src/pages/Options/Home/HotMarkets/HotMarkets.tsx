@@ -12,9 +12,16 @@ import { media } from 'shared/media';
 import { darkTheme } from 'styles/theme';
 
 import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
+import { navigateToOptionsMarket } from 'constants/routes';
+
 import { formatCurrencyWithSign, formatShortDate } from 'utils/formatters';
 
-import { GridDivCentered, FlexDivRow, FlexDivCol } from 'shared/commonStyles';
+import {
+	GridDivCentered,
+	FlexDivRow,
+	FlexDivCol,
+	shiftUpHoverEffectCSS,
+} from 'shared/commonStyles';
 
 import TimeRemaining from '../components/TimeRemaining';
 import MarketSentiment from '../../components/MarketSentiment';
@@ -29,7 +36,10 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 	return (
 		<Cards>
 			{optionsMarkets.map((optionsMarket) => (
-				<Card key={optionsMarket.address}>
+				<Card
+					key={optionsMarket.address}
+					onClick={() => navigateToOptionsMarket(optionsMarket.address)}
+				>
 					<MarketHeadingRow>
 						<StyledCurrencyName
 							currencyKey={optionsMarket.currencyKey}
@@ -75,6 +85,8 @@ const MarketHeadingRow = styled(FlexDivRow)`
 `;
 
 const Card = styled(FlexDivCol)`
+	${shiftUpHoverEffectCSS};
+	cursor: pointer;
 	background: ${(props) => props.theme.colors.white};
 	border: 1px solid ${(props) => props.theme.colors.accentL1};
 	border-radius: 3px;
