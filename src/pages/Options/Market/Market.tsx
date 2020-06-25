@@ -1,8 +1,7 @@
-import React, { memo, FC, useEffect, useState } from 'react';
+import React, { memo, FC } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
-import { ethers } from 'ethers';
 
 import { OptionsMarketInfo, Phase } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
@@ -15,6 +14,7 @@ import {
 	CenteredPageLayout,
 	GridDivRow,
 	FlexDivCentered,
+	LoaderContainer,
 } from 'shared/commonStyles';
 
 import {
@@ -39,6 +39,9 @@ import TransactionsCard from './TransactionsCard';
 import { useQuery } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
 
+import { MarketProvider } from './contexts/MarketContext';
+import { useBOMContractContext } from './contexts/BOMContractContext';
+
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
@@ -50,12 +53,12 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MarketProps = PropsFromRedux & {
-	BOMContract: ethers.Contract;
 	marketAddress: string;
 };
 
-const Market: FC<MarketProps> = memo(({ BOMContract, synthsMap, marketAddress }) => {
+const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
+	const BOMContract = useBOMContractContext();
 
 	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), () =>
 		Promise.all([
@@ -98,43 +101,45 @@ const Market: FC<MarketProps> = memo(({ BOMContract, synthsMap, marketAddress })
 	}
 
 	return optionsMarket ? (
-		<StyledCenteredPageLayout>
-			<LeftCol>
-				<Heading>
-					<HeadingItem>
-						<AllMarketsLink to={ROUTES.Options.Home}>
-							{t('options.market.heading.all-markets')}
-						</AllMarketsLink>
-						{' | '}
-						<HeadingTitle>
-							{optionsMarket.asset} &gt;{' '}
-							{formatCurrencyWithSign(USD_SIGN, optionsMarket.strikePrice)} @{' '}
-							{formatShortDate(optionsMarket.maturityDate)}
-						</HeadingTitle>
-					</HeadingItem>
-					<StyledHeadingItem>
-						<HeadingTitle>{t('options.market.heading.market-sentiment')}</HeadingTitle>
-						<StyledMarketSentiment
-							short={optionsMarket.shortPrice}
-							long={optionsMarket.longPrice}
-							display="col"
-						/>
-					</StyledHeadingItem>
-				</Heading>
-				<ChartCard optionsMarket={optionsMarket} />
-				<TransactionsCard optionsMarket={optionsMarket} />
-			</LeftCol>
-			<RightCol>
-				<GridDivCenteredCol>
-					{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
-						<PhaseItem key={phase} isActive={phase === optionsMarket!.phase}>
-							{t(`options.phases.${phase}`)}
-						</PhaseItem>
-					))}
-				</GridDivCenteredCol>
-				<TradeCard optionsMarket={optionsMarket} />
-			</RightCol>
-		</StyledCenteredPageLayout>
+		<MarketProvider optionsMarket={optionsMarket}>
+			<StyledCenteredPageLayout>
+				<LeftCol>
+					<Heading>
+						<HeadingItem>
+							<AllMarketsLink to={ROUTES.Options.Home}>
+								{t('options.market.heading.all-markets')}
+							</AllMarketsLink>
+							{' | '}
+							<HeadingTitle>
+								{optionsMarket.asset} &gt;{' '}
+								{formatCurrencyWithSign(USD_SIGN, optionsMarket.strikePrice)} @{' '}
+								{formatShortDate(optionsMarket.maturityDate)}
+							</HeadingTitle>
+						</HeadingItem>
+						<StyledHeadingItem>
+							<HeadingTitle>{t('options.market.heading.market-sentiment')}</HeadingTitle>
+							<StyledMarketSentiment
+								short={optionsMarket.shortPrice}
+								long={optionsMarket.longPrice}
+								display="col"
+							/>
+						</StyledHeadingItem>
+					</Heading>
+					<ChartCard />
+					<TransactionsCard />
+				</LeftCol>
+				<RightCol>
+					<GridDivCenteredCol>
+						{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
+							<PhaseItem key={phase} isActive={phase === optionsMarket!.phase}>
+								{t(`options.phases.${phase}`)}
+							</PhaseItem>
+						))}
+					</GridDivCenteredCol>
+					<TradeCard />
+				</RightCol>
+			</StyledCenteredPageLayout>
+		</MarketProvider>
 	) : (
 		<LoaderContainer>
 			<Spinner size="sm" centered={true} />
@@ -211,11 +216,6 @@ const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`
 			background-color: ${(props) => props.theme.colors.accentL2};
 			color: ${(props) => props.theme.colors.fontPrimary};
 		`}
-`;
-
-const LoaderContainer = styled.div`
-	position: relative;
-	height: 400px;
 `;
 
 export default connector(Market);

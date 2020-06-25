@@ -28,6 +28,8 @@ import Currency from 'components/Currency';
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
 import Spinner from 'components/Spinner';
 
+import { useMarketContext } from '../contexts/MarketContext';
+
 const mapStateToProps = (state: RootState) => ({
 	historicalRatesMap: getHistoricalRatesState(state),
 });
@@ -40,217 +42,212 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type ChartCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarketInfo;
-};
+type ChartCardProps = PropsFromRedux;
 
-const Market: FC<ChartCardProps> = memo(
-	({ optionsMarket, fetchHistoricalRatesRequest, historicalRatesMap }) => {
-		const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.FOUR_HOURS);
-		const [longOverlayVisible, setLongOverlayVisible] = useState<boolean>(true);
-		const [shortOverlayVisible, setShortOverlayVisible] = useState<boolean>(true);
-		const [chartData, setChartData] = useState<BaseRateUpdates>([]);
-		const [isLoading, setLoading] = useState<boolean>(true);
-		const theme = useContext(ThemeContext);
+const Market: FC<ChartCardProps> = memo(({ fetchHistoricalRatesRequest, historicalRatesMap }) => {
+	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.FOUR_HOURS);
+	const [longOverlayVisible, setLongOverlayVisible] = useState<boolean>(true);
+	const [shortOverlayVisible, setShortOverlayVisible] = useState<boolean>(true);
+	const [chartData, setChartData] = useState<BaseRateUpdates>([]);
+	const [isLoading, setLoading] = useState<boolean>(true);
+	const theme = useContext(ThemeContext);
+	const optionsMarket = useMarketContext();
 
-		const { currencyKey } = optionsMarket;
+	const { currencyKey } = optionsMarket;
 
-		const { t } = useTranslation();
+	const { t } = useTranslation();
 
-		useEffect(() => {
-			fetchHistoricalRatesRequest({
-				currencyKeys: [currencyKey],
-				periods: [selectedPeriod.period],
-			});
-		}, [fetchHistoricalRatesRequest, selectedPeriod.period, currencyKey]);
+	useEffect(() => {
+		fetchHistoricalRatesRequest({
+			currencyKeys: [currencyKey],
+			periods: [selectedPeriod.period],
+		});
+	}, [fetchHistoricalRatesRequest, selectedPeriod.period, currencyKey]);
 
-		useEffect(() => {
-			const historicalRates: HistoricalRatesData | null = get(
-				historicalRatesMap,
-				[currencyKey, selectedPeriod.period, 'data'],
-				null
+	useEffect(() => {
+		const historicalRates: HistoricalRatesData | null = get(
+			historicalRatesMap,
+			[currencyKey, selectedPeriod.period, 'data'],
+			null
+		);
+
+		if (historicalRates != null) {
+			setLoading(false);
+			setChartData(
+				(historicalRates?.rates || []).map((rates) => ({
+					...rates,
+					short: 0,
+					long: 1,
+				}))
 			);
+		} else {
+			setLoading(true);
+		}
+	}, [historicalRatesMap, selectedPeriod.period, currencyKey]);
 
-			if (historicalRates != null) {
-				setLoading(false);
-				setChartData(
-					(historicalRates?.rates || []).map((rates) => ({
-						...rates,
-						short: 0,
-						long: 1,
-					}))
-				);
-			} else {
-				setLoading(true);
-			}
-		}, [historicalRatesMap, selectedPeriod.period, currencyKey]);
+	const linearGradientId = 'optionsMarketChartArea';
+	let chartColor = theme.colors.hyperlink;
 
-		const linearGradientId = 'optionsMarketChartArea';
-		let chartColor = theme.colors.hyperlink;
+	const fontStyle = {
+		fontSize: '10px',
+		fill: theme.colors.fontTertiary,
+		fontFamily: theme.fonts.regular,
+	};
 
-		const fontStyle = {
-			fontSize: '10px',
-			fill: theme.colors.fontTertiary,
-			fontFamily: theme.fonts.regular,
-		};
-
-		const fontStyleMedium = {
-			...fontStyle,
-			fontFamily: theme.fonts.medium,
-		};
-		// console.log(optionsMarket.maturityDate);
-		return (
-			<Card>
-				<CardHeader>
-					<div>
-						<Currency.Pair baseCurrencyKey={currencyKey} quoteCurrencyKey={FIAT_CURRENCY_MAP.USD} />
-					</div>
-					<ActionsContainer>
-						<Overlays>
-							<OverlayButton
-								isActive={longOverlayVisible}
-								onClick={() => setLongOverlayVisible(!longOverlayVisible)}
+	const fontStyleMedium = {
+		...fontStyle,
+		fontFamily: theme.fonts.medium,
+	};
+	// console.log(optionsMarket.maturityDate);
+	return (
+		<Card>
+			<CardHeader>
+				<div>
+					<Currency.Pair baseCurrencyKey={currencyKey} quoteCurrencyKey={FIAT_CURRENCY_MAP.USD} />
+				</div>
+				<ActionsContainer>
+					<Overlays>
+						<OverlayButton
+							isActive={longOverlayVisible}
+							onClick={() => setLongOverlayVisible(!longOverlayVisible)}
+						>
+							<LongDot /> {t('options.common.long')}
+						</OverlayButton>
+						<OverlayButton
+							isActive={shortOverlayVisible}
+							onClick={() => setShortOverlayVisible(!shortOverlayVisible)}
+						>
+							<ShortDot /> {t('options.common.short')}
+						</OverlayButton>
+					</Overlays>
+					<VerticalSeparator />
+					<Periods>
+						{PERIOD_LABELS.map((period) => (
+							<StyledButton
+								key={period.value}
+								isActive={period.value === selectedPeriod.value}
+								onClick={() => setSelectedPeriod(period)}
 							>
-								<LongDot /> {t('options.common.long')}
-							</OverlayButton>
-							<OverlayButton
-								isActive={shortOverlayVisible}
-								onClick={() => setShortOverlayVisible(!shortOverlayVisible)}
-							>
-								<ShortDot /> {t('options.common.short')}
-							</OverlayButton>
-						</Overlays>
-						<VerticalSeparator />
-						<Periods>
-							{PERIOD_LABELS.map((period) => (
-								<StyledButton
-									key={period.value}
-									isActive={period.value === selectedPeriod.value}
-									onClick={() => setSelectedPeriod(period)}
-								>
-									{t(period.i18nLabel)}
-								</StyledButton>
-							))}
-						</Periods>
-					</ActionsContainer>
-				</CardHeader>
-				<Card.Body>
-					<ChartContainer semiTransparent={isLoading}>
-						<RechartsResponsiveContainer width="100%" height="100%">
-							<ComposedChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-								<defs>
-									<linearGradient id={linearGradientId} x1="0" y1="0" x2="0" y2="1">
-										<stop offset="5%" stopColor={chartColor} stopOpacity={0.5} />
-										<stop offset="95%" stopColor={chartColor} stopOpacity={0} />
-									</linearGradient>
-								</defs>
-								<XAxis
-									dataKey="timestamp"
-									allowDataOverflow={true}
-									tick={fontStyleMedium}
-									axisLine={false}
-									tickLine={false}
-									tickFormatter={(val) => {
-										if (!isNumber(val)) {
-											return '';
-										}
-										const periodOverOneDay =
-											selectedPeriod != null && selectedPeriod.value > PERIOD_IN_HOURS.ONE_DAY;
+								{t(period.i18nLabel)}
+							</StyledButton>
+						))}
+					</Periods>
+				</ActionsContainer>
+			</CardHeader>
+			<Card.Body>
+				<ChartContainer semiTransparent={isLoading}>
+					<RechartsResponsiveContainer width="100%" height="100%">
+						<ComposedChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+							<defs>
+								<linearGradient id={linearGradientId} x1="0" y1="0" x2="0" y2="1">
+									<stop offset="5%" stopColor={chartColor} stopOpacity={0.5} />
+									<stop offset="95%" stopColor={chartColor} stopOpacity={0} />
+								</linearGradient>
+							</defs>
+							<XAxis
+								dataKey="timestamp"
+								allowDataOverflow={true}
+								tick={fontStyleMedium}
+								axisLine={false}
+								tickLine={false}
+								tickFormatter={(val) => {
+									if (!isNumber(val)) {
+										return '';
+									}
+									const periodOverOneDay =
+										selectedPeriod != null && selectedPeriod.value > PERIOD_IN_HOURS.ONE_DAY;
 
-										return format(val, periodOverOneDay ? 'dd MMM' : 'h:mma');
-									}}
-								/>
-								<YAxis
-									type="number"
-									domain={['auto', (d: number) => Math.max(d, optionsMarket.strikePrice * 1.1)]}
-									// domain={['auto', 'auto']}
-									tick={fontStyleMedium}
-									orientation="right"
-									axisLine={false}
-									tickLine={false}
-									yAxisId="rate"
-									tickFormatter={(val) => formatCurrencyWithSign(USD_SIGN, val)}
-								/>
-								<YAxis
-									type="number"
-									allowDataOverflow={true}
-									domain={[0, 1]}
-									tick={fontStyleMedium}
-									orientation="left"
-									axisLine={false}
-									tickLine={false}
-									tickFormatter={(val) => t('common.val-in-cents', { val })}
+									return format(val, periodOverOneDay ? 'dd MMM' : 'h:mma');
+								}}
+							/>
+							<YAxis
+								type="number"
+								domain={['auto', (d: number) => Math.max(d, optionsMarket.strikePrice * 1.1)]}
+								// domain={['auto', 'auto']}
+								tick={fontStyleMedium}
+								orientation="right"
+								axisLine={false}
+								tickLine={false}
+								yAxisId="rate"
+								tickFormatter={(val) => formatCurrencyWithSign(USD_SIGN, val)}
+							/>
+							<YAxis
+								type="number"
+								allowDataOverflow={true}
+								domain={[0, 1]}
+								tick={fontStyleMedium}
+								orientation="left"
+								axisLine={false}
+								tickLine={false}
+								tickFormatter={(val) => t('common.val-in-cents', { val })}
+								yAxisId="price"
+							/>
+							<Area
+								yAxisId="rate"
+								dataKey="rate"
+								stroke={chartColor}
+								fillOpacity={0.5}
+								fill={`url(#${linearGradientId})`}
+								isAnimationActive={false}
+							/>
+							{longOverlayVisible && (
+								<Line
 									yAxisId="price"
-								/>
-								<Area
-									yAxisId="rate"
-									dataKey="rate"
-									stroke={chartColor}
-									fillOpacity={0.5}
-									fill={`url(#${linearGradientId})`}
-									isAnimationActive={false}
-								/>
-								{longOverlayVisible && (
-									<Line
-										yAxisId="price"
-										dataKey="long"
-										stroke={theme.colors.green}
-										isAnimationActive={false}
-										dot={false}
-										activeDot={false}
-									/>
-								)}
-								{shortOverlayVisible && (
-									<Line
-										yAxisId="price"
-										dataKey="short"
-										stroke={theme.colors.red}
-										isAnimationActive={false}
-										dot={false}
-										activeDot={false}
-									/>
-								)}
-								<ReferenceLine
-									yAxisId="price"
-									y={optionsMarket.longPrice}
+									dataKey="long"
 									stroke={theme.colors.green}
-									strokeDasharray="5 2"
-								>
-									<Label position="insideBottomLeft" className="ref-line-label ref-line-label-long">
-										{t('common.val-in-cents', {
-											val: formatCurrency(optionsMarket.longPrice * 100),
-										})}
-									</Label>
-								</ReferenceLine>
-								<ReferenceLine
+									isAnimationActive={false}
+									dot={false}
+									activeDot={false}
+								/>
+							)}
+							{shortOverlayVisible && (
+								<Line
 									yAxisId="price"
-									y={optionsMarket.shortPrice}
+									dataKey="short"
 									stroke={theme.colors.red}
-									strokeDasharray="5 2"
+									isAnimationActive={false}
+									dot={false}
+									activeDot={false}
+								/>
+							)}
+							<ReferenceLine
+								yAxisId="price"
+								y={optionsMarket.longPrice}
+								stroke={theme.colors.green}
+								strokeDasharray="5 2"
+							>
+								<Label position="insideBottomLeft" className="ref-line-label ref-line-label-long">
+									{t('common.val-in-cents', {
+										val: formatCurrency(optionsMarket.longPrice * 100),
+									})}
+								</Label>
+							</ReferenceLine>
+							<ReferenceLine
+								yAxisId="price"
+								y={optionsMarket.shortPrice}
+								stroke={theme.colors.red}
+								strokeDasharray="5 2"
+							>
+								<Label position="insideBottomLeft" className="ref-line-label ref-line-label-short">
+									{t('common.val-in-cents', {
+										val: formatCurrency(optionsMarket.shortPrice * 100),
+									})}
+								</Label>
+							</ReferenceLine>
+							<ReferenceLine
+								yAxisId="rate"
+								y={optionsMarket.strikePrice}
+								stroke={theme.colors.fontSecondary}
+								strokeDasharray="5 2"
+							>
+								<Label
+									position="insideBottomRight"
+									className="ref-line-label ref-line-label-strike-price"
 								>
-									<Label
-										position="insideBottomLeft"
-										className="ref-line-label ref-line-label-short"
-									>
-										{t('common.val-in-cents', {
-											val: formatCurrency(optionsMarket.shortPrice * 100),
-										})}
-									</Label>
-								</ReferenceLine>
-								<ReferenceLine
-									yAxisId="rate"
-									y={optionsMarket.strikePrice}
-									stroke={theme.colors.fontSecondary}
-									strokeDasharray="5 2"
-								>
-									<Label
-										position="insideBottomRight"
-										className="ref-line-label ref-line-label-strike-price"
-									>
-										{optionsMarket.strikePrice}
-									</Label>
-								</ReferenceLine>
-								{/* <ReferenceLine
+									{optionsMarket.strikePrice}
+								</Label>
+							</ReferenceLine>
+							{/* <ReferenceLine
 									yAxisId="rate"
 									x={optionsMarket.biddingEndDate}
 									stroke={theme.colors.red}
@@ -266,37 +263,36 @@ const Market: FC<ChartCardProps> = memo(
 								>
 									<Label position="insideBottomLeft">{optionsMarket.maturityDate}</Label>
 								</ReferenceLine> */}
-								<Tooltip
-									className="tooltip"
-									// @ts-ignore
-									cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
-									contentStyle={{
-										border: 'none',
-										borderRadius: '3px',
-										backgroundColor: theme.colors.surfaceL1,
-									}}
-									itemStyle={{
-										...fontStyle,
-										textTransform: 'capitalize',
-									}}
-									labelStyle={fontStyle}
-									formatter={(val: string | number) => formatCurrencyWithSign(USD_SIGN, val)}
-									labelFormatter={(label) => {
-										if (!isNumber(label)) {
-											return '';
-										}
-										return format(label, 'do MMM yy | HH:mm');
-									}}
-								/>
-							</ComposedChart>
-						</RechartsResponsiveContainer>
-					</ChartContainer>
-					{isLoading && <Spinner size="sm" centered={true} />}
-				</Card.Body>
-			</Card>
-		);
-	}
-);
+							<Tooltip
+								className="tooltip"
+								// @ts-ignore
+								cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
+								contentStyle={{
+									border: 'none',
+									borderRadius: '3px',
+									backgroundColor: theme.colors.surfaceL1,
+								}}
+								itemStyle={{
+									...fontStyle,
+									textTransform: 'capitalize',
+								}}
+								labelStyle={fontStyle}
+								formatter={(val: string | number) => formatCurrencyWithSign(USD_SIGN, val)}
+								labelFormatter={(label) => {
+									if (!isNumber(label)) {
+										return '';
+									}
+									return format(label, 'do MMM yy | HH:mm');
+								}}
+							/>
+						</ComposedChart>
+					</RechartsResponsiveContainer>
+				</ChartContainer>
+				{isLoading && <Spinner size="sm" centered={true} />}
+			</Card.Body>
+		</Card>
+	);
+});
 
 const CardHeader = styled(Card.Header)`
 	padding: 0 12px;

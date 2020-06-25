@@ -5,7 +5,12 @@ import { ethers } from 'ethers';
 
 import { binaryOptionMarket } from 'utils/contracts';
 
+import { LoaderContainer } from 'shared/commonStyles';
+import Spinner from 'components/Spinner';
+
 import ROUTES, { navigateTo } from 'constants/routes';
+
+import { BOMContractProvider } from './contexts/BOMContractContext';
 
 import Market from './Market';
 
@@ -24,8 +29,7 @@ const MarketContainer: FC<MarketContainerProps> = memo(({ match }) => {
 				new ethers.Contract(
 					params.marketAddress,
 					binaryOptionMarket.abi,
-					// @ts-ignore
-					snxJSConnector.provider
+					(snxJSConnector as any).provider
 				)
 			);
 		} else {
@@ -35,8 +39,14 @@ const MarketContainer: FC<MarketContainerProps> = memo(({ match }) => {
 	}, [match]);
 
 	return BOMContract ? (
-		<Market BOMContract={BOMContract} marketAddress={match.params.marketAddress} />
-	) : null;
+		<BOMContractProvider contract={BOMContract}>
+			<Market marketAddress={match.params.marketAddress} />
+		</BOMContractProvider>
+	) : (
+		<LoaderContainer>
+			<Spinner size="sm" centered={true} />
+		</LoaderContainer>
+	);
 });
 
 export default MarketContainer;

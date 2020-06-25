@@ -7,7 +7,6 @@ import { FlexDiv } from 'shared/commonStyles';
 
 import { CARD_HEIGHT } from 'constants/ui';
 
-import { OptionsMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
@@ -15,6 +14,8 @@ import Card from 'components/Card';
 
 import RecentTransactions from './RecentTransactions';
 import YourTransactions from './YourTransactions';
+
+import { useMarketContext } from '../contexts/MarketContext';
 
 const mapStateToProps = (state: RootState) => ({
 	walletAddress: getCurrentWalletAddress(state),
@@ -25,60 +26,54 @@ const connector = connect(mapStateToProps, {});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type TransactionsCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarketInfo;
-};
+type TransactionsCardProps = PropsFromRedux;
 
-const TransactionsCard: FC<TransactionsCardProps> = memo(
-	({ optionsMarket, walletAddress, isLoggedIn }) => {
-		const { t } = useTranslation();
+const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isLoggedIn }) => {
+	const { t } = useTranslation();
+	const optionsMarket = useMarketContext();
 
-		const tabContent = useMemo(
-			() => [
-				{
-					name: t('options.market.transactions-card.recent-market-tab-title'),
-					id: 'recent-transactions',
-					component: <RecentTransactions marketAddress={optionsMarket.address} />,
-					isDisabled: false,
-				},
-				{
-					name: t('options.market.transactions-card.your-activity-tab-title'),
-					id: 'your-transactions',
-					component: (
-						<YourTransactions
-							marketAddress={optionsMarket.address}
-							walletAddress={walletAddress!}
-						/>
-					),
-					isDisabled: !isLoggedIn,
-				},
-			],
-			[isLoggedIn, optionsMarket.address, t, walletAddress]
-		);
+	const tabContent = useMemo(
+		() => [
+			{
+				name: t('options.market.transactions-card.recent-market-tab-title'),
+				id: 'recent-transactions',
+				component: <RecentTransactions marketAddress={optionsMarket.address} />,
+				isDisabled: false,
+			},
+			{
+				name: t('options.market.transactions-card.your-activity-tab-title'),
+				id: 'your-transactions',
+				component: (
+					<YourTransactions marketAddress={optionsMarket.address} walletAddress={walletAddress!} />
+				),
+				isDisabled: !isLoggedIn,
+			},
+		],
+		[isLoggedIn, optionsMarket.address, t, walletAddress]
+	);
 
-		const [activeTab, setActiveTab] = useState(tabContent[0]);
+	const [activeTab, setActiveTab] = useState(tabContent[0]);
 
-		return (
-			<StyledCard>
-				<StyledCardBody>
-					<FlexDiv>
-						{tabContent.map((tab) => (
-							<TabButton
-								key={tab.id}
-								onClick={() => setActiveTab(tab)}
-								isActive={tab.id === activeTab.id}
-								isDisabled={tab.isDisabled}
-							>
-								{tab.name}
-							</TabButton>
-						))}
-					</FlexDiv>
-					{activeTab.component}
-				</StyledCardBody>
-			</StyledCard>
-		);
-	}
-);
+	return (
+		<StyledCard>
+			<StyledCardBody>
+				<FlexDiv>
+					{tabContent.map((tab) => (
+						<TabButton
+							key={tab.id}
+							onClick={() => setActiveTab(tab)}
+							isActive={tab.id === activeTab.id}
+							isDisabled={tab.isDisabled}
+						>
+							{tab.name}
+						</TabButton>
+					))}
+				</FlexDiv>
+				{activeTab.component}
+			</StyledCardBody>
+		</StyledCard>
+	);
+});
 
 const StyledCard = styled(Card)`
 	flex-grow: 1;

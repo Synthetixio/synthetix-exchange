@@ -290,3 +290,8 @@ export const PageContent = styled.div`
 	max-width: ${breakpoint.large}px;
 	margin: 0 auto;
 `;
+
+export const LoaderContainer = styled.div`
+	position: relative;
+	height: 400px;
+`;

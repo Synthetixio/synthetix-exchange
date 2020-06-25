@@ -1,21 +1,21 @@
 import React, { FC } from 'react';
 
-import { OptionsMarketInfo } from 'ducks/options/types';
-
 import BiddingPhaseCard from './BiddingPhaseCard';
 import TradingPhaseCard from './TradingPhaseCard';
 import MaturityPhaseCard from './MaturityPhaseCard';
 
-type TradeCardProps = {
-	optionsMarket: OptionsMarketInfo;
-};
+import { useMarketContext } from '../contexts/MarketContext';
 
-const TradeCard: FC<TradeCardProps> = ({ optionsMarket }) => (
-	<>
-		{optionsMarket.phase === 'bidding' && <BiddingPhaseCard optionsMarket={optionsMarket} />}
-		{optionsMarket.phase === 'trading' && <TradingPhaseCard optionsMarket={optionsMarket} />}
-		{optionsMarket.phase === 'maturity' && <MaturityPhaseCard optionsMarket={optionsMarket} />}
-	</>
-);
+const TradeCard: FC = () => {
+	const optionsMarket = useMarketContext();
+
+	return (
+		<>
+			{optionsMarket.phase === 'bidding' && <BiddingPhaseCard optionsMarket={optionsMarket} />}
+			{optionsMarket.phase === 'trading' && <TradingPhaseCard optionsMarket={optionsMarket} />}
+			{optionsMarket.phase === 'maturity' && <MaturityPhaseCard optionsMarket={optionsMarket} />}
+		</>
+	);
+};
 
 export default TradeCard;
