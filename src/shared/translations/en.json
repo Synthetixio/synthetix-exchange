@@ -239,7 +239,11 @@
 					"amount-col": "bid amount",
 					"tx-status-col": "tx status",
 					"no-results-your-activity": "No transactions associated with this wallet.",
-					"no-results-recent-activity": "No transactions associated with this market."
+					"no-results-recent-activity": "No transactions associated with this market.",
+					"types": {
+						"bid": "Bid",
+						"refund": "Withdrawal"
+					}
 				}
 			},
 			"trade-card": {

@@ -22,15 +22,16 @@ const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress })
 		() => snxData.binaryOptions.optionTransactions({ market: marketAddress })
 	);
 
-	const noData =
+	const isInitialLoading = transactionsQuery.isLoading && transactionsQuery.data == null;
+	const noResults =
 		transactionsQuery.isSuccess && transactionsQuery.data && transactionsQuery.data.length === 0;
 
 	return (
 		<TransactionsTable
 			optionsTransactions={transactionsQuery.data}
-			isLoading={transactionsQuery.isLoading && noData}
+			isLoading={isInitialLoading}
 			noResultsMessage={
-				transactionsQuery.isSuccess && noData ? (
+				transactionsQuery.isSuccess && noResults ? (
 					<TableNoResults>
 						{t('options.market.transactions-card.table.no-results-recent-activity')}
 					</TableNoResults>

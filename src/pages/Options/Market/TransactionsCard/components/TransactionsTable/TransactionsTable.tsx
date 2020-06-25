@@ -5,6 +5,9 @@ import { CellProps } from 'react-table';
 
 import { SYNTHS_MAP, USD_SIGN } from 'constants/currency';
 
+import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
+import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
+
 import { TableOverflowContainer } from 'shared/commonStyles';
 import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
 
@@ -41,7 +44,9 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 							Header: <>{t('options.market.transactions-card.table.type-col')}</>,
 							accessor: 'type',
 							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['type']>) => (
-								<span>{cellProps.cell.value}</span>
+								<span>
+									{t(`options.market.transactions-card.table.types.${cellProps.cell.value}`)}
+								</span>
 							),
 							width: 150,
 							sortable: true,
@@ -49,9 +54,15 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 						{
 							Header: <>{t('options.market.transactions-card.table.position-col')}</>,
 							accessor: 'side',
-							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['side']>) => (
-								<span>{cellProps.cell.value}</span>
-							),
+							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['side']>) => {
+								const side = cellProps.cell.value;
+
+								return (
+									<Position side={side}>
+										<span>{side === 'long' ? <TrendUpIcon /> : <TrendDownIcon />}</span> {side}
+									</Position>
+								);
+							},
 							width: 150,
 							sortable: true,
 						},
@@ -96,6 +107,23 @@ const StyledTable = styled(Table)`
 		& > :last-child {
 			justify-content: flex-end;
 		}
+	}
+`;
+
+const Position = styled.span<{ side: OptionsTransaction['side'] }>`
+	display: inline-flex;
+	text-transform: uppercase;
+	span {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 10px;
+		border-radius: 2px;
+		width: 16px;
+		height: 16px;
+		background-color: ${(props) =>
+			props.side === 'long' ? props.theme.colors.green : props.theme.colors.red};
+		color: ${(props) => props.theme.colors.surfaceL1};
 	}
 `;
 
