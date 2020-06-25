@@ -1,9 +1,10 @@
-import React, { useState, memo, FC, useMemo } from 'react';
+import React, { useState, memo, FC, useMemo, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import { addDays } from 'date-fns';
 
 import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
@@ -20,12 +21,21 @@ import {
 	USD_SIGN,
 } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
+import { APPROVAL_EVENTS, BINARY_OPTIONS_EVENTS } from 'constants/events';
+import { navigateToOptionsMarket } from 'constants/routes';
+
+import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
+import { normalizeGasLimit } from 'utils/transactions';
+import snxJSConnector from 'utils/snxJSConnector';
+import { GWEI_UNIT } from 'utils/networkUtils';
 
 import { lightTheme, darkTheme } from 'styles/theme';
 import colors from 'styles/theme/colors';
 
 import { RootState } from 'ducks/types';
-import { getAvailableSynthsMap, getAvailableSynths } from 'ducks/synths';
+import { getAvailableSynths } from 'ducks/synths';
+import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getGasInfo } from 'ducks/transaction';
 
 import DatePicker from 'components/Input/DatePicker';
 import { headingH3CSS, headingH6CSS, headingH5CSS } from 'components/Typography/Heading';
@@ -40,21 +50,15 @@ import Button from 'components/Button/Button';
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
 import { media } from 'shared/media';
 
-import { formatPercentage, formatShortDate, formattedDuration } from 'utils/formatters';
+import {
+	formatPercentage,
+	formatShortDate,
+	formattedDuration,
+	bytesFormatter,
+} from 'utils/formatters';
 import MarketSentiment from '../components/MarketSentiment';
 
-/*
-TODO: 
-
-BinaryOptionMarketManager.durations()
-sAUDKey,
-			initialTargetPrice,
-			[creationTime + biddingTime, creationTime + timeToMaturity],
-			[initialLongBid, initialShortBid],
-			{ from: initialBidder }
-	from
-	if the values are x, y (where x+y=1), then the bids are x * funding y * funding
-*/
+const MATURITY_DATE_DAY_DELAY = 1;
 
 const FEES = {
 	CREATOR: 0.1 / 100,
@@ -89,8 +93,9 @@ const StyledSlider = withStyles({
 })(Slider);
 
 const mapStateToProps = (state: RootState) => ({
-	synthsMap: getAvailableSynthsMap(state),
 	synths: getAvailableSynths(state),
+	currentWallet: getCurrentWalletAddress(state),
+	gasInfo: getGasInfo(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -101,246 +106,400 @@ type CreateMarketModalProps = PropsFromRedux;
 
 type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
 
-export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, synthsMap }) => {
-	const { t } = useTranslation();
-	const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
-	const [strikePrice, setStrikePrice] = useState<number | string>('');
-	const [biddingEndDate, setEndOfBidding] = useState<Date | null | undefined>(null);
-	const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
-	const [initialLongShorts, setInitialLongShorts] = useState<{ long: number; short: number }>({
-		long: 50,
-		short: 50,
-	});
-	const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
-	const assetsOptions = useMemo(
-		() => [
-			{
-				label: CRYPTO_CURRENCY_MAP.SNX,
-				value: CRYPTO_CURRENCY_MAP.SNX,
-			},
-			...synths
-				.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
-				.map((synth) => ({
-					label: synth.asset,
-					value: synth.name,
-				})),
-		],
-		[synths]
-	);
+export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
+	({ synths, currentWallet, gasInfo }) => {
+		const { t } = useTranslation();
+		const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
+		const [strikePrice, setStrikePrice] = useState<number | string>('');
+		const [biddingEndDate, setEndOfBidding] = useState<Date | null | undefined>(null);
+		const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
+		const [initialLongShorts, setInitialLongShorts] = useState<{ long: number; short: number }>({
+			long: 50,
+			short: 50,
+		});
+		const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
+		const [isManagerApproved, setIsManagerApproved] = useState<boolean>(false);
+		const [isManagerApprovalPending, setIsManagerApprovalPending] = useState<boolean>(false);
+		const [gasLimit, setGasLimit] = useState<number | null>(null);
+		const [isCreatingMarket, setIsCreatingMarket] = useState<boolean>(false);
 
-	const isButtonDisabled =
-		currencyKey == null ||
-		strikePrice === '' ||
-		biddingEndDate === null ||
-		maturityDate === null ||
-		initialFundingAmount === '';
+		const assetsOptions = useMemo(
+			() => [
+				{
+					label: CRYPTO_CURRENCY_MAP.SNX,
+					value: CRYPTO_CURRENCY_MAP.SNX,
+				},
+				...synths
+					.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
+					.map((synth) => ({
+						label: synth.asset,
+						value: synth.name,
+					})),
+			],
+			[synths]
+		);
 
-	const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
+		const isButtonDisabled =
+			currencyKey == null ||
+			strikePrice === '' ||
+			biddingEndDate === null ||
+			maturityDate === null ||
+			initialFundingAmount === '';
 
-	const handleClose = () => navigateTo(ROUTES.Options.Home);
-	const handleMarketCreation = () => {
-		console.log('TODO');
-	};
+		const formatCreateMarketArguments = () => {
+			const {
+				utils: { parseEther },
+			} = snxJSConnector as any;
+			const longBidAmount: number = (initialFundingAmount as number) / initialLongShorts.long;
+			const shortBidAmount: number = (initialFundingAmount as number) / initialLongShorts.short;
+			const oracleKey = bytesFormatter((currencyKey as CurrencyKeyOptionType).value);
+			const price = parseEther(strikePrice.toString());
+			const times = [
+				Math.round((biddingEndDate as Date).getTime() / 1000),
+				Math.round((maturityDate as Date).getTime() / 1000),
+			];
+			const bids = [parseEther(longBidAmount.toString()), parseEther(shortBidAmount.toString())];
+			return { oracleKey, price, times, bids };
+		};
 
-	return (
-		<ThemeProvider theme={lightTheme}>
-			<StyledModal
-				open={true}
-				onClose={handleClose}
-				disableEscapeKeyDown={true}
-				disableAutoFocus={true}
-				disableEnforceFocus={true}
-				hideBackdrop={true}
-				disableRestoreFocus={true}
-			>
-				<Container>
-					<CloseButton>
-						<CloseCrossIcon onClick={handleClose} />
-					</CloseButton>
-					<Title>{t('options.create-market-modal.title')}</Title>
-					<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
-					<Content>
-						<MarketDetails>
-							<FormRow>
-								<FormControlGroup>
-									<FormControl>
-										<FormInputLabel htmlFor="asset">
-											{t('options.create-market-modal.details.select-asset-label')}
-										</FormInputLabel>
-										<SelectContainer>
-											<Select
-												formatOptionLabel={(option) => (
-													<Currency.Name
-														currencyKey={option.value}
-														name={option.label}
-														showIcon={true}
-														iconProps={{ type: 'asset' }}
-													/>
-												)}
-												options={assetsOptions}
-												placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
-												value={currencyKey}
-												onChange={(option) => {
-													setCurrencyKey(option);
-												}}
+		useEffect(() => {
+			const {
+				snxJS: { sUSD, BinaryOptionMarketManager },
+			} = snxJSConnector as any;
+			const getAllowanceForCurrentWallet = async () => {
+				try {
+					const allowance = await sUSD.allowance(
+						currentWallet,
+						BinaryOptionMarketManager.contract.address
+					);
+					setIsManagerApproved(!!bigNumberFormatter(allowance));
+				} catch (e) {
+					console.log(e);
+				}
+			};
+			const setEventListeners = () => {
+				sUSD.contract.on(APPROVAL_EVENTS.APPROVAL, (owner: string, spender: string) => {
+					if (owner === currentWallet && spender === BinaryOptionMarketManager.contract.address) {
+						setIsManagerApproved(true);
+					}
+				});
+			};
+			getAllowanceForCurrentWallet();
+			setEventListeners();
+			return () => {
+				sUSD.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
+			};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
+
+		useEffect(() => {
+			const {
+				snxJS: { BinaryOptionMarketManager },
+			} = snxJSConnector as any;
+			if (!isCreatingMarket) return;
+			BinaryOptionMarketManager.contract.on(
+				BINARY_OPTIONS_EVENTS.MARKET_CREATED,
+				(market: string, creator: string, oracleKey: string) => {
+					if (
+						creator === currentWallet &&
+						parseBytes32String(oracleKey) === (currencyKey as CurrencyKeyOptionType).value
+					) {
+						navigateToOptionsMarket(market);
+					}
+				}
+			);
+			return () => {
+				BinaryOptionMarketManager.contract.removeAllListeners(BINARY_OPTIONS_EVENTS.MARKET_CREATED);
+			};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [isCreatingMarket]);
+
+		useEffect(() => {
+			const fetchGasLimit = async () => {
+				if (isButtonDisabled) return;
+				const {
+					snxJS: { BinaryOptionMarketManager },
+				} = snxJSConnector as any;
+				try {
+					const { oracleKey, price, times, bids } = formatCreateMarketArguments();
+					const gasEstimate = await BinaryOptionMarketManager.contract.estimate.createMarket(
+						oracleKey,
+						price,
+						times,
+						bids
+					);
+					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
+				} catch (e) {
+					console.log(e);
+				}
+			};
+			fetchGasLimit();
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [
+			isButtonDisabled,
+			currencyKey,
+			strikePrice,
+			biddingEndDate,
+			maturityDate,
+			initialFundingAmount,
+		]);
+
+		const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
+
+		const handleClose = () => navigateTo(ROUTES.Options.Home);
+
+		const handleApproveManager = async () => {
+			const {
+				snxJS: { sUSD, BinaryOptionMarketManager },
+			} = snxJSConnector as any;
+			try {
+				setIsManagerApprovalPending(true);
+				const maxInt = `0x${'f'.repeat(64)}`;
+				sUSD.approve(BinaryOptionMarketManager.contract.address, maxInt);
+			} catch (e) {
+				console.log(e);
+				setIsManagerApprovalPending(false);
+			}
+		};
+
+		const handleMarketCreation = async () => {
+			const {
+				snxJS: { BinaryOptionMarketManager },
+			} = snxJSConnector as any;
+			try {
+				const { oracleKey, price, times, bids } = formatCreateMarketArguments();
+				await BinaryOptionMarketManager.createMarket(oracleKey, price, times, bids, {
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasLimit,
+				});
+				setIsCreatingMarket(true);
+			} catch (e) {
+				console.log(e);
+				setIsCreatingMarket(false);
+			}
+		};
+
+		return (
+			<ThemeProvider theme={lightTheme}>
+				<StyledModal
+					open={true}
+					onClose={handleClose}
+					disableEscapeKeyDown={true}
+					disableAutoFocus={true}
+					disableEnforceFocus={true}
+					hideBackdrop={true}
+					disableRestoreFocus={true}
+				>
+					<Container>
+						<CloseButton>
+							<CloseCrossIcon onClick={handleClose} />
+						</CloseButton>
+						<Title>{t('options.create-market-modal.title')}</Title>
+						<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
+						<Content>
+							<MarketDetails>
+								<FormRow>
+									<FormControlGroup>
+										<FormControl>
+											<FormInputLabel htmlFor="asset">
+												{t('options.create-market-modal.details.select-asset-label')}
+											</FormInputLabel>
+											<SelectContainer>
+												<Select
+													formatOptionLabel={(option) => (
+														<Currency.Name
+															currencyKey={option.value}
+															name={option.label}
+															showIcon={true}
+															iconProps={{ type: 'asset' }}
+														/>
+													)}
+													options={assetsOptions}
+													placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
+													value={currencyKey}
+													onChange={(option) => {
+														setCurrencyKey(option);
+													}}
+												/>
+											</SelectContainer>
+										</FormControl>
+										<FormControl>
+											<FormInputLabel htmlFor="strike-price">
+												{t('options.create-market-modal.details.strike-price-label')}
+											</FormInputLabel>
+											<StyledNumericInput
+												id="strike-price"
+												value={strikePrice}
+												onChange={(e) => setStrikePrice(e.target.value)}
+												placeholder={t('common.eg-val', {
+													val: strikePricePlaceholderVal,
+												})}
 											/>
-										</SelectContainer>
-									</FormControl>
+										</FormControl>
+									</FormControlGroup>
+								</FormRow>
+								<FormRow>
+									<FormControlGroup>
+										<FormControl>
+											<FormInputLabel htmlFor="end-of-bidding">
+												{t('options.create-market-modal.details.bidding-end-date-label')}
+											</FormInputLabel>
+											<StyledDatePicker
+												id="end-of-bidding"
+												dateFormat="MMMM d, yyyy h:mm aa"
+												selected={biddingEndDate}
+												showTimeSelect
+												onChange={(d) => setEndOfBidding(d)}
+												minDate={new Date()}
+												maxDate={maturityDate}
+											/>
+										</FormControl>
+										<FormControl>
+											<FormInputLabel htmlFor="maturity-date">
+												{t('options.create-market-modal.details.market-maturity-date-label')}
+											</FormInputLabel>
+											<StyledDatePicker
+												disabled={!biddingEndDate}
+												id="maturity-date"
+												dateFormat="MMMM d, yyyy h:mm aa"
+												selected={maturityDate}
+												showTimeSelect
+												onChange={(d) => setMaturityDate(d)}
+												minDate={
+													biddingEndDate
+														? new Date(addDays(biddingEndDate, MATURITY_DATE_DAY_DELAY))
+														: null
+												}
+											/>
+										</FormControl>
+									</FormControlGroup>
+								</FormRow>
+								<FormRow>
 									<FormControl>
-										<FormInputLabel htmlFor="strike-price">
-											{t('options.create-market-modal.details.strike-price-label')}
-										</FormInputLabel>
-										<StyledNumericInput
-											id="strike-price"
-											value={strikePrice}
-											onChange={(e) => setStrikePrice(e.target.value)}
-											placeholder={t('common.eg-val', {
-												val: strikePricePlaceholderVal,
-											})}
+										<FlexDivRowCentered>
+											<FormInputLabel style={{ cursor: 'default' }}>
+												{t('options.create-market-modal.details.long-short-skew-label')}
+											</FormInputLabel>
+											<div>
+												<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
+												{' / '}
+												<Shorts>
+													{t('common.val-in-cents', { val: initialLongShorts.short })}
+												</Shorts>
+											</div>
+										</FlexDivRowCentered>
+										<StyledSlider
+											value={initialLongShorts.long}
+											onChange={(_, newValue) => {
+												const long = newValue as number;
+												setInitialLongShorts({
+													long,
+													short: 100 - long,
+												});
+											}}
 										/>
 									</FormControl>
-								</FormControlGroup>
-							</FormRow>
-							<FormRow>
-								<FormControlGroup>
+								</FormRow>
+								<FormRow>
 									<FormControl>
-										<FormInputLabel htmlFor="end-of-bidding">
-											{t('options.create-market-modal.details.bidding-end-date-label')}
+										<FormInputLabel htmlFor="funding-amount">
+											{t('options.create-market-modal.details.funding-amount-label')}
 										</FormInputLabel>
-										<StyledDatePicker
-											id="end-of-bidding"
-											dateFormat="MMMM d, yyyy h:mm aa"
-											showTimeSelect={true}
-											selected={biddingEndDate}
-											onChange={(d) => setEndOfBidding(d)}
-											maxDate={maturityDate}
+										<StyledNumericInputWithCurrency
+											currencyKey={SYNTHS_MAP.sUSD}
+											value={initialFundingAmount}
+											onChange={(e) => setInitialFundingAmount(e.target.value)}
+											inputProps={{
+												id: 'funding-amount',
+											}}
 										/>
 									</FormControl>
-									<FormControl>
-										<FormInputLabel htmlFor="maturity-date">
-											{t('options.create-market-modal.details.market-maturity-date-label')}
-										</FormInputLabel>
-										<StyledDatePicker
-											id="maturity-date"
-											selected={maturityDate}
-											onChange={(d) => setMaturityDate(d)}
-										/>
-									</FormControl>
-								</FormControlGroup>
-							</FormRow>
-							<FormRow>
-								<FormControl>
-									<FlexDivRowCentered>
-										<FormInputLabel style={{ cursor: 'default' }}>
-											{t('options.create-market-modal.details.long-short-skew-label')}
-										</FormInputLabel>
+								</FormRow>
+							</MarketDetails>
+							<MarketSummary>
+								<MarketSummaryTitle>
+									{t('options.create-market-modal.summary.title')}
+								</MarketSummaryTitle>
+								<MarketSummaryPreview>
+									<PreviewAssetRow>
+										{currencyKey ? (
+											<StyledCurrencyName
+												showIcon={true}
+												currencyKey={(currencyKey as CurrencyKeyOptionType).value}
+												name={(currencyKey as CurrencyKeyOptionType).label}
+												iconProps={{ type: 'asset' }}
+											/>
+										) : (
+											EMPTY_VALUE
+										)}
+										<span>&gt;</span>
+										<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
+											FIAT_CURRENCY_MAP.USD
+										}`}</StrikePrice>
+									</PreviewAssetRow>
+									<PreviewDatesRow>
 										<div>
-											<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
-											{' / '}
-											<Shorts>{t('common.val-in-cents', { val: initialLongShorts.short })}</Shorts>
+											{t('options.create-market-modal.summary.dates.bids-end', {
+												date: biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE,
+											})}
 										</div>
-									</FlexDivRowCentered>
-									<StyledSlider
-										value={initialLongShorts.long}
-										onChange={(_, newValue) => {
-											const long = newValue as number;
-											setInitialLongShorts({
-												long,
-												short: 100 - long,
-											});
-										}}
-									/>
-								</FormControl>
-							</FormRow>
-							<FormRow>
-								<FormControl>
-									<FormInputLabel htmlFor="funding-amount">
-										{t('options.create-market-modal.details.funding-amount-label')}
-									</FormInputLabel>
-									<StyledNumericInputWithCurrency
-										currencyKey={SYNTHS_MAP.sUSD}
-										value={initialFundingAmount}
-										onChange={(e) => setInitialFundingAmount(e.target.value)}
-										inputProps={{
-											id: 'funding-amount',
-										}}
-									/>
-								</FormControl>
-							</FormRow>
-						</MarketDetails>
-						<MarketSummary>
-							<MarketSummaryTitle>
-								{t('options.create-market-modal.summary.title')}
-							</MarketSummaryTitle>
-							<MarketSummaryPreview>
-								<PreviewAssetRow>
-									{currencyKey ? (
-										<StyledCurrencyName
-											showIcon={true}
-											currencyKey={(currencyKey as CurrencyKeyOptionType).value}
-											name={(currencyKey as CurrencyKeyOptionType).label}
-											iconProps={{ type: 'asset' }}
+										<div>
+											{t('options.create-market-modal.summary.dates.trading-period', {
+												period: biddingEndDate
+													? formattedDuration(
+															intervalToDuration({ start: Date.now(), end: biddingEndDate })
+													  )
+													: EMPTY_VALUE,
+											})}
+										</div>
+									</PreviewDatesRow>
+									<PreviewMarketPriceRow>
+										<MarketSentiment
+											long={initialLongShorts.long / 100}
+											short={initialLongShorts.short / 100}
 										/>
+									</PreviewMarketPriceRow>
+									<PreviewFeesRow>
+										<FlexDivRowCentered>
+											<span>{t('options.create-market-modal.summary.fees.creator')}</span>
+											<span>{formatPercentage(FEES.CREATOR)}</span>
+										</FlexDivRowCentered>
+										<FlexDivRowCentered>
+											<span>{t('options.create-market-modal.summary.fees.refund')}</span>
+											<span>{formatPercentage(FEES.REFUND)}</span>
+										</FlexDivRowCentered>
+										<FlexDivRowCentered>
+											<span>{t('options.create-market-modal.summary.fees.trading')}</span>
+											<span>{formatPercentage(FEES.TRADING)}</span>
+										</FlexDivRowCentered>
+									</PreviewFeesRow>
+									{isManagerApproved ? (
+										<CreateMarketButton
+											palette="primary"
+											size="lg"
+											disabled={isButtonDisabled || !gasLimit}
+											onClick={handleMarketCreation}
+										>
+											{isCreatingMarket
+												? t('options.create-market-modal.summary.creating-market-button-label')
+												: t('options.create-market-modal.summary.create-market-button-label')}
+										</CreateMarketButton>
 									) : (
-										EMPTY_VALUE
+										<CreateMarketButton palette="primary" size="lg" onClick={handleApproveManager}>
+											{isManagerApprovalPending
+												? t('options.create-market-modal.summary.waiting-for-approval-button-label')
+												: t('options.create-market-modal.summary.approve-manager-button-label')}
+										</CreateMarketButton>
 									)}
-									<span>&gt;</span>
-									<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
-										FIAT_CURRENCY_MAP.USD
-									}`}</StrikePrice>
-								</PreviewAssetRow>
-								<PreviewDatesRow>
-									<div>
-										{t('options.create-market-modal.summary.dates.bids-end', {
-											date: biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE,
-										})}
-									</div>
-									<div>
-										{t('options.create-market-modal.summary.dates.trading-period', {
-											period: biddingEndDate
-												? formattedDuration(
-														intervalToDuration({ start: Date.now(), end: biddingEndDate })
-												  )
-												: EMPTY_VALUE,
-										})}
-									</div>
-								</PreviewDatesRow>
-								<PreviewMarketPriceRow>
-									<MarketSentiment
-										long={initialLongShorts.long / 100}
-										short={initialLongShorts.short / 100}
-									/>
-								</PreviewMarketPriceRow>
-								<PreviewFeesRow>
-									<FlexDivRowCentered>
-										<span>{t('options.create-market-modal.summary.fees.creator')}</span>
-										<span>{formatPercentage(FEES.CREATOR)}</span>
-									</FlexDivRowCentered>
-									<FlexDivRowCentered>
-										<span>{t('options.create-market-modal.summary.fees.refund')}</span>
-										<span>{formatPercentage(FEES.REFUND)}</span>
-									</FlexDivRowCentered>
-									<FlexDivRowCentered>
-										<span>{t('options.create-market-modal.summary.fees.trading')}</span>
-										<span>{formatPercentage(FEES.TRADING)}</span>
-									</FlexDivRowCentered>
-								</PreviewFeesRow>
-								<CreateMarketButton
-									palette="primary"
-									size="lg"
-									disabled={isButtonDisabled}
-									onClick={handleMarketCreation}
-								>
-									{t('options.create-market-modal.summary.create-market-button-label')}
-								</CreateMarketButton>
-							</MarketSummaryPreview>
-						</MarketSummary>
-					</Content>
-				</Container>
-			</StyledModal>
-		</ThemeProvider>
-	);
-});
+								</MarketSummaryPreview>
+							</MarketSummary>
+						</Content>
+					</Container>
+				</StyledModal>
+			</ThemeProvider>
+		);
+	}
+);
 
 const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.surfaceL1};
