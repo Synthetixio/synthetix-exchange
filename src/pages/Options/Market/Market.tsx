@@ -10,7 +10,6 @@ import { binaryOptionMarket } from 'utils/contracts';
 
 import { OptionsMarketInfo, Phase } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
-import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 
 import ROUTES, { navigateTo } from 'constants/routes';
 
@@ -42,7 +41,6 @@ import TradeCard from './TradeCard';
 import TransactionsCard from './TransactionsCard';
 
 const mapStateToProps = (state: RootState) => ({
-	optionsMarketsMap: getOptionsMarketsMap(state),
 	synthsMap: getAvailableSynthsMap(state),
 });
 
@@ -57,7 +55,7 @@ type MarketProps = PropsFromRedux &
 		marketAddress: string;
 	}>;
 
-const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) => {
+const Market: FC<MarketProps> = memo(({ match, synthsMap }) => {
 	const [optionsMarket, setOptionsMarket] = useState<OptionsMarketInfo | null>(null);
 	const [BOMContract, setBOMContract] = useState<ethers.Contract>();
 
