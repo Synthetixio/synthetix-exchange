@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import { addDays } from 'date-fns';
 
 import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
@@ -40,11 +41,19 @@ import Button from 'components/Button/Button';
 import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
 import { media } from 'shared/media';
 
-import { formatPercentage, formatShortDate, formattedDuration } from 'utils/formatters';
+import {
+	formatPercentage,
+	formatShortDate,
+	formattedDuration,
+	bytesFormatter,
+} from 'utils/formatters';
 import MarketSentiment from '../components/MarketSentiment';
+import snxJSConnector from 'utils/snxJSConnector';
+
+const MATURITY_DATE_DAY_DELAY = 1;
 
 /*
-TODO: 
+TODO:
 
 BinaryOptionMarketManager.durations()
 sAUDKey,
@@ -138,8 +147,28 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 	const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
 
 	const handleClose = () => navigateTo(ROUTES.Options.Home);
-	const handleMarketCreation = () => {
-		console.log('TODO');
+	const handleMarketCreation = async () => {
+		try {
+			const {
+				snxJS: { BinaryOptionMarketManager },
+				utils: { parseEther },
+			} = snxJSConnector as any;
+
+			const longBidAmount: number = initialLongShorts.long / (initialFundingAmount as number);
+			const shortBidAmount: number = initialLongShorts.short / (initialFundingAmount as number);
+			const tx = await BinaryOptionMarketManager.createMarket(
+				bytesFormatter((currencyKey as CurrencyKeyOptionType).value),
+				parseEther(strikePrice),
+				[
+					Math.round((biddingEndDate as Date).getTime() / 1000),
+					Math.round((maturityDate as Date).getTime() / 1000),
+				],
+				[parseEther(longBidAmount.toString()), parseEther(shortBidAmount.toString())]
+			);
+			console.log(tx);
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	return (
@@ -210,7 +239,9 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 										<StyledDatePicker
 											id="end-of-bidding"
 											selected={biddingEndDate}
+											showTimeSelect
 											onChange={(d) => setEndOfBidding(d)}
+											minDate={new Date()}
 											maxDate={maturityDate}
 										/>
 									</FormControl>
@@ -219,9 +250,16 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 											{t('options.create-market-modal.details.market-maturity-date-label')}
 										</FormInputLabel>
 										<StyledDatePicker
+											disabled={!biddingEndDate}
 											id="maturity-date"
 											selected={maturityDate}
+											showTimeSelect
 											onChange={(d) => setMaturityDate(d)}
+											minDate={
+												biddingEndDate
+													? new Date(addDays(biddingEndDate, MATURITY_DATE_DAY_DELAY))
+													: null
+											}
 										/>
 									</FormControl>
 								</FormControlGroup>
