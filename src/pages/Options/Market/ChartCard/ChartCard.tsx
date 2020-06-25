@@ -9,7 +9,6 @@ import get from 'lodash/get';
 
 import { OptionsMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
-import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 import {
 	fetchHistoricalRatesRequest,
 	HistoricalRatesData,
@@ -31,7 +30,6 @@ import Spinner from 'components/Spinner';
 
 const mapStateToProps = (state: RootState) => ({
 	historicalRatesMap: getHistoricalRatesState(state),
-	optionsMarketsMap: getOptionsMarketsMap(state),
 });
 
 const mapDispatchToProps = {

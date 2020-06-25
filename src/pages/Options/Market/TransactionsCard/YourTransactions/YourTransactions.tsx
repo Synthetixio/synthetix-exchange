@@ -1,76 +1,44 @@
-import React, { FC, memo, useEffect } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React, { FC, memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import snxData from 'synthetix-data';
+import { useQuery } from 'react-query';
 
-import { RootState } from 'ducks/types';
 import { OptionsMarketInfo } from 'ducks/options/types';
-
-import {
-	getUserOptionsTransactionsMap,
-	getIsLoadingUserOptionsTransactions,
-	getIsLoadedUserOptionsTransactions,
-	fetchUserOptionsTransactionsRequest,
-} from 'ducks/options/userOptionsTransactions';
-
-import useInterval from 'shared/hooks/useInterval';
-import { NoResultsMessage } from 'shared/commonStyles';
-
 import TransactionsTable from '../components/TransactionsTable';
-import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 
-const mapStateToProps = (state: RootState) => ({
-	isLoading: getIsLoadingUserOptionsTransactions(state),
-	isLoaded: getIsLoadedUserOptionsTransactions(state),
-	optionsTransactionsMap: getUserOptionsTransactionsMap(state),
+import QUERY_KEYS from 'constants/queryKeys';
+import { TableNoResults } from 'shared/commonStyles';
+
+type RecentTransactionsProps = {
+	marketAddress: OptionsMarketInfo['address'];
+	walletAddress: string;
+};
+
+const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress, walletAddress }) => {
+	const { t } = useTranslation();
+
+	const transactionsQuery = useQuery(
+		QUERY_KEYS.BinaryOptions.UserTransactions(marketAddress, walletAddress),
+		() =>
+			snxData.binaryOptions.optionTransactions({ market: marketAddress, account: walletAddress })
+	);
+
+	const noData =
+		transactionsQuery.isSuccess && transactionsQuery.data && transactionsQuery.data.length === 0;
+
+	return (
+		<TransactionsTable
+			optionsTransactions={transactionsQuery.data}
+			isLoading={transactionsQuery.isLoading && noData}
+			noResultsMessage={
+				transactionsQuery.isSuccess && noData ? (
+					<TableNoResults>
+						{t('options.market.transactions-card.table.no-results-your-activity')}
+					</TableNoResults>
+				) : undefined
+			}
+		/>
+	);
 });
 
-const mapDispatchToProps = {
-	fetchUserOptionsTransactionsRequest,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-type YourTransactionsProps = PropsFromRedux & {
-	marketAddress: OptionsMarketInfo['address'];
-};
-
-const YourTransactions: FC<YourTransactionsProps> = memo(
-	({
-		marketAddress,
-		optionsTransactionsMap,
-		isLoading,
-		isLoaded,
-		fetchUserOptionsTransactionsRequest,
-	}) => {
-		useEffect(() => {
-			fetchUserOptionsTransactionsRequest({
-				marketAddress,
-			});
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		useInterval(() => {
-			fetchUserOptionsTransactionsRequest({
-				marketAddress,
-			});
-		}, DEFAULT_REQUEST_REFRESH_INTERVAL);
-
-		const optionsTransactions = optionsTransactionsMap[marketAddress] || [];
-
-		return (
-			<TransactionsTable
-				key="your-tx"
-				optionsTransactions={optionsTransactions}
-				isLoading={isLoading && !isLoaded}
-				noResultsMessage={
-					isLoaded && optionsTransactions.length === 0 ? (
-						<NoResultsMessage>No transactions</NoResultsMessage>
-					) : undefined
-				}
-			/>
-		);
-	}
-);
-
-export default connector(YourTransactions);
+export default RecentTransactions;

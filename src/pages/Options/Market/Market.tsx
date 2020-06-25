@@ -1,18 +1,13 @@
 import React, { memo, FC, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { RouteComponentProps } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
-import snxJSConnector from 'utils/snxJSConnector';
 import { ethers } from 'ethers';
-
-import { binaryOptionMarket } from 'utils/contracts';
 
 import { OptionsMarketInfo, Phase } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
-import { getOptionsMarketsMap } from 'ducks/options/optionsMarkets';
 
-import ROUTES, { navigateTo } from 'constants/routes';
+import ROUTES from 'constants/routes';
 
 import { USD_SIGN } from 'constants/currency';
 import {
@@ -41,8 +36,10 @@ import ChartCard from './ChartCard';
 import TradeCard from './TradeCard';
 import TransactionsCard from './TransactionsCard';
 
+import { useQuery } from 'react-query';
+import QUERY_KEYS from 'constants/queryKeys';
+
 const mapStateToProps = (state: RootState) => ({
-	optionsMarketsMap: getOptionsMarketsMap(state),
 	synthsMap: getAvailableSynthsMap(state),
 });
 
@@ -52,83 +49,53 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type MarketProps = PropsFromRedux &
-	RouteComponentProps<{
-		marketAddress: string;
-	}>;
+type MarketProps = PropsFromRedux & {
+	BOMContract: ethers.Contract;
+	marketAddress: string;
+};
 
-const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) => {
-	const [optionsMarket, setOptionsMarket] = useState<OptionsMarketInfo | null>(null);
-	const [BOMContract, setBOMContract] = useState<ethers.Contract>();
-
+const Market: FC<MarketProps> = memo(({ BOMContract, synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
 
-	useEffect(() => {
-		const { params } = match;
+	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), () =>
+		Promise.all([
+			BOMContract.oracleDetails(),
+			BOMContract.times(),
+			BOMContract.prices(),
+			BOMContract.totalBids(),
+			BOMContract.totalSupplies(),
+		])
+	);
 
-		if (params && params.marketAddress) {
-			setBOMContract(
-				new ethers.Contract(
-					params.marketAddress,
-					binaryOptionMarket.abi,
-					// @ts-ignore
-					snxJSConnector.provider
-				)
-			);
-		} else {
-			navigateTo(ROUTES.Options.Home);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [match]);
+	let optionsMarket: OptionsMarketInfo | null = null;
 
-	useEffect(() => {
-		if (BOMContract) {
-			// TODO: move this to redux
+	if (marketQuery.isSuccess && marketQuery.data) {
+		const [oracleDetails, times, prices, totalBids, totalSupplies] = marketQuery.data;
+		const [oracleKey, strikePrice] = oracleDetails;
+		const [biddingEnd, maturity, expiry] = times;
+		const [longPrice, shortPrice] = prices;
+		const biddingEndDate = Number(biddingEnd) * 1000;
+		const maturityDate = Number(maturity) * 1000;
+		const expiryDate = Number(expiry) * 1000;
 
-			const getMarketInfo = async () => {
-				const [oracleDetails, times, prices, totalBids, totalSupplies] = await Promise.all([
-					BOMContract.oracleDetails(),
-					BOMContract.times(),
-					BOMContract.prices(),
-					BOMContract.totalBids(),
-					BOMContract.totalSupplies(),
-				]);
+		const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
 
-				const [biddingEnd, maturity, expiry] = times;
-				const [oracleKey, strikePrice] = oracleDetails;
-				const [longPrice, shortPrice] = prices;
+		const currencyKey = parseBytes32String(oracleKey);
 
-				const biddingEndDate = Number(biddingEnd) * 1000;
-				const maturityDate = Number(maturity) * 1000;
-				const expiryDate = Number(expiry) * 1000;
-
-				const { phase, timeRemaining } = getPhaseAndEndDate(
-					biddingEndDate,
-					maturityDate,
-					expiryDate
-				);
-
-				const currencyKey = parseBytes32String(oracleKey);
-
-				const market: OptionsMarketInfo = {
-					address: match.params.marketAddress,
-					biddingEndDate,
-					maturityDate,
-					expiryDate,
-					currencyKey: parseBytes32String(oracleKey),
-					asset: synthsMap[currencyKey]?.asset || currencyKey,
-					strikePrice: bigNumberFormatter(strikePrice),
-					longPrice: bigNumberFormatter(longPrice),
-					shortPrice: bigNumberFormatter(shortPrice),
-					phase,
-					timeRemaining,
-				};
-
-				setOptionsMarket(market);
-			};
-			getMarketInfo();
-		}
-	}, [BOMContract, synthsMap, match]);
+		optionsMarket = {
+			address: marketAddress,
+			biddingEndDate,
+			maturityDate,
+			expiryDate,
+			currencyKey,
+			asset: synthsMap[currencyKey]?.asset || currencyKey,
+			strikePrice: bigNumberFormatter(strikePrice),
+			longPrice: bigNumberFormatter(longPrice),
+			shortPrice: bigNumberFormatter(shortPrice),
+			phase,
+			timeRemaining,
+		};
+	}
 
 	return optionsMarket ? (
 		<StyledCenteredPageLayout>
@@ -160,7 +127,7 @@ const Market: FC<MarketProps> = memo(({ match, optionsMarketsMap, synthsMap }) =
 			<RightCol>
 				<GridDivCenteredCol>
 					{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
-						<PhaseItem key={phase} isActive={phase === optionsMarket.phase}>
+						<PhaseItem key={phase} isActive={phase === optionsMarket!.phase}>
 							{t(`options.phases.${phase}`)}
 						</PhaseItem>
 					))}
