@@ -209,6 +209,8 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(({ synths, syn
 										</FormInputLabel>
 										<StyledDatePicker
 											id="end-of-bidding"
+											dateFormat="MMMM d, yyyy h:mm aa"
+											showTimeSelect={true}
 											selected={biddingEndDate}
 											onChange={(d) => setEndOfBidding(d)}
 											maxDate={maturityDate}

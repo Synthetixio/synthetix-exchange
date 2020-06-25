@@ -234,7 +234,9 @@
 					"type-col": "type",
 					"position-col": "position",
 					"amount-col": "bid amount",
-					"tx-status-col": "tx status"
+					"tx-status-col": "tx status",
+					"no-results-your-activity": "No transactions associated with this wallet.",
+					"no-results-recent-activity": "No transactions associated with this market."
 				}
 			},
 			"trade-card": {

@@ -41,7 +41,7 @@ export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
 			setTimeInterval(null);
 		}
 	}, timeInterval);
-	console.log(weeksDiff);
+
 	return (
 		<Container label={endingSoon ? 'ending-soon' : undefined} {...rest}>
 			{timeElapsed
