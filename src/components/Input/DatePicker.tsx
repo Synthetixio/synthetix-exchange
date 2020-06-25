@@ -22,7 +22,7 @@ export const DatePicker: FC<DatePickerProps> = ({ className, errorMessage, ...re
 	return (
 		<DatePickerContainer className={className} hasError={!!errorMessage}>
 			<ReactDatePicker
-				dateFormat="yyyy/MM/dd"
+				dateFormat="yyyy-MM-dd h:mm aa"
 				placeholderText={t('common.select-date')}
 				{...rest}
 			/>
@@ -53,6 +53,9 @@ const DatePickerContainer = styled(InputContainer)<{ hasError?: boolean }>`
 		${inputCSS};
 		&::placeholder {
 			text-transform: uppercase;
+		}
+		&:disabled {
+			opacity: 0.3;
 		}
 		${(props) =>
 			props.hasError &&
