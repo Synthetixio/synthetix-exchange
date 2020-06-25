@@ -57,7 +57,7 @@ type MarketProps = PropsFromRedux & {
 const Market: FC<MarketProps> = memo(({ BOMContract, synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
 
-	const someQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), () =>
+	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), () =>
 		Promise.all([
 			BOMContract.oracleDetails(),
 			BOMContract.times(),
@@ -69,8 +69,8 @@ const Market: FC<MarketProps> = memo(({ BOMContract, synthsMap, marketAddress })
 
 	let optionsMarket: OptionsMarketInfo | null = null;
 
-	if (someQuery.isSuccess && someQuery.data) {
-		const [oracleDetails, times, prices, totalBids, totalSupplies] = someQuery.data;
+	if (marketQuery.isSuccess && marketQuery.data) {
+		const [oracleDetails, times, prices, totalBids, totalSupplies] = marketQuery.data;
 		const [oracleKey, strikePrice] = oracleDetails;
 		const [biddingEnd, maturity, expiry] = times;
 		const [longPrice, shortPrice] = prices;
