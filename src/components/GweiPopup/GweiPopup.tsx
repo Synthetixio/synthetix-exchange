@@ -207,7 +207,7 @@ const BodyMedium = styled.span`
 `;
 
 const Popup = styled.div<{ isVisible?: boolean }>`
-	z-index: ${Z_INDEX.MODAL + 10000};
+	z-index: ${Z_INDEX.MODAL};
 	background-color: ${(props) => props.theme.colors.surfaceL1};
 	position: absolute;
 	display: ${(props) => (props.isVisible ? 'block' : 'none')};
