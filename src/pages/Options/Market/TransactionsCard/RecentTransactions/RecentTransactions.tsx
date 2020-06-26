@@ -1,6 +1,7 @@
 import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
+
 import snxData from 'synthetix-data';
 
 import { OptionsMarketInfo } from 'ducks/options/types';

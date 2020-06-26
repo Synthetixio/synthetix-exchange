@@ -1,18 +1,11 @@
-import React, { memo, FC, useEffect, useContext, useState } from 'react';
+import React, { memo, FC, useContext, useState } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
 import { ComposedChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label, Line } from 'recharts';
 import { useTranslation } from 'react-i18next';
-import { connect, ConnectedProps } from 'react-redux';
 import format from 'date-fns/format';
 import isNumber from 'lodash/isNumber';
 import get from 'lodash/get';
-
-import { RootState } from 'ducks/types';
-import {
-	fetchHistoricalRatesRequest,
-	HistoricalRatesData,
-	getHistoricalRatesState,
-} from 'ducks/historicalRates';
+import { useQuery } from 'react-query';
 
 import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 import { BaseRateUpdates } from 'constants/rates';
@@ -27,62 +20,30 @@ import Currency from 'components/Currency';
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
 import Spinner from 'components/Spinner';
 
+import QUERY_KEYS from 'constants/queryKeys';
+
 import { useMarketContext } from '../contexts/MarketContext';
+import { fetchSynthRateUpdate } from 'services/rates/rates';
 
-const mapStateToProps = (state: RootState) => ({
-	historicalRatesMap: getHistoricalRatesState(state),
-});
-
-const mapDispatchToProps = {
-	fetchHistoricalRatesRequest,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-type ChartCardProps = PropsFromRedux;
-
-const Market: FC<ChartCardProps> = memo(({ fetchHistoricalRatesRequest, historicalRatesMap }) => {
+const Market: FC = memo(() => {
 	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.FOUR_HOURS);
 	const [longOverlayVisible, setLongOverlayVisible] = useState<boolean>(true);
 	const [shortOverlayVisible, setShortOverlayVisible] = useState<boolean>(true);
-	const [chartData, setChartData] = useState<BaseRateUpdates>([]);
-	const [isLoading, setLoading] = useState<boolean>(true);
+
 	const theme = useContext(ThemeContext);
 	const optionsMarket = useMarketContext();
+
+	const historicalRatesQuery = useQuery(
+		QUERY_KEYS.Synths.HistoricalRates(optionsMarket.currencyKey, selectedPeriod.period),
+		() => fetchSynthRateUpdate(currencyKey, selectedPeriod.value)
+	);
+
+	const chartData: BaseRateUpdates = get(historicalRatesQuery, 'data.rates', []);
+	const isLoading = historicalRatesQuery.isLoading;
 
 	const { currencyKey } = optionsMarket;
 
 	const { t } = useTranslation();
-
-	useEffect(() => {
-		fetchHistoricalRatesRequest({
-			currencyKeys: [currencyKey],
-			periods: [selectedPeriod.period],
-		});
-	}, [fetchHistoricalRatesRequest, selectedPeriod.period, currencyKey]);
-
-	useEffect(() => {
-		const historicalRates: HistoricalRatesData | null = get(
-			historicalRatesMap,
-			[currencyKey, selectedPeriod.period, 'data'],
-			null
-		);
-
-		if (historicalRates != null) {
-			setLoading(false);
-			setChartData(
-				(historicalRates?.rates || []).map((rates) => ({
-					...rates,
-					short: 0,
-					long: 1,
-				}))
-			);
-		} else {
-			setLoading(true);
-		}
-	}, [historicalRatesMap, selectedPeriod.period, currencyKey]);
 
 	const linearGradientId = 'optionsMarketChartArea';
 	let chartColor = theme.colors.hyperlink;
@@ -97,7 +58,7 @@ const Market: FC<ChartCardProps> = memo(({ fetchHistoricalRatesRequest, historic
 		...fontStyle,
 		fontFamily: theme.fonts.medium,
 	};
-	// console.log(optionsMarket.maturityDate);
+
 	return (
 		<Card>
 			<CardHeader>
@@ -369,4 +330,4 @@ const OverlayButton = styled(StyledButton)`
 	align-items: center;
 `;
 
-export default connector(Market);
+export default Market;
