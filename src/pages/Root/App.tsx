@@ -7,7 +7,6 @@ import { ROUTES } from 'constants/routes';
 
 import { getCurrentTheme } from 'ducks/ui';
 import { getIsSystemSuspended } from 'ducks/app';
-import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { RootState } from 'ducks/types';
 
 import GlobalEventsGate from 'gates/GlobalEventsGate';

@@ -7,7 +7,6 @@ import format from 'date-fns/format';
 import isNumber from 'lodash/isNumber';
 import get from 'lodash/get';
 
-import { OptionsMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import {
 	fetchHistoricalRatesRequest,

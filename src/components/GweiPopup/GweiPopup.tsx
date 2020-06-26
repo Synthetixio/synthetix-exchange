@@ -10,7 +10,7 @@ import { getEthRate } from 'ducks/rates';
 import { RootState } from 'ducks/types';
 import { SynthDefinitionMap } from 'ducks/synths';
 
-import { formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
+import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
 import { Z_INDEX } from 'constants/ui';
@@ -76,7 +76,6 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [gasPrice, gasLimit, ethRate]);
 
-		const usdPriceSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
 		return (
 			<>
 				<GlobalStyle />
