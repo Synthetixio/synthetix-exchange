@@ -33,13 +33,14 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type NetworkFeesProps = PropsFromRedux & {
 	className?: string;
+	gasLimit: number | null;
 };
 
 const NetworkFees: FC<NetworkFeesProps> = memo(
-	({ className, toggleGweiPopup, gasInfo, ethRate }) => {
+	({ className, toggleGweiPopup, gasInfo, ethRate, gasLimit }) => {
 		const { t } = useTranslation();
 
-		const { gasPrice, gasLimit } = gasInfo;
+		const { gasPrice } = gasInfo;
 
 		return (
 			<Container className={className}>

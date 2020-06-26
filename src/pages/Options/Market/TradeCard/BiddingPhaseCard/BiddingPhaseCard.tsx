@@ -26,7 +26,7 @@ import TimeRemaining from 'pages/Options/Home/components/TimeRemaining';
 import TradeSide from './TradeSide';
 
 import { CurrentPosition } from './types';
-import NetworkFees from '../components/NetworkFees';
+import NetworkFees from '../../../components/NetworkFees';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
@@ -132,7 +132,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						/>
 					</TradeSides>
 					<CardContent>
-						<NetworkFees />
+						<NetworkFees gasLimit={null} />
 						<ActionButton
 							size="lg"
 							palette="primary"
