@@ -33,7 +33,6 @@ import Options from '../Options';
 const mapStateToProps = (state: RootState) => ({
 	currentTheme: getCurrentTheme(state),
 	isSystemSuspended: getIsSystemSuspended(state),
-	currentWallet: getCurrentWalletAddress(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -44,7 +43,7 @@ type AppProps = PropsFromRedux & {
 	isAppReady: boolean;
 };
 
-const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended, currentWallet }) => {
+const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
@@ -116,9 +115,7 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended, curren
 							/>
 							<Route
 								path={ROUTES.Options.Home}
-								render={(routeProps) => (
-									<Options isAppReady={isAppReady} isLoggedIn={!!currentWallet} {...routeProps} />
-								)}
+								render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
 							/>
 							<Route
 								path={ROUTES.Home}

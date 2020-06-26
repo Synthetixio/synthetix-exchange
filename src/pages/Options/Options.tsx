@@ -1,19 +1,30 @@
 import React, { memo, FC, lazy } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
 import ROUTES from 'constants/routes';
 
+import { RootState } from 'ducks/types';
 import HomeLayout from 'pages/Root/components/HomeLayout';
 import MainLayout from 'pages/Root/components/MainLayout';
+import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 const Home = lazy(() => import('./Home'));
 const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
 const Market = lazy(() => import('./Market'));
 
-type OptionsProps = RouteComponentProps & {
-	isAppReady: boolean;
-	isLoggedIn: boolean;
-};
+const mapStateToProps = (state: RootState) => ({
+	isLoggedIn: getIsLoggedIn(state),
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type OptionsProps = PropsFromRedux &
+	RouteComponentProps & {
+		isAppReady: boolean;
+	};
 
 export const Options: FC<OptionsProps> = memo(({ isAppReady, isLoggedIn }) => (
 	<Switch>
@@ -35,7 +46,7 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady, isLoggedIn }) => (
 						<CreateMarketModal />
 					</HomeLayout>
 				) : (
-					<Redirect to={{ pathname: ROUTES.Options.Home }} />
+					<Redirect to={ROUTES.Options.Home} />
 				)
 			}
 		/>
@@ -52,4 +63,4 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady, isLoggedIn }) => (
 	</Switch>
 ));
 
-export default Options;
+export default connector(Options);
