@@ -7,6 +7,7 @@ import { ROUTES } from 'constants/routes';
 
 import { getCurrentTheme } from 'ducks/ui';
 import { getIsSystemSuspended } from 'ducks/app';
+import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { RootState } from 'ducks/types';
 
 import GlobalEventsGate from 'gates/GlobalEventsGate';
@@ -32,6 +33,7 @@ import Options from '../Options';
 const mapStateToProps = (state: RootState) => ({
 	currentTheme: getCurrentTheme(state),
 	isSystemSuspended: getIsSystemSuspended(state),
+	currentWallet: getCurrentWalletAddress(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -42,7 +44,7 @@ type AppProps = PropsFromRedux & {
 	isAppReady: boolean;
 };
 
-const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
+const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended, currentWallet }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
@@ -114,7 +116,9 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 							/>
 							<Route
 								path={ROUTES.Options.Home}
-								render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
+								render={(routeProps) => (
+									<Options isAppReady={isAppReady} isLoggedIn={!!currentWallet} {...routeProps} />
+								)}
 							/>
 							<Route
 								path={ROUTES.Home}
