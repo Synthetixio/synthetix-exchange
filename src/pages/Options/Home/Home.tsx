@@ -17,7 +17,7 @@ import { lightTheme } from 'styles/theme';
 import QUERY_KEYS from 'constants/queryKeys';
 import { Z_INDEX } from 'constants/ui';
 
-import YourMarkets from './YourMarkets';
+import MarketCreation from './MarketCreation';
 import HotMarkets from './HotMarkets';
 import ExploreMarkets from './ExploreMarkets';
 
@@ -74,11 +74,11 @@ const Home: FC<HomeProps> = memo(({ synthsMap }) => {
 			<HotMarketsContent>
 				<HotMarkets optionsMarkets={hotMarkets} />
 			</HotMarketsContent>
-			<YourMarketsContainer>
+			<MarketCreationContainer>
 				<PageContent>
-					<YourMarkets />
+					<MarketCreation />
 				</PageContent>
-			</YourMarketsContainer>
+			</MarketCreationContainer>
 			<ExploreMarketsContainer>
 				<PageContent>
 					<ExploreMarkets optionsMarkets={optionsMarkets} />
@@ -106,7 +106,7 @@ const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.white};
 `;
 
-const YourMarketsContainer = styled(Container)`
+const MarketCreationContainer = styled(Container)`
 	padding-bottom: 65px;
 	padding-top: 140px;
 	${media.large`

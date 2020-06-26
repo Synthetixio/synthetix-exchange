@@ -22,24 +22,24 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type YourMarketsProps = PropsFromRedux;
+type MarketCreationProps = PropsFromRedux;
 
-const YourMarkets: FC<YourMarketsProps> = memo(({ isLoggedIn }) => {
+const MarketCreation: FC<MarketCreationProps> = memo(({ isLoggedIn }) => {
 	const { t } = useTranslation();
 
 	return (
 		<Container>
 			{!isLoggedIn ? (
-				<div>Please login to create markets</div>
+				<div>{t('options.home.market-creation.login-to-create')}</div>
 			) : (
 				<>
-					<Title>{t('options.home.your-markets.no-markets.title')}</Title>
-					<Subtitle>{t('options.home.your-markets.no-markets.subtitle')}</Subtitle>
+					<Title>{t('options.home.market-creation.no-markets.title')}</Title>
+					<Subtitle>{t('options.home.market-creation.no-markets.subtitle')}</Subtitle>
 					<StyledButton
 						palette="primary"
 						onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
 					>
-						{t('options.home.your-markets.create-market-button-label')}
+						{t('options.home.market-creation.create-market-button-label')}
 					</StyledButton>
 				</>
 			)}
@@ -75,4 +75,4 @@ const StyledButton = styled(Button)`
 	padding: 0 50px;
 `;
 
-export default connector(YourMarkets);
+export default connector(MarketCreation);

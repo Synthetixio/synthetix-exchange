@@ -173,10 +173,8 @@
 			"destruction": "destruction"
 		},
 		"home": {
-			"your-markets": {
-				"has-markets": {
-					"title": "Your Markets"
-				},
+			"market-creation": {
+				"login-to-create": "Please login to create markets",
 				"no-markets": {
 					"title": "Create a market or place a bid to get started",
 					"subtitle": "Get fees for creating markets, win big without actually holding the asset"
