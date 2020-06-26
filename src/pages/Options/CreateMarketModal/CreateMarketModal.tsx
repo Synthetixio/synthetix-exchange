@@ -682,6 +682,9 @@ const CloseButton = styled.button`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
+	.react-datepicker-popper {
+		width: max-content;
+	}
 	.react-datepicker__input-container input {
 		border-color: transparent;
 	}
