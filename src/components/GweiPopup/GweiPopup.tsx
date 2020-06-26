@@ -77,7 +77,6 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 		}, [gasPrice, gasLimit, ethRate]);
 
 		const usdPriceSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
-
 		return (
 			<>
 				<GlobalStyle />
@@ -94,14 +93,14 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 							<SliderContainer>
 								<Slider
 									min={0}
-									max={gasSpeed.fastestAllowed}
-									defaultValue={gasSettings.gasPrice}
+									max={100}
+									value={gasSettings.gasPrice}
 									tooltipRenderer={() => (
 										<TooltipInner>
-											<TooltipValue>{gasSettings.gasPrice} </TooltipValue>
-											<TooltipValue>
+											<TooltipValue>{gasSettings.gasPrice} GWEI</TooltipValue>
+											{/* <TooltipValue>
 												{formatCurrencyWithSign(usdPriceSign, gasSettings.usdPrice || 0)}
-											</TooltipValue>
+											</TooltipValue> */}
 										</TooltipInner>
 									)}
 									onChange={(newPrice: number) => {
@@ -138,7 +137,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 									</Tr>
 								</Thead>
 								<Tbody>
-									<Tr>
+									{/* <Tr>
 										<Td>
 											<DataLabel>{t('modals.gwei.table.price')}</DataLabel>
 										</Td>
@@ -166,7 +165,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 												)}
 											</DataLabel>
 										</Td>
-									</Tr>
+									</Tr> */}
 									<Tr>
 										<Td>
 											<DataLabel>{t('common.gwei')}</DataLabel>
@@ -260,7 +259,6 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const TooltipInner = styled.div`
-	background-color: ${({ theme }) => theme.colors.surfaceL3};
 	height: 100%;
 	padding: 12px;
 `;

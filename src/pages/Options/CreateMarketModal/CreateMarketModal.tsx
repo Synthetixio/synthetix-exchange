@@ -57,14 +57,9 @@ import {
 	bytesFormatter,
 } from 'utils/formatters';
 import MarketSentiment from '../components/MarketSentiment';
+import NetworkFees from '../components/NetworkFees';
 
 const MATURITY_DATE_DAY_DELAY = 1;
-
-const FEES = {
-	CREATOR: 0.1 / 100,
-	REFUND: 0.1 / 100,
-	TRADING: 0.1 / 100,
-};
 
 const StyledSlider = withStyles({
 	root: {
@@ -106,6 +101,8 @@ type CreateMarketModalProps = PropsFromRedux;
 
 type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
 
+type MarketFees = Record<string, number>;
+
 export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 	({ synths, currentWallet, gasInfo }) => {
 		const { t } = useTranslation();
@@ -122,6 +119,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 		const [isManagerApprovalPending, setIsManagerApprovalPending] = useState<boolean>(false);
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
 		const [isCreatingMarket, setIsCreatingMarket] = useState<boolean>(false);
+		const [marketFees, setMarketFees] = useState<MarketFees | null>(null);
 
 		const assetsOptions = useMemo(
 			() => [
@@ -168,11 +166,18 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 			} = snxJSConnector as any;
 			const getAllowanceForCurrentWallet = async () => {
 				try {
-					const allowance = await sUSD.allowance(
-						currentWallet,
-						BinaryOptionMarketManager.contract.address
-					);
+					const [allowance, fees] = await Promise.all([
+						sUSD.allowance(currentWallet, BinaryOptionMarketManager.contract.address),
+						BinaryOptionMarketManager.fees(),
+					]);
 					setIsManagerApproved(!!bigNumberFormatter(allowance));
+					setMarketFees({
+						creator: fees.creatorFee / 1e18,
+						pool: fees.poolFee / 1e18,
+						refund: fees.refundFee / 1e18,
+						bidding: fees.creatorFee / 1e18 + fees.poolFee / 1e18,
+					});
+					console.log(fees);
 				} catch (e) {
 					console.log(e);
 				}
@@ -460,19 +465,26 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 										/>
 									</PreviewMarketPriceRow>
 									<PreviewFeesRow>
-										<FlexDivRowCentered>
-											<span>{t('options.create-market-modal.summary.fees.creator')}</span>
-											<span>{formatPercentage(FEES.CREATOR)}</span>
-										</FlexDivRowCentered>
+										<FeeSummarySection>
+											<FeeHeadingRow>
+												<span>{t('options.create-market-modal.summary.fees.bidding')}</span>
+												<span>{formatPercentage(marketFees ? marketFees.bidding : 0)}</span>
+											</FeeHeadingRow>
+											<FeeDetailsRow>
+												<FeeLabel>{t('options.create-market-modal.summary.fees.creator')}</FeeLabel>
+												<span>{formatPercentage(marketFees ? marketFees.creator : 0)}</span>
+											</FeeDetailsRow>
+											<FeeDetailsRow>
+												<FeeLabel>{t('options.create-market-modal.summary.fees.pool')}</FeeLabel>
+												<span>{formatPercentage(marketFees ? marketFees.pool : 0)}</span>
+											</FeeDetailsRow>
+										</FeeSummarySection>
 										<FlexDivRowCentered>
 											<span>{t('options.create-market-modal.summary.fees.refund')}</span>
-											<span>{formatPercentage(FEES.REFUND)}</span>
-										</FlexDivRowCentered>
-										<FlexDivRowCentered>
-											<span>{t('options.create-market-modal.summary.fees.trading')}</span>
-											<span>{formatPercentage(FEES.TRADING)}</span>
+											<span>{formatPercentage(marketFees ? marketFees.refund : 0)}</span>
 										</FlexDivRowCentered>
 									</PreviewFeesRow>
+									<NetworkFees gasLimit={gasLimit} />
 									{isManagerApproved ? (
 										<CreateMarketButton
 											palette="primary"
@@ -640,6 +652,23 @@ const PreviewFeesRow = styled.div`
 	margin-bottom: 18px;
 	grid-gap: 4px;
 `;
+
+const FeeSummarySection = styled.div`
+	margin-bottom: 6px;
+`;
+
+const FeeHeadingRow = styled(FlexDivRowCentered)`
+	margin-bottom: 4px;
+`;
+
+const FeeDetailsRow = styled(FlexDivRowCentered)`
+	color: ${({ theme }) => theme.colors.fontTertiary};
+`;
+
+const FeeLabel = styled.span`
+	margin-left: 12px;
+`;
+
 const CreateMarketButton = styled(Button)`
 	width: 100%;
 `;
@@ -653,6 +682,9 @@ const CloseButton = styled.button`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
+	.react-datepicker-popper {
+		width: max-content;
+	}
 	.react-datepicker__input-container input {
 		border-color: transparent;
 	}

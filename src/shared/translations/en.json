@@ -45,7 +45,7 @@
 		},
 		"gwei": {
 			"title": "Set transaction speed & price",
-			"desc": "Adjust the slider below, or use the input field to set the transaction speed.",
+			"desc": "Adjust the slider below to set the transaction speed.",
 			"table": {
 				"speed-allowed": "Speed (allowed)",
 				"slow": "Slow",
@@ -214,9 +214,10 @@
 					"trading-period": "Trading period: {{period}}"
 				},
 				"fees": {
+					"bidding": "Bidding fee",
 					"creator": "Creator fee",
 					"refund": "Refund fee",
-					"trading": "Trading fee"
+					"pool": "Pool fee"
 				},
 				"create-market-button-label": "create market",
 				"creating-market-button-label": "creating market...",

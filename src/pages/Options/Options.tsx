@@ -1,5 +1,5 @@
 import React, { memo, FC, lazy } from 'react';
-import { Switch, Route, RouteComponentProps } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
 import ROUTES from 'constants/routes';
 
@@ -12,9 +12,10 @@ const Market = lazy(() => import('./Market'));
 
 type OptionsProps = RouteComponentProps & {
 	isAppReady: boolean;
+	isLoggedIn: boolean;
 };
 
-export const Options: FC<OptionsProps> = memo(({ isAppReady }) => (
+export const Options: FC<OptionsProps> = memo(({ isAppReady, isLoggedIn }) => (
 	<Switch>
 		<Route
 			exact
@@ -28,11 +29,15 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady }) => (
 		<Route
 			exact
 			path={ROUTES.Options.CreateMarketModal}
-			render={() => (
-				<HomeLayout isAppReady={isAppReady}>
-					<CreateMarketModal />
-				</HomeLayout>
-			)}
+			render={() =>
+				isLoggedIn ? (
+					<HomeLayout isAppReady={isAppReady}>
+						<CreateMarketModal />
+					</HomeLayout>
+				) : (
+					<Redirect to={{ pathname: ROUTES.Options.Home }} />
+				)
+			}
 		/>
 		<Route
 			exact
