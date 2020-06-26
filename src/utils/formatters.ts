@@ -37,8 +37,8 @@ export const formatCurrency = (value: NumericValue, decimals = DEFAULT_CURRENCY_
 
 	return numbro(value).format({
 		thousandSeparated: true,
-		trimMantissa: decimals > 2 ? true : false,
-		mantissa: Number.isInteger(value as number) ? 0 : decimals,
+		trimMantissa: decimals > FIAT_CURRENCY_DECIMALS ? true : false,
+		mantissa: decimals,
 	});
 };
 
