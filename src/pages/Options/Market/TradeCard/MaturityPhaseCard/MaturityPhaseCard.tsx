@@ -79,7 +79,7 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket, isL
 							: t('options.market.trade-card.maturity.confirm-button.progress-label')}
 					</ActionButton>
 					<PhaseEnd>
-						{t('options.market.trade-card.bidding.footer.end-label')}{' '}
+						{t('options.market.trade-card.maturity.footer.end-label')}{' '}
 						<StyledTimeRemaining end={optionsMarket.timeRemaining} />
 					</PhaseEnd>
 				</StyledCardContent>

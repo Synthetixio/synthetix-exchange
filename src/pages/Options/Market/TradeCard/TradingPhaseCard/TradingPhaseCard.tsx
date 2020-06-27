@@ -70,7 +70,7 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(({ optionsMarket, isLog
 							: t('options.market.trade-card.trading.confirm-button.progress-label')}
 					</ActionButton>
 					<PhaseEnd>
-						{t('options.market.trade-card.bidding.footer.end-label')}{' '}
+						{t('options.market.trade-card.trading.footer.end-label')}{' '}
 						<StyledTimeRemaining end={optionsMarket.timeRemaining} />
 					</PhaseEnd>
 				</StyledCardContent>

@@ -301,7 +301,7 @@
 						"success-label": "already exercised"
 					},
 					"footer": {
-						"end-label": "time left to exercise"
+						"end-label": "time left to exercise:"
 					}
 				}
 			}
