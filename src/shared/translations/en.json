@@ -228,6 +228,13 @@
 				"all-markets": "all markets",
 				"market-sentiment": "market sentiment"
 			},
+			"chart-card": {
+				"chart-types": {
+					"price": "price chart",
+					"options": "options chart"
+				},
+				"no-results": "No transactions associated with this market."
+			},
 			"transactions-card": {
 				"recent-market-tab-title": "recent market activity",
 				"your-activity-tab-title": "your activity",

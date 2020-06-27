@@ -20,6 +20,11 @@ export const QUERY_KEYS = {
 			marketAddress,
 			walletAddress,
 		],
+		OptionPrices: (marketAddress: string, period: Period) => [
+			'binaryOptions',
+			marketAddress,
+			period,
+		],
 	},
 };
 
