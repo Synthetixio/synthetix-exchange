@@ -170,7 +170,7 @@
 			"bidding": "bidding",
 			"trading": "trading",
 			"maturity": "maturity",
-			"destruction": "destruction"
+			"expiry": "expiry"
 		},
 		"home": {
 			"market-creation": {
@@ -277,22 +277,23 @@
 						"end-label": "bidding period closing in:"
 					}
 				},
-				"trading": {
-					"title": "bidding has closed",
-					"subtitle": "Number of tokens available:",
+				"trading": {			
+					"title": "claim options",
+					"card-title": "bidding has closed",
+					"card-subtitle": "Number of tokens available:",
 					"confirm-button": {
 						"label": "claim options",
 						"progress-label": "claiming in progress...",
 						"success-label": "already claimed"
-					},
-					"price-you-paid-in-cents": "price you paid:",
+					},					
 					"footer": {
 						"end-label": "trading period closing in:"
 					}
 				},
 				"maturity": {
-					"title": "market has closed",
-					"subtitle": "Options available to exercise",
+					"title": "exercise options",
+					"card-title": "market has closed",
+					"card-subtitle": "Options available to exercise:",
 					"payout-amount": "payout amount",
 					"confirm-button": {
 						"label": "exercise options",
@@ -312,8 +313,9 @@
 			"long": "long",
 			"short": "short",
 			"price": "price",
-			"price-long": "{{price}} long",
-			"price-short": "{{price}} short"
+			"amount-long": "{{amount}} long",
+			"amount-short": "{{amount}} short",
+			"price-you-paid": "price you paid:"
 		}
 	},
 	"exchange": {

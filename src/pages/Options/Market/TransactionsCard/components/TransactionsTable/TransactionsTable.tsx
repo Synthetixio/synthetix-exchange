@@ -5,10 +5,7 @@ import { CellProps } from 'react-table';
 
 import { SYNTHS_MAP, USD_SIGN } from 'constants/currency';
 
-import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
-import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
-
-import { TableOverflowContainer } from 'shared/commonStyles';
+import { TableOverflowContainer, GridDivCenteredCol } from 'shared/commonStyles';
 import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
 
 import Table from 'components/Table';
@@ -16,6 +13,7 @@ import Table from 'components/Table';
 import { OptionsTransaction, OptionsTransactions } from 'ducks/options/types';
 
 import ViewLinkCell from 'pages/shared/components/ViewLinkCell';
+import SideIcon from 'pages/Options/Market/components/SideIcon';
 
 type TransactionsTableProps = {
 	optionsTransactions: OptionsTransactions;
@@ -58,8 +56,9 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 								const side = cellProps.cell.value;
 
 								return (
-									<Position side={side}>
-										<span>{side === 'long' ? <TrendUpIcon /> : <TrendDownIcon />}</span> {side}
+									<Position>
+										<SideIcon side={side} />
+										<span>{side}</span>
 									</Position>
 								);
 							},
@@ -110,21 +109,9 @@ const StyledTable = styled(Table)`
 	}
 `;
 
-const Position = styled.span<{ side: OptionsTransaction['side'] }>`
-	display: inline-flex;
+const Position = styled(GridDivCenteredCol)`
+	grid-gap: 8px;
 	text-transform: uppercase;
-	span {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		margin-right: 10px;
-		border-radius: 2px;
-		width: 16px;
-		height: 16px;
-		background-color: ${(props) =>
-			props.side === 'long' ? props.theme.colors.green : props.theme.colors.red};
-		color: ${(props) => props.theme.colors.surfaceL1};
-	}
 `;
 
 export default TransactionsTable;

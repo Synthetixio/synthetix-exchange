@@ -129,13 +129,13 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 					<TransactionsCard />
 				</LeftCol>
 				<RightCol>
-					<GridDivCenteredCol>
+					<Phases>
 						{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
 							<PhaseItem key={phase} isActive={phase === optionsMarket!.phase}>
 								{t(`options.phases.${phase}`)}
 							</PhaseItem>
 						))}
-					</GridDivCenteredCol>
+					</Phases>
 					<TradeCard />
 				</RightCol>
 			</StyledCenteredPageLayout>
@@ -202,6 +202,10 @@ const RightCol = styled(GridDivRow)`
 	align-content: start;
 	width: 414px;
 	grid-template-rows: auto 1fr;
+`;
+
+const Phases = styled(GridDivCenteredCol)`
+	border: 1px solid ${(props) => props.theme.colors.accentL2};
 `;
 
 const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`

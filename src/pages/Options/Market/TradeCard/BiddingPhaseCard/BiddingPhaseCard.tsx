@@ -21,21 +21,26 @@ import { FlexDivRowCentered, GridDivCenteredCol } from 'shared/commonStyles';
 import Card from 'components/Card';
 import { Button } from 'components/Button';
 import { formLabelSmallCSS } from 'components/Typography/Form';
-import TimeRemaining from 'pages/Options/Home/components/TimeRemaining';
+
+import NetworkFees from 'pages/Options/components/NetworkFees';
+
+import {
+	StyledTimeRemaining,
+	CardContent,
+	ActionButton,
+	StyledCardBody,
+	PhaseEnd,
+} from '../common';
 
 import TradeSide from './TradeSide';
-
 import { CurrentPosition } from './types';
-import NetworkFees from '../../../components/NetworkFees';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
 	isLoggedIn: getIsLoggedIn(state),
 });
 
-const mapDispatchToProps = {};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -145,7 +150,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						</ActionButton>
 						<PhaseEnd>
 							{t('options.market.trade-card.bidding.footer.end-label')}{' '}
-							<StyledTimeRemaining end={optionsMarket.biddingEndDate} />
+							<StyledTimeRemaining end={optionsMarket.timeRemaining} />
 						</PhaseEnd>
 					</CardContent>
 				</StyledCardBody>
@@ -165,19 +170,7 @@ const StyledCardHeader = styled(Card.Header)`
 	grid-gap: 4px;
 `;
 
-const CardContent = styled.div`
-	padding: 12px;
-	border-bottom: 1px solid ${(props) => props.theme.colors.accentL1};
-	&:last-child {
-		border-bottom: 0;
-	}
-`;
-
 export const TabButton = styled(Button).attrs({ size: 'sm', palette: 'tab' })``;
-
-const StyledCardBody = styled(Card.Body)`
-	padding: 0;
-`;
 
 const WalletBalance = styled(GridDivCenteredCol)`
 	font-family: ${(props) => props.theme.fonts.medium};
@@ -190,10 +183,6 @@ const Title = styled.div`
 	${formLabelSmallCSS};
 `;
 
-const ActionButton = styled(Button)`
-	width: 100%;
-`;
-
 const TradeSides = styled(GridDivCenteredCol)`
 	grid-auto-flow: initial;
 	grid-template-columns: 1fr auto 1fr;
@@ -204,19 +193,6 @@ const TradeSideSeparator = styled.div`
 	width: 1px;
 	height: 100%;
 	background-color: ${(props) => props.theme.colors.accentL1};
-`;
-
-const PhaseEnd = styled.div`
-	font-size: 12px;
-	text-transform: uppercase;
-	text-align: center;
-	padding-top: 12px;
-`;
-const StyledTimeRemaining = styled(TimeRemaining)`
-	background: none;
-	font-size: 12px;
-	padding: 0;
-	display: inline;
 `;
 
 export default connector(BiddingPhaseCard);

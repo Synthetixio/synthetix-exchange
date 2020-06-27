@@ -14,7 +14,6 @@ import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
 import { Z_INDEX } from 'constants/ui';
-import { SYNTHS_MAP } from 'constants/currency';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
