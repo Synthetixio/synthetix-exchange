@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import snxJSConnector from 'utils/snxJSConnector';
 import { ethers } from 'ethers';
 
-import { binaryOptionMarket } from 'utils/contracts';
+import binaryOptionMarketContract from 'utils/contracts/binaryOptionsMarketContract';
 
 import { LoaderContainer } from 'shared/commonStyles';
 import Spinner from 'components/Spinner';
@@ -28,7 +28,7 @@ const MarketContainer: FC<MarketContainerProps> = memo(({ match }) => {
 			setBOMContract(
 				new ethers.Contract(
 					params.marketAddress,
-					binaryOptionMarket.abi,
+					binaryOptionMarketContract.abi,
 					(snxJSConnector as any).provider
 				)
 			);
