@@ -21,6 +21,7 @@ import { ChartContainer } from '../common';
 import { OptionsMarketInfo, OptionsTransactions } from 'ducks/options/types';
 import { GridDivCenteredRow, absoluteCenteredCSS } from 'shared/commonStyles';
 import { subtitleSmallCSS } from 'components/Typography/General';
+import { calculateTimestampForPeriod } from 'services/rates/utils';
 
 type OptionsChartProps = {
 	selectedPeriod: PeriodLabel;
@@ -34,7 +35,12 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 
 	const historicalOptionPriceQuery = useQuery(
 		QUERY_KEYS.BinaryOptions.OptionPrices(optionsMarket.address, selectedPeriod.period),
-		() => snxData.binaryOptions.historicalOptionPrice({ market: optionsMarket.address })
+		() =>
+			snxData.binaryOptions.historicalOptionPrice({
+				market: optionsMarket.address,
+				maxTimestamp: Math.trunc(Date.now() / 1000),
+				minTimestamp: calculateTimestampForPeriod(selectedPeriod.value),
+			})
 	);
 
 	const chartData: OptionsTransactions = useMemo(() => {
