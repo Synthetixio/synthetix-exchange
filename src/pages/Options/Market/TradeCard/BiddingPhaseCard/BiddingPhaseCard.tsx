@@ -39,7 +39,6 @@ import {
 } from '../common';
 
 import TradeSide from './TradeSide';
-import { CurrentPosition } from './types';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
@@ -115,13 +114,18 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				} = snxJSConnector as any;
 				try {
 					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-					const gasEstimate = await BOMContractWithSigner.estimate.bid(
+					const bidOrRefundFunction =
+						type === 'bid'
+							? BOMContractWithSigner.estimate.bid
+							: BOMContractWithSigner.estimate.refund;
+					const gasEstimate = await bidOrRefundFunction(
 						isShort ? 1 : 0,
 						parseEther(amount.toString())
 					);
 					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
 				} catch (e) {
 					console.log(e);
+					setGasLimit(null);
 				}
 			};
 			if (!isLoggedIn || (!shortSideAmount && !longSideAmount)) return;
@@ -173,7 +177,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			}
 		};
 
-		const handleBidding = async () => {
+		const handleBidOrRefund = async () => {
 			const {
 				utils: { parseEther },
 			} = snxJSConnector as any;
@@ -183,7 +187,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			try {
 				setIsBidding(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-				const tx = await BOMContractWithSigner.bid(isShort ? 1 : 0, parseEther(amount.toString()), {
+				const bidOrRefundFunction =
+					type === 'bid' ? BOMContractWithSigner.bid : BOMContractWithSigner.refund;
+				await bidOrRefundFunction(isShort ? 1 : 0, parseEther(amount.toString()), {
 					gasLimit,
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				});
@@ -254,7 +260,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							amount={longSideAmount}
 							onAmountChange={(e) => setLongSideAmount(e.target.value)}
 							price={longPriceAmount}
-							onPriceChange={(e) => handleTargetPrice(e.target.value, false, false, false)}
+							onPriceChange={(e) =>
+								handleTargetPrice(e.target.value, false, false, type === 'refund')
+							}
 							onClick={() => setSide('long')}
 							transKey={transKey}
 							currentPosition={longPosition}
@@ -267,7 +275,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							amount={shortSideAmount}
 							onAmountChange={(e) => setShortSideAmount(e.target.value)}
 							price={shortPriceAmount}
-							onPriceChange={(e) => handleTargetPrice(e.target.value, true, true, false)}
+							onPriceChange={(e) =>
+								handleTargetPrice(e.target.value, true, true, type === 'refund')
+							}
 							onClick={() => setSide('short')}
 							transKey={transKey}
 							currentPosition={shortPosition}
@@ -280,7 +290,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 								size="lg"
 								palette="primary"
 								disabled={isBidding || !isLoggedIn || !sUSDBalance || !gasLimit}
-								onClick={handleBidding}
+								onClick={handleBidOrRefund}
 							>
 								{!isBidding
 									? t(`${transKey}.confirm-button.label`)
