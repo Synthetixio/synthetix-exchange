@@ -158,6 +158,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			fetchCurrentPositions();
 			getAllowance();
 			registerAllowanceListener();
+			return () => {
+				sUSD.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
+			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [currentWalletAddress]);
 
