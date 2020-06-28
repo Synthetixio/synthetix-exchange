@@ -19,7 +19,7 @@ import HomeLayout from './components/HomeLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
-import AppBanner from './components/AppBanner';
+// import AppBanner from './components/AppBanner';
 
 import Trade from '../Trade';
 import Loans from '../Loans';
@@ -60,7 +60,7 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 								<GlobalEventsGate />
 								<WalletPopup />
 								<GweiPopup />
-								<AppBanner />
+								{/* <AppBanner /> */}
 							</>
 						)}
 						<Switch>
