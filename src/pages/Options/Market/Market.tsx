@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
+import snxJSConnector from 'utils/snxJSConnector';
+
 import { OptionsMarketInfo, Phase } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 
@@ -40,7 +42,6 @@ import { useQuery } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
 
 import { MarketProvider } from './contexts/MarketContext';
-import { useBOMContractContext } from './contexts/BOMContractContext';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -58,32 +59,42 @@ type MarketProps = PropsFromRedux & {
 
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
-	const BOMContract = useBOMContractContext();
 
-	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), () =>
-		Promise.all([
-			BOMContract.oracleDetails(),
-			BOMContract.times(),
-			BOMContract.prices(),
-			BOMContract.totalBids(),
-			BOMContract.totalSupplies(),
-		])
-	);
+	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), async () => {
+		const [marketData, marketParameters] = await Promise.all([
+			(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
+			(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
+		]);
+
+		const { key: oracleKey, strikePrice } = marketParameters.oracleDetails;
+		const { biddingEnd, maturity, expiry } = marketParameters.times;
+		const { long: longPrice, short: shortPrice } = marketData.prices;
+
+		return {
+			currencyKey: parseBytes32String(oracleKey),
+			strikePrice: bigNumberFormatter(strikePrice),
+			biddingEndDate: Number(biddingEnd) * 1000,
+			maturityDate: Number(maturity) * 1000,
+			expiryDate: Number(expiry) * 1000,
+			longPrice: bigNumberFormatter(longPrice),
+			shortPrice: bigNumberFormatter(shortPrice),
+		};
+	});
 
 	let optionsMarket: OptionsMarketInfo | null = null;
 
 	if (marketQuery.isSuccess && marketQuery.data) {
-		const [oracleDetails, times, prices, totalBids, totalSupplies] = marketQuery.data;
-		const [oracleKey, strikePrice] = oracleDetails;
-		const [biddingEnd, maturity, expiry] = times;
-		const [longPrice, shortPrice] = prices;
-		const biddingEndDate = Number(biddingEnd) * 1000;
-		const maturityDate = Number(maturity) * 1000;
-		const expiryDate = Number(expiry) * 1000;
+		const {
+			currencyKey,
+			strikePrice,
+			biddingEndDate,
+			maturityDate,
+			expiryDate,
+			longPrice,
+			shortPrice,
+		} = marketQuery.data;
 
 		const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
-
-		const currencyKey = parseBytes32String(oracleKey);
 
 		optionsMarket = {
 			address: marketAddress,
@@ -92,9 +103,9 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			expiryDate,
 			currencyKey,
 			asset: synthsMap[currencyKey]?.asset || currencyKey,
-			strikePrice: bigNumberFormatter(strikePrice),
-			longPrice: bigNumberFormatter(longPrice),
-			shortPrice: bigNumberFormatter(shortPrice),
+			strikePrice,
+			longPrice,
+			shortPrice,
 			phase,
 			timeRemaining,
 		};
