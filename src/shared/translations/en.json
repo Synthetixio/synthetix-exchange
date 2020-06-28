@@ -263,6 +263,10 @@
 						"confirm-button": {
 							"label": "confirm bid",
 							"progress-label": "bidding in progress..."
+						},
+						"allowance-button": {
+							"label": "approve market",
+							"progress-label": "allowing market..."
 						}
 					},
 					"refund": {
@@ -284,7 +288,7 @@
 						"end-label": "bidding period closing in:"
 					}
 				},
-				"trading": {			
+				"trading": {
 					"title": "claim options",
 					"card-title": "bidding has closed",
 					"card-subtitle": "Number of tokens available:",
@@ -292,7 +296,7 @@
 						"label": "claim options",
 						"progress-label": "claiming in progress...",
 						"success-label": "nothing to claim"
-					},					
+					},
 					"footer": {
 						"end-label": "trading period closing in:"
 					}

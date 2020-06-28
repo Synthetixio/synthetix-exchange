@@ -54,5 +54,15 @@ export type OptionsMarketInfo = {
 	timeRemaining: number;
 };
 
+export type AccountMarketInfo = {
+	claimableLongAmount: number;
+	claimableShortAmount: number;
+	bidLongAmount: number;
+	bidShortAmount: number;
+	totalLongPrice: number;
+	totalShortPrice: number;
+	nothingToClaim: boolean;
+};
+
 export type OptionsMarkets = OptionsMarket[];
 export type OptionsMarketsMap = Record<string, OptionsMarket>;

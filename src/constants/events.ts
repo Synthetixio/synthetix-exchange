@@ -22,4 +22,6 @@ export const APPROVAL_EVENTS = {
 
 export const BINARY_OPTIONS_EVENTS = {
 	MARKET_CREATED: 'MarketCreated',
+	BID: 'Bid',
+	REFUND: 'Refund',
 };
