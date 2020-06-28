@@ -60,29 +60,41 @@ type MarketProps = PropsFromRedux & {
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
 
-	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), () =>
-		Promise.all([
+	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), async () => {
+		const [marketData, marketParameters] = await Promise.all([
 			(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
 			(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
-		])
-	);
-
-	let optionsMarket: OptionsMarketInfo | null = null;
-
-	if (marketQuery.isSuccess && marketQuery.data) {
-		const [marketData, marketParameters] = marketQuery.data;
+		]);
 
 		const { key: oracleKey, strikePrice } = marketParameters.oracleDetails;
 		const { biddingEnd, maturity, expiry } = marketParameters.times;
 		const { long: longPrice, short: shortPrice } = marketData.prices;
 
-		const biddingEndDate = Number(biddingEnd) * 1000;
-		const maturityDate = Number(maturity) * 1000;
-		const expiryDate = Number(expiry) * 1000;
+		return {
+			currencyKey: parseBytes32String(oracleKey),
+			strikePrice: bigNumberFormatter(strikePrice),
+			biddingEndDate: Number(biddingEnd) * 1000,
+			maturityDate: Number(maturity) * 1000,
+			expiryDate: Number(expiry) * 1000,
+			longPrice: bigNumberFormatter(longPrice),
+			shortPrice: bigNumberFormatter(shortPrice),
+		};
+	});
+
+	let optionsMarket: OptionsMarketInfo | null = null;
+
+	if (marketQuery.isSuccess && marketQuery.data) {
+		const {
+			currencyKey,
+			strikePrice,
+			biddingEndDate,
+			maturityDate,
+			expiryDate,
+			longPrice,
+			shortPrice,
+		} = marketQuery.data;
 
 		const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
-
-		const currencyKey = parseBytes32String(oracleKey);
 
 		optionsMarket = {
 			address: marketAddress,
@@ -91,9 +103,9 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			expiryDate,
 			currencyKey,
 			asset: synthsMap[currencyKey]?.asset || currencyKey,
-			strikePrice: bigNumberFormatter(strikePrice),
-			longPrice: bigNumberFormatter(longPrice),
-			shortPrice: bigNumberFormatter(shortPrice),
+			strikePrice,
+			longPrice,
+			shortPrice,
 			phase,
 			timeRemaining,
 		};
