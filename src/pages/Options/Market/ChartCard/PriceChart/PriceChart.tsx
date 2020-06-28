@@ -42,7 +42,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 	const linearGradientId = 'optionsMarketPriceChartArea';
 
 	const fontStyle = {
-		fontSize: '10px',
+		fontSize: '12px',
 		fill: theme.colors.fontTertiary,
 		fontFamily: theme.fonts.regular,
 	};

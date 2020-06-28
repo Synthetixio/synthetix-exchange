@@ -55,7 +55,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 	const noResults = historicalOptionPriceQuery.isSuccess && chartData.length < 2;
 
 	const fontStyle = {
-		fontSize: '10px',
+		fontSize: '12px',
 		fill: theme.colors.fontTertiary,
 		fontFamily: theme.fonts.regular,
 	};
@@ -101,12 +101,14 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 							type="monotone"
 							dataKey="longPrice"
 							stroke={theme.colors.green}
+							strokeWidth={1.5}
 							isAnimationActive={false}
 						/>
 						<Line
 							type="monotone"
 							dataKey="shortPrice"
 							stroke={theme.colors.red}
+							strokeWidth={1.5}
 							isAnimationActive={false}
 						/>
 						{!noResults && (
