@@ -116,7 +116,6 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 
 	let optionsMarket: OptionsMarketInfo | null = null;
 
-	console.log(marketQuery.data);
 	if (marketQuery.isSuccess && marketQuery.data) {
 		const {
 			currencyKey,
