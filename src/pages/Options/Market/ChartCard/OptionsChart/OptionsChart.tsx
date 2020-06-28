@@ -18,7 +18,7 @@ import Spinner from 'components/Spinner';
 import QUERY_KEYS from 'constants/queryKeys';
 
 import { ChartContainer } from '../common';
-import { OptionsMarketInfo, OptionsTransactions } from 'ducks/options/types';
+import { OptionsMarketInfo, OptionsTransactions } from 'pages/Options/types';
 import { GridDivCenteredRow, absoluteCenteredCSS } from 'shared/commonStyles';
 import { subtitleSmallCSS } from 'components/Typography/General';
 import { calculateTimestampForPeriod } from 'services/rates/utils';

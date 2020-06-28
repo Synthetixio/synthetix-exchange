@@ -2,7 +2,7 @@ import React, { FC, memo, useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { OptionsTransaction } from 'ducks/options/types';
+import { OptionsTransaction } from 'pages/Options/types';
 
 import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
 import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';

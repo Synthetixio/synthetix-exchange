@@ -2,7 +2,7 @@ import React, { memo, FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { OptionsMarkets } from 'ducks/options/types';
+import { OptionsMarkets } from 'pages/Options/types';
 import { headingH4CSS } from 'components/Typography/Heading';
 
 import MarketsTable from '../MarketsTable';

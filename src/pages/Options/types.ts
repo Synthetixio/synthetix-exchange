@@ -54,14 +54,15 @@ export type OptionsMarketInfo = {
 	timeRemaining: number;
 };
 
+export type OptionValue = {
+	long: number;
+	short: number;
+};
+
 export type AccountMarketInfo = {
-	claimableLongAmount: number;
-	claimableShortAmount: number;
-	bidLongAmount: number;
-	bidShortAmount: number;
-	totalLongPrice: number;
-	totalShortPrice: number;
-	nothingToClaim: boolean;
+	claimable: OptionValue;
+	balances: OptionValue;
+	bids: OptionValue;
 };
 
 export type OptionsMarkets = OptionsMarket[];

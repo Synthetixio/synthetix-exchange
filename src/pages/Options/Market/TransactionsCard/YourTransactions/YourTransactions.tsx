@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import snxData from 'synthetix-data';
 import { useQuery } from 'react-query';
 
-import { OptionsMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'pages/Options/types';
 import TransactionsTable from '../components/TransactionsTable';
 
 import QUERY_KEYS from 'constants/queryKeys';

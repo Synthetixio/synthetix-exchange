@@ -5,8 +5,8 @@ import snxData from 'synthetix-data';
 import { ConnectedProps, connect } from 'react-redux';
 import orderBy from 'lodash/orderBy';
 
-import { PHASE, getPhaseAndEndDate } from 'ducks/options/constants';
-import { OptionsMarkets } from 'ducks/options/types';
+import { PHASE, getPhaseAndEndDate } from 'pages/Options/constants';
+import { OptionsMarkets } from 'pages/Options/types';
 import { getAvailableSynthsMap } from 'ducks/synths';
 import { RootState } from 'ducks/types';
 

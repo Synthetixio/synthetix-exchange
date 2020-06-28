@@ -16,8 +16,8 @@ import QUERY_KEYS from 'constants/queryKeys';
 import { useMarketContext } from '../contexts/MarketContext';
 import { useBOMContractContext } from '../contexts/BOMContractContext';
 
-import { bigNumberFormatter, toBigNumber } from 'utils/formatters';
-import { AccountMarketInfo } from 'ducks/options/types';
+import { bigNumberFormatter } from 'utils/formatters';
+import { AccountMarketInfo } from 'pages/Options/types';
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
@@ -31,14 +31,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => {
 	const optionsMarket = useMarketContext();
 	const BOMContract = useBOMContractContext();
-
-	let claimableLongAmount = 0;
-	let claimableShortAmount = 0;
-	let bidLongAmount = 0;
-	let bidShortAmount = 0;
-	let totalLongPrice = 0;
-	let totalShortPrice = 0;
-	let nothingToClaim = true;
 
 	const accountMarketInfoQuery = useQuery(
 		QUERY_KEYS.BinaryOptions.AccountMarketInfo(
@@ -70,29 +62,28 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 		}
 	);
 
-	let accountMarketInfo: AccountMarketInfo | null = null;
+	let accountMarketInfo: AccountMarketInfo = {
+		balances: {
+			long: 0,
+			short: 0,
+		},
+		claimable: {
+			long: 0,
+			short: 0,
+		},
+		bids: {
+			long: 0,
+			short: 0,
+		},
+	};
 
 	if (isLoggedIn && accountMarketInfoQuery.isSuccess && accountMarketInfoQuery.data) {
-		const { bids, claimable } = accountMarketInfoQuery.data;
+		const { balances, claimable, bids } = accountMarketInfoQuery.data as AccountMarketInfo;
 
-		claimableLongAmount = claimable.long;
-		claimableShortAmount = claimable.short;
-		bidLongAmount = bids.long;
-		bidShortAmount = bids.short;
-		totalLongPrice = optionsMarket.longPrice * bidLongAmount;
-		totalShortPrice = optionsMarket.shortPrice * bidShortAmount;
-		nothingToClaim = !bidLongAmount && !bidShortAmount;
+		accountMarketInfo.balances = balances;
+		accountMarketInfo.claimable = claimable;
+		accountMarketInfo.bids = bids;
 	}
-
-	accountMarketInfo = {
-		claimableLongAmount,
-		claimableShortAmount,
-		bidLongAmount,
-		bidShortAmount,
-		totalLongPrice,
-		totalShortPrice,
-		nothingToClaim,
-	};
 
 	useEffect(() => {
 		BOMContract.on(BINARY_OPTIONS_EVENTS.BID, () => {
@@ -124,17 +115,16 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const sharedProps = {
+		optionsMarket,
+		accountMarketInfo,
+	};
+
 	return (
 		<>
-			{optionsMarket.phase === 'bidding' && (
-				<BiddingPhaseCard optionsMarket={optionsMarket} accountMarketInfo={accountMarketInfo} />
-			)}
-			{optionsMarket.phase === 'trading' && (
-				<TradingPhaseCard optionsMarket={optionsMarket} accountMarketInfo={accountMarketInfo} />
-			)}
-			{optionsMarket.phase === 'maturity' && (
-				<MaturityPhaseCard optionsMarket={optionsMarket} accountMarketInfo={accountMarketInfo} />
-			)}
+			{optionsMarket.phase === 'bidding' && <BiddingPhaseCard {...sharedProps} />}
+			{optionsMarket.phase === 'trading' && <TradingPhaseCard {...sharedProps} />}
+			{optionsMarket.phase === 'maturity' && <MaturityPhaseCard {...sharedProps} />}
 		</>
 	);
 };

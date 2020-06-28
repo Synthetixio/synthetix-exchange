@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import snxData from 'synthetix-data';
 
-import { OptionsMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'pages/Options/types';
 
 import QUERY_KEYS from 'constants/queryKeys';
 import TransactionsTable from '../components/TransactionsTable';

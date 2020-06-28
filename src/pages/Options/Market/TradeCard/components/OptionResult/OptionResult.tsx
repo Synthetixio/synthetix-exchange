@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { USD_SIGN } from 'constants/currency';
 
-import { Side } from 'ducks/options/types';
+import { Side } from 'pages/Options/types';
 
 import { formatCurrency, formatCurrencyWithSign } from 'utils/formatters';
 

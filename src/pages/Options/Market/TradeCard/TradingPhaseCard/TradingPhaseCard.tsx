@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
 
-import { OptionsMarketInfo, AccountMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
@@ -22,8 +22,6 @@ import {
 } from '../common';
 import ResultCard from '../components/ResultCard';
 import { useBOMContractContext } from '../../contexts/BOMContractContext';
-
-import { toBigNumber } from 'utils/formatters';
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
@@ -44,22 +42,19 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 
-		const [isClaiming, setisClaiming] = useState<boolean>(false);
+		const [isClaiming, setIsClaiming] = useState<boolean>(false);
 
-		const {
-			nothingToClaim,
-			bidLongAmount,
-			bidShortAmount,
-			totalLongPrice,
-			totalShortPrice,
-		} = accountMarketInfo;
+		const { bids } = accountMarketInfo;
 
+		const nothingToClaim = !bids.short && !bids.long;
 		const buttonDisabled = isClaiming || !isLoggedIn || nothingToClaim;
 
 		const handleClaim = async () => {
-			// TODO: implement
+			setIsClaiming(true);
+			console.log('TODO');
 			const res = await BOMContract.estimate.claimOptions(currentWalletAddress);
 			console.log(res);
+			setIsClaiming(false);
 		};
 
 		return (
@@ -70,10 +65,10 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 						icon={<ClockIcon />}
 						title={t('options.market.trade-card.trading.card-title')}
 						subTitle={t('options.market.trade-card.trading.card-subtitle')}
-						longAmount={bidLongAmount}
-						shortAmount={bidShortAmount}
-						totalLongPrice={totalLongPrice}
-						totalShortPrice={totalShortPrice}
+						longAmount={bids.long}
+						shortAmount={bids.short}
+						totalLongPrice={optionsMarket.longPrice * bids.long}
+						totalShortPrice={optionsMarket.shortPrice * bids.short}
 					/>
 					<StyledCardContent>
 						<NetworkFees gasLimit={null} />

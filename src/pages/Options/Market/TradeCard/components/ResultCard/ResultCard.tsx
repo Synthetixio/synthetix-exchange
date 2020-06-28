@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 
 import { GridDivCenteredCol } from 'shared/commonStyles';
-import { Side } from 'ducks/options/types';
+import { Side } from 'pages/Options/types';
 
 import { headingH6CSS } from 'components/Typography/Heading';
 

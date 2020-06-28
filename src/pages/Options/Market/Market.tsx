@@ -1,11 +1,11 @@
-import React, { memo, FC, useEffect } from 'react';
+import React, { memo, FC } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
-import { OptionsMarketInfo, Phase } from 'ducks/options/types';
+import { OptionsMarketInfo, Phase } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 
 import ROUTES from 'constants/routes';
@@ -26,7 +26,7 @@ import {
 	parseBytes32String,
 } from 'utils/formatters';
 
-import { getPhaseAndEndDate } from 'ducks/options/constants';
+import { getPhaseAndEndDate } from 'pages/Options/constants';
 import { getAvailableSynthsMap } from 'ducks/synths';
 
 import Spinner from 'components/Spinner';
@@ -164,6 +164,7 @@ const StyledCenteredPageLayout = styled(CenteredPageLayout)`
 `;
 
 const LeftCol = styled(GridDivRow)`
+	overflow: hidden;
 	grid-gap: 8px;
 	align-content: start;
 	grid-template-rows: auto auto 1fr;

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
 
-import { OptionsMarketInfo, AccountMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
@@ -38,15 +38,19 @@ type MaturityPhaseCardProps = PropsFromRedux & {
 	optionsMarket: OptionsMarketInfo;
 	accountMarketInfo: AccountMarketInfo;
 };
+
 const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
-		const { bidLongAmount, bidShortAmount } = accountMarketInfo;
+		const { bids, claimable } = accountMarketInfo;
 		const { t } = useTranslation();
-		const [isExercising, setisExercising] = useState<boolean>(false);
-		const [isAlreadyExercised, setIsAlreadyExercised] = useState<boolean>(false);
+		const [isExercising, setIsExercising] = useState<boolean>(false);
+
+		const nothingToExercise = !claimable.short && !claimable.long;
 
 		const handleExercise = () => {
+			setIsExercising(true);
 			console.log('TODO');
+			setIsExercising(false);
 		};
 
 		return (
@@ -57,8 +61,8 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 						icon={<FinishIcon />}
 						title={t('options.market.trade-card.maturity.card-title')}
 						subTitle={t('options.market.trade-card.maturity.card-subtitle')}
-						longAmount={bidLongAmount}
-						shortAmount={bidShortAmount}
+						longAmount={bids.long}
+						shortAmount={bids.short}
 						result="long"
 					/>
 					<Payout>
@@ -72,10 +76,10 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 						<ActionButton
 							size="lg"
 							palette="primary"
-							disabled={isExercising || !isLoggedIn || isAlreadyExercised}
+							disabled={isExercising || !isLoggedIn || nothingToExercise}
 							onClick={handleExercise}
 						>
-							{isAlreadyExercised
+							{nothingToExercise
 								? t('options.market.trade-card.maturity.confirm-button.success-label')
 								: !isExercising
 								? t('options.market.trade-card.maturity.confirm-button.label')

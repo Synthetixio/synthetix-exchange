@@ -277,6 +277,10 @@
 						"confirm-button": {
 							"label": "confirm withdrawal",
 							"progress-label": "withdrawal in progress..."
+						},
+						"allowance-button": {
+							"label": "approve market",
+							"progress-label": "allowing market..."
 						}
 					},
 					"common": {
@@ -309,7 +313,7 @@
 					"confirm-button": {
 						"label": "exercise options",
 						"progress-label": "exercise options",
-						"success-label": "already exercised"
+						"success-label": "nothing to exercise"
 					},
 					"footer": {
 						"end-label": "time left to exercise:"

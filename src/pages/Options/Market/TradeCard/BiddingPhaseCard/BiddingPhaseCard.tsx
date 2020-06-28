@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as WalletIcon } from 'assets/images/wallet.svg';
 
-import { OptionsMarketInfo, OptionsTransaction, AccountMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo, OptionsTransaction, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getGasInfo } from 'ducks/transaction';
@@ -65,20 +65,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		gasInfo,
 		accountMarketInfo,
 	}) => {
-		const {
-			bidLongAmount,
-			bidShortAmount,
-			claimableLongAmount,
-			claimableShortAmount,
-		} = accountMarketInfo;
-		const longPosition = {
-			bid: bidLongAmount,
-			payoff: claimableLongAmount,
-		};
-		const shortPosition = {
-			bid: bidShortAmount,
-			payoff: claimableShortAmount,
-		};
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
@@ -94,6 +80,15 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
 
 		const [side, setSide] = useState<OptionsTransaction['side']>('long');
+		const { bids, claimable } = accountMarketInfo;
+		const longPosition = {
+			bid: bids.long,
+			payoff: claimable.long,
+		};
+		const shortPosition = {
+			bid: bids.short,
+			payoff: claimable.short,
+		};
 
 		useEffect(() => {
 			setLongSideAmount('');

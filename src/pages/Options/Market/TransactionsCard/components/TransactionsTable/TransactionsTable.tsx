@@ -10,7 +10,7 @@ import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
 
 import Table from 'components/Table';
 
-import { OptionsTransaction, OptionsTransactions } from 'ducks/options/types';
+import { OptionsTransaction, OptionsTransactions } from 'pages/Options/types';
 
 import ViewLinkCell from 'pages/shared/components/ViewLinkCell';
 import SideIcon from 'pages/Options/Market/components/SideIcon';

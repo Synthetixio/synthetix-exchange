@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FIAT_CURRENCY_MAP } from 'constants/currency';
 
-import { GridDivCenteredCol, Dot } from 'shared/commonStyles';
+import { GridDivCenteredCol } from 'shared/commonStyles';
 
 import Card from 'components/Card';
 import { PeriodLabel, PERIOD_LABELS_MAP, PERIOD_LABELS } from 'constants/period';
@@ -101,19 +101,6 @@ const VerticalSeparator = styled.div`
 	height: 24px;
 	background-color: ${(props) => props.theme.colors.accentL2};
 	width: 1px;
-`;
-
-const StyledDot = styled(Dot)`
-	width: 8px;
-	height: 8px;
-	margin-right: 4px;
-`;
-
-const ShortDot = styled(StyledDot)`
-	background-color: ${(props) => props.theme.colors.red};
-`;
-const LongDot = styled(StyledDot)`
-	background-color: ${(props) => props.theme.colors.green};
 `;
 
 const StyledButton = styled(Button).attrs({

@@ -20,7 +20,7 @@ import QUERY_KEYS from 'constants/queryKeys';
 import { fetchSynthRateUpdate } from 'services/rates/rates';
 
 import { ChartContainer } from '../common';
-import { OptionsMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'pages/Options/types';
 
 type PriceChartProps = {
 	selectedPeriod: PeriodLabel;

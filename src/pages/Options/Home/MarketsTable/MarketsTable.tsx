@@ -16,7 +16,7 @@ import { CurrencyCol } from 'components/Table/common';
 import Currency from 'components/Currency';
 import { bodyCSS } from 'components/Typography/General';
 
-import { OptionsMarkets, OptionsMarket, Phase } from 'ducks/options/types';
+import { OptionsMarkets, OptionsMarket, Phase } from 'pages/Options/types';
 import TimeRemaining from '../components/TimeRemaining';
 
 type MarketsTableProps = {
