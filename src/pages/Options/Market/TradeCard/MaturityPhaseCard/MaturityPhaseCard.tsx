@@ -42,7 +42,10 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket, isL
 	const [isExercising, setisExercising] = useState<boolean>(false);
 	const [isAlreadyExercised, setIsAlreadyExercised] = useState<boolean>(false);
 
-	const handleClaim = () => {
+	let longAmount = 0;
+	let shortAmount = 0;
+
+	const handleExercise = () => {
 		console.log('TODO');
 	};
 
@@ -54,8 +57,8 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket, isL
 					icon={<FinishIcon />}
 					title={t('options.market.trade-card.maturity.card-title')}
 					subTitle={t('options.market.trade-card.maturity.card-subtitle')}
-					longAmount={0}
-					shortAmount={0}
+					longAmount={longAmount}
+					shortAmount={shortAmount}
 					result="long"
 				/>
 				<Payout>
@@ -70,7 +73,7 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket, isL
 						size="lg"
 						palette="primary"
 						disabled={isExercising || !isLoggedIn || isAlreadyExercised}
-						onClick={handleClaim}
+						onClick={handleExercise}
 					>
 						{isAlreadyExercised
 							? t('options.market.trade-card.maturity.confirm-button.success-label')
