@@ -10,12 +10,14 @@ import { OptionsMarkets } from 'pages/Options/types';
 import { getAvailableSynthsMap } from 'ducks/synths';
 import { RootState } from 'ducks/types';
 
-import { PageContent } from 'shared/commonStyles';
+import { PageContent, LoaderContainer } from 'shared/commonStyles';
 import { media } from 'shared/media';
 import { lightTheme } from 'styles/theme';
 
 import QUERY_KEYS from 'constants/queryKeys';
 import { Z_INDEX } from 'constants/ui';
+
+import Spinner from 'components/Spinner';
 
 import MarketCreation from './MarketCreation';
 import HotMarkets from './HotMarkets';
@@ -71,19 +73,27 @@ const Home: FC<HomeProps> = memo(({ synthsMap }) => {
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<HotMarketsContent>
-				<HotMarkets optionsMarkets={hotMarkets} />
-			</HotMarketsContent>
-			<MarketCreationContainer>
-				<PageContent>
-					<MarketCreation />
-				</PageContent>
-			</MarketCreationContainer>
-			<ExploreMarketsContainer>
-				<PageContent>
-					<ExploreMarkets optionsMarkets={optionsMarkets} />
-				</PageContent>
-			</ExploreMarketsContainer>
+			{optionsMarkets.length ? (
+				<>
+					<HotMarketsContent>
+						<HotMarkets optionsMarkets={hotMarkets} />
+					</HotMarketsContent>
+					<MarketCreationContainer>
+						<PageContent>
+							<MarketCreation />
+						</PageContent>
+					</MarketCreationContainer>
+					<ExploreMarketsContainer>
+						<PageContent>
+							<ExploreMarkets optionsMarkets={optionsMarkets} />
+						</PageContent>
+					</ExploreMarketsContainer>
+				</>
+			) : (
+				<LoaderContainer>
+					<Spinner size="sm" centered={true} />
+				</LoaderContainer>
+			)}
 		</ThemeProvider>
 	);
 });
