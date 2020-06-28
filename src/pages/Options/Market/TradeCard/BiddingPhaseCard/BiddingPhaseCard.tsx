@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as WalletIcon } from 'assets/images/wallet.svg';
 
-import { OptionsMarketInfo, OptionsTransaction } from 'ducks/options/types';
+import { OptionsMarketInfo, OptionsTransaction, AccountMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getGasInfo } from 'ducks/transaction';
@@ -54,10 +54,32 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type BiddingPhaseCardProps = PropsFromRedux & {
 	optionsMarket: OptionsMarketInfo;
+	accountMarketInfo: AccountMarketInfo;
 };
 
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
-	({ optionsMarket, isLoggedIn, walletBalancesMap, currentWalletAddress, gasInfo }) => {
+	({
+		optionsMarket,
+		isLoggedIn,
+		walletBalancesMap,
+		currentWalletAddress,
+		gasInfo,
+		accountMarketInfo,
+	}) => {
+		const {
+			bidLongAmount,
+			bidShortAmount,
+			claimableLongAmount,
+			claimableShortAmount,
+		} = accountMarketInfo;
+		const longPosition = {
+			bid: bidLongAmount,
+			payoff: claimableLongAmount,
+		};
+		const shortPosition = {
+			bid: bidShortAmount,
+			payoff: claimableShortAmount,
+		};
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
@@ -71,14 +93,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		);
 		const [longPriceAmount, setLongPriceAmount] = useState<string | number>('');
 		const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
-		const [shortCurrentPosition, setShortCurrentPosition] = useState<CurrentPosition>({
-			bid: 0,
-			payoff: 0,
-		});
-		const [longCurrentPosition, setLongCurrentPosition] = useState<CurrentPosition>({
-			bid: 0,
-			payoff: 0,
-		});
 
 		const [side, setSide] = useState<OptionsTransaction['side']>('long');
 
@@ -121,24 +135,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			const {
 				snxJS: { sUSD },
 			} = snxJSConnector as any;
-			const fetchCurrentPositions = async () => {
-				try {
-					const [bids, claimableBalances] = await Promise.all([
-						BOMContract.bidsOf(currentWalletAddress),
-						BOMContract.claimableBalancesOf(currentWalletAddress),
-					]);
-					setLongCurrentPosition({
-						bid: bids.long / 1e18,
-						payoff: claimableBalances.long / 1e18,
-					});
-					setShortCurrentPosition({
-						bid: bids.short / 1e18,
-						payoff: claimableBalances.short / 1e18,
-					});
-				} catch (e) {
-					console.log(e);
-				}
-			};
 
 			const getAllowance = async () => {
 				const allowance = await sUSD.allowance(currentWalletAddress, BOMContract.address);
@@ -155,7 +151,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			};
 
 			if (!currentWalletAddress) return;
-			fetchCurrentPositions();
 			getAllowance();
 			registerAllowanceListener();
 			return () => {
@@ -262,7 +257,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onPriceChange={(e) => handleTargetPrice(e.target.value, false, false, false)}
 							onClick={() => setSide('long')}
 							transKey={transKey}
-							currentPosition={longCurrentPosition}
+							currentPosition={longPosition}
 						/>
 						<TradeSideSeparator />
 						<TradeSide
@@ -275,7 +270,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onPriceChange={(e) => handleTargetPrice(e.target.value, true, true, false)}
 							onClick={() => setSide('short')}
 							transKey={transKey}
-							currentPosition={shortCurrentPosition}
+							currentPosition={shortPosition}
 						/>
 					</TradeSides>
 					<CardContent>

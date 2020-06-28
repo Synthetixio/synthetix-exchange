@@ -38,12 +38,10 @@ import ChartCard from './ChartCard';
 import TradeCard from './TradeCard';
 import TransactionsCard from './TransactionsCard';
 
-import { useQuery, queryCache } from 'react-query';
+import { useQuery } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
-import { BINARY_OPTIONS_EVENTS } from 'constants/events';
 
 import { MarketProvider } from './contexts/MarketContext';
-import { useBOMContractContext } from './contexts/BOMContractContext';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -61,7 +59,6 @@ type MarketProps = PropsFromRedux & {
 
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
-	const BOMContract = useBOMContractContext();
 
 	const marketQuery = useQuery(QUERY_KEYS.BinaryOptions.Market(marketAddress), async () => {
 		const [marketData, marketParameters] = await Promise.all([
@@ -83,20 +80,6 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			shortPrice: bigNumberFormatter(shortPrice),
 		};
 	});
-
-	useEffect(() => {
-		BOMContract.on(BINARY_OPTIONS_EVENTS.BID, () =>
-			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(marketAddress))
-		);
-		BOMContract.on(BINARY_OPTIONS_EVENTS.REFUND, () =>
-			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(marketAddress))
-		);
-		return () => {
-			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.BID);
-			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.REFUND);
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	let optionsMarket: OptionsMarketInfo | null = null;
 

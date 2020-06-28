@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
 
-import { OptionsMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo, AccountMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
@@ -36,60 +36,61 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MaturityPhaseCardProps = PropsFromRedux & {
 	optionsMarket: OptionsMarketInfo;
+	accountMarketInfo: AccountMarketInfo;
 };
-const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(({ optionsMarket, isLoggedIn }) => {
-	const { t } = useTranslation();
-	const [isExercising, setisExercising] = useState<boolean>(false);
-	const [isAlreadyExercised, setIsAlreadyExercised] = useState<boolean>(false);
+const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
+	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
+		const { bidLongAmount, bidShortAmount } = accountMarketInfo;
+		const { t } = useTranslation();
+		const [isExercising, setisExercising] = useState<boolean>(false);
+		const [isAlreadyExercised, setIsAlreadyExercised] = useState<boolean>(false);
 
-	let longAmount = 0;
-	let shortAmount = 0;
+		const handleExercise = () => {
+			console.log('TODO');
+		};
 
-	const handleExercise = () => {
-		console.log('TODO');
-	};
-
-	return (
-		<Card>
-			<StyledCardHeader>{t('options.market.trade-card.maturity.title')}</StyledCardHeader>
-			<StyledCardBody>
-				<StyledResultCard
-					icon={<FinishIcon />}
-					title={t('options.market.trade-card.maturity.card-title')}
-					subTitle={t('options.market.trade-card.maturity.card-subtitle')}
-					longAmount={longAmount}
-					shortAmount={shortAmount}
-					result="long"
-				/>
-				<Payout>
-					<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
-					<PayoutAmount>
-						{formatCurrencyWithSign(USD_SIGN, 500)} {SYNTHS_MAP.sUSD}
-					</PayoutAmount>
-				</Payout>
-				<StyledCardContent>
-					<NetworkFees gasLimit={null} />
-					<ActionButton
-						size="lg"
-						palette="primary"
-						disabled={isExercising || !isLoggedIn || isAlreadyExercised}
-						onClick={handleExercise}
-					>
-						{isAlreadyExercised
-							? t('options.market.trade-card.maturity.confirm-button.success-label')
-							: !isExercising
-							? t('options.market.trade-card.maturity.confirm-button.label')
-							: t('options.market.trade-card.maturity.confirm-button.progress-label')}
-					</ActionButton>
-					<PhaseEnd>
-						{t('options.market.trade-card.maturity.footer.end-label')}{' '}
-						<StyledTimeRemaining end={optionsMarket.timeRemaining} />
-					</PhaseEnd>
-				</StyledCardContent>
-			</StyledCardBody>
-		</Card>
-	);
-});
+		return (
+			<Card>
+				<StyledCardHeader>{t('options.market.trade-card.maturity.title')}</StyledCardHeader>
+				<StyledCardBody>
+					<StyledResultCard
+						icon={<FinishIcon />}
+						title={t('options.market.trade-card.maturity.card-title')}
+						subTitle={t('options.market.trade-card.maturity.card-subtitle')}
+						longAmount={bidLongAmount}
+						shortAmount={bidShortAmount}
+						result="long"
+					/>
+					<Payout>
+						<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
+						<PayoutAmount>
+							{formatCurrencyWithSign(USD_SIGN, 500)} {SYNTHS_MAP.sUSD}
+						</PayoutAmount>
+					</Payout>
+					<StyledCardContent>
+						<NetworkFees gasLimit={null} />
+						<ActionButton
+							size="lg"
+							palette="primary"
+							disabled={isExercising || !isLoggedIn || isAlreadyExercised}
+							onClick={handleExercise}
+						>
+							{isAlreadyExercised
+								? t('options.market.trade-card.maturity.confirm-button.success-label')
+								: !isExercising
+								? t('options.market.trade-card.maturity.confirm-button.label')
+								: t('options.market.trade-card.maturity.confirm-button.progress-label')}
+						</ActionButton>
+						<PhaseEnd>
+							{t('options.market.trade-card.maturity.footer.end-label')}{' '}
+							<StyledTimeRemaining end={optionsMarket.timeRemaining} />
+						</PhaseEnd>
+					</StyledCardContent>
+				</StyledCardBody>
+			</Card>
+		);
+	}
+);
 
 const StyledResultCard = styled(ResultCard)`
 	margin-bottom: 21px;

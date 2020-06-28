@@ -2,11 +2,8 @@ import React, { FC, memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
 
-import snxJSConnector from 'utils/snxJSConnector';
-
-import { OptionsMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo, AccountMarketInfo } from 'ducks/options/types';
 import { RootState } from 'ducks/types';
 import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
@@ -25,8 +22,8 @@ import {
 } from '../common';
 import ResultCard from '../components/ResultCard';
 import { useBOMContractContext } from '../../contexts/BOMContractContext';
-import QUERY_KEYS from 'constants/queryKeys';
-import { bigNumberFormatter, toBigNumber } from 'utils/formatters';
+
+import { toBigNumber } from 'utils/formatters';
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
@@ -39,61 +36,23 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type TradingPhaseCardProps = PropsFromRedux & {
 	optionsMarket: OptionsMarketInfo;
+	accountMarketInfo: AccountMarketInfo;
 };
 
 const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
-	({ optionsMarket, isLoggedIn, currentWalletAddress = '' }) => {
+	({ optionsMarket, isLoggedIn, currentWalletAddress = '', accountMarketInfo }) => {
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 
 		const [isClaiming, setisClaiming] = useState<boolean>(false);
 
-		const accountMarketInfoQuery = useQuery(
-			QUERY_KEYS.BinaryOptions.AccountMarketInfo(
-				optionsMarket.address,
-				currentWalletAddress as string
-			),
-			async () => {
-				const result = await (snxJSConnector as any).binaryOptionsMarketDataContract.getAccountMarketInfo(
-					optionsMarket.address,
-					currentWalletAddress
-				);
-
-				return {
-					claimable: {
-						long: bigNumberFormatter(result.claimable.long),
-						short: bigNumberFormatter(result.claimable.short),
-					},
-					balances: {
-						long: bigNumberFormatter(result.claimable.long),
-						short: bigNumberFormatter(result.claimable.short),
-					},
-					bids: {
-						long: bigNumberFormatter(result.claimable.long),
-						short: bigNumberFormatter(result.claimable.short),
-					},
-				};
-			},
-			{
-				enabled: isLoggedIn,
-			}
-		);
-
-		let longAmount = toBigNumber(0);
-		let shortAmount = toBigNumber(0);
-		let totalLongPrice = toBigNumber(0);
-		let totalShortPrice = toBigNumber(0);
-		let nothingToClaim = true;
-
-		if (isLoggedIn && accountMarketInfoQuery.isSuccess && accountMarketInfoQuery.data) {
-			const { bids } = accountMarketInfoQuery.data;
-
-			longAmount = toBigNumber(bids.long);
-			shortAmount = toBigNumber(bids.short);
-			totalLongPrice = toBigNumber(optionsMarket.longPrice).multipliedBy(longAmount);
-			totalShortPrice = toBigNumber(optionsMarket.shortPrice).multipliedBy(shortAmount);
-			nothingToClaim = longAmount.isZero() && shortAmount.isZero();
-		}
+		const {
+			nothingToClaim,
+			bidLongAmount,
+			bidShortAmount,
+			totalLongPrice,
+			totalShortPrice,
+		} = accountMarketInfo;
 
 		const buttonDisabled = isClaiming || !isLoggedIn || nothingToClaim;
 
@@ -111,10 +70,10 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 						icon={<ClockIcon />}
 						title={t('options.market.trade-card.trading.card-title')}
 						subTitle={t('options.market.trade-card.trading.card-subtitle')}
-						longAmount={longAmount.toNumber()}
-						shortAmount={shortAmount.toNumber()}
-						totalLongPrice={totalLongPrice.toNumber()}
-						totalShortPrice={totalShortPrice.toNumber()}
+						longAmount={bidLongAmount}
+						shortAmount={bidShortAmount}
+						totalLongPrice={totalLongPrice}
+						totalShortPrice={totalShortPrice}
 					/>
 					<StyledCardContent>
 						<NetworkFees gasLimit={null} />
