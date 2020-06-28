@@ -63,12 +63,12 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 						subTitle={t('options.market.trade-card.maturity.card-subtitle')}
 						longAmount={bids.long}
 						shortAmount={bids.short}
-						result="long"
+						result={optionsMarket.result}
 					/>
 					<Payout>
 						<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
 						<PayoutAmount>
-							{formatCurrencyWithSign(USD_SIGN, 500)} {SYNTHS_MAP.sUSD}
+							{formatCurrencyWithSign(USD_SIGN, claimable[optionsMarket.result])} {SYNTHS_MAP.sUSD}
 						</PayoutAmount>
 					</Payout>
 					<StyledCardContent>

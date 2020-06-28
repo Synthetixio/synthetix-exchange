@@ -7,9 +7,11 @@ export const PHASE: Record<Phase, number> = {
 	expiry: 3,
 };
 
-export const SIDE: Record<Side, number> = {
+export const SIDE: Record<Side | number, number | Side> = {
 	long: 0,
 	short: 1,
+	0: 'long',
+	1: 'short',
 };
 
 export const getPhaseAndEndDate = (

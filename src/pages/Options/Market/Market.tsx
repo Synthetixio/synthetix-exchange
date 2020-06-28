@@ -26,7 +26,7 @@ import {
 	parseBytes32String,
 } from 'utils/formatters';
 
-import { getPhaseAndEndDate } from 'pages/Options/constants';
+import { getPhaseAndEndDate, SIDE } from 'pages/Options/constants';
 import { getAvailableSynthsMap } from 'ducks/synths';
 
 import Spinner from 'components/Spinner';
@@ -78,6 +78,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			expiryDate: Number(expiry) * 1000,
 			longPrice: bigNumberFormatter(longPrice),
 			shortPrice: bigNumberFormatter(shortPrice),
+			result: SIDE[marketData.result],
 		};
 	});
 
@@ -92,6 +93,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			expiryDate,
 			longPrice,
 			shortPrice,
+			result,
 		} = marketQuery.data;
 
 		const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
@@ -108,6 +110,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			shortPrice,
 			phase,
 			timeRemaining,
+			result,
 		};
 	}
 

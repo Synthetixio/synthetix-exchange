@@ -233,7 +233,7 @@
 					"price": "price chart",
 					"options": "options chart"
 				},
-				"no-results": "No transactions associated with this market."
+				"no-results": "No transactions"
 			},
 			"transactions-card": {
 				"recent-market-tab-title": "recent market activity",

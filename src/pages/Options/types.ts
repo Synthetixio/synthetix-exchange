@@ -52,6 +52,7 @@ export type OptionsMarketInfo = {
 	asset: string;
 	phase: Phase;
 	timeRemaining: number;
+	result: Side;
 };
 
 export type OptionValue = {
