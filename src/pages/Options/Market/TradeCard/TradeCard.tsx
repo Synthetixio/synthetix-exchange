@@ -86,8 +86,9 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 	}
 
 	useEffect(() => {
-		BOMContract.on(BINARY_OPTIONS_EVENTS.BID, () => {
+		const refetchQueries = () => {
 			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(BOMContract.address));
+
 			if (currentWalletAddress) {
 				queryCache.invalidateQueries(
 					QUERY_KEYS.BinaryOptions.AccountMarketInfo(
@@ -96,17 +97,12 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 					)
 				);
 			}
+		};
+		BOMContract.on(BINARY_OPTIONS_EVENTS.BID, () => {
+			refetchQueries();
 		});
 		BOMContract.on(BINARY_OPTIONS_EVENTS.REFUND, () => {
-			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(BOMContract.address));
-			if (currentWalletAddress) {
-				queryCache.invalidateQueries(
-					QUERY_KEYS.BinaryOptions.AccountMarketInfo(
-						optionsMarket.address,
-						currentWalletAddress as string
-					)
-				);
-			}
+			refetchQueries();
 		});
 		return () => {
 			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.BID);
