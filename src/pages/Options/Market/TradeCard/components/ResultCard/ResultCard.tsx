@@ -14,8 +14,8 @@ type ResultCardProps = {
 	subTitle: React.ReactNode;
 	longAmount: number;
 	shortAmount: number;
-	longPrice?: number;
-	shortPrice?: number;
+	totalLongPrice?: number;
+	totalShortPrice?: number;
 	result?: Side;
 	exercised?: boolean;
 };
@@ -26,8 +26,8 @@ const ResultCard: FC<ResultCardProps> = ({
 	subTitle,
 	longAmount,
 	shortAmount,
-	longPrice,
-	shortPrice,
+	totalLongPrice,
+	totalShortPrice,
 	result,
 	exercised,
 	...rest
@@ -37,8 +37,8 @@ const ResultCard: FC<ResultCardProps> = ({
 		<Title>{title}</Title>
 		<Subtitle>{subTitle}</Subtitle>
 		<OptionResults result={result} exercised={exercised}>
-			<OptionResult side="long" amount={longAmount} price={longPrice} />
-			<OptionResult side="short" amount={shortAmount} price={shortPrice} />
+			<OptionResult side="long" amount={longAmount} totalPrice={totalLongPrice} />
+			<OptionResult side="short" amount={shortAmount} totalPrice={totalShortPrice} />
 		</OptionResults>
 	</Container>
 );

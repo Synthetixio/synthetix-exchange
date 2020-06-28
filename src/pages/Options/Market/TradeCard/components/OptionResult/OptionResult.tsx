@@ -2,9 +2,11 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { USD_SIGN } from 'constants/currency';
+
 import { Side } from 'ducks/options/types';
 
-import { formatCurrency } from 'utils/formatters';
+import { formatCurrency, formatCurrencyWithSign } from 'utils/formatters';
 
 import { headingH6CSS } from 'components/Typography/Heading';
 
@@ -13,24 +15,19 @@ import SideIcon from 'pages/Options/Market/components/SideIcon';
 type OptionResultProps = {
 	side: Side;
 	amount: number;
-	price?: number;
+	totalPrice?: number;
 };
 
-const OptionResult: FC<OptionResultProps> = ({ side, amount, price, ...rest }) => {
+const OptionResult: FC<OptionResultProps> = ({ side, amount, totalPrice, ...rest }) => {
 	const { t } = useTranslation();
 
 	return (
 		<Container className={side} {...rest}>
 			<StyledSideIcon side={side} />
 			<Amount>{t(`options.common.amount-${side}`, { amount: formatCurrency(amount) })}</Amount>
-			{price != null && (
+			{totalPrice != null && (
 				<Price>
-					{t('options.common.price-you-paid')}{' '}
-					<Cents>
-						{t('common.val-in-cents', {
-							val: formatCurrency(price * 100),
-						})}
-					</Cents>
+					{t('options.common.price-you-paid')} {formatCurrencyWithSign(USD_SIGN, totalPrice)}
 				</Price>
 			)}
 		</Container>
@@ -59,10 +56,6 @@ const Price = styled.div`
 	font-size: 12px;
 	text-transform: uppercase;
 	white-space: nowrap;
-`;
-
-const Cents = styled.span`
-	text-transform: none;
 `;
 
 export default OptionResult;

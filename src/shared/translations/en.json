@@ -291,7 +291,7 @@
 					"confirm-button": {
 						"label": "claim options",
 						"progress-label": "claiming in progress...",
-						"success-label": "already claimed"
+						"success-label": "nothing to claim"
 					},					
 					"footer": {
 						"end-label": "trading period closing in:"

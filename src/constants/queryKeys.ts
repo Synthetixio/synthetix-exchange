@@ -13,6 +13,12 @@ export const QUERY_KEYS = {
 	BinaryOptions: {
 		Markets: ['binaryOptions', 'markets'],
 		Market: (marketAddress: string) => ['binaryOptions', 'markets', marketAddress],
+		AccountMarketInfo: (marketAddress: string, accountAddress: string) => [
+			'binaryOptions',
+			'markets',
+			marketAddress,
+			accountAddress,
+		],
 		RecentTransactions: (marketAddress: string) => ['binaryOptions', 'transactions', marketAddress],
 		UserTransactions: (marketAddress: string, walletAddress: string) => [
 			'binaryOptions',
