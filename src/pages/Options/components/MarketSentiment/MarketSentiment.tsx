@@ -19,8 +19,8 @@ export const MarketSentiment: FC<MarketSentimentProps> = memo(
 	({ long, short, display, ...rest }) => {
 		const { t } = useTranslation();
 
-		const priceLong = long;
-		const priceShort = short;
+		const priceLong = long * 100;
+		const priceShort = short * 100;
 		const range = priceLong + priceShort;
 
 		const longs = (
