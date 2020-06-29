@@ -206,7 +206,7 @@ const SideIndication = styled.div`
 	height: 32px;
 	padding: 8px;
 	text-align: center;
-	cursor: pointer;
+	cursor: default;
 `;
 
 const LongSideIndication = styled(SideIndication)`
