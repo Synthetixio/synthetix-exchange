@@ -104,9 +104,21 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 		BOMContract.on(BINARY_OPTIONS_EVENTS.REFUND, () => {
 			refetchQueries();
 		});
+		BOMContract.on(BINARY_OPTIONS_EVENTS.OPTIONS_CLAIMED, (account: string) => {
+			if (currentWalletAddress && currentWalletAddress === account) {
+				refetchQueries();
+			}
+		});
+		BOMContract.on(BINARY_OPTIONS_EVENTS.OPTIONS_EXERCISED, (account: string) => {
+			if (currentWalletAddress && currentWalletAddress === account) {
+				refetchQueries();
+			}
+		});
 		return () => {
 			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.BID);
 			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.REFUND);
+			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.OPTIONS_CLAIMED);
+			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.OPTIONS_EXERCISED);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

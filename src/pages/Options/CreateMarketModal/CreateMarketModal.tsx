@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
-import { addDays } from 'date-fns';
 
 import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
@@ -148,8 +147,10 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 			const {
 				utils: { parseEther },
 			} = snxJSConnector as any;
-			const longBidAmount: number = (initialFundingAmount as number) / initialLongShorts.long;
-			const shortBidAmount: number = (initialFundingAmount as number) / initialLongShorts.short;
+			const longBidAmount: number =
+				(initialFundingAmount as number) / (100 - initialLongShorts.long);
+			const shortBidAmount: number =
+				(initialFundingAmount as number) / (100 - initialLongShorts.short);
 			const oracleKey = bytesFormatter((currencyKey as CurrencyKeyOptionType).value);
 			const price = parseEther(strikePrice.toString());
 			const times = [
@@ -370,11 +371,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 												selected={maturityDate}
 												showTimeSelect
 												onChange={(d) => setMaturityDate(d)}
-												minDate={
-													biddingEndDate
-														? new Date(addDays(biddingEndDate, MATURITY_DATE_DAY_DELAY))
-														: null
-												}
+												minDate={biddingEndDate || null}
 											/>
 										</FormControl>
 									</FormControlGroup>
