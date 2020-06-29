@@ -58,6 +58,12 @@ type BiddingPhaseCardProps = PropsFromRedux & {
 	accountMarketInfo: AccountMarketInfo;
 };
 
+function getPriceDifference(currentPrice: number, newPrice: number): number {
+	return (newPrice - currentPrice) / currentPrice;
+}
+
+const PRICE_SHIFT_THRESHOLD = 0.1;
+
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 	({
 		optionsMarket,
@@ -67,6 +73,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		gasInfo,
 		accountMarketInfo,
 	}) => {
+		const { longPrice, shortPrice } = optionsMarket;
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
@@ -74,6 +81,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		const [isAllowing, setIsAllowing] = useState<boolean>(false);
 		const [type, setType] = useState<OptionsTransaction['type']>('bid');
 		const [isBidding, setIsBidding] = useState<boolean>(false);
+		const [priceShift, setPriceShift] = useState<number>(0);
 		const [longSideAmount, setLongSideAmount] = useState<OptionsTransaction['amount'] | string>('');
 		const [shortSideAmount, setShortSideAmount] = useState<OptionsTransaction['amount'] | string>(
 			''
@@ -231,6 +239,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 
 		const handleBidAmount = async (amount: string) => {
 			side === 'short' ? setShortSideAmount(amount) : setLongSideAmount(amount);
+			const bidPrice = side === 'short' ? shortPrice : longPrice;
 			const {
 				utils: { parseEther },
 			} = snxJSConnector as any;
@@ -248,6 +257,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 
 				setShortPriceAmount(short / 1e18);
 				setLongPriceAmount(long / 1e18);
+				setPriceShift(getPriceDifference(bidPrice, (side === 'short' ? short : long) / 1e18));
 			} catch (e) {
 				console.log(e);
 			}
@@ -297,6 +307,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onClick={() => setSide('long')}
 							transKey={transKey}
 							currentPosition={longPosition}
+							priceShift={priceShift}
 						/>
 						<TradeSideSeparator />
 						<TradeSide
@@ -312,6 +323,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onClick={() => setSide('short')}
 							transKey={transKey}
 							currentPosition={shortPosition}
+							priceShift={priceShift}
 						/>
 					</TradeSides>
 					<CardContent>
@@ -320,7 +332,13 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							<ActionButton
 								size="lg"
 								palette="primary"
-								disabled={isBidding || !isLoggedIn || !sUSDBalance || !gasLimit}
+								disabled={
+									isBidding ||
+									!isLoggedIn ||
+									!sUSDBalance ||
+									!gasLimit ||
+									Math.abs(priceShift) > PRICE_SHIFT_THRESHOLD
+								}
 								onClick={handleBidOrRefund}
 							>
 								{!isBidding

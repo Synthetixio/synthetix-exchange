@@ -7,11 +7,11 @@ import { OptionsTransaction } from 'pages/Options/types';
 import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
 import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
 
-import { GridDivRow, CurrencyKey } from 'shared/commonStyles';
+import { GridDivRow, CurrencyKey, FlexDiv } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
 
-import { formatCurrencyWithKey } from 'utils/formatters';
+import { formatCurrencyWithKey, formatPercentage } from 'utils/formatters';
 
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
@@ -19,6 +19,8 @@ import { formLabelSmallCSS } from 'components/Typography/Form';
 
 import { CurrentPosition } from './types';
 import { labelMediumCSS } from 'components/Typography/Label';
+import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
+import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 
 type TradeSideProps = {
 	isActive: boolean;
@@ -31,6 +33,7 @@ type TradeSideProps = {
 	onClick: () => void;
 	transKey?: string;
 	currentPosition: CurrentPosition;
+	priceShift: number;
 };
 
 const TradeSide: FC<TradeSideProps> = memo(
@@ -45,6 +48,7 @@ const TradeSide: FC<TradeSideProps> = memo(
 		onClick,
 		transKey,
 		currentPosition,
+		priceShift,
 	}) => {
 		const { t } = useTranslation();
 		const theme = useContext(ThemeContext);
@@ -73,7 +77,19 @@ const TradeSide: FC<TradeSideProps> = memo(
 					</FormRow>
 					<FormRow>
 						<FormControl>
-							<FormInputLabel htmlFor={priceInputId}>{t(`${transKey}.price-label`)}</FormInputLabel>
+							<FormLabelRow>
+								<FormInputLabel htmlFor={priceInputId}>
+									{t(`${transKey}.price-label`)}
+								</FormInputLabel>
+								<FlexDiv>
+									<FormInputLabel>{formatPercentage(priceShift, 0)}</FormInputLabel>
+									<NetworkInfoTooltip title={'test'}>
+										<QuestionMarkIcon>
+											<QuestionMarkStyled />
+										</QuestionMarkIcon>
+									</NetworkInfoTooltip>
+								</FlexDiv>
+							</FormLabelRow>
 							<StyledNumericInput
 								id={priceInputId}
 								value={price}
@@ -179,6 +195,10 @@ const FormControl = styled(GridDivRow)`
 	grid-gap: 8px;
 `;
 
+const FormLabelRow = styled(FlexDiv)`
+	justify-content: space-between;
+`;
+
 const StyledNumericInput = styled(NumericInput)`
 	background-color: ${(props) => props.theme.colors.surfaceL2};
 	border-color: ${(props) => props.theme.colors.accentL1};
@@ -231,6 +251,22 @@ const StyledCurrencyKey = styled(CurrencyKey)`
 
 const SectionBody = styled.div`
 	padding-bottom: 3px;
+`;
+
+const QuestionMarkIcon = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	margin-left: 4px;
+`;
+
+const QuestionMarkStyled = styled(QuestionMark)`
+	height: 8px;
 `;
 
 export default TradeSide;
