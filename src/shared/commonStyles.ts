@@ -97,6 +97,7 @@ export const TextButton = styled.button`
 	background: transparent;
 	padding: 0;
 	cursor: pointer;
+	outline: none;
 `;
 
 export const LinkTextSmall = styled(DataSmall)`

@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { memo, FC, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -47,6 +47,7 @@ import { useQuery /*queryCache*/ } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
 
 import { MarketProvider } from './contexts/MarketContext';
+import MarketInfoModal from './MarketInfoModal';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -62,6 +63,7 @@ type MarketProps = PropsFromRedux & {
 
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
+	const [marketInfoModalVisible, setMarketInfoModalVisible] = useState<boolean>(false);
 
 	const marketQuery = useQuery<OptionsMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.Market(marketAddress),
@@ -84,6 +86,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 
 			return {
 				currencyKey,
+				finalPrice: bigNumberFormatter(oracleDetails.finalPrice),
 				asset: synthsMap[currencyKey]?.asset || currencyKey,
 				strikePrice: bigNumberFormatter(oracleDetails.strikePrice),
 				biddingEndDate,
@@ -162,8 +165,19 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 		*/
 	);
 
+	const handleViewMarketDetails = useCallback(() => {
+		setMarketInfoModalVisible(true);
+	}, []);
+
 	const optionsMarket: OptionsMarketInfo | null =
 		marketQuery.isSuccess && marketQuery.data ? marketQuery.data : null;
+
+	let marketHeading = optionsMarket
+		? `${optionsMarket.asset} > ${formatCurrencyWithSign(
+				USD_SIGN,
+				optionsMarket.strikePrice
+		  )} @ ${formatShortDate(optionsMarket.maturityDate)}`
+		: null;
 
 	return optionsMarket ? (
 		<MarketProvider optionsMarket={optionsMarket}>
@@ -176,11 +190,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 								{t('options.market.heading.all-markets')}
 							</AllMarketsLink>
 							{' | '}
-							<HeadingTitle>
-								{optionsMarket.asset} &gt;{' '}
-								{formatCurrencyWithSign(USD_SIGN, optionsMarket.strikePrice)} @{' '}
-								{formatShortDate(optionsMarket.maturityDate)}
-							</HeadingTitle>
+							<HeadingTitle>{marketHeading}</HeadingTitle>
 						</HeadingItem>
 						<StyledHeadingItem>
 							<HeadingTitle>{t('options.market.heading.market-sentiment')}</HeadingTitle>
@@ -191,7 +201,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 							/>
 						</StyledHeadingItem>
 					</Heading>
-					<ChartCard />
+					<ChartCard onViewMarketDetails={handleViewMarketDetails} />
 					<TransactionsCard />
 				</LeftCol>
 				<RightCol>
@@ -205,6 +215,13 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 					<TradeCard />
 				</RightCol>
 			</StyledCenteredPageLayout>
+			{marketInfoModalVisible && (
+				<MarketInfoModal
+					marketHeading={marketHeading}
+					optionMarket={optionsMarket}
+					onClose={() => setMarketInfoModalVisible(false)}
+				/>
+			)}
 		</MarketProvider>
 	) : (
 		<LoaderContainer>

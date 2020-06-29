@@ -228,7 +228,26 @@
 				"all-markets": "all markets",
 				"market-sentiment": "market sentiment"
 			},
+			"info-modal": {
+				"title": "market information:",
+				"table": {
+					"currency-col": "currency",
+					"strike-price-col": "strike price",
+					"phase-col": "phase",
+					"bidding-end-col": "bidding end",
+					"maturity-col": "maturity",
+					"expiry-col": "expiry",
+					"option-prices-col": "option prices",
+					"total-outstanding-bids-col": "total outstanding bids",
+					"total-outstanding-options-col": "total outstanding options",
+					"deposited-currency-col": "deposited <0>{{currencyKey}}</0>",
+					"currency-price-col": "current <0>{{currencyKey}}</0> price",
+					"final-price-col": "final <0>{{currencyKey}}</0> price",
+					"current-result-col": "current result"
+				}
+			},
 			"chart-card": {
+				"view-market-details": "View Market Details",
 				"chart-types": {
 					"price": "price chart",
 					"options": "options chart"

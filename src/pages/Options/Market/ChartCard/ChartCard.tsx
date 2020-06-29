@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { FIAT_CURRENCY_MAP } from 'constants/currency';
 
-import { GridDivCenteredCol } from 'shared/commonStyles';
+import { GridDivCenteredCol, TextButton } from 'shared/commonStyles';
+
+import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperlink.svg';
 
 import Card from 'components/Card';
 import { PeriodLabel, PERIOD_LABELS_MAP, PERIOD_LABELS } from 'constants/period';
@@ -17,7 +19,11 @@ import OptionsChart from './OptionsChart';
 
 type ChartType = 'price' | 'options';
 
-const Market: FC = memo(() => {
+type ChartCardProps = {
+	onViewMarketDetails: () => void;
+};
+
+const ChartCard: FC<ChartCardProps> = memo(({ onViewMarketDetails }) => {
 	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.FOUR_HOURS);
 	const [chartType, setChartType] = useState<ChartType>('price');
 
@@ -33,7 +39,7 @@ const Market: FC = memo(() => {
 	return (
 		<Card>
 			<CardHeader>
-				<div>
+				<CardHeaderLeft>
 					<Currency.Pair
 						baseCurrencyKey={optionsMarket.currencyKey}
 						baseCurrencyAsset={optionsMarket.asset}
@@ -42,8 +48,11 @@ const Market: FC = memo(() => {
 							type: 'asset',
 						}}
 					/>
-				</div>
-				<ActionsContainer>
+					<ViewMarketDetailsButton onClick={onViewMarketDetails}>
+						{t('options.market.chart-card.view-market-details')} <ArrowHyperlinkIcon />
+					</ViewMarketDetailsButton>
+				</CardHeaderLeft>
+				<CardHeaderRight>
 					<Overlays>
 						<OverlayButton isActive={chartType === 'price'} onClick={() => setChartType('price')}>
 							{t('options.market.chart-card.chart-types.price')}
@@ -67,7 +76,7 @@ const Market: FC = memo(() => {
 							</StyledButton>
 						))}
 					</Periods>
-				</ActionsContainer>
+				</CardHeaderRight>
 			</CardHeader>
 			<Card.Body>
 				{chartType === 'price' && <PriceChart {...chartProps} />}
@@ -85,7 +94,7 @@ const CardHeader = styled(Card.Header)`
 	}
 `;
 
-const ActionsContainer = styled(GridDivCenteredCol)`
+const CardHeaderRight = styled(GridDivCenteredCol)`
 	grid-gap: 16px;
 `;
 
@@ -114,4 +123,20 @@ const OverlayButton = styled(StyledButton)`
 	align-items: center;
 `;
 
-export default Market;
+const CardHeaderLeft = styled(GridDivCenteredCol)`
+	grid-gap: 12px;
+`;
+
+const ViewMarketDetailsButton = styled(TextButton)`
+	cursor: pointer;
+	color: ${(props) => props.theme.colors.hyperlink};
+	font-family: ${(props) => props.theme.fonts.medium};
+	font-size: 10.5px;
+	svg {
+		margin-left: 3px;
+		width: 6px;
+		height: 6px;
+	}
+`;
+
+export default ChartCard;

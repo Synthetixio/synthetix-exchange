@@ -122,3 +122,4 @@ export const formattedDuration = (duration: Duration, delimiter = ' ') => {
 };
 
 export const formatShortDate = (date: Date | number) => format(date, 'yyyy-MM-dd');
+export const formatShortDateWithTime = (date: Date | number) => format(date, 'yyyy-MM-dd H:mma');

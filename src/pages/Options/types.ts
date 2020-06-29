@@ -48,6 +48,7 @@ export type HistoricalOptionsMarketInfo = {
 export type OptionsMarketInfo = {
 	address: string;
 	currencyKey: CurrencyKey;
+	finalPrice: number;
 	strikePrice: number;
 	biddingEndDate: number;
 	maturityDate: number;
