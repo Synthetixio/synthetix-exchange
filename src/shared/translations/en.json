@@ -182,7 +182,15 @@
 				"create-market-button-label": "create a new market"
 			},
 			"explore-markets": {
-				"title": "Bid on open markets:"
+				"title": "Bid on open markets:",
+				"table": {
+					"filters": {
+						"creator": {
+							"tooltip-logged-in": "Login to see markets you created",
+							"tooltip-logged-out": "Click to see markets you created"
+						}
+					}
+				}
 			},
 			"markets-table": {
 				"asset-col": "asset",
@@ -605,7 +613,7 @@
 		"features": {
 			"coming-soon": "coming soon"
 		},
-		"search-results": {
+		"search-results": {			
 			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
 		},
 		"chart": {
