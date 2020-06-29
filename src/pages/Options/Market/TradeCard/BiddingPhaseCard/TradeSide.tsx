@@ -106,9 +106,9 @@ const TradeSide: FC<TradeSideProps> = memo(
 						</StyledCurrencyKey>
 					</SectionBody>
 					<SectionBody>
-						{t('options.market.trade-card.bidding.common.payoff')}{' '}
+						{t('options.market.trade-card.bidding.common.payout')}{' '}
 						<StyledCurrencyKey>
-							{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.payoff)}
+							{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.payout)}
 						</StyledCurrencyKey>
 					</SectionBody>
 				</CurrentPositionSection>

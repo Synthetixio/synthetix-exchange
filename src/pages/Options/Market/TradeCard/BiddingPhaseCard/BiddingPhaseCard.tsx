@@ -85,11 +85,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		const { bids, claimable } = accountMarketInfo;
 		const longPosition = {
 			bid: bids.long,
-			payoff: claimable.long,
+			payout: claimable.long,
 		};
 		const shortPosition = {
 			bid: bids.short,
-			payoff: claimable.short,
+			payout: claimable.short,
 		};
 
 		useEffect(() => {

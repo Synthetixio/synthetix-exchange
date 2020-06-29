@@ -58,7 +58,7 @@ import {
 import MarketSentiment from '../components/MarketSentiment';
 import NetworkFees from '../components/NetworkFees';
 
-const MATURITY_DATE_DAY_DELAY = 1;
+// const MATURITY_DATE_DAY_DELAY = 1;
 
 const StyledSlider = withStyles({
 	root: {

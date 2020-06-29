@@ -286,7 +286,7 @@
 					"common": {
 						"current-position": "current position:",
 						"bid": "bid:",
-						"payoff": "payoff:"
+						"payout": "payout:"
 					},
 					"footer": {
 						"end-label": "bidding period closing in:"
