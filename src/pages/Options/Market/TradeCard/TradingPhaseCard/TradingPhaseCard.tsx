@@ -2,6 +2,7 @@ import React, { FC, memo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
+import { queryCache, AnyQueryKey } from 'react-query';
 
 import snxJSConnector from 'utils/snxJSConnector';
 import { normalizeGasLimit } from 'utils/transactions';
@@ -14,6 +15,7 @@ import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
 
 import { ReactComponent as ClockIcon } from 'assets/images/clock.svg';
+import QUERY_KEYS from 'constants/queryKeys';
 
 import {
 	StyledTimeRemaining,
@@ -110,7 +112,16 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 						</ActionButton>
 						<PhaseEnd>
 							{t('options.market.trade-card.trading.footer.end-label')}{' '}
-							<StyledTimeRemaining end={optionsMarket.timeRemaining} />
+							<StyledTimeRemaining
+								end={optionsMarket.timeRemaining}
+								onEnded={() =>
+									queryCache.invalidateQueries(
+										(QUERY_KEYS.BinaryOptions.Market(
+											optionsMarket.address
+										) as unknown) as AnyQueryKey
+									)
+								}
+							/>
 						</PhaseEnd>
 					</StyledCardContent>
 				</StyledCardBody>
