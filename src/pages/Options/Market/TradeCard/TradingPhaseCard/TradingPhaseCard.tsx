@@ -1,7 +1,10 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
+
+import snxJSConnector from 'utils/snxJSConnector';
+import { normalizeGasLimit } from 'utils/transactions';
 
 import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
@@ -43,18 +46,39 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 		const BOMContract = useBOMContractContext();
 
 		const [isClaiming, setIsClaiming] = useState<boolean>(false);
+		const [gasLimit, setGasLimit] = useState<number | null>(null);
 
 		const { bids } = accountMarketInfo;
 
 		const nothingToClaim = !bids.short && !bids.long;
-		const buttonDisabled = isClaiming || !isLoggedIn || nothingToClaim;
+		const buttonDisabled = isClaiming || !isLoggedIn || nothingToClaim || !gasLimit;
+
+		useEffect(() => {
+			const fetchGasLimit = async () => {
+				if (!isLoggedIn) return;
+				try {
+					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
+					const gasEstimate = await BOMContractWithSigner.estimate.claimOptions();
+					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
+				} catch (e) {
+					console.log(e);
+					setGasLimit(null);
+				}
+			};
+			fetchGasLimit();
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [isLoggedIn]);
 
 		const handleClaim = async () => {
-			setIsClaiming(true);
-			console.log('TODO');
-			const res = await BOMContract.estimate.claimOptions(currentWalletAddress);
-			console.log(res);
-			setIsClaiming(false);
+			try {
+				setIsClaiming(true);
+				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
+				await BOMContractWithSigner.claimOptions();
+				setIsClaiming(false);
+			} catch (e) {
+				console.log(e);
+				setIsClaiming(false);
+			}
 		};
 
 		return (
@@ -71,7 +95,7 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 						totalShortPrice={optionsMarket.shortPrice * bids.short}
 					/>
 					<StyledCardContent>
-						<NetworkFees gasLimit={null} />
+						<NetworkFees gasLimit={gasLimit} />
 						<ActionButton
 							size="lg"
 							palette="primary"
