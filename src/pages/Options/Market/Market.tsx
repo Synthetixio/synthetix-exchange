@@ -29,6 +29,8 @@ import {
 	parseBytes32String,
 } from 'utils/formatters';
 
+import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
+
 import { getPhaseAndEndDate, SIDE } from 'pages/Options/constants';
 import { getAvailableSynthsMap } from 'ducks/synths';
 
@@ -57,18 +59,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type MarketProps = PropsFromRedux & {
 	marketAddress: string;
 };
-
-type OptionsMarketInfoDataQuery = Pick<
-	OptionsMarketInfo,
-	| 'currencyKey'
-	| 'strikePrice'
-	| 'biddingEndDate'
-	| 'maturityDate'
-	| 'expiryDate'
-	| 'longPrice'
-	| 'shortPrice'
-	| 'result'
->;
 
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
@@ -182,6 +172,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 					<Heading>
 						<HeadingItem>
 							<AllMarketsLink to={ROUTES.Options.Home}>
+								<ArrowBackIcon />
 								{t('options.market.heading.all-markets')}
 							</AllMarketsLink>
 							{' | '}
@@ -265,7 +256,11 @@ const StyledMarketSentiment = styled(MarketSentiment)`
 
 const AllMarketsLink = styled(Link)`
 	text-transform: uppercase;
-	color: ${(props) => props.theme.colors.fontSecondary};
+	color: ${(props) => props.theme.colors.hyperlink};
+	svg {
+		width: 10px;
+		margin-right: 5px;
+	}
 `;
 
 const HeadingTitle = styled.div`
@@ -291,11 +286,15 @@ const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`
 	height: 30px;
 	justify-content: center;
 	${(props) =>
-		props.isActive &&
-		css`
-			background-color: ${(props) => props.theme.colors.accentL2};
-			color: ${(props) => props.theme.colors.fontPrimary};
-		`}
+		props.isActive
+			? css`
+					background-color: ${(props) => props.theme.colors.accentL2};
+					color: ${(props) => props.theme.colors.fontPrimary};
+			  `
+			: css`
+					opacity: 0.5;
+					cursor: not-allowed;
+			  `}
 `;
 
 export default connector(Market);
