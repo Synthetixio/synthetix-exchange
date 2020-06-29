@@ -1,5 +1,5 @@
 import React, { FC, memo, useContext } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import styled, { css, ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { OptionsTransaction } from 'pages/Options/types';
@@ -158,6 +158,11 @@ const Container = styled(GridDivRow)<{ isActive: boolean }>`
 		border: 1px solid
 			${(props) => (props.isActive ? props.theme.colors.accentL2 : props.theme.colors.accentL1)};
 	}
+	${(props) =>
+		!props.isActive &&
+		css`
+			cursor: pointer;
+		`};
 `;
 
 const FormInputLabel = styled.label`
@@ -201,7 +206,7 @@ const SideIndication = styled.div`
 	height: 32px;
 	padding: 8px;
 	text-align: center;
-	cursor: default;
+	cursor: pointer;
 `;
 
 const LongSideIndication = styled(SideIndication)`
