@@ -2,6 +2,7 @@ import React, { FC, memo, useState, useEffect } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { queryCache, AnyQueryKey } from 'react-query';
 
 import { ReactComponent as WalletIcon } from 'assets/images/wallet.svg';
 
@@ -11,6 +12,7 @@ import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getGasInfo } from 'ducks/transaction';
 import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
+import QUERY_KEYS from 'constants/queryKeys';
 import { SYNTHS_MAP } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { APPROVAL_EVENTS } from 'constants/events';
@@ -305,7 +307,16 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						)}
 						<PhaseEnd>
 							{t('options.market.trade-card.bidding.footer.end-label')}{' '}
-							<StyledTimeRemaining end={optionsMarket.timeRemaining} />
+							<StyledTimeRemaining
+								end={optionsMarket.timeRemaining}
+								onEnded={() =>
+									queryCache.invalidateQueries(
+										(QUERY_KEYS.BinaryOptions.Market(
+											optionsMarket.address
+										) as unknown) as AnyQueryKey
+									)
+								}
+							/>
 						</PhaseEnd>
 					</CardContent>
 				</StyledCardBody>

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -14,12 +14,13 @@ import { formattedDuration } from 'utils/formatters';
 type TimeRemainingProps = {
 	end: Date | number;
 	className?: string;
+	onEnded?: () => void;
 };
 
 const ONE_SECOND_IN_MS = 1000;
 const ENDING_SOON_IN_HOURS = 24;
 
-export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
+export const TimeRemaining: FC<TimeRemainingProps> = ({ end, onEnded, ...rest }) => {
 	const now = Date.now();
 	const timeElapsed = now >= end;
 	const endingSoon = Math.abs(differenceInHours(now, end)) < ENDING_SOON_IN_HOURS;
@@ -33,6 +34,12 @@ export const TimeRemaining: FC<TimeRemainingProps> = ({ end, ...rest }) => {
 
 	const [duration, setDuration] = useState<Duration>(intervalToDuration({ start: now, end }));
 	const { t } = useTranslation();
+
+	useEffect(() => {
+		if (onEnded && timeElapsed) {
+			onEnded();
+		}
+	}, [onEnded, timeElapsed]);
 
 	useInterval(() => {
 		if (now <= end) {
