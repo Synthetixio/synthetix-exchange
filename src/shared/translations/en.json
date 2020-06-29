@@ -273,7 +273,7 @@
 						"title": "withdraw",
 						"subtitle": "from your existing bid:",
 						"amount-label": "withdrawal amount:",
-						"price-label": "updated price:",
+						"price-label": "price:",
 						"confirm-button": {
 							"label": "confirm withdrawal",
 							"progress-label": "withdrawal in progress..."
