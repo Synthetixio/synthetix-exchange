@@ -21,7 +21,13 @@ import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
 import { Z_INDEX, SEARCH_DEBOUNCE_MS } from 'constants/ui';
-import { FlexDivRow, AssetSearchInput, NoResultsMessage, PageContent } from 'shared/commonStyles';
+import {
+	FlexDivRow,
+	AssetSearchInput,
+	NoResultsMessage,
+	PageContent,
+	Strong,
+} from 'shared/commonStyles';
 
 import { Button } from 'components/Button';
 
@@ -141,7 +147,7 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 										<Trans
 											i18nKey="common.search-results.no-results-for-query"
 											values={{ searchQuery: assetSearch }}
-											components={[<strong />]}
+											components={[<Strong />]}
 										/>
 									</NoResultsMessage>
 								) : undefined

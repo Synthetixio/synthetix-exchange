@@ -296,3 +296,7 @@ export const LoaderContainer = styled.div`
 	position: relative;
 	height: 400px;
 `;
+
+export const Strong = styled.span`
+	font-family: ${(props) => props.theme.fonts.medium};
+`;

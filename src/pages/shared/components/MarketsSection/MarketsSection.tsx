@@ -23,7 +23,13 @@ import useInterval from 'shared/hooks/useInterval';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button, ButtonFilterWithDropdown } from 'components/Button';
-import { FlexDivRow, AssetSearchInput, NoResultsMessage, PageContent } from 'shared/commonStyles';
+import {
+	FlexDivRow,
+	AssetSearchInput,
+	NoResultsMessage,
+	PageContent,
+	Strong,
+} from 'shared/commonStyles';
 
 import MarketsTable from './MarketsTable';
 import MarketsCharts from './MarketsCharts';
@@ -123,7 +129,7 @@ export const MarketsSection: FC<MarketSectionProps> = ({
 									<Trans
 										i18nKey="common.search-results.no-results-for-query"
 										values={{ searchQuery: assetSearch }}
-										components={[<strong />]}
+										components={[<Strong />]}
 									/>
 								</NoResultsMessage>
 							) : undefined

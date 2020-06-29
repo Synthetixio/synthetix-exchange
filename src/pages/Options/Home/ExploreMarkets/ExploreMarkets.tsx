@@ -16,7 +16,7 @@ import { RootState } from 'ducks/types';
 import { ReactComponent as PencilIcon } from 'assets/images/pencil.svg';
 
 import { media } from 'shared/media';
-import { GridDivCenteredCol, NoResultsMessage } from 'shared/commonStyles';
+import { GridDivCenteredCol, NoResultsMessage, Strong } from 'shared/commonStyles';
 
 import { SEARCH_DEBOUNCE_MS } from 'constants/ui';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
@@ -118,7 +118,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 								<Trans
 									i18nKey="common.search-results.no-results-for-query"
 									values={{ searchQuery: assetSearch }}
-									components={[<strong />]}
+									components={[<Strong />]}
 								/>
 							</NoResultsMessage>
 						) : showCreatorMarkets && creatorOptionsMarkets.length === 0 ? (
@@ -126,7 +126,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 								<Trans
 									i18nKey="common.search-results.no-results-for-query"
 									values={{ searchQuery: currentWalletAddress }}
-									components={[<strong />]}
+									components={[<Strong />]}
 								/>
 							</NoResultsMessage>
 						) : undefined
