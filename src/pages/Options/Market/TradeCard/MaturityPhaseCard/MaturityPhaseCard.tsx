@@ -1,4 +1,4 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
@@ -9,6 +9,10 @@ import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
+
+import snxJSConnector from 'utils/snxJSConnector';
+import { normalizeGasLimit } from 'utils/transactions';
+import { useBOMContractContext } from '../../contexts/BOMContractContext';
 
 import { ReactComponent as FinishIcon } from 'assets/images/finish.svg';
 
@@ -41,16 +45,43 @@ type MaturityPhaseCardProps = PropsFromRedux & {
 
 const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
-		const { bids, claimable } = accountMarketInfo;
 		const { t } = useTranslation();
-		const [isExercising, setIsExercising] = useState<boolean>(false);
+		const BOMContract = useBOMContractContext();
 
+		const [isExercising, setIsExercising] = useState<boolean>(false);
+		const [gasLimit, setGasLimit] = useState<number | null>(null);
+
+		const { bids, claimable } = accountMarketInfo;
 		const nothingToExercise = !claimable.short && !claimable.long;
 
-		const handleExercise = () => {
-			setIsExercising(true);
-			console.log('TODO');
-			setIsExercising(false);
+		const buttonDisabled = isExercising || !isLoggedIn || nothingToExercise || !gasLimit;
+
+		useEffect(() => {
+			const fetchGasLimit = async () => {
+				if (!isLoggedIn) return;
+				try {
+					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
+					const gasEstimate = await BOMContractWithSigner.estimate.exerciseOptions();
+					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
+				} catch (e) {
+					console.log(e);
+					setGasLimit(null);
+				}
+			};
+			fetchGasLimit();
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [isLoggedIn]);
+
+		const handleExercise = async () => {
+			try {
+				setIsExercising(true);
+				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
+				await BOMContractWithSigner.exerciseOptions();
+				setIsExercising(false);
+			} catch (e) {
+				console.log(e);
+				setIsExercising(false);
+			}
 		};
 
 		return (
@@ -72,11 +103,11 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 						</PayoutAmount>
 					</Payout>
 					<StyledCardContent>
-						<NetworkFees gasLimit={null} />
+						<NetworkFees gasLimit={gasLimit} />
 						<ActionButton
 							size="lg"
 							palette="primary"
-							disabled={isExercising || !isLoggedIn || nothingToExercise}
+							disabled={buttonDisabled}
 							onClick={handleExercise}
 						>
 							{nothingToExercise

@@ -9,7 +9,7 @@ import { normalizeGasLimit } from 'utils/transactions';
 
 import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
 
 import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
@@ -30,7 +30,6 @@ import { useBOMContractContext } from '../../contexts/BOMContractContext';
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
-	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -43,7 +42,7 @@ type TradingPhaseCardProps = PropsFromRedux & {
 };
 
 const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
-	({ optionsMarket, isLoggedIn, currentWalletAddress = '', accountMarketInfo }) => {
+	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 
