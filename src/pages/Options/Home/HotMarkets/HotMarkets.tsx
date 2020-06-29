@@ -109,6 +109,7 @@ const MarketDetailsRow = styled(GridDivCentered)`
 
 const StrikePrice = styled.div`
 	${headingH5CSS};
+	text-align: center;
 	${(props) => props.theme.colors.fontPrimary};
 `;
 
