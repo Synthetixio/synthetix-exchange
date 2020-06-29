@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { useQuery, queryCache } from 'react-query';
+import { useQuery, queryCache, AnyQueryKey } from 'react-query';
+
 import BiddingPhaseCard from './BiddingPhaseCard';
 import TradingPhaseCard from './TradingPhaseCard';
 import MaturityPhaseCard from './MaturityPhaseCard';
@@ -32,7 +33,7 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 	const optionsMarket = useMarketContext();
 	const BOMContract = useBOMContractContext();
 
-	const accountMarketInfoQuery = useQuery(
+	const accountMarketInfoQuery = useQuery<AccountMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.AccountMarketInfo(
 			optionsMarket.address,
 			currentWalletAddress as string
@@ -62,7 +63,7 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 		}
 	);
 
-	let accountMarketInfo: AccountMarketInfo = {
+	let accountMarketInfo = {
 		balances: {
 			long: 0,
 			short: 0,
@@ -87,14 +88,16 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 
 	useEffect(() => {
 		const refetchQueries = () => {
-			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(BOMContract.address));
+			queryCache.invalidateQueries(
+				(QUERY_KEYS.BinaryOptions.Market(BOMContract.address) as unknown) as AnyQueryKey
+			);
 
 			if (currentWalletAddress) {
 				queryCache.invalidateQueries(
-					QUERY_KEYS.BinaryOptions.AccountMarketInfo(
+					(QUERY_KEYS.BinaryOptions.AccountMarketInfo(
 						optionsMarket.address,
 						currentWalletAddress as string
-					)
+					) as unknown) as AnyQueryKey
 				);
 			}
 		};

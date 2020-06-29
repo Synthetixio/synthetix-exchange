@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
-import { OptionsMarketInfo, Phase, OptionsMarket } from 'pages/Options/types';
+import { OptionsMarketInfo, Phase, OptionsMarkets, OptionsMarket } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 
 import ROUTES from 'constants/routes';
@@ -55,10 +55,22 @@ type MarketProps = PropsFromRedux & {
 	marketAddress: string;
 };
 
+type OptionsMarketInfoDataQuery = Pick<
+	OptionsMarketInfo,
+	| 'currencyKey'
+	| 'strikePrice'
+	| 'biddingEndDate'
+	| 'maturityDate'
+	| 'expiryDate'
+	| 'longPrice'
+	| 'shortPrice'
+	| 'result'
+>;
+
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
 
-	const marketQuery = useQuery(
+	const marketQuery = useQuery<OptionsMarketInfoDataQuery, any>(
 		QUERY_KEYS.BinaryOptions.Market(marketAddress),
 		async () => {
 			const [marketData, marketParameters] = await Promise.all([
@@ -79,13 +91,14 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				longPrice: bigNumberFormatter(longPrice),
 				shortPrice: bigNumberFormatter(shortPrice),
 				result: SIDE[marketData.result],
-			};
+			} as OptionsMarketInfoDataQuery;
 		},
 		{
 			initialData: () => {
 				const marketData = queryCache
-					.getQueryData(QUERY_KEYS.BinaryOptions.Markets)
-					?.find((d: OptionsMarket) => d.address === marketAddress) as OptionsMarket;
+					// @ts-ignore
+					.getQueryData<OptionsMarkets>(QUERY_KEYS.BinaryOptions.Markets)
+					?.find((market: OptionsMarket) => market.address === marketAddress);
 
 				if (marketData) {
 					const {

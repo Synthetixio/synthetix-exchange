@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import snxData from 'synthetix-data';
 
-import { OptionsMarketInfo } from 'pages/Options/types';
+import { OptionsMarketInfo, OptionsTransactions } from 'pages/Options/types';
 
 import QUERY_KEYS from 'constants/queryKeys';
 import TransactionsTable from '../components/TransactionsTable';
@@ -18,19 +18,21 @@ type RecentTransactionsProps = {
 const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress }) => {
 	const { t } = useTranslation();
 
-	const transactionsQuery = useQuery(
+	const transactionsQuery = useQuery<OptionsTransactions, any>(
 		QUERY_KEYS.BinaryOptions.RecentTransactions(marketAddress),
-		() => snxData.binaryOptions.optionTransactions({ market: marketAddress })
+		() => snxData.binaryOptions.optionTransactions({ market: marketAddress }),
+		{
+			refetchOnWindowFocus: false,
+		}
 	);
 
-	const isInitialLoading = transactionsQuery.isLoading && transactionsQuery.data == null;
 	const noResults =
 		transactionsQuery.isSuccess && transactionsQuery.data && transactionsQuery.data.length === 0;
 
 	return (
 		<TransactionsTable
-			optionsTransactions={transactionsQuery.data}
-			isLoading={isInitialLoading}
+			optionsTransactions={transactionsQuery.data || []}
+			isLoading={transactionsQuery.isLoading}
 			noResultsMessage={
 				transactionsQuery.isSuccess && noResults ? (
 					<TableNoResults>

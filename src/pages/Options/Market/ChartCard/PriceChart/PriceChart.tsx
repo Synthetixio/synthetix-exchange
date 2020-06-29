@@ -7,7 +7,6 @@ import get from 'lodash/get';
 import { useQuery } from 'react-query';
 
 import { USD_SIGN } from 'constants/currency';
-import { BaseRateUpdates } from 'constants/rates';
 
 import { formatCurrencyWithSign } from 'utils/formatters';
 
@@ -21,6 +20,7 @@ import { fetchSynthRateUpdate } from 'services/rates/rates';
 
 import { ChartContainer } from '../common';
 import { OptionsMarketInfo } from 'pages/Options/types';
+import { HistoricalRatesData } from 'ducks/historicalRates';
 
 type PriceChartProps = {
 	selectedPeriod: PeriodLabel;
@@ -30,12 +30,12 @@ type PriceChartProps = {
 const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 	const theme = useContext(ThemeContext);
 
-	const historicalRatesQuery = useQuery(
+	const historicalRatesQuery = useQuery<HistoricalRatesData | null, any>(
 		QUERY_KEYS.Synths.HistoricalRates(optionsMarket.currencyKey, selectedPeriod.period),
 		() => fetchSynthRateUpdate(optionsMarket.currencyKey, selectedPeriod.value)
 	);
 
-	const chartData: BaseRateUpdates = get(historicalRatesQuery, 'data.rates', []);
+	const chartData = get(historicalRatesQuery, 'data.rates', []);
 	const isLoading = historicalRatesQuery.isLoading;
 
 	const chartColor = theme.colors.hyperlink;

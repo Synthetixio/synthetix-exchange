@@ -33,7 +33,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 
 	const theme = useContext(ThemeContext);
 
-	const historicalOptionPriceQuery = useQuery(
+	const historicalOptionPriceQuery = useQuery<OptionsTransactions, any>(
 		QUERY_KEYS.BinaryOptions.OptionPrices(optionsMarket.address, selectedPeriod.period),
 		() =>
 			snxData.binaryOptions.historicalOptionPrice({
@@ -43,7 +43,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 			})
 	);
 
-	const chartData: OptionsTransactions = useMemo(() => {
+	const chartData = useMemo(() => {
 		const data = historicalOptionPriceQuery.data || [];
 		if (data.length) {
 			return [...data].reverse();

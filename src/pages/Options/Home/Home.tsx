@@ -38,13 +38,13 @@ type HomeProps = PropsFromRedux;
 const MAX_HOT_MARKETS = 4;
 
 const Home: FC<HomeProps> = memo(({ synthsMap }) => {
-	const marketsQuery = useQuery(QUERY_KEYS.BinaryOptions.Markets, () =>
+	const marketsQuery = useQuery<OptionsMarkets, any>(QUERY_KEYS.BinaryOptions.Markets, () =>
 		snxData.binaryOptions.markets()
 	);
 
 	const optionsMarkets = useMemo(() => {
 		if (marketsQuery.isSuccess) {
-			const markets = (marketsQuery.data || []) as OptionsMarkets;
+			const markets = marketsQuery.data || [];
 			if (markets.length) {
 				return orderBy(
 					markets.map((optionsMarket) => {
