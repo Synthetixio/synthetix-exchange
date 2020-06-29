@@ -94,17 +94,14 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 							classes={classes}
 							arrow={true}
 						>
-							<span>
-								<Button
-									size="md"
-									palette="toggle"
-									onClick={() => setShowCreatorMarkets(!showCreatorMarkets)}
-									isActive={showCreatorMarkets}
-									disabled={!isLoggedIn}
-								>
-									<PencilIcon />
-								</Button>
-							</span>
+							<Button
+								size="md"
+								palette="toggle"
+								onClick={() => setShowCreatorMarkets(!showCreatorMarkets)}
+								isActive={showCreatorMarkets}
+							>
+								<PencilIcon />
+							</Button>
 						</Tooltip>
 						<AssetSearchInput
 							onChange={(e) => setAssetSearch(e.target.value)}
