@@ -16,7 +16,7 @@ import { CurrencyCol } from 'components/Table/common';
 import Currency from 'components/Currency';
 import { bodyCSS } from 'components/Typography/General';
 
-import { OptionsMarkets, OptionsMarket, Phase } from 'pages/Options/types';
+import { OptionsMarkets, HistoricalOptionsMarketInfo, Phase } from 'pages/Options/types';
 import TimeRemaining from '../components/TimeRemaining';
 
 type MarketsTableProps = {
@@ -35,7 +35,12 @@ export const MarketsTable: FC<MarketsTableProps> = memo(({ optionsMarkets, noRes
 					{
 						Header: <>{t('options.home.markets-table.asset-col')}</>,
 						accessor: 'currencyKey',
-						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['currencyKey']>) => (
+						Cell: (
+							cellProps: CellProps<
+								HistoricalOptionsMarketInfo,
+								HistoricalOptionsMarketInfo['currencyKey']
+							>
+						) => (
 							<StyledCurrencyName
 								currencyKey={cellProps.cell.value}
 								name={cellProps.row.original.asset}
@@ -56,18 +61,24 @@ export const MarketsTable: FC<MarketsTableProps> = memo(({ optionsMarkets, noRes
 						),
 						accessor: 'strikePrice',
 						sortType: 'basic',
-						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['strikePrice']>) => (
-							<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
-						),
+						Cell: (
+							cellProps: CellProps<
+								HistoricalOptionsMarketInfo,
+								HistoricalOptionsMarketInfo['strikePrice']
+							>
+						) => <CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />,
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: <>{t('options.home.markets-table.maturity-date-col')}</>,
 						accessor: 'maturityDate',
-						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['maturityDate']>) => (
-							<span>{formatShortDate(cellProps.cell.value)}</span>
-						),
+						Cell: (
+							cellProps: CellProps<
+								HistoricalOptionsMarketInfo,
+								HistoricalOptionsMarketInfo['maturityDate']
+							>
+						) => <span>{formatShortDate(cellProps.cell.value)}</span>,
 						width: 150,
 						sortable: true,
 					},
@@ -75,7 +86,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(({ optionsMarkets, noRes
 					{
 						Header: <>{t('options.home.markets-table.long-short-col')}</>,
 						id: 'long-short',
-						Cell: (cellProps: CellProps<OptionsMarket>) => (
+						Cell: (cellProps: CellProps<HistoricalOptionsMarketInfo>) => (
 							<LongShorts>
 								<Longs>
 									{t('common.val-in-cents', {
@@ -102,16 +113,24 @@ export const MarketsTable: FC<MarketsTableProps> = memo(({ optionsMarkets, noRes
 						),
 						accessor: 'poolSize',
 						sortType: 'basic',
-						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['poolSize']>) => (
-							<CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />
-						),
+						Cell: (
+							cellProps: CellProps<
+								HistoricalOptionsMarketInfo,
+								HistoricalOptionsMarketInfo['poolSize']
+							>
+						) => <CurrencyCol sign={USD_SIGN} value={cellProps.cell.value} />,
 						width: 150,
 						sortable: true,
 					},
 					{
 						Header: <>{t('options.home.markets-table.phase-col')}</>,
 						accessor: 'phase',
-						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['phase']>) => (
+						Cell: (
+							cellProps: CellProps<
+								HistoricalOptionsMarketInfo,
+								HistoricalOptionsMarketInfo['phase']
+							>
+						) => (
 							<PhaseDiv phase={cellProps.cell.value}>
 								{t(`options.phases.${cellProps.cell.value}`)}
 							</PhaseDiv>
@@ -121,14 +140,17 @@ export const MarketsTable: FC<MarketsTableProps> = memo(({ optionsMarkets, noRes
 					{
 						Header: <>{t('options.home.markets-table.time-remaining-col')}</>,
 						accessor: 'timeRemaining',
-						Cell: (cellProps: CellProps<OptionsMarket, OptionsMarket['timeRemaining']>) => (
-							<TimeRemaining end={cellProps.cell.value} />
-						),
+						Cell: (
+							cellProps: CellProps<
+								HistoricalOptionsMarketInfo,
+								HistoricalOptionsMarketInfo['timeRemaining']
+							>
+						) => <TimeRemaining end={cellProps.cell.value} />,
 						width: 150,
 					},
 				]}
 				data={optionsMarkets}
-				onTableRowClick={(row: Row<OptionsMarket>) => {
+				onTableRowClick={(row: Row<HistoricalOptionsMarketInfo>) => {
 					navigateToOptionsMarket(row.original.address);
 				}}
 				noResultsMessage={noResultsMessage}

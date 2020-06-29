@@ -17,11 +17,16 @@ export type OptionsTransaction = {
 	market: string;
 };
 
+export type OptionValue = {
+	long: number;
+	short: number;
+};
+
 export type OptionsTransactions = OptionsTransaction[];
 
 export type OptionsTransactionsMap = Record<string, OptionsTransactions>;
 
-export type OptionsMarket = {
+export type HistoricalOptionsMarketInfo = {
 	address: string;
 	timestamp: number;
 	creator: string;
@@ -53,11 +58,24 @@ export type OptionsMarketInfo = {
 	phase: Phase;
 	timeRemaining: number;
 	result: Side;
-};
-
-export type OptionValue = {
-	long: number;
-	short: number;
+	totalBids: OptionValue;
+	totalClaimableSupplies: OptionValue;
+	totalSupplies: OptionValue;
+	deposits: {
+		deposited: number;
+		exercisableDeposits: number;
+	};
+	creator: string;
+	options: OptionValue;
+	fees: {
+		creatorFee: number;
+		poolFee: number;
+		refundFee: number;
+	};
+	creatorLimits: {
+		capitalRequirement: number;
+		skewLimit: number;
+	};
 };
 
 export type AccountMarketInfo = {
@@ -66,5 +84,5 @@ export type AccountMarketInfo = {
 	bids: OptionValue;
 };
 
-export type OptionsMarkets = OptionsMarket[];
-export type OptionsMarketsMap = Record<string, OptionsMarket>;
+export type OptionsMarkets = HistoricalOptionsMarketInfo[];
+export type OptionsMarketsMap = Record<string, HistoricalOptionsMarketInfo>;

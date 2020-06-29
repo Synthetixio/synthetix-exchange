@@ -5,7 +5,10 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
-import { OptionsMarketInfo, Phase, OptionsMarkets, OptionsMarket } from 'pages/Options/types';
+import {
+	OptionsMarketInfo,
+	Phase /*OptionsMarkets, HistoricalOptionsMarketInfo*/,
+} from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 
 import ROUTES from 'constants/routes';
@@ -38,7 +41,7 @@ import ChartCard from './ChartCard';
 import TradeCard from './TradeCard';
 import TransactionsCard from './TransactionsCard';
 
-import { useQuery, queryCache } from 'react-query';
+import { useQuery /*queryCache*/ } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
 
 import { MarketProvider } from './contexts/MarketContext';
@@ -70,7 +73,7 @@ type OptionsMarketInfoDataQuery = Pick<
 const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
 
-	const marketQuery = useQuery<OptionsMarketInfoDataQuery, any>(
+	const marketQuery = useQuery<OptionsMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.Market(marketAddress),
 		async () => {
 			const [marketData, marketParameters] = await Promise.all([
@@ -78,27 +81,68 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
 			]);
 
-			const { key: oracleKey, strikePrice } = marketParameters.oracleDetails;
-			const { biddingEnd, maturity, expiry } = marketParameters.times;
-			const { long: longPrice, short: shortPrice } = marketData.prices;
+			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
+			const { totalBids, totalClaimableSupplies, totalSupplies, deposits, prices } = marketData;
+
+			const biddingEndDate = Number(times.biddingEnd) * 1000;
+			const maturityDate = Number(times.maturity) * 1000;
+			const expiryDate = Number(times.expiry) * 1000;
+
+			const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
+
+			const currencyKey = parseBytes32String(oracleDetails.key);
 
 			return {
-				currencyKey: parseBytes32String(oracleKey),
-				strikePrice: bigNumberFormatter(strikePrice),
-				biddingEndDate: Number(biddingEnd) * 1000,
-				maturityDate: Number(maturity) * 1000,
-				expiryDate: Number(expiry) * 1000,
-				longPrice: bigNumberFormatter(longPrice),
-				shortPrice: bigNumberFormatter(shortPrice),
+				currencyKey,
+				asset: synthsMap[currencyKey]?.asset || currencyKey,
+				strikePrice: bigNumberFormatter(oracleDetails.strikePrice),
+				biddingEndDate,
+				maturityDate,
+				expiryDate,
+				longPrice: bigNumberFormatter(prices.long),
+				shortPrice: bigNumberFormatter(prices.short),
 				result: SIDE[marketData.result],
-			} as OptionsMarketInfoDataQuery;
-		},
+				totalBids: {
+					long: bigNumberFormatter(totalBids.long),
+					short: bigNumberFormatter(totalBids.short),
+				},
+				totalClaimableSupplies: {
+					long: bigNumberFormatter(totalClaimableSupplies.long),
+					short: bigNumberFormatter(totalClaimableSupplies.short),
+				},
+				totalSupplies: {
+					long: bigNumberFormatter(totalSupplies.long),
+					short: bigNumberFormatter(totalSupplies.short),
+				},
+				deposits: {
+					deposited: bigNumberFormatter(deposits.deposited),
+					exercisableDeposits: bigNumberFormatter(deposits.exercisableDeposits),
+				},
+				phase,
+				timeRemaining,
+				creator,
+				options: {
+					long: bigNumberFormatter(options.long),
+					short: bigNumberFormatter(options.short),
+				},
+				fees: {
+					creatorFee: bigNumberFormatter(fees.creatorFee),
+					poolFee: bigNumberFormatter(fees.poolFee),
+					refundFee: bigNumberFormatter(fees.refundFee),
+				},
+				creatorLimits: {
+					capitalRequirement: bigNumberFormatter(creatorLimits.capitalRequirement),
+					skewLimit: bigNumberFormatter(creatorLimits.skewLimit),
+				},
+			} as OptionsMarketInfo;
+		}
+		/*
 		{
 			initialData: () => {
 				const marketData = queryCache
 					// @ts-ignore
 					.getQueryData<OptionsMarkets>(QUERY_KEYS.BinaryOptions.Markets)
-					?.find((market: OptionsMarket) => market.address === marketAddress);
+					?.find((market: HistoricalOptionsMarketInfo) => market.address === marketAddress);
 
 				if (marketData) {
 					const {
@@ -125,39 +169,11 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				}
 			},
 		}
+		*/
 	);
 
-	let optionsMarket: OptionsMarketInfo | null = null;
-
-	if (marketQuery.isSuccess && marketQuery.data) {
-		const {
-			currencyKey,
-			strikePrice,
-			biddingEndDate,
-			maturityDate,
-			expiryDate,
-			longPrice,
-			shortPrice,
-			result,
-		} = marketQuery.data;
-
-		const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
-
-		optionsMarket = {
-			address: marketAddress,
-			biddingEndDate,
-			maturityDate,
-			expiryDate,
-			currencyKey,
-			asset: synthsMap[currencyKey]?.asset || currencyKey,
-			strikePrice,
-			longPrice,
-			shortPrice,
-			phase,
-			timeRemaining,
-			result,
-		};
-	}
+	const optionsMarket: OptionsMarketInfo | null =
+		marketQuery.isSuccess && marketQuery.data ? marketQuery.data : null;
 
 	return optionsMarket ? (
 		<MarketProvider optionsMarket={optionsMarket}>
