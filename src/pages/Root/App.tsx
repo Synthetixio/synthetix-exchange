@@ -112,10 +112,12 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 									</HomeLayout>
 								)}
 							/>
-							<Route
-								path={ROUTES.Options.Home}
-								render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
-							/>
+							{process.env.REACT_APP_BINARY_OPTIONS_ENABLED && (
+								<Route
+									path={ROUTES.Options.Home}
+									render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
+								/>
+							)}
 							<Route
 								path={ROUTES.Home}
 								render={() => (
