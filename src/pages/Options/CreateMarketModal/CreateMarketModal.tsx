@@ -148,9 +148,10 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 				utils: { parseEther },
 			} = snxJSConnector as any;
 			const longBidAmount: number =
-				(initialFundingAmount as number) / (100 - initialLongShorts.long);
+				(initialFundingAmount as number) * (initialLongShorts.long / 100);
 			const shortBidAmount: number =
-				(initialFundingAmount as number) / (100 - initialLongShorts.short);
+				(initialFundingAmount as number) * (initialLongShorts.short / 100);
+
 			const oracleKey = bytesFormatter((currencyKey as CurrencyKeyOptionType).value);
 			const price = parseEther(strikePrice.toString());
 			const times = [
@@ -248,6 +249,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 			biddingEndDate,
 			maturityDate,
 			initialFundingAmount,
+			initialLongShorts,
 		]);
 
 		const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
