@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 import { ReactComponent as ReverseArrowIcon } from 'assets/images/reverse-arrow.svg';
 
-import { SearchInput } from 'components/Input';
+import SearchInput from 'components/Input/SearchInput';
 
 import { IconButton } from './common';
 

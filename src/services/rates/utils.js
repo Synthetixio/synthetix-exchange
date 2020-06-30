@@ -1,4 +1,4 @@
-import { subHours } from 'date-fns';
+import subHours from 'date-fns/subHours';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 

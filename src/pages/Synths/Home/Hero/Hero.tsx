@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingLarge } from 'components/Typography/Heading';
+import { headingH2CSS } from 'components/Typography/Heading';
 import { media } from 'shared/media';
 import { darkTheme } from 'styles/theme';
 
@@ -35,9 +35,9 @@ const Content = styled.div`
 	margin: 0 auto;
 `;
 
-const HeroTitle = styled(HeadingLarge)`
+const HeroTitle = styled.div`
+	${headingH2CSS};
 	color: ${darkTheme.colors.fontPrimary};
-	font-size: 48px;
 	max-width: 850px;
 	margin: 0 auto;
 	padding-bottom: 24px;

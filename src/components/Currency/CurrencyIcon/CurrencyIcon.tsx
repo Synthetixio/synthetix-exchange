@@ -5,12 +5,23 @@ import { CurrencyKey } from 'constants/currency';
 
 type CurrencyIconProps = {
 	currencyKey: CurrencyKey;
+	type?: 'synth' | 'asset';
 };
 
-export const CurrencyIcon: FC<CurrencyIconProps> = memo(({ currencyKey, ...rest }) => {
-	const Icon = getCurrencyKeyIcon(currencyKey);
+export const CurrencyIcon: FC<CurrencyIconProps> = memo(
+	({ currencyKey, type = 'synth', ...rest }) => {
+		const currencyIcon = getCurrencyKeyIcon(currencyKey);
 
-	return Icon ? <Icon viewBox="0 0 300 300" width="22" height="22" {...rest} /> : null;
-});
+		if (!currencyIcon) {
+			return null;
+		}
+
+		const { SynthIcon, AssetIcon } = currencyIcon;
+
+		const Icon = type === 'synth' && SynthIcon ? SynthIcon : AssetIcon;
+
+		return <Icon width="22" height="22" {...rest} />;
+	}
+);
 
 export default CurrencyIcon;

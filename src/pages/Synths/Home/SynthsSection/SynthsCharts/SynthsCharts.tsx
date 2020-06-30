@@ -1,10 +1,9 @@
 import React, { FC, memo } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 
-import { getAvailableSynthsMap, SynthDefinitionWithRates, SynthDefinitionMap } from 'ducks/synths';
+import { SynthDefinitionWithRates } from 'ducks/synths';
 
 import ChartCard from 'components/ChartCard/ChartCard';
 
@@ -15,66 +14,52 @@ import { media } from 'shared/media';
 import { formatCurrencyWithSign } from 'utils/formatters';
 
 import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
-import { SYNTHS_MAP } from 'constants/currency';
-import { RootState } from 'ducks/types';
+import { USD_SIGN } from 'constants/currency';
 import { HistoricalRatesData } from 'ducks/historicalRates';
-import { captionCSS } from 'components/Typography/Caption';
+import { captionCSS } from 'components/Typography/General';
 
-type StateProps = {
-	synthsMap: SynthDefinitionMap;
-};
-
-type Props = {
+type SynthsChartsProps = {
 	synthsWithRates: SynthDefinitionWithRates[];
 	maxTopSynths: number;
 };
+export const SynthsCharts: FC<SynthsChartsProps> = memo(({ synthsWithRates, maxTopSynths }) => {
+	const { t } = useTranslation();
 
-type SynthsCharts = StateProps & Props;
-
-export const SynthsCharts: FC<SynthsCharts> = memo(
-	({ synthsWithRates, synthsMap, maxTopSynths }) => {
-		const { t } = useTranslation();
-
-		const charts = synthsWithRates.map(({ name, historicalRates, lastPrice }) => {
-			const historicalData: HistoricalRatesData | null = get(historicalRates, 'ONE_DAY.data', null);
-			const chartData = historicalData != null ? historicalData.rates : null;
-			const change = historicalData != null ? historicalData.change : null;
-
-			return (
-				<StyledChartCard
-					key={name}
-					currencyLabel={name}
-					price={
-						lastPrice != null
-							? formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, lastPrice)
-							: null
-					}
-					change={change}
-					chartData={chartData || []}
-					onClick={() => navigateToSynthOverview(name)}
-					variableGradient={true}
-					labelPosition="down"
-				/>
-			);
-		});
-
-		const gainers = charts.slice(0, maxTopSynths);
-		const losers = charts.slice(-maxTopSynths);
+	const charts = synthsWithRates.map(({ name, historicalRates, lastPrice }) => {
+		const historicalData: HistoricalRatesData | null = get(historicalRates, 'ONE_DAY.data', null);
+		const chartData = historicalData != null ? historicalData.rates : null;
+		const change = historicalData != null ? historicalData.change : null;
 
 		return (
-			<GridContainer>
-				<GridItem>
-					<Gainers>{t('synths.home.charts.biggest-gainers-24h')}</Gainers>
-					<Charts>{gainers}</Charts>
-				</GridItem>
-				<GridItem>
-					<Losers>{t('synths.home.charts.biggest-losers-24h')}</Losers>
-					<Charts>{losers}</Charts>
-				</GridItem>
-			</GridContainer>
+			<StyledChartCard
+				key={name}
+				currencyLabel={name}
+				price={lastPrice != null ? formatCurrencyWithSign(USD_SIGN, lastPrice) : null}
+				change={change}
+				chartData={chartData || []}
+				onClick={() => navigateToSynthOverview(name)}
+				variableGradient={true}
+				labelPosition="down"
+			/>
 		);
-	}
-);
+	});
+
+	const gainers = charts.slice(0, maxTopSynths);
+	const losers = charts.slice(-maxTopSynths);
+
+	return (
+		<GridContainer>
+			<GridItem>
+				<Gainers>{t('synths.home.charts.biggest-gainers-24h')}</Gainers>
+				<Charts>{gainers}</Charts>
+			</GridItem>
+			<GridItem>
+				<Losers>{t('synths.home.charts.biggest-losers-24h')}</Losers>
+				<Charts>{losers}</Charts>
+			</GridItem>
+		</GridContainer>
+	);
+});
 
 const GridContainer = styled.div`
 	display: grid;
@@ -152,8 +137,4 @@ const StyledChartCard = styled(ChartCard)`
 	}
 `;
 
-const mapStateToProps = (state: RootState): StateProps => ({
-	synthsMap: getAvailableSynthsMap(state),
-});
-
-export default connect<StateProps, {}, {}, RootState>(mapStateToProps)(SynthsCharts);
+export default SynthsCharts;

@@ -1,21 +1,23 @@
-import styled from 'styled-components';
-import { color } from 'styled-system';
+import styled, { css } from 'styled-components';
 
-const Input = styled.input<{ padding?: string }>`
+export const inputCSS = css`
 	width: 100%;
-	font-family: 'apercu-regular', sans-serif;
+	font-family: ${(props) => props.theme.fonts.regular};
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
 	height: 42px;
-	padding: ${(props) => (props.padding ? props.padding : '0 10px')};
+	padding: 0 10px;
 	font-size: 14px;
-	color: ${(props) => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	::placeholder {
 		opacity: 0.5;
 		color: ${(props) => props.theme.colors.fontTertiary};
-		text-transform: capitalize;
 	}
-	${color}
+	outline: none;
+`;
+
+export const Input = styled.input`
+	${inputCSS};
 `;
 
 export default Input;

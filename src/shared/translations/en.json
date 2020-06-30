@@ -7,7 +7,8 @@
 			"markets": "markets",
 			"synths": "synths",
 			"support": "support",
-			"assets": "assets"
+			"assets": "assets",
+			"options": "options"
 		},
 		"theme": {
 			"light": "light mode",
@@ -44,14 +45,14 @@
 		},
 		"gwei": {
 			"title": "Set transaction speed & price",
-			"desc": "Adjust the slider below, or use the input field to set the transaction speed.",
+			"desc": "Adjust the slider below to set the transaction speed.",
 			"table": {
 				"speed-allowed": "Speed (allowed)",
 				"slow": "Slow",
 				"average": "Average",
 				"fast": "fast",
-				"price": "price"				
-			},			
+				"price": "price"
+			},
 			"submit": "Submit changes"
 		}
 	},
@@ -162,6 +163,207 @@
 				"units-of-symbol": "{{units}} of {{symbol}}",
 				"generic": "Tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle."
 			}
+		}
+	},
+	"options": {
+		"phases": {
+			"bidding": "bidding",
+			"trading": "trading",
+			"maturity": "maturity",
+			"expiry": "expiry"
+		},
+		"home": {
+			"market-creation": {
+				"login-to-create": "Please login to create markets",
+				"no-markets": {
+					"title": "Create a market or place a bid to get started",
+					"subtitle": "Get fees for creating markets, win big without actually holding the asset"
+				},
+				"create-market-button-label": "create a new market"
+			},
+			"explore-markets": {
+				"title": "Bid on open markets:",
+				"table": {
+					"filters": {
+						"creator": {
+							"tooltip-logged-in": "Login to see markets you created",
+							"tooltip-logged-out": "Click to see markets you created"
+						}
+					}
+				}
+			},
+			"markets-table": {
+				"asset-col": "asset",
+				"strike-price-col": "strike price ({{currencyKeyWithSymbol}})",
+				"maturity-date-col": "maturity date",
+				"long-short-col": "long / short",
+				"phase-col": "phase",
+				"pool-size-col": "pool size (<0>{{currencyKeyWithSymbol}}</0>)",
+				"time-remaining-col": "time remaining"
+			}
+		},
+		"create-market-modal": {
+			"title": "Create a new Options Market",
+			"subtitle": "Here you can create a new binary options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
+			"details": {
+				"select-asset-label": "select asset:",
+				"strike-price-label": "strike price:",
+				"bidding-end-date-label": "bidding end date:",
+				"market-maturity-date-label": "market maturity date:",
+				"long-short-skew-label": "long/short price skew:",
+				"funding-amount-label": "choose market funding amount:"
+			},
+			"summary": {
+				"title": "market creation summary:",
+				"dates": {
+					"bids-end": "Bids end: {{date}}",
+					"trading-period": "Trading period: {{period}}"
+				},
+				"fees": {
+					"bidding": "Bidding fee",
+					"creator": "Creator fee",
+					"refund": "Refund fee",
+					"pool": "Pool fee"
+				},
+				"create-market-button-label": "create market",
+				"creating-market-button-label": "creating market...",
+				"approve-manager-button-label": "approve manager",
+				"waiting-for-approval-button-label": "waiting for approval..."
+			}
+		},
+		"market": {
+			"heading": {
+				"all-markets": "all markets",
+				"market-sentiment": "market sentiment"
+			},
+			"info-modal": {
+				"title": "market information:",
+				"table": {
+					"currency-col": "currency",
+					"strike-price-col": "strike price",
+					"phase-col": "phase",
+					"bidding-end-col": "bidding end",
+					"maturity-col": "maturity",
+					"expiry-col": "expiry",
+					"option-prices-col": "option prices",
+					"total-outstanding-bids-col": "total outstanding bids",
+					"total-outstanding-options-col": "total outstanding options",
+					"deposited-currency-col": "deposited <0>{{currencyKey}}</0>",
+					"currency-price-col": "current <0>{{currencyKey}}</0> price",
+					"final-price-col": "final <0>{{currencyKey}}</0> price",
+					"current-result-col": "current result"
+				}
+			},
+			"chart-card": {
+				"view-market-details": "View Market Details",
+				"chart-types": {
+					"price": "price chart",
+					"options": "options chart"
+				},
+				"no-results": "No transactions"
+			},
+			"transactions-card": {
+				"recent-market-tab-title": "recent market activity",
+				"your-activity-tab-title": "your activity",
+				"table": {
+					"date-time-col": "date | time",
+					"type-col": "type",
+					"position-col": "position",
+					"amount-col": "bid amount",
+					"tx-status-col": "tx status",
+					"no-results-your-activity": "No transactions associated with this wallet.",
+					"no-results-recent-activity": "No transactions associated with this market.",
+					"types": {
+						"bid": "Bid",
+						"refund": "Withdrawal"
+					}
+				}
+			},
+			"trade-card": {
+				"shared": {
+					"price-shift": "If a bid is too large for the current size of the market, it will cause slippage. The maximum slippage allowed is 10%."
+				},
+				"bidding": {
+					"bid": {
+						"title": "place bid",
+						"subtitle": "choose your side:",
+						"amount-label": "bid amount:",
+						"price-label": "price:",
+						"confirm-bid": "confirm-bid",
+						"confirm-button": {
+							"label": "confirm bid",
+							"progress-label": "bidding in progress...",
+							"high-slippage": "Warning: this bid is too large and causes more than the maximum 10% price slippage. Please lower your bid."
+						},
+						"allowance-button": {
+							"label": "approve market",
+							"progress-label": "allowing market..."
+						}
+					},
+					"refund": {
+						"title": "withdraw",
+						"subtitle": "from your existing bid:",
+						"amount-label": "withdrawal amount:",
+						"price-label": "price:",
+						"confirm-button": {
+							"label": "confirm withdrawal",
+							"progress-label": "withdrawal in progress..."
+						},
+						"allowance-button": {
+							"label": "approve market",
+							"progress-label": "allowing market..."
+						}
+					},
+					"common": {
+						"current-position": "current position:",
+						"bid": "bid:",
+						"payout": "payout:",
+						"bid-fee": "Bid fee",
+						"refund-fee": "Refund fee"
+					},
+					"footer": {
+						"end-label": "bidding period closing in:"
+					}
+				},
+				"trading": {
+					"title": "claim options",
+					"card-title": "bidding has closed",
+					"card-subtitle": "Number of tokens available:",
+					"confirm-button": {
+						"label": "claim options",
+						"progress-label": "claiming in progress...",
+						"success-label": "nothing to claim"
+					},
+					"footer": {
+						"end-label": "trading period closing in:"
+					}
+				},
+				"maturity": {
+					"title": "exercise options",
+					"card-title": "market has closed",
+					"card-subtitle": "Options available to exercise:",
+					"payout-amount": "payout amount",
+					"confirm-button": {
+						"label": "exercise options",
+						"progress-label": "exercise options",
+						"success-label": "nothing to exercise"
+					},
+					"footer": {
+						"end-label": "time left to exercise:"
+					}
+				}
+			}
+		},
+		"common": {
+			"time-remaining": {
+				"ended": "ended"
+			},
+			"long": "long",
+			"short": "short",
+			"price": "price",
+			"amount-long": "{{amount}} long",
+			"amount-short": "{{amount}} short",
+			"price-you-paid": "price you paid:"
 		}
 	},
 	"exchange": {
@@ -340,6 +542,7 @@
 	"common": {
 		"max": "max",
 		"gas-limit": "gas limit",
+		"network-fee-gas": "network fee (gas)",
 		"gas-price-gwei": "gas price (gwei)",
 		"gwei": "gwei",
 		"transaction": {
@@ -445,6 +648,11 @@
 			"1W": "1W",
 			"1M": "1M"
 		},
-		"top-number": "top {{number}}"
+		"top-number": "top {{number}}",
+		"by-date": "by {{date}}",
+		"val-in-cents": "{{val}}c",
+		"eg-val": "e.g. {{val}}",
+		"select-date": "select date",
+		"beta": "beta"
 	}
 }

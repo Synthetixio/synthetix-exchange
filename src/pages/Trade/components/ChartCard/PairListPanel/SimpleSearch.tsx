@@ -5,7 +5,7 @@ import { SYNTHS_MAP, CurrencyKey, CurrencyKeys } from 'constants/currency';
 
 import { ReactComponent as CogIcon } from 'assets/images/cog.svg';
 
-import { SearchInput } from 'components/Input';
+import SearchInput from 'components/Input/SearchInput';
 
 import { StyledButton, IconButton } from './common';
 

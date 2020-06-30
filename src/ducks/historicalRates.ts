@@ -5,13 +5,12 @@ import get from 'lodash/get';
 import merge from 'lodash/merge';
 import chunk from 'lodash/chunk';
 
-import { CurrencyKey } from 'constants/currency';
+import { CurrencyKey, CurrencyKeys } from 'constants/currency';
 import { RateUpdates } from 'constants/rates';
 import { Period, PERIOD_IN_HOURS } from 'constants/period';
 import { fetchSynthRateUpdate } from 'services/rates/rates';
 
 import { RootState } from './types';
-import { SynthDefinition } from './synths';
 
 export type HistoricalRatesData = {
 	rates: RateUpdates;
@@ -44,16 +43,16 @@ export const historicalRatesSlice = createSlice({
 	reducers: {
 		fetchHistoricalRatesRequest: (
 			state,
-			action: PayloadAction<{ synths: SynthDefinition[]; periods: Period[] }>
+			action: PayloadAction<{ currencyKeys: CurrencyKeys; periods: Period[] }>
 		) => {
-			const { synths, periods } = action.payload;
+			const { currencyKeys, periods } = action.payload;
 
-			synths.forEach((synth) => {
+			currencyKeys.forEach((currencyKey) => {
 				periods.forEach((period) => {
 					set(
 						state,
-						[synth.name, period],
-						merge(get(state, [synth.name, period], {}), {
+						[currencyKey, period],
+						merge(get(state, [currencyKey, period], {}), {
 							loadingError: null,
 							isLoading: true,
 						})
@@ -63,14 +62,14 @@ export const historicalRatesSlice = createSlice({
 		},
 		fetchHistoricalRateFailure: (
 			state,
-			action: PayloadAction<{ synth: SynthDefinition; period: Period; error: string }>
+			action: PayloadAction<{ currencyKey: CurrencyKey; period: Period; error: string }>
 		) => {
-			const { synth, period, error } = action.payload;
+			const { currencyKey, period, error } = action.payload;
 
 			set(
 				state,
-				[synth.name, period],
-				merge(get(state, [synth.name, period], {}), {
+				[currencyKey, period],
+				merge(get(state, [currencyKey, period], {}), {
 					loadingError: error,
 					isLoading: false,
 					isRefreshing: false,
@@ -80,17 +79,17 @@ export const historicalRatesSlice = createSlice({
 		fetchHistoricalRateSuccess: (
 			state,
 			action: PayloadAction<{
-				synth: SynthDefinition;
+				currencyKey: CurrencyKey;
 				period: Period;
 				data: HistoricalRatesData;
 			}>
 		) => {
-			const { synth, period, data } = action.payload;
+			const { currencyKey, period, data } = action.payload;
 
 			set(
 				state,
-				[synth.name, period],
-				merge(get(state, [synth.name, period], {}), {
+				[currencyKey, period],
+				merge(get(state, [currencyKey, period], {}), {
 					data,
 					isLoading: false,
 					isRefreshing: false,
@@ -119,12 +118,12 @@ export const getHistoricalRatesIsOneDayPeriodLoaded = createSelector(
 		historicalRatesList.length > 0 && historicalRatesList.every((rate) => rate.ONE_DAY.isLoaded)
 );
 
-function* fetchHistoricalRate(synth: SynthDefinition, period: Period) {
+function* fetchHistoricalRate(currencyKey: CurrencyKey, period: Period) {
 	try {
-		const ratesData = yield fetchSynthRateUpdate(synth.name, PERIOD_IN_HOURS[period]);
+		const ratesData = yield fetchSynthRateUpdate(currencyKey, PERIOD_IN_HOURS[period]);
 		yield put(
 			fetchHistoricalRateSuccess({
-				synth,
+				currencyKey,
 				data: ratesData,
 				period,
 			})
@@ -132,7 +131,7 @@ function* fetchHistoricalRate(synth: SynthDefinition, period: Period) {
 	} catch (e) {
 		yield put(
 			fetchHistoricalRateFailure({
-				synth,
+				currencyKey,
 				period,
 				error: e,
 			})
@@ -143,14 +142,14 @@ function* fetchHistoricalRate(synth: SynthDefinition, period: Period) {
 const MAX_CONCURRENT_REQUESTS = 30;
 
 function* fetchHistoricalRates(
-	action: PayloadAction<{ synths: SynthDefinition[]; periods: Period[] }>
+	action: PayloadAction<{ currencyKeys: CurrencyKeys; periods: Period[] }>
 ) {
-	const { synths, periods } = action.payload;
-	const chunks = chunk(synths, MAX_CONCURRENT_REQUESTS);
+	const { currencyKeys, periods } = action.payload;
+	const chunks = chunk(currencyKeys, MAX_CONCURRENT_REQUESTS);
 
 	for (const period of periods) {
 		for (const chunk of chunks) {
-			yield all(chunk.map((synth) => fetchHistoricalRate(synth, period)));
+			yield all(chunk.map((currencyKey) => fetchHistoricalRate(currencyKey, period)));
 		}
 	}
 }
