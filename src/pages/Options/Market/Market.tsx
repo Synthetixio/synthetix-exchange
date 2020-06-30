@@ -85,6 +85,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			const currencyKey = parseBytes32String(oracleDetails.key);
 
 			return {
+				address: marketAddress,
 				currencyKey,
 				finalPrice: bigNumberFormatter(oracleDetails.finalPrice),
 				asset: synthsMap[currencyKey]?.asset || currencyKey,

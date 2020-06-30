@@ -1,24 +1,43 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
+import { connect, ConnectedProps } from 'react-redux';
+
+import { RootState } from 'ducks/types';
+import { getNetworkId } from 'ducks/wallet/walletDetails';
 
 import Modal from '@material-ui/core/Modal';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
+import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperlink.svg';
 
 import { headingH4CSS } from 'components/Typography/Heading';
 import { bodyCSS } from 'components/Typography/General';
 
-import { GridDivCol, resetButtonCSS, CurrencyKey } from 'shared/commonStyles';
+import { GridDivCol, resetButtonCSS, CurrencyKey, GridDivCenteredCol } from 'shared/commonStyles';
 
 import { formatShortDateWithTime, formatCurrencyWithSign } from 'utils/formatters';
 import { OptionsMarketInfo } from 'pages/Options/types';
 import { labelMediumCSS } from 'components/Typography/Label';
-import { tableDataLargeCSS, tableHeaderLargeCSS } from 'components/Typography/Table';
+import {
+	tableDataLargeCSS,
+	tableHeaderLargeCSS,
+	tableDataSmallCSS,
+} from 'components/Typography/Table';
 import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
+import Link from 'components/Link';
+import { getEtherscanAddressLink } from 'utils/explorers';
 
-type MarketInfoModalProps = {
+const mapStateToProps = (state: RootState) => ({
+	networkId: getNetworkId(state),
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type MarketInfoModalProps = PropsFromRedux & {
 	marketHeading: React.ReactNode;
 	optionMarket: OptionsMarketInfo;
 	onClose: () => void;
@@ -28,9 +47,10 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 	onClose,
 	optionMarket,
 	marketHeading,
+	networkId,
 }) => {
 	const { t } = useTranslation();
-	console.log(optionMarket.finalPrice);
+
 	return (
 		<StyledModal
 			open={true}
@@ -40,9 +60,17 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 			disableRestoreFocus={true}
 		>
 			<Container>
-				<CloseButton>
-					<CloseCrossIcon onClick={onClose} />
-				</CloseButton>
+				<Buttons>
+					<ContractLink
+						to={getEtherscanAddressLink(networkId, optionMarket.address)}
+						isExternal={true}
+					>
+						{t('common.contracts.view')} <ArrowIcon width="8" height="8" />
+					</ContractLink>
+					<CloseButton>
+						<CloseCrossIcon onClick={onClose} />
+					</CloseButton>
+				</Buttons>
 				<MarketHeading>{marketHeading}</MarketHeading>
 				<Title>{t('options.market.info-modal.title')}</Title>
 				<InfoTables>
@@ -232,14 +260,31 @@ const Title = styled.div`
 	text-transform: uppercase;
 `;
 
-const CloseButton = styled.button`
-	${resetButtonCSS};
+const Buttons = styled(GridDivCenteredCol)`
 	position: absolute;
 	right: 55px;
 	top: 55px;
+	grid-gap: 24px;
+`;
+
+const ContractLink = styled(Link)`
+	color: ${(props) => props.theme.colors.hyperlink};
+	border: 1px solid ${(props) => props.theme.colors.hyperlink};
+	${tableDataSmallCSS};
+	font-family: ${(props) => props.theme.fonts.medium};
+	border-radius: 1px;
+	padding: 4px 10px;
+`;
+
+export const ArrowIcon = styled(ArrowHyperlinkIcon)`
+	margin-left: 2px;
+`;
+
+const CloseButton = styled.button`
+	${resetButtonCSS};
 	color: ${({ theme }) => theme.colors.fontTertiary};
 	width: 16px;
 	height: 16px;
 `;
 
-export default MarketInfoModal;
+export default connector(MarketInfoModal);
