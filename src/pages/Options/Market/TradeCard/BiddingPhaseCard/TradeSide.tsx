@@ -87,7 +87,7 @@ const TradeSide: FC<TradeSideProps> = memo(
 								</FormInputLabel>
 								<FlexDiv>
 									<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
-										{formatCurrencyWithSign(USD_SIGN, priceShift)}
+										{formatCurrencyWithSign(USD_SIGN, priceShift, 3)}
 									</FormInputPriceShiftLabel>
 									{type === 'bid' ? (
 										<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
