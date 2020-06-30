@@ -27,6 +27,7 @@ import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
 import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from '../constants';
+import { BetaLabel } from '../common';
 
 type DispatchProps = {
 	toggleTheme: typeof toggleTheme;
@@ -77,9 +78,10 @@ export const MobileAppHeader: FC<MobileAppHeaderProps> = memo(
 					<>
 						<Overlay onClick={toggleMenu} />
 						<StyledDropdown isOnSplashPage={isOnSplashPage}>
-							{MENU_LINKS.map(({ i18nLabel, link }) => (
+							{MENU_LINKS.map(({ i18nLabel, link, isBeta }) => (
 								<DropdownMenuLink to={link} onClick={toggleMenu} key={link}>
 									{t(i18nLabel)}
+									{isBeta && <BetaLabel>{t('common.beta')}</BetaLabel>}
 								</DropdownMenuLink>
 							))}
 							{isLoggedIn &&

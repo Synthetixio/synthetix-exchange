@@ -25,6 +25,7 @@ import SupportLink from './SupportLink';
 import MobileAppHeader from './MobileAppHeader';
 
 import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from './constants';
+import { BetaLabel } from './common';
 
 type StateProps = {
 	isLoggedIn: boolean;
@@ -57,9 +58,11 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 							<Logo />
 						</StyledLogoLink>
 					</MenuItem>
-					{MENU_LINKS.map(({ i18nLabel, link }) => (
+					{MENU_LINKS.map(({ i18nLabel, link, isBeta }) => (
 						<MenuLinkItem key={link}>
-							<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
+							<MenuLink to={link}>
+								{t(i18nLabel)} {isBeta && <BetaLabel>{t('common.beta')}</BetaLabel>}
+							</MenuLink>
 						</MenuLinkItem>
 					))}
 					{isLoggedIn &&
@@ -126,6 +129,9 @@ const MenuLink = styled(Link)`
 	&:hover {
 		color: ${({ theme }) => theme.colors.fontPrimary};
 		background-color: ${({ theme }) => theme.colors.accentL1};
+		span {
+			background-color: ${(props) => props.theme.colors.accentL2};
+		}
 	}
 	&.active {
 		background-color: ${({ theme }) => theme.colors.accentL2};
