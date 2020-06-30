@@ -1,12 +1,11 @@
 import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
-import get from 'lodash/get';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { SYNTHS_MAP } from 'constants/currency';
+import { USD_SIGN } from 'constants/currency';
 
 import Table from 'components/Table';
 import Currency from 'components/Currency';
@@ -37,8 +36,6 @@ import {
 	getIsLoadedMyTrades,
 } from 'ducks/trades/myTrades';
 
-import { getAvailableSynthsMap } from 'ducks/synths';
-
 export const Exchanges = memo(
 	({
 		myTrades,
@@ -47,7 +44,6 @@ export const Exchanges = memo(
 		isRefreshingMyTrades,
 		networkId,
 		fetchMyTradesRequest,
-		synthsMap,
 	}) => {
 		const { t } = useTranslation();
 
@@ -139,12 +135,7 @@ export const Exchanges = memo(
 								accessor: 'price',
 								sortType: 'basic',
 								Cell: (cellProps) => (
-									<span>
-										{formatCurrencyWithSign(
-											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-											cellProps.cell.value
-										)}
-									</span>
+									<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
 								),
 								width: 150,
 							},
@@ -153,12 +144,7 @@ export const Exchanges = memo(
 								accessor: 'amount',
 								sortType: 'basic',
 								Cell: (cellProps) => (
-									<span>
-										{formatCurrencyWithSign(
-											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-											cellProps.cell.value
-										)}
-									</span>
+									<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
 								),
 								width: 150,
 								sortable: true,
@@ -215,7 +201,6 @@ const StyledCardBody = styled(Card.Body)`
 `;
 
 const mapStateToProps = (state) => ({
-	synthsMap: getAvailableSynthsMap(state),
 	networkId: getNetworkId(state),
 	myTrades: getMyTrades(state),
 	isLoadingMyTrades: getIsLoadingMyTrades(state),

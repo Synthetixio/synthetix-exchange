@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation, Trans } from 'react-i18next';
 
-import { breakpoint, media } from 'shared/media';
+import { media } from 'shared/media';
 import { lightTheme } from 'styles/theme';
 import useInterval from 'shared/hooks/useInterval';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
@@ -21,7 +21,13 @@ import { getSynthsCategoryFilter, setSynthsCategoryFilter } from 'ducks/ui';
 import { fetchHistoricalRatesRequest } from 'ducks/historicalRates';
 
 import { Z_INDEX, SEARCH_DEBOUNCE_MS } from 'constants/ui';
-import { FlexDivRow, AssetSearchInput, NoResultsMessage } from 'shared/commonStyles';
+import {
+	FlexDivRow,
+	AssetSearchInput,
+	NoResultsMessage,
+	PageContent,
+	Strong,
+} from 'shared/commonStyles';
 
 import { Button } from 'components/Button';
 
@@ -59,12 +65,20 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 
 		const { t } = useTranslation();
 
+		const currencyKeys = useMemo(() => synths.map((synth) => synth.name), [synths]);
+
 		useEffect(() => {
-			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
-		}, [fetchHistoricalRatesRequest, synths]);
+			fetchHistoricalRatesRequest({
+				currencyKeys,
+				periods: ['ONE_DAY'],
+			});
+		}, [fetchHistoricalRatesRequest, currencyKeys]);
 
 		useInterval(() => {
-			fetchHistoricalRatesRequest({ synths, periods: ['ONE_DAY'] });
+			fetchHistoricalRatesRequest({
+				currencyKeys,
+				periods: ['ONE_DAY'],
+			});
 		}, SYNTHS_REFRESH_INTERVAL_MS);
 
 		const filteredSynths = useDebouncedMemo(
@@ -97,7 +111,7 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 					<SynthsCharts synthsWithRates={topGainersLosersSynths} maxTopSynths={MAX_TOP_SYNTHS} />
 				</SynthsChartsContent>
 				<SynthsTableContainer>
-					<Content>
+					<PageContent>
 						<FiltersRow>
 							<CategoryFilters>
 								<Button
@@ -133,13 +147,13 @@ export const SynthsSection: FC<SynthsSectionProps> = memo(
 										<Trans
 											i18nKey="common.search-results.no-results-for-query"
 											values={{ searchQuery: assetSearch }}
-											components={[<strong />]}
+											components={[<Strong />]}
 										/>
 									</NoResultsMessage>
 								) : undefined
 							}
 						/>
-					</Content>
+					</PageContent>
 				</SynthsTableContainer>
 			</ThemeProvider>
 		);
@@ -155,11 +169,6 @@ const SynthsTableContainer = styled.div`
 			padding-top: 0;
 			padding-bottom: 90px;
 		`}
-`;
-
-const Content = styled.div`
-	max-width: ${breakpoint.large}px;
-	margin: 0 auto;
 `;
 
 const CategoryFilters = styled.div`
@@ -188,7 +197,7 @@ const FiltersRow = styled(FlexDivRow)`
 	}
 `;
 
-const SynthsChartsContent = styled(Content)`
+const SynthsChartsContent = styled(PageContent)`
 	position: relative;
 	z-index: ${Z_INDEX.BASE};
 	transform: translateY(calc(50% - 20px));

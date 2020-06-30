@@ -2,16 +2,14 @@ import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getAvailableSynthsMap, SynthDefinition } from 'ducks/synths';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 
 import Table from 'components/Table';
 import Currency from 'components/Currency';
 
-import { SYNTHS_MAP } from 'constants/currency';
+import { USD_SIGN } from 'constants/currency';
 
 import { RootState } from 'ducks/types';
 import { HistoricalTrade, HistoricalTrades } from 'ducks/trades/types';
@@ -32,7 +30,6 @@ import { CellProps } from 'react-table';
 
 type StateProps = {
 	networkId: string | number;
-	synthsMap: Record<string, SynthDefinition>;
 };
 
 type Props = {
@@ -43,13 +40,7 @@ type Props = {
 
 type TradeHistoryProps = StateProps & Props;
 
-const TradeHistory: FC<TradeHistoryProps> = ({
-	trades,
-	isLoading,
-	isLoaded,
-	synthsMap,
-	networkId,
-}) => {
+const TradeHistory: FC<TradeHistoryProps> = ({ trades, isLoading, isLoaded, networkId }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -122,12 +113,7 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					accessor: 'price',
 					sortType: 'basic',
 					Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['price']>) => (
-						<span>
-							{formatCurrencyWithSign(
-								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-								cellProps.cell.value
-							)}
-						</span>
+						<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
 					),
 					sortable: true,
 				},
@@ -136,12 +122,7 @@ const TradeHistory: FC<TradeHistoryProps> = ({
 					accessor: 'amount',
 					sortType: 'basic',
 					Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['amount']>) => (
-						<span>
-							{formatCurrencyWithSign(
-								get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-								cellProps.cell.value
-							)}
-						</span>
+						<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
 					),
 					sortable: true,
 				},
@@ -185,7 +166,6 @@ const StyledTable = styled(Table)`
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	synthsMap: getAvailableSynthsMap(state),
 	networkId: getNetworkId(state),
 });
 

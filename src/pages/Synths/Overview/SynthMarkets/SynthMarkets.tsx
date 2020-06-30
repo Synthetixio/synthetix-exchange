@@ -20,7 +20,12 @@ import ROUTES, { navigateTo } from 'constants/routes';
 
 import useInterval from 'shared/hooks/useInterval';
 import { media } from 'shared/media';
-import { GridDivCenteredCol, AssetSearchInput, NoResultsMessage } from 'shared/commonStyles';
+import {
+	GridDivCenteredCol,
+	AssetSearchInput,
+	NoResultsMessage,
+	Strong,
+} from 'shared/commonStyles';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import { Button } from 'components/Button';
@@ -139,7 +144,7 @@ export const SynthMarkets: FC<MarketSectionProps> = ({
 							<Trans
 								i18nKey="common.search-results.no-results-for-query"
 								values={{ searchQuery: assetSearch }}
-								components={[<strong />]}
+								components={[<Strong />]}
 							/>
 						</NoResultsMessage>
 					) : undefined

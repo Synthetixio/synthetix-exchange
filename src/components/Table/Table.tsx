@@ -12,6 +12,8 @@ import { lightTheme, darkTheme } from 'styles/theme';
 import { FlexDivCentered } from 'shared/commonStyles';
 
 import Spinner from 'components/Spinner';
+import { tableHeaderLargeCSS } from 'components/Typography/Table';
+import { bodyCSS } from 'components/Typography/General';
 
 type TablePalette = 'primary' | 'light-secondary' | 'striped';
 
@@ -169,6 +171,7 @@ const ReactTable = styled.div<{ palette: TablePalette }>`
 				margin-bottom: 8px;
 			}
 			${TableCellHead} {
+				font-family: ${(props) => props.theme.fonts.medium};
 				color: ${(props) => props.theme.colors.fontTertiary};
 				background-color: ${(props) => props.theme.colors.surfaceL3};
 			}
@@ -202,6 +205,7 @@ ${(props) =>
 			}
 		}
 		${TableCellHead} {
+			font-family: ${(props) => props.theme.fonts.medium};
 			color: ${(props) => props.theme.colors.fontTertiary};
 			background-color: ${(props) => props.theme.colors.surfaceL3};
 		}
@@ -217,7 +221,7 @@ ${(props) =>
 				max-height: calc(100% - 56px);
 			}
 			${TableCell} {
-				font-size: 14px;
+				${bodyCSS};
 				color: ${lightTheme.colors.fontPrimary};
 				height: 56px;
 			}
@@ -228,8 +232,8 @@ ${(props) =>
 			${TableCellHead} {
 				background-color: ${lightTheme.colors.brand};
 				color: ${darkTheme.colors.fontSecondary};
-				font-family: ${(props) => props.theme.fonts.bold};
-				font-size: 12px;
+				font-family: ${(props) => props.theme.fonts.medium};
+				${tableHeaderLargeCSS};
 			}
 			${TableBodyRow} {
 				background-color: ${darkTheme.colors.brand};

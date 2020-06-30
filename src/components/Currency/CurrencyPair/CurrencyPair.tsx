@@ -9,16 +9,24 @@ import { CurrencyKey } from 'constants/currency';
 
 type CurrencyPairProps = {
 	baseCurrencyKey: CurrencyKey;
+	baseCurrencyAsset?: string;
 	quoteCurrencyKey: CurrencyKey;
 	showIcon?: boolean;
 	iconProps?: any;
 };
 
 export const CurrencyPair: FC<CurrencyPairProps> = memo(
-	({ baseCurrencyKey, quoteCurrencyKey, showIcon = true, iconProps = {}, ...rest }) => (
+	({
+		baseCurrencyKey,
+		baseCurrencyAsset,
+		quoteCurrencyKey,
+		showIcon = true,
+		iconProps = {},
+		...rest
+	}) => (
 		<Container showIcon={showIcon} {...rest}>
 			{showIcon && <CurrencyIcon currencyKey={baseCurrencyKey} {...iconProps} />}
-			{formatCurrencyPair(baseCurrencyKey, quoteCurrencyKey)}
+			{formatCurrencyPair(baseCurrencyAsset || baseCurrencyKey, quoteCurrencyKey)}
 		</Container>
 	)
 );

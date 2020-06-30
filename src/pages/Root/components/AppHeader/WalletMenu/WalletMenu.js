@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import get from 'lodash/get';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { resetWalletReducer, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
@@ -13,10 +12,9 @@ import {
 	getIsFetchingWalletBalances,
 } from 'ducks/wallet/walletBalances';
 import { showWalletPopup } from 'ducks/ui';
-import { getAvailableSynthsMap } from 'ducks/synths';
 
 import { ROUTES } from 'constants/routes';
-import { FIAT_CURRENCY_MAP, SYNTHS_MAP } from 'constants/currency';
+import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
 import {
@@ -42,7 +40,6 @@ const WalletMenu = ({
 	showWalletPopup,
 	totalSynthsBalanceUSD,
 	isLoadedWalletBalances,
-	synthsMap,
 	synthsWalletBalances,
 	isFetchingWalletBalances,
 }) => {
@@ -78,10 +75,9 @@ const WalletMenu = ({
 				<Card.Body>
 					<CardData>
 						{isLoadedWalletBalances
-							? `${formatCurrencyWithSign(
-									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-									totalSynthsBalanceUSD
-							  )} ${FIAT_CURRENCY_MAP.USD}`
+							? `${formatCurrencyWithSign(USD_SIGN, totalSynthsBalanceUSD)} ${
+									FIAT_CURRENCY_MAP.USD
+							  }`
 							: EMPTY_VALUE}
 					</CardData>
 				</Card.Body>
@@ -133,12 +129,7 @@ const WalletMenu = ({
 								accessor: 'usdBalance',
 								sortType: 'basic',
 								Cell: (cellProps) => (
-									<span>
-										{formatCurrencyWithSign(
-											get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-											cellProps.cell.value
-										)}
-									</span>
+									<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
 								),
 								width: 90,
 								sortable: true,
@@ -227,7 +218,6 @@ const mapStateToProps = (state) => ({
 	currentWallet: getCurrentWalletAddress(state),
 	totalSynthsBalanceUSD: getTotalSynthsBalanceUSD(state),
 	isLoadedWalletBalances: getIsLoadedWalletBalances(state),
-	synthsMap: getAvailableSynthsMap(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 });

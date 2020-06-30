@@ -9,11 +9,10 @@ import { CurrencyKey, toStandardSynth, toInverseSynth } from 'constants/currency
 import ROUTES, { navigateTo, navigateToSynthOverview } from 'constants/routes';
 
 import Spinner from 'components/Spinner';
-import { buttonLargeCSS } from 'components/Typography/Button';
 import { labelMediumCSS } from 'components/Typography/Label';
 
-import { breakpoint, media } from 'shared/media';
-import { resetButtonCSS, FlexDivRow } from 'shared/commonStyles';
+import { media } from 'shared/media';
+import { resetButtonCSS, FlexDivRow, PageContent } from 'shared/commonStyles';
 
 import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
 
@@ -90,14 +89,14 @@ export const Overview: FC<OverviewProps> = memo(({ match, synthsMap }) => {
 						<SynthChart synth={synth} key={synth.name} />
 					</SynthsChartsContent>
 					<SynthInfoContainer>
-						<Content>
+						<PageContent>
 							<SynthInfo synth={synth} key={synth.name} />
-						</Content>
+						</PageContent>
 					</SynthInfoContainer>
 					<SynthMarketsContainer>
-						<Content>
+						<PageContent>
 							<SynthMarkets synth={synth} key={synth.name} />
-						</Content>
+						</PageContent>
 					</SynthMarketsContainer>
 				</ThemeProvider>
 			) : (
@@ -111,12 +110,7 @@ export const Overview: FC<OverviewProps> = memo(({ match, synthsMap }) => {
 
 const CHART_CONTAINER_HEIGHT = '350px';
 
-const Content = styled.div`
-	max-width: ${breakpoint.large}px;
-	margin: 0 auto;
-`;
-
-const SynthsChartsContent = styled(Content)`
+const SynthsChartsContent = styled(PageContent)`
 	position: relative;
 	z-index: ${Z_INDEX.BASE};
 	height: ${CHART_CONTAINER_HEIGHT};
@@ -138,6 +132,7 @@ const SynthChartActions = styled(FlexDivRow)`
 const BackLinkButton = styled.button`
 	${resetButtonCSS};
 	${labelMediumCSS};
+	text-transform: none;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	> svg {
 		margin-right: 8px;
@@ -177,7 +172,7 @@ const InverseToggleContainer = styled.div`
 
 const ToggleButton = styled.button<{ isActive: boolean }>`
 	${resetButtonCSS};
-	${buttonLargeCSS};
+	${labelMediumCSS};
 	padding: 5px 13px;
 	color: ${(props) => props.theme.colors.fontSecondary};
 	&:hover {

@@ -28,6 +28,7 @@ import BaseTradingPairs from 'components/BaseTradingPairs';
 import { TableOverflowContainer } from 'shared/commonStyles';
 
 import { mockRates } from 'pages/Synths/mockData';
+import { bodyCSS } from 'components/Typography/General';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -70,10 +71,11 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								Cell: (
 									cellProps: CellProps<SynthDefinitionWithRates, SynthDefinitionWithRates['name']>
 								) => (
-									<Currency.Name
+									<StyledCurrencyName
 										currencyKey={cellProps.cell.value}
 										currencyDesc={cellProps.row.original.desc}
 										showIcon={true}
+										iconProps={{ width: '24px', height: '24px' }}
 									/>
 								),
 								width: 200,
@@ -202,6 +204,10 @@ const StyledTable = styled(Table)`
 			justify-content: flex-end;
 		}
 	}
+`;
+
+const StyledCurrencyName = styled(Currency.Name)`
+	${bodyCSS};
 `;
 
 const StyledPopover = styled(Popover)`

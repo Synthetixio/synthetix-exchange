@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty';
 import snxJSConnector from 'utils/snxJSConnector';
 
 import Card from 'components/Card';
-import { TradeInput } from 'components/Input';
+import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
 
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import { getSynthsWalletBalances } from 'ducks/wallet/walletBalances';
@@ -316,9 +316,9 @@ const CreateOrderCard = ({
 			</Card.Header>
 			<Card.Body>
 				<FormInputRow>
-					<TradeInput
-						synth={quote.name}
-						amount={`${quoteAmount}`}
+					<NumericInputWithCurrency
+						currencyKey={quote.name}
+						value={`${quoteAmount}`}
 						label={
 							<>
 								<FormInputLabel>{t('trade.trade-card.sell-input-label')}:</FormInputLabel>
@@ -342,12 +342,12 @@ const CreateOrderCard = ({
 							setQuoteAmount(value);
 						}}
 						errorMessage={inputError}
-					></TradeInput>
+					/>
 				</FormInputRow>
 				<FormInputRow>
-					<TradeInput
-						synth={base.name}
-						amount={`${baseAmount}`}
+					<NumericInputWithCurrency
+						currencyKey={base.name}
+						value={`${baseAmount}`}
 						label={
 							<>
 								<FormInputLabel>{t('trade.trade-card.buy-input-label')}:</FormInputLabel>
@@ -370,7 +370,7 @@ const CreateOrderCard = ({
 							setQuoteAmount(value * inverseRate);
 							setBaseAmount(value);
 						}}
-					></TradeInput>
+					/>
 				</FormInputRow>
 				<BalanceFractionRow>
 					{BALANCE_FRACTIONS.map((fraction, id) => (

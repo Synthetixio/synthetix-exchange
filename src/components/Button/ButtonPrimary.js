@@ -22,7 +22,7 @@ const ButtonPrimary = styled.button`
 	height: 48px;
 	width: 100%;
 	font-size: 16px;
-	letter-spacing: 0.5px;
+	letter-spacing: 0.2px;
 	font-family: ${(props) => props.theme.fonts.medium};
 	color: ${(props) => props.theme.colors.white};
 	cursor: pointer;
