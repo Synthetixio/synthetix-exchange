@@ -24,7 +24,7 @@ type ChartCardProps = {
 };
 
 const ChartCard: FC<ChartCardProps> = memo(({ onViewMarketDetails }) => {
-	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.FOUR_HOURS);
+	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
 	const [chartType, setChartType] = useState<ChartType>('price');
 
 	const optionsMarket = useMarketContext();

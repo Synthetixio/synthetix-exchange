@@ -25,15 +25,12 @@ export const MENU_LINKS: MenuLinks = [
 		i18nLabel: 'header.links.loans',
 		link: ROUTES.Loans,
 	},
-];
-
-if (process.env.REACT_APP_BINARY_OPTIONS_ENABLED) {
-	MENU_LINKS.push({
+	{
 		i18nLabel: 'header.links.options',
 		link: ROUTES.Options.Home,
 		isBeta: true,
-	});
-}
+	},
+];
 
 export const MENU_LINKS_LOGGED_IN: MenuLinks = [
 	{
