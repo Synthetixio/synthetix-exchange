@@ -159,6 +159,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 				Math.round((maturityDate as Date).getTime() / 1000),
 			];
 			const bids = [parseEther(longBidAmount.toString()), parseEther(shortBidAmount.toString())];
+			console.log(currencyKey, strikePrice, times, longBidAmount, shortBidAmount);
 			return { oracleKey, price, times, bids };
 		};
 
