@@ -136,6 +136,11 @@ const MenuLink = styled(Link)`
 	&.active {
 		background-color: ${({ theme }) => theme.colors.accentL2};
 		color: ${({ theme }) => theme.colors.fontPrimary};
+		&:hover {
+			span {
+				background-color: ${(props) => props.theme.colors.accentL1};
+			}
+		}
 	}
 `;
 
