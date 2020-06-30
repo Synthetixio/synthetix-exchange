@@ -10,9 +10,10 @@ import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
 import { GridDivRow, CurrencyKey, FlexDiv } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
+import { USD_SIGN } from 'constants/currency';
 import { SLIPPAGE_THRESHOLD } from 'constants/ui';
 
-import { formatCurrencyWithKey, formatPercentageWithSign } from 'utils/formatters';
+import { formatCurrencyWithKey, formatCurrencyWithSign } from 'utils/formatters';
 
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
@@ -86,7 +87,7 @@ const TradeSide: FC<TradeSideProps> = memo(
 								</FormInputLabel>
 								<FlexDiv>
 									<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
-										{formatPercentageWithSign(priceShift, 0)}
+										{formatCurrencyWithSign(USD_SIGN, priceShift)}
 									</FormInputPriceShiftLabel>
 									{type === 'bid' ? (
 										<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
