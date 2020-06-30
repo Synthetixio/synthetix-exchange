@@ -63,7 +63,7 @@ type BiddingPhaseCardProps = PropsFromRedux & {
 };
 
 function getPriceDifference(currentPrice: number, newPrice: number): number {
-	return (newPrice - currentPrice) / currentPrice;
+	return newPrice - currentPrice;
 }
 
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(

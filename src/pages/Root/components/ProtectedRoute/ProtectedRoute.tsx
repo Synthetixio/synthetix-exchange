@@ -17,12 +17,16 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type ProtectedRouteProps = PropsFromRedux & RouteProps;
 
-export const ProtectedRoute: FC<ProtectedRouteProps & PropsFromRedux> = ({ isLoggedIn, path }) => {
+export const ProtectedRoute: FC<ProtectedRouteProps & PropsFromRedux> = ({
+	isLoggedIn,
+	path,
+	...rest
+}) => {
 	if (!isLoggedIn) {
 		return <Redirect to={ROUTES.Home} />;
 	}
 
-	return <Route path={path} />;
+	return <Route path={path} {...rest} />;
 };
 
 export default connector(ProtectedRoute);
