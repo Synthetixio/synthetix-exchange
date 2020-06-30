@@ -1,22 +1,25 @@
 import { css } from 'styled-components';
 
-const tableBaseCSS = css`
-	font-family: ${(props) => props.theme.fonts.regular};
-	font-weight: 400;
-	letter-spacing: 0.2px;
-`;
-
-const tableBaseSmallCSS = css`
-	${tableBaseCSS};
-	font-size: 12px;
-`;
-
-export const tableHeaderSmallCSS = css`
-	${tableBaseSmallCSS};
+const tableHeaderCSS = css`
 	font-family: ${(props) => props.theme.fonts.medium};
 	text-transform: uppercase;
 `;
 
+export const tableHeaderSmallCSS = css`
+	${tableHeaderCSS};
+	font-size: 12px;
+`;
+
+export const tableHeaderLargeCSS = css`
+	${tableHeaderCSS};
+	font-size: 14px;
+`;
+
 export const tableDataSmallCSS = css`
-	${tableBaseSmallCSS};
+	font-size: 12px;
+`;
+
+export const tableDataLargeCSS = css`
+	font-size: 14px;
+	line-height: 1.3;
 `;

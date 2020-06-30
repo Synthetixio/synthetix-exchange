@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 import Card from 'components/Card';
 import { HeadingSmall } from 'components/Typography';
-import { tableDataSmallCSS } from 'components/Typography/Data';
+import { tableDataSmallCSS } from 'components/Typography/Table';
 import { formatPercentage } from 'utils/formatters';
 
 import { CardHeadingDescription } from 'shared/commonStyles';

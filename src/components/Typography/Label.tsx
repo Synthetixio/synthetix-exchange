@@ -2,18 +2,6 @@ import styled, { css } from 'styled-components';
 
 export const labelCSS = css`
 	font-family: ${(props) => props.theme.fonts.medium};
-	color: ${(props) => props.theme.colors.fontPrimary};
-	letter-spacing: 0.2px;
-`;
-
-export const labelLargeCSS = css`
-	${labelCSS};
-	font-size: 16px;
-`;
-
-export const labelMediumCSS = css`
-	${labelCSS};
-	font-size: 14px;
 `;
 
 export const labelSmallCSS = css`
@@ -21,8 +9,16 @@ export const labelSmallCSS = css`
 	font-size: 12px;
 `;
 
-export const LabelLarge = styled.span`
-	${labelLargeCSS}
+export const labelMediumCSS = css`
+	${labelCSS};
+	font-size: 14px;
+	text-transform: uppercase;
+`;
+
+export const labelLargeCSS = css`
+	${labelCSS};
+	font-size: 16px;
+	text-transform: uppercase;
 `;
 
 export const LabelMedium = styled.span`

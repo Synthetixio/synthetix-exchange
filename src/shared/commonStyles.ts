@@ -1,10 +1,11 @@
 import styled, { keyframes, css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
-import { tableDataSmallCSS, chartDataCSS } from 'components/Typography/Data';
+import { tableDataSmallCSS } from 'components/Typography/Table';
+import { chartDataCSS } from 'components/Typography/General';
 
 import { Z_INDEX } from '../constants/ui';
-import { media } from './media';
+import { media, breakpoint } from './media';
 
 import SearchInput from 'components/Input/SearchInput';
 
@@ -22,6 +23,10 @@ export const FlexDivCol = styled(FlexDiv)`
 
 export const FlexDivRow = styled(FlexDiv)`
 	justify-content: space-between;
+`;
+
+export const FlexDivRowCentered = styled(FlexDivRow)`
+	align-items: center;
 `;
 
 export const PageLayout = styled(FlexDiv)`
@@ -92,6 +97,7 @@ export const TextButton = styled.button`
 	background: transparent;
 	padding: 0;
 	cursor: pointer;
+	outline: none;
 `;
 
 export const LinkTextSmall = styled(DataSmall)`
@@ -103,6 +109,7 @@ export const Message = styled(FlexDivCentered)<{
 	floating: boolean;
 	type: 'error' | 'success';
 }>`
+	color: ${(props) => props.theme.colors.white};
 	border-radius: 1px;
 	transition: opacity 0.2s ease-out;
 	width: 100%;
@@ -110,7 +117,7 @@ export const Message = styled(FlexDivCentered)<{
 	${(props) =>
 		props.size === 'sm'
 			? css`
-					font-size: 11px;
+					font-size: 12px;
 					padding: 5px 10px;
 			  `
 			: css`
@@ -248,7 +255,6 @@ export const GridDiv = styled.div`
 
 export const GridDivCentered = styled(GridDiv)`
 	align-items: center;
-	justify-items: center;
 `;
 
 export const GridDivRow = styled(GridDiv)`
@@ -279,4 +285,18 @@ export const AssetSearchInput = styled(SearchInput)`
 
 export const NoResultsMessage = styled.div`
 	padding: 18px;
+`;
+
+export const PageContent = styled.div`
+	max-width: ${breakpoint.large}px;
+	margin: 0 auto;
+`;
+
+export const LoaderContainer = styled.div`
+	position: relative;
+	height: 400px;
+`;
+
+export const Strong = styled.span`
+	font-family: ${(props) => props.theme.fonts.medium};
 `;

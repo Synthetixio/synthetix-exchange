@@ -7,6 +7,7 @@ import {
 	SUPPORTED_WALLETS_MAP,
 } from './networkUtils';
 import { synthSummaryUtilContract } from './contracts';
+import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
 
 let snxJSConnector = {
 	initialized: false,
@@ -19,9 +20,16 @@ let snxJSConnector = {
 		this.provider = this.snxJS.contractSettings.provider;
 		this.utils = this.snxJS.utils;
 		this.ethersUtils = this.snxJS.ethers.utils;
+		this.ethers = ethers;
+		this.contractSettings = contractSettings;
 		this.synthSummaryUtilContract = new ethers.Contract(
 			synthSummaryUtilContract.addresses[contractSettings.networkId],
 			synthSummaryUtilContract.abi,
+			this.provider
+		);
+		this.binaryOptionsMarketDataContract = new ethers.Contract(
+			binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
+			binaryOptionsMarketDataContract.abi,
 			this.provider
 		);
 	},

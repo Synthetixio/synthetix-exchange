@@ -5,6 +5,7 @@ import { Link as RouterLink, ExternalLink } from 'shared/commonStyles';
 type LinkProps = {
 	to: string;
 	isExternal?: boolean;
+	onClick?: () => void;
 };
 
 export const Link: FC<LinkProps> = ({ to, isExternal, ...rest }) =>

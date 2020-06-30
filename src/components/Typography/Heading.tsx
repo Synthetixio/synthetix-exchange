@@ -1,76 +1,57 @@
 import styled, { css } from 'styled-components';
-import { typography } from 'styled-system';
 
 const headingCSS = css`
-	font-family: ${(props) => props.theme.fonts.regular};
-	color: ${(props) => props.theme.colors.fontPrimary};
+	font-family: ${(props) => props.theme.fonts.medium};
+`;
+
+export const headingH1CSS = css`
+	font-family: ${(props) => props.theme.fonts.bold};
+	font-size: 56px;
+	line-height: 1.1;
+`;
+
+export const headingH2CSS = css`
+	${headingCSS};
+	font-size: 48px;
+	line-height: 1.3;
+`;
+
+export const headingH3CSS = css`
+	${headingCSS};
+	font-size: 32px;
 `;
 
 export const headingH4CSS = css`
-	font-family: ${(props) => props.theme.fonts.medium};
-	font-weight: 400;
+	${headingCSS};
 	font-size: 24px;
-	line-height: 29px;
-	letter-spacing: 0.2px;
 `;
 
 export const headingH5CSS = css`
-	font-family: ${(props) => props.theme.fonts.medium};
+	${headingCSS};
 	font-size: 20px;
-	line-height: 25px;
-	letter-spacing: 0.2px;
 `;
 
-export const headingLargeCSS = css`
+export const headingH6CSS = css`
 	${headingCSS};
-	font-family: ${(props) => props.theme.fonts.bold};
-	font-size: 56px;
-	line-height: 56px;
-	letter-spacing: 0.2px;
+	font-size: 16px;
 `;
+
+// TODO: deprecate these
 
 export const headingMediumCSS = css`
 	${headingCSS};
-	line-height: 32px;
 	font-size: 32px;
-	letter-spacing: 0.2px;
 `;
 
 export const headingSmallCSS = css`
 	${headingCSS};
-	line-height: 14px;
 	font-size: 14px;
-	letter-spacing: 0.5px;
 `;
 
-export const HeadingLarge = styled.h1`
-	${headingLargeCSS};
-	margin: 0;
-	${typography}
-`;
-
-export const HeadingMedium = styled.h2`
+export const HeadingMedium = styled.div`
 	${headingMediumCSS};
-	margin: 0;
-	${typography}
 `;
 
-export const HeadingSmall = styled.h3`
+export const HeadingSmall = styled.div`
 	${headingSmallCSS};
-	margin: 0;
-	${typography}
-`;
-
-export const subtitleSmallCSS = css`
-	font-family: ${(props) => props.theme.fonts.regular};
-	font-weight: 400;
-	font-size: 20px;
-	letter-spacing: 0.2px;
-`;
-
-export const subtitleLargeCSS = css`
-	font-family: ${(props) => props.theme.fonts.regular};
-	font-weight: 400;
-	font-size: 24px;
-	letter-spacing: 0.2px;
 `;

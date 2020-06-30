@@ -17,7 +17,15 @@ export const ROUTES = {
 		Home: '/synths',
 		OverviewMatch: '/synths/:currencyKey',
 	},
+	Options: {
+		Home: '/options',
+		CreateMarketModal: '/options/create-market',
+		MarketMatch: '/options/:marketAddress',
+	},
 };
+
+export const buildOptionsMarketLink = (marketAddress: string) =>
+	`${ROUTES.Options.Home}/${marketAddress}`;
 
 export const buildSynthOverviewLink = (currencyKey: CurrencyKey) =>
 	`${ROUTES.Synths.Home}/${currencyKey}`;
@@ -47,5 +55,8 @@ export const navigateToSynthOverview = (
 	replacePath: boolean = false,
 	scrollToTop: boolean = true
 ) => navigateTo(buildSynthOverviewLink(currencyKey), replacePath, scrollToTop);
+
+export const navigateToOptionsMarket = (marketAddress: string, replacePath: boolean = false) =>
+	navigateTo(buildOptionsMarketLink(marketAddress), replacePath);
 
 export default ROUTES;

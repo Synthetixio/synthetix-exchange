@@ -33,7 +33,7 @@ import {
 	getIsFetchingWalletBalances,
 } from 'ducks/wallet/walletBalances';
 
-import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP, CurrencyKey } from 'constants/currency';
+import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP, CurrencyKey, USD_SIGN } from 'constants/currency';
 import Spinner from 'components/Spinner';
 import BaseTradingPairs from 'components/BaseTradingPairs';
 
@@ -144,14 +144,7 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 									sortType: 'basic',
 									Cell: (
 										cellProps: CellProps<SynthWalletBalance, SynthWalletBalance['usdBalance']>
-									) => (
-										<span>
-											{formatCurrencyWithSign(
-												get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
-												cellProps.cell.value
-											)}
-										</span>
-									),
+									) => <span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>,
 									width: 150,
 									sortable: true,
 								},

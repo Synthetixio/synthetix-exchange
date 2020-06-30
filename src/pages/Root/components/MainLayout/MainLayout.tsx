@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 
@@ -18,7 +18,9 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, isAppReady }) => (
 		<GlobalStyle />
 		<FullScreenContainer>
 			<AppHeader />
-			{isAppReady ? children : <Spinner centered={true} size="sm" />}
+			<Suspense fallback={<Spinner size="sm" centered={true} />}>
+				{isAppReady ? children : <Spinner centered={true} size="sm" />}
+			</Suspense>
 		</FullScreenContainer>
 	</>
 );
@@ -26,6 +28,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, isAppReady }) => (
 const GlobalStyle = createGlobalStyle`
   body {
     background-color: ${({ theme }) => theme.colors.surfaceL1};
+    color: ${({ theme }) => theme.colors.fontPrimary};
   }
 `;
 

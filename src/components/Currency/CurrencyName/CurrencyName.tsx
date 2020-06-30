@@ -9,16 +9,17 @@ import { CurrencyKey } from 'constants/currency';
 
 type CurrencyNameProps = {
 	currencyKey: CurrencyKey;
+	name?: string;
 	showIcon?: boolean;
 	iconProps?: object;
 	currencyDesc?: string | null;
 };
 
 export const CurrencyName: FC<CurrencyNameProps> = memo(
-	({ currencyKey, currencyDesc = null, showIcon = false, iconProps = {}, ...rest }) => (
+	({ currencyKey, name, currencyDesc = null, showIcon = false, iconProps = {}, ...rest }) => (
 		<Container showIcon={showIcon} {...rest}>
 			{showIcon && <CurrencyIcon currencyKey={currencyKey} {...iconProps} />}
-			{currencyKey}
+			{name || currencyKey}
 			{currencyDesc && <Desc className="currency-desc">{currencyDesc}</Desc>}
 		</Container>
 	)

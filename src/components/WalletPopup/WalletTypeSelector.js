@@ -14,7 +14,7 @@ import { updateWalletReducer, resetWalletReducer } from 'ducks/wallet/walletDeta
 import { toggleWalletPopup } from 'ducks/ui';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
-import { HeadingMedium } from '../Typography';
+import { headingH3CSS, headingH5CSS } from 'components/Typography/Heading';
 
 import { ReactComponent as CoinbaseWallet } from 'assets/images/wallets/coinbase.svg';
 import { ReactComponent as LedgerWallet } from 'assets/images/wallets/ledger.svg';
@@ -63,7 +63,7 @@ const WalletTypeSelector = ({
 
 	return (
 		<Container>
-			<HeadingMedium>{t('modals.wallet.connect-your-wallet')}</HeadingMedium>
+			<Title>{t('modals.wallet.connect-your-wallet')}</Title>
 			<Wallets>
 				{SUPPORTED_WALLETS.map((wallet) => {
 					const noMetamask = wallet === METAMASK && !hasWeb3();
@@ -122,11 +122,14 @@ const Wallet = styled.button`
 	transition: transform 0.2s ease-in-out;
 `;
 
-const WalletLabel = styled.h3`
+const Title = styled.div`
+	${headingH3CSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
-	font-family: 'apercu-light', sans-serif;
-	letter-spacing: 1px;
-	font-size: 24px;
+`;
+
+const WalletLabel = styled.div`
+	${headingH5CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
 const mapStateToProps = (state) => ({

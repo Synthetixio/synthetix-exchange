@@ -13,7 +13,7 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 
 import { ButtonPrimary } from 'components/Button';
 import Card from 'components/Card';
-import { TradeInput } from 'components/Input';
+import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
 import { HeadingSmall } from 'components/Typography';
 import { getGasInfo } from 'ducks/transaction';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
@@ -142,9 +142,9 @@ export const CreateLoanCard = ({
 			</Card.Header>
 			<Card.Body>
 				<FormInputRow>
-					<TradeInput
-						synth={collateralCurrencyKey}
-						amount={`${collateralAmount}`}
+					<NumericInputWithCurrency
+						currencyKey={collateralCurrencyKey}
+						value={`${collateralAmount}`}
 						label={
 							<>
 								<FormInputLabel>
@@ -169,9 +169,9 @@ export const CreateLoanCard = ({
 					/>
 				</FormInputRow>
 				<FormInputRow>
-					<TradeInput
-						synth={loanCurrencyKey}
-						amount={loanAmount}
+					<NumericInputWithCurrency
+						currencyKey={loanCurrencyKey}
+						value={loanAmount}
 						label={
 							<>
 								<FormInputLabel>

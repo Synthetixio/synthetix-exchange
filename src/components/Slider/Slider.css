@@ -28,13 +28,17 @@
 	box-shadow: 0px 0px 6px 4px rgba(119, 119, 119, 0.2);
 }
 
+.rc-slider-tooltip {
+	z-index: 100001 !important;
+}
+
 .rc-slider-tooltip-inner {
-	width: 128px;
-	font-size: 14px;
-	background-color: transparent;
 	height: auto;
-	padding: 0;
-	box-shadow: none;
+	width: auto;
+	padding: 8px;
+	background: white;
+	color: #0e0d14;
+	font-size: 14px;
 }
 
 .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
