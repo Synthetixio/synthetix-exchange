@@ -10,9 +10,9 @@
   NODE_VERSION = "10.16.3"
   RUBY_VERSION = "2.6.2"
   REACT_APP_CONTEXT = "production"
-  REACT_APP_BINARY_OPTIONS_ENABLED = "false"
+  REACT_APP_BINARY_OPTIONS_ENABLED = false
 
 [context.branch-deploy.environment]
-  REACT_APP_BINARY_OPTIONS_ENABLED = "true"
+  REACT_APP_BINARY_OPTIONS_ENABLED = false
   REACT_APP_CONTEXT = "staging"
 
