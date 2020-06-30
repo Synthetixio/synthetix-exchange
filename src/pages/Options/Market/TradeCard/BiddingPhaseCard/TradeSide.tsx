@@ -7,11 +7,12 @@ import { OptionsTransaction } from 'pages/Options/types';
 import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
 import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
 
-import { GridDivRow, CurrencyKey } from 'shared/commonStyles';
+import { GridDivRow, CurrencyKey, FlexDiv } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
+import { SLIPPAGE_THRESHOLD } from 'constants/ui';
 
-import { formatCurrencyWithKey } from 'utils/formatters';
+import { formatCurrencyWithKey, formatPercentageWithSign } from 'utils/formatters';
 
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
@@ -19,6 +20,10 @@ import { formLabelSmallCSS } from 'components/Typography/Form';
 
 import { CurrentPosition } from './types';
 import { labelMediumCSS } from 'components/Typography/Label';
+
+// TO DO: rename and put this tooltip in ./components
+import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
+import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 
 type TradeSideProps = {
 	isActive: boolean;
@@ -31,6 +36,7 @@ type TradeSideProps = {
 	onClick: () => void;
 	transKey?: string;
 	currentPosition: CurrentPosition;
+	priceShift: number;
 };
 
 const TradeSide: FC<TradeSideProps> = memo(
@@ -45,6 +51,7 @@ const TradeSide: FC<TradeSideProps> = memo(
 		onClick,
 		transKey,
 		currentPosition,
+		priceShift,
 	}) => {
 		const { t } = useTranslation();
 		const theme = useContext(ThemeContext);
@@ -73,7 +80,21 @@ const TradeSide: FC<TradeSideProps> = memo(
 					</FormRow>
 					<FormRow>
 						<FormControl>
-							<FormInputLabel htmlFor={priceInputId}>{t(`${transKey}.price-label`)}</FormInputLabel>
+							<FormLabelRow>
+								<FormInputLabel htmlFor={priceInputId}>
+									{t(`${transKey}.price-label`)}
+								</FormInputLabel>
+								<FlexDiv>
+									<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
+										{formatPercentageWithSign(priceShift, 0)}
+									</FormInputPriceShiftLabel>
+									<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
+										<QuestionMarkIcon>
+											<QuestionMarkStyled />
+										</QuestionMarkIcon>
+									</NetworkInfoTooltip>
+								</FlexDiv>
+							</FormLabelRow>
 							<StyledNumericInput
 								id={priceInputId}
 								value={price}
@@ -171,12 +192,25 @@ const FormInputLabel = styled.label`
 	cursor: pointer;
 `;
 
+const FormInputPriceShiftLabel = styled(FormInputLabel)<{ highlighted: boolean }>`
+	${(props) =>
+		props.highlighted &&
+		css`
+			font-weight: 600;
+			color: ${(props) => props.theme.colors.red};
+		`}}
+`;
+
 const FormRow = styled.div`
 	padding-bottom: 10px;
 `;
 
 const FormControl = styled(GridDivRow)`
 	grid-gap: 8px;
+`;
+
+const FormLabelRow = styled(FlexDiv)`
+	justify-content: space-between;
 `;
 
 const StyledNumericInput = styled(NumericInput)`
@@ -231,6 +265,22 @@ const StyledCurrencyKey = styled(CurrencyKey)`
 
 const SectionBody = styled.div`
 	padding-bottom: 3px;
+`;
+
+const QuestionMarkIcon = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	margin-left: 4px;
+`;
+
+const QuestionMarkStyled = styled(QuestionMark)`
+	height: 8px;
 `;
 
 export default TradeSide;
