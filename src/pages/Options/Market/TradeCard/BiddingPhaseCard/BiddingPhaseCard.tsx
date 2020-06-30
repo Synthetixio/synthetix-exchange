@@ -29,7 +29,7 @@ import Card from 'components/Card';
 import { Button } from 'components/Button';
 import { formLabelSmallCSS } from 'components/Typography/Form';
 
-import NetworkFees from 'pages/Options/components/NetworkFees';
+import BidNetworkFees from '../components/BidNetworkFees';
 import { useBOMContractContext } from '../../contexts/BOMContractContext';
 import snxJSConnector from 'utils/snxJSConnector';
 
@@ -75,7 +75,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		gasInfo,
 		accountMarketInfo,
 	}) => {
-		const { longPrice, shortPrice } = optionsMarket;
+		const { longPrice, shortPrice, fees } = optionsMarket;
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
@@ -339,7 +339,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						/>
 					</TradeSides>
 					<CardContent>
-						<NetworkFees gasLimit={gasLimit} />
+						<BidNetworkFees
+							gasLimit={gasLimit}
+							type={type}
+							fees={fees}
+							amount={side === 'long' ? longSideAmount : shortSideAmount}
+						/>
 						{hasAllowance ? (
 							<NetworkInfoTooltip
 								open={type === 'bid' && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}

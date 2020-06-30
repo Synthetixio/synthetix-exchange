@@ -317,7 +317,9 @@
 					"common": {
 						"current-position": "current position:",
 						"bid": "bid:",
-						"payout": "payout:"
+						"payout": "payout:",
+						"bid-fee": "Bid fee",
+						"refund-fee": "Refund fee"
 					},
 					"footer": {
 						"end-label": "bidding period closing in:"
@@ -617,7 +619,7 @@
 		"features": {
 			"coming-soon": "coming soon"
 		},
-		"search-results": {			
+		"search-results": {
 			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
 		},
 		"chart": {
