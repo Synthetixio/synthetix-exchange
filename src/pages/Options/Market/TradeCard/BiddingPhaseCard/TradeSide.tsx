@@ -88,11 +88,13 @@ const TradeSide: FC<TradeSideProps> = memo(
 									<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
 										{formatPercentageWithSign(priceShift, 0)}
 									</FormInputPriceShiftLabel>
-									<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
-										<QuestionMarkIcon>
-											<QuestionMarkStyled />
-										</QuestionMarkIcon>
-									</NetworkInfoTooltip>
+									{type === 'bid' ? (
+										<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
+											<QuestionMarkIcon>
+												<QuestionMarkStyled />
+											</QuestionMarkIcon>
+										</NetworkInfoTooltip>
+									) : null}
 								</FlexDiv>
 							</FormLabelRow>
 							<StyledNumericInput

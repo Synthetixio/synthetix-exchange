@@ -254,7 +254,7 @@
 			},
 			"trade-card": {
 				"shared": {
-					"price-shift": "If a bid or refund is too large for the current size of the market, it will cause slippage. The maximum slippage allowed is 10%."
+					"price-shift": "If a bid is too large for the current size of the market, it will cause slippage. The maximum slippage allowed is 10%."
 				},
 				"bidding": {
 					"bid": {
@@ -265,7 +265,8 @@
 						"confirm-bid": "confirm-bid",
 						"confirm-button": {
 							"label": "confirm bid",
-							"progress-label": "bidding in progress..."
+							"progress-label": "bidding in progress...",
+							"high-slippage": "Warning: this bid is too large and causes more than the maximum 10% price slippage. Please lower your bid."
 						},
 						"allowance-button": {
 							"label": "approve market",
