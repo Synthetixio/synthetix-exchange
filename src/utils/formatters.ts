@@ -51,6 +51,11 @@ export const formatPercentage = (value: NumericValue, decimals = DEFAULT_CURRENC
 		mantissa: decimals,
 	});
 
+export const formatPercentageWithSign = (
+	value: NumericValue,
+	decimals = DEFAULT_CURRENCY_DECIMALS
+) => `${value > 0 ? '+' : ''}${formatPercentage(value, decimals)}`;
+
 // TODO: use a library for this, because the sign does not always appear on the left. (perhaps something like number.toLocaleString)
 export const formatCurrencyWithSign = (
 	sign: string | null | undefined,

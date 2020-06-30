@@ -17,3 +17,4 @@ export const Z_INDEX = {
 
 export const SEARCH_DEBOUNCE_MS = 300;
 export const DEFAULT_REQUEST_REFRESH_INTERVAL = 30000; // 30s
+export const SLIPPAGE_THRESHOLD = 0.1;

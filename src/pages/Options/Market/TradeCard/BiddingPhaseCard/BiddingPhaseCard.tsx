@@ -16,6 +16,7 @@ import QUERY_KEYS from 'constants/queryKeys';
 import { SYNTHS_MAP } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { APPROVAL_EVENTS } from 'constants/events';
+import { SLIPPAGE_THRESHOLD } from 'constants/ui';
 
 import { getCurrencyKeyBalance } from 'utils/balances';
 import { formatCurrencyWithKey, getAddress } from 'utils/formatters';
@@ -31,6 +32,9 @@ import { formLabelSmallCSS } from 'components/Typography/Form';
 import NetworkFees from 'pages/Options/components/NetworkFees';
 import { useBOMContractContext } from '../../contexts/BOMContractContext';
 import snxJSConnector from 'utils/snxJSConnector';
+
+// TO DO: rename and put this tooltip in ./components
+import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
 
 import {
 	StyledTimeRemaining,
@@ -61,8 +65,6 @@ type BiddingPhaseCardProps = PropsFromRedux & {
 function getPriceDifference(currentPrice: number, newPrice: number): number {
 	return (newPrice - currentPrice) / currentPrice;
 }
-
-const PRICE_SHIFT_THRESHOLD = 0.1;
 
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 	({
@@ -217,9 +219,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			const setPriceAmountFunction = isShort ? setShortPriceAmount : setLongPriceAmount;
 			const setOtherSidePriceAmountFunction = isShort ? setLongPriceAmount : setShortPriceAmount;
 			const setSideAmountFunction = isShort ? setShortSideAmount : setLongSideAmount;
+			const bidPrice = side === 'short' ? shortPrice : longPrice;
 			try {
 				if (!targetPrice) {
 					setPriceAmountFunction('');
+					setPriceShift(0);
 					return;
 				}
 				setPriceAmountFunction(targetPrice);
@@ -231,6 +235,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					isRefund
 				);
 				setSideAmountFunction(amountNeeded / 1e18);
+				setPriceShift(getPriceDifference(bidPrice, Number(targetPrice)));
 			} catch (e) {
 				console.log(e);
 				setPriceAmountFunction('');
@@ -269,6 +274,13 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			setShortPriceAmount('');
 			setLongSideAmount('');
 			setShortSideAmount('');
+			setPriceShift(0);
+		};
+
+		const handleSideChange = (selectedSide: OptionsTransaction['side']) => {
+			if (side === selectedSide) return;
+			setSide(selectedSide);
+			setPriceShift(0);
 		};
 
 		const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD);
@@ -304,10 +316,10 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onPriceChange={(e) =>
 								handleTargetPrice(e.target.value, false, false, type === 'refund')
 							}
-							onClick={() => setSide('long')}
+							onClick={() => handleSideChange('long')}
 							transKey={transKey}
 							currentPosition={longPosition}
-							priceShift={priceShift}
+							priceShift={side === 'long' ? priceShift : 0}
 						/>
 						<TradeSideSeparator />
 						<TradeSide
@@ -320,10 +332,10 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							onPriceChange={(e) =>
 								handleTargetPrice(e.target.value, true, true, type === 'refund')
 							}
-							onClick={() => setSide('short')}
+							onClick={() => handleSideChange('short')}
 							transKey={transKey}
 							currentPosition={shortPosition}
-							priceShift={priceShift}
+							priceShift={side === 'short' ? priceShift : 0}
 						/>
 					</TradeSides>
 					<CardContent>
@@ -337,7 +349,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 									!isLoggedIn ||
 									!sUSDBalance ||
 									!gasLimit ||
-									Math.abs(priceShift) > PRICE_SHIFT_THRESHOLD
+									Math.abs(priceShift) > SLIPPAGE_THRESHOLD
 								}
 								onClick={handleBidOrRefund}
 							>

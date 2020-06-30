@@ -10,8 +10,9 @@ import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
 import { GridDivRow, CurrencyKey, FlexDiv } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
+import { SLIPPAGE_THRESHOLD } from 'constants/ui';
 
-import { formatCurrencyWithKey, formatPercentage } from 'utils/formatters';
+import { formatCurrencyWithKey, formatPercentageWithSign } from 'utils/formatters';
 
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
@@ -19,6 +20,8 @@ import { formLabelSmallCSS } from 'components/Typography/Form';
 
 import { CurrentPosition } from './types';
 import { labelMediumCSS } from 'components/Typography/Label';
+
+// TO DO: rename and put this tooltip in ./components
 import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 
@@ -82,8 +85,10 @@ const TradeSide: FC<TradeSideProps> = memo(
 									{t(`${transKey}.price-label`)}
 								</FormInputLabel>
 								<FlexDiv>
-									<FormInputLabel>{formatPercentage(priceShift, 0)}</FormInputLabel>
-									<NetworkInfoTooltip title={'test'}>
+									<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
+										{formatPercentageWithSign(priceShift, 0)}
+									</FormInputPriceShiftLabel>
+									<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
 										<QuestionMarkIcon>
 											<QuestionMarkStyled />
 										</QuestionMarkIcon>
@@ -185,6 +190,15 @@ const FormInputLabel = styled.label`
 	color: ${(props) => props.theme.colors.fontSecondary};
 	text-align: left;
 	cursor: pointer;
+`;
+
+const FormInputPriceShiftLabel = styled(FormInputLabel)<{ highlighted: boolean }>`
+	${(props) =>
+		props.highlighted &&
+		css`
+			font-weight: 600;
+			color: ${(props) => props.theme.colors.red};
+		`}}
 `;
 
 const FormRow = styled.div`
