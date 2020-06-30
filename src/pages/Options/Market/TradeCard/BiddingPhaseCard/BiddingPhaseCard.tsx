@@ -341,22 +341,27 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					<CardContent>
 						<NetworkFees gasLimit={gasLimit} />
 						{hasAllowance ? (
-							<ActionButton
-								size="lg"
-								palette="primary"
-								disabled={
-									isBidding ||
-									!isLoggedIn ||
-									!sUSDBalance ||
-									!gasLimit ||
-									Math.abs(priceShift) > SLIPPAGE_THRESHOLD
-								}
-								onClick={handleBidOrRefund}
+							<NetworkInfoTooltip
+								open={type === 'bid' && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
+								title={t(`${transKey}.confirm-button.high-slippage`)}
 							>
-								{!isBidding
-									? t(`${transKey}.confirm-button.label`)
-									: t(`${transKey}.confirm-button.progress-label`)}
-							</ActionButton>
+								<ActionButton
+									size="lg"
+									palette="primary"
+									disabled={
+										isBidding ||
+										!isLoggedIn ||
+										!sUSDBalance ||
+										!gasLimit ||
+										(type === 'bid' && Math.abs(priceShift) > SLIPPAGE_THRESHOLD)
+									}
+									onClick={handleBidOrRefund}
+								>
+									{!isBidding
+										? t(`${transKey}.confirm-button.label`)
+										: t(`${transKey}.confirm-button.progress-label`)}
+								</ActionButton>
+							</NetworkInfoTooltip>
 						) : (
 							<ActionButton
 								size="lg"
