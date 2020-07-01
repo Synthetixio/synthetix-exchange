@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.24.0-alpha",
+	"version": "2.24.0-beta",
 	"private": true,
 	"dependencies": {
 		"@bugsnag/js": "6.2.0",
