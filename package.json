@@ -42,7 +42,7 @@
 		"styled-components": "5.0.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.15",
-		"synthetix-js": "2.24.0-alpha",
+		"synthetix-js": "2.24.0-beta",
 		"typescript": "3.7.2"
 	},
 	"devDependencies": {
