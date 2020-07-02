@@ -30,6 +30,8 @@ import {
 import ResultCard from '../components/ResultCard';
 import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
 
+import TxErrorMessage from 'components/TxErrorMessage';
+
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
@@ -47,12 +49,17 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
+		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
 
 		const [isExercising, setIsExercising] = useState<boolean>(false);
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
 
-		const { bids, claimable } = accountMarketInfo;
-		const nothingToExercise = !claimable.short && !claimable.long;
+		const { balances, claimable } = accountMarketInfo;
+		const { result } = optionsMarket;
+
+		const longAmount = balances.long + claimable.long;
+		const shortAmount = balances.short + claimable.short;
+		const nothingToExercise = !longAmount && !shortAmount;
 
 		const buttonDisabled = isExercising || !isLoggedIn || nothingToExercise || !gasLimit;
 
@@ -74,12 +81,14 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 
 		const handleExercise = async () => {
 			try {
+				setTxErrorMessage(null);
 				setIsExercising(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 				await BOMContractWithSigner.exerciseOptions();
-				setIsExercising(false);
 			} catch (e) {
 				console.log(e);
+				setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+			} finally {
 				setIsExercising(false);
 			}
 		};
@@ -92,14 +101,15 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 						icon={<FinishIcon />}
 						title={t('options.market.trade-card.maturity.card-title')}
 						subTitle={t('options.market.trade-card.maturity.card-subtitle')}
-						longAmount={bids.long}
-						shortAmount={bids.short}
-						result={optionsMarket.result}
+						longAmount={longAmount}
+						shortAmount={shortAmount}
+						result={result}
 					/>
 					<Payout>
 						<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
 						<PayoutAmount>
-							{formatCurrencyWithSign(USD_SIGN, claimable[optionsMarket.result])} {SYNTHS_MAP.sUSD}
+							{formatCurrencyWithSign(USD_SIGN, result === 'long' ? longAmount : shortAmount)}{' '}
+							{SYNTHS_MAP.sUSD}
 						</PayoutAmount>
 					</Payout>
 					<StyledCardContent>
@@ -116,6 +126,11 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 								? t('options.market.trade-card.maturity.confirm-button.label')
 								: t('options.market.trade-card.maturity.confirm-button.progress-label')}
 						</ActionButton>
+						{txErrorMessage && (
+							<TxErrorMessage onDismiss={() => setTxErrorMessage(null)}>
+								{txErrorMessage}
+							</TxErrorMessage>
+						)}
 						<PhaseEnd>
 							{t('options.market.trade-card.maturity.footer.end-label')}{' '}
 							<StyledTimeRemaining end={optionsMarket.timeRemaining} />
