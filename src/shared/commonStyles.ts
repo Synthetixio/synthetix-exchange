@@ -104,11 +104,13 @@ export const LinkTextSmall = styled(DataSmall)`
 	color: ${(props) => props.theme.colors.hyperlink};
 `;
 
-export const Message = styled(FlexDivCentered)<{
+export type MessageProps = {
 	size: 'sm' | 'lg';
-	floating: boolean;
+	floating?: boolean;
 	type: 'error' | 'success';
-}>`
+};
+
+export const Message = styled(FlexDivCentered)<MessageProps>`
 	color: ${(props) => props.theme.colors.white};
 	border-radius: 1px;
 	transition: opacity 0.2s ease-out;
