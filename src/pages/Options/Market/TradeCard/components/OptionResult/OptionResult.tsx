@@ -15,20 +15,24 @@ import SideIcon from 'pages/Options/Market/components/SideIcon';
 type OptionResultProps = {
 	side: Side;
 	amount: number;
-	totalPrice?: number;
+	price?: number;
+	claimableAmount?: number;
 };
 
-const OptionResult: FC<OptionResultProps> = ({ side, amount, totalPrice, ...rest }) => {
+const OptionResult: FC<OptionResultProps> = ({ side, amount, price, claimableAmount, ...rest }) => {
 	const { t } = useTranslation();
 
 	return (
 		<Container className={side} {...rest}>
 			<StyledSideIcon side={side} />
 			<Amount>{t(`options.common.amount-${side}`, { amount: formatCurrency(amount) })}</Amount>
-			{totalPrice != null && (
-				<Price>
-					{t('options.common.price-you-paid')} {formatCurrencyWithSign(USD_SIGN, totalPrice)}
-				</Price>
+			{claimableAmount != null && (
+				<Info>{t('options.common.claimable-amount', { amount: claimableAmount })}</Info>
+			)}
+			{price != null && (
+				<Info>
+					{t('options.common.final-price')} {formatCurrencyWithSign(USD_SIGN, price)}
+				</Info>
 			)}
 		</Container>
 	);
@@ -51,11 +55,15 @@ const Amount = styled.div`
 	text-transform: uppercase;
 `;
 
-const Price = styled.div`
+const Info = styled.div`
 	color: ${(props) => props.theme.colors.fontTertiary};
 	font-size: 12px;
 	text-transform: uppercase;
 	white-space: nowrap;
+	padding-bottom: 3px;
+	&:last-child {
+		padding-bottom: 0;
+	}
 `;
 
 export default OptionResult;

@@ -28,6 +28,8 @@ import {
 import ResultCard from '../components/ResultCard';
 import { useBOMContractContext } from '../../contexts/BOMContractContext';
 
+import TxErrorMessage from 'components/TxErrorMessage';
+
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
 });
@@ -44,12 +46,14 @@ type TradingPhaseCardProps = PropsFromRedux & {
 const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
 		const { t } = useTranslation();
+		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
+
 		const BOMContract = useBOMContractContext();
 
 		const [isClaiming, setIsClaiming] = useState<boolean>(false);
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
 
-		const { bids } = accountMarketInfo;
+		const { bids, balances, claimable } = accountMarketInfo;
 
 		const nothingToClaim = !bids.short && !bids.long;
 		const buttonDisabled = isClaiming || !isLoggedIn || nothingToClaim || !gasLimit;
@@ -72,12 +76,14 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 
 		const handleClaim = async () => {
 			try {
+				setTxErrorMessage(null);
 				setIsClaiming(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 				await BOMContractWithSigner.claimOptions();
-				setIsClaiming(false);
 			} catch (e) {
 				console.log(e);
+				setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+			} finally {
 				setIsClaiming(false);
 			}
 		};
@@ -90,10 +96,12 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 						icon={<ClockIcon />}
 						title={t('options.market.trade-card.trading.card-title')}
 						subTitle={t('options.market.trade-card.trading.card-subtitle')}
-						longAmount={bids.long}
-						shortAmount={bids.short}
-						totalLongPrice={optionsMarket.longPrice * bids.long}
-						totalShortPrice={optionsMarket.shortPrice * bids.short}
+						longAmount={balances.long}
+						shortAmount={balances.short}
+						longPrice={optionsMarket.longPrice}
+						shortPrice={optionsMarket.shortPrice}
+						claimableLongAmount={claimable.long}
+						claimableShortAmount={claimable.short}
 					/>
 					<StyledCardContent>
 						<NetworkFees gasLimit={gasLimit} />
@@ -109,6 +117,11 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 								? t('options.market.trade-card.trading.confirm-button.label')
 								: t('options.market.trade-card.trading.confirm-button.progress-label')}
 						</ActionButton>
+						{txErrorMessage && (
+							<TxErrorMessage onDismiss={() => setTxErrorMessage(null)}>
+								{txErrorMessage}
+							</TxErrorMessage>
+						)}
 						<PhaseEnd>
 							{t('options.market.trade-card.trading.footer.end-label')}{' '}
 							<StyledTimeRemaining
