@@ -25,7 +25,8 @@ const Container = styled.span<{ side: Side }>`
 	height: 20px;
 	background-color: ${(props) =>
 		props.side === 'long' ? props.theme.colors.green : props.theme.colors.red};
-	color: ${(props) => props.theme.colors.surfaceL1};
+	color: ${(props) =>
+		props.theme.isDarkTheme ? props.theme.colors.surfaceL1 : props.theme.colors.white};
 `;
 
 export default SideIcon;

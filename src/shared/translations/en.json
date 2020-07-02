@@ -328,7 +328,7 @@
 				"trading": {
 					"title": "claim options",
 					"card-title": "bidding has closed",
-					"card-subtitle": "Number of tokens available:",
+					"card-subtitle": "Options available:",
 					"confirm-button": {
 						"label": "claim options",
 						"progress-label": "claiming in progress...",
@@ -341,7 +341,7 @@
 				"maturity": {
 					"title": "exercise options",
 					"card-title": "market has closed",
-					"card-subtitle": "Options available to exercise:",
+					"card-subtitle": "Options available:",
 					"payout-amount": "payout amount",
 					"confirm-button": {
 						"label": "exercise options",
@@ -363,7 +363,8 @@
 			"price": "price",
 			"amount-long": "{{amount}} long",
 			"amount-short": "{{amount}} short",
-			"price-you-paid": "price you paid:"
+			"final-price": "final price:",
+			"claimable-amount": "claimable: {{amount}}"
 		}
 	},
 	"exchange": {
@@ -585,7 +586,7 @@
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
-			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
+			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
 		},
