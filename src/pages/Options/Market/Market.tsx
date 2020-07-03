@@ -45,6 +45,7 @@ import TransactionsCard from './TransactionsCard';
 
 import { useQuery /*queryCache*/ } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
+import { Z_INDEX } from 'constants/ui';
 
 import { MarketProvider } from './contexts/MarketContext';
 import MarketInfoModal from './MarketInfoModal';
@@ -207,8 +208,8 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				</LeftCol>
 				<RightCol>
 					<Phases>
-						{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase) => (
-							<PhaseItem key={phase} isActive={phase === optionsMarket!.phase}>
+						{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase, idx: number) => (
+							<PhaseItem key={phase} isActive={phase === optionsMarket!.phase} itemIndex={idx}>
 								{t(`options.phases.${phase}`)}
 							</PhaseItem>
 						))}
@@ -297,12 +298,42 @@ const Phases = styled(GridDivCenteredCol)`
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
 `;
 
-const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`
+const phaseArrowCSS = css`
+	position: absolute;
+	top: 0;
+	content: '';
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
+	z-index: ${Z_INDEX.BASE};
+`;
+
+const phaseArrowActiveCSS = css`
+	${phaseArrowCSS};
+	right: -10px;
+	border-left: 10px solid ${(props) => props.theme.colors.accentL2};
+`;
+
+const phaseArrowThinBackgroundCSS = css`
+	${phaseArrowCSS};
+	right: -11px;
+	border-left: 10px solid ${(props) => props.theme.colors.accentL2};
+`;
+
+const phaseArrowThinCSS = css`
+	${phaseArrowCSS};
+	right: -10px;
+	border-left: 10px solid ${(props) => props.theme.colors.surfaceL3};
+	z-index: ${Z_INDEX.BASE + 1};
+`;
+
+const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean; itemIndex: number }>`
+	position: relative;
 	${captionCSS};
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 	color: ${(props) => props.theme.colors.fontSecondary};
 	height: 30px;
 	justify-content: center;
+
 	${(props) =>
 		props.isActive
 			? css`
@@ -310,9 +341,47 @@ const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean }>`
 					color: ${(props) => props.theme.colors.fontPrimary};
 			  `
 			: css`
-					opacity: 0.5;
 					cursor: not-allowed;
-			  `}
+			  `};
+
+	${(props) => {
+		if (props.itemIndex === 0) {
+			return props.isActive
+				? css`
+						&::after {
+							${phaseArrowActiveCSS};
+						}
+				  `
+				: css`
+						&::before {
+							${phaseArrowThinBackgroundCSS};
+						}
+						&::after {
+							${phaseArrowThinCSS};
+						}
+				  `;
+		} else if (props.itemIndex === 1) {
+			return props.isActive
+				? css`
+						&::before {
+							${phaseArrowCSS};
+							left: 0;
+							border-left: 10px solid ${(props) => props.theme.colors.surfaceL3};
+						}
+						&::after {
+							${phaseArrowActiveCSS};
+						}
+				  `
+				: css`
+						&::before {
+							${phaseArrowThinBackgroundCSS};
+						}
+						&::after {
+							${phaseArrowThinCSS};
+						}
+				  `;
+		}
+	}}
 `;
 
 export default connector(Market);
