@@ -86,16 +86,16 @@ const Chart: FC<ChartProps> = memo(
 								cursor={{ strokeWidth: 1, stroke: colors.fontTertiary }}
 								contentStyle={{
 									border: `none`,
-									borderRadius: '3px',
-									backgroundColor: colors.surfaceL1,
+									borderRadius: '4px',
+									backgroundColor: colors.accentL1,
 								}}
 								itemStyle={{
-									color: colors.fontTertiary,
+									color: colors.fontPrimary,
 									fontSize: '12px',
 									textTransform: 'capitalize',
 								}}
 								labelStyle={{
-									color: colors.fontTertiary,
+									color: colors.fontPrimary,
 									fontSize: '12px',
 								}}
 								formatter={(value: string | number) =>

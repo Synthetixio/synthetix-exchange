@@ -56,7 +56,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 		<>
 			<ChartContainer semiTransparent={isLoading}>
 				<RechartsResponsiveContainer width="100%" height="100%">
-					<AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+					<AreaChart data={chartData}>
 						<defs>
 							<linearGradient id={linearGradientId} x1="0" y1="0" x2="0" y2="1">
 								<stop offset="5%" stopColor={chartColor} stopOpacity={0.5} />
@@ -86,6 +86,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 							orientation="right"
 							axisLine={false}
 							tickLine={false}
+							width={80}
 							tickFormatter={(val) => formatCurrencyWithSign(USD_SIGN, val)}
 						/>
 						<Area
@@ -113,8 +114,8 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 							cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
 							contentStyle={{
 								border: 'none',
-								borderRadius: '3px',
-								backgroundColor: theme.colors.surfaceL1,
+								borderRadius: '4px',
+								backgroundColor: theme.colors.accentL1,
 							}}
 							itemStyle={{
 								...fontStyle,

@@ -364,7 +364,9 @@
 			"amount-long": "{{amount}} long",
 			"amount-short": "{{amount}} short",
 			"final-price": "final price:",
-			"claimable-amount": "claimable: {{amount}}"
+			"claimable-amount": "claimable: {{amount}}",
+			"long-price": "Long price",
+			"short-price": "Short price"
 		}
 	},
 	"exchange": {
