@@ -251,7 +251,9 @@
 					"deposited-currency-col": "deposited <0>{{currencyKey}}</0>",
 					"currency-price-col": "current <0>{{currencyKey}}</0> price",
 					"final-price-col": "final <0>{{currencyKey}}</0> price",
-					"current-result-col": "current result"
+					"current-price-col": "current <0>{{currencyKey}}</0> price",
+					"current-result-col": "current result",
+					"final-result-col": "final result"
 				}
 			},
 			"chart-card": {

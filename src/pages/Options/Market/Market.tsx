@@ -75,7 +75,15 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			]);
 
 			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
-			const { totalBids, totalClaimableSupplies, totalSupplies, deposits, prices } = marketData;
+			const {
+				totalBids,
+				totalClaimableSupplies,
+				totalSupplies,
+				deposits,
+				prices,
+				oraclePriceAndTimestamp,
+				resolution,
+			} = marketData;
 
 			const biddingEndDate = Number(times.biddingEnd) * 1000;
 			const maturityDate = Number(times.maturity) * 1000;
@@ -86,8 +94,11 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			const currencyKey = parseBytes32String(oracleDetails.key);
 
 			return {
+				isResolved: resolution.resolved,
 				address: marketAddress,
 				currencyKey,
+				priceUpdatedAt: Number(oraclePriceAndTimestamp.updatedAt) * 1000,
+				currentPrice: bigNumberFormatter(oraclePriceAndTimestamp.price),
 				finalPrice: bigNumberFormatter(oracleDetails.finalPrice),
 				asset: synthsMap[currencyKey]?.asset || currencyKey,
 				strikePrice: bigNumberFormatter(oracleDetails.strikePrice),

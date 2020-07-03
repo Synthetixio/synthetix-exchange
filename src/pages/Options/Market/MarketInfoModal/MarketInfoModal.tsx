@@ -16,7 +16,7 @@ import { bodyCSS } from 'components/Typography/General';
 
 import { GridDivCol, resetButtonCSS, CurrencyKey, GridDivCenteredCol } from 'shared/commonStyles';
 
-import { formatShortDateWithTime, formatCurrencyWithSign } from 'utils/formatters';
+import { formatShortDateWithTime, formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
 import { OptionsMarketInfo } from 'pages/Options/types';
 import { labelMediumCSS } from 'components/Typography/Label';
 import {
@@ -25,7 +25,6 @@ import {
 	tableDataSmallCSS,
 } from 'components/Typography/Table';
 import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
-import { EMPTY_VALUE } from 'constants/placeholder';
 import Link from 'components/Link';
 import { getEtherscanAddressLink } from 'utils/explorers';
 
@@ -50,7 +49,7 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 	networkId,
 }) => {
 	const { t } = useTranslation();
-
+	console.log(optionMarket.isResolved);
 	return (
 		<StyledModal
 			open={true}
@@ -150,12 +149,8 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 								<TableCellLabel>
 									{t('options.market.info-modal.table.total-outstanding-options-col')}
 								</TableCellLabel>
-								<TableCellValue>
-									{formatCurrencyWithSign(USD_SIGN, optionMarket.totalSupplies.long)}
-								</TableCellValue>
-								<TableCellValue>
-									{formatCurrencyWithSign(USD_SIGN, optionMarket.totalSupplies.short)}
-								</TableCellValue>
+								<TableCellValue>{formatCurrency(optionMarket.totalSupplies.long)}</TableCellValue>
+								<TableCellValue>{formatCurrency(optionMarket.totalSupplies.short)}</TableCellValue>
 							</TableRow>
 							<TableRow>
 								<TableCellLabel>
@@ -172,20 +167,27 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 							<TableRow>
 								<TableCellLabel>
 									<Trans
-										i18nKey="options.market.info-modal.table.final-price-col"
+										i18nKey={
+											optionMarket.isResolved
+												? 'options.market.info-modal.table.final-price-col'
+												: 'options.market.info-modal.table.current-price-col'
+										}
 										values={{ currencyKey: optionMarket.asset }}
 										components={[<CurrencyKey />]}
 									/>
 								</TableCellLabel>
 								<TableCellValue colSpan={2}>
-									{optionMarket.finalPrice !== 0
-										? formatCurrencyWithSign(USD_SIGN, optionMarket.finalPrice)
-										: EMPTY_VALUE}
+									{formatCurrencyWithSign(
+										USD_SIGN,
+										optionMarket.isResolved ? optionMarket.finalPrice : optionMarket.currentPrice
+									)}
 								</TableCellValue>
 							</TableRow>
 							<TableRow>
 								<TableCellLabel>
-									{t('options.market.info-modal.table.current-result-col')}
+									{optionMarket.isResolved
+										? t('options.market.info-modal.table.final-result-col')
+										: t('options.market.info-modal.table.current-result-col')}
 								</TableCellLabel>
 								<TableCellValue colSpan={2} style={{ textTransform: 'uppercase' }}>
 									{optionMarket.result}
