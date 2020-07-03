@@ -12,7 +12,7 @@ export const binaryOptionsMarketDataContract = {
 				{ internalType: 'contract IBinaryOptionMarket', name: 'market', type: 'address' },
 				{ internalType: 'address', name: 'account', type: 'address' },
 			],
-			name: 'getAccountMarketInfo',
+			name: 'getAccountMarketData',
 			outputs: [
 				{
 					components: [
