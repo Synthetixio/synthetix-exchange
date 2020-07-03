@@ -49,9 +49,7 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 	networkId,
 }) => {
 	const { t } = useTranslation();
-
-	const hasFinalPrice = optionMarket.finalPrice !== 0;
-
+	console.log(optionMarket.isResolved);
 	return (
 		<StyledModal
 			open={true}
@@ -174,7 +172,7 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 								<TableCellLabel>
 									<Trans
 										i18nKey={
-											hasFinalPrice
+											optionMarket.isResolved
 												? 'options.market.info-modal.table.final-price-col'
 												: 'options.market.info-modal.table.current-price-col'
 										}
@@ -185,13 +183,15 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 								<TableCellValue colSpan={2}>
 									{formatCurrencyWithSign(
 										USD_SIGN,
-										hasFinalPrice ? optionMarket.finalPrice : optionMarket.currentPrice
+										optionMarket.isResolved ? optionMarket.finalPrice : optionMarket.currentPrice
 									)}
 								</TableCellValue>
 							</TableRow>
 							<TableRow>
 								<TableCellLabel>
-									{t('options.market.info-modal.table.current-result-col')}
+									{optionMarket.isResolved
+										? t('options.market.info-modal.table.final-result-col')
+										: t('options.market.info-modal.table.current-result-col')}
 								</TableCellLabel>
 								<TableCellValue colSpan={2} style={{ textTransform: 'uppercase' }}>
 									{optionMarket.result}

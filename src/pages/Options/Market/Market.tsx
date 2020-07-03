@@ -82,6 +82,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				deposits,
 				prices,
 				oraclePriceAndTimestamp,
+				resolution,
 			} = marketData;
 
 			const biddingEndDate = Number(times.biddingEnd) * 1000;
@@ -93,6 +94,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			const currencyKey = parseBytes32String(oracleDetails.key);
 
 			return {
+				isResolved: resolution.resolved,
 				address: marketAddress,
 				currencyKey,
 				priceUpdatedAt: Number(oraclePriceAndTimestamp.updatedAt) * 1000,
