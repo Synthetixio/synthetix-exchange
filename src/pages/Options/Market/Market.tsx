@@ -73,9 +73,16 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
 			]);
-
+			console.log(marketData, marketParameters);
 			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
-			const { totalBids, totalClaimableSupplies, totalSupplies, deposits, prices } = marketData;
+			const {
+				totalBids,
+				totalClaimableSupplies,
+				totalSupplies,
+				deposits,
+				prices,
+				oraclePriceAndTimestamp,
+			} = marketData;
 
 			const biddingEndDate = Number(times.biddingEnd) * 1000;
 			const maturityDate = Number(times.maturity) * 1000;
@@ -88,6 +95,8 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 			return {
 				address: marketAddress,
 				currencyKey,
+				priceUpdatedAt: Number(oraclePriceAndTimestamp.updatedAt) * 1000,
+				currentPrice: bigNumberFormatter(oraclePriceAndTimestamp.price),
 				finalPrice: bigNumberFormatter(oracleDetails.finalPrice),
 				asset: synthsMap[currencyKey]?.asset || currencyKey,
 				strikePrice: bigNumberFormatter(oracleDetails.strikePrice),

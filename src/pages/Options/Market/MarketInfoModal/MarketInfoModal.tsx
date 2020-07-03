@@ -25,7 +25,6 @@ import {
 	tableDataSmallCSS,
 } from 'components/Typography/Table';
 import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
-import { EMPTY_VALUE } from 'constants/placeholder';
 import Link from 'components/Link';
 import { getEtherscanAddressLink } from 'utils/explorers';
 
@@ -50,6 +49,8 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 	networkId,
 }) => {
 	const { t } = useTranslation();
+
+	const hasFinalPrice = optionMarket.finalPrice !== 0;
 
 	return (
 		<StyledModal
@@ -172,15 +173,20 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 							<TableRow>
 								<TableCellLabel>
 									<Trans
-										i18nKey="options.market.info-modal.table.final-price-col"
+										i18nKey={
+											hasFinalPrice
+												? 'options.market.info-modal.table.final-price-col'
+												: 'options.market.info-modal.table.current-price-col'
+										}
 										values={{ currencyKey: optionMarket.asset }}
 										components={[<CurrencyKey />]}
 									/>
 								</TableCellLabel>
 								<TableCellValue colSpan={2}>
-									{optionMarket.finalPrice !== 0
-										? formatCurrencyWithSign(USD_SIGN, optionMarket.finalPrice)
-										: EMPTY_VALUE}
+									{formatCurrencyWithSign(
+										USD_SIGN,
+										hasFinalPrice ? optionMarket.finalPrice : optionMarket.currentPrice
+									)}
 								</TableCellValue>
 							</TableRow>
 							<TableRow>

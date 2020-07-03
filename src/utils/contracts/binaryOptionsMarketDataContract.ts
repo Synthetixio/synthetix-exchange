@@ -62,6 +62,15 @@ export const binaryOptionsMarketDataContract = {
 					components: [
 						{
 							components: [
+								{ internalType: 'uint256', name: 'price', type: 'uint256' },
+								{ internalType: 'uint256', name: 'updatedAt', type: 'uint256' },
+							],
+							internalType: 'struct BinaryOptionMarketData.OraclePriceAndTimestamp',
+							name: 'oraclePriceAndTimestamp',
+							type: 'tuple',
+						},
+						{
+							components: [
 								{ internalType: 'uint256', name: 'long', type: 'uint256' },
 								{ internalType: 'uint256', name: 'short', type: 'uint256' },
 							],
