@@ -210,8 +210,8 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
 								contentStyle={{
 									border: 'none',
-									borderRadius: '3px',
-									backgroundColor: theme.colors.surfaceL1,
+									borderRadius: '4px',
+									backgroundColor: theme.colors.accentL1,
 								}}
 								itemStyle={{
 									...fontStyle,

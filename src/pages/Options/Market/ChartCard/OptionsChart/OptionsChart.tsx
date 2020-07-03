@@ -69,10 +69,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 		<>
 			<ChartContainer semiTransparent={isLoading}>
 				<RechartsResponsiveContainer width="100%" height="100%">
-					<LineChart
-						data={noResults ? [] : chartData}
-						margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-					>
+					<LineChart data={noResults ? [] : chartData}>
 						<XAxis
 							dataKey="timestamp"
 							tick={fontStyleMedium}
@@ -98,14 +95,16 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 							tickFormatter={(val) => t('common.val-in-cents', { val })}
 						/>
 						<Line
-							type="monotone"
+							type="linear"
+							name={t('options.common.long-price')}
 							dataKey="longPrice"
 							stroke={theme.colors.green}
 							strokeWidth={1.5}
 							isAnimationActive={false}
 						/>
 						<Line
-							type="monotone"
+							type="linear"
+							name={t('options.common.short-price')}
 							dataKey="shortPrice"
 							stroke={theme.colors.red}
 							strokeWidth={1.5}
@@ -118,8 +117,8 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 								cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
 								contentStyle={{
 									border: 'none',
-									borderRadius: '3px',
-									backgroundColor: theme.colors.surfaceL1,
+									borderRadius: '4px',
+									backgroundColor: theme.colors.accentL1,
 								}}
 								itemStyle={{
 									...fontStyle,
