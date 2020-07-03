@@ -27,7 +27,9 @@ const OptionResult: FC<OptionResultProps> = ({ side, amount, price, claimableAmo
 			<StyledSideIcon side={side} />
 			<Amount>{t(`options.common.amount-${side}`, { amount: formatCurrency(amount) })}</Amount>
 			{claimableAmount != null && (
-				<Info>{t('options.common.claimable-amount', { amount: claimableAmount })}</Info>
+				<Info>
+					{t('options.common.claimable-amount', { amount: formatCurrency(claimableAmount) })}
+				</Info>
 			)}
 			{price != null && (
 				<Info>
