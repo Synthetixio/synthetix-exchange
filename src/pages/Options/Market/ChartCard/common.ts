@@ -24,11 +24,8 @@ export const ChartContainer = styled.div<{ semiTransparent: boolean }>`
 	.ref-line-label-strike-price {
 		fill: ${(props) => props.theme.colors.fontSecondary};
 	}
-	.recharts-default-tooltip {
-		background: ${(props) => props.theme.colors.surfaceL1} !important;
-	}
 	.recharts-tooltip-label,
 	.recharts-tooltip-item {
-		color: ${(props) => props.theme.colors.fontTertiary} !important;
+		color: ${(props) => props.theme.colors.fontPrimary} !important;
 	}
 `;
