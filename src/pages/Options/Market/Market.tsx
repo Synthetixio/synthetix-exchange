@@ -73,7 +73,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
 			]);
-			console.log(marketData, marketParameters);
+
 			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
 			const {
 				totalBids,
