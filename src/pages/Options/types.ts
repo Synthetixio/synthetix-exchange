@@ -46,6 +46,7 @@ export type HistoricalOptionsMarketInfo = {
 };
 
 export type OptionsMarketInfo = {
+	isResolved: boolean;
 	address: string;
 	currencyKey: CurrencyKey;
 	priceUpdatedAt: number;
