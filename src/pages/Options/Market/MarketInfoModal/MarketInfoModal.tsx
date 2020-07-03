@@ -16,7 +16,7 @@ import { bodyCSS } from 'components/Typography/General';
 
 import { GridDivCol, resetButtonCSS, CurrencyKey, GridDivCenteredCol } from 'shared/commonStyles';
 
-import { formatShortDateWithTime, formatCurrencyWithSign } from 'utils/formatters';
+import { formatShortDateWithTime, formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
 import { OptionsMarketInfo } from 'pages/Options/types';
 import { labelMediumCSS } from 'components/Typography/Label';
 import {
@@ -149,12 +149,8 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 								<TableCellLabel>
 									{t('options.market.info-modal.table.total-outstanding-options-col')}
 								</TableCellLabel>
-								<TableCellValue>
-									{formatCurrencyWithSign(USD_SIGN, optionMarket.totalSupplies.long)}
-								</TableCellValue>
-								<TableCellValue>
-									{formatCurrencyWithSign(USD_SIGN, optionMarket.totalSupplies.short)}
-								</TableCellValue>
+								<TableCellValue>{formatCurrency(optionMarket.totalSupplies.long)}</TableCellValue>
+								<TableCellValue>{formatCurrency(optionMarket.totalSupplies.short)}</TableCellValue>
 							</TableRow>
 							<TableRow>
 								<TableCellLabel>
