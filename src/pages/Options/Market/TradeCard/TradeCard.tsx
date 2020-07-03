@@ -39,7 +39,7 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 			currentWalletAddress as string
 		),
 		async () => {
-			const result = await (snxJSConnector as any).binaryOptionsMarketDataContract.getAccountMarketInfo(
+			const result = await (snxJSConnector as any).binaryOptionsMarketDataContract.getAccountMarketData(
 				optionsMarket.address,
 				currentWalletAddress
 			);
