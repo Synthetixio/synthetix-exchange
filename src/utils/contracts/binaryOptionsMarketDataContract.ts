@@ -1,9 +1,9 @@
 export const binaryOptionsMarketDataContract = {
 	addresses: {
-		1: '0x1588049feb644dc06ad2681f85a5d33eacc85f5d',
-		3: '0x5a7f9e24025c5f806e53694bfe027d5c4f5ca612',
-		4: '0x5a7f9e24025c5f806e53694bfe027d5c4f5ca612',
-		42: '0x5a7f9e24025c5f806e53694bfe027d5c4f5ca612',
+		1: '0xDAdEa8352661FF961956c7aB5425839A400535a4',
+		3: '0x953Cb51942084edd0e1E6BdCBa9e19eCDfC3BdFd',
+		4: '0x99D378835E2981e4AA8EeF08090d5621853dfC34',
+		42: '0xe9d2762643Ab57a07b4fb91E38D13e501d2cbaAd',
 	},
 	abi: [
 		{
