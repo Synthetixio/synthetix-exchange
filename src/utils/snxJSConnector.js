@@ -6,7 +6,7 @@ import {
 	INFURA_PROJECT_ID,
 	SUPPORTED_WALLETS_MAP,
 } from './networkUtils';
-import { synthSummaryUtilContract } from './contracts';
+import { synthSummaryUtilContract } from './contracts/synthSummaryUtilContract';
 import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
 
 let snxJSConnector = {
