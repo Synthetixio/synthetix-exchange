@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, lazy } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
@@ -21,13 +21,14 @@ import WalletPopup from '../../components/WalletPopup';
 import GweiPopup from '../../components/GweiPopup';
 // import AppBanner from './components/AppBanner';
 
-import Trade from '../Trade';
-import Loans from '../Loans';
-import Assets from '../Assets';
 import Home from '../Home';
-import Markets from '../Markets';
-import Synths from '../Synths';
 import Options from '../Options';
+import Synths from '../Synths';
+
+const Trade = lazy(() => import('../Trade'));
+const Loans = lazy(() => import('../Loans'));
+const Markets = lazy(() => import('../Markets'));
+const Assets = lazy(() => import('../Assets'));
 
 const mapStateToProps = (state: RootState) => ({
 	currentTheme: getCurrentTheme(state),
