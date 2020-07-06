@@ -7,7 +7,7 @@ import snxJSConnector from 'utils/snxJSConnector';
 
 import {
 	OptionsMarketInfo,
-	Phase /*OptionsMarkets, HistoricalOptionsMarketInfo*/,
+	/*OptionsMarkets, HistoricalOptionsMarketInfo*/
 } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 
@@ -31,7 +31,7 @@ import {
 
 import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
 
-import { getPhaseAndEndDate, SIDE } from 'pages/Options/constants';
+import { getPhaseAndEndDate, SIDE, PHASES } from 'pages/Options/constants';
 import { getAvailableSynthsMap } from 'ducks/synths';
 
 import Spinner from 'components/Spinner';
@@ -219,7 +219,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				</LeftCol>
 				<RightCol>
 					<Phases>
-						{(['bidding', 'trading', 'maturity'] as Phase[]).map((phase, idx: number) => (
+						{PHASES.map((phase, idx: number) => (
 							<PhaseItem key={phase} isActive={phase === optionsMarket!.phase} itemIndex={idx}>
 								{t(`options.phases.${phase}`)}
 							</PhaseItem>
@@ -306,7 +306,7 @@ const RightCol = styled(GridDivRow)`
 `;
 
 const Phases = styled(GridDivCenteredCol)`
-	border: 1px solid ${(props) => props.theme.colors.accentL2};
+	border: 1px solid ${(props) => props.theme.colors.accentL1};
 `;
 
 const phaseArrowCSS = css`
@@ -321,13 +321,13 @@ const phaseArrowCSS = css`
 const phaseArrowActiveCSS = css`
 	${phaseArrowCSS};
 	right: -10px;
-	border-left: 10px solid ${(props) => props.theme.colors.accentL2};
+	border-left: 10px solid ${(props) => props.theme.colors.accentL1};
 `;
 
 const phaseArrowThinBackgroundCSS = css`
 	${phaseArrowCSS};
 	right: -11px;
-	border-left: 10px solid ${(props) => props.theme.colors.accentL2};
+	border-left: 10px solid ${(props) => props.theme.colors.accentL1};
 `;
 
 const phaseArrowThinCSS = css`
@@ -348,7 +348,7 @@ const PhaseItem = styled(FlexDivCentered)<{ isActive: boolean; itemIndex: number
 	${(props) =>
 		props.isActive
 			? css`
-					background-color: ${(props) => props.theme.colors.accentL2};
+					background-color: ${(props) => props.theme.colors.accentL1};
 					color: ${(props) => props.theme.colors.fontPrimary};
 			  `
 			: css`
