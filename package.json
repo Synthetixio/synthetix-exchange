@@ -41,7 +41,7 @@
 		"redux-thunk": "~2.3.0",
 		"styled-components": "5.0.1",
 		"styled-system": "5.1.2",
-		"synthetix-data": "2.1.15",
+		"synthetix-data": "git://github.com/Synthetixio/synthetix-data.git#e7cc52b445db948495c71e310b67ed12afdb5991",
 		"synthetix-js": "^2.24.0-2",
 		"typescript": "3.7.2"
 	},
