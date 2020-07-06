@@ -174,7 +174,10 @@
 		},
 		"home": {
 			"market-creation": {
-				"login-to-create": "Please login to create markets",
+				"not-connected": {
+					"title": "Connect a wallet to create a market or place a bid",
+					"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!"
+				},
 				"no-markets": {
 					"title": "Create a market or place a bid to get started",
 					"subtitle": "Get fees for creating markets, win big without actually holding the asset"
@@ -186,8 +189,8 @@
 				"table": {
 					"filters": {
 						"creator": {
-							"tooltip-logged-in": "Login to see markets you created",
-							"tooltip-logged-out": "Click to see markets you created"
+							"tooltip-logged-in": "Markets you’ve created. Connect a wallet to start.",
+							"tooltip-logged-out": "Markets you’ve created."
 						}
 					}
 				}
@@ -586,7 +589,8 @@
 			"currency-balance": "{{currencyKey}} BALANCE",
 			"balance-currency": "Balance: {{balance}}",
 			"no-wallet-connected": "No wallet currently connected",
-			"connect-currency-wallet": "connect {{currencyKey}} wallet to start"
+			"connect-currency-wallet": "connect {{currencyKey}} wallet to start",
+			"connect-your-wallet": "Connect your wallet"
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
