@@ -33,4 +33,7 @@ export const LINKS = {
 		DefiNetwork: 'https://defi.network/',
 		Messari: 'https://messari.io/asset/synthetix',
 	},
+	Blog: {
+		HowBinaryOptionsWork: 'https://blog.synthetix.io/how-binary-options-work/',
+	},
 };
