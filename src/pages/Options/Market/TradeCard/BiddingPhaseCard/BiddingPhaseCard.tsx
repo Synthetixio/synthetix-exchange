@@ -177,7 +177,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			try {
 				setIsAllowing(true);
 				const maxInt = `0x${'f'.repeat(64)}`;
-				await sUSD.approve(BOMContract.address, maxInt);
+				const gasEstimate = await sUSD.contract.estimate.approve(BOMContract.address, maxInt);
+				await sUSD.approve(BOMContract.address, maxInt, {
+					gasLimit: normalizeGasLimit(Number(gasEstimate)),
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				});
 			} catch (e) {
 				console.log(e);
 				setIsAllowing(false);
