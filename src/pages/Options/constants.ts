@@ -49,3 +49,5 @@ export const getPhaseAndEndDate = (
 		timeRemaining: expiryDate,
 	};
 };
+
+export const PHASES = ['bidding', 'trading', 'maturity'] as Phase[];
