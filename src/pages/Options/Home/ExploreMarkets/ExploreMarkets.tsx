@@ -244,7 +244,9 @@ const Container = styled.div``;
 const ToggleButton = styled(Button).attrs({
 	size: 'md',
 	palette: 'toggle',
-})``;
+})`
+	cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
+`;
 
 const FiltersRow = styled(FlexDivRow)`
 	align-items: center;
