@@ -105,8 +105,8 @@ const ErrorMessage = ({ error, isLedger, onRetry }) => {
 	return (
 		<ErrorContainer>
 			<Title>{t('modals.wallet.errors.generic-error')}</Title>
-			<Label fontSize={'18px'}>{error}</Label>
-			{isLedger ? <Label fontSize={'18px'}>{t('modals.wallet.errors.ledger-error')}</Label> : null}
+			<Label>{error}</Label>
+			{isLedger ? <Label>{t('modals.wallet.errors.ledger-error')}</Label> : null}
 
 			<ButtonPrimary onClick={() => onRetry()} width="250px">
 				{t('modals.wallet.retry')}
