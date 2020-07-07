@@ -6,7 +6,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core';
 
 import { OptionsMarkets } from 'pages/Options/types';
-import { headingH4CSS } from 'components/Typography/Heading';
 import SearchInput from 'components/Input/SearchInput';
 import { Button } from 'components/Button';
 
@@ -16,12 +15,17 @@ import { RootState } from 'ducks/types';
 import { ReactComponent as PencilIcon } from 'assets/images/pencil.svg';
 
 import { media } from 'shared/media';
-import { GridDivCenteredCol, NoResultsMessage, Strong } from 'shared/commonStyles';
+import { GridDivCenteredCol, NoResultsMessage, Strong, FlexDivRow } from 'shared/commonStyles';
 
 import { SEARCH_DEBOUNCE_MS } from 'constants/ui';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import MarketsTable from '../MarketsTable';
+import { useLocalStorage } from 'shared/hooks/useLocalStorage';
+import { LOCAL_STORAGE_KEYS } from 'constants/storage';
+import { PHASES } from 'pages/Options/constants';
+
+const { BIDDING_PHASE_FILTER } = LOCAL_STORAGE_KEYS;
 
 const mapStateToProps = (state: RootState) => ({
 	isLoggedIn: getIsLoggedIn(state),
@@ -49,19 +53,30 @@ const useStyles = makeStyles({
 	},
 });
 
+const phasesWithAll = ['all', ...PHASES];
+
 const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 	({ optionsMarkets, isLoggedIn, currentWalletAddress }) => {
 		const classes = useStyles();
 		const { t } = useTranslation();
 		const [assetSearch, setAssetSearch] = useState<string>('');
 		const [showCreatorMarkets, setShowCreatorMarkets] = useState<boolean>(false);
+		const [phaseFilter, setPhaseFilter] = useLocalStorage(BIDDING_PHASE_FILTER, 'all');
 
-		const filteredOptionsMarkets = useDebouncedMemo(
+		const phaseFilteredOptionsMarkets = useMemo(
 			() =>
-				optionsMarkets.filter(({ asset }) =>
+				phaseFilter === 'all'
+					? optionsMarkets
+					: optionsMarkets.filter(({ phase }) => phase === phaseFilter),
+			[optionsMarkets, phaseFilter]
+		);
+
+		const searchFilteredOptionsMarkets = useDebouncedMemo(
+			() =>
+				phaseFilteredOptionsMarkets.filter(({ asset }) =>
 					asset.toLowerCase().includes(assetSearch.toLowerCase())
 				),
-			[optionsMarkets, assetSearch],
+			[phaseFilteredOptionsMarkets, assetSearch],
 			SEARCH_DEBOUNCE_MS
 		);
 
@@ -74,14 +89,27 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 		);
 
 		useEffect(() => {
-			setAssetSearch('');
-		}, [showCreatorMarkets]);
+			if (showCreatorMarkets) {
+				setAssetSearch('');
+				setPhaseFilter('all');
+			}
+		}, [setAssetSearch, setPhaseFilter, showCreatorMarkets]);
 
 		return (
 			<Container>
-				<Header>
-					<Title>{t('options.home.explore-markets.title')}</Title>
-					<Filters>
+				<FiltersRow>
+					<PhaseFilters>
+						{phasesWithAll.map((phase) => (
+							<ToggleButton
+								isActive={phase === phaseFilter}
+								onClick={() => setPhaseFilter(phase)}
+								key={phase}
+							>
+								{phase === 'all' ? t('common.filters.all') : t(`options.phases.${phase}`)}
+							</ToggleButton>
+						))}
+					</PhaseFilters>
+					<UserFilters>
 						<Tooltip
 							title={
 								<span>
@@ -94,26 +122,24 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 							classes={classes}
 							arrow={true}
 						>
-							<Button
-								size="md"
-								palette="toggle"
+							<ToggleButton
 								onClick={() => setShowCreatorMarkets(!showCreatorMarkets)}
 								isActive={showCreatorMarkets}
 							>
 								<PencilIcon />
-							</Button>
+							</ToggleButton>
 						</Tooltip>
 						<AssetSearchInput
 							onChange={(e) => setAssetSearch(e.target.value)}
 							value={assetSearch}
 						/>
-					</Filters>
-				</Header>
+					</UserFilters>
+				</FiltersRow>
 
 				<MarketsTable
-					optionsMarkets={showCreatorMarkets ? creatorOptionsMarkets : filteredOptionsMarkets}
+					optionsMarkets={showCreatorMarkets ? creatorOptionsMarkets : searchFilteredOptionsMarkets}
 					noResultsMessage={
-						assetSearch && filteredOptionsMarkets.length === 0 ? (
+						assetSearch && searchFilteredOptionsMarkets.length === 0 ? (
 							<NoResultsMessage>
 								<Trans
 									i18nKey="common.search-results.no-results-for-query"
@@ -139,23 +165,40 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 
 const Container = styled.div``;
 
-const Header = styled(GridDivCenteredCol)`
-	padding-bottom: 40px;
-	grid-template-columns: 1fr auto;
-	justify-items: initial;
+const ToggleButton = styled(Button).attrs({
+	size: 'md',
+	palette: 'toggle',
+})``;
+
+const FiltersRow = styled(FlexDivRow)`
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 0 0 32px;
 	${media.large`
-		padding: 0 20px 40px 20px;
+		padding: 0 32px 24px;
 	`}
-	${media.small`
-    grid-gap: 20px;
-		grid-template-columns: unset;
-		grid-template-rows: auto auto;
-	`}
+	margin-top: -20px;
+	> * {
+		margin-top: 20px;
+		${media.small`
+		    flex-basis: 100%;
+		`}
+	}
 `;
 
-const Filters = styled(GridDivCenteredCol)`
+const UserFilters = styled(GridDivCenteredCol)`
 	grid-template-columns: auto 1fr;
 	grid-gap: 15px;
+`;
+
+const PhaseFilters = styled.div`
+	display: inline-grid;
+	grid-auto-flow: column;
+	grid-gap: 8px;
+	${media.small`
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+	`}
 `;
 
 export const AssetSearchInput = styled(SearchInput)`
@@ -166,11 +209,6 @@ export const AssetSearchInput = styled(SearchInput)`
 	${media.small`
 		width: 100%;
 	`}
-`;
-
-const Title = styled.div`
-	${headingH4CSS};
-	color: ${(props) => props.theme.colors.brand};
 `;
 
 export default connector(ExploreMarkets);

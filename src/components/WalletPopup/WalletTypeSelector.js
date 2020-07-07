@@ -21,8 +21,9 @@ import { ReactComponent as LedgerWallet } from 'assets/images/wallets/ledger.svg
 import { ReactComponent as MetamaskWallet } from 'assets/images/wallets/metamask.svg';
 import { ReactComponent as TrezorWallet } from 'assets/images/wallets/trezor.svg';
 import { ReactComponent as WalletConnect } from 'assets/images/wallets/walletConnect.svg';
+import { ReactComponent as Portis } from 'assets/images/wallets/portis.svg';
 
-const { METAMASK, LEDGER, TREZOR, COINBASE, WALLET_CONNECT } = SUPPORTED_WALLETS_MAP;
+const { METAMASK, LEDGER, TREZOR, COINBASE, WALLET_CONNECT, PORTIS } = SUPPORTED_WALLETS_MAP;
 
 const walletTypeToIconMap = {
 	[METAMASK]: MetamaskWallet,
@@ -30,6 +31,7 @@ const walletTypeToIconMap = {
 	[TREZOR]: TrezorWallet,
 	[COINBASE]: CoinbaseWallet,
 	[WALLET_CONNECT]: WalletConnect,
+	[PORTIS]: Portis,
 };
 
 const WalletTypeSelector = ({
@@ -110,8 +112,8 @@ const Wallet = styled.button`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	width: 200px;
-	height: 260px;
+	width: 150px;
+	height: 210px;
 	&:hover {
 		transform: scale(1.04);
 	}

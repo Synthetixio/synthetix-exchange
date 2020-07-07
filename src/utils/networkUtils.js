@@ -31,12 +31,15 @@ export const INFURA_JSON_RPC_URLS = {
 	42: `https://kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
+export const PORTIS_APP_ID = '26e198be-a8bb-4240-ad78-ae88579085bc';
+
 export const SUPPORTED_WALLETS_MAP = {
 	METAMASK: 'Metamask',
 	TREZOR: 'Trezor',
 	LEDGER: 'Ledger',
 	COINBASE: 'Coinbase',
 	WALLET_CONNECT: 'WalletConnect',
+	PORTIS: 'Portis',
 };
 export const SUPPORTED_WALLETS = Object.values(SUPPORTED_WALLETS_MAP);
 
