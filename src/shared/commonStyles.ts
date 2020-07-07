@@ -49,6 +49,12 @@ export const SectionVerticalSpacer = styled.div`
 	margin-bottom: 8px;
 `;
 
+export const VerticalCardSeparator = styled.div`
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL2};
+	width: 1px;
+`;
+
 export const linkCSS = css`
 	text-decoration: none;
 	&:hover {
