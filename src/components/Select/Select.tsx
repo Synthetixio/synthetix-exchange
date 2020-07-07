@@ -35,6 +35,7 @@ function Select<T>(props: Props<T>) {
 					border: `1px solid ${colors.accentL2}`,
 				},
 				fontSize: '14px',
+				backgroundColor: colors.surfaceL3,
 			}),
 			menu: (provided) => ({
 				...provided,
