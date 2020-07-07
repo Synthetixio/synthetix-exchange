@@ -19,7 +19,8 @@ import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg'
 
 import { fadeInAnimation, fadeOutAnimation } from 'shared/commonStyles';
 
-import { HeadingMedium, DataSmall } from '../Typography';
+import { DataSmall } from '../Typography';
+import { headingH3CSS } from 'components/Typography/Heading';
 import { bodyCSS } from '../Typography/General';
 import Slider from '../Slider';
 
@@ -84,9 +85,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 							<CloseCrossIcon />
 						</CloseButton>
 						<Body>
-							<HeadingMedium style={{ marginBottom: '18px' }}>
-								{t('modals.gwei.title')}
-							</HeadingMedium>
+							<Title>{t('modals.gwei.title')}</Title>
 							<BodyMedium>{t('modals.gwei.desc')}</BodyMedium>
 							<SliderContainer>
 								<Slider
@@ -202,6 +201,12 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 const BodyMedium = styled.span`
 	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
+const Title = styled.div`
+	${headingH3CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+	padding-bottom: 18px;
 `;
 
 const Popup = styled.div<{ isVisible?: boolean }>`
