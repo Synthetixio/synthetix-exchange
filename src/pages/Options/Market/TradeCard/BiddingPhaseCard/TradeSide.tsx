@@ -1,13 +1,10 @@
-import React, { FC, memo, useContext } from 'react';
-import styled, { css, ThemeContext } from 'styled-components';
+import React, { FC, memo } from 'react';
+import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { OptionsTransaction } from 'pages/Options/types';
 
-import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
-import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
-
-import { GridDivRow, CurrencyKey, FlexDiv } from 'shared/commonStyles';
+import { GridDivRow, CurrencyKey, FlexDiv, FlexDivRow } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
 import { USD_SIGN } from 'constants/currency';
@@ -18,6 +15,7 @@ import { formatCurrencyWithKey, formatCurrencyWithSign } from 'utils/formatters'
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
 import { formLabelSmallCSS } from 'components/Typography/Form';
+import SideIcon from '../../components/SideIcon';
 
 import { CurrentPosition } from './types';
 import { labelMediumCSS } from 'components/Typography/Label';
@@ -35,6 +33,7 @@ type TradeSideProps = {
 	onPriceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onClick: () => void;
+	onMaxClick: () => void;
 	transKey?: string;
 	currentPosition: CurrentPosition;
 	priceShift: number;
@@ -53,9 +52,9 @@ const TradeSide: FC<TradeSideProps> = memo(
 		transKey,
 		currentPosition,
 		priceShift,
+		onMaxClick,
 	}) => {
 		const { t } = useTranslation();
-		const theme = useContext(ThemeContext);
 
 		const amountInputId = `${type}-${side}-amount`;
 		const priceInputId = `${type}-${side}-price`;
@@ -64,10 +63,28 @@ const TradeSide: FC<TradeSideProps> = memo(
 			<Container isActive={isActive} onClick={onClick}>
 				<Section>
 					<FormRow>
+						<SideIndication highlighted={isActive}>
+							{t(`options.common.${side}`)} <StyledSideIcon side={side} />
+						</SideIndication>
+					</FormRow>
+					<FormRow>
 						<FormControl>
-							<FormInputLabel htmlFor={amountInputId}>
-								{t(`${transKey}.amount-label`)}
-							</FormInputLabel>
+							<FormInputLabelRow>
+								<FormInputLabel htmlFor={amountInputId}>
+									{t(`${transKey}.amount-label`)}
+								</FormInputLabel>
+								<MaxButton
+									onClick={() => {
+										if (!isActive) {
+											onClick();
+											return;
+										}
+										onMaxClick();
+									}}
+								>
+									{t('common.max')}
+								</MaxButton>
+							</FormInputLabelRow>
 							<StyledNumericInputWithCurrency
 								currencyKey={SYNTHS_MAP.sUSD}
 								value={amount}
@@ -106,18 +123,6 @@ const TradeSide: FC<TradeSideProps> = memo(
 							/>
 						</FormControl>
 					</FormRow>
-					<FormRow>
-						{side === 'long' && (
-							<LongSideIndication>
-								{t('options.common.long')} <TrendUpIcon />
-							</LongSideIndication>
-						)}
-						{side === 'short' && (
-							<ShortSideIndication>
-								{t('options.common.short')} <TrendDownIcon />
-							</ShortSideIndication>
-						)}
-					</FormRow>
 				</Section>
 				<CurrentPositionSection>
 					<SectionTitle>
@@ -136,38 +141,21 @@ const TradeSide: FC<TradeSideProps> = memo(
 						</StyledCurrencyKey>
 					</SectionBody>
 				</CurrentPositionSection>
-				<ToggleIcon>
-					<svg
-						width="8"
-						height="8"
-						viewBox="0 0 8 8"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-						key={type}
-					>
-						{isActive ? (
-							<>
-								<circle cx="4" cy="4" r="4" fill={theme.colors.brand} />
-								<circle cx="4" cy="4" r="2" fill={theme.colors.accentL1} />
-							</>
-						) : (
-							<circle cx="4" cy="4" r="4" fill={theme.colors.accentL1} />
-						)}
-					</svg>
-				</ToggleIcon>
 			</Container>
 		);
 	}
 );
 
-const ToggleIcon = styled.div`
-	position: absolute;
-	top: 12px;
-	right: 18px;
+const FormInputLabelRow = styled(FlexDivRow)`
+	align-items: center;
 `;
 
 const Section = styled.div`
 	${formLabelSmallCSS};
+`;
+
+const StyledSideIcon = styled(SideIcon)`
+	margin-left: 8px;
 `;
 
 const Container = styled(GridDivRow)<{ isActive: boolean }>`
@@ -205,7 +193,7 @@ const FormInputPriceShiftLabel = styled(FormInputLabel)<{ highlighted: boolean }
 `;
 
 const FormRow = styled.div`
-	padding-bottom: 10px;
+	padding-bottom: 12px;
 `;
 
 const FormControl = styled(GridDivRow)`
@@ -236,21 +224,16 @@ const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
 	}
 `;
 
-const SideIndication = styled.div`
+const SideIndication = styled.div<{ highlighted: boolean }>`
 	${labelMediumCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
+	background-color: ${(props) =>
+		props.highlighted ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 	border-radius: 1px;
 	height: 32px;
 	padding: 8px;
 	text-align: center;
 	cursor: default;
-`;
-
-const LongSideIndication = styled(SideIndication)`
-	background-color: ${(props) => props.theme.colors.green};
-`;
-const ShortSideIndication = styled(SideIndication)`
-	background-color: ${(props) => props.theme.colors.red};
 `;
 
 const CurrentPositionSection = styled(Section)`
@@ -284,6 +267,16 @@ const QuestionMarkIcon = styled.div`
 
 const QuestionMarkStyled = styled(QuestionMark)`
 	height: 8px;
+`;
+
+const MaxButton = styled.button`
+	color: ${(props) => props.theme.colors.buttonHover};
+	background-color: transparent;
+	border: none;
+	text-transform: uppercase;
+	font-size: 12px;
+	outline: none;
+	cursor: pointer;
 `;
 
 export default TradeSide;

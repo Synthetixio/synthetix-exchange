@@ -18,7 +18,7 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 import { APPROVAL_EVENTS } from 'constants/events';
 import { SLIPPAGE_THRESHOLD } from 'constants/ui';
 
-import { getCurrencyKeyBalance } from 'utils/balances';
+import { getCurrencyKeyBalance, getCurrencyKeyUSDBalanceBN } from 'utils/balances';
 import { formatCurrencyWithKey, getAddress } from 'utils/formatters';
 import { normalizeGasLimit } from 'utils/transactions';
 import { GWEI_UNIT } from 'utils/networkUtils';
@@ -114,21 +114,23 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				? 'options.market.trade-card.bidding.bid'
 				: 'options.market.trade-card.bidding.refund';
 
+		const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
+		const sUSDBalanceBN = getCurrencyKeyUSDBalanceBN(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
+
 		useEffect(() => {
 			const fetchGasLimit = async (isShort: boolean, amount: string) => {
 				const {
 					utils: { parseEther },
 				} = snxJSConnector as any;
 				try {
+					const bidOrRefundAmount =
+						amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 					const bidOrRefundFunction =
 						type === 'bid'
 							? BOMContractWithSigner.estimate.bid
 							: BOMContractWithSigner.estimate.refund;
-					const gasEstimate = await bidOrRefundFunction(
-						isShort ? 1 : 0,
-						parseEther(amount.toString())
-					);
+					const gasEstimate = await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount);
 					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
 				} catch (e) {
 					console.log(e);
@@ -200,7 +202,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 				const bidOrRefundFunction =
 					type === 'bid' ? BOMContractWithSigner.bid : BOMContractWithSigner.refund;
-				await bidOrRefundFunction(isShort ? 1 : 0, parseEther(amount.toString()), {
+				const bidOrRefundAmount =
+					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
+				await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount, {
 					gasLimit,
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				});
@@ -258,9 +262,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				return;
 			}
 			try {
+				const bidOrRefundAmount =
+					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 				const { long, short } = await BOMContract.pricesAfterBidOrRefund(
 					side === 'short' ? 1 : 0,
-					parseEther(amount),
+					bidOrRefundAmount,
 					type === 'refund'
 				);
 
@@ -286,8 +292,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			setSide(selectedSide);
 			setPriceShift(0);
 		};
-
-		const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD);
 
 		return (
 			<Card>
@@ -316,6 +320,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							isActive={side === 'long'}
 							amount={longSideAmount}
 							onAmountChange={(e) => handleBidAmount(e.target.value)}
+							onMaxClick={() => handleBidAmount(sUSDBalance)}
 							price={longPriceAmount}
 							onPriceChange={(e) =>
 								handleTargetPrice(e.target.value, false, false, type === 'refund')
@@ -332,6 +337,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							isActive={side === 'short'}
 							amount={shortSideAmount}
 							onAmountChange={(e) => handleBidAmount(e.target.value)}
+							onMaxClick={() => handleBidAmount(sUSDBalance)}
 							price={shortPriceAmount}
 							onPriceChange={(e) =>
 								handleTargetPrice(e.target.value, true, true, type === 'refund')
@@ -357,13 +363,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 								<ActionButton
 									size="lg"
 									palette="primary"
-									disabled={
-										isBidding ||
-										!isLoggedIn ||
-										!sUSDBalance ||
-										!gasLimit ||
-										(type === 'bid' && Math.abs(priceShift) > SLIPPAGE_THRESHOLD)
-									}
+									disabled={isBidding || !isLoggedIn || !sUSDBalance || !gasLimit}
 									onClick={handleBidOrRefund}
 								>
 									{!isBidding
