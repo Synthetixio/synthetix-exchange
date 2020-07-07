@@ -159,7 +159,6 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 				Math.round((maturityDate as Date).getTime() / 1000),
 			];
 			const bids = [parseEther(longBidAmount.toString()), parseEther(shortBidAmount.toString())];
-			console.log(currencyKey, strikePrice, times, longBidAmount, shortBidAmount);
 			return { oracleKey, price, times, bids };
 		};
 
@@ -180,7 +179,6 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 						refund: fees.refundFee / 1e18,
 						bidding: fees.creatorFee / 1e18 + fees.poolFee / 1e18,
 					});
-					console.log(fees);
 				} catch (e) {
 					console.log(e);
 				}
@@ -264,7 +262,14 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 			try {
 				setIsManagerApprovalPending(true);
 				const maxInt = `0x${'f'.repeat(64)}`;
-				sUSD.approve(BinaryOptionMarketManager.contract.address, maxInt);
+				const gasEstimate = await sUSD.contract.estimate.approve(
+					BinaryOptionMarketManager.contract.address,
+					maxInt
+				);
+				await sUSD.approve(BinaryOptionMarketManager.contract.address, maxInt, {
+					gasLimit: normalizeGasLimit(Number(gasEstimate)),
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				});
 			} catch (e) {
 				console.log(e);
 				setIsManagerApprovalPending(false);

@@ -73,6 +73,7 @@ export const walletDetailsSlice = createSlice({
 					type: string;
 					networkId: string;
 					derivationPath: string;
+					networkName: string;
 				};
 				derivationPath: string;
 			}>
