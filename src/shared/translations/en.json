@@ -306,7 +306,7 @@
 						},
 						"allowance-button": {
 							"label": "approve market",
-							"progress-label": "allowing market..."
+							"progress-label": "approving market..."
 						}
 					},
 					"refund": {
@@ -320,7 +320,7 @@
 						},
 						"allowance-button": {
 							"label": "approve market",
-							"progress-label": "allowing market..."
+							"progress-label": "approving market..."
 						}
 					},
 					"common": {
