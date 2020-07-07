@@ -1,9 +1,11 @@
-import React, { memo, FC, useState, useEffect, useMemo } from 'react';
+import React, { memo, FC, useState, useEffect, useMemo, useCallback } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation, Trans } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core';
+import snxData from 'synthetix-data';
+import { useQuery } from 'react-query';
 
 import { OptionsMarkets } from 'pages/Options/types';
 import SearchInput from 'components/Input/SearchInput';
@@ -13,11 +15,13 @@ import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetai
 import { RootState } from 'ducks/types';
 
 import { ReactComponent as PencilIcon } from 'assets/images/pencil.svg';
+import { ReactComponent as PersonIcon } from 'assets/images/person.svg';
 
 import { media } from 'shared/media';
 import { GridDivCenteredCol, NoResultsMessage, Strong, FlexDivRow } from 'shared/commonStyles';
 
 import { SEARCH_DEBOUNCE_MS } from 'constants/ui';
+import QUERY_KEYS from 'constants/queryKeys';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import MarketsTable from '../MarketsTable';
@@ -61,8 +65,18 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 		const { t } = useTranslation();
 		const [assetSearch, setAssetSearch] = useState<string>('');
 		const [showCreatorMarkets, setShowCreatorMarkets] = useState<boolean>(false);
+		const [showUserBidsMarkets, setShowUserBidsMarkets] = useState<boolean>(false);
 		const [phaseFilter, setPhaseFilter] = useLocalStorage(BIDDING_PHASE_FILTER, 'all');
 
+		const userBidsMarketsQuery = useQuery<string[], any>(
+			QUERY_KEYS.BinaryOptions.UserMarkets(currentWalletAddress || ''),
+			() => snxData.binaryOptions.marketsBidOn({ account: currentWalletAddress }),
+			{
+				enabled: isLoggedIn,
+			}
+		);
+
+		// marketsBidOn
 		const phaseFilteredOptionsMarkets = useMemo(
 			() =>
 				phaseFilter === 'all'
@@ -84,16 +98,43 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 			() =>
 				isLoggedIn && showCreatorMarkets
 					? optionsMarkets.filter(({ creator }) => creator.toLowerCase() === currentWalletAddress)
-					: optionsMarkets,
+					: [],
 			[isLoggedIn, showCreatorMarkets, optionsMarkets, currentWalletAddress]
 		);
 
+		const userBidsOptionsMarkets = useMemo(
+			() =>
+				showUserBidsMarkets &&
+				userBidsMarketsQuery.isSuccess &&
+				Array.isArray(userBidsMarketsQuery.data)
+					? optionsMarkets.filter(({ address }) => userBidsMarketsQuery.data.includes(address))
+					: [],
+			[
+				showUserBidsMarkets,
+				optionsMarkets,
+				userBidsMarketsQuery.data,
+				userBidsMarketsQuery.isSuccess,
+			]
+		);
+
+		const resetFilters = useCallback(() => {
+			setPhaseFilter('all');
+			setAssetSearch('');
+		}, [setPhaseFilter, setAssetSearch]);
+
 		useEffect(() => {
 			if (showCreatorMarkets) {
-				setAssetSearch('');
-				setPhaseFilter('all');
+				resetFilters();
+				setShowUserBidsMarkets(false);
 			}
-		}, [setAssetSearch, setPhaseFilter, showCreatorMarkets]);
+		}, [showCreatorMarkets, resetFilters, setShowUserBidsMarkets]);
+
+		useEffect(() => {
+			if (showUserBidsMarkets) {
+				resetFilters();
+				setShowCreatorMarkets(false);
+			}
+		}, [showUserBidsMarkets, resetFilters, setShowCreatorMarkets]);
 
 		return (
 			<Container>
@@ -114,6 +155,27 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 							title={
 								<span>
 									{!isLoggedIn
+										? t('options.home.explore-markets.table.filters.user-bids.tooltip-logged-in')
+										: t('options.home.explore-markets.table.filters.user-bids.tooltip-logged-out')}
+								</span>
+							}
+							placement="top"
+							classes={classes}
+							arrow={true}
+						>
+							<ToggleButton
+								onClick={
+									isLoggedIn ? () => setShowUserBidsMarkets(!showUserBidsMarkets) : undefined
+								}
+								isActive={showUserBidsMarkets}
+							>
+								<PersonIcon />
+							</ToggleButton>
+						</Tooltip>
+						<Tooltip
+							title={
+								<span>
+									{!isLoggedIn
 										? t('options.home.explore-markets.table.filters.creator.tooltip-logged-in')
 										: t('options.home.explore-markets.table.filters.creator.tooltip-logged-out')}
 								</span>
@@ -123,7 +185,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 							arrow={true}
 						>
 							<ToggleButton
-								onClick={() => setShowCreatorMarkets(!showCreatorMarkets)}
+								onClick={isLoggedIn ? () => setShowCreatorMarkets(!showCreatorMarkets) : undefined}
 								isActive={showCreatorMarkets}
 							>
 								<PencilIcon />
@@ -137,7 +199,13 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 				</FiltersRow>
 
 				<MarketsTable
-					optionsMarkets={showCreatorMarkets ? creatorOptionsMarkets : searchFilteredOptionsMarkets}
+					optionsMarkets={
+						showCreatorMarkets
+							? creatorOptionsMarkets
+							: showUserBidsMarkets
+							? userBidsOptionsMarkets
+							: searchFilteredOptionsMarkets
+					}
 					noResultsMessage={
 						assetSearch && searchFilteredOptionsMarkets.length === 0 ? (
 							<NoResultsMessage>
@@ -148,6 +216,14 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 								/>
 							</NoResultsMessage>
 						) : showCreatorMarkets && creatorOptionsMarkets.length === 0 ? (
+							<NoResultsMessage>
+								<Trans
+									i18nKey="common.search-results.no-results-for-query"
+									values={{ searchQuery: currentWalletAddress }}
+									components={[<Strong />]}
+								/>
+							</NoResultsMessage>
+						) : showUserBidsMarkets && userBidsOptionsMarkets.length === 0 ? (
 							<NoResultsMessage>
 								<Trans
 									i18nKey="common.search-results.no-results-for-query"

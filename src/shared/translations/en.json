@@ -190,7 +190,11 @@
 					"filters": {
 						"creator": {
 							"tooltip-logged-in": "Markets you’ve created. Connect a wallet to start.",
-							"tooltip-logged-out": "Markets you’ve created."
+							"tooltip-logged-out": "Markets you’ve created. Click on the row to enter."
+						},
+						"user-bids": {
+							"tooltip-logged-in": "Markets you’ve bid on. Connect a wallet to start.",
+							"tooltip-logged-out": "Markets you’ve bid on. Click on the row to enter."
 						}
 					}
 				}
