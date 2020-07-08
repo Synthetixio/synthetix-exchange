@@ -2,16 +2,20 @@ import React, { memo, FC, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { FIAT_CURRENCY_MAP } from 'constants/currency';
+import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 
-import { GridDivCenteredCol, TextButton } from 'shared/commonStyles';
+import { GridDivCenteredCol, VerticalCardSeparator } from 'shared/commonStyles';
 
-import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperlink.svg';
+import { ReactComponent as OptionsLineIcon } from 'assets/images/options-line.svg';
+import { ReactComponent as DollarSignIcon } from 'assets/images/dollar-sign.svg';
+
+import { formatCurrencyWithSign } from 'utils/formatters';
 
 import Card from 'components/Card';
 import { PeriodLabel, PERIOD_LABELS_MAP, PERIOD_LABELS } from 'constants/period';
 import { Button } from 'components/Button';
 import Currency from 'components/Currency';
+import { sectionTitleCSS } from 'components/Typography/General';
 
 import { useMarketContext } from '../contexts/MarketContext';
 import PriceChart from './PriceChart';
@@ -19,11 +23,7 @@ import OptionsChart from './OptionsChart';
 
 type ChartType = 'price' | 'options';
 
-type ChartCardProps = {
-	onViewMarketDetails: () => void;
-};
-
-const ChartCard: FC<ChartCardProps> = memo(({ onViewMarketDetails }) => {
+const ChartCard: FC = memo(() => {
 	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
 	const [chartType, setChartType] = useState<ChartType>('price');
 
@@ -48,23 +48,22 @@ const ChartCard: FC<ChartCardProps> = memo(({ onViewMarketDetails }) => {
 							type: 'asset',
 						}}
 					/>
-					<ViewMarketDetailsButton onClick={onViewMarketDetails}>
-						{t('options.market.chart-card.view-market-details')} <ArrowHyperlinkIcon />
-					</ViewMarketDetailsButton>
+					<VerticalCardSeparator />
+					<Price>{formatCurrencyWithSign(USD_SIGN, optionsMarket.currentPrice)}</Price>
 				</CardHeaderLeft>
 				<CardHeaderRight>
 					<Overlays>
 						<OverlayButton isActive={chartType === 'price'} onClick={() => setChartType('price')}>
-							{t('options.market.chart-card.chart-types.price')}
+							<DollarSignIcon /> {t('options.market.chart-card.chart-types.price')}
 						</OverlayButton>
 						<OverlayButton
 							isActive={chartType === 'options'}
 							onClick={() => setChartType('options')}
 						>
-							{t('options.market.chart-card.chart-types.options')}
+							<OptionsLineIcon /> {t('options.market.chart-card.chart-types.options')}
 						</OverlayButton>
 					</Overlays>
-					<VerticalSeparator />
+					<VerticalCardSeparator />
 					<Periods>
 						{PERIOD_LABELS.map((period) => (
 							<StyledButton
@@ -106,12 +105,6 @@ const Overlays = styled(GridDivCenteredCol)`
 	grid-gap: 8px;
 `;
 
-const VerticalSeparator = styled.div`
-	height: 24px;
-	background-color: ${(props) => props.theme.colors.accentL2};
-	width: 1px;
-`;
-
 const StyledButton = styled(Button).attrs({
 	size: 'xs',
 	palette: 'secondary',
@@ -121,22 +114,18 @@ const OverlayButton = styled(StyledButton)`
 	text-transform: uppercase;
 	display: flex;
 	align-items: center;
+	svg {
+		margin-right: 6px;
+	}
 `;
 
 const CardHeaderLeft = styled(GridDivCenteredCol)`
 	grid-gap: 12px;
 `;
 
-const ViewMarketDetailsButton = styled(TextButton)`
-	cursor: pointer;
-	color: ${(props) => props.theme.colors.hyperlink};
-	font-family: ${(props) => props.theme.fonts.medium};
-	font-size: 10.5px;
-	svg {
-		margin-left: 3px;
-		width: 6px;
-		height: 6px;
-	}
+const Price = styled.div`
+	${sectionTitleCSS};
+	color: ${(props) => props.theme.colors.fontSecondary};
 `;
 
 export default ChartCard;

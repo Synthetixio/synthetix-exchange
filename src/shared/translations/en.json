@@ -241,7 +241,8 @@
 		"market": {
 			"heading": {
 				"all-markets": "all markets",
-				"market-sentiment": "market sentiment"
+				"market-details": "market details",
+				"market-sentiment": "market sentiment:"
 			},
 			"info-modal": {
 				"title": "market information:",
@@ -263,11 +264,10 @@
 					"final-result-col": "final result"
 				}
 			},
-			"chart-card": {
-				"view-market-details": "View Market Details",
+			"chart-card": {				
 				"chart-types": {
-					"price": "price chart",
-					"options": "options chart"
+					"price": "price",
+					"options": "options"
 				},
 				"no-results": "No transactions"
 			},
