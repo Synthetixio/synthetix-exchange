@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useEffect, useMemo } from 'react';
+import React, { memo, FC, useState, useEffect, useMemo, useCallback } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -113,9 +113,19 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 			SEARCH_DEBOUNCE_MS
 		);
 
+		const setDefaultFilter = useCallback(() => setFilter(defaultFilter), []);
+
 		useEffect(() => {
 			setAssetSearch('');
 		}, [filter, setAssetSearch]);
+
+		useEffect(() => {
+			if (!isWalletConnected) {
+				if (filter.name !== 'phase') {
+					setDefaultFilter();
+				}
+			}
+		}, [isWalletConnected, setDefaultFilter, filter]);
 
 		const userFilters: Array<{ filterName: Filter['name']; icon: JSX.Element }> = [
 			{
@@ -131,8 +141,6 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 		const isPhaseFilter = filter.name === 'phase';
 		const isCreatorFilter = filter.name === 'creator';
 		const isUserBidsFilter = filter.name === 'user-bids';
-
-		const setDefaultFilter = () => setFilter(defaultFilter);
 
 		return (
 			<div>
