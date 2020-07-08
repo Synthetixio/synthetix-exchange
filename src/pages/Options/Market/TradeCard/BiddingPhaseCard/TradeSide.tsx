@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { OptionsTransaction } from 'pages/Options/types';
 
-import { GridDivRow, CurrencyKey, FlexDiv, FlexDivRow } from 'shared/commonStyles';
+import { GridDivRow, CurrencyKey, FlexDiv, FlexDivRow, resetButtonCSS } from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
 import { USD_SIGN } from 'constants/currency';
@@ -63,7 +63,7 @@ const TradeSide: FC<TradeSideProps> = memo(
 			<Container isActive={isActive} onClick={onClick}>
 				<Section>
 					<FormRow>
-						<SideIndication highlighted={isActive}>
+						<SideIndication isHighlighted={isActive}>
 							{t(`options.common.${side}`)} <StyledSideIcon side={side} />
 						</SideIndication>
 					</FormRow>
@@ -75,11 +75,9 @@ const TradeSide: FC<TradeSideProps> = memo(
 								</FormInputLabel>
 								<MaxButton
 									onClick={() => {
-										if (!isActive) {
-											onClick();
-											return;
-										}
-										onMaxClick();
+										if (isActive) {
+											onMaxClick();
+										} else onClick();
 									}}
 								>
 									{t('common.max')}
@@ -224,11 +222,11 @@ const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
 	}
 `;
 
-const SideIndication = styled.div<{ highlighted: boolean }>`
+const SideIndication = styled.div<{ isHighlighted: boolean }>`
 	${labelMediumCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
 	background-color: ${(props) =>
-		props.highlighted ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
+		props.isHighlighted ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 	border-radius: 1px;
 	height: 32px;
 	padding: 8px;
@@ -270,13 +268,10 @@ const QuestionMarkStyled = styled(QuestionMark)`
 `;
 
 const MaxButton = styled.button`
+	${resetButtonCSS};
 	color: ${(props) => props.theme.colors.buttonHover};
-	background-color: transparent;
-	border: none;
 	text-transform: uppercase;
 	font-size: 12px;
-	outline: none;
-	cursor: pointer;
 `;
 
 export default TradeSide;
