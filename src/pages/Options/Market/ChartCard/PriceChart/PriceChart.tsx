@@ -52,6 +52,9 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 		fontFamily: theme.fonts.medium,
 	};
 
+	const minPriceDomain = optionsMarket.strikePrice * 0.95;
+	const maxPriceDomain = optionsMarket.strikePrice * 1.05;
+
 	return (
 		<>
 			<ChartContainer semiTransparent={isLoading}>
@@ -80,8 +83,10 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 						/>
 						<YAxis
 							type="number"
-							domain={['auto', (d: number) => Math.max(d, optionsMarket.strikePrice * 1.1)]}
-							// domain={['auto', 'auto']}
+							domain={[
+								(d: number) => Math.min(d, minPriceDomain),
+								(d: number) => Math.max(d, maxPriceDomain),
+							]}
 							tick={fontStyleMedium}
 							orientation="right"
 							axisLine={false}
