@@ -88,10 +88,10 @@ export const Table: FC<TableProps> = ({
 					))}
 				</TableRow>
 			))}
-			{noResultsMessage != null ? (
-				noResultsMessage
-			) : isLoading ? (
+			{isLoading ? (
 				<Spinner size="sm" centered={true} />
+			) : noResultsMessage != null ? (
+				noResultsMessage
 			) : (
 				<TableBody className="table-body" {...getTableBodyProps()}>
 					{rows.map((row) => {
