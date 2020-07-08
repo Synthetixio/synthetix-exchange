@@ -20,6 +20,8 @@ import Spinner from '../Spinner';
 import Select from '../Select';
 import { ButtonPrimary } from '../Button';
 
+import { media } from 'shared/media';
+
 const WALLET_PAGE_SIZE = 5;
 const LEDGER_DERIVATION_PATHS = [
 	{ value: "44'/60'/0'/", label: "Ethereum - m/44'/60'/0'" },
@@ -209,7 +211,10 @@ const SelectWrapper = styled.div`
 
 const Container = styled.div`
 	text-align: center;
-	width: 100%;
+	min-width: 1024px;
+	${media.large`
+		min-width: unset;
+	`}
 `;
 
 const ErrorContainer = styled.div`
