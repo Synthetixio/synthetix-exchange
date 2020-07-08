@@ -10,7 +10,7 @@ import { OptionsMarketInfo, OptionsTransaction, AccountMarketInfo } from 'pages/
 import { RootState } from 'ducks/types';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getGasInfo } from 'ducks/transaction';
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
 import QUERY_KEYS from 'constants/queryKeys';
 import { SYNTHS_MAP } from 'constants/currency';
@@ -48,7 +48,7 @@ import TradeSide from './TradeSide';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 	gasInfo: getGasInfo(state),
 });
@@ -69,7 +69,7 @@ function getPriceDifference(currentPrice: number, newPrice: number): number {
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 	({
 		optionsMarket,
-		isLoggedIn,
+		isWalletConnected,
 		walletBalancesMap,
 		currentWalletAddress,
 		gasInfo,
@@ -137,12 +137,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					setGasLimit(null);
 				}
 			};
-			if (!isLoggedIn || (!shortSideAmount && !longSideAmount)) return;
+			if (!isWalletConnected || (!shortSideAmount && !longSideAmount)) return;
 			const isShort = side === 'short';
 			const amount = isShort ? shortSideAmount : longSideAmount;
 			fetchGasLimit(isShort, amount as string);
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isLoggedIn, shortSideAmount, longSideAmount]);
+		}, [isWalletConnected, shortSideAmount, longSideAmount]);
 
 		useEffect(() => {
 			const {
@@ -309,7 +309,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							<Title>{t(`${transKey}.title`)}</Title>
 							<WalletBalance>
 								<WalletIcon />
-								{isLoggedIn ? formatCurrencyWithKey(SYNTHS_MAP.sUSD, sUSDBalance) : EMPTY_VALUE}
+								{isWalletConnected
+									? formatCurrencyWithKey(SYNTHS_MAP.sUSD, sUSDBalance)
+									: EMPTY_VALUE}
 							</WalletBalance>
 						</FlexDivRowCentered>
 					</CardContent>
@@ -363,7 +365,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 								<ActionButton
 									size="lg"
 									palette="primary"
-									disabled={isBidding || !isLoggedIn || !sUSDBalance || !gasLimit}
+									disabled={isBidding || !isWalletConnected || !sUSDBalance || !gasLimit}
 									onClick={handleBidOrRefund}
 								>
 									{!isBidding
@@ -375,7 +377,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							<ActionButton
 								size="lg"
 								palette="primary"
-								disabled={isAllowing || !isLoggedIn}
+								disabled={isAllowing || !isWalletConnected}
 								onClick={handleAllowance}
 							>
 								{!isAllowing

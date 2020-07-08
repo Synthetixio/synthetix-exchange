@@ -11,7 +11,7 @@ import { OptionsMarkets } from 'pages/Options/types';
 import SearchInput from 'components/Input/SearchInput';
 import { Button } from 'components/Button';
 
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { RootState } from 'ducks/types';
 
 import { ReactComponent as PencilIcon } from 'assets/images/pencil.svg';
@@ -30,7 +30,7 @@ import MarketsTable from '../MarketsTable';
 import ROUTES, { navigateTo } from 'constants/routes';
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
@@ -65,7 +65,7 @@ const defaultFilter: Filter = {
 };
 
 const ExploreMarkets: FC<ExploreMarketsProps> = memo(
-	({ optionsMarkets, isLoggedIn, currentWalletAddress }) => {
+	({ optionsMarkets, isWalletConnected, currentWalletAddress }) => {
 		const classes = useStyles();
 		const { t } = useTranslation();
 		const [assetSearch, setAssetSearch] = useState<string>('');
@@ -75,16 +75,16 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 			QUERY_KEYS.BinaryOptions.UserMarkets(currentWalletAddress || ''),
 			() => snxData.binaryOptions.marketsBidOn({ account: currentWalletAddress }),
 			{
-				enabled: isLoggedIn && filter.name === 'user-bids',
+				enabled: isWalletConnected && filter.name === 'user-bids',
 			}
 		);
 
 		const filteredOptionsMarkets = useMemo(() => {
-			if (filter.name === 'creator' && isLoggedIn) {
+			if (filter.name === 'creator' && isWalletConnected) {
 				return optionsMarkets.filter(
 					({ creator }) => creator.toLowerCase() === currentWalletAddress
 				);
-			} else if (filter.name === 'user-bids' && isLoggedIn) {
+			} else if (filter.name === 'user-bids' && isWalletConnected) {
 				return userBidsMarketsQuery.isSuccess && Array.isArray(userBidsMarketsQuery.data)
 					? optionsMarkets.filter(({ address }) => userBidsMarketsQuery.data.includes(address))
 					: [];
@@ -96,7 +96,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 		}, [
 			optionsMarkets,
 			filter,
-			isLoggedIn,
+			isWalletConnected,
 			currentWalletAddress,
 			userBidsMarketsQuery.data,
 			userBidsMarketsQuery.isSuccess,
@@ -163,7 +163,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 									key={filterName}
 									title={
 										<span>
-											{!isLoggedIn
+											{!isWalletConnected
 												? t(
 														`options.home.explore-markets.table.filters.${filterName}.tooltip-connected`
 												  )
@@ -178,7 +178,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 								>
 									<ToggleButton
 										onClick={
-											isLoggedIn
+											isWalletConnected
 												? () => {
 														if (isActive) {
 															// toggle off

@@ -9,7 +9,7 @@ import MaturityPhaseCard from './MaturityPhaseCard';
 import snxJSConnector from 'utils/snxJSConnector';
 
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
 import { BINARY_OPTIONS_EVENTS } from 'constants/events';
 import QUERY_KEYS from 'constants/queryKeys';
@@ -21,7 +21,7 @@ import { bigNumberFormatter } from 'utils/formatters';
 import { AccountMarketInfo } from 'pages/Options/types';
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
@@ -29,7 +29,7 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => {
+const TradeCard: FC<PropsFromRedux> = ({ isWalletConnected, currentWalletAddress }) => {
 	const optionsMarket = useMarketContext();
 	const BOMContract = useBOMContractContext();
 
@@ -59,7 +59,7 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 			};
 		},
 		{
-			enabled: isLoggedIn,
+			enabled: isWalletConnected,
 		}
 	);
 
@@ -78,7 +78,7 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 		},
 	};
 
-	if (isLoggedIn && accountMarketInfoQuery.isSuccess && accountMarketInfoQuery.data) {
+	if (isWalletConnected && accountMarketInfoQuery.isSuccess && accountMarketInfoQuery.data) {
 		const { balances, claimable, bids } = accountMarketInfoQuery.data as AccountMarketInfo;
 
 		accountMarketInfo.balances = balances;

@@ -8,7 +8,7 @@ import { FlexDiv } from 'shared/commonStyles';
 import { CARD_HEIGHT } from 'constants/ui';
 
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
 import Card from 'components/Card';
 
@@ -19,7 +19,7 @@ import { useMarketContext } from '../contexts/MarketContext';
 
 const mapStateToProps = (state: RootState) => ({
 	walletAddress: getCurrentWalletAddress(state),
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const connector = connect(mapStateToProps, {});
@@ -28,7 +28,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type TransactionsCardProps = PropsFromRedux;
 
-const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isLoggedIn }) => {
+const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const optionsMarket = useMarketContext();
 
@@ -46,10 +46,10 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isLog
 				component: (
 					<YourTransactions marketAddress={optionsMarket.address} walletAddress={walletAddress!} />
 				),
-				isDisabled: !isLoggedIn,
+				isDisabled: !isWalletConnected,
 			},
 		],
-		[isLoggedIn, optionsMarket.address, t, walletAddress]
+		[isWalletConnected, optionsMarket.address, t, walletAddress]
 	);
 
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
