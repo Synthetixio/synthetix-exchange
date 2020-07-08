@@ -9,7 +9,7 @@ import { normalizeGasLimit } from 'utils/transactions';
 
 import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
@@ -31,7 +31,7 @@ import { useBOMContractContext } from '../../contexts/BOMContractContext';
 import TxErrorMessage from 'components/TxErrorMessage';
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -44,7 +44,7 @@ type TradingPhaseCardProps = PropsFromRedux & {
 };
 
 const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
-	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
+	({ optionsMarket, isWalletConnected, accountMarketInfo }) => {
 		const { t } = useTranslation();
 		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
 
@@ -56,11 +56,11 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 		const { bids, balances, claimable } = accountMarketInfo;
 
 		const nothingToClaim = !bids.short && !bids.long;
-		const buttonDisabled = isClaiming || !isLoggedIn || nothingToClaim || !gasLimit;
+		const buttonDisabled = isClaiming || !isWalletConnected || nothingToClaim || !gasLimit;
 
 		useEffect(() => {
 			const fetchGasLimit = async () => {
-				if (!isLoggedIn) return;
+				if (!isWalletConnected) return;
 				try {
 					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 					const gasEstimate = await BOMContractWithSigner.estimate.claimOptions();
@@ -72,7 +72,7 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 			};
 			fetchGasLimit();
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isLoggedIn]);
+		}, [isWalletConnected]);
 
 		const handleClaim = async () => {
 			try {
