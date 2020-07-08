@@ -5,6 +5,8 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
+import { ReactComponent as InfoRoundedIcon } from 'assets/images/info-rounded.svg';
+
 import {
 	OptionsMarketInfo,
 	/*OptionsMarkets, HistoricalOptionsMarketInfo*/
@@ -20,6 +22,8 @@ import {
 	GridDivRow,
 	FlexDivCentered,
 	LoaderContainer,
+	TextButton,
+	VerticalCardSeparator,
 } from 'shared/commonStyles';
 
 import {
@@ -202,8 +206,13 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 								<ArrowBackIcon />
 								{t('options.market.heading.all-markets')}
 							</AllMarketsLink>
-							{' | '}
+							<VerticalCardSeparator />
 							<HeadingTitle>{marketHeading}</HeadingTitle>
+						</HeadingItem>
+						<HeadingItem>
+							<MarketDetailsTextButton onClick={handleViewMarketDetails}>
+								{t('options.market.heading.market-details')} <InfoRoundedIcon />
+							</MarketDetailsTextButton>
 						</HeadingItem>
 						<StyledHeadingItem>
 							<HeadingTitle>{t('options.market.heading.market-sentiment')}</HeadingTitle>
@@ -214,7 +223,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 							/>
 						</StyledHeadingItem>
 					</Heading>
-					<ChartCard onViewMarketDetails={handleViewMarketDetails} />
+					<ChartCard />
 					<TransactionsCard />
 				</LeftCol>
 				<RightCol>
@@ -257,8 +266,7 @@ const LeftCol = styled(GridDivRow)`
 
 const Heading = styled(GridDivCenteredCol)`
 	grid-gap: 8px;
-	font-size: 12px;
-	grid-template-columns: auto 1fr;
+	grid-template-columns: auto auto 1fr;
 `;
 
 const HeadingItem = styled(GridDivCenteredCol)`
@@ -266,6 +274,9 @@ const HeadingItem = styled(GridDivCenteredCol)`
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 	height: 30px;
 	padding: 0 12px;
+	font-size: 12px;
+	text-transform: uppercase;
+	font-family: ${(props) => props.theme.fonts.medium};
 `;
 
 const StyledHeadingItem = styled(HeadingItem)`
@@ -274,7 +285,7 @@ const StyledHeadingItem = styled(HeadingItem)`
 
 const StyledMarketSentiment = styled(MarketSentiment)`
 	font-size: 10px;
-	font-family: ${(props) => props.theme.fonts.regular};
+	text-transform: none;
 	.longs,
 	.shorts {
 		color: ${(props) => props.theme.colors.brand};
@@ -284,17 +295,34 @@ const StyledMarketSentiment = styled(MarketSentiment)`
 	}
 `;
 
-const AllMarketsLink = styled(Link)`
+const headingLinkCSS = css`
 	text-transform: uppercase;
 	color: ${(props) => props.theme.colors.hyperlink};
+`;
+
+const AllMarketsLink = styled(Link)`
+	${headingLinkCSS};
 	svg {
 		width: 10px;
 		margin-right: 5px;
+		position: relative;
+		top: 1px;
+	}
+`;
+
+const MarketDetailsTextButton = styled(TextButton)`
+	${headingLinkCSS};
+	font-size: 12px;
+	font-family: ${(props) => props.theme.fonts.medium};
+	display: flex;
+	svg {
+		margin-left: 7px;
+		position: relative;
+		top: -1px;
 	}
 `;
 
 const HeadingTitle = styled.div`
-	text-transform: uppercase;
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 

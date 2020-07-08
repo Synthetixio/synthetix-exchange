@@ -1,3 +1,7 @@
+* {
+	box-sizing: border-box;
+}
+
 body {
 	margin: 0;
 	font-family: 'apercu-regular', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -8,8 +12,8 @@ body {
 	font-size: 16px;
 }
 
-* {
-	box-sizing: border-box;
+button {
+	letter-spacing: 0.2px;
 }
 
 @font-face {
