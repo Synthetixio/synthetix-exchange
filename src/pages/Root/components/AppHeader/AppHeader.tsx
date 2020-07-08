@@ -15,7 +15,7 @@ import { FlexDivCentered } from 'shared/commonStyles';
 import { mediumMediaQuery } from 'shared/media';
 
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
@@ -24,11 +24,11 @@ import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
 
-import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from './constants';
+import { MENU_LINKS, MENU_LINKS_WALLET_CONNECTED } from './constants';
 import { BetaLabel } from './common';
 
 type StateProps = {
-	isLoggedIn: boolean;
+	isWalletConnected: boolean;
 };
 
 type Props = {
@@ -40,7 +40,7 @@ type Props = {
 type AppHeaderProps = StateProps & Props;
 
 export const AppHeader: FC<AppHeaderProps> = memo((props) => {
-	const { showThemeToggle = true, isOnSplashPage, isLoggedIn, ...rest } = props;
+	const { showThemeToggle = true, isOnSplashPage, isWalletConnected, ...rest } = props;
 	const { t } = useTranslation();
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -65,8 +65,8 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 							</MenuLink>
 						</MenuLinkItem>
 					))}
-					{isLoggedIn &&
-						MENU_LINKS_LOGGED_IN.map(({ i18nLabel, link }) => (
+					{isWalletConnected &&
+						MENU_LINKS_WALLET_CONNECTED.map(({ i18nLabel, link }) => (
 							<MenuLinkItem key={link}>
 								<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
 							</MenuLinkItem>
@@ -164,7 +164,7 @@ const MenuItemsRight = styled(MenuItems)`
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 export default connect<StateProps, {}, Props, RootState>(mapStateToProps)(AppHeader);

@@ -26,7 +26,7 @@ import UserInfo from '../UserInfo';
 import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
-import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from '../constants';
+import { MENU_LINKS, MENU_LINKS_WALLET_CONNECTED } from '../constants';
 import { BetaLabel } from '../common';
 
 type DispatchProps = {
@@ -34,7 +34,7 @@ type DispatchProps = {
 };
 
 type Props = {
-	isLoggedIn: boolean;
+	isWalletConnected: boolean;
 	showThemeToggle?: boolean;
 	className?: string;
 	isOnSplashPage?: boolean;
@@ -43,7 +43,7 @@ type Props = {
 type MobileAppHeaderProps = DispatchProps & Props;
 
 export const MobileAppHeader: FC<MobileAppHeaderProps> = memo(
-	({ showThemeToggle = true, toggleTheme, isOnSplashPage, isLoggedIn, ...rest }) => {
+	({ showThemeToggle = true, toggleTheme, isOnSplashPage, isWalletConnected, ...rest }) => {
 		const [menuOpen, setMenuOpen] = useState(false);
 		const { t } = useTranslation();
 
@@ -84,8 +84,8 @@ export const MobileAppHeader: FC<MobileAppHeaderProps> = memo(
 									{isBeta && <BetaLabel>{t('common.beta')}</BetaLabel>}
 								</DropdownMenuLink>
 							))}
-							{isLoggedIn &&
-								MENU_LINKS_LOGGED_IN.map(({ i18nLabel, link }) => (
+							{isWalletConnected &&
+								MENU_LINKS_WALLET_CONNECTED.map(({ i18nLabel, link }) => (
 									<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
 										{t(i18nLabel)}
 									</DropdownMenuLink>

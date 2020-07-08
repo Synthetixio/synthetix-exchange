@@ -10,7 +10,7 @@ import { OptionsMarketInfo, OptionsTransaction, AccountMarketInfo } from 'pages/
 import { RootState } from 'ducks/types';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getGasInfo } from 'ducks/transaction';
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
 import QUERY_KEYS from 'constants/queryKeys';
 import { SYNTHS_MAP } from 'constants/currency';
@@ -18,7 +18,7 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 import { APPROVAL_EVENTS } from 'constants/events';
 import { SLIPPAGE_THRESHOLD } from 'constants/ui';
 
-import { getCurrencyKeyBalance } from 'utils/balances';
+import { getCurrencyKeyBalance, getCurrencyKeyUSDBalanceBN } from 'utils/balances';
 import { formatCurrencyWithKey, getAddress } from 'utils/formatters';
 import { normalizeGasLimit } from 'utils/transactions';
 import { GWEI_UNIT } from 'utils/networkUtils';
@@ -48,7 +48,7 @@ import TradeSide from './TradeSide';
 
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 	gasInfo: getGasInfo(state),
 });
@@ -69,7 +69,7 @@ function getPriceDifference(currentPrice: number, newPrice: number): number {
 const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 	({
 		optionsMarket,
-		isLoggedIn,
+		isWalletConnected,
 		walletBalancesMap,
 		currentWalletAddress,
 		gasInfo,
@@ -114,33 +114,35 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				? 'options.market.trade-card.bidding.bid'
 				: 'options.market.trade-card.bidding.refund';
 
+		const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
+		const sUSDBalanceBN = getCurrencyKeyUSDBalanceBN(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
+
 		useEffect(() => {
 			const fetchGasLimit = async (isShort: boolean, amount: string) => {
 				const {
 					utils: { parseEther },
 				} = snxJSConnector as any;
 				try {
+					const bidOrRefundAmount =
+						amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 					const bidOrRefundFunction =
 						type === 'bid'
 							? BOMContractWithSigner.estimate.bid
 							: BOMContractWithSigner.estimate.refund;
-					const gasEstimate = await bidOrRefundFunction(
-						isShort ? 1 : 0,
-						parseEther(amount.toString())
-					);
+					const gasEstimate = await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount);
 					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
 				} catch (e) {
 					console.log(e);
 					setGasLimit(null);
 				}
 			};
-			if (!isLoggedIn || (!shortSideAmount && !longSideAmount)) return;
+			if (!isWalletConnected || (!shortSideAmount && !longSideAmount)) return;
 			const isShort = side === 'short';
 			const amount = isShort ? shortSideAmount : longSideAmount;
 			fetchGasLimit(isShort, amount as string);
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isLoggedIn, shortSideAmount, longSideAmount]);
+		}, [isWalletConnected, shortSideAmount, longSideAmount]);
 
 		useEffect(() => {
 			const {
@@ -200,7 +202,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 				const bidOrRefundFunction =
 					type === 'bid' ? BOMContractWithSigner.bid : BOMContractWithSigner.refund;
-				await bidOrRefundFunction(isShort ? 1 : 0, parseEther(amount.toString()), {
+				const bidOrRefundAmount =
+					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
+				await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount, {
 					gasLimit,
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				});
@@ -258,9 +262,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				return;
 			}
 			try {
+				const bidOrRefundAmount =
+					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 				const { long, short } = await BOMContract.pricesAfterBidOrRefund(
 					side === 'short' ? 1 : 0,
-					parseEther(amount),
+					bidOrRefundAmount,
 					type === 'refund'
 				);
 
@@ -287,8 +293,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			setPriceShift(0);
 		};
 
-		const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD);
-
 		return (
 			<Card>
 				<StyledCardHeader>
@@ -305,7 +309,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							<Title>{t(`${transKey}.title`)}</Title>
 							<WalletBalance>
 								<WalletIcon />
-								{isLoggedIn ? formatCurrencyWithKey(SYNTHS_MAP.sUSD, sUSDBalance) : EMPTY_VALUE}
+								{isWalletConnected
+									? formatCurrencyWithKey(SYNTHS_MAP.sUSD, sUSDBalance)
+									: EMPTY_VALUE}
 							</WalletBalance>
 						</FlexDivRowCentered>
 					</CardContent>
@@ -316,6 +322,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							isActive={side === 'long'}
 							amount={longSideAmount}
 							onAmountChange={(e) => handleBidAmount(e.target.value)}
+							onMaxClick={() => handleBidAmount(sUSDBalance)}
 							price={longPriceAmount}
 							onPriceChange={(e) =>
 								handleTargetPrice(e.target.value, false, false, type === 'refund')
@@ -332,6 +339,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							isActive={side === 'short'}
 							amount={shortSideAmount}
 							onAmountChange={(e) => handleBidAmount(e.target.value)}
+							onMaxClick={() => handleBidAmount(sUSDBalance)}
 							price={shortPriceAmount}
 							onPriceChange={(e) =>
 								handleTargetPrice(e.target.value, true, true, type === 'refund')
@@ -357,13 +365,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 								<ActionButton
 									size="lg"
 									palette="primary"
-									disabled={
-										isBidding ||
-										!isLoggedIn ||
-										!sUSDBalance ||
-										!gasLimit ||
-										(type === 'bid' && Math.abs(priceShift) > SLIPPAGE_THRESHOLD)
-									}
+									disabled={isBidding || !isWalletConnected || !sUSDBalance || !gasLimit}
 									onClick={handleBidOrRefund}
 								>
 									{!isBidding
@@ -375,7 +377,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							<ActionButton
 								size="lg"
 								palette="primary"
-								disabled={isAllowing || !isLoggedIn}
+								disabled={isAllowing || !isWalletConnected}
 								onClick={handleAllowance}
 							>
 								{!isAllowing

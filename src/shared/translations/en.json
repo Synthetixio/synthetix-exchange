@@ -188,15 +188,22 @@
 				"title": "Bid on open markets:",
 				"table": {
 					"filters": {
+						"markets": {
+							"no-results": "No markets found, please try again."
+						},
 						"creator": {
-							"tooltip-logged-in": "Markets you’ve created. Connect a wallet to start.",
-							"tooltip-logged-out": "Markets you’ve created. Click on the row to enter."
+							"tooltip-connected": "Markets you’ve created. Connect a wallet to start.",
+							"tooltip-not-connected": "Markets you’ve created. Click on the row to enter.",
+							"no-results": "You haven't created any markets yet."
 						},
 						"user-bids": {
-							"tooltip-logged-in": "Markets you’ve bid on. Connect a wallet to start.",
-							"tooltip-logged-out": "Markets you’ve bid on. Click on the row to enter."
+							"tooltip-connected": "Markets you’ve bid on. Connect a wallet to start.",
+							"tooltip-not-connected": "Markets you’ve bid on. Click on the row to enter.",
+							"no-results": "You haven't placed any bids yet."
 						}
-					}
+					},
+					"view-all-markets": "view all markets",
+					"view-all-open-markets": "view all open markets"
 				}
 			},
 			"markets-table": {
@@ -290,7 +297,7 @@
 			},
 			"trade-card": {
 				"shared": {
-					"price-shift": "If a bid is too large for the current size of the market, it will cause slippage. The maximum slippage allowed is 10c."
+					"price-shift": "If a bid is too large for the current size of the market, it will cause slippage."
 				},
 				"bidding": {
 					"bid": {
@@ -302,7 +309,7 @@
 						"confirm-button": {
 							"label": "confirm bid",
 							"progress-label": "bidding in progress...",
-							"high-slippage": "Warning: this bid is too large and causes more than the maximum 10c price slippage. Please lower your bid."
+							"high-slippage": "Warning this bid will shift market prices by more than 10% make sure you have entered the right bid amount."
 						},
 						"allowance-button": {
 							"label": "approve market",
@@ -666,6 +673,7 @@
 		"val-in-cents": "{{val}}c",
 		"eg-val": "e.g. {{val}}",
 		"select-date": "select date",
-		"beta": "beta"
+		"beta": "beta",
+		"or": "or"
 	}
 }
