@@ -1,6 +1,6 @@
 import React from 'react';
 import { CreateLoanCard } from './CreateLoanCard';
-import { loggedInUserWithBalances } from '../../../../../../.storybook/mocks/reducers/wallet';
+import { connectedWalletWithBalances } from '../../../../../../.storybook/mocks/reducers/wallet';
 import { action } from '@storybook/addon-actions';
 
 export default {
@@ -12,6 +12,6 @@ export const createLoan = () => (
 		gasInfo={{ gasLimit: 0, gasPrice: 0 }}
 		ethRate={0}
 		toggleGweiPopup={action('open gwei popup')}
-		walletInfo={loggedInUserWithBalances}
+		walletInfo={connectedWalletWithBalances}
 	/>
 );

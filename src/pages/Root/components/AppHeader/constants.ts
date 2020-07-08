@@ -32,7 +32,7 @@ export const MENU_LINKS: MenuLinks = [
 	},
 ];
 
-export const MENU_LINKS_LOGGED_IN: MenuLinks = [
+export const MENU_LINKS_WALLET_CONNECTED: MenuLinks = [
 	{
 		i18nLabel: 'header.links.assets',
 		link: ROUTES.Assets.Home,

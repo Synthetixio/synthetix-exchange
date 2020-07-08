@@ -99,7 +99,7 @@ export const getNetwork = (state: RootState) => ({
 	networkName: getNetworkName(state),
 });
 export const getCurrentWalletAddress = (state: RootState) => getWalletState(state).currentWallet;
-export const getIsLoggedIn = createSelector(getCurrentWalletAddress, (currentWallet) =>
+export const getIsWalletConnected = createSelector(getCurrentWalletAddress, (currentWallet) =>
 	currentWallet != null ? true : false
 );
 export const getWalletInfo = (state: RootState) => getWalletState(state);

@@ -7,14 +7,14 @@ import ROUTES from 'constants/routes';
 import { RootState } from 'ducks/types';
 import HomeLayout from 'pages/Root/components/HomeLayout';
 import MainLayout from 'pages/Root/components/MainLayout';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 const Home = lazy(() => import('./Home'));
 const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
 const Market = lazy(() => import('./Market'));
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -26,7 +26,7 @@ type OptionsProps = PropsFromRedux &
 		isAppReady: boolean;
 	};
 
-export const Options: FC<OptionsProps> = memo(({ isAppReady, isLoggedIn }) => (
+export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }) => (
 	<Switch>
 		<Route
 			exact
@@ -41,7 +41,7 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady, isLoggedIn }) => (
 			exact
 			path={ROUTES.Options.CreateMarketModal}
 			render={() =>
-				isLoggedIn ? (
+				isWalletConnected ? (
 					<HomeLayout isAppReady={isAppReady}>
 						<CreateMarketModal />
 					</HomeLayout>
