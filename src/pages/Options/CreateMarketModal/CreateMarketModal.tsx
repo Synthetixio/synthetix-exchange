@@ -5,7 +5,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
 
-import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -46,7 +45,14 @@ import Select from 'components/Select';
 import Currency from 'components/Currency';
 import Button from 'components/Button/Button';
 
-import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
+import {
+	GridDivCol,
+	GridDivRow,
+	FlexDivRowCentered,
+	FullScreenModalCloseButton,
+	FullScreenModal,
+	FullScreenModalContainer,
+} from 'shared/commonStyles';
 import { media } from 'shared/media';
 
 import {
@@ -295,19 +301,11 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<StyledModal
-					open={true}
-					onClose={handleClose}
-					disableEscapeKeyDown={true}
-					disableAutoFocus={true}
-					disableEnforceFocus={true}
-					hideBackdrop={true}
-					disableRestoreFocus={true}
-				>
-					<Container>
-						<CloseButton>
-							<CloseCrossIcon onClick={handleClose} />
-						</CloseButton>
+				<StyledFullScreenModal open={true} onClose={handleClose}>
+					<FullScreenModalContainer>
+						<FullScreenModalCloseButton onClick={handleClose}>
+							<CloseCrossIcon />
+						</FullScreenModalCloseButton>
 						<Title>{t('options.create-market-modal.title')}</Title>
 						<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
 						<Content>
@@ -511,30 +509,18 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 								</MarketSummaryPreview>
 							</MarketSummary>
 						</Content>
-					</Container>
-				</StyledModal>
+					</FullScreenModalContainer>
+				</StyledFullScreenModal>
 			</ThemeProvider>
 		);
 	}
 );
 
-const Container = styled.div`
-	background-color: ${(props) => props.theme.colors.surfaceL1};
-	text-align: center;
-	outline: none;
-`;
-
-const StyledModal = styled(Modal)`
-	background-color: ${(props) => props.theme.colors.surfaceL1};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	opacity: 1;
+const StyledFullScreenModal = styled(FullScreenModal)`
 	${media.medium`
 		display: block;
 		padding: 80px 24px;
 	`}
-	overflow: auto;
 `;
 
 const Title = styled.div`
@@ -676,14 +662,6 @@ const FeeLabel = styled.span`
 
 const CreateMarketButton = styled(Button)`
 	width: 100%;
-`;
-
-const CloseButton = styled.button`
-	${resetButtonCSS};
-	position: absolute;
-	right: 5%;
-	top: 5%;
-	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
 
 const StyledDatePicker = styled(DatePicker)`

@@ -23,6 +23,8 @@ import { ReactComponent as TrezorWallet } from 'assets/images/wallets/trezor.svg
 import { ReactComponent as WalletConnect } from 'assets/images/wallets/walletConnect.svg';
 import { ReactComponent as Portis } from 'assets/images/wallets/portis.svg';
 
+import { media } from 'shared/media';
+
 const { METAMASK, LEDGER, TREZOR, COINBASE, WALLET_CONNECT, PORTIS } = SUPPORTED_WALLETS_MAP;
 
 const walletTypeToIconMap = {
@@ -94,34 +96,51 @@ const WalletTypeSelector = ({
 
 const Container = styled.div`
 	text-align: center;
-	width: 100%;
 `;
 
 const Wallets = styled.div`
+	display: grid;
+	grid-auto-flow: column;
 	width: 100%;
-	justify-content: space-between;
-	display: flex;
+	grid-gap: 20px;
 	margin-top: 80px;
+	justify-content: center;
+	${media.large`
+		grid-auto-flow: unset;
+		grid-template-columns: auto auto auto;
+		grid-template-rows: auto auto;
+	`}
+	${media.medium`
+		grid-auto-flow: unset;
+		grid-template-columns: auto auto;
+		grid-template-rows: auto auto auto;
+	`}
 `;
 
 const Wallet = styled.button`
 	cursor: pointer;
-	border: none;
+	border: 1px solid ${(props) => props.theme.colors.accentL1};
+	border-radius: 2px;
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	width: 150px;
-	height: 210px;
+	width: 180px;
+	height: 240px;
 	&:hover {
-		transform: scale(1.04);
+		transform: translateY(-20px);
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	&:disabled {
 		opacity: 0.5;
 		transform: none;
 	}
 	transition: transform 0.2s ease-in-out;
+	${media.medium`
+		width: 150px;
+		height: 200px;
+	`}
 `;
 
 const Title = styled.div`
