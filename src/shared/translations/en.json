@@ -188,15 +188,22 @@
 				"title": "Bid on open markets:",
 				"table": {
 					"filters": {
+						"markets": {
+							"no-results": "No markets found, please try again."
+						},
 						"creator": {
-							"tooltip-logged-in": "Markets you’ve created. Connect a wallet to start.",
-							"tooltip-logged-out": "Markets you’ve created. Click on the row to enter."
+							"tooltip-connected": "Markets you’ve created. Connect a wallet to start.",
+							"tooltip-not-connected": "Markets you’ve created. Click on the row to enter.",
+							"no-results": "You haven't created any markets yet."
 						},
 						"user-bids": {
-							"tooltip-logged-in": "Markets you’ve bid on. Connect a wallet to start.",
-							"tooltip-logged-out": "Markets you’ve bid on. Click on the row to enter."
+							"tooltip-connected": "Markets you’ve bid on. Connect a wallet to start.",
+							"tooltip-not-connected": "Markets you’ve bid on. Click on the row to enter.",
+							"no-results": "You haven't placed any bids yet."
 						}
-					}
+					},
+					"view-all-markets": "view all markets",
+					"view-all-open-markets": "view all open markets"
 				}
 			},
 			"markets-table": {
@@ -666,6 +673,7 @@
 		"val-in-cents": "{{val}}c",
 		"eg-val": "e.g. {{val}}",
 		"select-date": "select date",
-		"beta": "beta"
+		"beta": "beta",
+		"or": "or"
 	}
 }

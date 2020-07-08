@@ -86,7 +86,7 @@ const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.surfaceL2};
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
 	text-align: center;
-	padding: 23px 54px;
+	padding: 56px;
 	${media.medium`
 		border: 0;
 	`}
