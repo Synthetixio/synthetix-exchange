@@ -165,8 +165,7 @@ const Container = styled(GridDivRow)<{ isActive: boolean }>`
 		background-color: ${(props) =>
 			props.isActive ? props.theme.colors.surfaceL3 : props.theme.colors.surfaceL2};
 
-		border: 1px solid
-			${(props) => (props.isActive ? props.theme.colors.accentL2 : props.theme.colors.accentL1)};
+		border: 1px solid ${(props) => props.theme.colors.accentL2};
 	}
 	${(props) =>
 		!props.isActive &&
@@ -187,7 +186,7 @@ const FormInputPriceShiftLabel = styled(FormInputLabel)<{ highlighted: boolean }
 		css`
 			font-weight: 600;
 			color: ${(props) => props.theme.colors.red};
-		`}}
+		`}
 `;
 
 const FormRow = styled.div`
@@ -204,18 +203,21 @@ const FormLabelRow = styled(FlexDiv)`
 
 const StyledNumericInput = styled(NumericInput)`
 	background-color: ${(props) => props.theme.colors.surfaceL2};
-	border-color: ${(props) => props.theme.colors.accentL1};
+	border-color: ${(props) =>
+		props.theme.isDarkTheme ? props.theme.colors.accentL1 : props.theme.colors.accentL2};
 `;
 
 const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
 	.input {
 		background-color: ${(props) => props.theme.colors.surfaceL2};
-		border-color: ${(props) => props.theme.colors.accentL1};
+		border-color: ${(props) =>
+			props.theme.isDarkTheme ? props.theme.colors.accentL1 : props.theme.colors.accentL2};
 	}
 
 	.currency-container {
 		background-color: ${(props) => props.theme.colors.surfaceL3};
-		border-color: ${(props) => props.theme.colors.accentL1};
+		border-color: ${(props) =>
+			props.theme.isDarkTheme ? props.theme.colors.accentL1 : props.theme.colors.accentL2};
 		> span {
 			color: ${(props) => props.theme.colors.fontPrimary};
 		}
@@ -227,7 +229,9 @@ const SideIndication = styled.div<{ isHighlighted: boolean }>`
 	color: ${(props) => props.theme.colors.fontPrimary};
 	background-color: ${(props) =>
 		props.isHighlighted ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
-	border-radius: 1px;
+	border: 1px solid
+		${(props) => (props.isHighlighted ? props.theme.colors.accentL2 : 'transparent')};
+	border-radius: 2px;
 	height: 32px;
 	padding: 8px;
 	text-align: center;
