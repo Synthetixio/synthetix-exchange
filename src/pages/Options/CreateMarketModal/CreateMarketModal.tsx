@@ -135,22 +135,22 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 							label: CRYPTO_CURRENCY_MAP.SNX,
 							value: CRYPTO_CURRENCY_MAP.SNX,
 						},
-						{
-							label: CRYPTO_CURRENCY_MAP.KNC,
-							value: CRYPTO_CURRENCY_MAP.KNC,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.COMP,
-							value: CRYPTO_CURRENCY_MAP.COMP,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.REN,
-							value: CRYPTO_CURRENCY_MAP.REN,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.LEND,
-							value: CRYPTO_CURRENCY_MAP.LEND,
-						},
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.KNC,
+						// 	value: CRYPTO_CURRENCY_MAP.KNC,
+						// },
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.COMP,
+						// 	value: CRYPTO_CURRENCY_MAP.COMP,
+						// },
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.REN,
+						// 	value: CRYPTO_CURRENCY_MAP.REN,
+						// },
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.LEND,
+						// 	value: CRYPTO_CURRENCY_MAP.LEND,
+						// },
 						...synths
 							.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
 							.map((synth) => ({
