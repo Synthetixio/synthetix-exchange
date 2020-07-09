@@ -382,7 +382,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 												id="end-of-bidding"
 												dateFormat="MMMM d, yyyy h:mm aa"
 												selected={biddingEndDate}
-												showTimeSelect
+												showTimeSelect={true}
 												onChange={(d) => setEndOfBidding(d)}
 												minDate={new Date()}
 												maxDate={maturityDate}
@@ -397,7 +397,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 												id="maturity-date"
 												dateFormat="MMMM d, yyyy h:mm aa"
 												selected={maturityDate}
-												showTimeSelect
+												showTimeSelect={true}
 												onChange={(d) => setMaturityDate(d)}
 												minDate={biddingEndDate || null}
 											/>

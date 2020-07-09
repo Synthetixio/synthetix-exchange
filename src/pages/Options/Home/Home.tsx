@@ -47,21 +47,23 @@ const Home: FC<HomeProps> = memo(({ synthsMap }) => {
 			const markets = marketsQuery.data || [];
 			if (markets.length) {
 				return orderBy(
-					markets.map((optionsMarket) => {
-						const { phase, timeRemaining } = getPhaseAndEndDate(
-							optionsMarket.biddingEndDate,
-							optionsMarket.maturityDate,
-							optionsMarket.expiryDate
-						);
+					markets
+						.filter((optionsMarket) => optionsMarket.isOpen)
+						.map((optionsMarket) => {
+							const { phase, timeRemaining } = getPhaseAndEndDate(
+								optionsMarket.biddingEndDate,
+								optionsMarket.maturityDate,
+								optionsMarket.expiryDate
+							);
 
-						return {
-							...optionsMarket,
-							phase,
-							asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
-							timeRemaining,
-							phaseNum: PHASE[phase],
-						};
-					}),
+							return {
+								...optionsMarket,
+								phase,
+								asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
+								timeRemaining,
+								phaseNum: PHASE[phase],
+							};
+						}),
 					['phaseNum', 'timeRemaining']
 				);
 			}
