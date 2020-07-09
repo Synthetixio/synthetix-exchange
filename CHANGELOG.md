@@ -1,5 +1,26 @@
 # Changelog
 
+## 10 July 2020 (Muscovite release)
+
+### Added
+
+- Added COMP, LEND, KNC and REN to binary options.
+- Filtering for binary option markets (by phase, markets you've bid on, and market creator) + the ability to search within each filter.
+- Added current price/final price for binary options.
+- Integrated Portis wallet
+
+### Changed
+
+- Numerous UI improvements and bug fixes for binary options.
+- Lazy load all pages for faster load time.
+- Reworked the wallet popup/gwei popup to use the new modal component.
+
+## 30 June 2020 (Acrux release)
+
+### Added
+
+- **Binary options**
+
 ## 4 June 2020 (Halite release)
 
 ### Added
