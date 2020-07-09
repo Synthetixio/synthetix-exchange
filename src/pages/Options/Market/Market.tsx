@@ -140,6 +140,13 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 					capitalRequirement: bigNumberFormatter(creatorLimits.capitalRequirement),
 					skewLimit: bigNumberFormatter(creatorLimits.skewLimit),
 				},
+				BN: {
+					totalLongBN: totalBids.long,
+					totalShortBN: totalBids.short,
+					depositedBN: deposits.deposited,
+					feeBN: fees.creatorFee.add(fees.poolFee),
+					refundFeeBN: fees.refundFee,
+				},
 			} as OptionsMarketInfo;
 		}
 		/*
