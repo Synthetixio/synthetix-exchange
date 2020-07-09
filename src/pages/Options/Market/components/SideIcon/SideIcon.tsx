@@ -5,6 +5,7 @@ import { Side } from 'pages/Options/types';
 
 import { ReactComponent as TrendUpIcon } from 'assets/images/trend-up.svg';
 import { ReactComponent as TrendDownIcon } from 'assets/images/trend-down.svg';
+import { darkTheme } from 'styles/theme';
 
 type SideIconProps = {
 	side: Side;
@@ -25,8 +26,7 @@ const Container = styled.span<{ side: Side }>`
 	height: 16px;
 	background-color: ${(props) =>
 		props.side === 'long' ? props.theme.colors.green : props.theme.colors.red};
-	color: ${(props) =>
-		props.theme.isDarkTheme ? props.theme.colors.surfaceL1 : props.theme.colors.white};
+	color: ${darkTheme.colors.surfaceL1};
 `;
 
 export default SideIcon;
