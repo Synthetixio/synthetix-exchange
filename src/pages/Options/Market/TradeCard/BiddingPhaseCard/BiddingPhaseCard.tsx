@@ -306,7 +306,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				<StyledCardBody>
 					<CardContent>
 						<FlexDivRowCentered>
-							<Title>{t(`${transKey}.title`)}</Title>
+							<Title>{t(`${transKey}.subtitle`)}</Title>
 							<WalletBalance>
 								<WalletIcon />
 								{isWalletConnected
@@ -427,18 +427,22 @@ const WalletBalance = styled(GridDivCenteredCol)`
 
 const Title = styled.div`
 	${formLabelSmallCSS};
+	text-transform: capitalize;
 `;
 
 const TradeSides = styled(GridDivCenteredCol)`
 	grid-auto-flow: initial;
 	grid-template-columns: 1fr auto 1fr;
-	border-bottom: 1px solid ${(props) => props.theme.colors.accentL1};
+	border-bottom: 1px solid
+		${(props) =>
+			props.theme.isDarkTheme ? props.theme.colors.accentL1 : props.theme.colors.accentL2};
 `;
 
 const TradeSideSeparator = styled.div`
 	width: 1px;
 	height: 100%;
-	background-color: ${(props) => props.theme.colors.accentL1};
+	background-color: ${(props) =>
+		props.theme.isDarkTheme ? props.theme.colors.accentL1 : props.theme.colors.accentL2};
 `;
 
 export default connector(BiddingPhaseCard);
