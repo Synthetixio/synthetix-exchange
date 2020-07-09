@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import orderBy from 'lodash/orderBy';
 
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
@@ -127,18 +128,39 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 		const [marketFees, setMarketFees] = useState<MarketFees | null>(null);
 
 		const assetsOptions = useMemo(
-			() => [
-				{
-					label: CRYPTO_CURRENCY_MAP.SNX,
-					value: CRYPTO_CURRENCY_MAP.SNX,
-				},
-				...synths
-					.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
-					.map((synth) => ({
-						label: synth.asset,
-						value: synth.name,
-					})),
-			],
+			() =>
+				orderBy(
+					[
+						{
+							label: CRYPTO_CURRENCY_MAP.SNX,
+							value: CRYPTO_CURRENCY_MAP.SNX,
+						},
+						{
+							label: CRYPTO_CURRENCY_MAP.KNC,
+							value: CRYPTO_CURRENCY_MAP.KNC,
+						},
+						{
+							label: CRYPTO_CURRENCY_MAP.COMP,
+							value: CRYPTO_CURRENCY_MAP.COMP,
+						},
+						{
+							label: CRYPTO_CURRENCY_MAP.REN,
+							value: CRYPTO_CURRENCY_MAP.REN,
+						},
+						{
+							label: CRYPTO_CURRENCY_MAP.LEND,
+							value: CRYPTO_CURRENCY_MAP.LEND,
+						},
+						...synths
+							.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
+							.map((synth) => ({
+								label: synth.asset,
+								value: synth.name,
+							})),
+					],
+					'label',
+					'asc'
+				),
 			[synths]
 		);
 
