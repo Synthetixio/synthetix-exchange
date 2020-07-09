@@ -1,9 +1,10 @@
 # Changelog
 
-## 9 July 2020 (Muscovite release)
+## 10 July 2020 (Muscovite release)
 
 ### Added
 
+- Added COMP, LEND, KNC and REN to binary options.
 - Filtering for binary option markets (by phase, markets you've bid on, and market creator) + the ability to search within each filter.
 - Added current price/final price for binary options.
 - Integrated Portis wallet
