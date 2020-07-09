@@ -8,6 +8,7 @@ import { Z_INDEX } from '../constants/ui';
 import { media, breakpoint } from './media';
 
 import SearchInput from 'components/Input/SearchInput';
+import Modal from '@material-ui/core/Modal';
 
 export const FlexDiv = styled.div`
 	display: flex;
@@ -47,6 +48,12 @@ export const CenteredPageLayout = styled(PageLayout)`
 
 export const SectionVerticalSpacer = styled.div`
 	margin-bottom: 8px;
+`;
+
+export const VerticalCardSeparator = styled.div`
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL2};
+	width: 1px;
 `;
 
 export const linkCSS = css`
@@ -301,4 +308,33 @@ export const LoaderContainer = styled.div`
 
 export const Strong = styled.span`
 	font-family: ${(props) => props.theme.fonts.medium};
+`;
+
+export const FullScreenModal = styled(Modal).attrs({
+	disableEscapeKeyDown: true,
+	disableAutoFocus: true,
+	disableEnforceFocus: true,
+	hideBackdrop: true,
+	disableRestoreFocus: true,
+})`
+	background-color: ${(props) => props.theme.colors.surfaceL1};
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 1;
+	overflow: auto;
+`;
+
+export const FullScreenModalContainer = styled.div`
+	background-color: ${(props) => props.theme.colors.surfaceL1};
+	text-align: center;
+	outline: none;
+`;
+
+export const FullScreenModalCloseButton = styled.button`
+	${resetButtonCSS};
+	position: absolute;
+	right: 5%;
+	top: 5%;
+	color: ${({ theme }) => theme.colors.fontTertiary};
 `;

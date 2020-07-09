@@ -17,7 +17,7 @@ import { Z_INDEX } from 'constants/ui';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
-import { fadeInAnimation, fadeOutAnimation } from 'shared/commonStyles';
+import { FullScreenModal, FullScreenModalCloseButton } from 'shared/commonStyles';
 
 import { DataSmall } from '../Typography';
 import { headingH3CSS } from 'components/Typography/Heading';
@@ -56,7 +56,6 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 		setGasPrice,
 		gasInfo: { gasPrice = 1, gasLimit, gasSpeed },
 		ethRate,
-		synthsMap,
 	}) => {
 		const [gasSettings, setGasSettings] = useState<{
 			gasPrice?: number;
@@ -79,11 +78,11 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 		return (
 			<>
 				<GlobalStyle />
-				<Popup isVisible={popupIsVisible}>
+				<FullScreenModal open={popupIsVisible}>
 					<Container>
-						<CloseButton onClick={() => toggleGweiPopup(false)}>
+						<FullScreenModalCloseButton onClick={() => toggleGweiPopup(false)}>
 							<CloseCrossIcon />
-						</CloseButton>
+						</FullScreenModalCloseButton>
 						<Body>
 							<Title>{t('modals.gwei.title')}</Title>
 							<BodyMedium>{t('modals.gwei.desc')}</BodyMedium>
@@ -192,7 +191,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 							</InputRow>
 						</Body>
 					</Container>
-				</Popup>
+				</FullScreenModal>
 			</>
 		);
 	}
@@ -207,18 +206,6 @@ const Title = styled.div`
 	${headingH3CSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
 	padding-bottom: 18px;
-`;
-
-const Popup = styled.div<{ isVisible?: boolean }>`
-	z-index: ${Z_INDEX.MODAL};
-	background-color: ${(props) => props.theme.colors.surfaceL1};
-	position: absolute;
-	display: ${(props) => (props.isVisible ? 'block' : 'none')};
-	animation: ${(props) => (props.isVisible ? fadeInAnimation : fadeOutAnimation)} 0.2s ease-in;
-	width: 100%;
-	height: 100vh;
-	top: 0;
-	left: 0;
 `;
 
 const Container = styled.div`
@@ -238,16 +225,6 @@ const Body = styled.div`
 
 const SliderContainer = styled.div`
 	margin: 100px 0 50px 0;
-`;
-
-const CloseButton = styled.button`
-	border: none;
-	background: none;
-	cursor: pointer;
-	position: absolute;
-	right: 5%;
-	top: 5%;
-	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
 
 const InputRow = styled.div`

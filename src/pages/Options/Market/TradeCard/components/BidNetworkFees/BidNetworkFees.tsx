@@ -117,7 +117,7 @@ export const Container = styled(GridDivRow)`
 export const ButtonEdit = styled(TextButton)`
 	${formDataCSS};
 	margin-left: 10px;
-	color: ${(props) => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.buttonHover};
 	text-transform: uppercase;
 `;
 

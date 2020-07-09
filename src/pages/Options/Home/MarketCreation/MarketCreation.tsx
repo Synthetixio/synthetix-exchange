@@ -9,7 +9,7 @@ import ROUTES, { navigateTo } from 'constants/routes';
 
 import { RootState } from 'ducks/types';
 import { toggleWalletPopup } from 'ducks/ui';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import { Button } from 'components/Button';
 import { headingH4CSS } from 'components/Typography/Heading';
@@ -18,7 +18,7 @@ import Link from 'components/Link';
 import { LINKS } from 'constants/links';
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const mapDispatchToProps = {
@@ -31,12 +31,12 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MarketCreationProps = PropsFromRedux;
 
-const MarketCreation: FC<MarketCreationProps> = memo(({ isLoggedIn, toggleWalletPopup }) => {
+const MarketCreation: FC<MarketCreationProps> = memo(({ isWalletConnected, toggleWalletPopup }) => {
 	const { t } = useTranslation();
 
 	return (
 		<Container>
-			{!isLoggedIn ? (
+			{!isWalletConnected ? (
 				<>
 					<Title>{t('options.home.market-creation.not-connected.title')}</Title>
 					<Subtitle>
@@ -86,7 +86,7 @@ const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.surfaceL2};
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
 	text-align: center;
-	padding: 23px 54px;
+	padding: 56px;
 	${media.medium`
 		border: 0;
 	`}

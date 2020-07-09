@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import orderBy from 'lodash/orderBy';
 
-import Modal from '@material-ui/core/Modal';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -46,7 +46,14 @@ import Select from 'components/Select';
 import Currency from 'components/Currency';
 import Button from 'components/Button/Button';
 
-import { GridDivCol, resetButtonCSS, GridDivRow, FlexDivRowCentered } from 'shared/commonStyles';
+import {
+	GridDivCol,
+	GridDivRow,
+	FlexDivRowCentered,
+	FullScreenModalCloseButton,
+	FullScreenModal,
+	FullScreenModalContainer,
+} from 'shared/commonStyles';
 import { media } from 'shared/media';
 
 import {
@@ -121,18 +128,39 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 		const [marketFees, setMarketFees] = useState<MarketFees | null>(null);
 
 		const assetsOptions = useMemo(
-			() => [
-				{
-					label: CRYPTO_CURRENCY_MAP.SNX,
-					value: CRYPTO_CURRENCY_MAP.SNX,
-				},
-				...synths
-					.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
-					.map((synth) => ({
-						label: synth.asset,
-						value: synth.name,
-					})),
-			],
+			() =>
+				orderBy(
+					[
+						{
+							label: CRYPTO_CURRENCY_MAP.SNX,
+							value: CRYPTO_CURRENCY_MAP.SNX,
+						},
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.KNC,
+						// 	value: CRYPTO_CURRENCY_MAP.KNC,
+						// },
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.COMP,
+						// 	value: CRYPTO_CURRENCY_MAP.COMP,
+						// },
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.REN,
+						// 	value: CRYPTO_CURRENCY_MAP.REN,
+						// },
+						// {
+						// 	label: CRYPTO_CURRENCY_MAP.LEND,
+						// 	value: CRYPTO_CURRENCY_MAP.LEND,
+						// },
+						...synths
+							.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
+							.map((synth) => ({
+								label: synth.asset,
+								value: synth.name,
+							})),
+					],
+					'label',
+					'asc'
+				),
 			[synths]
 		);
 
@@ -295,19 +323,11 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<StyledModal
-					open={true}
-					onClose={handleClose}
-					disableEscapeKeyDown={true}
-					disableAutoFocus={true}
-					disableEnforceFocus={true}
-					hideBackdrop={true}
-					disableRestoreFocus={true}
-				>
-					<Container>
-						<CloseButton>
-							<CloseCrossIcon onClick={handleClose} />
-						</CloseButton>
+				<StyledFullScreenModal open={true} onClose={handleClose}>
+					<FullScreenModalContainer>
+						<FullScreenModalCloseButton onClick={handleClose}>
+							<CloseCrossIcon />
+						</FullScreenModalCloseButton>
 						<Title>{t('options.create-market-modal.title')}</Title>
 						<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
 						<Content>
@@ -362,7 +382,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 												id="end-of-bidding"
 												dateFormat="MMMM d, yyyy h:mm aa"
 												selected={biddingEndDate}
-												showTimeSelect
+												showTimeSelect={true}
 												onChange={(d) => setEndOfBidding(d)}
 												minDate={new Date()}
 												maxDate={maturityDate}
@@ -377,7 +397,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 												id="maturity-date"
 												dateFormat="MMMM d, yyyy h:mm aa"
 												selected={maturityDate}
-												showTimeSelect
+												showTimeSelect={true}
 												onChange={(d) => setMaturityDate(d)}
 												minDate={biddingEndDate || null}
 											/>
@@ -511,30 +531,18 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
 								</MarketSummaryPreview>
 							</MarketSummary>
 						</Content>
-					</Container>
-				</StyledModal>
+					</FullScreenModalContainer>
+				</StyledFullScreenModal>
 			</ThemeProvider>
 		);
 	}
 );
 
-const Container = styled.div`
-	background-color: ${(props) => props.theme.colors.surfaceL1};
-	text-align: center;
-	outline: none;
-`;
-
-const StyledModal = styled(Modal)`
-	background-color: ${(props) => props.theme.colors.surfaceL1};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	opacity: 1;
+const StyledFullScreenModal = styled(FullScreenModal)`
 	${media.medium`
 		display: block;
 		padding: 80px 24px;
 	`}
-	overflow: auto;
 `;
 
 const Title = styled.div`
@@ -676,14 +684,6 @@ const FeeLabel = styled.span`
 
 const CreateMarketButton = styled(Button)`
 	width: 100%;
-`;
-
-const CloseButton = styled.button`
-	${resetButtonCSS};
-	position: absolute;
-	right: 5%;
-	top: 5%;
-	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
 
 const StyledDatePicker = styled(DatePicker)`

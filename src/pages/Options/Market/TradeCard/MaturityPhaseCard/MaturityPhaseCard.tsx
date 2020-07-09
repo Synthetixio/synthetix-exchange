@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
@@ -33,7 +33,7 @@ import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
 import TxErrorMessage from 'components/TxErrorMessage';
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -46,7 +46,7 @@ type MaturityPhaseCardProps = PropsFromRedux & {
 };
 
 const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
-	({ optionsMarket, isLoggedIn, accountMarketInfo }) => {
+	({ optionsMarket, isWalletConnected, accountMarketInfo }) => {
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
@@ -61,11 +61,11 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 		const shortAmount = balances.short + claimable.short;
 		const nothingToExercise = !longAmount && !shortAmount;
 
-		const buttonDisabled = isExercising || !isLoggedIn || nothingToExercise || !gasLimit;
+		const buttonDisabled = isExercising || !isWalletConnected || nothingToExercise || !gasLimit;
 
 		useEffect(() => {
 			const fetchGasLimit = async () => {
-				if (!isLoggedIn) return;
+				if (!isWalletConnected) return;
 				try {
 					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
 					const gasEstimate = await BOMContractWithSigner.estimate.exerciseOptions();
@@ -77,7 +77,7 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 			};
 			fetchGasLimit();
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isLoggedIn]);
+		}, [isWalletConnected]);
 
 		const handleExercise = async () => {
 			try {
