@@ -10,7 +10,10 @@ const NetworkInfoTooltip = ({ children, title, open = undefined }) => {
 			MuiTooltip: {
 				tooltip: {
 					padding: '16px',
+					color: colors.fontPrimary,
 					backgroundColor: colors.accentL1,
+					fontSize: '12px',
+					fontFamily: `'apercu-regular', sans-serif`,
 				},
 			},
 		},

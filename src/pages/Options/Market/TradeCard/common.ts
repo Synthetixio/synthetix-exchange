@@ -14,7 +14,9 @@ export const StyledCardHeader = styled(Card.Header)`
 
 export const CardContent = styled.div`
 	padding: 12px;
-	border-bottom: 1px solid ${(props) => props.theme.colors.accentL1};
+	border-bottom: 1px solid
+		${(props) =>
+			props.theme.isDarkTheme ? props.theme.colors.accentL1 : props.theme.colors.accentL2};
 	&:last-child {
 		border-bottom: 0;
 	}
