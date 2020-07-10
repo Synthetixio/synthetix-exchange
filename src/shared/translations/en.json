@@ -208,11 +208,11 @@
 			},
 			"markets-table": {
 				"asset-col": "asset",
-				"strike-price-col": "strike price ({{currencyKeyWithSymbol}})",
+				"strike-price-col": "strike price ({{currencyKey}})",
 				"maturity-date-col": "maturity date",
 				"long-short-col": "long / short",
 				"phase-col": "phase",
-				"pool-size-col": "pool size (<0>{{currencyKeyWithSymbol}}</0>)",
+				"pool-size-col": "pool size (<0>{{currencyKey}}</0>)",
 				"time-remaining-col": "time remaining"
 			}
 		},
@@ -276,7 +276,7 @@
 					"price": "price",
 					"options": "options"
 				},
-				"no-results": "No transactions"
+				"no-chart-data": "No chart data"
 			},
 			"transactions-card": {
 				"recent-market-tab-title": "recent market activity",
@@ -319,7 +319,7 @@
 					"refund": {
 						"title": "withdraw",
 						"subtitle": "from your existing bid:",
-						"amount-label": "withdrawal amount:",
+						"amount-label": "withdrawing:",
 						"price-label": "price:",
 						"confirm-button": {
 							"label": "confirm withdrawal",
