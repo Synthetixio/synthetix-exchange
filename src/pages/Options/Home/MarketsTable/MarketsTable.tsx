@@ -57,7 +57,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: (
 								<>
 									{t('options.home.markets-table.strike-price-col', {
-										currencyKeyWithSymbol: `${USD_SIGN}${FIAT_CURRENCY_MAP.USD}`,
+										currencyKey: `${FIAT_CURRENCY_MAP.USD}`,
 									})}
 								</>
 							),
@@ -109,7 +109,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: (
 								<Trans
 									i18nKey="options.home.markets-table.pool-size-col"
-									values={{ currencyKeyWithSymbol: `${USD_SIGN}${SYNTHS_MAP.sUSD}` }}
+									values={{ currencyKey: `${SYNTHS_MAP.sUSD}` }}
 									components={[<CurrencyKey />]}
 								/>
 							),

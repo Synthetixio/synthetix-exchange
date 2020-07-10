@@ -90,6 +90,7 @@ const TradeSide: FC<TradeSideProps> = memo(
 								showIcon={false}
 								inputProps={{
 									id: amountInputId,
+									min: '0',
 								}}
 							/>
 						</FormControl>
@@ -118,6 +119,9 @@ const TradeSide: FC<TradeSideProps> = memo(
 								value={price}
 								onChange={onPriceChange}
 								placeholder="0"
+								step="0.1"
+								min="0"
+								max="1"
 							/>
 						</FormControl>
 					</FormRow>
