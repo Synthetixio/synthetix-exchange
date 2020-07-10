@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 
 import { USD_SIGN } from 'constants/currency';
 
-import { formatCurrencyWithSign, truncateAddress } from 'utils/formatters';
+import { formatCurrencyWithSign } from 'utils/formatters';
 
 import { PeriodLabel, PERIOD_IN_HOURS } from 'constants/period';
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
