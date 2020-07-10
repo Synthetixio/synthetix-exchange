@@ -276,7 +276,7 @@
 					"price": "price",
 					"options": "options"
 				},
-				"no-results": "No transactions"
+				"no-results": "No data"
 			},
 			"transactions-card": {
 				"recent-market-tab-title": "recent market activity",

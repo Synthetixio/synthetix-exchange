@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import format from 'date-fns/format';
 import isNumber from 'lodash/isNumber';
 import get from 'lodash/get';
@@ -8,7 +9,7 @@ import { useQuery } from 'react-query';
 
 import { USD_SIGN } from 'constants/currency';
 
-import { formatCurrencyWithSign } from 'utils/formatters';
+import { formatCurrencyWithSign, truncateAddress } from 'utils/formatters';
 
 import { PeriodLabel, PERIOD_IN_HOURS } from 'constants/period';
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
@@ -18,7 +19,7 @@ import QUERY_KEYS from 'constants/queryKeys';
 
 import { fetchSynthRateUpdate } from 'services/rates/rates';
 
-import { ChartContainer } from '../common';
+import { ChartContainer, NoResults } from '../common';
 import { OptionsMarketInfo } from 'pages/Options/types';
 import { HistoricalRatesData } from 'ducks/historicalRates';
 
@@ -28,6 +29,7 @@ type PriceChartProps = {
 };
 
 const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
+	const { t } = useTranslation();
 	const theme = useContext(ThemeContext);
 
 	const historicalRatesQuery = useQuery<HistoricalRatesData | null, any>(
@@ -37,6 +39,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 
 	const chartData = get(historicalRatesQuery, 'data.rates', []);
 	const isLoading = historicalRatesQuery.isLoading;
+	const noResults = historicalRatesQuery.isSuccess && chartData.length === 0;
 
 	const chartColor = theme.colors.hyperlink;
 	const linearGradientId = 'optionsMarketPriceChartArea';
@@ -101,44 +104,49 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 							fill={`url(#${linearGradientId})`}
 							isAnimationActive={false}
 						/>
-						<ReferenceLine
-							y={optionsMarket.strikePrice}
-							stroke={theme.colors.fontSecondary}
-							strokeDasharray="5 2"
-						>
-							<Label
-								position="insideBottomRight"
-								className="ref-line-label ref-line-label-strike-price"
+						{!noResults && (
+							<ReferenceLine
+								y={optionsMarket.strikePrice}
+								stroke={theme.colors.fontSecondary}
+								strokeDasharray="5 2"
 							>
-								{formatCurrencyWithSign(USD_SIGN, optionsMarket.strikePrice)}
-							</Label>
-						</ReferenceLine>
-						<Tooltip
-							className="tooltip"
-							// @ts-ignore
-							cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
-							contentStyle={{
-								border: 'none',
-								borderRadius: '4px',
-								backgroundColor: theme.colors.accentL1,
-							}}
-							itemStyle={{
-								...fontStyle,
-								textTransform: 'capitalize',
-							}}
-							labelStyle={fontStyle}
-							formatter={(val: string | number) => formatCurrencyWithSign(USD_SIGN, val)}
-							labelFormatter={(label) => {
-								if (!isNumber(label)) {
-									return '';
-								}
-								return format(label, 'do MMM yy | HH:mm');
-							}}
-						/>
+								<Label
+									position="insideBottomRight"
+									className="ref-line-label ref-line-label-strike-price"
+								>
+									{formatCurrencyWithSign(USD_SIGN, optionsMarket.strikePrice)}
+								</Label>
+							</ReferenceLine>
+						)}
+						{!noResults && (
+							<Tooltip
+								className="tooltip"
+								// @ts-ignore
+								cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
+								contentStyle={{
+									border: 'none',
+									borderRadius: '4px',
+									backgroundColor: theme.colors.accentL1,
+								}}
+								itemStyle={{
+									...fontStyle,
+									textTransform: 'capitalize',
+								}}
+								labelStyle={fontStyle}
+								formatter={(val: string | number) => formatCurrencyWithSign(USD_SIGN, val)}
+								labelFormatter={(label) => {
+									if (!isNumber(label)) {
+										return '';
+									}
+									return format(label, 'do MMM yy | HH:mm');
+								}}
+							/>
+						)}
 					</AreaChart>
 				</RechartsResponsiveContainer>
 			</ChartContainer>
 			{isLoading && <Spinner size="sm" centered={true} />}
+			{noResults && <NoResults>{t('options.market.chart-card.no-results')}</NoResults>}
 		</>
 	);
 };
