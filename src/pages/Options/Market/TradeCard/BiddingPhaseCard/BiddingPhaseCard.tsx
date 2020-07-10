@@ -111,6 +111,14 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		};
 
 		useEffect(() => {
+			return () => {
+				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
+				if (bidOrRefundForPriceTimer) clearTimeout(bidOrRefundForPriceTimer);
+			};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
+
+		useEffect(() => {
 			setLongSideAmount('');
 			setShortSideAmount('');
 			setLongPriceAmount('');
