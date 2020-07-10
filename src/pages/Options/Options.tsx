@@ -40,14 +40,16 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }
 		<Route
 			exact
 			path={ROUTES.Options.CreateMarketModal}
-			render={() =>
-				isWalletConnected ? (
-					<HomeLayout isAppReady={isAppReady}>
-						<CreateMarketModal />
-					</HomeLayout>
-				) : (
+			render={
+				() => (
+					// isWalletConnected ? (
+					// 	<HomeLayout isAppReady={isAppReady}>
+					// 		<CreateMarketModal />
+					// 	</HomeLayout>
+					// ) : (
 					<Redirect to={ROUTES.Options.Home} />
 				)
+				// )
 			}
 		/>
 		<Route
