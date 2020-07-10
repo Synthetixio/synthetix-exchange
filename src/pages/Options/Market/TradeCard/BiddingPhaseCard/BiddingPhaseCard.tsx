@@ -118,13 +118,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
-		useEffect(() => {
-			setLongSideAmount('');
-			setShortSideAmount('');
-			setLongPriceAmount('');
-			setShortPriceAmount('');
-		}, [side]);
-
 		const transKey =
 			type === 'bid'
 				? 'options.market.trade-card.bidding.bid'
