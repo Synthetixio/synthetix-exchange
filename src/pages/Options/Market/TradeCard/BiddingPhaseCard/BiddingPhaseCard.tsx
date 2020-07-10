@@ -250,7 +250,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					bidSide: isShort ? 1 : 0,
 					priceSide: targetShort ? 1 : 0,
 					price: parseEther(targetPrice),
-					isRefund,
+					refund: isRefund,
 					fee: BN.feeBN,
 					refundFee: BN.refundFeeBN,
 					longBids: BN.totalLongBN,
