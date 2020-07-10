@@ -10,7 +10,7 @@ import MainLayout from 'pages/Root/components/MainLayout';
 import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 const Home = lazy(() => import('./Home'));
-const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
+// const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
 const Market = lazy(() => import('./Market'));
 
 const mapStateToProps = (state: RootState) => ({
