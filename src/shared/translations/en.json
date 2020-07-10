@@ -319,7 +319,7 @@
 					"refund": {
 						"title": "withdraw",
 						"subtitle": "from your existing bid:",
-						"amount-label": "withdrawal amount:",
+						"amount-label": "withdrawing:",
 						"price-label": "price:",
 						"confirm-button": {
 							"label": "confirm withdrawal",
