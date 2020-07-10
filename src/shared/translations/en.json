@@ -208,11 +208,11 @@
 			},
 			"markets-table": {
 				"asset-col": "asset",
-				"strike-price-col": "strike price ({{currencyKeyWithSymbol}})",
+				"strike-price-col": "strike price ({{currencyKey}})",
 				"maturity-date-col": "maturity date",
 				"long-short-col": "long / short",
 				"phase-col": "phase",
-				"pool-size-col": "pool size (<0>{{currencyKeyWithSymbol}}</0>)",
+				"pool-size-col": "pool size (<0>{{currencyKey}}</0>)",
 				"time-remaining-col": "time remaining"
 			}
 		},

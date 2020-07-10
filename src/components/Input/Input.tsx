@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const inputCSS = css`
 	width: 100%;
+	min-width: 0;
 	font-family: ${(props) => props.theme.fonts.regular};
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
