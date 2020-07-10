@@ -55,6 +55,7 @@ const MarketCreation: FC<MarketCreationProps> = memo(({ isWalletConnected, toggl
 					<Subtitle>{t('options.home.market-creation.no-markets.subtitle')}</Subtitle>
 					<StyledButton
 						palette="primary"
+						disabled={true}
 						onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
 					>
 						{t('options.home.market-creation.create-market-button-label')}
