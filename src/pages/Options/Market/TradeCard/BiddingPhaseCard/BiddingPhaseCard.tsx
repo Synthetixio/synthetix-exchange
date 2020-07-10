@@ -235,17 +235,16 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				binaryOptionsUtils: { bidOrRefundForPrice },
 			} = snxJSConnector as any;
 			const setPriceAmountFunction = isShort ? setShortPriceAmount : setLongPriceAmount;
-			const setOtherSidePriceAmountFunction = isShort ? setLongPriceAmount : setShortPriceAmount;
 			const setSideAmountFunction = isShort ? setShortSideAmount : setLongSideAmount;
 			const bidPrice = side === 'short' ? shortPrice : longPrice;
 			try {
 				if (!targetPrice || Number(targetPrice) > 1) {
 					setPriceAmountFunction('');
 					setPriceShift(0);
+					if (bidOrRefundForPriceTimer) clearTimeout(bidOrRefundForPriceTimer);
 					return;
 				}
 				setPriceAmountFunction(targetPrice);
-				setOtherSidePriceAmountFunction((1 - Number(targetPrice)).toString());
 
 				const estimatedAmountNeeded = bidOrRefundForPrice({
 					bidSide: isShort ? 1 : 0,
@@ -285,11 +284,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			}
 		};
 
-		const setBidsPriceAmount = (long: number, short: number) => {
+		const setBidPriceAmount = (newPrice: number) => {
 			const bidPrice = side === 'short' ? shortPrice : longPrice;
-			setShortPriceAmount(short);
-			setLongPriceAmount(long);
-			setPriceShift(getPriceDifference(bidPrice, side === 'short' ? short : long));
+			const setBidPriceFunction = side === 'short' ? setShortPriceAmount : setLongPriceAmount;
+			setBidPriceFunction(newPrice);
+			setPriceShift(getPriceDifference(bidPrice, newPrice));
 		};
 
 		const handleBidAmount = async (amount: string) => {
@@ -301,6 +300,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			if (!amount) {
 				setLongPriceAmount('');
 				setShortPriceAmount('');
+				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
 				return;
 			}
 			try {
@@ -318,18 +318,18 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					resolved: isResolved,
 					deposited: BN.depositedBN,
 				});
-				setBidsPriceAmount(estimatedPrice.long / 1e18, estimatedPrice.short / 1e18);
+				setBidPriceAmount(estimatedPrice[side] / 1e18);
 
 				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
 				setPricesAfterBidOrRefundTimer(
 					setTimeout(async () => {
 						try {
-							const { long, short } = await BOMContract.pricesAfterBidOrRefund(
+							const truePrice = await BOMContract.pricesAfterBidOrRefund(
 								side === 'short' ? 1 : 0,
 								bidOrRefundAmount,
 								type === 'refund'
 							);
-							setBidsPriceAmount(long / 1e18, short / 1e18);
+							setBidPriceAmount(truePrice[side] / 1e18);
 						} catch (e) {
 							console.log(e);
 						}
