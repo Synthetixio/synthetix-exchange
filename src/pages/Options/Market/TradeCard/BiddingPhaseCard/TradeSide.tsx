@@ -235,7 +235,7 @@ const SideIndication = styled.div<{ isHighlighted: boolean }>`
 	height: 32px;
 	padding: 8px;
 	text-align: center;
-	cursor: default;
+	cursor: ${(props) => (props.isHighlighted ? 'default' : 'pointer')};
 `;
 
 const CurrentPositionSection = styled(Section)`
