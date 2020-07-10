@@ -175,13 +175,12 @@
 		"home": {
 			"market-creation": {
 				"not-connected": {
-					"title": "Connect a wallet to create a market or place a bid",
-					"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!"
+					"title": "Connect a wallet to create a market or place a bid"
 				},
 				"no-markets": {
-					"title": "Create a market or place a bid to get started",
-					"subtitle": "Get fees for creating markets, win big without actually holding the asset"
+					"title": "Create a market or place a bid to get started"
 				},
+				"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!",
 				"create-market-button-label": "create a new market"
 			},
 			"explore-markets": {

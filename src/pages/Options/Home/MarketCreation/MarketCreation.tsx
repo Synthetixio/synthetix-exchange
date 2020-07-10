@@ -34,17 +34,21 @@ type MarketCreationProps = PropsFromRedux;
 const MarketCreation: FC<MarketCreationProps> = memo(({ isWalletConnected, toggleWalletPopup }) => {
 	const { t } = useTranslation();
 
+	const subTitle = (
+		<Subtitle>
+			<Trans
+				i18nKey="options.home.market-creation.subtitle"
+				components={[<Link to={LINKS.Blog.HowBinaryOptionsWork} isExternal={true} />]}
+			/>
+		</Subtitle>
+	);
+
 	return (
 		<Container>
 			{!isWalletConnected ? (
 				<>
 					<Title>{t('options.home.market-creation.not-connected.title')}</Title>
-					<Subtitle>
-						<Trans
-							i18nKey="options.home.market-creation.not-connected.subtitle"
-							components={[<Link to={LINKS.Blog.HowBinaryOptionsWork} isExternal={true} />]}
-						/>
-					</Subtitle>
+					{subTitle}
 					<StyledButton palette="primary" onClick={() => toggleWalletPopup(true)}>
 						{t('common.wallet.connect-your-wallet')}
 					</StyledButton>
@@ -52,7 +56,7 @@ const MarketCreation: FC<MarketCreationProps> = memo(({ isWalletConnected, toggl
 			) : (
 				<>
 					<Title>{t('options.home.market-creation.no-markets.title')}</Title>
-					<Subtitle>{t('options.home.market-creation.no-markets.subtitle')}</Subtitle>
+					{subTitle}
 					<StyledButton
 						palette="primary"
 						disabled={true}
