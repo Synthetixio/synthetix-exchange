@@ -146,12 +146,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					setGasLimit(null);
 				}
 			};
-			if (!isWalletConnected || (!shortSideAmount && !longSideAmount)) return;
+			if (!hasAllowance || !isWalletConnected || (!shortSideAmount && !longSideAmount)) return;
 			const isShort = side === 'short';
 			const amount = isShort ? shortSideAmount : longSideAmount;
 			fetchGasLimit(isShort, amount as string);
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isWalletConnected, shortSideAmount, longSideAmount]);
+		}, [isWalletConnected, shortSideAmount, longSideAmount, hasAllowance]);
 
 		useEffect(() => {
 			const {
