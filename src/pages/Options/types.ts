@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { CurrencyKey } from 'constants/currency';
 
 export type Phase = 'bidding' | 'trading' | 'maturity' | 'expiry';
@@ -20,6 +21,14 @@ export type OptionsTransaction = {
 export type OptionValue = {
 	long: number;
 	short: number;
+};
+
+export type BNOptionValue = {
+	totalLongBN: BigNumber;
+	totalShortBN: BigNumber;
+	depositedBN: BigNumber;
+	feeBN: BigNumber;
+	refundFeeBN: BigNumber;
 };
 
 export type OptionsTransactions = OptionsTransaction[];
@@ -80,6 +89,7 @@ export type OptionsMarketInfo = {
 		capitalRequirement: number;
 		skewLimit: number;
 	};
+	BN: BNOptionValue;
 };
 
 export type AccountMarketInfo = {

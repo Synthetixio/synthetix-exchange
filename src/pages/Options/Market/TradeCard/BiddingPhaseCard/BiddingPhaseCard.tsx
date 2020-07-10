@@ -46,6 +46,8 @@ import {
 
 import TradeSide from './TradeSide';
 
+const TIMEOUT_DELAY = 2500;
+
 const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
 	isWalletConnected: getIsWalletConnected(state),
@@ -75,7 +77,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		gasInfo,
 		accountMarketInfo,
 	}) => {
-		const { longPrice, shortPrice, fees } = optionsMarket;
+		const { longPrice, shortPrice, fees, isResolved, BN } = optionsMarket;
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [gasLimit, setGasLimit] = useState<number | null>(null);
@@ -92,6 +94,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
 
 		const [side, setSide] = useState<OptionsTransaction['side']>('long');
+
+		const [pricesAfterBidOrRefundTimer, setPricesAfterBidOrRefundTimer] = useState<number | null>(
+			null
+		);
+		const [bidOrRefundForPriceTimer, setBidOrRefundForPriceTimer] = useState<number | null>(null);
+
 		const { bids, claimable } = accountMarketInfo;
 		const longPosition = {
 			bid: bids.long,
@@ -103,11 +111,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		};
 
 		useEffect(() => {
-			setLongSideAmount('');
-			setShortSideAmount('');
-			setLongPriceAmount('');
-			setShortPriceAmount('');
-		}, [side]);
+			return () => {
+				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
+				if (bidOrRefundForPriceTimer) clearTimeout(bidOrRefundForPriceTimer);
+			};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
 
 		const transKey =
 			type === 'bid'
@@ -223,38 +232,71 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		) => {
 			const {
 				utils: { parseEther },
+				binaryOptionsUtils: { bidOrRefundForPrice },
 			} = snxJSConnector as any;
 			const setPriceAmountFunction = isShort ? setShortPriceAmount : setLongPriceAmount;
 			const setOtherSidePriceAmountFunction = isShort ? setLongPriceAmount : setShortPriceAmount;
 			const setSideAmountFunction = isShort ? setShortSideAmount : setLongSideAmount;
 			const bidPrice = side === 'short' ? shortPrice : longPrice;
 			try {
-				if (!targetPrice) {
+				if (!targetPrice || Number(targetPrice) > 1) {
 					setPriceAmountFunction('');
 					setPriceShift(0);
 					return;
 				}
 				setPriceAmountFunction(targetPrice);
 				setOtherSidePriceAmountFunction((1 - Number(targetPrice)).toString());
-				const amountNeeded = await BOMContract.bidOrRefundForPrice(
-					isShort ? 1 : 0,
-					targetShort ? 1 : 0,
-					parseEther(targetPrice),
-					isRefund
-				);
-				setSideAmountFunction(amountNeeded / 1e18);
+
+				const estimatedAmountNeeded = bidOrRefundForPrice({
+					bidSide: isShort ? 1 : 0,
+					priceSide: targetShort ? 1 : 0,
+					price: parseEther(targetPrice),
+					refund: isRefund,
+					fee: BN.feeBN,
+					refundFee: BN.refundFeeBN,
+					longBids: BN.totalLongBN,
+					shortBids: BN.totalShortBN,
+					deposited: BN.depositedBN,
+				});
+
+				setSideAmountFunction(estimatedAmountNeeded / 1e18);
 				setPriceShift(getPriceDifference(bidPrice, Number(targetPrice)));
+
+				if (bidOrRefundForPriceTimer) clearTimeout(bidOrRefundForPriceTimer);
+				setBidOrRefundForPriceTimer(
+					setTimeout(async () => {
+						try {
+							const amountNeeded = await BOMContract.bidOrRefundForPrice(
+								isShort ? 1 : 0,
+								targetShort ? 1 : 0,
+								parseEther(targetPrice),
+								isRefund
+							);
+							setSideAmountFunction(amountNeeded / 1e18);
+						} catch (e) {
+							console.log(e);
+							setSideAmountFunction('');
+						}
+					}, TIMEOUT_DELAY)
+				);
 			} catch (e) {
 				console.log(e);
 				setPriceAmountFunction('');
 			}
 		};
 
+		const setBidsPriceAmount = (long: number, short: number) => {
+			const bidPrice = side === 'short' ? shortPrice : longPrice;
+			setShortPriceAmount(short);
+			setLongPriceAmount(long);
+			setPriceShift(getPriceDifference(bidPrice, side === 'short' ? short : long));
+		};
+
 		const handleBidAmount = async (amount: string) => {
 			side === 'short' ? setShortSideAmount(amount) : setLongSideAmount(amount);
-			const bidPrice = side === 'short' ? shortPrice : longPrice;
 			const {
 				utils: { parseEther },
+				binaryOptionsUtils: { pricesAfterBidOrRefund },
 			} = snxJSConnector as any;
 			if (!amount) {
 				setLongPriceAmount('');
@@ -264,15 +306,35 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			try {
 				const bidOrRefundAmount =
 					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
-				const { long, short } = await BOMContract.pricesAfterBidOrRefund(
-					side === 'short' ? 1 : 0,
-					bidOrRefundAmount,
-					type === 'refund'
-				);
 
-				setShortPriceAmount(short / 1e18);
-				setLongPriceAmount(long / 1e18);
-				setPriceShift(getPriceDifference(bidPrice, (side === 'short' ? short : long) / 1e18));
+				const estimatedPrice = pricesAfterBidOrRefund({
+					side: side === 'short' ? 1 : 0,
+					value: bidOrRefundAmount,
+					refund: type === 'refund',
+					longBids: BN.totalLongBN,
+					shortBids: BN.totalShortBN,
+					fee: BN.feeBN,
+					refundFee: BN.refundFeeBN,
+					resolved: isResolved,
+					deposited: BN.depositedBN,
+				});
+				setBidsPriceAmount(estimatedPrice.long / 1e18, estimatedPrice.short / 1e18);
+
+				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
+				setPricesAfterBidOrRefundTimer(
+					setTimeout(async () => {
+						try {
+							const { long, short } = await BOMContract.pricesAfterBidOrRefund(
+								side === 'short' ? 1 : 0,
+								bidOrRefundAmount,
+								type === 'refund'
+							);
+							setBidsPriceAmount(long / 1e18, short / 1e18);
+						} catch (e) {
+							console.log(e);
+						}
+					}, TIMEOUT_DELAY)
+				);
 			} catch (e) {
 				console.log(e);
 			}
