@@ -32,8 +32,18 @@ export const ChartContainer = styled.div<{ semiTransparent: boolean }>`
 	}
 `;
 
-export const NoResults = styled(GridDivCenteredRow)`
+export const NoChartData = styled(GridDivCenteredRow)`
 	${absoluteCenteredCSS};
 	${subtitleSmallCSS};
+	grid-gap: 10px;
 	color: ${(props) => props.theme.colors.fontPrimary};
+	padding: 20px;
+	background-color: ${(props) => props.theme.colors.surfaceL3};
+	border-radius: 2px;
+	font-size: 12px;
+	font-family: ${(props) => props.theme.fonts.medium};
+	justify-items: center;
+	svg {
+		color: ${(props) => props.theme.colors.accentL2};
+	}
 `;

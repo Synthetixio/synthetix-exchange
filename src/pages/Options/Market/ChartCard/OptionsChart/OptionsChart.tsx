@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import snxData from 'synthetix-data';
 
+import { ReactComponent as ExclamationIcon } from 'assets/images/exclamation.svg';
+
 import { USD_SIGN } from 'constants/currency';
 
 import { formatCurrencyWithSign } from 'utils/formatters';
@@ -17,7 +19,7 @@ import Spinner from 'components/Spinner';
 
 import QUERY_KEYS from 'constants/queryKeys';
 
-import { ChartContainer, NoResults } from '../common';
+import { ChartContainer, NoChartData } from '../common';
 import { OptionsMarketInfo, OptionsTransactions } from 'pages/Options/types';
 import { calculateTimestampForPeriod } from 'services/rates/utils';
 
@@ -49,7 +51,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 	}, [historicalOptionPriceQuery.data]);
 
 	const isLoading = historicalOptionPriceQuery.isLoading;
-	const noResults = historicalOptionPriceQuery.isSuccess && chartData.length < 2;
+	const noChartData = historicalOptionPriceQuery.isSuccess && chartData.length < 2;
 
 	const fontStyle = {
 		fontSize: '12px',
@@ -66,7 +68,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 		<>
 			<ChartContainer semiTransparent={isLoading}>
 				<RechartsResponsiveContainer width="100%" height="100%">
-					<LineChart data={noResults ? [] : chartData}>
+					<LineChart data={noChartData ? [] : chartData}>
 						<XAxis
 							dataKey="timestamp"
 							tick={fontStyleMedium}
@@ -107,7 +109,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 							strokeWidth={1.5}
 							isAnimationActive={false}
 						/>
-						{!noResults && (
+						{!noChartData && (
 							<Tooltip
 								className="tooltip"
 								// @ts-ignore
@@ -135,7 +137,12 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 				</RechartsResponsiveContainer>
 			</ChartContainer>
 			{isLoading && <Spinner size="sm" centered={true} />}
-			{noResults && <NoResults>{t('options.market.chart-card.no-results')}</NoResults>}
+			{noChartData && (
+				<NoChartData>
+					<ExclamationIcon />
+					{t('options.market.chart-card.no-chart-data')}
+				</NoChartData>
+			)}
 		</>
 	);
 };

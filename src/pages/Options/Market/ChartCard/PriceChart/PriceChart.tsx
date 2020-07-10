@@ -9,6 +9,8 @@ import { useQuery } from 'react-query';
 
 import { USD_SIGN } from 'constants/currency';
 
+import { ReactComponent as ExclamationIcon } from 'assets/images/exclamation.svg';
+
 import { formatCurrencyWithSign } from 'utils/formatters';
 
 import { PeriodLabel, PERIOD_IN_HOURS } from 'constants/period';
@@ -19,7 +21,7 @@ import QUERY_KEYS from 'constants/queryKeys';
 
 import { fetchSynthRateUpdate } from 'services/rates/rates';
 
-import { ChartContainer, NoResults } from '../common';
+import { ChartContainer, NoChartData } from '../common';
 import { OptionsMarketInfo } from 'pages/Options/types';
 import { HistoricalRatesData } from 'ducks/historicalRates';
 
@@ -39,7 +41,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 
 	const chartData = get(historicalRatesQuery, 'data.rates', []);
 	const isLoading = historicalRatesQuery.isLoading;
-	const noResults = historicalRatesQuery.isSuccess && chartData.length === 0;
+	const noChartData = historicalRatesQuery.isSuccess && chartData.length === 0;
 
 	const chartColor = theme.colors.hyperlink;
 	const linearGradientId = 'optionsMarketPriceChartArea';
@@ -104,7 +106,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 							fill={`url(#${linearGradientId})`}
 							isAnimationActive={false}
 						/>
-						{!noResults && (
+						{!noChartData && (
 							<ReferenceLine
 								y={optionsMarket.strikePrice}
 								stroke={theme.colors.fontSecondary}
@@ -118,7 +120,7 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 								</Label>
 							</ReferenceLine>
 						)}
-						{!noResults && (
+						{!noChartData && (
 							<Tooltip
 								className="tooltip"
 								// @ts-ignore
@@ -146,7 +148,12 @@ const PriceChart: FC<PriceChartProps> = ({ selectedPeriod, optionsMarket }) => {
 				</RechartsResponsiveContainer>
 			</ChartContainer>
 			{isLoading && <Spinner size="sm" centered={true} />}
-			{noResults && <NoResults>{t('options.market.chart-card.no-results')}</NoResults>}
+			{noChartData && (
+				<NoChartData>
+					<ExclamationIcon />
+					{t('options.market.chart-card.no-results')}
+				</NoChartData>
+			)}
 		</>
 	);
 };
