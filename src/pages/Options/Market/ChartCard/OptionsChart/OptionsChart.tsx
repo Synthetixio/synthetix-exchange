@@ -1,5 +1,5 @@
 import React, { useMemo, FC, useContext } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import { LineChart, XAxis, YAxis, Line, Tooltip } from 'recharts';
 import format from 'date-fns/format';
 import isNumber from 'lodash/isNumber';
@@ -17,10 +17,8 @@ import Spinner from 'components/Spinner';
 
 import QUERY_KEYS from 'constants/queryKeys';
 
-import { ChartContainer } from '../common';
+import { ChartContainer, NoResults } from '../common';
 import { OptionsMarketInfo, OptionsTransactions } from 'pages/Options/types';
-import { GridDivCenteredRow, absoluteCenteredCSS } from 'shared/commonStyles';
-import { subtitleSmallCSS } from 'components/Typography/General';
 import { calculateTimestampForPeriod } from 'services/rates/utils';
 
 type OptionsChartProps = {
@@ -30,7 +28,6 @@ type OptionsChartProps = {
 
 const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) => {
 	const { t } = useTranslation();
-
 	const theme = useContext(ThemeContext);
 
 	const historicalOptionPriceQuery = useQuery<OptionsTransactions, any>(
@@ -142,11 +139,5 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 		</>
 	);
 };
-
-const NoResults = styled(GridDivCenteredRow)`
-	${absoluteCenteredCSS};
-	${subtitleSmallCSS};
-	color: ${(props) => props.theme.colors.fontPrimary};
-`;
 
 export default OptionsChart;

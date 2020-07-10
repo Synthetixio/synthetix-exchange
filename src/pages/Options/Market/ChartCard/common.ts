@@ -1,4 +1,6 @@
 import styled, { css } from 'styled-components';
+import { GridDivCenteredRow, absoluteCenteredCSS } from 'shared/commonStyles';
+import { subtitleSmallCSS } from 'components/Typography/General';
 
 export const ChartContainer = styled.div<{ semiTransparent: boolean }>`
 	height: 300px;
@@ -28,4 +30,10 @@ export const ChartContainer = styled.div<{ semiTransparent: boolean }>`
 	.recharts-tooltip-item {
 		color: ${(props) => props.theme.colors.fontPrimary} !important;
 	}
+`;
+
+export const NoResults = styled(GridDivCenteredRow)`
+	${absoluteCenteredCSS};
+	${subtitleSmallCSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
