@@ -49,7 +49,11 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWal
 			name: t('options.market.transactions-card.pending-transactions-tab-title'),
 			isDisabled: !isWalletConnected,
 		},
-	];
+	] as Array<{
+		id: 'recent-transactions' | 'your-transactions' | 'pending-transactions';
+		name: string;
+		isDisabled: boolean;
+	}>;
 
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
 
