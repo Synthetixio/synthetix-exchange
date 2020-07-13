@@ -1,4 +1,4 @@
-import React, { FC, memo, useState, useMemo } from 'react';
+import React, { FC, memo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -16,13 +16,14 @@ import RecentTransactions from './RecentTransactions';
 import YourTransactions from './YourTransactions';
 
 import { useMarketContext } from '../contexts/MarketContext';
+import PendingTransactions from './PendingTransactions';
 
 const mapStateToProps = (state: RootState) => ({
 	walletAddress: getCurrentWalletAddress(state),
 	isWalletConnected: getIsWalletConnected(state),
 });
 
-const connector = connect(mapStateToProps, {});
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -32,25 +33,23 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWal
 	const { t } = useTranslation();
 	const optionsMarket = useMarketContext();
 
-	const tabContent = useMemo(
-		() => [
-			{
-				name: t('options.market.transactions-card.recent-market-tab-title'),
-				id: 'recent-transactions',
-				component: <RecentTransactions marketAddress={optionsMarket.address} />,
-				isDisabled: false,
-			},
-			{
-				name: t('options.market.transactions-card.your-activity-tab-title'),
-				id: 'your-transactions',
-				component: (
-					<YourTransactions marketAddress={optionsMarket.address} walletAddress={walletAddress!} />
-				),
-				isDisabled: !isWalletConnected,
-			},
-		],
-		[isWalletConnected, optionsMarket.address, t, walletAddress]
-	);
+	const tabContent = [
+		{
+			id: 'recent-transactions',
+			name: t('options.market.transactions-card.recent-market-tab-title'),
+			isDisabled: false,
+		},
+		{
+			id: 'your-transactions',
+			name: t('options.market.transactions-card.your-activity-tab-title'),
+			isDisabled: !isWalletConnected,
+		},
+		{
+			id: 'pending-transactions',
+			name: t('options.market.transactions-card.pending-transactions-tab-title'),
+			isDisabled: !isWalletConnected,
+		},
+	];
 
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
 
@@ -69,7 +68,18 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWal
 						</TabButton>
 					))}
 				</FlexDiv>
-				{activeTab.component}
+				{activeTab.id === 'recent-transactions' && (
+					<RecentTransactions marketAddress={optionsMarket.address} />
+				)}
+				{activeTab.id === 'your-transactions' && (
+					<YourTransactions marketAddress={optionsMarket.address} walletAddress={walletAddress!} />
+				)}
+				{activeTab.id === 'pending-transactions' && (
+					<PendingTransactions
+						marketAddress={optionsMarket.address}
+						walletAddress={walletAddress!}
+					/>
+				)}
 			</StyledCardBody>
 		</StyledCard>
 	);

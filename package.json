@@ -43,7 +43,8 @@
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.19",
 		"synthetix-js": "2.24.0-3",
-		"typescript": "3.7.2"
+		"typescript": "3.7.2",
+		"use-immer": "0.4.0"
 	},
 	"devDependencies": {
 		"@storybook/addon-actions": "^5.3.18",

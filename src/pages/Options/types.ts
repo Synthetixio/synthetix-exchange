@@ -5,7 +5,7 @@ export type Phase = 'bidding' | 'trading' | 'maturity' | 'expiry';
 
 export type Side = 'long' | 'short';
 
-export type OptionsTransactionType = 'refund' | 'bid';
+export type OptionsTransactionType = 'refund' | 'bid' | 'exercise' | 'claim';
 
 export type OptionsTransaction = {
 	hash: string;
@@ -14,8 +14,9 @@ export type OptionsTransaction = {
 	currencyKey: CurrencyKey;
 	timestamp: number;
 	side: Side;
-	amount: number;
+	amount: number | string;
 	market: string;
+	status?: 'pending' | 'confirmed';
 };
 
 export type OptionValue = {
@@ -100,3 +101,8 @@ export type AccountMarketInfo = {
 
 export type OptionsMarkets = HistoricalOptionsMarketInfo[];
 export type OptionsMarketsMap = Record<string, HistoricalOptionsMarketInfo>;
+
+export type TradeCardPhaseProps = {
+	optionsMarket: OptionsMarketInfo;
+	accountMarketInfo: AccountMarketInfo;
+};

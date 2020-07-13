@@ -6,11 +6,15 @@ import { queryCache, AnyQueryKey } from 'react-query';
 
 import { ReactComponent as WalletIcon } from 'assets/images/wallet.svg';
 
-import { OptionsMarketInfo, OptionsTransaction, AccountMarketInfo } from 'pages/Options/types';
+import { OptionsTransaction, TradeCardPhaseProps } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getGasInfo } from 'ducks/transaction';
 import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import {
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+} from 'ducks/options/pendingTransaction';
 
 import QUERY_KEYS from 'constants/queryKeys';
 import { SYNTHS_MAP } from 'constants/currency';
@@ -45,6 +49,7 @@ import {
 } from '../common';
 
 import TradeSide from './TradeSide';
+import { ethers } from 'ethers';
 
 const TIMEOUT_DELAY = 2500;
 
@@ -55,14 +60,16 @@ const mapStateToProps = (state: RootState) => ({
 	gasInfo: getGasInfo(state),
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = {
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type BiddingPhaseCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarketInfo;
-	accountMarketInfo: AccountMarketInfo;
-};
+type BiddingPhaseCardProps = PropsFromRedux & TradeCardPhaseProps;
 
 function getPriceDifference(currentPrice: number, newPrice: number): number {
 	return newPrice - currentPrice;
@@ -76,6 +83,8 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		currentWalletAddress,
 		gasInfo,
 		accountMarketInfo,
+		addOptionsPendingTransaction,
+		updateOptionsPendingTransactionStatus,
 	}) => {
 		const { longPrice, shortPrice, fees, isResolved, BN } = optionsMarket;
 		const { t } = useTranslation();
@@ -213,10 +222,31 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					type === 'bid' ? BOMContractWithSigner.bid : BOMContractWithSigner.refund;
 				const bidOrRefundAmount =
 					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
-				await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount, {
+				const tx = (await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount, {
 					gasLimit,
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				})) as ethers.ContractTransaction;
+
+				addOptionsPendingTransaction({
+					optionTransaction: {
+						hash: tx.hash!,
+						market: optionsMarket.address,
+						currencyKey: optionsMarket.currencyKey,
+						account: currentWalletAddress!,
+						type,
+						amount,
+						side,
+					},
 				});
+				tx.wait().then((txResult) => {
+					if (txResult && txResult.transactionHash) {
+						updateOptionsPendingTransactionStatus({
+							hash: txResult.transactionHash,
+							status: 'confirmed',
+						});
+					}
+				});
+				// const txResult = await tx.wait();
 				setIsBidding(false);
 			} catch (e) {
 				console.log(e);
