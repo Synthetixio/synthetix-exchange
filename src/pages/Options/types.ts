@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js';
 import { CurrencyKey } from 'constants/currency';
+import { BigNumberish } from 'ethers/utils';
 
 export type Phase = 'bidding' | 'trading' | 'maturity' | 'expiry';
 
 export type Side = 'long' | 'short';
 
-export type OptionsTransactionType = 'refund' | 'bid';
+export type OptionsTransactionType = 'refund' | 'bid' | 'exercise' | 'claim';
 
 export type OptionsTransaction = {
 	hash: string;
@@ -14,8 +14,9 @@ export type OptionsTransaction = {
 	currencyKey: CurrencyKey;
 	timestamp: number;
 	side: Side;
-	amount: number;
+	amount: number | string;
 	market: string;
+	status?: 'pending' | 'confirmed';
 };
 
 export type OptionValue = {
@@ -24,11 +25,11 @@ export type OptionValue = {
 };
 
 export type BNOptionValue = {
-	totalLongBN: BigNumber;
-	totalShortBN: BigNumber;
-	depositedBN: BigNumber;
-	feeBN: BigNumber;
-	refundFeeBN: BigNumber;
+	totalLongBN: BigNumberish;
+	totalShortBN: BigNumberish;
+	depositedBN: BigNumberish;
+	feeBN: BigNumberish;
+	refundFeeBN: BigNumberish;
 };
 
 export type OptionsTransactions = OptionsTransaction[];
@@ -100,3 +101,8 @@ export type AccountMarketInfo = {
 
 export type OptionsMarkets = HistoricalOptionsMarketInfo[];
 export type OptionsMarketsMap = Record<string, HistoricalOptionsMarketInfo>;
+
+export type TradeCardPhaseProps = {
+	optionsMarket: OptionsMarketInfo;
+	accountMarketInfo: AccountMarketInfo;
+};

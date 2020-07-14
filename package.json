@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.24.0",
+	"version": "2.24.1",
 	"private": true,
 	"dependencies": {
 		"@bugsnag/js": "6.2.0",
@@ -42,8 +42,9 @@
 		"styled-components": "5.0.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.19",
-		"synthetix-js": "2.24.0-3",
-		"typescript": "3.7.2"
+		"synthetix-js": "2.24.1",
+		"typescript": "3.7.2",
+		"use-immer": "0.4.0"
 	},
 	"devDependencies": {
 		"@storybook/addon-actions": "^5.3.18",

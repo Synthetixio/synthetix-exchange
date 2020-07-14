@@ -29,7 +29,7 @@ import {
 import { CellProps } from 'react-table';
 
 type StateProps = {
-	networkId: string | number;
+	networkId: number;
 };
 
 type Props = {
