@@ -1,5 +1,4 @@
 import throttle from 'lodash/throttle';
-import invert from 'lodash/invert';
 
 export const GWEI_UNIT = 1000000000;
 
@@ -8,9 +7,11 @@ export const SUPPORTED_NETWORKS = {
 	3: 'ROPSTEN',
 	4: 'RINKEBY',
 	42: 'KOVAN',
+	MAINNET: 1,
+	ROPSTEN: 3,
+	RINKEBY: 4,
+	KOVAN: 42,
 };
-
-export const SUPPORTED_NETWORKS_MAP = invert(SUPPORTED_NETWORKS);
 
 export const DEFAULT_GAS_LIMIT = {
 	mint: 2200000,
@@ -124,4 +125,4 @@ export function onMetamaskNetworkChange(cb) {
 	window.ethereum.on('networkChanged', listener);
 }
 
-export const isMainNet = (networkId) => networkId === SUPPORTED_NETWORKS_MAP.MAINNET;
+export const isMainNet = (networkId) => networkId === SUPPORTED_NETWORKS.MAINNET;
