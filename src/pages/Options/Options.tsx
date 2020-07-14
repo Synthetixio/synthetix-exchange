@@ -1,4 +1,4 @@
-import React, { memo, FC, lazy, useEffect } from 'react';
+import React, { memo, FC, lazy } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
