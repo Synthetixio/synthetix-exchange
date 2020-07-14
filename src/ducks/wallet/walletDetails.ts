@@ -15,7 +15,7 @@ export type WalletDetailsSliceState = {
 	walletPaginatorIndex: number;
 	availableWallets: string[];
 	derivationPath: string | null;
-	networkId: string | number;
+	networkId: number;
 	networkName: string;
 };
 
@@ -57,7 +57,7 @@ export const walletDetailsSlice = createSlice({
 		updateNetworkSettings: (
 			state,
 			action: PayloadAction<{
-				networkId: string | number;
+				networkId: number;
 				networkName: string;
 			}>
 		) => {
