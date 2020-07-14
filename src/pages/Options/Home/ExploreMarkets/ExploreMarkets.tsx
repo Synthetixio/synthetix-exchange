@@ -82,7 +82,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 		const filteredOptionsMarkets = useMemo(() => {
 			if (filter.name === 'creator' && isWalletConnected) {
 				return optionsMarkets.filter(
-					({ creator }) => creator.toLowerCase() === currentWalletAddress
+					({ creator }) => creator.toLowerCase() === currentWalletAddress!.toLowerCase()
 				);
 			} else if (filter.name === 'user-bids' && isWalletConnected) {
 				return userBidsMarketsQuery.isSuccess && Array.isArray(userBidsMarketsQuery.data)
