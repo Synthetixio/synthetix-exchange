@@ -7,9 +7,14 @@ import { queryCache, AnyQueryKey } from 'react-query';
 import snxJSConnector from 'utils/snxJSConnector';
 import { normalizeGasLimit } from 'utils/transactions';
 
-import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
+import { TradeCardPhaseProps } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
-import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+
+import {
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+} from 'ducks/options/pendingTransaction';
 
 import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
@@ -29,22 +34,33 @@ import ResultCard from '../components/ResultCard';
 import { useBOMContractContext } from '../../contexts/BOMContractContext';
 
 import TxErrorMessage from 'components/TxErrorMessage';
+import { ethers } from 'ethers';
 
 const mapStateToProps = (state: RootState) => ({
 	isWalletConnected: getIsWalletConnected(state),
+	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = {
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type TradingPhaseCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarketInfo;
-	accountMarketInfo: AccountMarketInfo;
-};
+type TradingPhaseCardProps = PropsFromRedux & TradeCardPhaseProps;
 
 const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
-	({ optionsMarket, isWalletConnected, accountMarketInfo }) => {
+	({
+		optionsMarket,
+		isWalletConnected,
+		accountMarketInfo,
+		addOptionsPendingTransaction,
+		updateOptionsPendingTransactionStatus,
+		currentWalletAddress,
+	}) => {
 		const { t } = useTranslation();
 		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
 
@@ -79,7 +95,45 @@ const TradingPhaseCard: FC<TradingPhaseCardProps> = memo(
 				setTxErrorMessage(null);
 				setIsClaiming(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-				await BOMContractWithSigner.claimOptions();
+				const tx = (await BOMContractWithSigner.claimOptions()) as ethers.ContractTransaction;
+
+				const sharedPendingTxProps = {
+					market: optionsMarket.address,
+					currencyKey: optionsMarket.currencyKey,
+					account: currentWalletAddress!,
+				};
+
+				if (claimable.long) {
+					addOptionsPendingTransaction({
+						optionTransaction: {
+							...sharedPendingTxProps,
+							hash: tx.hash!,
+							type: 'claim',
+							amount: claimable.long,
+							side: 'long',
+						},
+					});
+				}
+
+				if (claimable.short) {
+					addOptionsPendingTransaction({
+						optionTransaction: {
+							...sharedPendingTxProps,
+							hash: tx.hash!,
+							type: 'claim',
+							amount: claimable.short,
+							side: 'short',
+						},
+					});
+				}
+
+				const txResult = await tx.wait();
+				if (txResult && txResult.transactionHash) {
+					updateOptionsPendingTransactionStatus({
+						hash: txResult.transactionHash,
+						status: 'confirmed',
+					});
+				}
 			} catch (e) {
 				console.log(e);
 				setTxErrorMessage(t('common.errors.unknown-error-try-again'));

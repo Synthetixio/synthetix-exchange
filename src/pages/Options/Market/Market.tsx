@@ -7,10 +7,7 @@ import snxJSConnector from 'utils/snxJSConnector';
 
 import { ReactComponent as InfoRoundedIcon } from 'assets/images/info-rounded.svg';
 
-import {
-	OptionsMarketInfo,
-	/*OptionsMarkets, HistoricalOptionsMarketInfo*/
-} from 'pages/Options/types';
+import { OptionsMarketInfo } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 
 import ROUTES from 'constants/routes';
@@ -37,6 +34,7 @@ import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
 
 import { getPhaseAndEndDate, SIDE, PHASES } from 'pages/Options/constants';
 import { getAvailableSynthsMap } from 'ducks/synths';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Spinner from 'components/Spinner';
 import Link from 'components/Link';
@@ -56,6 +54,7 @@ import MarketInfoModal from './MarketInfoModal';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -66,7 +65,7 @@ type MarketProps = PropsFromRedux & {
 	marketAddress: string;
 };
 
-const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
+const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const [marketInfoModalVisible, setMarketInfoModalVisible] = useState<boolean>(false);
 
@@ -153,40 +152,6 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress }) => {
 				},
 			} as OptionsMarketInfo;
 		}
-		/*
-		{
-			initialData: () => {
-				const marketData = queryCache
-					// @ts-ignore
-					.getQueryData<OptionsMarkets>(QUERY_KEYS.BinaryOptions.Markets)
-					?.find((market: HistoricalOptionsMarketInfo) => market.address === marketAddress);
-
-				if (marketData) {
-					const {
-						currencyKey,
-						strikePrice,
-						biddingEndDate,
-						maturityDate,
-						expiryDate,
-						longPrice,
-						shortPrice,
-					} = marketData;
-
-					return {
-						currencyKey,
-						strikePrice,
-						biddingEndDate,
-						maturityDate,
-						expiryDate,
-						longPrice,
-						shortPrice,
-						// TODO: add this in the graph
-						result: 'short',
-					};
-				}
-			},
-		}
-		*/
 	);
 
 	const handleViewMarketDetails = useCallback(() => {
