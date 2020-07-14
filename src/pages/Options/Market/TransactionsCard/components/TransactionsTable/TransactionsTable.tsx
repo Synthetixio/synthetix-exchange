@@ -81,9 +81,13 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 						{
 							Header: <>{t('options.market.transactions-card.table.tx-status-col')}</>,
 							id: 'tx-status',
-							Cell: (cellProps: CellProps<OptionsTransaction>) => (
-								<ViewLinkCell hash={cellProps.cell.row.original.hash} />
-							),
+							Cell: (cellProps: CellProps<OptionsTransaction>) =>
+								cellProps.cell.row.original.status &&
+								cellProps.cell.row.original.status === 'pending' ? (
+									<span>{t('common.tx-status.pending')}</span>
+								) : (
+									<ViewLinkCell hash={cellProps.cell.row.original.hash} />
+								),
 							width: 150,
 						},
 					]}

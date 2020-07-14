@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import snxJSConnector from 'utils/snxJSConnector';
-import { getEthereumNetwork } from 'utils/metamaskTools';
+import { getEthereumNetwork } from 'utils/networkUtils';
 import { getExchangeData } from 'dataFetcher';
 
 import { getWalletInfo } from 'ducks/wallet/walletDetails';

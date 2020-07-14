@@ -3,9 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
 
-import { OptionsMarketInfo, AccountMarketInfo } from 'pages/Options/types';
+import { TradeCardPhaseProps } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
-import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+
+import {
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+} from 'ducks/options/pendingTransaction';
 
 import Card from 'components/Card';
 import NetworkFees from 'pages/Options/components/NetworkFees';
@@ -31,22 +36,33 @@ import ResultCard from '../components/ResultCard';
 import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
 
 import TxErrorMessage from 'components/TxErrorMessage';
+import { ethers } from 'ethers';
 
 const mapStateToProps = (state: RootState) => ({
 	isWalletConnected: getIsWalletConnected(state),
+	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = {
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type MaturityPhaseCardProps = PropsFromRedux & {
-	optionsMarket: OptionsMarketInfo;
-	accountMarketInfo: AccountMarketInfo;
-};
+type MaturityPhaseCardProps = PropsFromRedux & TradeCardPhaseProps;
 
 const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
-	({ optionsMarket, isWalletConnected, accountMarketInfo }) => {
+	({
+		optionsMarket,
+		isWalletConnected,
+		accountMarketInfo,
+		addOptionsPendingTransaction,
+		updateOptionsPendingTransactionStatus,
+		currentWalletAddress,
+	}) => {
 		const { t } = useTranslation();
 		const BOMContract = useBOMContractContext();
 		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
@@ -60,6 +76,7 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 		const longAmount = balances.long + claimable.long;
 		const shortAmount = balances.short + claimable.short;
 		const nothingToExercise = !longAmount && !shortAmount;
+		const isLongResult = result === 'long';
 
 		const buttonDisabled = isExercising || !isWalletConnected || nothingToExercise || !gasLimit;
 
@@ -84,7 +101,27 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 				setTxErrorMessage(null);
 				setIsExercising(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-				await BOMContractWithSigner.exerciseOptions();
+				const tx = (await BOMContractWithSigner.exerciseOptions()) as ethers.ContractTransaction;
+
+				addOptionsPendingTransaction({
+					optionTransaction: {
+						market: optionsMarket.address,
+						currencyKey: optionsMarket.currencyKey,
+						account: currentWalletAddress!,
+						hash: tx.hash!,
+						type: 'exercise',
+						amount: isLongResult ? balances.long : balances.short,
+						side: isLongResult ? 'long' : 'short',
+					},
+				});
+
+				const txResult = await tx.wait();
+				if (txResult && txResult.transactionHash) {
+					updateOptionsPendingTransactionStatus({
+						hash: txResult.transactionHash,
+						status: 'confirmed',
+					});
+				}
 			} catch (e) {
 				console.log(e);
 				setTxErrorMessage(t('common.errors.unknown-error-try-again'));
@@ -108,7 +145,7 @@ const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
 					<Payout>
 						<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
 						<PayoutAmount>
-							{formatCurrencyWithSign(USD_SIGN, result === 'long' ? longAmount : shortAmount)}{' '}
+							{formatCurrencyWithSign(USD_SIGN, isLongResult ? longAmount : shortAmount)}{' '}
 							{SYNTHS_MAP.sUSD}
 						</PayoutAmount>
 					</Payout>

@@ -47,15 +47,27 @@ export const hasWeb3 = () => {
 	return window.web3;
 };
 
-export const defaultNetwork = { name: 'MAINNET', networkId: '1' };
+export const defaultNetwork = { name: 'MAINNET', networkId: 1 };
 
 export async function getEthereumNetwork() {
-	return await new Promise(function (resolve) {
-		if (!window.ethereum) resolve(defaultNetwork);
-		const networkId = window.ethereum.networkVersion;
-		const name = SUPPORTED_NETWORKS[parseInt(networkId)];
-		resolve(networkId && name ? { name, networkId } : defaultNetwork);
-	});
+	if (!window.web3) return defaultNetwork;
+	let networkId = 1;
+	try {
+		if (window.web3?.eth?.net) {
+			networkId = await window.web3.eth.net.getId();
+			return { name: SUPPORTED_NETWORKS[networkId], networkId: Number(networkId) };
+		} else if (window.web3?.version?.network) {
+			networkId = Number(window.web3.version.network);
+			return { name: SUPPORTED_NETWORKS[networkId], networkId };
+		} else if (window.ethereum?.networkVersion) {
+			networkId = Number(window.ethereum?.networkVersion);
+			return { name: SUPPORTED_NETWORKS[networkId], networkId };
+		}
+		return defaultNetwork;
+	} catch (e) {
+		console.log(e);
+		return defaultNetwork;
+	}
 }
 
 export const getTransactionPrice = (gasPrice, gasLimit, ethPrice) => {

@@ -280,6 +280,7 @@
 			"transactions-card": {
 				"recent-market-tab-title": "recent market activity",
 				"your-activity-tab-title": "your activity",
+				"pending-transactions-tab-title": "pending transactions",
 				"table": {
 					"date-time-col": "date | time",
 					"type-col": "type",
@@ -288,9 +289,12 @@
 					"tx-status-col": "tx status",
 					"no-results-your-activity": "No transactions associated with this wallet.",
 					"no-results-recent-activity": "No transactions associated with this market.",
+					"no-results-pending-transactions": "No pending transactions associated with this wallet.",
 					"types": {
 						"bid": "Bid",
-						"refund": "Withdrawal"
+						"refund": "Withdrawal",
+						"claim": "Claim",
+						"exercise": "Exercise"
 					}
 				}
 			},
@@ -301,7 +305,7 @@
 				"bidding": {
 					"bid": {
 						"title": "place bid",
-						"subtitle": "choose your side:",
+						"subtitle": "Pick a side to place a bid:",
 						"amount-label": "bid amount:",
 						"price-label": "price:",
 						"confirm-bid": "confirm-bid",
@@ -317,7 +321,7 @@
 					},
 					"refund": {
 						"title": "withdraw",
-						"subtitle": "from your existing bid:",
+						"subtitle": "From your existing bid:",
 						"amount-label": "withdrawing:",
 						"price-label": "price:",
 						"confirm-button": {
@@ -360,7 +364,7 @@
 					"payout-amount": "payout amount",
 					"confirm-button": {
 						"label": "exercise options",
-						"progress-label": "exercise options",
+						"progress-label": "exercising in progress...",
 						"success-label": "nothing to exercise"
 					},
 					"footer": {
