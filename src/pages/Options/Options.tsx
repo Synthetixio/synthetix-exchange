@@ -26,50 +26,43 @@ type OptionsProps = PropsFromRedux &
 		isAppReady: boolean;
 	};
 
-export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }) => {
-	useEffect(() => {
-		return () => {
-			console.log('unmounted');
-		};
-	}, []);
-	return (
-		<Switch>
-			<Route
-				exact
-				path={ROUTES.Options.Home}
-				render={() => (
-					<HomeLayout isAppReady={isAppReady}>
-						<Home />
-					</HomeLayout>
-				)}
-			/>
-			<Route
-				exact
-				path={ROUTES.Options.CreateMarketModal}
-				render={
-					() => (
-						// isWalletConnected ? (
-						// 	<HomeLayout isAppReady={isAppReady}>
-						// 		<CreateMarketModal />
-						// 	</HomeLayout>
-						// ) : (
-						<Redirect to={ROUTES.Options.Home} />
-					)
-					// )
-				}
-			/>
-			<Route
-				exact
-				path={ROUTES.Options.MarketMatch}
-				render={(routeProps) => (
-					<MainLayout isAppReady={isAppReady}>
-						<Market {...routeProps} />
-					</MainLayout>
-				)}
-			/>
-			<Route component={Home} />
-		</Switch>
-	);
-});
+export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }) => (
+	<Switch>
+		<Route
+			exact
+			path={ROUTES.Options.Home}
+			render={() => (
+				<HomeLayout isAppReady={isAppReady}>
+					<Home />
+				</HomeLayout>
+			)}
+		/>
+		<Route
+			exact
+			path={ROUTES.Options.CreateMarketModal}
+			render={
+				() => (
+					// isWalletConnected ? (
+					// 	<HomeLayout isAppReady={isAppReady}>
+					// 		<CreateMarketModal />
+					// 	</HomeLayout>
+					// ) : (
+					<Redirect to={ROUTES.Options.Home} />
+				)
+				// )
+			}
+		/>
+		<Route
+			exact
+			path={ROUTES.Options.MarketMatch}
+			render={(routeProps) => (
+				<MainLayout isAppReady={isAppReady}>
+					<Market {...routeProps} />
+				</MainLayout>
+			)}
+		/>
+		<Route component={Home} />
+	</Switch>
+));
 
 export default connector(Options);
