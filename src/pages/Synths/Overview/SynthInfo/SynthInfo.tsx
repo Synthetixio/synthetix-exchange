@@ -23,7 +23,7 @@ import { getEtherscanTokenLink } from 'utils/explorers';
 import { getDecimalPlaces } from 'utils/formatters';
 
 type StateProps = {
-	networkId: string | number;
+	networkId: number;
 };
 
 type Props = {
