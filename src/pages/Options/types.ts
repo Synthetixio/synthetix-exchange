@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js';
 import { CurrencyKey } from 'constants/currency';
+import { BigNumberish } from 'ethers/utils';
 
 export type Phase = 'bidding' | 'trading' | 'maturity' | 'expiry';
 
@@ -25,11 +25,11 @@ export type OptionValue = {
 };
 
 export type BNOptionValue = {
-	totalLongBN: BigNumber;
-	totalShortBN: BigNumber;
-	depositedBN: BigNumber;
-	feeBN: BigNumber;
-	refundFeeBN: BigNumber;
+	totalLongBN: BigNumberish;
+	totalShortBN: BigNumberish;
+	depositedBN: BigNumberish;
+	feeBN: BigNumberish;
+	refundFeeBN: BigNumberish;
 };
 
 export type OptionsTransactions = OptionsTransaction[];

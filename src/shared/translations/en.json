@@ -305,7 +305,7 @@
 				"bidding": {
 					"bid": {
 						"title": "place bid",
-						"subtitle": "choose your side:",
+						"subtitle": "Pick a side to place a bid:",
 						"amount-label": "bid amount:",
 						"price-label": "price:",
 						"confirm-bid": "confirm-bid",
@@ -321,7 +321,7 @@
 					},
 					"refund": {
 						"title": "withdraw",
-						"subtitle": "from your existing bid:",
+						"subtitle": "From your existing bid:",
 						"amount-label": "withdrawing:",
 						"price-label": "price:",
 						"confirm-button": {

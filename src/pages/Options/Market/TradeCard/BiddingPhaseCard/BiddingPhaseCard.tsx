@@ -71,7 +71,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type BiddingPhaseCardProps = PropsFromRedux & TradeCardPhaseProps;
 
-function getPriceDifference(currentPrice: number, newPrice: number): number {
+function getPriceDifference(currentPrice: number, newPrice: number) {
 	return newPrice - currentPrice;
 }
 
@@ -118,19 +118,26 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			bid: bids.short,
 			payout: claimable.short,
 		};
+		const isRefund = type === 'refund';
+		const isBid = type === 'bid';
+		const isLong = side === 'long';
+		const isShort = side === 'short';
 
 		useEffect(() => {
 			return () => {
-				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
-				if (bidOrRefundForPriceTimer) clearTimeout(bidOrRefundForPriceTimer);
+				if (pricesAfterBidOrRefundTimer) {
+					clearTimeout(pricesAfterBidOrRefundTimer);
+				}
+				if (bidOrRefundForPriceTimer) {
+					clearTimeout(bidOrRefundForPriceTimer);
+				}
 			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
-		const transKey =
-			type === 'bid'
-				? 'options.market.trade-card.bidding.bid'
-				: 'options.market.trade-card.bidding.refund';
+		const transKey = isBid
+			? 'options.market.trade-card.bidding.bid'
+			: 'options.market.trade-card.bidding.refund';
 
 		const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 		const sUSDBalanceBN = getCurrencyKeyUSDBalanceBN(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
@@ -144,10 +151,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					const bidOrRefundAmount =
 						amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-					const bidOrRefundFunction =
-						type === 'bid'
-							? BOMContractWithSigner.estimate.bid
-							: BOMContractWithSigner.estimate.refund;
+					const bidOrRefundFunction = isBid
+						? BOMContractWithSigner.estimate.bid
+						: BOMContractWithSigner.estimate.refund;
 					const gasEstimate = await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount);
 					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
 				} catch (e) {
@@ -156,7 +162,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				}
 			};
 			if (!hasAllowance || !isWalletConnected || (!shortSideAmount && !longSideAmount)) return;
-			const isShort = side === 'short';
 			const amount = isShort ? shortSideAmount : longSideAmount;
 			fetchGasLimit(isShort, amount as string);
 			// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,15 +185,15 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					}
 				});
 			};
-
-			if (!currentWalletAddress) return;
-			getAllowance();
-			registerAllowanceListener();
+			if (isWalletConnected) {
+				getAllowance();
+				registerAllowanceListener();
+			}
 			return () => {
 				sUSD.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
 			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [currentWalletAddress]);
+		}, [currentWalletAddress, isWalletConnected]);
 
 		const handleAllowance = async () => {
 			const {
@@ -212,14 +217,14 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			const {
 				utils: { parseEther },
 			} = snxJSConnector as any;
-			const isShort = side === 'short';
 			const amount = isShort ? shortSideAmount : longSideAmount;
 			if (!amount) return;
 			try {
 				setIsBidding(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-				const bidOrRefundFunction =
-					type === 'bid' ? BOMContractWithSigner.bid : BOMContractWithSigner.refund;
+				const bidOrRefundFunction = isBid
+					? BOMContractWithSigner.bid
+					: BOMContractWithSigner.refund;
 				const bidOrRefundAmount =
 					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 				const tx = (await bidOrRefundFunction(isShort ? 1 : 0, bidOrRefundAmount, {
@@ -246,7 +251,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						});
 					}
 				});
-				// const txResult = await tx.wait();
 				setIsBidding(false);
 			} catch (e) {
 				console.log(e);
@@ -266,7 +270,7 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			} = snxJSConnector as any;
 			const setPriceAmountFunction = isShort ? setShortPriceAmount : setLongPriceAmount;
 			const setSideAmountFunction = isShort ? setShortSideAmount : setLongSideAmount;
-			const bidPrice = side === 'short' ? shortPrice : longPrice;
+			const bidPrice = isShort ? shortPrice : longPrice;
 			try {
 				if (!targetPrice || Number(targetPrice) > 1) {
 					setPriceAmountFunction('');
@@ -291,7 +295,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				setSideAmountFunction(estimatedAmountNeeded / 1e18);
 				setPriceShift(getPriceDifference(bidPrice, Number(targetPrice)));
 
-				if (bidOrRefundForPriceTimer) clearTimeout(bidOrRefundForPriceTimer);
+				if (bidOrRefundForPriceTimer) {
+					clearTimeout(bidOrRefundForPriceTimer);
+				}
 				setBidOrRefundForPriceTimer(
 					setTimeout(async () => {
 						try {
@@ -315,14 +321,14 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		};
 
 		const setBidPriceAmount = (newPrice: number) => {
-			const bidPrice = side === 'short' ? shortPrice : longPrice;
-			const setBidPriceFunction = side === 'short' ? setShortPriceAmount : setLongPriceAmount;
+			const bidPrice = isShort ? shortPrice : longPrice;
+			const setBidPriceFunction = isShort ? setShortPriceAmount : setLongPriceAmount;
 			setBidPriceFunction(newPrice);
 			setPriceShift(getPriceDifference(bidPrice, newPrice));
 		};
 
 		const handleBidAmount = async (amount: string) => {
-			side === 'short' ? setShortSideAmount(amount) : setLongSideAmount(amount);
+			isShort ? setShortSideAmount(amount) : setLongSideAmount(amount);
 			const {
 				utils: { parseEther },
 				binaryOptionsUtils: { pricesAfterBidOrRefund },
@@ -330,7 +336,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 			if (!amount) {
 				setLongPriceAmount('');
 				setShortPriceAmount('');
-				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
+				if (pricesAfterBidOrRefundTimer) {
+					clearTimeout(pricesAfterBidOrRefundTimer);
+				}
 				return;
 			}
 			try {
@@ -338,9 +346,9 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 					amount === sUSDBalance ? sUSDBalanceBN : parseEther(amount.toString());
 
 				const estimatedPrice = pricesAfterBidOrRefund({
-					side: side === 'short' ? 1 : 0,
+					side: isShort ? 1 : 0,
 					value: bidOrRefundAmount,
-					refund: type === 'refund',
+					refund: isRefund,
 					longBids: BN.totalLongBN,
 					shortBids: BN.totalShortBN,
 					fee: BN.feeBN,
@@ -350,14 +358,16 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 				});
 				setBidPriceAmount(estimatedPrice[side] / 1e18);
 
-				if (pricesAfterBidOrRefundTimer) clearTimeout(pricesAfterBidOrRefundTimer);
+				if (pricesAfterBidOrRefundTimer) {
+					clearTimeout(pricesAfterBidOrRefundTimer);
+				}
 				setPricesAfterBidOrRefundTimer(
 					setTimeout(async () => {
 						try {
 							const truePrice = await BOMContract.pricesAfterBidOrRefund(
-								side === 'short' ? 1 : 0,
+								isShort ? 1 : 0,
 								bidOrRefundAmount,
-								type === 'refund'
+								isRefund
 							);
 							setBidPriceAmount(truePrice[side] / 1e18);
 						} catch (e) {
@@ -380,18 +390,19 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 		};
 
 		const handleSideChange = (selectedSide: OptionsTransaction['side']) => {
-			if (side === selectedSide) return;
-			setSide(selectedSide);
-			setPriceShift(0);
+			if (side !== selectedSide) {
+				setSide(selectedSide);
+				setPriceShift(0);
+			}
 		};
 
 		return (
 			<Card>
 				<StyledCardHeader>
-					<TabButton isActive={type === 'bid'} onClick={() => handleTypeChange('bid')}>
+					<TabButton isActive={isBid} onClick={() => handleTypeChange('bid')}>
 						{t('options.market.trade-card.bidding.bid.title')}
 					</TabButton>
-					<TabButton isActive={type === 'refund'} onClick={() => handleTypeChange('refund')}>
+					<TabButton isActive={isRefund} onClick={() => handleTypeChange('refund')}>
 						{t('options.market.trade-card.bidding.refund.title')}
 					</TabButton>
 				</StyledCardHeader>
@@ -411,35 +422,31 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 						<TradeSide
 							side="long"
 							type={type}
-							isActive={side === 'long'}
+							isActive={isLong}
 							amount={longSideAmount}
 							onAmountChange={(e) => handleBidAmount(e.target.value)}
-							onMaxClick={() => handleBidAmount(sUSDBalance)}
+							onMaxClick={() => handleBidAmount(isRefund ? longPosition.bid : sUSDBalance)}
 							price={longPriceAmount}
-							onPriceChange={(e) =>
-								handleTargetPrice(e.target.value, false, false, type === 'refund')
-							}
+							onPriceChange={(e) => handleTargetPrice(e.target.value, false, false, isRefund)}
 							onClick={() => handleSideChange('long')}
 							transKey={transKey}
 							currentPosition={longPosition}
-							priceShift={side === 'long' ? priceShift : 0}
+							priceShift={isLong ? priceShift : 0}
 						/>
 						<TradeSideSeparator />
 						<TradeSide
 							side="short"
 							type={type}
-							isActive={side === 'short'}
+							isActive={isShort}
 							amount={shortSideAmount}
 							onAmountChange={(e) => handleBidAmount(e.target.value)}
-							onMaxClick={() => handleBidAmount(sUSDBalance)}
+							onMaxClick={() => handleBidAmount(isRefund ? shortPosition.bid : sUSDBalance)}
 							price={shortPriceAmount}
-							onPriceChange={(e) =>
-								handleTargetPrice(e.target.value, true, true, type === 'refund')
-							}
+							onPriceChange={(e) => handleTargetPrice(e.target.value, true, true, isRefund)}
 							onClick={() => handleSideChange('short')}
 							transKey={transKey}
 							currentPosition={shortPosition}
-							priceShift={side === 'short' ? priceShift : 0}
+							priceShift={isShort ? priceShift : 0}
 						/>
 					</TradeSides>
 					<CardContent>
@@ -447,11 +454,11 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = memo(
 							gasLimit={gasLimit}
 							type={type}
 							fees={fees}
-							amount={side === 'long' ? longSideAmount : shortSideAmount}
+							amount={isLong ? longSideAmount : shortSideAmount}
 						/>
 						{hasAllowance ? (
 							<NetworkInfoTooltip
-								open={type === 'bid' && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
+								open={isBid && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
 								title={t(`${transKey}.confirm-button.high-slippage`)}
 							>
 								<ActionButton
@@ -519,7 +526,7 @@ const WalletBalance = styled(GridDivCenteredCol)`
 
 const Title = styled.div`
 	${formLabelSmallCSS};
-	text-transform: capitalize;
+	text-transform: none;
 `;
 
 const TradeSides = styled(GridDivCenteredCol)`
