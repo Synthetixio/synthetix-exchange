@@ -29,7 +29,7 @@ type OptionsProps = PropsFromRedux &
 export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }) => (
 	<Switch>
 		<Route
-			exact
+			exact={true}
 			path={ROUTES.Options.Home}
 			render={() => (
 				<HomeLayout isAppReady={isAppReady}>
@@ -38,7 +38,7 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }
 			)}
 		/>
 		<Route
-			exact
+			exact={true}
 			path={ROUTES.Options.CreateMarketModal}
 			render={
 				() => (
@@ -53,7 +53,7 @@ export const Options: FC<OptionsProps> = memo(({ isAppReady, isWalletConnected }
 			}
 		/>
 		<Route
-			exact
+			exact={true}
 			path={ROUTES.Options.MarketMatch}
 			render={(routeProps) => (
 				<MainLayout isAppReady={isAppReady}>

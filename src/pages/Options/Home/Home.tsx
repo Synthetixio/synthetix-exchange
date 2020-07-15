@@ -3,9 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { useQuery } from 'react-query';
 import snxData from 'synthetix-data';
 import { ConnectedProps, connect } from 'react-redux';
-import orderBy from 'lodash/orderBy';
 
-import { PHASE, getPhaseAndEndDate } from 'pages/Options/constants';
 import { OptionsMarkets } from 'pages/Options/types';
 import { getAvailableSynthsMap } from 'ducks/synths';
 import { RootState } from 'ducks/types';
@@ -22,6 +20,8 @@ import Spinner from 'components/Spinner';
 import MarketCreation from './MarketCreation';
 import HotMarkets from './HotMarkets';
 import ExploreMarkets from './ExploreMarkets';
+
+import { sortOptionsMarkets } from './utils';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -42,34 +42,13 @@ const Home: FC<HomeProps> = memo(({ synthsMap }) => {
 		snxData.binaryOptions.markets()
 	);
 
-	const optionsMarkets = useMemo(() => {
-		if (marketsQuery.isSuccess) {
-			const markets = marketsQuery.data || [];
-			if (markets.length) {
-				return orderBy(
-					markets
-						.filter((optionsMarket) => optionsMarket.isOpen)
-						.map((optionsMarket) => {
-							const { phase, timeRemaining } = getPhaseAndEndDate(
-								optionsMarket.biddingEndDate,
-								optionsMarket.maturityDate,
-								optionsMarket.expiryDate
-							);
-
-							return {
-								...optionsMarket,
-								phase,
-								asset: synthsMap[optionsMarket.currencyKey]?.asset || optionsMarket.currencyKey,
-								timeRemaining,
-								phaseNum: PHASE[phase],
-							};
-						}),
-					['phaseNum', 'timeRemaining']
-				);
-			}
-		}
-		return [];
-	}, [marketsQuery, synthsMap]);
+	const optionsMarkets = useMemo(
+		() =>
+			marketsQuery.isSuccess && Array.isArray(marketsQuery.data)
+				? sortOptionsMarkets(marketsQuery.data, synthsMap)
+				: [],
+		[marketsQuery, synthsMap]
+	);
 
 	const hotMarkets = useMemo(() => optionsMarkets.slice(0, MAX_HOT_MARKETS), [optionsMarkets]);
 
