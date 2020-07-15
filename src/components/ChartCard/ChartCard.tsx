@@ -2,7 +2,8 @@ import React, { useContext, FC, memo } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceLine, Label } from 'recharts';
 import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
+import isNumber from 'lodash/isNumber';
 
 import ChangePercent from '../ChangePercent';
 import RechartsResponsiveContainer from '../RechartsResponsiveContainer';
@@ -161,10 +162,13 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								tickLine={false}
 								hide={!xAxisVisible}
 								tickFormatter={(val) => {
+									if (!isNumber(val)) {
+										return '';
+									}
 									const periodOverOneDay =
 										selectedPeriod != null && selectedPeriod.value > PERIOD_IN_HOURS.ONE_DAY;
 
-									return format(val, periodOverOneDay ? 'DD MMM' : 'h:mma');
+									return format(val, periodOverOneDay ? 'dd MMM' : 'h:mma');
 								}}
 							/>
 							<YAxis
@@ -206,8 +210,8 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								cursor={{ strokeWidth: 1, stroke: theme.colors.fontTertiary }}
 								contentStyle={{
 									border: 'none',
-									borderRadius: '3px',
-									backgroundColor: theme.colors.surfaceL1,
+									borderRadius: '4px',
+									backgroundColor: theme.colors.accentL1,
 								}}
 								itemStyle={{
 									...fontStyle,
@@ -215,7 +219,7 @@ export const ChartCard: FC<ChartCardProps> = memo(
 								}}
 								labelStyle={fontStyle}
 								formatter={(val: string | number) => formatCurrencyWithSign(synthSign, val)}
-								labelFormatter={(label) => format(label, 'Do MMM YY | HH:mm')}
+								labelFormatter={(label) => format(label, 'do MMM yy | HH:mm')}
 							/>
 						</AreaChart>
 					</RechartsResponsiveContainer>

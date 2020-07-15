@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
-import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 
 import {
@@ -13,7 +12,6 @@ import {
 	updateTransaction,
 } from 'ducks/transaction';
 import { getWalletInfo, getNetworkId } from 'ducks/wallet/walletDetails';
-import { getAvailableSynthsMap } from 'ducks/synths';
 
 import {
 	formatCurrency,
@@ -27,7 +25,7 @@ import { getEtherscanTxLink } from 'utils/explorers';
 import Table from 'components/Table';
 
 import Currency from 'components/Currency';
-import { SYNTHS_MAP } from 'constants/currency';
+import { USD_SIGN } from 'constants/currency';
 
 import { TableNoResults } from 'shared/commonStyles';
 
@@ -124,7 +122,7 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 						>
 							<span>
 								{formatCurrencyWithSign(
-									get(synthsMap, [SYNTHS_MAP.sUSD, 'sign']),
+									USD_SIGN,
 									cellProps.cell.value,
 									getPrecision(cellProps.cell.value)
 								)}
@@ -180,7 +178,6 @@ const mapStateToProps = (state) => ({
 	transactions: getTransactions(state),
 	pendingTransactions: getPendingTransactions(state),
 	walletInfo: getWalletInfo(state),
-	synthsMap: getAvailableSynthsMap(state),
 });
 
 const mapDispatchToProps = {

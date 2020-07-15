@@ -19,6 +19,7 @@ import Table from 'components/Table';
 import { CurrencyCol } from 'components/Table/common';
 
 import Currency from 'components/Currency';
+import { bodyCSS } from 'components/Typography/General';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -45,10 +46,11 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('markets.table.pair-col')}</>,
 							accessor: 'pair',
 							Cell: (cellProps: CellProps<MarketPair>) => (
-								<Currency.Pair
+								<StyledCurrencyPair
 									baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 									quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
 									showIcon={true}
+									iconProps={{ width: '24px', height: '24px' }}
 								/>
 							),
 							width: 150,
@@ -142,6 +144,10 @@ const StyledTable = styled(Table)`
 			justify-content: flex-end;
 		}
 	}
+`;
+
+const StyledCurrencyPair = styled(Currency.Pair)`
+	${bodyCSS};
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({

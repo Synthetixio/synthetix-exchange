@@ -15,7 +15,7 @@ export type WalletDetailsSliceState = {
 	walletPaginatorIndex: number;
 	availableWallets: string[];
 	derivationPath: string | null;
-	networkId: string | number;
+	networkId: number;
 	networkName: string;
 };
 
@@ -57,7 +57,7 @@ export const walletDetailsSlice = createSlice({
 		updateNetworkSettings: (
 			state,
 			action: PayloadAction<{
-				networkId: string | number;
+				networkId: number;
 				networkName: string;
 			}>
 		) => {
@@ -73,6 +73,7 @@ export const walletDetailsSlice = createSlice({
 					type: string;
 					networkId: string;
 					derivationPath: string;
+					networkName: string;
 				};
 				derivationPath: string;
 			}>
@@ -98,7 +99,7 @@ export const getNetwork = (state: RootState) => ({
 	networkName: getNetworkName(state),
 });
 export const getCurrentWalletAddress = (state: RootState) => getWalletState(state).currentWallet;
-export const getIsLoggedIn = createSelector(getCurrentWalletAddress, (currentWallet) =>
+export const getIsWalletConnected = createSelector(getCurrentWalletAddress, (currentWallet) =>
 	currentWallet != null ? true : false
 );
 export const getWalletInfo = (state: RootState) => getWalletState(state);

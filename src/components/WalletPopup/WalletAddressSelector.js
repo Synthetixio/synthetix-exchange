@@ -13,12 +13,14 @@ import {
 import { toggleWalletPopup } from 'ducks/ui';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
-import { HeadingMedium } from '../Typography';
+import { headingH3CSS, headingH5CSS } from 'components/Typography/Heading';
 import WalletAddressTable from '../WalletAddressTable';
 import WalletPaginator from '../WalletPaginator';
 import Spinner from '../Spinner';
 import Select from '../Select';
 import { ButtonPrimary } from '../Button';
+
+import { media } from 'shared/media';
 
 const WALLET_PAGE_SIZE = 5;
 const LEDGER_DERIVATION_PATHS = [
@@ -104,15 +106,9 @@ const ErrorMessage = ({ error, isLedger, onRetry }) => {
 
 	return (
 		<ErrorContainer>
-			<HeadingMedium>{t('modals.wallet.errors.generic-error')}</HeadingMedium>
-			<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-				{error}
-			</HeadingMedium>
-			{isLedger ? (
-				<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-					{t('modals.wallet.errors.ledger-error')}
-				</HeadingMedium>
-			) : null}
+			<Title>{t('modals.wallet.errors.generic-error')}</Title>
+			<Label>{error}</Label>
+			{isLedger ? <Label>{t('modals.wallet.errors.ledger-error')}</Label> : null}
 
 			<ButtonPrimary onClick={() => onRetry()} width="250px">
 				{t('modals.wallet.retry')}
@@ -153,7 +149,7 @@ const WalletAddressSelector = ({
 	if (error) return <ErrorMessage error={error} isLedger={isLedger} onRetry={onRetry} />;
 	return (
 		<Container>
-			<HeadingMedium>{t('modals.wallet.select-your-wallet')}</HeadingMedium>
+			<Title>{t('modals.wallet.select-your-wallet')}</Title>
 			<Body>
 				{isLedger && (
 					<SelectWrapper>
@@ -215,7 +211,10 @@ const SelectWrapper = styled.div`
 
 const Container = styled.div`
 	text-align: center;
-	width: 100%;
+	min-width: 1024px;
+	${media.large`
+		min-width: unset;
+	`}
 `;
 
 const ErrorContainer = styled.div`
@@ -233,6 +232,15 @@ const AddressesContainer = styled.div`
 	justify-content: center;
 `;
 
+const Title = styled.div`
+	${headingH3CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
+const Label = styled.div`
+	${headingH5CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
 const mapStateToProps = (state) => {
 	return {
 		walletInfo: getWalletInfo(state),

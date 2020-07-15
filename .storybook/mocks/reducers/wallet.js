@@ -12,11 +12,7 @@ export const walletReducerDefaults = {
 	networkName: defaultNetwork.name,
 };
 
-export const loggedOutUser = {
-	...walletReducerDefaults,
-};
-
-export const loggedInUser = {
+export const connectedWallet = {
 	...walletReducerDefaults,
 	unlocked: true,
 	currentWallet: '0x1BC4230d996286ffD1dD4DC649AAd47Fa08cadc4',
@@ -39,7 +35,7 @@ export const balances = {
 	},
 };
 
-export const loggedInUserWithBalances = {
-	...loggedInUser,
+export const connectedWalletWithBalances = {
+	...connectedWallet,
 	balances,
 };

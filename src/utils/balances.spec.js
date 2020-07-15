@@ -26,15 +26,6 @@ describe('Balances', () => {
 		it('returns the correct currency balance for sBTC', () => {
 			expect(getCurrencyKeyBalance(balances, SYNTHS_MAP.sBTC)).toEqual(0.000628320060412509);
 		});
-
-		it('returns 0 from undefined currency', () => {
-			expect(getCurrencyKeyBalance(balances, 'satoshiCoin')).toEqual(0);
-		});
-
-		it('returns 0 when balances is null or undefined', () => {
-			expect(getCurrencyKeyBalance(null, CRYPTO_CURRENCY_MAP.ETH)).toEqual(0);
-			expect(getCurrencyKeyBalance(undefined, CRYPTO_CURRENCY_MAP.ETH)).toEqual(0);
-		});
 	});
 
 	describe('getCurrencyKeyUSDBalance', () => {
@@ -46,15 +37,6 @@ describe('Balances', () => {
 
 		it('returns the correct USD balance for sBTC', () => {
 			expect(getCurrencyKeyUSDBalance(balances, SYNTHS_MAP.sBTC)).toEqual(6.50700536879026);
-		});
-
-		it('returns 0 from undefined currency', () => {
-			expect(getCurrencyKeyUSDBalance(balances, 'magic')).toEqual(0);
-		});
-
-		it('returns 0 when balances is null or undefined', () => {
-			expect(getCurrencyKeyUSDBalance(null, CRYPTO_CURRENCY_MAP.ETH)).toEqual(0);
-			expect(getCurrencyKeyUSDBalance(undefined, CRYPTO_CURRENCY_MAP.ETH)).toEqual(0);
 		});
 	});
 });

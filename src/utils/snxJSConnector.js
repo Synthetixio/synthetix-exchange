@@ -5,8 +5,10 @@ import {
 	INFURA_JSON_RPC_URLS,
 	INFURA_PROJECT_ID,
 	SUPPORTED_WALLETS_MAP,
+	PORTIS_APP_ID,
 } from './networkUtils';
-import { synthSummaryUtilContract } from './contracts';
+import { synthSummaryUtilContract } from './contracts/synthSummaryUtilContract';
+import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
 
 let snxJSConnector = {
 	initialized: false,
@@ -19,9 +21,17 @@ let snxJSConnector = {
 		this.provider = this.snxJS.contractSettings.provider;
 		this.utils = this.snxJS.utils;
 		this.ethersUtils = this.snxJS.ethers.utils;
+		this.binaryOptionsUtils = this.snxJS.binaryOptionsUtils;
+		this.ethers = ethers;
+		this.contractSettings = contractSettings;
 		this.synthSummaryUtilContract = new ethers.Contract(
 			synthSummaryUtilContract.addresses[contractSettings.networkId],
 			synthSummaryUtilContract.abi,
+			this.provider
+		);
+		this.binaryOptionsMarketDataContract = new ethers.Contract(
+			binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
+			binaryOptionsMarketDataContract.abi,
 			this.provider
 		);
 	},
@@ -124,7 +134,32 @@ const connectToWalletConnect = async (networkId, networkName) => {
 	}
 };
 
-const getSignerConfig = ({ type, networkId, derivationPath }) => {
+const connectToPortis = async (networkId, networkName) => {
+	const walletState = {
+		walletType: SUPPORTED_WALLETS_MAP.PORTIS,
+		unlocked: false,
+	};
+	try {
+		const accounts = await snxJSConnector.signer.getNextAddresses();
+		if (accounts && accounts.length > 0) {
+			return {
+				...walletState,
+				currentWallet: accounts[0],
+				unlocked: true,
+				networkId,
+				networkName: networkName.toLowerCase(),
+			};
+		}
+	} catch (e) {
+		console.log(e);
+		return {
+			...walletState,
+			unlockError: e.message,
+		};
+	}
+};
+
+const getSignerConfig = ({ type, networkId, derivationPath, networkName }) => {
 	if (type === SUPPORTED_WALLETS_MAP.LEDGER) {
 		const DEFAULT_LEDGER_DERIVATION_PATH = "44'/60'/0'/";
 		return { derivationPath: derivationPath || DEFAULT_LEDGER_DERIVATION_PATH };
@@ -142,12 +177,18 @@ const getSignerConfig = ({ type, networkId, derivationPath }) => {
 			infuraId: INFURA_PROJECT_ID,
 		};
 	}
+	if (type === SUPPORTED_WALLETS_MAP.PORTIS) {
+		return {
+			networkName: networkName.toLowerCase(),
+			appId: PORTIS_APP_ID,
+		};
+	}
 	return {};
 };
 
-export const setSigner = ({ type, networkId, derivationPath }) => {
+export const setSigner = ({ type, networkId, derivationPath, networkName }) => {
 	const signer = new snxJSConnector.signers[type](
-		getSignerConfig({ type, networkId, derivationPath })
+		getSignerConfig({ type, networkId, derivationPath, networkName })
 	);
 	snxJSConnector.setContractSettings({
 		networkId,
@@ -164,7 +205,7 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 			unlockError: 'Network not supported',
 		};
 	}
-	setSigner({ type: wallet, networkId, derivationPath });
+	setSigner({ type: wallet, networkId, derivationPath, networkName: name });
 
 	switch (wallet) {
 		case SUPPORTED_WALLETS_MAP.METAMASK:
@@ -173,6 +214,8 @@ export const connectToWallet = async ({ wallet, derivationPath }) => {
 			return connectToCoinbase(networkId, name);
 		case SUPPORTED_WALLETS_MAP.WALLET_CONNECT:
 			return connectToWalletConnect(networkId, name);
+		case SUPPORTED_WALLETS_MAP.PORTIS:
+			return connectToPortis(networkId, name);
 		case SUPPORTED_WALLETS_MAP.TREZOR:
 		case SUPPORTED_WALLETS_MAP.LEDGER:
 			return connectToHardwareWallet(networkId, name, wallet);

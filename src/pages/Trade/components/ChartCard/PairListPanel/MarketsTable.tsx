@@ -107,4 +107,4 @@ const mapStateToProps = (state: RootState): StateProps => ({
 	synthsMap: getAvailableSynthsMap(state),
 });
 
-export default connect<StateProps, undefined, Props, RootState>(mapStateToProps)(MarketsTable);
+export default connect<StateProps, {}, Props, RootState>(mapStateToProps)(MarketsTable);

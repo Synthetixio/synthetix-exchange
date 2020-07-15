@@ -1,12 +1,19 @@
+* {
+	box-sizing: border-box;
+}
+
 body {
 	margin: 0;
 	font-family: 'apercu-regular', -apple-system, BlinkMacSystemFont, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	letter-spacing: 0.2px;
+	line-height: 1.2;
+	font-size: 16px;
 }
 
-* {
-	box-sizing: border-box;
+button {
+	letter-spacing: 0.2px;
 }
 
 @font-face {

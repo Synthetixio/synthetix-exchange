@@ -2,7 +2,7 @@ import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { bodyMediumCSS } from 'components/Typography/Body';
+import { bodyCSS } from 'components/Typography/General';
 import Link from 'components/Link';
 
 import { breakpoint, media } from 'shared/media';
@@ -218,7 +218,7 @@ const Menu = styled.div`
 
 const MenuTitle = styled.div`
 	text-transform: uppercase;
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${(props) => props.theme.colors.white};
 	padding-bottom: 25px;
 `;
@@ -234,7 +234,7 @@ const MenuLinkItem = styled.li`
 `;
 
 const FooterLink = styled(Link)`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontSecondary};
 	&:hover {
 		color: ${(props) => props.theme.colors.white};

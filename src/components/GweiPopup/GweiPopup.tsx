@@ -10,18 +10,18 @@ import { getEthRate } from 'ducks/rates';
 import { RootState } from 'ducks/types';
 import { SynthDefinitionMap } from 'ducks/synths';
 
-import { formatCurrencyWithSign, formatCurrency } from 'utils/formatters';
+import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
 import { Z_INDEX } from 'constants/ui';
-import { SYNTHS_MAP } from 'constants/currency';
 
 import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
 
-import { fadeInAnimation, fadeOutAnimation } from 'shared/commonStyles';
+import { FullScreenModal, FullScreenModalCloseButton } from 'shared/commonStyles';
 
-import { HeadingMedium, DataSmall } from '../Typography';
-import { bodyMediumCSS } from '../Typography/Body';
+import { DataSmall } from '../Typography';
+import { headingH3CSS } from 'components/Typography/Heading';
+import { bodyCSS } from '../Typography/General';
 import Slider from '../Slider';
 
 import { Table, Tr, Th, Td, Thead, Tbody, DataLabel } from '../deprecated/Table';
@@ -56,7 +56,6 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 		setGasPrice,
 		gasInfo: { gasPrice = 1, gasLimit, gasSpeed },
 		ethRate,
-		synthsMap,
 	}) => {
 		const [gasSettings, setGasSettings] = useState<{
 			gasPrice?: number;
@@ -76,32 +75,28 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [gasPrice, gasLimit, ethRate]);
 
-		const usdPriceSign = synthsMap[SYNTHS_MAP.sUSD]?.sign;
-
 		return (
 			<>
 				<GlobalStyle />
-				<Popup isVisible={popupIsVisible}>
+				<FullScreenModal open={popupIsVisible}>
 					<Container>
-						<CloseButton onClick={() => toggleGweiPopup(false)}>
+						<FullScreenModalCloseButton onClick={() => toggleGweiPopup(false)}>
 							<CloseCrossIcon />
-						</CloseButton>
+						</FullScreenModalCloseButton>
 						<Body>
-							<HeadingMedium style={{ marginBottom: '18px' }}>
-								{t('modals.gwei.title')}
-							</HeadingMedium>
+							<Title>{t('modals.gwei.title')}</Title>
 							<BodyMedium>{t('modals.gwei.desc')}</BodyMedium>
 							<SliderContainer>
 								<Slider
 									min={0}
-									max={gasSpeed.fastestAllowed}
-									defaultValue={gasSettings.gasPrice}
+									max={100}
+									value={gasSettings.gasPrice}
 									tooltipRenderer={() => (
 										<TooltipInner>
-											<TooltipValue>{gasSettings.gasPrice} </TooltipValue>
-											<TooltipValue>
+											<TooltipValue>{gasSettings.gasPrice} GWEI</TooltipValue>
+											{/* <TooltipValue>
 												{formatCurrencyWithSign(usdPriceSign, gasSettings.usdPrice || 0)}
-											</TooltipValue>
+											</TooltipValue> */}
 										</TooltipInner>
 									)}
 									onChange={(newPrice: number) => {
@@ -138,7 +133,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 									</Tr>
 								</Thead>
 								<Tbody>
-									<Tr>
+									{/* <Tr>
 										<Td>
 											<DataLabel>{t('modals.gwei.table.price')}</DataLabel>
 										</Td>
@@ -166,7 +161,7 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 												)}
 											</DataLabel>
 										</Td>
-									</Tr>
+									</Tr> */}
 									<Tr>
 										<Td>
 											<DataLabel>{t('common.gwei')}</DataLabel>
@@ -196,27 +191,21 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 							</InputRow>
 						</Body>
 					</Container>
-				</Popup>
+				</FullScreenModal>
 			</>
 		);
 	}
 );
 
 const BodyMedium = styled.span`
-	${bodyMediumCSS};
+	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
-const Popup = styled.div<{ isVisible?: boolean }>`
-	z-index: ${Z_INDEX.MODAL};
-	background-color: ${(props) => props.theme.colors.surfaceL1};
-	position: absolute;
-	display: ${(props) => (props.isVisible ? 'block' : 'none')};
-	animation: ${(props) => (props.isVisible ? fadeInAnimation : fadeOutAnimation)} 0.2s ease-in;
-	width: 100%;
-	height: 100vh;
-	top: 0;
-	left: 0;
+const Title = styled.div`
+	${headingH3CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+	padding-bottom: 18px;
 `;
 
 const Container = styled.div`
@@ -238,16 +227,6 @@ const SliderContainer = styled.div`
 	margin: 100px 0 50px 0;
 `;
 
-const CloseButton = styled.button`
-	border: none;
-	background: none;
-	cursor: pointer;
-	position: absolute;
-	right: 5%;
-	top: 5%;
-	color: ${({ theme }) => theme.colors.fontTertiary};
-`;
-
 const InputRow = styled.div`
 	margin: 40px 0;
 	display: flex;
@@ -260,7 +239,6 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const TooltipInner = styled.div`
-	background-color: ${({ theme }) => theme.colors.surfaceL3};
 	height: 100%;
 	padding: 12px;
 `;
@@ -281,7 +259,7 @@ const mapDispatchToProps: DispatchProps = {
 	setGasPrice,
 };
 
-export default connect<StateProps, DispatchProps, undefined, RootState>(
+export default connect<StateProps, DispatchProps, {}, RootState>(
 	mapStateToProps,
 	mapDispatchToProps
 )(GweiPopup);

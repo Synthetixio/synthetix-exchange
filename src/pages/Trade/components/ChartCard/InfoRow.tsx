@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { SYNTHS_MAP } from 'constants/currency';
+import { USD_SIGN } from 'constants/currency';
 
 import { getAvailableSynthsMap, SynthDefinitionMap, SynthPair } from 'ducks/synths';
 import { getRatesExchangeRates, Rates } from 'ducks/rates';
@@ -77,7 +77,7 @@ const InfoRow: FC<InfoRowProps> = ({
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-volume'),
-			value: formatCurrencyWithSign(synthsMap[SYNTHS_MAP.sUSD].sign, volume24H),
+			value: formatCurrencyWithSign(USD_SIGN, volume24H),
 		},
 	];
 

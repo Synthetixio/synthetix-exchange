@@ -23,13 +23,13 @@ export const handle = (props) => {
 	);
 };
 
-const SliderComponent = ({ min, max, defaultValue, tooltipRenderer, onChange }) => {
+const SliderComponent = ({ min, max, value, tooltipRenderer, onChange }) => {
 	return (
 		<CustomSlider
 			min={min}
 			max={max}
-			step={0.01}
-			defaultValue={defaultValue}
+			step={0.1}
+			value={value}
 			handle={handle}
 			tipFormatter={tooltipRenderer}
 			onChange={onChange}

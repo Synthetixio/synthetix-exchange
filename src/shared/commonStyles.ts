@@ -1,12 +1,14 @@
 import styled, { keyframes, css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { DataLarge, DataSmall, DataMedium } from '../components/Typography';
-import { tableDataSmallCSS, chartDataCSS } from 'components/Typography/Data';
+import { tableDataSmallCSS } from 'components/Typography/Table';
+import { chartDataCSS } from 'components/Typography/General';
 
 import { Z_INDEX } from '../constants/ui';
-import { media } from './media';
+import { media, breakpoint } from './media';
 
 import SearchInput from 'components/Input/SearchInput';
+import Modal from '@material-ui/core/Modal';
 
 export const FlexDiv = styled.div`
 	display: flex;
@@ -22,6 +24,10 @@ export const FlexDivCol = styled(FlexDiv)`
 
 export const FlexDivRow = styled(FlexDiv)`
 	justify-content: space-between;
+`;
+
+export const FlexDivRowCentered = styled(FlexDivRow)`
+	align-items: center;
 `;
 
 export const PageLayout = styled(FlexDiv)`
@@ -42,6 +48,12 @@ export const CenteredPageLayout = styled(PageLayout)`
 
 export const SectionVerticalSpacer = styled.div`
 	margin-bottom: 8px;
+`;
+
+export const VerticalCardSeparator = styled.div`
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL2};
+	width: 1px;
 `;
 
 export const linkCSS = css`
@@ -92,17 +104,21 @@ export const TextButton = styled.button`
 	background: transparent;
 	padding: 0;
 	cursor: pointer;
+	outline: none;
 `;
 
 export const LinkTextSmall = styled(DataSmall)`
 	color: ${(props) => props.theme.colors.hyperlink};
 `;
 
-export const Message = styled(FlexDivCentered)<{
+export type MessageProps = {
 	size: 'sm' | 'lg';
-	floating: boolean;
+	floating?: boolean;
 	type: 'error' | 'success';
-}>`
+};
+
+export const Message = styled(FlexDivCentered)<MessageProps>`
+	color: ${(props) => props.theme.colors.white};
 	border-radius: 1px;
 	transition: opacity 0.2s ease-out;
 	width: 100%;
@@ -110,7 +126,7 @@ export const Message = styled(FlexDivCentered)<{
 	${(props) =>
 		props.size === 'sm'
 			? css`
-					font-size: 11px;
+					font-size: 12px;
 					padding: 5px 10px;
 			  `
 			: css`
@@ -248,7 +264,6 @@ export const GridDiv = styled.div`
 
 export const GridDivCentered = styled(GridDiv)`
 	align-items: center;
-	justify-items: center;
 `;
 
 export const GridDivRow = styled(GridDiv)`
@@ -279,4 +294,47 @@ export const AssetSearchInput = styled(SearchInput)`
 
 export const NoResultsMessage = styled.div`
 	padding: 18px;
+`;
+
+export const PageContent = styled.div`
+	max-width: ${breakpoint.large}px;
+	margin: 0 auto;
+`;
+
+export const LoaderContainer = styled.div`
+	position: relative;
+	height: 400px;
+`;
+
+export const Strong = styled.span`
+	font-family: ${(props) => props.theme.fonts.medium};
+`;
+
+export const FullScreenModal = styled(Modal).attrs({
+	disableEscapeKeyDown: true,
+	disableAutoFocus: true,
+	disableEnforceFocus: true,
+	hideBackdrop: true,
+	disableRestoreFocus: true,
+})`
+	background-color: ${(props) => props.theme.colors.surfaceL1};
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 1;
+	overflow: auto;
+`;
+
+export const FullScreenModalContainer = styled.div`
+	background-color: ${(props) => props.theme.colors.surfaceL1};
+	text-align: center;
+	outline: none;
+`;
+
+export const FullScreenModalCloseButton = styled.button`
+	${resetButtonCSS};
+	position: absolute;
+	right: 5%;
+	top: 5%;
+	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
