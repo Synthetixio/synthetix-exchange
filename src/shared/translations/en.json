@@ -499,7 +499,8 @@
 		"navigation": {
 			"overview": "overview",
 			"exchanges": "exchanges",
-			"transfers": "transfers"
+			"transfers": "transfers",
+			"options": "options"
 		},
 		"balances": {
 			"hide-small-value": "Hide small value assets",
@@ -558,6 +559,30 @@
 				"total-col": "total",
 				"status-col": "details",
 				"verify-col": "verify"
+			}
+		},
+		"options": {
+			"banner": {
+				"has-markets": {
+					"title": "Binary Options",
+					"subtitle": "Here you can see all the binary options markets you’ve bid on or markets you’ve created."
+				},
+				"no-susd": {
+					"title": "Get {{currencyKey}} to start bidding"
+				},
+				"no-markets": {
+					"title": "You have no bids or markets"
+				},
+				"common": {
+					"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!",
+					"buttons": {
+						"view-all-markets-label": "view all markets",
+						"create-new-market-label": "create new market"
+					}
+				}
+			},
+			"table": {
+				"title": "your markets"
 			}
 		}
 	},
@@ -628,7 +653,9 @@
 			"entry-limit-price": "entry {{price}}",
 			"frozen-synth": "This Synth has been frozen",
 			"lower-limit-reached-reset": "Lower limit reached, reset in progress.",
-			"upper-limit-reached-reset": "Upper limit reached, reset in progress."
+			"upper-limit-reached-reset": "Upper limit reached, reset in progress.",
+			"trade-synths-for-currency": "trade synths for <0>{{currencyKey}}</0>",
+			"buy-currency": "buy <0>{{currencyKey}}</0>"
 		},
 		"currency-category": {
 			"crypto": "crypto",

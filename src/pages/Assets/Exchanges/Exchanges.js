@@ -188,7 +188,7 @@ Exchanges.propTypes = {
 	isLoadingMyTrades: PropTypes.bool.isRequired,
 	isRefreshingMyTrades: PropTypes.bool.isRequired,
 	isLoadedMyTrades: PropTypes.bool.isRequired,
-	networkId: PropTypes.string.isRequired,
+	networkId: PropTypes.number.isRequired,
 };
 
 const StyledCard = styled(Card)`

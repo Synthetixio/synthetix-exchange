@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { CARD_HEIGHT } from 'constants/ui';
@@ -9,9 +9,9 @@ export type CardHeaderProps = {
 	children: React.ReactNode;
 };
 
-const CardHeader: FC<CardHeaderProps> = memo(({ children, ...rest }) => (
+const CardHeader: FC<CardHeaderProps> = ({ children, ...rest }) => (
 	<Container {...rest}>{children}</Container>
-));
+);
 
 const Container = styled(FlexDivCentered)`
 	background-color: ${(props) => props.theme.colors.surfaceL3};

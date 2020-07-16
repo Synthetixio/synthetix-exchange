@@ -14,6 +14,8 @@ import { Button } from 'components/Button';
 import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { RootState } from 'ducks/types';
 
+import ROUTES, { navigateTo } from 'constants/routes';
+
 import { ReactComponent as PencilIcon } from 'assets/images/pencil.svg';
 import { ReactComponent as PersonIcon } from 'assets/images/person.svg';
 import { ReactComponent as NoResultsIcon } from 'assets/images/no-results.svg';
@@ -27,7 +29,6 @@ import QUERY_KEYS from 'constants/queryKeys';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import MarketsTable from '../MarketsTable';
-import ROUTES, { navigateTo } from 'constants/routes';
 
 const mapStateToProps = (state: RootState) => ({
 	isWalletConnected: getIsWalletConnected(state),
@@ -63,6 +64,17 @@ type Filter = {
 const defaultFilter: Filter = {
 	name: 'phase',
 };
+
+const userFilters: Array<{ filterName: Filter['name']; icon: JSX.Element }> = [
+	{
+		filterName: 'user-bids',
+		icon: <PersonIcon />,
+	},
+	{
+		filterName: 'creator',
+		icon: <PencilIcon />,
+	},
+];
 
 const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 	({ optionsMarkets, isWalletConnected, currentWalletAddress }) => {
@@ -126,17 +138,6 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 				}
 			}
 		}, [isWalletConnected, setDefaultFilter, filter]);
-
-		const userFilters: Array<{ filterName: Filter['name']; icon: JSX.Element }> = [
-			{
-				filterName: 'user-bids',
-				icon: <PersonIcon />,
-			},
-			{
-				filterName: 'creator',
-				icon: <PencilIcon />,
-			},
-		];
 
 		const isPhaseFilter = filter.name === 'phase';
 		const isCreatorFilter = filter.name === 'creator';
@@ -215,6 +216,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 				</FiltersRow>
 
 				<MarketsTable
+					palette="light-secondary"
 					optionsMarkets={assetSearch ? searchFilteredOptionsMarkets : filteredOptionsMarkets}
 					isLoading={userBidsMarketsQuery.isLoading}
 					noResultsMessage={
@@ -222,32 +224,35 @@ const ExploreMarkets: FC<ExploreMarketsProps> = memo(
 						filteredOptionsMarkets.length === 0 ? (
 							<StyledNoResultsMessage>
 								<NoResultsIcon />
-								{isPhaseFilter && (
+								{assetSearch ? (
 									<NoResultsText>
 										{t('options.home.explore-markets.table.filters.markets.no-results')}
 									</NoResultsText>
-								)}
-								{isCreatorFilter && (
+								) : (
 									<>
-										<NoResultsText>
-											{t('options.home.explore-markets.table.filters.creator.no-results')}
-										</NoResultsText>
-										<div>
-											<Button
-												size="lg"
-												palette="primary"
-												onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
-											>
-												{t('options.home.market-creation.create-market-button-label')}
-											</Button>
-											<ButtonSpacer>{t('common.or')}</ButtonSpacer>
-										</div>
+										{isCreatorFilter && (
+											<>
+												<NoResultsText>
+													{t('options.home.explore-markets.table.filters.creator.no-results')}
+												</NoResultsText>
+												<div>
+													<Button
+														size="lg"
+														palette="primary"
+														onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
+													>
+														{t('options.home.market-creation.create-market-button-label')}
+													</Button>
+													<ButtonSpacer>{t('common.or')}</ButtonSpacer>
+												</div>
+											</>
+										)}
+										{isUserBidsFilter && (
+											<NoResultsText>
+												{t('options.home.explore-markets.table.filters.user-bids.no-results')}
+											</NoResultsText>
+										)}
 									</>
-								)}
-								{isUserBidsFilter && (
-									<NoResultsText>
-										{t('options.home.explore-markets.table.filters.user-bids.no-results')}
-									</NoResultsText>
 								)}
 								<Button size="lg" palette="outline" onClick={setDefaultFilter}>
 									{isUserBidsFilter
@@ -267,6 +272,7 @@ const ToggleButton = styled(Button).attrs({
 	size: 'md',
 	palette: 'toggle',
 })`
+	padding: 0 8px;
 	${(props) =>
 		!props.onClick &&
 		css`

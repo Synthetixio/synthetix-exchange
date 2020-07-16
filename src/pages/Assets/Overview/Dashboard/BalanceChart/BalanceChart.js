@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled, { withTheme } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis } from 'recharts';
@@ -13,7 +13,7 @@ import { CardHeadingDescription } from 'shared/commonStyles';
 // TODO: implement using real data
 import { MOCK_DATA } from './mockData';
 
-export const BalanceChart = memo(({ theme: { colors } }) => {
+export const BalanceChart = ({ theme: { colors } }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -48,7 +48,7 @@ export const BalanceChart = memo(({ theme: { colors } }) => {
 			</StyledCardBody>
 		</Card>
 	);
-});
+};
 
 const StyledCardBody = styled(Card.Body)`
 	padding: 0;
