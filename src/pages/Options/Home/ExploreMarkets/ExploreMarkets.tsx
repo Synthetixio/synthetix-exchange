@@ -217,6 +217,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = ({
 			<MarketsTable
 				optionsMarkets={assetSearch ? searchFilteredOptionsMarkets : filteredOptionsMarkets}
 				isLoading={userBidsMarketsQuery.isLoading}
+				palette="light-secondary"
 				noResultsMessage={
 					(assetSearch && searchFilteredOptionsMarkets.length === 0) ||
 					filteredOptionsMarkets.length === 0 ? (
