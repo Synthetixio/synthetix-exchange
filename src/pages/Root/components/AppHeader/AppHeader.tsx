@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,7 @@ type Props = {
 
 type AppHeaderProps = StateProps & Props;
 
-export const AppHeader: FC<AppHeaderProps> = memo((props) => {
+export const AppHeader: FC<AppHeaderProps> = (props) => {
 	const { showThemeToggle = true, isOnSplashPage, isWalletConnected, ...rest } = props;
 	const { t } = useTranslation();
 
@@ -88,7 +88,7 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 			</Content>
 		</Container>
 	);
-});
+};
 
 const StyledLogoLink = styled(Link)`
 	height: 24px;

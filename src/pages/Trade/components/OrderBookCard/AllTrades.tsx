@@ -1,4 +1,4 @@
-import React, { FC, memo, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -29,20 +29,18 @@ type DispatchProps = {
 
 type AllTradesProps = StateProps & DispatchProps;
 
-const AllTrades: FC<AllTradesProps> = memo(
-	({ fetchAllTradesRequest, trades, isLoading, isLoaded }) => {
-		useEffect(() => {
-			fetchAllTradesRequest();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
+const AllTrades: FC<AllTradesProps> = ({ fetchAllTradesRequest, trades, isLoading, isLoaded }) => {
+	useEffect(() => {
+		fetchAllTradesRequest();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-		useInterval(() => {
-			fetchAllTradesRequest();
-		}, REFRESH_INTERVAL);
+	useInterval(() => {
+		fetchAllTradesRequest();
+	}, REFRESH_INTERVAL);
 
-		return <TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} />;
-	}
-);
+	return <TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} />;
+};
 
 const mapStateToProps = (state: RootState): StateProps => ({
 	trades: getAllTrades(state),

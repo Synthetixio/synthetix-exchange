@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 
 import { formatPercentage } from 'utils/formatters';
@@ -12,17 +12,15 @@ type ChangePercentProps = {
 	className?: string;
 };
 
-export const ChangePercent: FC<ChangePercentProps> = memo(
-	({ value, isLabel = false, labelSize = 'md', ...rest }) => (
-		<Container
-			isPositive={value >= 0}
-			isLabel={isLabel}
-			labelSize={labelSize as LabelSize}
-			{...rest}
-		>
-			{formatPercentage(value)}
-		</Container>
-	)
+export const ChangePercent: FC<ChangePercentProps> = ({
+	value,
+	isLabel = false,
+	labelSize = 'md',
+	...rest
+}) => (
+	<Container isPositive={value >= 0} isLabel={isLabel} labelSize={labelSize as LabelSize} {...rest}>
+		{formatPercentage(value)}
+	</Container>
 );
 
 const Container = styled.span<{ isLabel: boolean; isPositive: boolean; labelSize: LabelSize }>`

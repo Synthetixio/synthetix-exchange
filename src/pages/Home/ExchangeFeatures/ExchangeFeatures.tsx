@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,7 @@ import { darkTheme } from 'styles/theme';
 
 import { media } from 'shared/media';
 
-export const ExchangeFeatures = memo(() => {
+export const ExchangeFeatures = () => {
 	const { t } = useTranslation();
 
 	return (
@@ -64,7 +64,7 @@ export const ExchangeFeatures = memo(() => {
 			</StyledButtonPrimary>
 		</Container>
 	);
-});
+};
 
 const Container = styled.div`
 	padding: 120px 20px;

@@ -1,4 +1,4 @@
-import React, { memo, FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -39,7 +39,7 @@ type TradeProps = PropsFromRedux &
 		quoteCurrencyKey: CurrencyKey;
 	}>;
 
-const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair, synthsMap }) => {
+const Trade: FC<TradeProps> = ({ match, setSynthPair, synthPair, synthsMap }) => {
 	const [isReady, setIsReady] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -93,7 +93,7 @@ const Trade: FC<TradeProps> = memo(({ match, setSynthPair, synthPair, synthsMap 
 			</CenteredPageLayout>
 		</Container>
 	);
-});
+};
 
 const Container = styled.div`
 	height: 100%;

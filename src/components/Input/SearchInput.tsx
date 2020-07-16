@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -14,26 +14,31 @@ type SearchInputProps = {
 	autoFocus?: boolean;
 };
 
-export const SearchInput: FC<SearchInputProps> = memo(
-	({ onChange, value, placeholder, tabIndex, autoFocus, ...rest }) => {
-		const { t } = useTranslation();
+export const SearchInput: FC<SearchInputProps> = ({
+	onChange,
+	value,
+	placeholder,
+	tabIndex,
+	autoFocus,
+	...rest
+}) => {
+	const { t } = useTranslation();
 
-		return (
-			<Container {...rest}>
-				<StyledSearchIcon />
-				<StyledInput
-					className="search-input"
-					type="search"
-					placeholder={placeholder || t('common.search')}
-					onChange={onChange}
-					value={value}
-					tabIndex={tabIndex}
-					autoFocus={autoFocus}
-				/>
-			</Container>
-		);
-	}
-);
+	return (
+		<Container {...rest}>
+			<StyledSearchIcon />
+			<StyledInput
+				className="search-input"
+				type="search"
+				placeholder={placeholder || t('common.search')}
+				onChange={onChange}
+				value={value}
+				tabIndex={tabIndex}
+				autoFocus={autoFocus}
+			/>
+		</Container>
+	);
+};
 
 const Container = styled.div`
 	position: relative;

@@ -1,4 +1,4 @@
-import React, { FC, memo, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
@@ -54,130 +54,128 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MaturityPhaseCardProps = PropsFromRedux & TradeCardPhaseProps;
 
-const MaturityPhaseCard: FC<MaturityPhaseCardProps> = memo(
-	({
-		optionsMarket,
-		isWalletConnected,
-		accountMarketInfo,
-		addOptionsPendingTransaction,
-		updateOptionsPendingTransactionStatus,
-		currentWalletAddress,
-	}) => {
-		const { t } = useTranslation();
-		const BOMContract = useBOMContractContext();
-		const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
+const MaturityPhaseCard: FC<MaturityPhaseCardProps> = ({
+	optionsMarket,
+	isWalletConnected,
+	accountMarketInfo,
+	addOptionsPendingTransaction,
+	updateOptionsPendingTransactionStatus,
+	currentWalletAddress,
+}) => {
+	const { t } = useTranslation();
+	const BOMContract = useBOMContractContext();
+	const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
 
-		const [isExercising, setIsExercising] = useState<boolean>(false);
-		const [gasLimit, setGasLimit] = useState<number | null>(null);
+	const [isExercising, setIsExercising] = useState<boolean>(false);
+	const [gasLimit, setGasLimit] = useState<number | null>(null);
 
-		const { balances, claimable } = accountMarketInfo;
-		const { result } = optionsMarket;
+	const { balances, claimable } = accountMarketInfo;
+	const { result } = optionsMarket;
 
-		const longAmount = balances.long + claimable.long;
-		const shortAmount = balances.short + claimable.short;
-		const nothingToExercise = !longAmount && !shortAmount;
-		const isLongResult = result === 'long';
+	const longAmount = balances.long + claimable.long;
+	const shortAmount = balances.short + claimable.short;
+	const nothingToExercise = !longAmount && !shortAmount;
+	const isLongResult = result === 'long';
 
-		const buttonDisabled = isExercising || !isWalletConnected || nothingToExercise || !gasLimit;
+	const buttonDisabled = isExercising || !isWalletConnected || nothingToExercise || !gasLimit;
 
-		useEffect(() => {
-			const fetchGasLimit = async () => {
-				if (!isWalletConnected) return;
-				try {
-					const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-					const gasEstimate = await BOMContractWithSigner.estimate.exerciseOptions();
-					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
-				} catch (e) {
-					console.log(e);
-					setGasLimit(null);
-				}
-			};
-			fetchGasLimit();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isWalletConnected]);
-
-		const handleExercise = async () => {
+	useEffect(() => {
+		const fetchGasLimit = async () => {
+			if (!isWalletConnected) return;
 			try {
-				setTxErrorMessage(null);
-				setIsExercising(true);
 				const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
-				const tx = (await BOMContractWithSigner.exerciseOptions()) as ethers.ContractTransaction;
-
-				addOptionsPendingTransaction({
-					optionTransaction: {
-						market: optionsMarket.address,
-						currencyKey: optionsMarket.currencyKey,
-						account: currentWalletAddress!,
-						hash: tx.hash!,
-						type: 'exercise',
-						amount: isLongResult ? balances.long : balances.short,
-						side: isLongResult ? 'long' : 'short',
-					},
-				});
-
-				const txResult = await tx.wait();
-				if (txResult && txResult.transactionHash) {
-					updateOptionsPendingTransactionStatus({
-						hash: txResult.transactionHash,
-						status: 'confirmed',
-					});
-				}
+				const gasEstimate = await BOMContractWithSigner.estimate.exerciseOptions();
+				setGasLimit(normalizeGasLimit(Number(gasEstimate)));
 			} catch (e) {
 				console.log(e);
-				setTxErrorMessage(t('common.errors.unknown-error-try-again'));
-			} finally {
-				setIsExercising(false);
+				setGasLimit(null);
 			}
 		};
+		fetchGasLimit();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isWalletConnected]);
 
-		return (
-			<Card>
-				<StyledCardHeader>{t('options.market.trade-card.maturity.title')}</StyledCardHeader>
-				<StyledCardBody>
-					<StyledResultCard
-						icon={<FinishIcon />}
-						title={t('options.market.trade-card.maturity.card-title')}
-						subTitle={t('options.market.trade-card.maturity.card-subtitle')}
-						longAmount={longAmount}
-						shortAmount={shortAmount}
-						result={result}
-					/>
-					<Payout>
-						<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
-						<PayoutAmount>
-							{formatCurrencyWithSign(USD_SIGN, isLongResult ? longAmount : shortAmount)}{' '}
-							{SYNTHS_MAP.sUSD}
-						</PayoutAmount>
-					</Payout>
-					<StyledCardContent>
-						<NetworkFees gasLimit={gasLimit} />
-						<ActionButton
-							size="lg"
-							palette="primary"
-							disabled={buttonDisabled}
-							onClick={handleExercise}
-						>
-							{nothingToExercise
-								? t('options.market.trade-card.maturity.confirm-button.success-label')
-								: !isExercising
-								? t('options.market.trade-card.maturity.confirm-button.label')
-								: t('options.market.trade-card.maturity.confirm-button.progress-label')}
-						</ActionButton>
-						{txErrorMessage && (
-							<TxErrorMessage onDismiss={() => setTxErrorMessage(null)}>
-								{txErrorMessage}
-							</TxErrorMessage>
-						)}
-						<PhaseEnd>
-							{t('options.market.trade-card.maturity.footer.end-label')}{' '}
-							<StyledTimeRemaining end={optionsMarket.timeRemaining} />
-						</PhaseEnd>
-					</StyledCardContent>
-				</StyledCardBody>
-			</Card>
-		);
-	}
-);
+	const handleExercise = async () => {
+		try {
+			setTxErrorMessage(null);
+			setIsExercising(true);
+			const BOMContractWithSigner = BOMContract.connect((snxJSConnector as any).signer);
+			const tx = (await BOMContractWithSigner.exerciseOptions()) as ethers.ContractTransaction;
+
+			addOptionsPendingTransaction({
+				optionTransaction: {
+					market: optionsMarket.address,
+					currencyKey: optionsMarket.currencyKey,
+					account: currentWalletAddress!,
+					hash: tx.hash!,
+					type: 'exercise',
+					amount: isLongResult ? balances.long : balances.short,
+					side: isLongResult ? 'long' : 'short',
+				},
+			});
+
+			const txResult = await tx.wait();
+			if (txResult && txResult.transactionHash) {
+				updateOptionsPendingTransactionStatus({
+					hash: txResult.transactionHash,
+					status: 'confirmed',
+				});
+			}
+		} catch (e) {
+			console.log(e);
+			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+		} finally {
+			setIsExercising(false);
+		}
+	};
+
+	return (
+		<Card>
+			<StyledCardHeader>{t('options.market.trade-card.maturity.title')}</StyledCardHeader>
+			<StyledCardBody>
+				<StyledResultCard
+					icon={<FinishIcon />}
+					title={t('options.market.trade-card.maturity.card-title')}
+					subTitle={t('options.market.trade-card.maturity.card-subtitle')}
+					longAmount={longAmount}
+					shortAmount={shortAmount}
+					result={result}
+				/>
+				<Payout>
+					<PayoutTitle>{t('options.market.trade-card.maturity.payout-amount')}</PayoutTitle>
+					<PayoutAmount>
+						{formatCurrencyWithSign(USD_SIGN, isLongResult ? longAmount : shortAmount)}{' '}
+						{SYNTHS_MAP.sUSD}
+					</PayoutAmount>
+				</Payout>
+				<StyledCardContent>
+					<NetworkFees gasLimit={gasLimit} />
+					<ActionButton
+						size="lg"
+						palette="primary"
+						disabled={buttonDisabled}
+						onClick={handleExercise}
+					>
+						{nothingToExercise
+							? t('options.market.trade-card.maturity.confirm-button.success-label')
+							: !isExercising
+							? t('options.market.trade-card.maturity.confirm-button.label')
+							: t('options.market.trade-card.maturity.confirm-button.progress-label')}
+					</ActionButton>
+					{txErrorMessage && (
+						<TxErrorMessage onDismiss={() => setTxErrorMessage(null)}>
+							{txErrorMessage}
+						</TxErrorMessage>
+					)}
+					<PhaseEnd>
+						{t('options.market.trade-card.maturity.footer.end-label')}{' '}
+						<StyledTimeRemaining end={optionsMarket.timeRemaining} />
+					</PhaseEnd>
+				</StyledCardContent>
+			</StyledCardBody>
+		</Card>
+	);
+};
 
 const StyledResultCard = styled(ResultCard)`
 	margin-bottom: 21px;

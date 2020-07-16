@@ -1,4 +1,4 @@
-import React, { FC, memo, useContext, useState, useEffect } from 'react';
+import React, { FC, useContext, useState, useEffect } from 'react';
 import styled, { createGlobalStyle, ThemeContext } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -49,91 +49,86 @@ type DispatchProps = {
 
 type GweiPopupProps = StateProps & DispatchProps;
 
-const GweiPopup: FC<GweiPopupProps> = memo(
-	({
-		popupIsVisible,
-		toggleGweiPopup,
-		setGasPrice,
-		gasInfo: { gasPrice = 1, gasLimit, gasSpeed },
-		ethRate,
-	}) => {
-		const [gasSettings, setGasSettings] = useState<{
-			gasPrice?: number;
-			usdPrice?: number;
-		}>({});
+const GweiPopup: FC<GweiPopupProps> = ({
+	popupIsVisible,
+	toggleGweiPopup,
+	setGasPrice,
+	gasInfo: { gasPrice = 1, gasLimit, gasSpeed },
+	ethRate,
+}) => {
+	const [gasSettings, setGasSettings] = useState<{
+		gasPrice?: number;
+		usdPrice?: number;
+	}>({});
 
-		const { colors } = useContext(ThemeContext);
-		const { t } = useTranslation();
+	const { colors } = useContext(ThemeContext);
+	const { t } = useTranslation();
 
-		useEffect(() => {
-			if (!gasPrice || !gasLimit || !ethRate) return;
+	useEffect(() => {
+		if (!gasPrice || !gasLimit || !ethRate) return;
 
-			setGasSettings({
-				gasPrice,
-				usdPrice: getTransactionPrice(gasPrice, gasLimit, ethRate),
-			});
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [gasPrice, gasLimit, ethRate]);
+		setGasSettings({
+			gasPrice,
+			usdPrice: getTransactionPrice(gasPrice, gasLimit, ethRate),
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [gasPrice, gasLimit, ethRate]);
 
-		return (
-			<>
-				<GlobalStyle />
-				<FullScreenModal open={popupIsVisible}>
-					<Container>
-						<FullScreenModalCloseButton onClick={() => toggleGweiPopup(false)}>
-							<CloseCrossIcon />
-						</FullScreenModalCloseButton>
-						<Body>
-							<Title>{t('modals.gwei.title')}</Title>
-							<BodyMedium>{t('modals.gwei.desc')}</BodyMedium>
-							<SliderContainer>
-								<Slider
-									min={0}
-									max={100}
-									value={gasSettings.gasPrice}
-									tooltipRenderer={() => (
-										<TooltipInner>
-											<TooltipValue>{gasSettings.gasPrice} GWEI</TooltipValue>
-											{/* <TooltipValue>
+	return (
+		<>
+			<GlobalStyle />
+			<FullScreenModal open={popupIsVisible}>
+				<Container>
+					<FullScreenModalCloseButton onClick={() => toggleGweiPopup(false)}>
+						<CloseCrossIcon />
+					</FullScreenModalCloseButton>
+					<Body>
+						<Title>{t('modals.gwei.title')}</Title>
+						<BodyMedium>{t('modals.gwei.desc')}</BodyMedium>
+						<SliderContainer>
+							<Slider
+								min={0}
+								max={100}
+								value={gasSettings.gasPrice}
+								tooltipRenderer={() => (
+									<TooltipInner>
+										<TooltipValue>{gasSettings.gasPrice} GWEI</TooltipValue>
+										{/* <TooltipValue>
 												{formatCurrencyWithSign(usdPriceSign, gasSettings.usdPrice || 0)}
 											</TooltipValue> */}
-										</TooltipInner>
-									)}
-									onChange={(newPrice: number) => {
-										setGasSettings({
-											gasPrice: newPrice,
-											usdPrice: getTransactionPrice(newPrice, gasLimit, ethRate),
-										});
-									}}
-								/>
-							</SliderContainer>
-							<Table style={{ height: 'auto' }}>
-								<Thead>
-									<Tr>
-										<Th>
-											<DataSmall color={colors.fontTertiary}>
-												{t('modals.gwei.table.speed-allowed')}
-											</DataSmall>
-										</Th>
-										<Th>
-											<DataSmall color={colors.fontTertiary}>
-												{t('modals.gwei.table.slow')}
-											</DataSmall>
-										</Th>
-										<Th>
-											<DataSmall color={colors.fontTertiary}>
-												{t('modals.gwei.table.average')}
-											</DataSmall>
-										</Th>
-										<Th>
-											<DataSmall color={colors.fontTertiary}>
-												{t('modals.gwei.table.fast')}
-											</DataSmall>
-										</Th>
-									</Tr>
-								</Thead>
-								<Tbody>
-									{/* <Tr>
+									</TooltipInner>
+								)}
+								onChange={(newPrice: number) => {
+									setGasSettings({
+										gasPrice: newPrice,
+										usdPrice: getTransactionPrice(newPrice, gasLimit, ethRate),
+									});
+								}}
+							/>
+						</SliderContainer>
+						<Table style={{ height: 'auto' }}>
+							<Thead>
+								<Tr>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>
+											{t('modals.gwei.table.speed-allowed')}
+										</DataSmall>
+									</Th>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>{t('modals.gwei.table.slow')}</DataSmall>
+									</Th>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>
+											{t('modals.gwei.table.average')}
+										</DataSmall>
+									</Th>
+									<Th>
+										<DataSmall color={colors.fontTertiary}>{t('modals.gwei.table.fast')}</DataSmall>
+									</Th>
+								</Tr>
+							</Thead>
+							<Tbody>
+								{/* <Tr>
 										<Td>
 											<DataLabel>{t('modals.gwei.table.price')}</DataLabel>
 										</Td>
@@ -162,40 +157,39 @@ const GweiPopup: FC<GweiPopupProps> = memo(
 											</DataLabel>
 										</Td>
 									</Tr> */}
-									<Tr>
-										<Td>
-											<DataLabel>{t('common.gwei')}</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>{formatCurrency(gasSpeed.slowAllowed)}</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>{formatCurrency(gasSpeed.averageAllowed)}</DataLabel>
-										</Td>
-										<Td>
-											<DataLabel>{formatCurrency(gasSpeed.fastestAllowed)}</DataLabel>
-										</Td>
-									</Tr>
-								</Tbody>
-							</Table>
-							<InputRow>
-								<ButtonPrimary
-									style={{ flex: 1, width: 'auto' }}
-									onClick={() => {
-										setGasPrice(gasSettings.gasPrice);
-										toggleGweiPopup(false);
-									}}
-								>
-									{t('modals.gwei.submit')}
-								</ButtonPrimary>
-							</InputRow>
-						</Body>
-					</Container>
-				</FullScreenModal>
-			</>
-		);
-	}
-);
+								<Tr>
+									<Td>
+										<DataLabel>{t('common.gwei')}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatCurrency(gasSpeed.slowAllowed)}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatCurrency(gasSpeed.averageAllowed)}</DataLabel>
+									</Td>
+									<Td>
+										<DataLabel>{formatCurrency(gasSpeed.fastestAllowed)}</DataLabel>
+									</Td>
+								</Tr>
+							</Tbody>
+						</Table>
+						<InputRow>
+							<ButtonPrimary
+								style={{ flex: 1, width: 'auto' }}
+								onClick={() => {
+									setGasPrice(gasSettings.gasPrice);
+									toggleGweiPopup(false);
+								}}
+							>
+								{t('modals.gwei.submit')}
+							</ButtonPrimary>
+						</InputRow>
+					</Body>
+				</Container>
+			</FullScreenModal>
+		</>
+	);
+};
 
 const BodyMedium = styled.span`
 	${bodyCSS};

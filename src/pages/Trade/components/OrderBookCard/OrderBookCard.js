@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -21,89 +21,87 @@ import MyOrders from './myOrders';
 import AllTrades from './AllTrades';
 import MyTrades from './MyTrades';
 
-const OrderBookCard = memo(
-	({
-		walletInfo: { currentWallet },
-		pendingTransactions,
-		transactions,
-		removePendingTransaction,
-		updateTransaction,
-	}) => {
-		const { t } = useTranslation();
+const OrderBookCard = ({
+	walletInfo: { currentWallet },
+	pendingTransactions,
+	transactions,
+	removePendingTransaction,
+	updateTransaction,
+}) => {
+	const { t } = useTranslation();
 
-		const tabContent = useMemo(
-			() => [
-				{
-					name: t('trade.order-book-card.tabs.your-orders'),
-					id: 'yourOrder',
-					component: <MyOrders />,
-				},
-				{
-					name: t('trade.order-book-card.tabs.your-trades'),
-					id: 'yourTrades',
-					component: <MyTrades />,
-				},
-				{
-					name: t('trade.order-book-card.tabs.all-trades'),
-					id: 'allTrades',
-					component: <AllTrades />,
-				},
-			],
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-			[]
-		);
+	const tabContent = useMemo(
+		() => [
+			{
+				name: t('trade.order-book-card.tabs.your-orders'),
+				id: 'yourOrder',
+				component: <MyOrders />,
+			},
+			{
+				name: t('trade.order-book-card.tabs.your-trades'),
+				id: 'yourTrades',
+				component: <MyTrades />,
+			},
+			{
+				name: t('trade.order-book-card.tabs.all-trades'),
+				id: 'allTrades',
+				component: <AllTrades />,
+			},
+		],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[]
+	);
 
-		const [activeTab, setActiveTab] = useState(tabContent[0]);
+	const [activeTab, setActiveTab] = useState(tabContent[0]);
 
-		// TODO: Move this logic into Redux
-		useEffect(() => {
-			const handlePendingTransactions = async () => {
-				const {
-					utils: { waitForTransaction },
-				} = snxJSConnector;
-				try {
-					if (pendingTransactions.length === 0) return;
-					const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
-					removePendingTransaction(latestTransactionHash);
-					const status = await waitForTransaction(latestTransactionHash);
-					const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
-					if (status) {
-						updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
-					} else {
-						updateTransaction(
-							{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
-							matchingTransaction.id
-						);
-					}
-				} catch (e) {
-					console.log(e);
+	// TODO: Move this logic into Redux
+	useEffect(() => {
+		const handlePendingTransactions = async () => {
+			const {
+				utils: { waitForTransaction },
+			} = snxJSConnector;
+			try {
+				if (pendingTransactions.length === 0) return;
+				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
+				removePendingTransaction(latestTransactionHash);
+				const status = await waitForTransaction(latestTransactionHash);
+				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
+				if (status) {
+					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
+				} else {
+					updateTransaction(
+						{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },
+						matchingTransaction.id
+					);
 				}
-			};
-			handlePendingTransactions();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [pendingTransactions.length]);
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		handlePendingTransactions();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pendingTransactions.length]);
 
-		return (
-			<StyledCard>
-				<StyledCardBody>
-					<Tabs>
-						{tabContent.map((tab) => (
-							<Tab
-								key={tab.id}
-								isDisabled={tab.id === 'yourTrades' && !currentWallet}
-								onClick={() => setActiveTab(tab)}
-								active={tab.id === activeTab.id}
-							>
-								<DataSmall>{tab.name}</DataSmall>
-							</Tab>
-						))}
-					</Tabs>
-					{activeTab.component}
-				</StyledCardBody>
-			</StyledCard>
-		);
-	}
-);
+	return (
+		<StyledCard>
+			<StyledCardBody>
+				<Tabs>
+					{tabContent.map((tab) => (
+						<Tab
+							key={tab.id}
+							isDisabled={tab.id === 'yourTrades' && !currentWallet}
+							onClick={() => setActiveTab(tab)}
+							active={tab.id === activeTab.id}
+						>
+							<DataSmall>{tab.name}</DataSmall>
+						</Tab>
+					))}
+				</Tabs>
+				{activeTab.component}
+			</StyledCardBody>
+		</StyledCard>
+	);
+};
 
 const StyledCard = styled(Card)`
 	flex-grow: 1;

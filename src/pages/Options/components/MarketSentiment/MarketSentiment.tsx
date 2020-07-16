@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -15,65 +15,61 @@ type MarketSentimentProps = {
 	display?: Display;
 };
 
-export const MarketSentiment: FC<MarketSentimentProps> = memo(
-	({ long, short, display, ...rest }) => {
-		const { t } = useTranslation();
+export const MarketSentiment: FC<MarketSentimentProps> = ({ long, short, display, ...rest }) => {
+	const { t } = useTranslation();
 
-		const priceLong = long * 100;
-		const priceShort = short * 100;
-		const range = priceLong + priceShort;
+	const priceLong = long * 100;
+	const priceShort = short * 100;
+	const range = priceLong + priceShort;
 
-		const longs = (
-			<Longs className="longs">
-				{t('common.val-in-cents', { val: formatCurrency(priceLong) })}
-			</Longs>
-		);
-		const shorts = (
-			<Shorts className="shorts">
-				{t('common.val-in-cents', { val: formatCurrency(priceShort) })}
-			</Shorts>
-		);
+	const longs = (
+		<Longs className="longs">{t('common.val-in-cents', { val: formatCurrency(priceLong) })}</Longs>
+	);
+	const shorts = (
+		<Shorts className="shorts">
+			{t('common.val-in-cents', { val: formatCurrency(priceShort) })}
+		</Shorts>
+	);
 
-		const longsPercent = (
-			<LongsPercent
-				className="longs-percent percent"
-				style={{ width: `calc(${(priceLong / range) * 100}% - 2px)` }}
-			/>
-		);
-		const shortsPercent = (
-			<ShortsPercent
-				className="shorts-percent percent"
-				style={{ width: `calc(${(priceShort / range) * 100}% - 2px)` }}
-			/>
-		);
-		return (
-			<Container display={display} {...rest}>
-				{display === 'row' && (
-					<>
-						<FlexDivRowCentered>
-							{longs}
-							{shorts}
-						</FlexDivRowCentered>
-						<FlexDivRowCentered>
-							{longsPercent}
-							{shortsPercent}
-						</FlexDivRowCentered>
-					</>
-				)}
-				{display === 'col' && (
-					<>
+	const longsPercent = (
+		<LongsPercent
+			className="longs-percent percent"
+			style={{ width: `calc(${(priceLong / range) * 100}% - 2px)` }}
+		/>
+	);
+	const shortsPercent = (
+		<ShortsPercent
+			className="shorts-percent percent"
+			style={{ width: `calc(${(priceShort / range) * 100}% - 2px)` }}
+		/>
+	);
+	return (
+		<Container display={display} {...rest}>
+			{display === 'row' && (
+				<>
+					<FlexDivRowCentered>
 						{longs}
-						<FlexDivRowCentered>
-							{longsPercent}
-							{shortsPercent}
-						</FlexDivRowCentered>
 						{shorts}
-					</>
-				)}
-			</Container>
-		);
-	}
-);
+					</FlexDivRowCentered>
+					<FlexDivRowCentered>
+						{longsPercent}
+						{shortsPercent}
+					</FlexDivRowCentered>
+				</>
+			)}
+			{display === 'col' && (
+				<>
+					{longs}
+					<FlexDivRowCentered>
+						{longsPercent}
+						{shortsPercent}
+					</FlexDivRowCentered>
+					{shorts}
+				</>
+			)}
+		</Container>
+	);
+};
 
 MarketSentiment.defaultProps = {
 	display: 'row',

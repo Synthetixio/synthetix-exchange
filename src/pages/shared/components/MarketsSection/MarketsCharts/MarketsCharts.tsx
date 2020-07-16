@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
@@ -29,27 +29,25 @@ type Props = {
 
 type MarketsChartsProps = StateProps & Props;
 
-export const MarketsCharts: FC<MarketsChartsProps> = memo(
-	({ markets, synthsMap, marketsLoaded }) => (
-		<Container>
-			{markets
-				.slice(0, Math.min(CHART_CARDS, markets.length))
-				.map(({ quoteCurrencyKey, pair, baseCurrencyKey, lastPrice, rates24hChange, rates }) => {
-					const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
+export const MarketsCharts: FC<MarketsChartsProps> = ({ markets, synthsMap, marketsLoaded }) => (
+	<Container>
+		{markets
+			.slice(0, Math.min(CHART_CARDS, markets.length))
+			.map(({ quoteCurrencyKey, pair, baseCurrencyKey, lastPrice, rates24hChange, rates }) => {
+				const sign = synthsMap[quoteCurrencyKey] && synthsMap[quoteCurrencyKey].sign;
 
-					return (
-						<StyledChartCard
-							key={pair}
-							currencyLabel={formatCurrencyPair(baseCurrencyKey, quoteCurrencyKey)}
-							price={lastPrice != null ? formatCurrencyWithSign(sign, lastPrice) : null}
-							change={rates24hChange}
-							chartData={marketsLoaded ? rates : []}
-							onClick={() => navigateToTrade(baseCurrencyKey, quoteCurrencyKey)}
-						/>
-					);
-				})}
-		</Container>
-	)
+				return (
+					<StyledChartCard
+						key={pair}
+						currencyLabel={formatCurrencyPair(baseCurrencyKey, quoteCurrencyKey)}
+						price={lastPrice != null ? formatCurrencyWithSign(sign, lastPrice) : null}
+						change={rates24hChange}
+						chartData={marketsLoaded ? rates : []}
+						onClick={() => navigateToTrade(baseCurrencyKey, quoteCurrencyKey)}
+					/>
+				);
+			})}
+	</Container>
 );
 
 const Container = styled.div`

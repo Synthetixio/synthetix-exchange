@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -18,46 +18,44 @@ type AdvancedSearchProps = {
 	onSwapCurrencies: () => void;
 };
 
-const AdvancedSearch: FC<AdvancedSearchProps> = memo(
-	({
-		onClose,
-		baseCurrencySearch,
-		onBaseCurrencyChange,
-		quoteCurrencySearch,
-		onQuoteCurrencyChange,
-		onSwapCurrencies,
-	}) => {
-		const { t } = useTranslation();
+const AdvancedSearch: FC<AdvancedSearchProps> = ({
+	onClose,
+	baseCurrencySearch,
+	onBaseCurrencyChange,
+	quoteCurrencySearch,
+	onQuoteCurrencyChange,
+	onSwapCurrencies,
+}) => {
+	const { t } = useTranslation();
 
-		return (
-			<>
-				<SearchContainer>
-					<SearchInput
-						value={baseCurrencySearch}
-						onChange={onBaseCurrencyChange}
-						placeholder={t('common.buy')}
-						tabIndex={1}
-						autoFocus={true}
-					/>
-					<IconButton onClick={onSwapCurrencies}>
-						<ReverseArrowIcon />
-					</IconButton>
-				</SearchContainer>
-				<SearchContainer>
-					<SearchInput
-						value={quoteCurrencySearch}
-						onChange={onQuoteCurrencyChange}
-						placeholder={t('common.sell')}
-						tabIndex={2}
-					/>
-					<IconButton onClick={onClose}>
-						<CloseCrossIcon width="10px" height="10px" />
-					</IconButton>
-				</SearchContainer>
-			</>
-		);
-	}
-);
+	return (
+		<>
+			<SearchContainer>
+				<SearchInput
+					value={baseCurrencySearch}
+					onChange={onBaseCurrencyChange}
+					placeholder={t('common.buy')}
+					tabIndex={1}
+					autoFocus={true}
+				/>
+				<IconButton onClick={onSwapCurrencies}>
+					<ReverseArrowIcon />
+				</IconButton>
+			</SearchContainer>
+			<SearchContainer>
+				<SearchInput
+					value={quoteCurrencySearch}
+					onChange={onQuoteCurrencyChange}
+					placeholder={t('common.sell')}
+					tabIndex={2}
+				/>
+				<IconButton onClick={onClose}>
+					<CloseCrossIcon width="10px" height="10px" />
+				</IconButton>
+			</SearchContainer>
+		</>
+	);
+};
 
 const SearchContainer = styled.div`
 	display: grid;

@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
@@ -31,7 +31,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MarketCreationProps = PropsFromRedux;
 
-const MarketCreation: FC<MarketCreationProps> = memo(({ isWalletConnected, toggleWalletPopup }) => {
+const MarketCreation: FC<MarketCreationProps> = ({ isWalletConnected, toggleWalletPopup }) => {
 	const { t } = useTranslation();
 
 	const subTitle = (
@@ -68,7 +68,7 @@ const MarketCreation: FC<MarketCreationProps> = memo(({ isWalletConnected, toggl
 			)}
 		</Container>
 	);
-});
+};
 
 const Title = styled.div`
 	${headingH4CSS};

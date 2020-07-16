@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
@@ -22,7 +22,7 @@ type SynthsChartsProps = {
 	synthsWithRates: SynthDefinitionWithRates[];
 	maxTopSynths: number;
 };
-export const SynthsCharts: FC<SynthsChartsProps> = memo(({ synthsWithRates, maxTopSynths }) => {
+export const SynthsCharts: FC<SynthsChartsProps> = ({ synthsWithRates, maxTopSynths }) => {
 	const { t } = useTranslation();
 
 	const charts = synthsWithRates.map(({ name, historicalRates, lastPrice }) => {
@@ -59,7 +59,7 @@ export const SynthsCharts: FC<SynthsChartsProps> = memo(({ synthsWithRates, maxT
 			</GridItem>
 		</GridContainer>
 	);
-});
+};
 
 const GridContainer = styled.div`
 	display: grid;

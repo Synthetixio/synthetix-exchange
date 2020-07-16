@@ -1,4 +1,4 @@
-import React, { memo, FC, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { useQuery } from 'react-query';
 import snxData from 'synthetix-data';
@@ -37,7 +37,7 @@ type HomeProps = PropsFromRedux;
 
 const MAX_HOT_MARKETS = 4;
 
-const Home: FC<HomeProps> = memo(({ synthsMap }) => {
+const Home: FC<HomeProps> = ({ synthsMap }) => {
 	const marketsQuery = useQuery<OptionsMarkets, any>(QUERY_KEYS.BinaryOptions.Markets, () =>
 		snxData.binaryOptions.markets()
 	);
@@ -77,7 +77,7 @@ const Home: FC<HomeProps> = memo(({ synthsMap }) => {
 			)}
 		</ThemeProvider>
 	);
-});
+};
 
 const HotMarketsContent = styled(PageContent)`
 	position: relative;

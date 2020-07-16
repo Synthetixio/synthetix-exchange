@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -38,54 +38,57 @@ type Props = {
 
 type UserInfoProps = StateProps & DispatchProps & Props;
 
-export const UserInfo: FC<UserInfoProps> = memo(
-	({ showWalletPopup, walletInfo, setBlurBackgroundIsVisible, isOnSplashPage }) => {
-		const { t } = useTranslation();
-		const { currentWallet, networkName } = walletInfo;
-		const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState<boolean>(false);
+export const UserInfo: FC<UserInfoProps> = ({
+	showWalletPopup,
+	walletInfo,
+	setBlurBackgroundIsVisible,
+	isOnSplashPage,
+}) => {
+	const { t } = useTranslation();
+	const { currentWallet, networkName } = walletInfo;
+	const [walletDropdownIsOpen, setWalletDropdownIsOpen] = useState<boolean>(false);
 
-		const setDropdownIsOpen = (isOpen: boolean) => {
-			if (!isOpen && !walletDropdownIsOpen) return;
-			setWalletDropdownIsOpen(isOpen);
-			setBlurBackgroundIsVisible(isOpen);
+	const setDropdownIsOpen = (isOpen: boolean) => {
+		if (!isOpen && !walletDropdownIsOpen) return;
+		setWalletDropdownIsOpen(isOpen);
+		setBlurBackgroundIsVisible(isOpen);
+	};
+
+	useEffect(() => {
+		return () => {
+			setBlurBackgroundIsVisible(false);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-		useEffect(() => {
-			return () => {
-				setBlurBackgroundIsVisible(false);
-			};
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		return currentWallet != null ? (
-			<StyledDropdownPanel
-				height="auto"
-				isOpen={walletDropdownIsOpen}
-				handleClose={() => setDropdownIsOpen(false)}
-				width={CREATE_ORDER_CARD_WIDTH}
-				onHeaderClick={() => setDropdownIsOpen(!walletDropdownIsOpen)}
-				header={
-					<UserInfoContainer isOnSplashPage={isOnSplashPage}>
-						<WalletInfo>
-							<StatusDot />
-							<WalletAddress>{truncateAddress(currentWallet)}</WalletAddress>
-							<NetworkLabel>{networkName}</NetworkLabel>
-						</WalletInfo>
-						<WalletIconContainer isOnSplashPage={isOnSplashPage}>
-							<WalletIcon />
-							<MenuArrowDownIcon className="arrow" />
-						</WalletIconContainer>
-					</UserInfoContainer>
-				}
-				body={<WalletMenu setDropdownIsOpen={setDropdownIsOpen} />}
-			/>
-		) : (
-			<StyledButton palette="primary" size="sm" onClick={showWalletPopup}>
-				{t('header.connect-wallet')}
-			</StyledButton>
-		);
-	}
-);
+	return currentWallet != null ? (
+		<StyledDropdownPanel
+			height="auto"
+			isOpen={walletDropdownIsOpen}
+			handleClose={() => setDropdownIsOpen(false)}
+			width={CREATE_ORDER_CARD_WIDTH}
+			onHeaderClick={() => setDropdownIsOpen(!walletDropdownIsOpen)}
+			header={
+				<UserInfoContainer isOnSplashPage={isOnSplashPage}>
+					<WalletInfo>
+						<StatusDot />
+						<WalletAddress>{truncateAddress(currentWallet)}</WalletAddress>
+						<NetworkLabel>{networkName}</NetworkLabel>
+					</WalletInfo>
+					<WalletIconContainer isOnSplashPage={isOnSplashPage}>
+						<WalletIcon />
+						<MenuArrowDownIcon className="arrow" />
+					</WalletIconContainer>
+				</UserInfoContainer>
+			}
+			body={<WalletMenu setDropdownIsOpen={setDropdownIsOpen} />}
+		/>
+	) : (
+		<StyledButton palette="primary" size="sm" onClick={showWalletPopup}>
+			{t('header.connect-wallet')}
+		</StyledButton>
+	);
+};
 
 const StyledDropdownPanel = styled(DropdownPanel)`
 	${media.medium`

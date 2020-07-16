@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -43,68 +43,71 @@ type NetworkFeesProps = PropsFromRedux & {
 	amount: string | number;
 };
 
-const NetworkFees: FC<NetworkFeesProps> = memo(
-	({ className, toggleGweiPopup, gasInfo, ethRate, gasLimit, fees, type, amount }) => {
-		const { t } = useTranslation();
+const NetworkFees: FC<NetworkFeesProps> = ({
+	className,
+	toggleGweiPopup,
+	gasInfo,
+	ethRate,
+	gasLimit,
+	fees,
+	type,
+	amount,
+}) => {
+	const { t } = useTranslation();
 
-		const { gasPrice } = gasInfo;
-		const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
-		const bidOrRefundFee = fees
-			? type === 'bid'
-				? fees.creatorFee + fees.poolFee
-				: fees.refundFee
-			: 0;
+	const { gasPrice } = gasInfo;
+	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
+	const bidOrRefundFee = fees
+		? type === 'bid'
+			? fees.creatorFee + fees.poolFee
+			: fees.refundFee
+		: 0;
 
-		const totalCost = networkFee + bidOrRefundFee * Number(amount);
+	const totalCost = networkFee + bidOrRefundFee * Number(amount);
 
-		const getTooltipBody = () => (
-			<TooltipContent>
-				<TooltipContentRow>
-					<StyledFlexDiv>
-						<TooltipFeeBlock>
-							<TooltipLabel>
-								{t(`options.market.trade-card.bidding.common.${type}-fee`)}
-							</TooltipLabel>
-							<TooltipLabel>{`(${formatPercentage(bidOrRefundFee, 0)})`}</TooltipLabel>
-						</TooltipFeeBlock>
-						<TooltipLabel>
-							{formatCurrencyWithSign(USD_SIGN, bidOrRefundFee * Number(amount))}
-						</TooltipLabel>
-					</StyledFlexDiv>
-				</TooltipContentRow>
-				<TooltipContentRow>
-					<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
-					<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, networkFee)}</TooltipLabel>
-				</TooltipContentRow>
-			</TooltipContent>
-		);
+	const getTooltipBody = () => (
+		<TooltipContent>
+			<TooltipContentRow>
+				<StyledFlexDiv>
+					<TooltipFeeBlock>
+						<TooltipLabel>{t(`options.market.trade-card.bidding.common.${type}-fee`)}</TooltipLabel>
+						<TooltipLabel>{`(${formatPercentage(bidOrRefundFee, 0)})`}</TooltipLabel>
+					</TooltipFeeBlock>
+					<TooltipLabel>
+						{formatCurrencyWithSign(USD_SIGN, bidOrRefundFee * Number(amount))}
+					</TooltipLabel>
+				</StyledFlexDiv>
+			</TooltipContentRow>
+			<TooltipContentRow>
+				<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
+				<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, networkFee)}</TooltipLabel>
+			</TooltipContentRow>
+		</TooltipContent>
+	);
 
-		return (
-			<Container className={className}>
-				<FlexDivRow>
-					<FlexDivCentered>
-						{t(`options.market.trade-card.bidding.common.${type}-fee`)}
-						<NetworkInfoTooltip title={getTooltipBody()}>
-							<QuestionMarkIcon>
-								<QuestionMarkStyled />
-							</QuestionMarkIcon>
-						</NetworkInfoTooltip>
-					</FlexDivCentered>
-					<div>{formatCurrencyWithSign(USD_SIGN, totalCost)}</div>
-				</FlexDivRow>
-				<FlexDivRow>
-					<div>{t('common.gas-price-gwei')}</div>
-					<div>
-						{gasPrice || 0}
-						<ButtonEdit onClick={() => toggleGweiPopup(true)}>
-							{t('common.actions.edit')}
-						</ButtonEdit>
-					</div>
-				</FlexDivRow>
-			</Container>
-		);
-	}
-);
+	return (
+		<Container className={className}>
+			<FlexDivRow>
+				<FlexDivCentered>
+					{t(`options.market.trade-card.bidding.common.${type}-fee`)}
+					<NetworkInfoTooltip title={getTooltipBody()}>
+						<QuestionMarkIcon>
+							<QuestionMarkStyled />
+						</QuestionMarkIcon>
+					</NetworkInfoTooltip>
+				</FlexDivCentered>
+				<div>{formatCurrencyWithSign(USD_SIGN, totalCost)}</div>
+			</FlexDivRow>
+			<FlexDivRow>
+				<div>{t('common.gas-price-gwei')}</div>
+				<div>
+					{gasPrice || 0}
+					<ButtonEdit onClick={() => toggleGweiPopup(true)}>{t('common.actions.edit')}</ButtonEdit>
+				</div>
+			</FlexDivRow>
+		</Container>
+	);
+};
 
 export const Container = styled(GridDivRow)`
 	${formDataCSS};

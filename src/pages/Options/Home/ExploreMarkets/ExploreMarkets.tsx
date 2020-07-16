@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { FC, useState, useEffect, useMemo, useCallback } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +14,6 @@ import { Button } from 'components/Button';
 import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { RootState } from 'ducks/types';
 
-import ROUTES, { navigateTo } from 'constants/routes';
-
 import { ReactComponent as PencilIcon } from 'assets/images/pencil.svg';
 import { ReactComponent as PersonIcon } from 'assets/images/person.svg';
 import { ReactComponent as NoResultsIcon } from 'assets/images/no-results.svg';
@@ -29,6 +27,7 @@ import QUERY_KEYS from 'constants/queryKeys';
 import useDebouncedMemo from 'shared/hooks/useDebouncedMemo';
 
 import MarketsTable from '../MarketsTable';
+import ROUTES, { navigateTo } from 'constants/routes';
 
 const mapStateToProps = (state: RootState) => ({
 	isWalletConnected: getIsWalletConnected(state),
@@ -65,214 +64,209 @@ const defaultFilter: Filter = {
 	name: 'phase',
 };
 
-const userFilters: Array<{ filterName: Filter['name']; icon: JSX.Element }> = [
-	{
-		filterName: 'user-bids',
-		icon: <PersonIcon />,
-	},
-	{
-		filterName: 'creator',
-		icon: <PencilIcon />,
-	},
-];
+const ExploreMarkets: FC<ExploreMarketsProps> = ({
+	optionsMarkets,
+	isWalletConnected,
+	currentWalletAddress,
+}) => {
+	const classes = useStyles();
+	const { t } = useTranslation();
+	const [assetSearch, setAssetSearch] = useState<string>('');
+	const [filter, setFilter] = useState<Filter>(defaultFilter);
 
-const ExploreMarkets: FC<ExploreMarketsProps> = memo(
-	({ optionsMarkets, isWalletConnected, currentWalletAddress }) => {
-		const classes = useStyles();
-		const { t } = useTranslation();
-		const [assetSearch, setAssetSearch] = useState<string>('');
-		const [filter, setFilter] = useState<Filter>(defaultFilter);
+	const userBidsMarketsQuery = useQuery<string[], any>(
+		QUERY_KEYS.BinaryOptions.UserMarkets(currentWalletAddress || ''),
+		() => snxData.binaryOptions.marketsBidOn({ account: currentWalletAddress }),
+		{
+			enabled: isWalletConnected && filter.name === 'user-bids',
+		}
+	);
 
-		const userBidsMarketsQuery = useQuery<string[], any>(
-			QUERY_KEYS.BinaryOptions.UserMarkets(currentWalletAddress || ''),
-			() => snxData.binaryOptions.marketsBidOn({ account: currentWalletAddress }),
-			{
-				enabled: isWalletConnected && filter.name === 'user-bids',
+	const filteredOptionsMarkets = useMemo(() => {
+		if (filter.name === 'creator' && isWalletConnected) {
+			return optionsMarkets.filter(
+				({ creator }) => creator.toLowerCase() === currentWalletAddress!.toLowerCase()
+			);
+		} else if (filter.name === 'user-bids' && isWalletConnected) {
+			return userBidsMarketsQuery.isSuccess && Array.isArray(userBidsMarketsQuery.data)
+				? optionsMarkets.filter(({ address }) => userBidsMarketsQuery.data.includes(address))
+				: [];
+		}
+		// phase filter
+		return filter.value == null
+			? optionsMarkets
+			: optionsMarkets.filter(({ phase }) => phase === filter.value);
+	}, [
+		optionsMarkets,
+		filter,
+		isWalletConnected,
+		currentWalletAddress,
+		userBidsMarketsQuery.data,
+		userBidsMarketsQuery.isSuccess,
+	]);
+
+	const searchFilteredOptionsMarkets = useDebouncedMemo(
+		() =>
+			assetSearch
+				? filteredOptionsMarkets.filter(({ asset }) =>
+						asset.toLowerCase().includes(assetSearch.toLowerCase())
+				  )
+				: filteredOptionsMarkets,
+		[filteredOptionsMarkets, assetSearch],
+		SEARCH_DEBOUNCE_MS
+	);
+
+	const setDefaultFilter = useCallback(() => setFilter(defaultFilter), []);
+
+	useEffect(() => {
+		setAssetSearch('');
+	}, [filter, setAssetSearch]);
+
+	useEffect(() => {
+		if (!isWalletConnected) {
+			if (filter.name !== 'phase') {
+				setDefaultFilter();
 			}
-		);
+		}
+	}, [isWalletConnected, setDefaultFilter, filter]);
 
-		const filteredOptionsMarkets = useMemo(() => {
-			if (filter.name === 'creator' && isWalletConnected) {
-				return optionsMarkets.filter(
-					({ creator }) => creator.toLowerCase() === currentWalletAddress!.toLowerCase()
-				);
-			} else if (filter.name === 'user-bids' && isWalletConnected) {
-				return userBidsMarketsQuery.isSuccess && Array.isArray(userBidsMarketsQuery.data)
-					? optionsMarkets.filter(({ address }) => userBidsMarketsQuery.data.includes(address))
-					: [];
-			}
-			// phase filter
-			return filter.value == null
-				? optionsMarkets
-				: optionsMarkets.filter(({ phase }) => phase === filter.value);
-		}, [
-			optionsMarkets,
-			filter,
-			isWalletConnected,
-			currentWalletAddress,
-			userBidsMarketsQuery.data,
-			userBidsMarketsQuery.isSuccess,
-		]);
+	const userFilters: Array<{ filterName: Filter['name']; icon: JSX.Element }> = [
+		{
+			filterName: 'user-bids',
+			icon: <PersonIcon />,
+		},
+		{
+			filterName: 'creator',
+			icon: <PencilIcon />,
+		},
+	];
 
-		const searchFilteredOptionsMarkets = useDebouncedMemo(
-			() =>
-				assetSearch
-					? filteredOptionsMarkets.filter(({ asset }) =>
-							asset.toLowerCase().includes(assetSearch.toLowerCase())
-					  )
-					: filteredOptionsMarkets,
-			[filteredOptionsMarkets, assetSearch],
-			SEARCH_DEBOUNCE_MS
-		);
+	const isPhaseFilter = filter.name === 'phase';
+	const isCreatorFilter = filter.name === 'creator';
+	const isUserBidsFilter = filter.name === 'user-bids';
 
-		const setDefaultFilter = useCallback(() => setFilter(defaultFilter), []);
-
-		useEffect(() => {
-			setAssetSearch('');
-		}, [filter, setAssetSearch]);
-
-		useEffect(() => {
-			if (!isWalletConnected) {
-				if (filter.name !== 'phase') {
-					setDefaultFilter();
-				}
-			}
-		}, [isWalletConnected, setDefaultFilter, filter]);
-
-		const isPhaseFilter = filter.name === 'phase';
-		const isCreatorFilter = filter.name === 'creator';
-		const isUserBidsFilter = filter.name === 'user-bids';
-
-		return (
-			<div>
-				<FiltersRow>
-					<PhaseFilters>
+	return (
+		<div>
+			<FiltersRow>
+				<PhaseFilters>
+					<ToggleButton
+						isActive={isPhaseFilter && filter.value == null}
+						onClick={() => setFilter({ name: 'phase' })}
+					>
+						{t('common.filters.all')}
+					</ToggleButton>
+					{PHASES.map((phase) => (
 						<ToggleButton
-							isActive={isPhaseFilter && filter.value == null}
-							onClick={() => setFilter({ name: 'phase' })}
+							isActive={isPhaseFilter && filter.value === phase}
+							onClick={() => setFilter({ name: 'phase', value: phase })}
+							key={phase}
 						>
-							{t('common.filters.all')}
+							{t(`options.phases.${phase}`)}
 						</ToggleButton>
-						{PHASES.map((phase) => (
-							<ToggleButton
-								isActive={isPhaseFilter && filter.value === phase}
-								onClick={() => setFilter({ name: 'phase', value: phase })}
-								key={phase}
+					))}
+				</PhaseFilters>
+				<UserFilters>
+					{userFilters.map(({ filterName, icon }) => {
+						const isActive = filter.name === filterName;
+
+						return (
+							<Tooltip
+								key={filterName}
+								title={
+									<span>
+										{!isWalletConnected
+											? t(
+													`options.home.explore-markets.table.filters.${filterName}.tooltip-connected`
+											  )
+											: t(
+													`options.home.explore-markets.table.filters.${filterName}.tooltip-not-connected`
+											  )}
+									</span>
+								}
+								placement="top"
+								classes={classes}
+								arrow={true}
 							>
-								{t(`options.phases.${phase}`)}
-							</ToggleButton>
-						))}
-					</PhaseFilters>
-					<UserFilters>
-						{userFilters.map(({ filterName, icon }) => {
-							const isActive = filter.name === filterName;
-
-							return (
-								<Tooltip
-									key={filterName}
-									title={
-										<span>
-											{!isWalletConnected
-												? t(
-														`options.home.explore-markets.table.filters.${filterName}.tooltip-connected`
-												  )
-												: t(
-														`options.home.explore-markets.table.filters.${filterName}.tooltip-not-connected`
-												  )}
-										</span>
+								<ToggleButton
+									onClick={
+										isWalletConnected
+											? () => {
+													if (isActive) {
+														// toggle off
+														setDefaultFilter();
+													} else {
+														// toggle on
+														setFilter({
+															name: filterName,
+														});
+													}
+											  }
+											: undefined
 									}
-									placement="top"
-									classes={classes}
-									arrow={true}
+									isActive={isActive}
 								>
-									<ToggleButton
-										onClick={
-											isWalletConnected
-												? () => {
-														if (isActive) {
-															// toggle off
-															setDefaultFilter();
-														} else {
-															// toggle on
-															setFilter({
-																name: filterName,
-															});
-														}
-												  }
-												: undefined
-										}
-										isActive={isActive}
-									>
-										{icon}
-									</ToggleButton>
-								</Tooltip>
-							);
-						})}
-						<AssetSearchInput
-							onChange={(e) => setAssetSearch(e.target.value)}
-							value={assetSearch}
-						/>
-					</UserFilters>
-				</FiltersRow>
+									{icon}
+								</ToggleButton>
+							</Tooltip>
+						);
+					})}
+					<AssetSearchInput onChange={(e) => setAssetSearch(e.target.value)} value={assetSearch} />
+				</UserFilters>
+			</FiltersRow>
 
-				<MarketsTable
-					palette="light-secondary"
-					optionsMarkets={assetSearch ? searchFilteredOptionsMarkets : filteredOptionsMarkets}
-					isLoading={userBidsMarketsQuery.isLoading}
-					noResultsMessage={
-						(assetSearch && searchFilteredOptionsMarkets.length === 0) ||
-						filteredOptionsMarkets.length === 0 ? (
-							<StyledNoResultsMessage>
-								<NoResultsIcon />
-								{assetSearch ? (
+			<MarketsTable
+				optionsMarkets={assetSearch ? searchFilteredOptionsMarkets : filteredOptionsMarkets}
+				isLoading={userBidsMarketsQuery.isLoading}
+				palette="light-secondary"
+				noResultsMessage={
+					(assetSearch && searchFilteredOptionsMarkets.length === 0) ||
+					filteredOptionsMarkets.length === 0 ? (
+						<StyledNoResultsMessage>
+							<NoResultsIcon />
+							{isPhaseFilter && (
+								<NoResultsText>
+									{t('options.home.explore-markets.table.filters.markets.no-results')}
+								</NoResultsText>
+							)}
+							{isCreatorFilter && (
+								<>
 									<NoResultsText>
-										{t('options.home.explore-markets.table.filters.markets.no-results')}
+										{t('options.home.explore-markets.table.filters.creator.no-results')}
 									</NoResultsText>
-								) : (
-									<>
-										{isCreatorFilter && (
-											<>
-												<NoResultsText>
-													{t('options.home.explore-markets.table.filters.creator.no-results')}
-												</NoResultsText>
-												<div>
-													<Button
-														size="lg"
-														palette="primary"
-														onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
-													>
-														{t('options.home.market-creation.create-market-button-label')}
-													</Button>
-													<ButtonSpacer>{t('common.or')}</ButtonSpacer>
-												</div>
-											</>
-										)}
-										{isUserBidsFilter && (
-											<NoResultsText>
-												{t('options.home.explore-markets.table.filters.user-bids.no-results')}
-											</NoResultsText>
-										)}
-									</>
-								)}
-								<Button size="lg" palette="outline" onClick={setDefaultFilter}>
-									{isUserBidsFilter
-										? t('options.home.explore-markets.table.view-all-open-markets')
-										: t('options.home.explore-markets.table.view-all-markets')}
-								</Button>
-							</StyledNoResultsMessage>
-						) : undefined
-					}
-				/>
-			</div>
-		);
-	}
-);
+									<div>
+										<Button
+											size="lg"
+											palette="primary"
+											onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
+										>
+											{t('options.home.market-creation.create-market-button-label')}
+										</Button>
+										<ButtonSpacer>{t('common.or')}</ButtonSpacer>
+									</div>
+								</>
+							)}
+							{isUserBidsFilter && (
+								<NoResultsText>
+									{t('options.home.explore-markets.table.filters.user-bids.no-results')}
+								</NoResultsText>
+							)}
+							<Button size="lg" palette="outline" onClick={setDefaultFilter}>
+								{isUserBidsFilter
+									? t('options.home.explore-markets.table.view-all-open-markets')
+									: t('options.home.explore-markets.table.view-all-markets')}
+							</Button>
+						</StyledNoResultsMessage>
+					) : undefined
+				}
+			/>
+		</div>
+	);
+};
 
 const ToggleButton = styled(Button).attrs({
 	size: 'md',
 	palette: 'toggle',
 })`
-	padding: 0 8px;
 	${(props) =>
 		!props.onClick &&
 		css`
