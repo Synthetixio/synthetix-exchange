@@ -11,6 +11,10 @@ export const ROUTES = {
 		Overview: '/assets/overview',
 		Exchanges: '/assets/exchanges',
 		Transfers: '/assets/transfers',
+		Options: {
+			Home: '/assets/options',
+			CreateMarketModal: '/assets/options/create-market',
+		},
 	},
 	Markets: '/markets',
 	Synths: {

@@ -103,7 +103,9 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type CreateMarketModalProps = PropsFromRedux;
+type CreateMarketModalProps = PropsFromRedux & {
+	onClose?: () => void;
+};
 
 type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
 
@@ -113,6 +115,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 	synths,
 	currentWallet,
 	gasInfo,
+	onClose,
 }) => {
 	const { t } = useTranslation();
 	const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
@@ -283,7 +286,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 
 	const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
 
-	const handleClose = () => navigateTo(ROUTES.Options.Home);
+	const handleClose = () => (onClose ? onClose() : navigateTo(ROUTES.Options.Home));
 
 	const handleApproveManager = async () => {
 		const {

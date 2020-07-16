@@ -28,7 +28,7 @@ type OptionsProps = PropsFromRedux &
 		isAppReady: boolean;
 	};
 
-const isPaused = true;
+const isPaused = false;
 
 export const Options: FC<OptionsProps> = ({ isAppReady /*isWalletConnected*/ }) =>
 	isPaused ? (
