@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import styled from 'styled-components';
@@ -36,7 +36,7 @@ const MenuLinks = [
 	*/
 ];
 
-const AssetsNavigation = memo(({ toggleHideSmallValueAssets, hideSmallValueAssets }) => {
+const AssetsNavigation = ({ toggleHideSmallValueAssets, hideSmallValueAssets }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -63,7 +63,7 @@ const AssetsNavigation = memo(({ toggleHideSmallValueAssets, hideSmallValueAsset
 			/>
 		</div>
 	);
-});
+};
 
 AssetsNavigation.propTypes = {
 	toggleHideSmallValueAssets: PropTypes.func.isRequired,

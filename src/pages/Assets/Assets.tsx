@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import Overview from './Overview';
 import Exchanges from './Exchanges';
 // import Transfers from './Transfers';
 
-const Assets: FC = memo(() => (
+const Assets: FC = () => (
 	<CenteredPageLayout>
 		<AssetsNavigation />
 		<Content>
@@ -23,7 +23,7 @@ const Assets: FC = memo(() => (
 			</Switch>
 		</Content>
 	</CenteredPageLayout>
-));
+);
 
 const Content = styled.div`
 	flex-grow: 1;

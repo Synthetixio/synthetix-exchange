@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useCallback } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -65,7 +65,7 @@ type MarketProps = PropsFromRedux & {
 	marketAddress: string;
 };
 
-const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress, isWalletConnected }) => {
+const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const [marketInfoModalVisible, setMarketInfoModalVisible] = useState<boolean>(false);
 
@@ -222,7 +222,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress, isWalletConnec
 			<Spinner size="sm" centered={true} />
 		</LoaderContainer>
 	);
-});
+};
 
 const StyledCenteredPageLayout = styled(CenteredPageLayout)`
 	display: grid;

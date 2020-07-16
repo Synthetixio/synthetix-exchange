@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled, { css, withTheme } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ import { MOCK_DATA } from './mockData';
 
 const TOP_HOLDINGS = 4;
 
-export const SynthBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalances, theme }) => {
+export const SynthBreakdown = ({ isLoadedWalletBalances, synthsWalletBalances, theme }) => {
 	const { t } = useTranslation();
 	const COLORS = [
 		theme.colors.icons,
@@ -88,7 +88,7 @@ export const SynthBreakdown = memo(({ isLoadedWalletBalances, synthsWalletBalanc
 			</StyledCardBody>
 		</Card>
 	);
-});
+};
 
 const StyledCardBody = styled(Card.Body)`
 	height: 120px;

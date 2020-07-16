@@ -1,4 +1,4 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -29,7 +29,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type TransactionsCardProps = PropsFromRedux;
 
-const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWalletConnected }) => {
+const TransactionsCard: FC<TransactionsCardProps> = ({ walletAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const optionsMarket = useMarketContext();
 
@@ -87,7 +87,7 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWal
 			</StyledCardBody>
 		</StyledCard>
 	);
-});
+};
 
 const StyledCard = styled(Card)`
 	flex-grow: 1;

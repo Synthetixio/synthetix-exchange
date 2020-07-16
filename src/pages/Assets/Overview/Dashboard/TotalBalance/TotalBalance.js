@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -21,44 +21,47 @@ import { FIAT_CURRENCY_MAP, CRYPTO_CURRENCY_MAP, USD_SIGN } from 'constants/curr
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { FlexDivRow } from 'shared/commonStyles';
 
-export const TotalBalance = memo(
-	({ isLoadedWalletBalances, totalSynthsBalanceUSD, synthsMap, totalETHBalance }) => {
-		const { t } = useTranslation();
+export const TotalBalance = ({
+	isLoadedWalletBalances,
+	totalSynthsBalanceUSD,
+	synthsMap,
+	totalETHBalance,
+}) => {
+	const { t } = useTranslation();
 
-		return (
-			<Container>
-				<Card>
-					<Card.Header>
-						<HeadingSmall>{t('assets.overview.dashboard.total-balance.title')}</HeadingSmall>
-					</Card.Header>
-					<Card.Body>
-						<Balance>
-							{isLoadedWalletBalances
-								? `${formatCurrencyWithSign(USD_SIGN, totalSynthsBalanceUSD)} ${
-										FIAT_CURRENCY_MAP.USD
-								  }`
-								: EMPTY_VALUE}
-						</Balance>
-					</Card.Body>
-				</Card>
-				<Card>
-					<Card.Body>
-						<FlexDivRow>
-							<HeadingSmall>
-								{t('common.wallet.currency-balance', {
-									currencyKey: CRYPTO_CURRENCY_MAP.ETH,
-								})}
-							</HeadingSmall>
-							<ETHBalance>
-								{isLoadedWalletBalances ? formatCurrency(totalETHBalance) : EMPTY_VALUE}
-							</ETHBalance>
-						</FlexDivRow>
-					</Card.Body>
-				</Card>
-			</Container>
-		);
-	}
-);
+	return (
+		<Container>
+			<Card>
+				<Card.Header>
+					<HeadingSmall>{t('assets.overview.dashboard.total-balance.title')}</HeadingSmall>
+				</Card.Header>
+				<Card.Body>
+					<Balance>
+						{isLoadedWalletBalances
+							? `${formatCurrencyWithSign(USD_SIGN, totalSynthsBalanceUSD)} ${
+									FIAT_CURRENCY_MAP.USD
+							  }`
+							: EMPTY_VALUE}
+					</Balance>
+				</Card.Body>
+			</Card>
+			<Card>
+				<Card.Body>
+					<FlexDivRow>
+						<HeadingSmall>
+							{t('common.wallet.currency-balance', {
+								currencyKey: CRYPTO_CURRENCY_MAP.ETH,
+							})}
+						</HeadingSmall>
+						<ETHBalance>
+							{isLoadedWalletBalances ? formatCurrency(totalETHBalance) : EMPTY_VALUE}
+						</ETHBalance>
+					</FlexDivRow>
+				</Card.Body>
+			</Card>
+		</Container>
+	);
+};
 
 TotalBalance.propTypes = {
 	isLoadedWalletBalances: PropTypes.bool.isRequired,

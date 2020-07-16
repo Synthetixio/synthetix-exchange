@@ -1,4 +1,4 @@
-import React, { useState, memo, FC, useMemo, useEffect } from 'react';
+import React, { useState, FC, useMemo, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -109,434 +109,433 @@ type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
 
 type MarketFees = Record<string, number>;
 
-export const CreateMarketModal: FC<CreateMarketModalProps> = memo(
-	({ synths, currentWallet, gasInfo }) => {
-		const { t } = useTranslation();
-		const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
-		const [strikePrice, setStrikePrice] = useState<number | string>('');
-		const [biddingEndDate, setEndOfBidding] = useState<Date | null | undefined>(null);
-		const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
-		const [initialLongShorts, setInitialLongShorts] = useState<{ long: number; short: number }>({
-			long: 50,
-			short: 50,
-		});
-		const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
-		const [isManagerApproved, setIsManagerApproved] = useState<boolean>(false);
-		const [isManagerApprovalPending, setIsManagerApprovalPending] = useState<boolean>(false);
-		const [gasLimit, setGasLimit] = useState<number | null>(null);
-		const [isCreatingMarket, setIsCreatingMarket] = useState<boolean>(false);
-		const [marketFees, setMarketFees] = useState<MarketFees | null>(null);
+export const CreateMarketModal: FC<CreateMarketModalProps> = ({
+	synths,
+	currentWallet,
+	gasInfo,
+}) => {
+	const { t } = useTranslation();
+	const [currencyKey, setCurrencyKey] = useState<ValueType<CurrencyKeyOptionType>>();
+	const [strikePrice, setStrikePrice] = useState<number | string>('');
+	const [biddingEndDate, setEndOfBidding] = useState<Date | null | undefined>(null);
+	const [maturityDate, setMaturityDate] = useState<Date | null | undefined>(null);
+	const [initialLongShorts, setInitialLongShorts] = useState<{ long: number; short: number }>({
+		long: 50,
+		short: 50,
+	});
+	const [initialFundingAmount, setInitialFundingAmount] = useState<number | string>('');
+	const [isManagerApproved, setIsManagerApproved] = useState<boolean>(false);
+	const [isManagerApprovalPending, setIsManagerApprovalPending] = useState<boolean>(false);
+	const [gasLimit, setGasLimit] = useState<number | null>(null);
+	const [isCreatingMarket, setIsCreatingMarket] = useState<boolean>(false);
+	const [marketFees, setMarketFees] = useState<MarketFees | null>(null);
 
-		const assetsOptions = useMemo(
-			() =>
-				orderBy(
-					[
-						{
-							label: CRYPTO_CURRENCY_MAP.SNX,
-							value: CRYPTO_CURRENCY_MAP.SNX,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.KNC,
-							value: CRYPTO_CURRENCY_MAP.KNC,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.COMP,
-							value: CRYPTO_CURRENCY_MAP.COMP,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.REN,
-							value: CRYPTO_CURRENCY_MAP.REN,
-						},
-						{
-							label: CRYPTO_CURRENCY_MAP.LEND,
-							value: CRYPTO_CURRENCY_MAP.LEND,
-						},
-						...synths
-							.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
-							.map((synth) => ({
-								label: synth.asset,
-								value: synth.name,
-							})),
-					],
-					'label',
-					'asc'
-				),
-			[synths]
-		);
+	const assetsOptions = useMemo(
+		() =>
+			orderBy(
+				[
+					{
+						label: CRYPTO_CURRENCY_MAP.SNX,
+						value: CRYPTO_CURRENCY_MAP.SNX,
+					},
+					{
+						label: CRYPTO_CURRENCY_MAP.KNC,
+						value: CRYPTO_CURRENCY_MAP.KNC,
+					},
+					{
+						label: CRYPTO_CURRENCY_MAP.COMP,
+						value: CRYPTO_CURRENCY_MAP.COMP,
+					},
+					{
+						label: CRYPTO_CURRENCY_MAP.REN,
+						value: CRYPTO_CURRENCY_MAP.REN,
+					},
+					{
+						label: CRYPTO_CURRENCY_MAP.LEND,
+						value: CRYPTO_CURRENCY_MAP.LEND,
+					},
+					...synths
+						.filter((synth) => !synth.inverted && synth.name !== SYNTHS_MAP.sUSD)
+						.map((synth) => ({
+							label: synth.asset,
+							value: synth.name,
+						})),
+				],
+				'label',
+				'asc'
+			),
+		[synths]
+	);
 
-		const isButtonDisabled =
-			currencyKey == null ||
-			strikePrice === '' ||
-			biddingEndDate === null ||
-			maturityDate === null ||
-			initialFundingAmount === '';
+	const isButtonDisabled =
+		currencyKey == null ||
+		strikePrice === '' ||
+		biddingEndDate === null ||
+		maturityDate === null ||
+		initialFundingAmount === '';
 
-		const formatCreateMarketArguments = () => {
-			const {
-				utils: { parseEther },
-			} = snxJSConnector as any;
-			const longBidAmount: number =
-				(initialFundingAmount as number) * (initialLongShorts.long / 100);
-			const shortBidAmount: number =
-				(initialFundingAmount as number) * (initialLongShorts.short / 100);
+	const formatCreateMarketArguments = () => {
+		const {
+			utils: { parseEther },
+		} = snxJSConnector as any;
+		const longBidAmount: number = (initialFundingAmount as number) * (initialLongShorts.long / 100);
+		const shortBidAmount: number =
+			(initialFundingAmount as number) * (initialLongShorts.short / 100);
 
-			const oracleKey = bytesFormatter((currencyKey as CurrencyKeyOptionType).value);
-			const price = parseEther(strikePrice.toString());
-			const times = [
-				Math.round((biddingEndDate as Date).getTime() / 1000),
-				Math.round((maturityDate as Date).getTime() / 1000),
-			];
-			const bids = [parseEther(longBidAmount.toString()), parseEther(shortBidAmount.toString())];
-			return { oracleKey, price, times, bids };
-		};
+		const oracleKey = bytesFormatter((currencyKey as CurrencyKeyOptionType).value);
+		const price = parseEther(strikePrice.toString());
+		const times = [
+			Math.round((biddingEndDate as Date).getTime() / 1000),
+			Math.round((maturityDate as Date).getTime() / 1000),
+		];
+		const bids = [parseEther(longBidAmount.toString()), parseEther(shortBidAmount.toString())];
+		return { oracleKey, price, times, bids };
+	};
 
-		useEffect(() => {
-			const {
-				snxJS: { sUSD, BinaryOptionMarketManager },
-			} = snxJSConnector as any;
-			const getAllowanceForCurrentWallet = async () => {
-				try {
-					const [allowance, fees] = await Promise.all([
-						sUSD.allowance(currentWallet, BinaryOptionMarketManager.contract.address),
-						BinaryOptionMarketManager.fees(),
-					]);
-					setIsManagerApproved(!!bigNumberFormatter(allowance));
-					setMarketFees({
-						creator: fees.creatorFee / 1e18,
-						pool: fees.poolFee / 1e18,
-						refund: fees.refundFee / 1e18,
-						bidding: fees.creatorFee / 1e18 + fees.poolFee / 1e18,
-					});
-				} catch (e) {
-					console.log(e);
-				}
-			};
-			const setEventListeners = () => {
-				sUSD.contract.on(APPROVAL_EVENTS.APPROVAL, (owner: string, spender: string) => {
-					if (owner === currentWallet && spender === BinaryOptionMarketManager.contract.address) {
-						setIsManagerApproved(true);
-					}
-				});
-			};
-			getAllowanceForCurrentWallet();
-			setEventListeners();
-			return () => {
-				sUSD.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
-			};
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		useEffect(() => {
-			const {
-				snxJS: { BinaryOptionMarketManager },
-			} = snxJSConnector as any;
-			if (!isCreatingMarket) return;
-			BinaryOptionMarketManager.contract.on(
-				BINARY_OPTIONS_EVENTS.MARKET_CREATED,
-				(market: string, creator: string, oracleKey: string) => {
-					if (
-						creator === currentWallet &&
-						parseBytes32String(oracleKey) === (currencyKey as CurrencyKeyOptionType).value
-					) {
-						navigateToOptionsMarket(market);
-					}
-				}
-			);
-			return () => {
-				BinaryOptionMarketManager.contract.removeAllListeners(BINARY_OPTIONS_EVENTS.MARKET_CREATED);
-			};
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [isCreatingMarket]);
-
-		useEffect(() => {
-			const fetchGasLimit = async () => {
-				if (isButtonDisabled) return;
-				const {
-					snxJS: { BinaryOptionMarketManager },
-				} = snxJSConnector as any;
-				try {
-					const { oracleKey, price, times, bids } = formatCreateMarketArguments();
-					const gasEstimate = await BinaryOptionMarketManager.contract.estimate.createMarket(
-						oracleKey,
-						price,
-						times,
-						bids
-					);
-					setGasLimit(normalizeGasLimit(Number(gasEstimate)));
-				} catch (e) {
-					console.log(e);
-				}
-			};
-			fetchGasLimit();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [
-			isButtonDisabled,
-			currencyKey,
-			strikePrice,
-			biddingEndDate,
-			maturityDate,
-			initialFundingAmount,
-			initialLongShorts,
-		]);
-
-		const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
-
-		const handleClose = () => navigateTo(ROUTES.Options.Home);
-
-		const handleApproveManager = async () => {
-			const {
-				snxJS: { sUSD, BinaryOptionMarketManager },
-			} = snxJSConnector as any;
+	useEffect(() => {
+		const {
+			snxJS: { sUSD, BinaryOptionMarketManager },
+		} = snxJSConnector as any;
+		const getAllowanceForCurrentWallet = async () => {
 			try {
-				setIsManagerApprovalPending(true);
-				const maxInt = `0x${'f'.repeat(64)}`;
-				const gasEstimate = await sUSD.contract.estimate.approve(
-					BinaryOptionMarketManager.contract.address,
-					maxInt
-				);
-				await sUSD.approve(BinaryOptionMarketManager.contract.address, maxInt, {
-					gasLimit: normalizeGasLimit(Number(gasEstimate)),
-					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				const [allowance, fees] = await Promise.all([
+					sUSD.allowance(currentWallet, BinaryOptionMarketManager.contract.address),
+					BinaryOptionMarketManager.fees(),
+				]);
+				setIsManagerApproved(!!bigNumberFormatter(allowance));
+				setMarketFees({
+					creator: fees.creatorFee / 1e18,
+					pool: fees.poolFee / 1e18,
+					refund: fees.refundFee / 1e18,
+					bidding: fees.creatorFee / 1e18 + fees.poolFee / 1e18,
 				});
 			} catch (e) {
 				console.log(e);
-				setIsManagerApprovalPending(false);
 			}
 		};
+		const setEventListeners = () => {
+			sUSD.contract.on(APPROVAL_EVENTS.APPROVAL, (owner: string, spender: string) => {
+				if (owner === currentWallet && spender === BinaryOptionMarketManager.contract.address) {
+					setIsManagerApproved(true);
+				}
+			});
+		};
+		getAllowanceForCurrentWallet();
+		setEventListeners();
+		return () => {
+			sUSD.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-		const handleMarketCreation = async () => {
+	useEffect(() => {
+		const {
+			snxJS: { BinaryOptionMarketManager },
+		} = snxJSConnector as any;
+		if (!isCreatingMarket) return;
+		BinaryOptionMarketManager.contract.on(
+			BINARY_OPTIONS_EVENTS.MARKET_CREATED,
+			(market: string, creator: string, oracleKey: string) => {
+				if (
+					creator === currentWallet &&
+					parseBytes32String(oracleKey) === (currencyKey as CurrencyKeyOptionType).value
+				) {
+					navigateToOptionsMarket(market);
+				}
+			}
+		);
+		return () => {
+			BinaryOptionMarketManager.contract.removeAllListeners(BINARY_OPTIONS_EVENTS.MARKET_CREATED);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isCreatingMarket]);
+
+	useEffect(() => {
+		const fetchGasLimit = async () => {
+			if (isButtonDisabled) return;
 			const {
 				snxJS: { BinaryOptionMarketManager },
 			} = snxJSConnector as any;
 			try {
 				const { oracleKey, price, times, bids } = formatCreateMarketArguments();
-				await BinaryOptionMarketManager.createMarket(oracleKey, price, times, bids, {
-					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-					gasLimit,
-				});
-				setIsCreatingMarket(true);
+				const gasEstimate = await BinaryOptionMarketManager.contract.estimate.createMarket(
+					oracleKey,
+					price,
+					times,
+					bids
+				);
+				setGasLimit(normalizeGasLimit(Number(gasEstimate)));
 			} catch (e) {
 				console.log(e);
-				setIsCreatingMarket(false);
 			}
 		};
+		fetchGasLimit();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		isButtonDisabled,
+		currencyKey,
+		strikePrice,
+		biddingEndDate,
+		maturityDate,
+		initialFundingAmount,
+		initialLongShorts,
+	]);
 
-		return (
-			<ThemeProvider theme={lightTheme}>
-				<StyledFullScreenModal open={true} onClose={handleClose}>
-					<FullScreenModalContainer>
-						<FullScreenModalCloseButton onClick={handleClose}>
-							<CloseCrossIcon />
-						</FullScreenModalCloseButton>
-						<Title>{t('options.create-market-modal.title')}</Title>
-						<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
-						<Content>
-							<MarketDetails>
-								<FormRow>
-									<FormControlGroup>
-										<FormControl>
-											<FormInputLabel htmlFor="asset">
-												{t('options.create-market-modal.details.select-asset-label')}
-											</FormInputLabel>
-											<SelectContainer>
-												<Select
-													formatOptionLabel={(option) => (
-														<Currency.Name
-															currencyKey={option.value}
-															name={option.label}
-															showIcon={true}
-															iconProps={{ type: 'asset' }}
-														/>
-													)}
-													options={assetsOptions}
-													placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
-													value={currencyKey}
-													onChange={(option) => {
-														setCurrencyKey(option);
-													}}
-												/>
-											</SelectContainer>
-										</FormControl>
-										<FormControl>
-											<FormInputLabel htmlFor="strike-price">
-												{t('options.create-market-modal.details.strike-price-label')}
-											</FormInputLabel>
-											<StyledNumericInput
-												id="strike-price"
-												value={strikePrice}
-												onChange={(e) => setStrikePrice(e.target.value)}
-												placeholder={t('common.eg-val', {
-													val: strikePricePlaceholderVal,
-												})}
-											/>
-										</FormControl>
-									</FormControlGroup>
-								</FormRow>
-								<FormRow>
-									<FormControlGroup>
-										<FormControl>
-											<FormInputLabel htmlFor="end-of-bidding">
-												{t('options.create-market-modal.details.bidding-end-date-label')}
-											</FormInputLabel>
-											<StyledDatePicker
-												id="end-of-bidding"
-												dateFormat="MMMM d, yyyy h:mm aa"
-												selected={biddingEndDate}
-												showTimeSelect={true}
-												onChange={(d) => setEndOfBidding(d)}
-												minDate={new Date()}
-												maxDate={maturityDate}
-											/>
-										</FormControl>
-										<FormControl>
-											<FormInputLabel htmlFor="maturity-date">
-												{t('options.create-market-modal.details.market-maturity-date-label')}
-											</FormInputLabel>
-											<StyledDatePicker
-												disabled={!biddingEndDate}
-												id="maturity-date"
-												dateFormat="MMMM d, yyyy h:mm aa"
-												selected={maturityDate}
-												showTimeSelect={true}
-												onChange={(d) => setMaturityDate(d)}
-												minDate={biddingEndDate || null}
-											/>
-										</FormControl>
-									</FormControlGroup>
-								</FormRow>
-								<FormRow>
+	const strikePricePlaceholderVal = `${USD_SIGN}10000.00 ${FIAT_CURRENCY_MAP.USD}`;
+
+	const handleClose = () => navigateTo(ROUTES.Options.Home);
+
+	const handleApproveManager = async () => {
+		const {
+			snxJS: { sUSD, BinaryOptionMarketManager },
+		} = snxJSConnector as any;
+		try {
+			setIsManagerApprovalPending(true);
+			const maxInt = `0x${'f'.repeat(64)}`;
+			const gasEstimate = await sUSD.contract.estimate.approve(
+				BinaryOptionMarketManager.contract.address,
+				maxInt
+			);
+			await sUSD.approve(BinaryOptionMarketManager.contract.address, maxInt, {
+				gasLimit: normalizeGasLimit(Number(gasEstimate)),
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+			});
+		} catch (e) {
+			console.log(e);
+			setIsManagerApprovalPending(false);
+		}
+	};
+
+	const handleMarketCreation = async () => {
+		const {
+			snxJS: { BinaryOptionMarketManager },
+		} = snxJSConnector as any;
+		try {
+			const { oracleKey, price, times, bids } = formatCreateMarketArguments();
+			await BinaryOptionMarketManager.createMarket(oracleKey, price, times, bids, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit,
+			});
+			setIsCreatingMarket(true);
+		} catch (e) {
+			console.log(e);
+			setIsCreatingMarket(false);
+		}
+	};
+
+	return (
+		<ThemeProvider theme={lightTheme}>
+			<StyledFullScreenModal open={true} onClose={handleClose}>
+				<FullScreenModalContainer>
+					<FullScreenModalCloseButton onClick={handleClose}>
+						<CloseCrossIcon />
+					</FullScreenModalCloseButton>
+					<Title>{t('options.create-market-modal.title')}</Title>
+					<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
+					<Content>
+						<MarketDetails>
+							<FormRow>
+								<FormControlGroup>
 									<FormControl>
-										<FlexDivRowCentered>
-											<FormInputLabel style={{ cursor: 'default' }}>
-												{t('options.create-market-modal.details.long-short-skew-label')}
-											</FormInputLabel>
-											<div>
-												<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
-												{' / '}
-												<Shorts>
-													{t('common.val-in-cents', { val: initialLongShorts.short })}
-												</Shorts>
-											</div>
-										</FlexDivRowCentered>
-										<StyledSlider
-											value={initialLongShorts.long}
-											onChange={(_, newValue) => {
-												const long = newValue as number;
-												setInitialLongShorts({
-													long,
-													short: 100 - long,
-												});
-											}}
-										/>
-									</FormControl>
-								</FormRow>
-								<FormRow>
-									<FormControl>
-										<FormInputLabel htmlFor="funding-amount">
-											{t('options.create-market-modal.details.funding-amount-label')}
+										<FormInputLabel htmlFor="asset">
+											{t('options.create-market-modal.details.select-asset-label')}
 										</FormInputLabel>
-										<StyledNumericInputWithCurrency
-											currencyKey={SYNTHS_MAP.sUSD}
-											value={initialFundingAmount}
-											onChange={(e) => setInitialFundingAmount(e.target.value)}
-											inputProps={{
-												id: 'funding-amount',
-											}}
+										<SelectContainer>
+											<Select
+												formatOptionLabel={(option) => (
+													<Currency.Name
+														currencyKey={option.value}
+														name={option.label}
+														showIcon={true}
+														iconProps={{ type: 'asset' }}
+													/>
+												)}
+												options={assetsOptions}
+												placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
+												value={currencyKey}
+												onChange={(option) => {
+													setCurrencyKey(option);
+												}}
+											/>
+										</SelectContainer>
+									</FormControl>
+									<FormControl>
+										<FormInputLabel htmlFor="strike-price">
+											{t('options.create-market-modal.details.strike-price-label')}
+										</FormInputLabel>
+										<StyledNumericInput
+											id="strike-price"
+											value={strikePrice}
+											onChange={(e) => setStrikePrice(e.target.value)}
+											placeholder={t('common.eg-val', {
+												val: strikePricePlaceholderVal,
+											})}
 										/>
 									</FormControl>
-								</FormRow>
-							</MarketDetails>
-							<MarketSummary>
-								<MarketSummaryTitle>
-									{t('options.create-market-modal.summary.title')}
-								</MarketSummaryTitle>
-								<MarketSummaryPreview>
-									<PreviewAssetRow>
-										{currencyKey ? (
-											<StyledCurrencyName
-												showIcon={true}
-												currencyKey={(currencyKey as CurrencyKeyOptionType).value}
-												name={(currencyKey as CurrencyKeyOptionType).label}
-												iconProps={{ type: 'asset' }}
-											/>
-										) : (
-											EMPTY_VALUE
-										)}
-										<span>&gt;</span>
-										<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
-											FIAT_CURRENCY_MAP.USD
-										}`}</StrikePrice>
-									</PreviewAssetRow>
-									<PreviewDatesRow>
-										<div>
-											{t('options.create-market-modal.summary.dates.bids-end', {
-												date: biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE,
-											})}
-										</div>
-										<div>
-											{t('options.create-market-modal.summary.dates.trading-period', {
-												period: biddingEndDate
-													? formattedDuration(
-															intervalToDuration({ start: Date.now(), end: biddingEndDate })
-													  )
-													: EMPTY_VALUE,
-											})}
-										</div>
-									</PreviewDatesRow>
-									<PreviewMarketPriceRow>
-										<MarketSentiment
-											long={initialLongShorts.long / 100}
-											short={initialLongShorts.short / 100}
+								</FormControlGroup>
+							</FormRow>
+							<FormRow>
+								<FormControlGroup>
+									<FormControl>
+										<FormInputLabel htmlFor="end-of-bidding">
+											{t('options.create-market-modal.details.bidding-end-date-label')}
+										</FormInputLabel>
+										<StyledDatePicker
+											id="end-of-bidding"
+											dateFormat="MMMM d, yyyy h:mm aa"
+											selected={biddingEndDate}
+											showTimeSelect={true}
+											onChange={(d) => setEndOfBidding(d)}
+											minDate={new Date()}
+											maxDate={maturityDate}
 										/>
-									</PreviewMarketPriceRow>
-									<PreviewFeesRow>
-										<FeeSummarySection>
-											<FeeHeadingRow>
-												<span>{t('options.create-market-modal.summary.fees.bidding')}</span>
-												<span>{formatPercentage(marketFees ? marketFees.bidding : 0)}</span>
-											</FeeHeadingRow>
-											<FeeDetailsRow>
-												<FeeLabel>{t('options.create-market-modal.summary.fees.creator')}</FeeLabel>
-												<span>{formatPercentage(marketFees ? marketFees.creator : 0)}</span>
-											</FeeDetailsRow>
-											<FeeDetailsRow>
-												<FeeLabel>{t('options.create-market-modal.summary.fees.pool')}</FeeLabel>
-												<span>{formatPercentage(marketFees ? marketFees.pool : 0)}</span>
-											</FeeDetailsRow>
-										</FeeSummarySection>
-										<FlexDivRowCentered>
-											<span>{t('options.create-market-modal.summary.fees.refund')}</span>
-											<span>{formatPercentage(marketFees ? marketFees.refund : 0)}</span>
-										</FlexDivRowCentered>
-									</PreviewFeesRow>
-									<NetworkFees gasLimit={gasLimit} />
-									{isManagerApproved ? (
-										<CreateMarketButton
-											palette="primary"
-											size="lg"
-											disabled={isButtonDisabled || !gasLimit}
-											onClick={handleMarketCreation}
-										>
-											{isCreatingMarket
-												? t('options.create-market-modal.summary.creating-market-button-label')
-												: t('options.create-market-modal.summary.create-market-button-label')}
-										</CreateMarketButton>
+									</FormControl>
+									<FormControl>
+										<FormInputLabel htmlFor="maturity-date">
+											{t('options.create-market-modal.details.market-maturity-date-label')}
+										</FormInputLabel>
+										<StyledDatePicker
+											disabled={!biddingEndDate}
+											id="maturity-date"
+											dateFormat="MMMM d, yyyy h:mm aa"
+											selected={maturityDate}
+											showTimeSelect={true}
+											onChange={(d) => setMaturityDate(d)}
+											minDate={biddingEndDate || null}
+										/>
+									</FormControl>
+								</FormControlGroup>
+							</FormRow>
+							<FormRow>
+								<FormControl>
+									<FlexDivRowCentered>
+										<FormInputLabel style={{ cursor: 'default' }}>
+											{t('options.create-market-modal.details.long-short-skew-label')}
+										</FormInputLabel>
+										<div>
+											<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
+											{' / '}
+											<Shorts>{t('common.val-in-cents', { val: initialLongShorts.short })}</Shorts>
+										</div>
+									</FlexDivRowCentered>
+									<StyledSlider
+										value={initialLongShorts.long}
+										onChange={(_, newValue) => {
+											const long = newValue as number;
+											setInitialLongShorts({
+												long,
+												short: 100 - long,
+											});
+										}}
+									/>
+								</FormControl>
+							</FormRow>
+							<FormRow>
+								<FormControl>
+									<FormInputLabel htmlFor="funding-amount">
+										{t('options.create-market-modal.details.funding-amount-label')}
+									</FormInputLabel>
+									<StyledNumericInputWithCurrency
+										currencyKey={SYNTHS_MAP.sUSD}
+										value={initialFundingAmount}
+										onChange={(e) => setInitialFundingAmount(e.target.value)}
+										inputProps={{
+											id: 'funding-amount',
+										}}
+									/>
+								</FormControl>
+							</FormRow>
+						</MarketDetails>
+						<MarketSummary>
+							<MarketSummaryTitle>
+								{t('options.create-market-modal.summary.title')}
+							</MarketSummaryTitle>
+							<MarketSummaryPreview>
+								<PreviewAssetRow>
+									{currencyKey ? (
+										<StyledCurrencyName
+											showIcon={true}
+											currencyKey={(currencyKey as CurrencyKeyOptionType).value}
+											name={(currencyKey as CurrencyKeyOptionType).label}
+											iconProps={{ type: 'asset' }}
+										/>
 									) : (
-										<CreateMarketButton palette="primary" size="lg" onClick={handleApproveManager}>
-											{isManagerApprovalPending
-												? t('options.create-market-modal.summary.waiting-for-approval-button-label')
-												: t('options.create-market-modal.summary.approve-manager-button-label')}
-										</CreateMarketButton>
+										EMPTY_VALUE
 									)}
-								</MarketSummaryPreview>
-							</MarketSummary>
-						</Content>
-					</FullScreenModalContainer>
-				</StyledFullScreenModal>
-			</ThemeProvider>
-		);
-	}
-);
+									<span>&gt;</span>
+									<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
+										FIAT_CURRENCY_MAP.USD
+									}`}</StrikePrice>
+								</PreviewAssetRow>
+								<PreviewDatesRow>
+									<div>
+										{t('options.create-market-modal.summary.dates.bids-end', {
+											date: biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE,
+										})}
+									</div>
+									<div>
+										{t('options.create-market-modal.summary.dates.trading-period', {
+											period: biddingEndDate
+												? formattedDuration(
+														intervalToDuration({ start: Date.now(), end: biddingEndDate })
+												  )
+												: EMPTY_VALUE,
+										})}
+									</div>
+								</PreviewDatesRow>
+								<PreviewMarketPriceRow>
+									<MarketSentiment
+										long={initialLongShorts.long / 100}
+										short={initialLongShorts.short / 100}
+									/>
+								</PreviewMarketPriceRow>
+								<PreviewFeesRow>
+									<FeeSummarySection>
+										<FeeHeadingRow>
+											<span>{t('options.create-market-modal.summary.fees.bidding')}</span>
+											<span>{formatPercentage(marketFees ? marketFees.bidding : 0)}</span>
+										</FeeHeadingRow>
+										<FeeDetailsRow>
+											<FeeLabel>{t('options.create-market-modal.summary.fees.creator')}</FeeLabel>
+											<span>{formatPercentage(marketFees ? marketFees.creator : 0)}</span>
+										</FeeDetailsRow>
+										<FeeDetailsRow>
+											<FeeLabel>{t('options.create-market-modal.summary.fees.pool')}</FeeLabel>
+											<span>{formatPercentage(marketFees ? marketFees.pool : 0)}</span>
+										</FeeDetailsRow>
+									</FeeSummarySection>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.fees.refund')}</span>
+										<span>{formatPercentage(marketFees ? marketFees.refund : 0)}</span>
+									</FlexDivRowCentered>
+								</PreviewFeesRow>
+								<NetworkFees gasLimit={gasLimit} />
+								{isManagerApproved ? (
+									<CreateMarketButton
+										palette="primary"
+										size="lg"
+										disabled={isButtonDisabled || !gasLimit}
+										onClick={handleMarketCreation}
+									>
+										{isCreatingMarket
+											? t('options.create-market-modal.summary.creating-market-button-label')
+											: t('options.create-market-modal.summary.create-market-button-label')}
+									</CreateMarketButton>
+								) : (
+									<CreateMarketButton palette="primary" size="lg" onClick={handleApproveManager}>
+										{isManagerApprovalPending
+											? t('options.create-market-modal.summary.waiting-for-approval-button-label')
+											: t('options.create-market-modal.summary.approve-manager-button-label')}
+									</CreateMarketButton>
+								)}
+							</MarketSummaryPreview>
+						</MarketSummary>
+					</Content>
+				</FullScreenModalContainer>
+			</StyledFullScreenModal>
+		</ThemeProvider>
+	);
+};
 
 const StyledFullScreenModal = styled(FullScreenModal)`
 	${media.medium`

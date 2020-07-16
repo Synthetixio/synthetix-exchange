@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import snxData from 'synthetix-data';
 import { useQuery } from 'react-query';
@@ -14,7 +14,7 @@ type RecentTransactionsProps = {
 	walletAddress: string;
 };
 
-const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress, walletAddress }) => {
+const RecentTransactions: FC<RecentTransactionsProps> = ({ marketAddress, walletAddress }) => {
 	const { t } = useTranslation();
 
 	const transactionsQuery = useQuery<OptionsTransactions, any>(
@@ -42,6 +42,6 @@ const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress, w
 			}
 		/>
 	);
-});
+};
 
 export default RecentTransactions;

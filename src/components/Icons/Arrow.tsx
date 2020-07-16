@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 type Direction = 'left' | 'right' | 'up' | 'down';
@@ -7,7 +7,7 @@ type ArrowProps = {
 	direction?: Direction;
 };
 
-const Arrow: FC<ArrowProps> = memo(({ direction = 'left' }) => (
+const Arrow: FC<ArrowProps> = ({ direction = 'left' }) => (
 	// @ts-ignore
 	<Container direction={direction}>
 		<svg width="11" height="8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,7 +19,7 @@ const Arrow: FC<ArrowProps> = memo(({ direction = 'left' }) => (
 			/>
 		</svg>
 	</Container>
-));
+);
 
 const getDirectionAngle = (direction: Direction) => {
 	switch (direction) {

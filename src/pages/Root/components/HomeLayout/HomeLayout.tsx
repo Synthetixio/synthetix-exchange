@@ -1,4 +1,4 @@
-import React, { Suspense, FC, memo } from 'react';
+import React, { Suspense, FC } from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { darkTheme, lightTheme } from 'styles/theme';
 
@@ -18,7 +18,7 @@ const LoadingContainer: FC = () => (
 	</LoaderContainer>
 );
 
-const HomeLayout: FC<HomeLayoutProps> = memo(({ children, isAppReady }) => {
+const HomeLayout: FC<HomeLayoutProps> = ({ children, isAppReady }) => {
 	let componentToRender = children;
 
 	if (isAppReady != null) {
@@ -36,7 +36,7 @@ const HomeLayout: FC<HomeLayoutProps> = memo(({ children, isAppReady }) => {
 			<Footer />
 		</>
 	);
-});
+};
 
 const LoaderContainer = styled.div`
 	position: relative;
