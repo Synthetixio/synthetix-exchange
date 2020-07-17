@@ -23,10 +23,12 @@ export const MarketSentiment: FC<MarketSentimentProps> = ({ long, short, display
 	const range = priceLong + priceShort;
 
 	const longs = (
-		<Longs className="longs">{t('common.val-in-cents', { val: formatCurrency(priceLong) })}</Longs>
+		<Longs className="longs label">
+			{t('common.val-in-cents', { val: formatCurrency(priceLong) })}
+		</Longs>
 	);
 	const shorts = (
-		<Shorts className="shorts">
+		<Shorts className="shorts label">
 			{t('common.val-in-cents', { val: formatCurrency(priceShort) })}
 		</Shorts>
 	);

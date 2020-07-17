@@ -67,7 +67,7 @@ export const Options: FC<OptionsProps> = ({ isAppReady, isWalletConnected }) =>
 				exact
 				path={ROUTES.Options.CreateMarketModal}
 				render={() =>
-					isWalletConnected ? (
+					isWalletConnected || true ? (
 						<HomeLayout isAppReady={isAppReady}>
 							<CreateMarketModal />
 						</HomeLayout>

@@ -12,6 +12,8 @@ import ROUTES, { navigateTo } from 'constants/routes';
 import { LINKS } from 'constants/links';
 import Link from 'components/Link';
 
+import NewToBinaryOptions from 'pages/Options/components/NewToBinaryOptions';
+
 type BannerProps = {
 	hasMarkets: boolean;
 	noSUSD: boolean;
@@ -21,12 +23,7 @@ const Banner: FC<BannerProps> = ({ hasMarkets, noSUSD }) => {
 	const { t } = useTranslation();
 
 	let title;
-	let subTitle = (
-		<Trans
-			i18nKey="assets.options.banner.common.subtitle"
-			components={[<Link to={LINKS.Blog.HowBinaryOptionsWork} isExternal={true} />]}
-		/>
-	);
+	let subTitle = <NewToBinaryOptions />;
 
 	if (hasMarkets) {
 		title = t('assets.options.banner.has-markets.title');
@@ -101,10 +98,6 @@ const Title = styled.div`
 const Subtitle = styled.div`
 	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontSecondary};
-	a {
-		color: ${(props) => props.theme.colors.hyperlink};
-		text-decoration: underline;
-	}
 `;
 const Buttons = styled(GridDivCenteredCol)`
 	grid-gap: 24px;
