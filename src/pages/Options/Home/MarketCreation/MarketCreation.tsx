@@ -59,7 +59,6 @@ const MarketCreation: FC<MarketCreationProps> = ({ isWalletConnected, toggleWall
 					{subTitle}
 					<StyledButton
 						palette="primary"
-						disabled={true}
 						onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
 					>
 						{t('options.home.market-creation.create-market-button-label')}
