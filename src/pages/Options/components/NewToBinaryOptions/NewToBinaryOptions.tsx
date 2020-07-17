@@ -20,7 +20,7 @@ const NewToBinaryOptions: FC<NewToBinaryOptionsProps> = (props) => (
 
 const Wrapper = styled.span`
 	a {
-		color: ${(props) => props.theme.colors.hyperlink};
+		color: ${(props) => props.theme.colors.buttonDefault};
 		text-decoration: underline;
 	}
 `;

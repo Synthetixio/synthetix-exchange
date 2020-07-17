@@ -130,5 +130,5 @@ export const formattedDuration = (
 	return (firstTwo ? formatted.slice(0, 2) : formatted).join(delimiter);
 };
 
-export const formatShortDate = (date: Date | number) => format(date, 'yyyy-MM-dd');
-export const formatShortDateWithTime = (date: Date | number) => format(date, 'yyyy-MM-dd H:mma');
+export const formatShortDate = (date: Date | number) => format(date, 'MMMM d, yyyy');
+export const formatShortDateWithTime = (date: Date | number) => format(date, 'MMMM d, yyyy H:mma');

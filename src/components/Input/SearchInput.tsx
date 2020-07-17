@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ReactComponent as SearchIcon } from 'assets/images/search.svg';
 
 import GenericInput from './Input';
+import { INPUT_SIZES } from './constants';
 
 type SearchInputProps = {
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -45,7 +46,7 @@ const Container = styled.div`
 `;
 
 const StyledInput = styled(GenericInput)`
-	height: 32px;
+	height: ${INPUT_SIZES.xs};
 	border-radius: 1px;
 	padding: 0 10px 0 25px;
 	&::placeholder {

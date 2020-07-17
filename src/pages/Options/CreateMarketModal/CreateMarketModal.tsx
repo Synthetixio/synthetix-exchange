@@ -4,12 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 import { ValueType } from 'react-select';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import formatDuration from 'date-fns/formatDuration';
+import add from 'date-fns/add';
 import orderBy from 'lodash/orderBy';
+import { makeStyles } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
-import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
+import { ReactComponent as QuestionMarkIcon } from 'assets/images/question-mark.svg';
+import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
 
 import ROUTES, { navigateTo } from 'constants/routes';
 import {
@@ -37,11 +42,11 @@ import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { getGasInfo } from 'ducks/transaction';
 
 import DatePicker from 'components/Input/DatePicker';
-import { headingH3CSS, headingH6CSS, headingH5CSS } from 'components/Typography/Heading';
-import { bodyCSS, sectionTitleCSS } from 'components/Typography/General';
+import { headingH3CSS, headingH5CSS, headingH6CSS } from 'components/Typography/Heading';
+import { bodyCSS } from 'components/Typography/General';
 import NumericInput from 'components/Input/NumericInput';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-import { formLabelLargeCSS, formDataCSS, formLabelSmallCSS } from 'components/Typography/Form';
+import { formLabelLargeCSS, formDataCSS } from 'components/Typography/Form';
 import Select from 'components/Select';
 import Currency from 'components/Currency';
 import Button from 'components/Button/Button';
@@ -50,21 +55,33 @@ import {
 	GridDivCol,
 	GridDivRow,
 	FlexDivRowCentered,
-	FullScreenModalCloseButton,
 	FullScreenModal,
 	FullScreenModalContainer,
+	FlexDivCentered,
+	resetButtonCSS,
 } from 'shared/commonStyles';
 import { media } from 'shared/media';
 
-import {
-	formatPercentage,
-	formatShortDate,
-	formattedDuration,
-	bytesFormatter,
-} from 'utils/formatters';
+import { formatPercentage, formatShortDate, bytesFormatter } from 'utils/formatters';
 import MarketSentiment from '../components/MarketSentiment';
 import NetworkFees from '../components/NetworkFees';
 import NewToBinaryOptions from '../components/NewToBinaryOptions';
+import SideIcon from '../Market/components/SideIcon';
+import { INPUT_SIZES } from 'components/Input/constants';
+import { labelSmallCSS } from 'components/Typography/Label';
+
+// TODO: make this a reusable style
+const useStyles = makeStyles({
+	tooltip: {
+		fontSize: '12px',
+		background: '#020B29',
+		borderRadius: '4px',
+		textAlign: 'center',
+	},
+	arrow: {
+		color: '#020B29',
+	},
+});
 
 // const MATURITY_DATE_DAY_DELAY = 1;
 
@@ -72,6 +89,7 @@ const StyledSlider = withStyles({
 	root: {
 		color: colors.green,
 		height: 16,
+		padding: '0 0 12px 0',
 	},
 	thumb: {
 		height: 24,
@@ -112,9 +130,21 @@ type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
 
 type MarketFees = Record<string, number>;
 
-const withdrawalsEnabled = (window as any).withdrawalsEnabled
-	? !!(window as any).withdrawalsEnabled
-	: false;
+type TooltipIconProps = {
+	title: React.ReactNode;
+};
+
+const TooltipIcon: FC<TooltipIconProps> = ({ title }) => {
+	const classes = useStyles();
+
+	return (
+		<Tooltip title={<span>{title}</span>} placement="top" classes={classes} arrow={true}>
+			<TooltipIconContainer>
+				<QuestionMarkIcon />{' '}
+			</TooltipIconContainer>
+		</Tooltip>
+	);
+};
 
 export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 	synths,
@@ -137,6 +167,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 	const [gasLimit, setGasLimit] = useState<number | null>(null);
 	const [isCreatingMarket, setIsCreatingMarket] = useState<boolean>(false);
 	const [marketFees, setMarketFees] = useState<MarketFees | null>(null);
+	const [withdrawalsEnabled, setWithdrawalsEnabled] = useState<boolean>(true);
 
 	const assetsOptions = useMemo(
 		() =>
@@ -339,10 +370,27 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 		}
 	};
 
+	const formattedBiddingEnd = biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE;
+	const formattedMaturityDate = maturityDate ? formatShortDate(maturityDate) : EMPTY_VALUE;
+	const timeLeftToExercise = maturityDate
+		? formatDuration(
+				intervalToDuration({ start: maturityDate, end: add(maturityDate, { weeks: 26 }) }),
+				{
+					format: ['months'],
+				}
+		  )
+		: EMPTY_VALUE;
+
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<StyledFullScreenModal open={true} onClose={handleClose}>
 				<FullScreenModalContainer>
+					<BackButtonContainer>
+						<BackLinkButton role="button" onClick={handleClose}>
+							<ArrowBackIcon />
+							{t('options.create-market-modal.back-to-markets')}
+						</BackLinkButton>
+					</BackButtonContainer>
 					<Content>
 						<MarketDetails>
 							<Title>{t('options.create-market-modal.title')}</Title>
@@ -357,28 +405,30 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 											<FormInputLabel htmlFor="asset">
 												{t('options.create-market-modal.details.select-asset-label')}
 											</FormInputLabel>
-											<Select
-												formatOptionLabel={(option) => (
-													<Currency.Name
-														currencyKey={option.value}
-														name={option.label}
-														showIcon={true}
-														iconProps={{ type: 'asset' }}
-													/>
-												)}
-												options={assetsOptions}
-												placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
-												value={currencyKey}
-												onChange={(option) => {
-													setCurrencyKey(option);
-												}}
-											/>
+											<SelectContainer>
+												<Select
+													formatOptionLabel={(option) => (
+														<Currency.Name
+															currencyKey={option.value}
+															name={option.label}
+															showIcon={true}
+															iconProps={{ type: 'asset' }}
+														/>
+													)}
+													options={assetsOptions}
+													placeholder={t('common.eg-val', { val: CRYPTO_CURRENCY_MAP.BTC })}
+													value={currencyKey}
+													onChange={(option) => {
+														setCurrencyKey(option);
+													}}
+												/>
+											</SelectContainer>
 										</FormControl>
 										<FormControl>
 											<FormInputLabel htmlFor="strike-price">
 												{t('options.create-market-modal.details.strike-price-label')}
 											</FormInputLabel>
-											<NumericInput
+											<StyledNumericInput
 												id="strike-price"
 												value={strikePrice}
 												onChange={(e) => setStrikePrice(e.target.value)}
@@ -448,68 +498,80 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 											<FormInputLabel style={{ cursor: 'default' }}>
 												{t('options.create-market-modal.details.long-short-skew-label')}
 											</FormInputLabel>
-											<StyledSlider
-												value={initialLongShorts.long}
-												onChange={(_, newValue) => {
-													const long = newValue as number;
-													setInitialLongShorts({
-														long,
-														short: 100 - long,
-													});
-												}}
-											/>
-											<FlexDivRowCentered>
-												<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
-												<Shorts>
-													{t('common.val-in-cents', { val: initialLongShorts.short })}
-												</Shorts>
-											</FlexDivRowCentered>
+											<SliderRow>
+												<StyledSlider
+													value={initialLongShorts.long}
+													onChange={(_, newValue) => {
+														const long = newValue as number;
+														setInitialLongShorts({
+															long,
+															short: 100 - long,
+														});
+													}}
+												/>
+												<LongsShorts>
+													<div>
+														<SideIcon side="long" />{' '}
+														{t('common.val-in-cents', { val: initialLongShorts.long })}
+													</div>
+													<div>
+														{t('common.val-in-cents', { val: initialLongShorts.short })}{' '}
+														<SideIcon side="short" />
+													</div>
+												</LongsShorts>
+											</SliderRow>
 										</FormControl>
 									</FormControlGroup>
 								</FormRow>
 							</Form>
 						</MarketDetails>
 						<MarketSummary>
-							<MarketSummaryTitle>
+							<MarketSummaryHeader>
 								{t('options.create-market-modal.summary.title')}
-							</MarketSummaryTitle>
-							<MarketSummaryPreview>
-								<PreviewAssetRow>
-									{currencyKey ? (
-										<StyledCurrencyName
-											showIcon={true}
-											currencyKey={(currencyKey as CurrencyKeyOptionType).value}
-											name={(currencyKey as CurrencyKeyOptionType).label}
-											iconProps={{ type: 'asset' }}
-										/>
-									) : (
-										EMPTY_VALUE
-									)}
-									<span>&gt;</span>
-									<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
-										FIAT_CURRENCY_MAP.USD
-									}`}</StrikePrice>
-								</PreviewAssetRow>
+							</MarketSummaryHeader>
+							<MarketSummaryBody>
+								<PreviewAssetAndDateRow>
+									<AssetRow>
+										{currencyKey ? (
+											<>
+												<StyledCurrencyName
+													showIcon={true}
+													currencyKey={(currencyKey as CurrencyKeyOptionType).value}
+													name={(currencyKey as CurrencyKeyOptionType).label}
+													iconProps={{ type: 'asset' }}
+												/>
+												<span>&gt;</span>
+												<StrikePrice>{`${USD_SIGN}${strikePrice !== '' ? strikePrice : 0} ${
+													FIAT_CURRENCY_MAP.USD
+												}`}</StrikePrice>
+											</>
+										) : (
+											EMPTY_VALUE
+										)}
+									</AssetRow>
+									<MaturityDateRow>
+										{t('common.by-date', { date: formattedMaturityDate })}
+									</MaturityDateRow>
+								</PreviewAssetAndDateRow>
 								<PreviewDatesRow>
-									<div>
-										{t('options.create-market-modal.summary.dates.bids-end', {
-											date: biddingEndDate ? formatShortDate(biddingEndDate) : EMPTY_VALUE,
-										})}
-									</div>
-									<div>
-										{t('options.create-market-modal.summary.dates.trading-period', {
-											period: biddingEndDate
-												? formattedDuration(
-														intervalToDuration({ start: Date.now(), end: biddingEndDate })
-												  )
-												: EMPTY_VALUE,
-										})}
-									</div>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.dates.bidding-end')}</span>
+										<span>{formattedBiddingEnd}</span>
+									</FlexDivRowCentered>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.dates.maturity-date')}</span>
+										<span>{formattedMaturityDate}</span>
+									</FlexDivRowCentered>
+									<FlexDivRowCentered>
+										<span>{t('options.create-market-modal.summary.dates.time-to-exercise')}</span>
+										<span>{timeLeftToExercise}</span>
+									</FlexDivRowCentered>
 								</PreviewDatesRow>
 								<PreviewMarketPriceRow>
-									<MarketSentiment
+									<StyledMarketSentiment
 										long={initialLongShorts.long / 100}
 										short={initialLongShorts.short / 100}
+										display="col"
 									/>
 								</PreviewMarketPriceRow>
 								<PreviewFeesRow>
@@ -518,20 +580,46 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 											<span>{t('options.create-market-modal.summary.fees.bidding')}</span>
 											<span>{formatPercentage(marketFees ? marketFees.bidding : 0)}</span>
 										</FeeHeadingRow>
-										<FeeDetailsRow>
-											<FeeLabel>{t('options.create-market-modal.summary.fees.creator')}</FeeLabel>
-											<span>{formatPercentage(marketFees ? marketFees.creator : 0)}</span>
-										</FeeDetailsRow>
-										<FeeDetailsRow>
-											<FeeLabel>{t('options.create-market-modal.summary.fees.pool')}</FeeLabel>
-											<span>{formatPercentage(marketFees ? marketFees.pool : 0)}</span>
-										</FeeDetailsRow>
+										<FeeDetailsRows>
+											<FeeDetailsRow>
+												<span>{t('options.create-market-modal.summary.fees.creator')}</span>
+												<span>{formatPercentage(marketFees ? marketFees.creator : 0)}</span>
+											</FeeDetailsRow>
+											<FeeDetailsRow>
+												<span>{t('options.create-market-modal.summary.fees.pool')}</span>
+												<span>{formatPercentage(marketFees ? marketFees.pool : 0)}</span>
+											</FeeDetailsRow>
+										</FeeDetailsRows>
+										<FeeHeadingRow>
+											<span>{t('options.create-market-modal.summary.fees.refund')}</span>
+											<span>{formatPercentage(marketFees ? marketFees.refund : 0)}</span>
+										</FeeHeadingRow>
 									</FeeSummarySection>
-									<FlexDivRowCentered>
-										<span>{t('options.create-market-modal.summary.fees.refund')}</span>
-										<span>{formatPercentage(marketFees ? marketFees.refund : 0)}</span>
-									</FlexDivRowCentered>
 								</PreviewFeesRow>
+							</MarketSummaryBody>
+							<MarketSummaryFooter>
+								<Withdrawals>
+									<FlexDivCentered>
+										{t('options.common.withdrawals')}{' '}
+										<TooltipIcon
+											title={t('options.create-market-modal.summary.withdrawals.tooltip')}
+										/>
+									</FlexDivCentered>
+									<OnOffToggle>
+										<Toggle
+											isActive={withdrawalsEnabled}
+											onClick={() => setWithdrawalsEnabled(true)}
+										>
+											{t('common.toggle.on')}
+										</Toggle>
+										<Toggle
+											isActive={!withdrawalsEnabled}
+											onClick={() => setWithdrawalsEnabled(false)}
+										>
+											{t('common.toggle.off')}
+										</Toggle>
+									</OnOffToggle>
+								</Withdrawals>
 								<NetworkFees gasLimit={gasLimit} />
 								{isManagerApproved ? (
 									<CreateMarketButton
@@ -551,7 +639,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 											: t('options.create-market-modal.summary.approve-manager-button-label')}
 									</CreateMarketButton>
 								)}
-							</MarketSummaryPreview>
+							</MarketSummaryFooter>
 						</MarketSummary>
 					</Content>
 				</FullScreenModalContainer>
@@ -565,6 +653,21 @@ const StyledFullScreenModal = styled(FullScreenModal)`
 		display: block;
 		padding: 80px 24px;
 	`}
+`;
+
+const BackButtonContainer = styled.div`
+	text-align: left;
+	padding-bottom: 33px;
+`;
+
+const BackLinkButton = styled.button`
+	${resetButtonCSS};
+	${labelSmallCSS};
+	text-transform: uppercase;
+	color: ${(props) => props.theme.colors.buttonDefault};
+	> svg {
+		margin-right: 8px;
+	}
 `;
 
 const Title = styled.div`
@@ -617,6 +720,7 @@ const FormRow = styled.div`
 const FormControlGroup = styled(GridDivCol)`
 	grid-gap: 24px;
 	grid-template-columns: 1fr 1fr;
+	align-items: baseline;
 	${media.medium`
 		grid-template-columns: unset;
 		grid-auto-flow: row;
@@ -627,60 +731,89 @@ const FormControl = styled(GridDivRow)`
 	grid-gap: 8px;
 `;
 
-const Longs = styled.span`
-	${headingH6CSS};
-	color: ${(props) => props.theme.colors.green};
-`;
-const Shorts = styled.span`
-	${headingH6CSS};
-	color: ${(props) => props.theme.colors.red};
+const LongsShorts = styled(FlexDivRowCentered)`
+	${formLabelLargeCSS};
+	text-transform: none;
 `;
 
 const MarketSummary = styled.div`
-	width: 330px;
+	width: 379px;
+	border-radius: 2px;
 	background-color: ${(props) => props.theme.colors.surfaceL2};
+	box-shadow: 0px 4px 11px rgba(209, 209, 232, 0.25);
 	${media.medium`
 		width: 100%;
 	`}
 `;
 
-const MarketSummaryTitle = styled.div`
-	${sectionTitleCSS};
+const MarketSummaryHeader = styled.div`
+	${headingH6CSS};
 	text-align: center;
-	background-color: ${(props) => props.theme.colors.surfaceL3};
-	height: 48px;
-	color: ${(props) => props.theme.colors.fontPrimary};
-	padding: 15px;
+	height: 56px;
+	padding: 20px;
 	text-transform: uppercase;
 `;
 
-const MarketSummaryPreview = styled.div`
+const MarketSummaryBody = styled.div`
+	padding: 20px;
+	background-color: ${(props) => props.theme.colors.surfaceL3};
+	border-bottom: 1px solid ${(props) => props.theme.colors.accentL2};
+	border-top: 1px solid ${(props) => props.theme.colors.accentL2};
+	> div {
+		padding: 12px 0;
+		border-bottom: 1px solid ${(props) => props.theme.colors.accentL2};
+		&:first-child {
+			padding-top: 0;
+		}
+		&:last-child {
+			border-bottom: 0;
+			padding-bottom: 0;
+		}
+	}
+`;
+
+const MarketSummaryFooter = styled.div`
+	text-align: center;
 	padding: 20px;
 `;
-const PreviewAssetRow = styled.div`
+
+const PreviewAssetAndDateRow = styled(GridDivRow)`
+	justify-content: center;
+	grid-gap: 6px;
+	padding-bottom: 14px;
+`;
+
+const AssetRow = styled.div`
+	${headingH5CSS};
 	display: inline-grid;
 	grid-auto-flow: column;
 	align-items: center;
 	grid-gap: 9px;
-	${headingH5CSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
-	padding-bottom: 14px;
+`;
+
+const MaturityDateRow = styled.div`
+	${headingH6CSS};
+	color: ${(props) => props.theme.colors.fontSecondary};
+	text-transform: capitalize;
 `;
 
 const StyledCurrencyName = styled(Currency.Name)`
 	${headingH5CSS};
-	color: ${darkTheme.colors.accentL1};
+	color: ${darkTheme.colors.accentL2};
 `;
 
 const StrikePrice = styled.div``;
 
 const PreviewDatesRow = styled.div`
-	${formLabelSmallCSS};
-	color: ${(props) => props.theme.colors.fontSecondary};
-	padding-bottom: 11px;
+	${formDataCSS};
 	display: grid;
 	grid-gap: 4px;
-	text-transform: none;
+	div {
+		&:last-child {
+			color: ${(props) => props.theme.colors.fontTertiary};
+		}
+	}
 `;
 const PreviewMarketPriceRow = styled.div`
 	padding-bottom: 18px;
@@ -689,27 +822,35 @@ const PreviewFeesRow = styled.div`
 	${formDataCSS};
 	display: grid;
 	padding: 12px 0;
-	border-top: 1px solid ${(props) => props.theme.colors.surfaceL1};
-	border-bottom: 1px solid ${(props) => props.theme.colors.surfaceL1};
 	color: ${(props) => props.theme.colors.fontSecondary};
-	margin-bottom: 18px;
 	grid-gap: 4px;
 `;
 
 const FeeSummarySection = styled.div`
-	margin-bottom: 6px;
+	> * {
+		margin-bottom: 4px;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
 `;
 
-const FeeHeadingRow = styled(FlexDivRowCentered)`
-	margin-bottom: 4px;
-`;
+const FeeHeadingRow = styled(FlexDivRowCentered)``;
 
 const FeeDetailsRow = styled(FlexDivRowCentered)`
 	color: ${({ theme }) => theme.colors.fontTertiary};
+	> * {
+		margin-bottom: 4px;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
 `;
 
-const FeeLabel = styled.span`
-	margin-left: 12px;
+const FeeDetailsRows = styled.div`
+	margin-left: 8px;
+	border-left: 1px solid ${darkTheme.colors.fontSecondary};
+	padding-left: 8px;
 `;
 
 const CreateMarketButton = styled(Button)`
@@ -720,14 +861,80 @@ const StyledDatePicker = styled(DatePicker)`
 	.react-datepicker-popper {
 		width: max-content;
 	}
+	.react-datepicker__input-container input {
+		height: ${INPUT_SIZES.lg};
+	}
 `;
 
 const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
+	.input {
+		height: ${INPUT_SIZES.lg};
+	}
 	.currency-container {
 		background-color: ${(props) => props.theme.colors.surfaceL2};
 	}
 `;
 
-const SelectContainer = styled.div``;
+const SliderRow = styled.div`
+	padding-top: 32px;
+`;
+
+const SelectContainer = styled.div`
+	.react-select__control {
+		height: ${INPUT_SIZES.lg};
+	}
+`;
+
+const StyledNumericInput = styled(NumericInput)`
+	height: ${INPUT_SIZES.lg};
+`;
+
+const StyledMarketSentiment = styled(MarketSentiment)`
+	.percent {
+		height: 7px;
+	}
+	.label {
+		color: ${(props) => props.theme.colors.fontPrimary};
+	}
+`;
+
+const Withdrawals = styled(FlexDivRowCentered)`
+	color: ${(props) => props.theme.colors.fontTertiary};
+	${formDataCSS};
+	padding-bottom: 8px;
+	text-transform: uppercase;
+`;
+
+const OnOffToggle = styled(FlexDivCentered)`
+	border-radius: 2px;
+	font-size: 10px;
+	line-height: normal;
+`;
+
+const Toggle = styled.span<{ isActive: boolean }>`
+	cursor: pointer;
+	width: 28px;
+	height: 16px;
+	background-color: ${(props) =>
+		props.isActive ? props.theme.colors.buttonDefault : props.theme.colors.accentL2};
+	color: ${(props) =>
+		props.isActive ? props.theme.colors.surfaceL3 : props.theme.colors.fontTertiary};
+`;
+
+const TooltipIconContainer = styled.span`
+	margin-left: 7px;
+	cursor: pointer;
+	justify-content: center;
+	display: inline-flex;
+	align-items: center;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: ${(props) => props.theme.colors.accentL2};
+	svg {
+		width: 4px;
+		height: 6px;
+	}
+`;
 
 export default connector(CreateMarketModal);
