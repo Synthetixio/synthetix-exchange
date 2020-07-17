@@ -11,7 +11,6 @@ export const inputCSS = css`
 	font-size: 14px;
 	color: ${(props) => props.theme.colors.fontPrimary};
 	::placeholder {
-		opacity: 0.5;
 		color: ${(props) => props.theme.colors.fontTertiary};
 	}
 	outline: none;

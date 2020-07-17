@@ -334,17 +334,17 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 					<Content>
 						<MarketDetails>
 							<Title>{t('options.create-market-modal.title')}</Title>
-							<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
-							<Subtitle>
+							<Paragraph>{t('options.create-market-modal.subtitle')}</Paragraph>
+							<Paragraph>
 								<NewToBinaryOptions />
-							</Subtitle>
-							<FormRow>
-								<FormControlGroup>
-									<FormControl>
-										<FormInputLabel htmlFor="asset">
-											{t('options.create-market-modal.details.select-asset-label')}
-										</FormInputLabel>
-										<SelectContainer>
+							</Paragraph>
+							<Form>
+								<FormRow>
+									<FormControlGroup>
+										<FormControl>
+											<FormInputLabel htmlFor="asset">
+												{t('options.create-market-modal.details.select-asset-label')}
+											</FormInputLabel>
 											<Select
 												formatOptionLabel={(option) => (
 													<Currency.Name
@@ -361,94 +361,101 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 													setCurrencyKey(option);
 												}}
 											/>
-										</SelectContainer>
-									</FormControl>
-									<FormControl>
-										<FormInputLabel htmlFor="strike-price">
-											{t('options.create-market-modal.details.strike-price-label')}
-										</FormInputLabel>
-										<StyledNumericInput
-											id="strike-price"
-											value={strikePrice}
-											onChange={(e) => setStrikePrice(e.target.value)}
-											placeholder={t('common.eg-val', {
-												val: strikePricePlaceholderVal,
-											})}
-										/>
-									</FormControl>
-								</FormControlGroup>
-							</FormRow>
-							<FormRow>
-								<FormControlGroup>
-									<FormControl>
-										<FormInputLabel htmlFor="end-of-bidding">
-											{t('options.create-market-modal.details.bidding-end-date-label')}
-										</FormInputLabel>
-										<StyledDatePicker
-											id="end-of-bidding"
-											dateFormat="MMMM d, yyyy h:mm aa"
-											selected={biddingEndDate}
-											showTimeSelect={true}
-											onChange={(d) => setEndOfBidding(d)}
-											minDate={new Date()}
-											maxDate={maturityDate}
-										/>
-									</FormControl>
-									<FormControl>
-										<FormInputLabel htmlFor="maturity-date">
-											{t('options.create-market-modal.details.market-maturity-date-label')}
-										</FormInputLabel>
-										<StyledDatePicker
-											disabled={!biddingEndDate}
-											id="maturity-date"
-											dateFormat="MMMM d, yyyy h:mm aa"
-											selected={maturityDate}
-											showTimeSelect={true}
-											onChange={(d) => setMaturityDate(d)}
-											minDate={biddingEndDate || null}
-										/>
-									</FormControl>
-								</FormControlGroup>
-							</FormRow>
-							<FormRow>
-								<FormControl>
-									<FlexDivRowCentered>
-										<FormInputLabel style={{ cursor: 'default' }}>
-											{t('options.create-market-modal.details.long-short-skew-label')}
-										</FormInputLabel>
-										<div>
-											<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
-											{' / '}
-											<Shorts>{t('common.val-in-cents', { val: initialLongShorts.short })}</Shorts>
-										</div>
-									</FlexDivRowCentered>
-									<StyledSlider
-										value={initialLongShorts.long}
-										onChange={(_, newValue) => {
-											const long = newValue as number;
-											setInitialLongShorts({
-												long,
-												short: 100 - long,
-											});
-										}}
-									/>
-								</FormControl>
-							</FormRow>
-							<FormRow>
-								<FormControl>
-									<FormInputLabel htmlFor="funding-amount">
-										{t('options.create-market-modal.details.funding-amount-label')}
-									</FormInputLabel>
-									<StyledNumericInputWithCurrency
-										currencyKey={SYNTHS_MAP.sUSD}
-										value={initialFundingAmount}
-										onChange={(e) => setInitialFundingAmount(e.target.value)}
-										inputProps={{
-											id: 'funding-amount',
-										}}
-									/>
-								</FormControl>
-							</FormRow>
+										</FormControl>
+										<FormControl>
+											<FormInputLabel htmlFor="strike-price">
+												{t('options.create-market-modal.details.strike-price-label')}
+											</FormInputLabel>
+											<NumericInput
+												id="strike-price"
+												value={strikePrice}
+												onChange={(e) => setStrikePrice(e.target.value)}
+												placeholder={t('common.eg-val', {
+													val: strikePricePlaceholderVal,
+												})}
+											/>
+										</FormControl>
+									</FormControlGroup>
+								</FormRow>
+								<FormRow>
+									<FormControlGroup>
+										<FormControl>
+											<FormInputLabel htmlFor="end-of-bidding">
+												{t('options.create-market-modal.details.bidding-end-date-label')}
+											</FormInputLabel>
+											<StyledDatePicker
+												id="end-of-bidding"
+												dateFormat="MMMM d, yyyy h:mm aa"
+												selected={biddingEndDate}
+												showTimeSelect={true}
+												onChange={(d) => setEndOfBidding(d)}
+												minDate={new Date()}
+												maxDate={maturityDate}
+											/>
+										</FormControl>
+										<FormControl>
+											<FormInputLabel htmlFor="maturity-date">
+												{t('options.create-market-modal.details.market-maturity-date-label')}
+											</FormInputLabel>
+											<StyledDatePicker
+												disabled={!biddingEndDate}
+												id="maturity-date"
+												dateFormat="MMMM d, yyyy h:mm aa"
+												selected={maturityDate}
+												showTimeSelect={true}
+												onChange={(d) => setMaturityDate(d)}
+												minDate={biddingEndDate || null}
+											/>
+										</FormControl>
+									</FormControlGroup>
+								</FormRow>
+								<FormRow>
+									<FormControlGroup>
+										<FormControl>
+											<div style={{ paddingBottom: '4px' }}>
+												<FormInputLabel htmlFor="funding-amount" style={{ paddingBottom: '4px' }}>
+													{t('options.create-market-modal.details.funding-amount.label')}
+												</FormInputLabel>
+												<FormInputDesc>
+													{t('options.create-market-modal.details.funding-amount.desc')}
+												</FormInputDesc>
+											</div>
+											<StyledNumericInputWithCurrency
+												currencyKey={SYNTHS_MAP.sUSD}
+												value={initialFundingAmount}
+												onChange={(e) => setInitialFundingAmount(e.target.value)}
+												inputProps={{
+													id: 'funding-amount',
+													placeholder: t('common.eg-val', {
+														val: `${USD_SIGN}1000.00 ${SYNTHS_MAP.sUSD}`,
+													}),
+												}}
+											/>
+										</FormControl>
+										<FormControl>
+											<FormInputLabel style={{ cursor: 'default' }}>
+												{t('options.create-market-modal.details.long-short-skew-label')}
+											</FormInputLabel>
+											<StyledSlider
+												value={initialLongShorts.long}
+												onChange={(_, newValue) => {
+													const long = newValue as number;
+													setInitialLongShorts({
+														long,
+														short: 100 - long,
+													});
+												}}
+											/>
+											<FlexDivRowCentered>
+												<Longs>{t('common.val-in-cents', { val: initialLongShorts.long })}</Longs>
+												<Shorts>
+													{t('common.val-in-cents', { val: initialLongShorts.short })}
+												</Shorts>
+											</FlexDivRowCentered>
+										</FormControl>
+									</FormControlGroup>
+								</FormRow>
+							</Form>
 						</MarketDetails>
 						<MarketSummary>
 							<MarketSummaryTitle>
@@ -554,16 +561,13 @@ const Title = styled.div`
 	padding-bottom: 8px;
 `;
 
-const Subtitle = styled.div`
+const Paragraph = styled.div`
 	${bodyCSS};
-	color: ${(props) => props.theme.colors.fontSecondary};
+	color: ${darkTheme.colors.accentL1};
 	padding-bottom: 24px;
-	max-width: 520px;
-	margin: 0 auto;
 `;
 
 const Content = styled(GridDivCol)`
-	padding-top: 14px;
 	grid-gap: 57px;
 	${media.medium`
 		grid-auto-flow: row;
@@ -572,6 +576,7 @@ const Content = styled(GridDivCol)`
 
 const MarketDetails = styled.div`
 	width: 570px;
+	text-align: initial;
 	${media.medium`
 		width: 100%;
 	`}
@@ -582,6 +587,15 @@ const FormInputLabel = styled.label`
 	color: ${(props) => props.theme.colors.fontSecondary};
 	text-align: left;
 	cursor: pointer;
+`;
+
+const FormInputDesc = styled.div`
+	${formDataCSS};
+	color: ${(props) => props.theme.colors.fontTertiary};
+`;
+
+const Form = styled.div`
+	padding-top: 14px;
 `;
 
 const FormRow = styled.div`
@@ -694,35 +708,14 @@ const StyledDatePicker = styled(DatePicker)`
 	.react-datepicker-popper {
 		width: max-content;
 	}
-	.react-datepicker__input-container input {
-		border-color: transparent;
-	}
-`;
-
-const StyledNumericInput = styled(NumericInput)`
-	border-color: transparent;
 `;
 
 const StyledNumericInputWithCurrency = styled(NumericInputWithCurrency)`
-	.input {
-		border-top-color: transparent;
-		border-bottom-color: transparent;
-		border-right-color: transparent;
-		border-left-color: ${(props) => props.theme.colors.accentL1};
-	}
-
 	.currency-container {
-		border-color: transparent;
+		background-color: ${(props) => props.theme.colors.surfaceL2};
 	}
 `;
 
-const SelectContainer = styled.div`
-	.react-select__control {
-		border-color: transparent;
-		&:hover {
-			border-color: transparent;
-		}
-	}
-`;
+const SelectContainer = styled.div``;
 
 export default connector(CreateMarketModal);

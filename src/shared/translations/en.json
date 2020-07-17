@@ -223,7 +223,10 @@
 				"bidding-end-date-label": "bidding end date:",
 				"market-maturity-date-label": "market maturity date:",
 				"long-short-skew-label": "long/short price skew:",
-				"funding-amount-label": "choose market funding amount:"
+				"funding-amount": {
+					"label": "market funding amount:",
+					"desc": "Note: your sUSD will be locked up in this contract until the market maturity date"
+				}
 			},
 			"summary": {
 				"title": "market creation summary:",
