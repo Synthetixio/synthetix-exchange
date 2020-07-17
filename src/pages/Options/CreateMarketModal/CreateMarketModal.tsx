@@ -447,7 +447,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 											</FormInputLabel>
 											<StyledDatePicker
 												id="end-of-bidding"
-												dateFormat="MMMM d, yyyy h:mm aa"
+												dateFormat="MMM d, yyyy h:mm aa"
 												selected={biddingEndDate}
 												showTimeSelect={true}
 												onChange={(d) => setEndOfBidding(d)}
@@ -462,7 +462,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 											<StyledDatePicker
 												disabled={!biddingEndDate}
 												id="maturity-date"
-												dateFormat="MMMM d, yyyy h:mm aa"
+												dateFormat="MMM d, yyyy h:mm aa"
 												selected={maturityDate}
 												showTimeSelect={true}
 												onChange={(d) => setMaturityDate(d)}

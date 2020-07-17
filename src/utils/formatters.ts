@@ -106,7 +106,7 @@ export const getDecimalPlaces = (value: NumericValue) =>
 export const formattedDuration = (
 	duration: Duration,
 	delimiter = ' ',
-	firstTwo: boolean = true
+	firstTwo: boolean = false
 ) => {
 	const formatted = [];
 	if (duration.years) {
@@ -130,5 +130,5 @@ export const formattedDuration = (
 	return (firstTwo ? formatted.slice(0, 2) : formatted).join(delimiter);
 };
 
-export const formatShortDate = (date: Date | number) => format(date, 'MMMM d, yyyy');
-export const formatShortDateWithTime = (date: Date | number) => format(date, 'MMMM d, yyyy H:mma');
+export const formatShortDate = (date: Date | number) => format(date, 'MMM d, yyyy');
+export const formatShortDateWithTime = (date: Date | number) => format(date, 'MMM d, yyyy H:mma');
