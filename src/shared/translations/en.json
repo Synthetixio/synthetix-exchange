@@ -180,7 +180,6 @@
 				"no-markets": {
 					"title": "Create a market or place a bid to get started"
 				},
-				"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!",
 				"create-market-button-label": "create a new market"
 			},
 			"explore-markets": {
@@ -216,8 +215,8 @@
 			}
 		},
 		"create-market-modal": {
-			"title": "Create a new Options Market",
-			"subtitle": "Here you can create a new binary options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
+			"title": "Create a new Binary Options market",
+			"subtitle": "Here you can create a new Binary Options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
 			"details": {
 				"select-asset-label": "select asset:",
 				"strike-price-label": "strike price:",
@@ -385,7 +384,8 @@
 			"final-price": "final price:",
 			"claimable-amount": "claimable: {{amount}}",
 			"long-price": "Long price",
-			"short-price": "Short price"
+			"short-price": "Short price",
+			"new-to-binary-options": "New to Binary Options on Synthetix? Make sure to <0>read how it works</0> first!"
 		}
 	},
 	"exchange": {
@@ -574,7 +574,6 @@
 					"title": "You have no bids or markets"
 				},
 				"common": {
-					"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!",
 					"buttons": {
 						"view-all-markets-label": "view all markets",
 						"create-new-market-label": "create new market"

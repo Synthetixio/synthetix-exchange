@@ -64,6 +64,7 @@ import {
 } from 'utils/formatters';
 import MarketSentiment from '../components/MarketSentiment';
 import NetworkFees from '../components/NetworkFees';
+import NewToBinaryOptions from '../components/NewToBinaryOptions';
 
 // const MATURITY_DATE_DAY_DELAY = 1;
 
@@ -330,13 +331,13 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 		<ThemeProvider theme={lightTheme}>
 			<StyledFullScreenModal open={true} onClose={handleClose}>
 				<FullScreenModalContainer>
-					<FullScreenModalCloseButton onClick={handleClose}>
-						<CloseCrossIcon />
-					</FullScreenModalCloseButton>
-					<Title>{t('options.create-market-modal.title')}</Title>
-					<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
 					<Content>
 						<MarketDetails>
+							<Title>{t('options.create-market-modal.title')}</Title>
+							<Subtitle>{t('options.create-market-modal.subtitle')}</Subtitle>
+							<Subtitle>
+								<NewToBinaryOptions />
+							</Subtitle>
 							<FormRow>
 								<FormControlGroup>
 									<FormControl>
@@ -556,12 +557,13 @@ const Title = styled.div`
 const Subtitle = styled.div`
 	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontSecondary};
-	padding-bottom: 57px;
+	padding-bottom: 24px;
 	max-width: 520px;
 	margin: 0 auto;
 `;
 
 const Content = styled(GridDivCol)`
+	padding-top: 14px;
 	grid-gap: 57px;
 	${media.medium`
 		grid-auto-flow: row;
