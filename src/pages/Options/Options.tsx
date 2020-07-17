@@ -30,7 +30,7 @@ type OptionsProps = PropsFromRedux &
 
 const isPaused = false;
 
-export const Options: FC<OptionsProps> = ({ isAppReady /*isWalletConnected*/ }) =>
+export const Options: FC<OptionsProps> = ({ isAppReady, isWalletConnected }) =>
 	isPaused ? (
 		<HomeLayout isAppReady={isAppReady}>
 			<div
@@ -66,16 +66,14 @@ export const Options: FC<OptionsProps> = ({ isAppReady /*isWalletConnected*/ }) 
 			<Route
 				exact
 				path={ROUTES.Options.CreateMarketModal}
-				render={
-					() => (
-						// isWalletConnected ? (
+				render={() =>
+					isWalletConnected ? (
 						<HomeLayout isAppReady={isAppReady}>
 							<CreateMarketModal />
 						</HomeLayout>
-						// ) : (
-						// <Redirect to={ROUTES.Options.Home} />
+					) : (
+						<Redirect to={ROUTES.Options.Home} />
 					)
-					// )
 				}
 			/>
 			<Route

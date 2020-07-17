@@ -112,6 +112,10 @@ type CurrencyKeyOptionType = { value: CurrencyKey; label: string };
 
 type MarketFees = Record<string, number>;
 
+const withdrawalsEnabled = (window as any).withdrawalsEnabled
+	? !!(window as any).withdrawalsEnabled
+	: false;
+
 export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 	synths,
 	currentWallet,
@@ -265,6 +269,7 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 				const gasEstimate = await BinaryOptionMarketManager.contract.estimate.createMarket(
 					oracleKey,
 					price,
+					withdrawalsEnabled,
 					times,
 					bids
 				);
@@ -316,10 +321,17 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 		} = snxJSConnector as any;
 		try {
 			const { oracleKey, price, times, bids } = formatCreateMarketArguments();
-			await BinaryOptionMarketManager.createMarket(oracleKey, price, times, bids, {
-				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit,
-			});
+			await BinaryOptionMarketManager.createMarket(
+				oracleKey,
+				price,
+				withdrawalsEnabled,
+				times,
+				bids,
+				{
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasLimit,
+				}
+			);
 			setIsCreatingMarket(true);
 		} catch (e) {
 			console.log(e);
