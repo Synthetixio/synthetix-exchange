@@ -51,6 +51,7 @@ import { Z_INDEX } from 'constants/ui';
 
 import { MarketProvider } from './contexts/MarketContext';
 import MarketInfoModal from './MarketInfoModal';
+import { useBOMContractContext } from './contexts/BOMContractContext';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -68,13 +69,15 @@ type MarketProps = PropsFromRedux & {
 const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const [marketInfoModalVisible, setMarketInfoModalVisible] = useState<boolean>(false);
+	const BOMContract = useBOMContractContext();
 
 	const marketQuery = useQuery<OptionsMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.Market(marketAddress),
 		async () => {
-			const [marketData, marketParameters] = await Promise.all([
+			const [marketData, marketParameters, withdrawalsEnabled] = await Promise.all([
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
+				BOMContract.refundsEnabled(),
 			]);
 
 			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
@@ -95,7 +98,7 @@ const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }
 			const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
 
 			const currencyKey = parseBytes32String(oracleDetails.key);
-
+			console.log(withdrawalsEnabled);
 			return {
 				isResolved: resolution.resolved,
 				address: marketAddress,
@@ -150,6 +153,7 @@ const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }
 					feeBN: fees.creatorFee.add(fees.poolFee),
 					refundFeeBN: fees.refundFee,
 				},
+				withdrawalsEnabled,
 			} as OptionsMarketInfo;
 		}
 	);

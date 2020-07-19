@@ -3,7 +3,7 @@ import { ConnectedProps, connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import snxData from 'synthetix-data';
 import { useQuery } from 'react-query';
 
@@ -42,19 +42,6 @@ type ExploreMarketsProps = PropsFromRedux & {
 	optionsMarkets: OptionsMarkets;
 };
 
-const useStyles = makeStyles({
-	tooltip: {
-		fontSize: '12px',
-		background: '#020B29',
-		borderRadius: '4px',
-		width: '160px',
-		textAlign: 'center',
-	},
-	arrow: {
-		color: '#020B29',
-	},
-});
-
 type Filter = {
 	name: 'creator' | 'user-bids' | 'phase';
 	value?: string;
@@ -69,7 +56,6 @@ const ExploreMarkets: FC<ExploreMarketsProps> = ({
 	isWalletConnected,
 	currentWalletAddress,
 }) => {
-	const classes = useStyles();
 	const { t } = useTranslation();
 	const [assetSearch, setAssetSearch] = useState<string>('');
 	const [filter, setFilter] = useState<Filter>(defaultFilter);
@@ -170,7 +156,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = ({
 						const isActive = filter.name === filterName;
 
 						return (
-							<Tooltip
+							<StyledTooltip
 								key={filterName}
 								title={
 									<span>
@@ -184,7 +170,6 @@ const ExploreMarkets: FC<ExploreMarketsProps> = ({
 									</span>
 								}
 								placement="top"
-								classes={classes}
 								arrow={true}
 							>
 								<ToggleButton
@@ -207,7 +192,7 @@ const ExploreMarkets: FC<ExploreMarketsProps> = ({
 								>
 									{icon}
 								</ToggleButton>
-							</Tooltip>
+							</StyledTooltip>
 						);
 					})}
 					<AssetSearchInput onChange={(e) => setAssetSearch(e.target.value)} value={assetSearch} />
@@ -338,5 +323,12 @@ const NoResultsText = styled.div`
 	padding-top: 20px;
 	padding-bottom: 40px;
 `;
+
+const StyledTooltip = withStyles({
+	tooltip: {
+		width: '180px',
+		textAlign: 'center',
+	},
+})(Tooltip);
 
 export default connector(ExploreMarkets);

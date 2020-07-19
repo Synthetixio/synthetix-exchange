@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { OptionsTransaction } from 'pages/Options/types';
 
@@ -20,8 +21,6 @@ import SideIcon from '../../components/SideIcon';
 import { CurrentPosition } from './types';
 import { labelMediumCSS } from 'components/Typography/Label';
 
-// TO DO: rename and put this tooltip in ./components
-import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 
 type TradeSideProps = {
@@ -103,11 +102,15 @@ const TradeSide: FC<TradeSideProps> = ({
 									{formatCurrencyWithSign(USD_SIGN, priceShift, 3)}
 								</FormInputPriceShiftLabel>
 								{type === 'bid' ? (
-									<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
+									<Tooltip
+										title={<span>{t('options.market.trade-card.shared.price-shift')}</span>}
+										placement="bottom"
+										arrow={true}
+									>
 										<QuestionMarkIcon>
 											<QuestionMarkStyled />
 										</QuestionMarkIcon>
-									</NetworkInfoTooltip>
+									</Tooltip>
 								) : null}
 							</FlexDiv>
 						</FormLabelRow>

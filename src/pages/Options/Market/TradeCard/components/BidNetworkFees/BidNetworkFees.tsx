@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { TextButton, FlexDivRow, GridDivRow, FlexDivCentered, FlexDiv } from 'shared/commonStyles';
 import { DataSmall } from 'components/Typography';
@@ -18,7 +19,6 @@ import { OptionsTransaction } from 'pages/Options/types';
 import { USD_SIGN } from 'constants/currency';
 
 import { formDataCSS } from 'components/Typography/Form';
-import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 
 const mapStateToProps = (state: RootState) => ({
@@ -90,11 +90,11 @@ const NetworkFees: FC<NetworkFeesProps> = ({
 			<FlexDivRow>
 				<FlexDivCentered>
 					{t(`options.market.trade-card.bidding.common.${type}-fee`)}
-					<NetworkInfoTooltip title={getTooltipBody()}>
+					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
 						<QuestionMarkIcon>
 							<QuestionMarkStyled />
 						</QuestionMarkIcon>
-					</NetworkInfoTooltip>
+					</Tooltip>
 				</FlexDivCentered>
 				<div>{formatCurrencyWithSign(USD_SIGN, totalCost)}</div>
 			</FlexDivRow>
@@ -142,6 +142,7 @@ const QuestionMarkStyled = styled(QuestionMark)`
 
 const TooltipContent = styled.div`
 	width: 200px;
+	padding: 2px;
 	& > * + * {
 		margin-top: 8px;
 	}

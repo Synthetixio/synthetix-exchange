@@ -7,11 +7,10 @@ import intervalToDuration from 'date-fns/intervalToDuration';
 import formatDuration from 'date-fns/formatDuration';
 import add from 'date-fns/add';
 import orderBy from 'lodash/orderBy';
-import { makeStyles } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 import Slider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
 
 import { ReactComponent as QuestionMarkIcon } from 'assets/images/question-mark.svg';
 import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
@@ -70,19 +69,6 @@ import SideIcon from '../Market/components/SideIcon';
 import { INPUT_SIZES } from 'components/Input/constants';
 import { labelSmallCSS } from 'components/Typography/Label';
 
-// TODO: make this a reusable style
-const useStyles = makeStyles({
-	tooltip: {
-		fontSize: '12px',
-		background: '#020B29',
-		borderRadius: '4px',
-		textAlign: 'center',
-	},
-	arrow: {
-		color: '#020B29',
-	},
-});
-
 // const MATURITY_DATE_DAY_DELAY = 1;
 
 const StyledSlider = withStyles({
@@ -134,17 +120,13 @@ type TooltipIconProps = {
 	title: React.ReactNode;
 };
 
-const TooltipIcon: FC<TooltipIconProps> = ({ title }) => {
-	const classes = useStyles();
-
-	return (
-		<Tooltip title={<span>{title}</span>} placement="top" classes={classes} arrow={true}>
-			<TooltipIconContainer>
-				<QuestionMarkIcon />{' '}
-			</TooltipIconContainer>
-		</Tooltip>
-	);
-};
+const TooltipIcon: FC<TooltipIconProps> = ({ title }) => (
+	<Tooltip title={<span>{title}</span>} placement="top" arrow={true}>
+		<TooltipIconContainer>
+			<QuestionMarkIcon />{' '}
+		</TooltipIconContainer>
+	</Tooltip>
+);
 
 export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 	synths,

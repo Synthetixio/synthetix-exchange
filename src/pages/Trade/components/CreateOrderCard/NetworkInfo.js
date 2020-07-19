@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
@@ -11,7 +12,6 @@ import { TextButton, FlexDivRow } from 'shared/commonStyles';
 
 import { DataSmall } from 'components/Typography';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
-import NetworkInfoTooltip from './NetworkInfoTooltip';
 import { formatPercentage } from 'utils/formatters';
 
 export const TransactionInfo = ({
@@ -52,11 +52,11 @@ export const TransactionInfo = ({
 			<NetworkDataRow>
 				<NetworkDataLabelFlex>
 					{t('trade.trade-card.network-info.fee')}
-					<NetworkInfoTooltip title={getTooltipBody()}>
+					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
 						<QuestionMarkIcon>
 							<QuestionMarkStyled />
 						</QuestionMarkIcon>
-					</NetworkInfoTooltip>
+					</Tooltip>
 				</NetworkDataLabelFlex>
 				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
@@ -82,6 +82,7 @@ TransactionInfo.propTypes = {
 
 const TooltipContent = styled.div`
 	width: 200px;
+	padding: 2px;
 	& > * + * {
 		margin-top: 8px;
 	}
