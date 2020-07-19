@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { formatCurrencyWithSign } from 'utils/formatters';
@@ -9,9 +9,9 @@ type CurrencyColProps = {
 	value: number | null;
 	decimals?: number;
 };
-export const CurrencyCol: FC<CurrencyColProps> = memo(({ sign = '', value, decimals }) => (
+export const CurrencyCol: FC<CurrencyColProps> = ({ sign = '', value, decimals }) => (
 	<span>{value == null ? EMPTY_VALUE : formatCurrencyWithSign(sign, value, decimals)}</span>
-));
+);
 
 export const RightAlignedCell = styled.div`
 	display: flex;

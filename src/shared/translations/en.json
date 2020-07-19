@@ -180,7 +180,6 @@
 				"no-markets": {
 					"title": "Create a market or place a bid to get started"
 				},
-				"subtitle": "New to binary options on Synthetix? Make sure to read <0>how it works</0> first!",
 				"create-market-button-label": "create a new market"
 			},
 			"explore-markets": {
@@ -216,32 +215,41 @@
 			}
 		},
 		"create-market-modal": {
-			"title": "Create a new Options Market",
-			"subtitle": "Here you can create a new binary options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
+			"back-to-markets": "back to markets",
+			"title": "Create a new Binary Options market",
+			"subtitle": "Here you can create a new Binary Options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
 			"details": {
 				"select-asset-label": "select asset:",
 				"strike-price-label": "strike price:",
 				"bidding-end-date-label": "bidding end date:",
 				"market-maturity-date-label": "market maturity date:",
 				"long-short-skew-label": "long/short price skew:",
-				"funding-amount-label": "choose market funding amount:"
+				"funding-amount": {
+					"label": "market funding amount:",
+					"desc": "Note: your sUSD will be locked up in this contract until the market maturity date"
+				}
 			},
 			"summary": {
-				"title": "market creation summary:",
+				"title": "new market summary:",
 				"dates": {
-					"bids-end": "Bids end: {{date}}",
-					"trading-period": "Trading period: {{period}}"
+					"bidding-end": "Bidding end",
+					"maturity-date": "Maturity date",
+					"time-to-exercise": "Time to exercise"
 				},
 				"fees": {
 					"bidding": "Bidding fee",
-					"creator": "Creator fee",
-					"refund": "Refund fee",
-					"pool": "Pool fee"
+					"creator": "Creator earns",
+					"refund": "Withdrawal penalty",
+					"pool": "Fee pool earns"
 				},
+				"withdrawals": {
+					"tooltip": "Here you can choose to allow withdrawals, which can affect the pay-out and odds dramatically, particularly late in the Bidding phase."
+				},
+				"wallet-access": "Before you can create a new market, enable wallet access:",
 				"create-market-button-label": "create market",
 				"creating-market-button-label": "creating market...",
-				"approve-manager-button-label": "approve manager",
-				"waiting-for-approval-button-label": "waiting for approval..."
+				"approve-manager-button-label": "enable wallet access",
+				"waiting-for-approval-button-label": "enabling wallet access..."
 			}
 		},
 		"market": {
@@ -313,10 +321,6 @@
 							"label": "confirm bid",
 							"progress-label": "bidding in progress...",
 							"high-slippage": "Warning this bid will shift market prices by more than 10% make sure you have entered the right bid amount."
-						},
-						"allowance-button": {
-							"label": "approve market",
-							"progress-label": "approving market..."
 						}
 					},
 					"refund": {
@@ -328,9 +332,8 @@
 							"label": "confirm withdrawal",
 							"progress-label": "withdrawal in progress..."
 						},
-						"allowance-button": {
-							"label": "approve market",
-							"progress-label": "approving market..."
+						"disabled": {
+							"tooltip": "Market Creator has disabled all. withdrawals - sUSD bids are final"
 						}
 					},
 					"common": {
@@ -385,7 +388,9 @@
 			"final-price": "final price:",
 			"claimable-amount": "claimable: {{amount}}",
 			"long-price": "Long price",
-			"short-price": "Short price"
+			"short-price": "Short price",
+			"new-to-binary-options": "New to Binary Options on Synthetix? Make sure to read <0>how it works</0> first!",
+			"withdrawals": "withdrawals"
 		}
 	},
 	"exchange": {
@@ -499,7 +504,8 @@
 		"navigation": {
 			"overview": "overview",
 			"exchanges": "exchanges",
-			"transfers": "transfers"
+			"transfers": "transfers",
+			"options": "options"
 		},
 		"balances": {
 			"hide-small-value": "Hide small value assets",
@@ -558,6 +564,29 @@
 				"total-col": "total",
 				"status-col": "details",
 				"verify-col": "verify"
+			}
+		},
+		"options": {
+			"banner": {
+				"has-markets": {
+					"title": "Binary Options",
+					"subtitle": "Here you can see all the binary options markets you’ve bid on or markets you’ve created."
+				},
+				"no-susd": {
+					"title": "Get {{currencyKey}} to start bidding"
+				},
+				"no-markets": {
+					"title": "You have no bids or markets"
+				},
+				"common": {
+					"buttons": {
+						"view-all-markets-label": "view all markets",
+						"create-new-market-label": "create new market"
+					}
+				}
+			},
+			"table": {
+				"title": "your markets"
 			}
 		}
 	},
@@ -628,7 +657,9 @@
 			"entry-limit-price": "entry {{price}}",
 			"frozen-synth": "This Synth has been frozen",
 			"lower-limit-reached-reset": "Lower limit reached, reset in progress.",
-			"upper-limit-reached-reset": "Upper limit reached, reset in progress."
+			"upper-limit-reached-reset": "Upper limit reached, reset in progress.",
+			"trade-synths-for-currency": "trade synths for <0>{{currencyKey}}</0>",
+			"buy-currency": "buy <0>{{currencyKey}}</0>"
 		},
 		"currency-category": {
 			"crypto": "crypto",
@@ -677,6 +708,14 @@
 		"eg-val": "e.g. {{val}}",
 		"select-date": "select date",
 		"beta": "beta",
-		"or": "or"
+		"or": "or",
+		"toggle": {
+			"on": "on",
+			"off": "off"
+		},
+		"enable-wallet-access": {
+			"label": "enable wallet access",
+			"progress-label": "enabling wallet access..."
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { SYNTHS_MAP, CurrencyKey, CurrencyKeys } from 'constants/currency';
@@ -22,26 +22,30 @@ type SimpleSearchProps = {
 	onAdvancedSearchClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
-const SimpleSearch: FC<SimpleSearchProps> = memo(
-	({ marketsAssetFilter, onSearchChange, onAdvancedSearchClick, search, onAssetFilterClick }) => (
-		<>
-			<SearchInput value={search} onChange={onSearchChange} />
-			<ButtonsRow>
-				{ASSET_FILTERS.map((asset) => (
-					<StyledButton
-						key={`button-filter-${asset}`}
-						isActive={asset === marketsAssetFilter}
-						onClick={(e) => onAssetFilterClick(e, asset)}
-					>
-						{asset}
-					</StyledButton>
-				))}
-				<IconButton onClick={onAdvancedSearchClick}>
-					<CogIcon />
-				</IconButton>
-			</ButtonsRow>
-		</>
-	)
+const SimpleSearch: FC<SimpleSearchProps> = ({
+	marketsAssetFilter,
+	onSearchChange,
+	onAdvancedSearchClick,
+	search,
+	onAssetFilterClick,
+}) => (
+	<>
+		<SearchInput value={search} onChange={onSearchChange} />
+		<ButtonsRow>
+			{ASSET_FILTERS.map((asset) => (
+				<StyledButton
+					key={`button-filter-${asset}`}
+					isActive={asset === marketsAssetFilter}
+					onClick={(e) => onAssetFilterClick(e, asset)}
+				>
+					{asset}
+				</StyledButton>
+			))}
+			<IconButton onClick={onAdvancedSearchClick}>
+				<CogIcon />
+			</IconButton>
+		</ButtonsRow>
+	</>
 );
 
 const ButtonsRow = styled.div`

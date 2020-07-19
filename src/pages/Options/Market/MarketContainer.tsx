@@ -1,4 +1,4 @@
-import React, { memo, FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import snxJSConnector from 'utils/snxJSConnector';
 import { ethers } from 'ethers';
@@ -18,7 +18,7 @@ type MarketContainerProps = RouteComponentProps<{
 	marketAddress: string;
 }>;
 
-const MarketContainer: FC<MarketContainerProps> = memo(({ match }) => {
+const MarketContainer: FC<MarketContainerProps> = ({ match }) => {
 	const [BOMContract, setBOMContract] = useState<ethers.Contract>();
 
 	useEffect(() => {
@@ -47,6 +47,6 @@ const MarketContainer: FC<MarketContainerProps> = memo(({ match }) => {
 			<Spinner size="sm" centered={true} />
 		</LoaderContainer>
 	);
-});
+};
 
 export default MarketContainer;

@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useCallback } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -51,6 +51,7 @@ import { Z_INDEX } from 'constants/ui';
 
 import { MarketProvider } from './contexts/MarketContext';
 import MarketInfoModal from './MarketInfoModal';
+import { useBOMContractContext } from './contexts/BOMContractContext';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
@@ -65,16 +66,18 @@ type MarketProps = PropsFromRedux & {
 	marketAddress: string;
 };
 
-const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress, isWalletConnected }) => {
+const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const [marketInfoModalVisible, setMarketInfoModalVisible] = useState<boolean>(false);
+	const BOMContract = useBOMContractContext();
 
 	const marketQuery = useQuery<OptionsMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.Market(marketAddress),
 		async () => {
-			const [marketData, marketParameters] = await Promise.all([
+			const [marketData, marketParameters, withdrawalsEnabled] = await Promise.all([
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
+				BOMContract.refundsEnabled(),
 			]);
 
 			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
@@ -150,6 +153,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress, isWalletConnec
 					feeBN: fees.creatorFee.add(fees.poolFee),
 					refundFeeBN: fees.refundFee,
 				},
+				withdrawalsEnabled,
 			} as OptionsMarketInfo;
 		}
 	);
@@ -222,7 +226,7 @@ const Market: FC<MarketProps> = memo(({ synthsMap, marketAddress, isWalletConnec
 			<Spinner size="sm" centered={true} />
 		</LoaderContainer>
 	);
-});
+};
 
 const StyledCenteredPageLayout = styled(CenteredPageLayout)`
 	display: grid;

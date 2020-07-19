@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 
 import { getBlurBackgroundIsVisible } from 'ducks/ui';
@@ -12,9 +12,9 @@ type StateProps = {
 
 type BlurBackgroundProps = StateProps;
 
-const BlurBackground: FC<BlurBackgroundProps> = memo(({ blurBackgroundIsVisible }) => (
+const BlurBackground: FC<BlurBackgroundProps> = ({ blurBackgroundIsVisible }) => (
 	<Blur isVisible={blurBackgroundIsVisible} />
-));
+);
 
 const keyf = keyframes`
 from {

@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -36,33 +36,35 @@ type NetworkFeesProps = PropsFromRedux & {
 	gasLimit: number | null;
 };
 
-const NetworkFees: FC<NetworkFeesProps> = memo(
-	({ className, toggleGweiPopup, gasInfo, ethRate, gasLimit }) => {
-		const { t } = useTranslation();
+const NetworkFees: FC<NetworkFeesProps> = ({
+	className,
+	toggleGweiPopup,
+	gasInfo,
+	ethRate,
+	gasLimit,
+}) => {
+	const { t } = useTranslation();
 
-		const { gasPrice } = gasInfo;
+	const { gasPrice } = gasInfo;
 
-		return (
-			<Container className={className}>
-				<FlexDivRow>
-					<div>{t('common.network-fee-gas')}</div>
-					<div>
-						{formatCurrencyWithSign(USD_SIGN, getTransactionPrice(gasPrice, gasLimit, ethRate))}
-					</div>
-				</FlexDivRow>
-				<FlexDivRow>
-					<div>{t('common.gas-price-gwei')}</div>
-					<div>
-						{gasPrice || 0}
-						<ButtonEdit onClick={() => toggleGweiPopup(true)}>
-							{t('common.actions.edit')}
-						</ButtonEdit>
-					</div>
-				</FlexDivRow>
-			</Container>
-		);
-	}
-);
+	return (
+		<Container className={className}>
+			<FlexDivRow>
+				<div>{t('common.network-fee-gas')}</div>
+				<div>
+					{formatCurrencyWithSign(USD_SIGN, getTransactionPrice(gasPrice, gasLimit, ethRate))}
+				</div>
+			</FlexDivRow>
+			<FlexDivRow>
+				<div>{t('common.gas-price-gwei')}</div>
+				<div>
+					{gasPrice || 0}
+					<ButtonEdit onClick={() => toggleGweiPopup(true)}>{t('common.actions.edit')}</ButtonEdit>
+				</div>
+			</FlexDivRow>
+		</Container>
+	);
+};
 
 export const Container = styled(GridDivRow)`
 	${formDataCSS};
@@ -75,7 +77,7 @@ export const Container = styled(GridDivRow)`
 export const ButtonEdit = styled(TextButton)`
 	${formDataCSS};
 	margin-left: 10px;
-	color: ${(props) => props.theme.colors.hyperlink};
+	color: ${(props) => props.theme.colors.icons};
 	text-transform: uppercase;
 `;
 

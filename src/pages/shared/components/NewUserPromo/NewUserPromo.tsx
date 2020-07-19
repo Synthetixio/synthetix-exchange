@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +22,7 @@ import { media } from 'shared/media';
 
 import { shiftUpHoverEffectCSS } from 'shared/commonStyles';
 
-export const NewUserPromo = memo(() => {
+export const NewUserPromo = () => {
 	const { t } = useTranslation();
 
 	return (
@@ -65,7 +65,7 @@ export const NewUserPromo = memo(() => {
 			</PromoCards>
 		</Container>
 	);
-});
+};
 
 const Container = styled.div`
 	padding: 85px 20px;

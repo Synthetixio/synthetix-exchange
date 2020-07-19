@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import spinnerBig from 'assets/images/spinner-big.png';
@@ -14,7 +14,7 @@ type SpinnerProps = {
 	centered?: boolean;
 };
 
-const Spinner: FC<SpinnerProps> = memo(({ size = 'lg', className, centered = false, ...rest }) => (
+const Spinner: FC<SpinnerProps> = ({ size = 'lg', className, centered = false, ...rest }) => (
 	<Container className={className} centered={centered} {...rest}>
 		{size === 'sm' ? (
 			<Img src={spinnerSmall} alt="spinner" width="20" height="20" />
@@ -22,7 +22,7 @@ const Spinner: FC<SpinnerProps> = memo(({ size = 'lg', className, centered = fal
 			<Img src={spinnerBig} alt="spinner" />
 		)}
 	</Container>
-));
+);
 
 const Container = styled.div<{ centered: boolean }>`
 	${(props) => props.centered && absoluteCenteredCSS}

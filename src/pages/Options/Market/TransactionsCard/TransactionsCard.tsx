@@ -1,4 +1,4 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
@@ -29,31 +29,34 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type TransactionsCardProps = PropsFromRedux;
 
-const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWalletConnected }) => {
+const TransactionsCard: FC<TransactionsCardProps> = ({ walletAddress, isWalletConnected }) => {
 	const { t } = useTranslation();
 	const optionsMarket = useMarketContext();
 
-	const tabContent = [
-		{
-			id: 'recent-transactions',
-			name: t('options.market.transactions-card.recent-market-tab-title'),
-			isDisabled: false,
-		},
-		{
-			id: 'your-transactions',
-			name: t('options.market.transactions-card.your-activity-tab-title'),
-			isDisabled: !isWalletConnected,
-		},
-		{
-			id: 'pending-transactions',
-			name: t('options.market.transactions-card.pending-transactions-tab-title'),
-			isDisabled: !isWalletConnected,
-		},
-	] as Array<{
+	const tabContent: Array<{
 		id: 'recent-transactions' | 'your-transactions' | 'pending-transactions';
 		name: string;
 		isDisabled: boolean;
-	}>;
+	}> = useMemo(
+		() => [
+			{
+				id: 'recent-transactions',
+				name: t('options.market.transactions-card.recent-market-tab-title'),
+				isDisabled: false,
+			},
+			{
+				id: 'your-transactions',
+				name: t('options.market.transactions-card.your-activity-tab-title'),
+				isDisabled: !isWalletConnected,
+			},
+			{
+				id: 'pending-transactions',
+				name: t('options.market.transactions-card.pending-transactions-tab-title'),
+				isDisabled: !isWalletConnected,
+			},
+		],
+		[t, isWalletConnected]
+	);
 
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
 
@@ -87,7 +90,7 @@ const TransactionsCard: FC<TransactionsCardProps> = memo(({ walletAddress, isWal
 			</StyledCardBody>
 		</StyledCard>
 	);
-});
+};
 
 const StyledCard = styled(Card)`
 	flex-grow: 1;

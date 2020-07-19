@@ -1,8 +1,7 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
@@ -13,10 +12,12 @@ import { toggleHideSmallValueAssets, getHideSmallValueAssets } from 'ducks/ui';
 import { ReactComponent as ChartsSquareIcon } from 'assets/images/charts-square.svg';
 import { ReactComponent as ClockSquareIcon } from 'assets/images/clock-square.svg';
 // import { ReactComponent as ArrowsSquareIcon } from 'assets/images/arrows-square.svg';
+// import { ReactComponent as ArrowsRotatedSquareIcon } from 'assets/images/arrows-rotated-square.svg';
 
 import { ROUTES } from 'constants/routes';
+import { RootState } from 'ducks/types';
 
-const MenuLinks = [
+const MENU_LINKS: Array<{ route: string; i18nKey: string; icon: React.ReactNode }> = [
 	{
 		route: ROUTES.Assets.Overview,
 		i18nKey: 'assets.navigation.overview',
@@ -34,15 +35,37 @@ const MenuLinks = [
 		icon: <ArrowsSquareIcon />,
 	},
 	*/
+	// {
+	// 	route: ROUTES.Assets.Options.Home,
+	// 	i18nKey: 'assets.navigation.options',
+	// 	icon: <ArrowsRotatedSquareIcon />,
+	// },
 ];
 
-const AssetsNavigation = memo(({ toggleHideSmallValueAssets, hideSmallValueAssets }) => {
+const mapStateToProps = (state: RootState) => ({
+	hideSmallValueAssets: getHideSmallValueAssets(state),
+});
+
+const mapDispatchToProps = {
+	toggleHideSmallValueAssets,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type AssetsNavigationProps = PropsFromRedux;
+
+const AssetsNavigation: FC<AssetsNavigationProps> = ({
+	toggleHideSmallValueAssets,
+	hideSmallValueAssets,
+}) => {
 	const { t } = useTranslation();
 
 	return (
-		<div>
+		<Container>
 			<List>
-				{MenuLinks.map(({ route, i18nKey, icon }) => (
+				{MENU_LINKS.map(({ route, i18nKey, icon }) => (
 					<li key={route}>
 						<ListItemLink to={route}>
 							<span>{t(i18nKey)}</span>
@@ -61,14 +84,14 @@ const AssetsNavigation = memo(({ toggleHideSmallValueAssets, hideSmallValueAsset
 					</SmallValueAssets>
 				)}
 			/>
-		</div>
+		</Container>
 	);
-});
-
-AssetsNavigation.propTypes = {
-	toggleHideSmallValueAssets: PropTypes.func.isRequired,
-	hideSmallValueAssets: PropTypes.bool.isRequired,
 };
+
+const Container = styled.div`
+	background-color: ${(props) => props.theme.colors.surfaceL2};
+	padding: 20px;
+`;
 
 const ListItemLink = styled(Link)`
 	${labelSmallCSS};
@@ -120,12 +143,4 @@ const SmallValueAssets = styled.div`
 	}
 `;
 
-const mapStateToProps = (state) => ({
-	hideSmallValueAssets: getHideSmallValueAssets(state),
-});
-
-const mapDispatchToProps = {
-	toggleHideSmallValueAssets,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssetsNavigation);
+export default connector(AssetsNavigation);
