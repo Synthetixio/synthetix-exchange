@@ -84,7 +84,7 @@ export const bigNumberFormatter = (value: BigNumberish) =>
 export const getAddress = (addr: string) => (snxJSConnector as any).ethersUtils.getAddress(addr);
 
 export const formatTxTimestamp = (timestamp: number | Date) =>
-	format(timestamp, 'dd-MM-yy | HH:mm');
+	format(timestamp, 'MMM d, yy | HH:mm');
 
 export const toJSTimestamp = (timestamp: number) => timestamp * 1000;
 

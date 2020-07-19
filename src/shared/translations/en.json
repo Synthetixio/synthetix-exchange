@@ -339,6 +339,9 @@
 						"allowance-button": {
 							"label": "approve market",
 							"progress-label": "approving market..."
+						},
+						"disabled": {
+							"tooltip": "Market Creator has disabled all. withdrawals - sUSD bids are final"
 						}
 					},
 					"common": {

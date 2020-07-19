@@ -91,6 +91,7 @@ export type OptionsMarketInfo = {
 		skewLimit: number;
 	};
 	BN: BNOptionValue;
+	withdrawalsEnabled: boolean;
 };
 
 export type AccountMarketInfo = {

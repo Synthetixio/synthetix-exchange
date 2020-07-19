@@ -4,6 +4,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 import orderBy from 'lodash/orderBy';
+import { withStyles } from '@material-ui/core';
 
 import {
 	fetchMarketsRequest,
@@ -32,7 +33,6 @@ import { Button } from 'components/Button';
 import { headingH4CSS } from 'components/Typography/Heading';
 
 import MarketsTable from 'pages/shared/components/MarketsSection/MarketsTable';
-import { makeStyles } from '@material-ui/core';
 
 type StateProps = {
 	marketsMap: MarketPairsMap;
@@ -49,19 +49,6 @@ type DispatchProps = {
 
 type MarketSectionProps = StateProps & DispatchProps & Props;
 
-const useStyles = makeStyles({
-	tooltip: {
-		fontSize: '12px',
-		background: '#020B29',
-		borderRadius: '4px',
-		width: '160px',
-		textAlign: 'center',
-	},
-	arrow: {
-		color: '#020B29',
-	},
-});
-
 const TOP_RANK = 5;
 
 export const SynthMarkets: FC<MarketSectionProps> = ({
@@ -70,7 +57,6 @@ export const SynthMarkets: FC<MarketSectionProps> = ({
 	marketsMap,
 	marketPairs,
 }) => {
-	const classes = useStyles();
 	const { t } = useTranslation();
 	const [assetSearch, setAssetSearch] = useState<string>('');
 	const [showTopRanking, setShowTopRanking] = useState<boolean>(true);
@@ -116,10 +102,9 @@ export const SynthMarkets: FC<MarketSectionProps> = ({
 			<Header>
 				<Title>{t('synths.overview.synth-markets.title', { currencyKey: synth.name })}</Title>
 				<Filters>
-					<Tooltip
+					<StyledTooltip
 						title={<span>{t('synths.overview.synth-markets.top-rank-synth-tooltip')}</span>}
 						placement="top"
-						classes={classes}
 						arrow={true}
 					>
 						<Button
@@ -131,7 +116,7 @@ export const SynthMarkets: FC<MarketSectionProps> = ({
 						>
 							{t('common.top-number', { number: TOP_RANK })}
 						</Button>
-					</Tooltip>
+					</StyledTooltip>
 					<AssetSearchInput onChange={(e) => setAssetSearch(e.target.value)} value={assetSearch} />
 				</Filters>
 			</Header>
@@ -192,6 +177,13 @@ const StyledButton = styled(Button)`
 	padding: 0 30px;
 	background-color: transparent;
 `;
+
+const StyledTooltip = withStyles({
+	tooltip: {
+		width: '180px',
+		textAlign: 'center',
+	},
+})(Tooltip);
 
 const mapStateToProps = (state: RootState, ownProps: Props): StateProps => ({
 	marketsMap: getAllMarketsMap(state),

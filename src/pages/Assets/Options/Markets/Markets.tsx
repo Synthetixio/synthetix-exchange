@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 
 import { OptionsMarkets } from 'pages/Options/types';
 import SearchInput from 'components/Input/SearchInput';
@@ -28,18 +28,12 @@ type MarketsProps = {
 	userBidsMarkets: OptionsMarkets;
 };
 
-const useStyles = makeStyles({
+const StyledTooltip = withStyles({
 	tooltip: {
-		fontSize: '12px',
-		background: '#020B29',
-		borderRadius: '4px',
-		width: '160px',
+		width: '180px',
 		textAlign: 'center',
 	},
-	arrow: {
-		color: '#020B29',
-	},
-});
+})(Tooltip);
 
 const userFilters: Array<{ filterName: Filter['name']; icon: JSX.Element }> = [
 	{
@@ -58,7 +52,6 @@ type Filter = {
 };
 
 const Markets: FC<MarketsProps> = ({ creatorMarkets, userBidsMarkets }) => {
-	const classes = useStyles();
 	const { t } = useTranslation();
 	const [assetSearch, setAssetSearch] = useState<string>('');
 	const [filter, setFilter] = useState<Filter>({
@@ -94,7 +87,7 @@ const Markets: FC<MarketsProps> = ({ creatorMarkets, userBidsMarkets }) => {
 						const isActive = filter.name === filterName;
 
 						return (
-							<Tooltip
+							<StyledTooltip
 								key={filterName}
 								title={
 									<span>
@@ -104,7 +97,6 @@ const Markets: FC<MarketsProps> = ({ creatorMarkets, userBidsMarkets }) => {
 									</span>
 								}
 								placement="top"
-								classes={classes}
 								arrow={true}
 							>
 								<ToggleButton
@@ -117,7 +109,7 @@ const Markets: FC<MarketsProps> = ({ creatorMarkets, userBidsMarkets }) => {
 								>
 									{icon}
 								</ToggleButton>
-							</Tooltip>
+							</StyledTooltip>
 						);
 					})}
 					<AssetSearchInput onChange={(e) => setAssetSearch(e.target.value)} value={assetSearch} />
