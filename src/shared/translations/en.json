@@ -321,10 +321,6 @@
 							"label": "confirm bid",
 							"progress-label": "bidding in progress...",
 							"high-slippage": "Warning this bid will shift market prices by more than 10% make sure you have entered the right bid amount."
-						},
-						"allowance-button": {
-							"label": "approve market",
-							"progress-label": "approving market..."
 						}
 					},
 					"refund": {
@@ -335,10 +331,6 @@
 						"confirm-button": {
 							"label": "confirm withdrawal",
 							"progress-label": "withdrawal in progress..."
-						},
-						"allowance-button": {
-							"label": "approve market",
-							"progress-label": "approving market..."
 						},
 						"disabled": {
 							"tooltip": "Market Creator has disabled all. withdrawals - sUSD bids are final"
