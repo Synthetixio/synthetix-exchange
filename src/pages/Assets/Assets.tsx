@@ -8,7 +8,7 @@ import AssetsNavigation from './components/AssetsNavigation';
 
 const Overview = lazy(() => import('./Overview'));
 const Exchanges = lazy(() => import('./Exchanges'));
-const Options = lazy(() => import('./Options'));
+// const Options = lazy(() => import('./Options'));
 const CreateMarketModal = lazy(() => import('pages/Options/CreateMarketModal'));
 
 // import Transfers from './Transfers';
@@ -20,7 +20,7 @@ const Assets: FC = () => (
 			<Switch>
 				<Route exact={true} path={ROUTES.Assets.Overview} component={Overview} />
 				<Route exact={true} path={ROUTES.Assets.Exchanges} component={Exchanges} />
-				<Route exact={true} path={ROUTES.Assets.Options.Home} component={Options} />
+				{/* <Route exact={true} path={ROUTES.Assets.Options.Home} component={Options} /> */}
 				<Route
 					exact={true}
 					path={ROUTES.Assets.Options.CreateMarketModal}
