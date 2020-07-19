@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import CurrencyIcon from '../CurrencyIcon';
@@ -15,14 +15,19 @@ type CurrencyNameProps = {
 	currencyDesc?: string | null;
 };
 
-export const CurrencyName: FC<CurrencyNameProps> = memo(
-	({ currencyKey, name, currencyDesc = null, showIcon = false, iconProps = {}, ...rest }) => (
-		<Container showIcon={showIcon} {...rest}>
-			{showIcon && <CurrencyIcon currencyKey={currencyKey} {...iconProps} />}
-			{name || currencyKey}
-			{currencyDesc && <Desc className="currency-desc">{currencyDesc}</Desc>}
-		</Container>
-	)
+export const CurrencyName: FC<CurrencyNameProps> = ({
+	currencyKey,
+	name,
+	currencyDesc = null,
+	showIcon = false,
+	iconProps = {},
+	...rest
+}) => (
+	<Container showIcon={showIcon} {...rest}>
+		{showIcon && <CurrencyIcon currencyKey={currencyKey} {...iconProps} />}
+		{name || currencyKey}
+		{currencyDesc && <Desc className="currency-desc">{currencyDesc}</Desc>}
+	</Container>
 );
 
 const Desc = styled.span`

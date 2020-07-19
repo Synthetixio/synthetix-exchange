@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +40,7 @@ type Props = {
 
 type TradeHistoryProps = StateProps & Props;
 
-const TradeHistory: FC<TradeHistoryProps> = ({ trades, isLoading, isLoaded, networkId }) => {
+const TradeHistory: FC<TradeHistoryProps> = memo(({ trades, isLoading, isLoaded, networkId }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -155,7 +155,7 @@ const TradeHistory: FC<TradeHistoryProps> = ({ trades, isLoading, isLoaded, netw
 			}
 		/>
 	);
-};
+});
 
 const StyledTable = styled(Table)`
 	position: initial;

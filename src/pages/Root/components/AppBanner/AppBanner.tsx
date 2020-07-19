@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { resetButtonCSS } from 'shared/commonStyles';
@@ -17,7 +17,7 @@ const { APP_BANNER_DISMISSED } = LOCAL_STORAGE_KEYS;
 
 const BANNER_ID = '2_eth_collat'; // set on 22 June, 2020
 
-const AppBanner = memo(() => {
+const AppBanner = () => {
 	const [bannerDismissed, setBannerDismissed] = useLocalStorage(APP_BANNER_DISMISSED, null);
 
 	const shouldDisplayBanner = bannerDismissed == null || bannerDismissed !== BANNER_ID;
@@ -33,7 +33,7 @@ const AppBanner = memo(() => {
 			</CloseButton>
 		</Container>
 	) : null;
-});
+};
 
 const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.buttonDefault};

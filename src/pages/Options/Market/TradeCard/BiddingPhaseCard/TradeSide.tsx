@@ -1,6 +1,7 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { OptionsTransaction } from 'pages/Options/types';
 
@@ -20,8 +21,6 @@ import SideIcon from '../../components/SideIcon';
 import { CurrentPosition } from './types';
 import { labelMediumCSS } from 'components/Typography/Label';
 
-// TO DO: rename and put this tooltip in ./components
-import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 
 type TradeSideProps = {
@@ -39,114 +38,114 @@ type TradeSideProps = {
 	priceShift: number;
 };
 
-const TradeSide: FC<TradeSideProps> = memo(
-	({
-		isActive,
-		type,
-		side,
-		amount,
-		price,
-		onPriceChange,
-		onAmountChange,
-		onClick,
-		transKey,
-		currentPosition,
-		priceShift,
-		onMaxClick,
-	}) => {
-		const { t } = useTranslation();
+const TradeSide: FC<TradeSideProps> = ({
+	isActive,
+	type,
+	side,
+	amount,
+	price,
+	onPriceChange,
+	onAmountChange,
+	onClick,
+	transKey,
+	currentPosition,
+	priceShift,
+	onMaxClick,
+}) => {
+	const { t } = useTranslation();
 
-		const amountInputId = `${type}-${side}-amount`;
-		const priceInputId = `${type}-${side}-price`;
+	const amountInputId = `${type}-${side}-amount`;
+	const priceInputId = `${type}-${side}-price`;
 
-		return (
-			<Container isActive={isActive} onClick={onClick}>
-				<Section>
-					<FormRow>
-						<SideIndication isHighlighted={isActive}>
-							{t(`options.common.${side}`)} <StyledSideIcon side={side} />
-						</SideIndication>
-					</FormRow>
-					<FormRow>
-						<FormControl>
-							<FormInputLabelRow>
-								<FormInputLabel htmlFor={amountInputId}>
-									{t(`${transKey}.amount-label`)}
-								</FormInputLabel>
-								<MaxButton
-									onClick={() => {
-										if (isActive) {
-											onMaxClick();
-										} else onClick();
-									}}
-								>
-									{t('common.max')}
-								</MaxButton>
-							</FormInputLabelRow>
-							<StyledNumericInputWithCurrency
-								currencyKey={SYNTHS_MAP.sUSD}
-								value={amount}
-								onChange={onAmountChange}
-								showIcon={false}
-								inputProps={{
-									id: amountInputId,
-									min: '0',
+	return (
+		<Container isActive={isActive} onClick={onClick}>
+			<Section>
+				<FormRow>
+					<SideIndication isHighlighted={isActive}>
+						{t(`options.common.${side}`)} <StyledSideIcon side={side} />
+					</SideIndication>
+				</FormRow>
+				<FormRow>
+					<FormControl>
+						<FormInputLabelRow>
+							<FormInputLabel htmlFor={amountInputId}>
+								{t(`${transKey}.amount-label`)}
+							</FormInputLabel>
+							<MaxButton
+								onClick={() => {
+									if (isActive) {
+										onMaxClick();
+									} else onClick();
 								}}
-							/>
-						</FormControl>
-					</FormRow>
-					<FormRow>
-						<FormControl>
-							<FormLabelRow>
-								<FormInputLabel htmlFor={priceInputId}>
-									{t(`${transKey}.price-label`)}
-								</FormInputLabel>
-								<FlexDiv>
-									<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
-										{formatCurrencyWithSign(USD_SIGN, priceShift, 3)}
-									</FormInputPriceShiftLabel>
-									{type === 'bid' ? (
-										<NetworkInfoTooltip title={t('options.market.trade-card.shared.price-shift')}>
-											<QuestionMarkIcon>
-												<QuestionMarkStyled />
-											</QuestionMarkIcon>
-										</NetworkInfoTooltip>
-									) : null}
-								</FlexDiv>
-							</FormLabelRow>
-							<StyledNumericInput
-								id={priceInputId}
-								value={price}
-								onChange={onPriceChange}
-								placeholder="0"
-								step="0.1"
-								min="0"
-								max="1"
-							/>
-						</FormControl>
-					</FormRow>
-				</Section>
-				<CurrentPositionSection>
-					<SectionTitle>
-						{t('options.market.trade-card.bidding.common.current-position')}
-					</SectionTitle>
-					<SectionBody>
-						{t('options.market.trade-card.bidding.common.bid')}{' '}
-						<StyledCurrencyKey>
-							{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.bid)}
-						</StyledCurrencyKey>
-					</SectionBody>
-					<SectionBody>
-						{t('options.market.trade-card.bidding.common.payout')}{' '}
-						<StyledCurrencyKey>
-							{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.payout)}
-						</StyledCurrencyKey>
-					</SectionBody>
-				</CurrentPositionSection>
-			</Container>
-		);
-	}
-);
+							>
+								{t('common.max')}
+							</MaxButton>
+						</FormInputLabelRow>
+						<StyledNumericInputWithCurrency
+							currencyKey={SYNTHS_MAP.sUSD}
+							value={amount}
+							onChange={onAmountChange}
+							showIcon={false}
+							inputProps={{
+								id: amountInputId,
+								min: '0',
+							}}
+						/>
+					</FormControl>
+				</FormRow>
+				<FormRow>
+					<FormControl>
+						<FormLabelRow>
+							<FormInputLabel htmlFor={priceInputId}>{t(`${transKey}.price-label`)}</FormInputLabel>
+							<FlexDiv>
+								<FormInputPriceShiftLabel highlighted={priceShift > SLIPPAGE_THRESHOLD}>
+									{formatCurrencyWithSign(USD_SIGN, priceShift, 3)}
+								</FormInputPriceShiftLabel>
+								{type === 'bid' ? (
+									<Tooltip
+										title={<span>{t('options.market.trade-card.shared.price-shift')}</span>}
+										placement="bottom"
+										arrow={true}
+									>
+										<QuestionMarkIcon>
+											<QuestionMarkStyled />
+										</QuestionMarkIcon>
+									</Tooltip>
+								) : null}
+							</FlexDiv>
+						</FormLabelRow>
+						<StyledNumericInput
+							id={priceInputId}
+							value={price}
+							onChange={onPriceChange}
+							placeholder="0"
+							step="0.1"
+							min="0"
+							max="1"
+						/>
+					</FormControl>
+				</FormRow>
+			</Section>
+			<CurrentPositionSection>
+				<SectionTitle>
+					{t('options.market.trade-card.bidding.common.current-position')}
+				</SectionTitle>
+				<SectionBody>
+					{t('options.market.trade-card.bidding.common.bid')}{' '}
+					<StyledCurrencyKey>
+						{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.bid)}
+					</StyledCurrencyKey>
+				</SectionBody>
+				<SectionBody>
+					{t('options.market.trade-card.bidding.common.payout')}{' '}
+					<StyledCurrencyKey>
+						{formatCurrencyWithKey(SYNTHS_MAP.sUSD, currentPosition.payout)}
+					</StyledCurrencyKey>
+				</SectionBody>
+			</CurrentPositionSection>
+		</Container>
+	);
+};
 
 const FormInputLabelRow = styled(FlexDivRow)`
 	align-items: center;

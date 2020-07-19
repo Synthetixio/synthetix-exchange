@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -112,7 +112,7 @@ const MISC_LINKS = [
 	},
 ];
 
-export const Footer: FC = memo(() => {
+export const Footer: FC = () => {
 	const { t } = useTranslation();
 
 	return (
@@ -156,7 +156,7 @@ export const Footer: FC = memo(() => {
 			</Content>
 		</Container>
 	);
-});
+};
 
 const Container = styled.footer`
 	padding: 68px;

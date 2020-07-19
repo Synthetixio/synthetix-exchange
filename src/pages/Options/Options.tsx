@@ -12,7 +12,7 @@ import { Button } from 'components/Button';
 import Link from 'components/Link';
 
 const Home = lazy(() => import('./Home'));
-// const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
+const CreateMarketModal = lazy(() => import('./CreateMarketModal'));
 const Market = lazy(() => import('./Market'));
 
 const mapStateToProps = (state: RootState) => ({
@@ -28,9 +28,9 @@ type OptionsProps = PropsFromRedux &
 		isAppReady: boolean;
 	};
 
-const isPaused = true;
+const isPaused = false;
 
-export const Options: FC<OptionsProps> = ({ isAppReady /*isWalletConnected*/ }) =>
+export const Options: FC<OptionsProps> = ({ isAppReady, isWalletConnected }) =>
 	isPaused ? (
 		<HomeLayout isAppReady={isAppReady}>
 			<div
@@ -66,16 +66,14 @@ export const Options: FC<OptionsProps> = ({ isAppReady /*isWalletConnected*/ }) 
 			<Route
 				exact
 				path={ROUTES.Options.CreateMarketModal}
-				render={
-					() => (
-						// isWalletConnected ? (
-						// 	<HomeLayout isAppReady={isAppReady}>
-						// 		<CreateMarketModal />
-						// 	</HomeLayout>
-						// ) : (
+				render={() =>
+					isWalletConnected ? (
+						<HomeLayout isAppReady={isAppReady}>
+							<CreateMarketModal />
+						</HomeLayout>
+					) : (
 						<Redirect to={ROUTES.Options.Home} />
 					)
-					// )
 				}
 			/>
 			<Route

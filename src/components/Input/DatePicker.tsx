@@ -22,7 +22,7 @@ export const DatePicker: FC<DatePickerProps> = ({ className, errorMessage, ...re
 	return (
 		<DatePickerContainer className={className} hasError={!!errorMessage}>
 			<ReactDatePicker
-				dateFormat="yyyy-MM-dd h:mm aa"
+				dateFormat="MMM d, yyyy h:mm aa"
 				placeholderText={t('common.select-date')}
 				autoComplete="off"
 				{...rest}

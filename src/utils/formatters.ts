@@ -84,7 +84,7 @@ export const bigNumberFormatter = (value: BigNumberish) =>
 export const getAddress = (addr: string) => (snxJSConnector as any).ethersUtils.getAddress(addr);
 
 export const formatTxTimestamp = (timestamp: number | Date) =>
-	format(timestamp, 'dd-MM-yy | HH:mm');
+	format(timestamp, 'MMM d, yy | HH:mm');
 
 export const toJSTimestamp = (timestamp: number) => timestamp * 1000;
 
@@ -103,7 +103,11 @@ export const getDecimalPlaces = (value: NumericValue) =>
 
 // date-fns formatDuration does not let us customize the actual string, so we need to write this custom formatter.
 // TODO: support translations
-export const formattedDuration = (duration: Duration, delimiter = ' ') => {
+export const formattedDuration = (
+	duration: Duration,
+	delimiter = ' ',
+	firstTwo: boolean = false
+) => {
 	const formatted = [];
 	if (duration.years) {
 		formatted.push(`${duration.years}y`);
@@ -123,8 +127,8 @@ export const formattedDuration = (duration: Duration, delimiter = ' ') => {
 	if (duration.seconds != null) {
 		formatted.push(`${duration.seconds}s`);
 	}
-	return formatted.join(delimiter);
+	return (firstTwo ? formatted.slice(0, 2) : formatted).join(delimiter);
 };
 
-export const formatShortDate = (date: Date | number) => format(date, 'yyyy-MM-dd');
-export const formatShortDateWithTime = (date: Date | number) => format(date, 'yyyy-MM-dd H:mma');
+export const formatShortDate = (date: Date | number) => format(date, 'MMM d, yyyy');
+export const formatShortDateWithTime = (date: Date | number) => format(date, 'MMM d, yyyy H:mma');

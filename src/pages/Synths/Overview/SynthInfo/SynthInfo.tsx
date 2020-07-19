@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -40,7 +40,7 @@ export const roundedLimit = (entry: number, limit: number) => {
 
 const SYNTH_CONTRACT_DECIMALS = 18;
 
-export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, networkId }) => {
+export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 	const { t } = useTranslation();
 
 	const assetDesc = synth.desc.replace(/^Inverse /, '');
@@ -148,7 +148,7 @@ export const SynthInfo: FC<SynthInfoProps> = memo(({ synth, networkId }) => {
 			</ContractInfo>
 		</Container>
 	);
-});
+};
 
 const Container = styled(GridDiv)`
 	grid-auto-flow: column;

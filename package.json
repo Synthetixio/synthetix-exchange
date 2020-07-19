@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.24.1",
+	"version": "2.25.0-alpha",
 	"private": true,
 	"dependencies": {
 		"@bugsnag/js": "6.2.0",
@@ -18,7 +18,7 @@
 		"history": "4.10.1",
 		"i18next": "19.3.4",
 		"i18next-browser-languagedetector": "4.0.2",
-		"lodash": "4.17.15",
+		"lodash": "4.17.19",
 		"memoize-one": "^5.1.1",
 		"numbro": "^2.1.2",
 		"prettier": "^2.0.4",
@@ -42,7 +42,7 @@
 		"styled-components": "5.0.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.19",
-		"synthetix-js": "2.24.1",
+		"synthetix-js": "2.25.0-alpha",
 		"typescript": "3.7.2",
 		"use-immer": "0.4.0"
 	},

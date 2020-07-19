@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
@@ -39,7 +39,7 @@ type OverviewProps = StateProps & Props;
 
 const navigateToSynthsPage = () => navigateTo(ROUTES.Synths.Home, false, true);
 
-export const Overview: FC<OverviewProps> = memo(({ match, synthsMap }) => {
+export const Overview: FC<OverviewProps> = ({ match, synthsMap }) => {
 	const [synth, setSynth] = useState<SynthDefinition | null>(null);
 	const { t } = useTranslation();
 
@@ -106,7 +106,7 @@ export const Overview: FC<OverviewProps> = memo(({ match, synthsMap }) => {
 			)}
 		</>
 	);
-});
+};
 
 const CHART_CONTAINER_HEIGHT = '350px';
 

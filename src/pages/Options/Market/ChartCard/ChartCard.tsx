@@ -1,4 +1,4 @@
-import React, { memo, FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ import OptionsChart from './OptionsChart';
 
 type ChartType = 'price' | 'options';
 
-const ChartCard: FC = memo(() => {
+const ChartCard: FC = () => {
 	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
 	const [chartType, setChartType] = useState<ChartType>('price');
 
@@ -83,7 +83,7 @@ const ChartCard: FC = memo(() => {
 			</Card.Body>
 		</Card>
 	);
-});
+};
 
 const CardHeader = styled(Card.Header)`
 	padding: 0 12px;

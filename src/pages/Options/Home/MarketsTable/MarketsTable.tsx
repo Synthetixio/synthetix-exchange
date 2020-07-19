@@ -11,6 +11,7 @@ import { formatShortDate, formatCurrency } from 'utils/formatters';
 import { darkTheme } from 'styles/theme';
 
 import Table from 'components/Table';
+import { TablePalette } from 'components/Table/Table';
 import { CurrencyCol } from 'components/Table/common';
 
 import Currency from 'components/Currency';
@@ -23,16 +24,17 @@ type MarketsTableProps = {
 	optionsMarkets: OptionsMarkets;
 	noResultsMessage?: React.ReactNode;
 	isLoading?: boolean;
+	palette: TablePalette;
 };
 
 export const MarketsTable: FC<MarketsTableProps> = memo(
-	({ optionsMarkets, noResultsMessage, isLoading }) => {
+	({ optionsMarkets, noResultsMessage, isLoading, palette }) => {
 		const { t } = useTranslation();
 
 		return (
 			<TableOverflowContainer>
 				<StyledTable
-					palette="light-secondary"
+					palette={palette}
 					columns={[
 						{
 							Header: <>{t('options.home.markets-table.asset-col')}</>,
@@ -88,21 +90,25 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 						{
 							Header: <>{t('options.home.markets-table.long-short-col')}</>,
 							id: 'long-short',
-							Cell: (cellProps: CellProps<HistoricalOptionsMarketInfo>) => (
-								<LongShorts>
-									<Longs>
-										{t('common.val-in-cents', {
-											val: formatCurrency(cellProps.row.original.longPrice * 100),
-										})}
-									</Longs>
-									{' / '}
-									<Shorts>
-										{t('common.val-in-cents', {
-											val: formatCurrency(cellProps.row.original.shortPrice * 100),
-										})}
-									</Shorts>
-								</LongShorts>
-							),
+							Cell: (cellProps: CellProps<HistoricalOptionsMarketInfo>) => {
+								const isLabel = palette !== 'light-secondary';
+
+								return (
+									<div>
+										<Longs isLabel={isLabel}>
+											{t('common.val-in-cents', {
+												val: formatCurrency(cellProps.row.original.longPrice * 100),
+											})}
+										</Longs>
+										{isLabel ? <span style={{ padding: '0 4px' }} /> : ' / '}
+										<Shorts isLabel={isLabel}>
+											{t('common.val-in-cents', {
+												val: formatCurrency(cellProps.row.original.shortPrice * 100),
+											})}
+										</Shorts>
+									</div>
+								);
+							},
 							width: 150,
 						},
 						{
@@ -133,7 +139,7 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 									HistoricalOptionsMarketInfo['phase']
 								>
 							) => (
-								<PhaseDiv phase={cellProps.cell.value}>
+								<PhaseDiv phase={cellProps.cell.value} isLabel={palette === 'light-secondary'}>
 									{t(`options.phases.${cellProps.cell.value}`)}
 								</PhaseDiv>
 							),
@@ -147,7 +153,12 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 									HistoricalOptionsMarketInfo,
 									HistoricalOptionsMarketInfo['timeRemaining']
 								>
-							) => <TimeRemaining end={cellProps.cell.value} />,
+							) => (
+								<TimeRemaining
+									end={cellProps.cell.value}
+									palette={palette === 'striped' ? 'high-contrast' : 'light'}
+								/>
+							),
 							width: 150,
 						},
 					]}
@@ -177,21 +188,34 @@ const StyledCurrencyName = styled(Currency.Name)`
 	${bodyCSS};
 `;
 
-const LongShorts = styled.div``;
-
-const Longs = styled.span`
-	color: ${(props) => props.theme.colors.green};
+const Longs = styled.span<{ isLabel: boolean }>`
+	color: ${(props) => (props.isLabel ? props.theme.colors.surfaceL1 : props.theme.colors.green)};
+	${(props) =>
+		props.isLabel &&
+		css`
+			background-color: ${(props) => props.theme.colors.green};
+			border-radius: 1px;
+			padding: 2px 4px;
+		`}
 `;
 
-const Shorts = styled.span`
-	color: ${(props) => props.theme.colors.red};
+const Shorts = styled.span<{ isLabel: boolean }>`
+	color: ${(props) => (props.isLabel ? props.theme.colors.surfaceL1 : props.theme.colors.red)};
+	${(props) =>
+		props.isLabel &&
+		css`
+			background-color: ${(props) => props.theme.colors.red};
+			border-radius: 1px;
+			padding: 2px 8px;
+		`}
 `;
 
-const PhaseDiv = styled.div<{ phase: Phase }>`
-	color: ${darkTheme.colors.accentL1};
+const PhaseDiv = styled.div<{ phase: Phase; isLabel: boolean }>`
   border-radius: 2px;
   padding: 5px 8px;
 	text-transform: uppercase;
+	
+	color: ${darkTheme.colors.accentL1};
 	${(props) =>
 		props.phase === 'bidding' &&
 		css`
@@ -207,6 +231,13 @@ const PhaseDiv = styled.div<{ phase: Phase }>`
 			css`
 				background-color: #c5d5ff;
 			`}
+
+	${(props) =>
+		!props.isLabel &&
+		css`
+			color: ${(props) => props.theme.colors.fontPrimary};
+			background-color: initial;
+		`}
 `;
 
 export default MarketsTable;

@@ -1,4 +1,4 @@
-import React, { FC, memo, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ type StateProps = {
 
 type ChartCardProps = StateProps;
 
-const ChartCard: FC<ChartCardProps> = memo(({ synthPair }) => {
+const ChartCard: FC<ChartCardProps> = ({ synthPair }) => {
 	const { t } = useTranslation();
 	const [chartData, setChartData] = useState<ChartData>({
 		rates: [],
@@ -115,7 +115,7 @@ const ChartCard: FC<ChartCardProps> = memo(({ synthPair }) => {
 			</Card.Body>
 		</Card>
 	);
-});
+};
 
 const StyledCardHeader = styled(Card.Header)`
 	padding-left: 0;

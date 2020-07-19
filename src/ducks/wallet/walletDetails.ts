@@ -71,7 +71,7 @@ export const walletDetailsSlice = createSlice({
 			action: PayloadAction<{
 				signerOptions: {
 					type: string;
-					networkId: string;
+					networkId: number;
 					derivationPath: string;
 					networkName: string;
 				};
