@@ -493,8 +493,8 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 							onClick={handleAllowance}
 						>
 							{!isAllowing
-								? t(`${transKey}.allowance-button.label`)
-								: t(`${transKey}.allowance-button.progress-label`)}
+								? t('common.enable-wallet-access.label')
+								: t('common.enable-wallet-access.progress-label')}
 						</ActionButton>
 					)}
 					<PhaseEnd>

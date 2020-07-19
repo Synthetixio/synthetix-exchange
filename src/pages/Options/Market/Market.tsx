@@ -98,7 +98,7 @@ const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }
 			const { phase, timeRemaining } = getPhaseAndEndDate(biddingEndDate, maturityDate, expiryDate);
 
 			const currencyKey = parseBytes32String(oracleDetails.key);
-			console.log(withdrawalsEnabled);
+
 			return {
 				isResolved: resolution.resolved,
 				address: marketAddress,
