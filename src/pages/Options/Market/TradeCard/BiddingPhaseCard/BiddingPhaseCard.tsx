@@ -50,6 +50,9 @@ import {
 import TradeSide from './TradeSide';
 import { ethers } from 'ethers';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useLocalStorage } from 'shared/hooks/useLocalStorage';
+import { LOCAL_STORAGE_KEYS } from 'constants/storage';
+import DismissableMessage from 'components/DismissableMessage';
 
 const TIMEOUT_DELAY = 2500;
 
@@ -98,6 +101,14 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 	const [shortSideAmount, setShortSideAmount] = useState<OptionsTransaction['amount'] | string>('');
 	const [longPriceAmount, setLongPriceAmount] = useState<string | number>('');
 	const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
+	const [
+		withdrawalsDisabledTooltipDismissedMarkets,
+		setWithdrawalsDisabledTooltipDismissedMarkets,
+	] = useLocalStorage(LOCAL_STORAGE_KEYS.BO_WITHDRAWALS_DISABLED_TOOLTIP_DISMISSED, []);
+
+	const withdrawalsDisabledTooltipDismissed = withdrawalsDisabledTooltipDismissedMarkets.includes(
+		optionsMarket.address
+	);
 
 	const [side, setSide] = useState<OptionsTransaction['side']>('long');
 
@@ -391,6 +402,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 		}
 	};
 
+	const withdrawalsDisabledTab = (
+		<TabDisabled>
+			{t('options.market.trade-card.bidding.refund.title')} <BlockedIcon />
+		</TabDisabled>
+	);
+
 	return (
 		<Card>
 			<StyledCardHeader>
@@ -402,15 +419,44 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 						{t('options.market.trade-card.bidding.refund.title')}
 					</TabButton>
 				) : (
-					<WithdrawalsTooltip
-						title={<span>{t('options.market.trade-card.bidding.refund.disabled.tooltip')}</span>}
-						placement="top"
-						arrow={true}
-					>
-						<TabDisabled>
-							{t('options.market.trade-card.bidding.refund.title')} <BlockedIcon />
-						</TabDisabled>
-					</WithdrawalsTooltip>
+					<>
+						{withdrawalsDisabledTooltipDismissed ? (
+							<WithdrawalsTooltip
+								key="withdrawalsTooltip"
+								title={
+									<span>{t('options.market.trade-card.bidding.refund.disabled.tooltip')}</span>
+								}
+								placement="top"
+								arrow={true}
+							>
+								{withdrawalsDisabledTab}
+							</WithdrawalsTooltip>
+						) : (
+							<PaddedWithdrawalsTooltip
+								key="dismissibleWithdrawalsTooltip"
+								open={true}
+								title={
+									<StyledDismissableMessage
+										size="sm"
+										type="info"
+										onDismiss={() =>
+											setWithdrawalsDisabledTooltipDismissedMarkets([
+												...withdrawalsDisabledTooltipDismissedMarkets,
+												optionsMarket.address,
+											])
+										}
+									>
+										{t('options.market.trade-card.bidding.refund.disabled.first-time-tooltip')}
+									</StyledDismissableMessage>
+								}
+								interactive={true}
+								placement="bottom"
+								arrow={true}
+							>
+								{withdrawalsDisabledTab}
+							</PaddedWithdrawalsTooltip>
+						)}
+					</>
 				)}
 			</StyledCardHeader>
 			<StyledCardBody>
@@ -566,5 +612,18 @@ const WithdrawalsTooltip = withStyles({
 		textAlign: 'center',
 	},
 })(Tooltip);
+
+const PaddedWithdrawalsTooltip = withStyles({
+	tooltip: {
+		width: '220px',
+		textAlign: 'center',
+		padding: '10px',
+	},
+})(Tooltip);
+
+const StyledDismissableMessage = styled(DismissableMessage)`
+	padding: 0;
+	align-items: flex-start;
+`;
 
 export default connector(BiddingPhaseCard);

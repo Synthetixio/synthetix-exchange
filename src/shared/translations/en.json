@@ -333,8 +333,9 @@
 							"progress-label": "withdrawal in progress..."
 						},
 						"disabled": {
-							"tooltip": "Market Creator has disabled all. withdrawals - sUSD bids are final"
-						}
+							"tooltip": "Market Creator has disabled all. withdrawals - sUSD bids are final",
+							"first-time-tooltip": "WARNING: market creator has disabled withdrawals on this market. All sUSD bids are final."
+						}						
 					},
 					"common": {
 						"current-position": "current position:",

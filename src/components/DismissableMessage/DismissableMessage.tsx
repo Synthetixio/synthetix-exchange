@@ -33,6 +33,7 @@ const StyledMessage = styled(Message)`
 
 const StyledCloseButton = styled(CloseIcon)`
 	cursor: pointer;
+	flex-shrink: 0;
 `;
 
 export default DismissableMessage;
