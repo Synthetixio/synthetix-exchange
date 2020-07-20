@@ -74,10 +74,13 @@ const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }
 	const marketQuery = useQuery<OptionsMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.Market(marketAddress),
 		async () => {
-			const [marketData, marketParameters, withdrawalsEnabled] = await Promise.all([
+			let withdrawalsEnabled = true;
+			try {
+				withdrawalsEnabled = await BOMContract.refundsEnabled();
+			} catch (e) {}
+			const [marketData, marketParameters] = await Promise.all([
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketData(marketAddress),
 				(snxJSConnector as any).binaryOptionsMarketDataContract.getMarketParameters(marketAddress),
-				BOMContract.refundsEnabled(),
 			]);
 
 			const { times, oracleDetails, creator, options, fees, creatorLimits } = marketParameters;
