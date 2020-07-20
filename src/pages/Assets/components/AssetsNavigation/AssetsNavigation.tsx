@@ -12,7 +12,7 @@ import { toggleHideSmallValueAssets, getHideSmallValueAssets } from 'ducks/ui';
 import { ReactComponent as ChartsSquareIcon } from 'assets/images/charts-square.svg';
 import { ReactComponent as ClockSquareIcon } from 'assets/images/clock-square.svg';
 // import { ReactComponent as ArrowsSquareIcon } from 'assets/images/arrows-square.svg';
-// import { ReactComponent as ArrowsRotatedSquareIcon } from 'assets/images/arrows-rotated-square.svg';
+import { ReactComponent as ArrowsRotatedSquareIcon } from 'assets/images/arrows-rotated-square.svg';
 
 import { ROUTES } from 'constants/routes';
 import { RootState } from 'ducks/types';
@@ -35,11 +35,11 @@ const MENU_LINKS: Array<{ route: string; i18nKey: string; icon: React.ReactNode 
 		icon: <ArrowsSquareIcon />,
 	},
 	*/
-	// {
-	// 	route: ROUTES.Assets.Options.Home,
-	// 	i18nKey: 'assets.navigation.options',
-	// 	icon: <ArrowsRotatedSquareIcon />,
-	// },
+	{
+		route: ROUTES.Assets.Options.Home,
+		i18nKey: 'assets.navigation.options',
+		icon: <ArrowsRotatedSquareIcon />,
+	},
 ];
 
 const mapStateToProps = (state: RootState) => ({
