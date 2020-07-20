@@ -77,11 +77,20 @@ const PairListPanel: FC<PairListPanelProps> = ({
 					});
 				} else {
 					const searchLowered = search.toLowerCase();
-					return allMarkets.filter(
-						({ baseCurrencyKey, quoteCurrencyKey }) =>
-							baseCurrencyKey.toLowerCase().includes(searchLowered) ||
-							quoteCurrencyKey.toLowerCase().includes(searchLowered)
-					);
+					const searchParts = searchLowered.split(' ');
+					if (searchParts.length > 1) {
+						return allMarkets.filter(
+							({ baseCurrencyKey, quoteCurrencyKey }) =>
+								baseCurrencyKey.toLowerCase().includes(searchParts[0]) &&
+								quoteCurrencyKey.toLowerCase().includes(searchParts[searchParts.length - 1])
+						);
+					} else {
+						return allMarkets.filter(
+							({ baseCurrencyKey, quoteCurrencyKey }) =>
+								baseCurrencyKey.toLowerCase().includes(searchLowered) ||
+								quoteCurrencyKey.toLowerCase().includes(searchLowered)
+						);
+					}
 				}
 			}
 		},
