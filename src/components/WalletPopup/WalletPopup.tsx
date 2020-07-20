@@ -1,5 +1,5 @@
-import React, { FC, useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { FC, useContext, useState, useEffect } from 'react';
+import styled, { ThemeContext } from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -44,6 +44,7 @@ const WalletPopup: FC<WalletPopupProps> = ({
 	toggleWalletPopup,
 	isWalletConnected,
 }) => {
+	const { colors } = useContext(ThemeContext);
 	const [displayContent, setContentDisplay] = useState<DisplayContent>('wallet-type-selector');
 	const { t } = useTranslation();
 
@@ -59,7 +60,10 @@ const WalletPopup: FC<WalletPopupProps> = ({
 	};
 
 	return (
-		<FullScreenModal open={popupIsVisible}>
+		<FullScreenModal
+			open={popupIsVisible}
+			BackdropProps={{ style: { backgroundColor: colors.surfaceL1 } }}
+		>
 			<FullScreenModalContainer>
 				{displayContent === 'wallet-address-selector' && (
 					<BackButton onClick={() => setContentDisplay('wallet-type-selector')}>

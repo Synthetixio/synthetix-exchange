@@ -365,7 +365,11 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<StyledFullScreenModal open={true} onClose={handleClose}>
+			<StyledFullScreenModal
+				open={true}
+				onClose={handleClose}
+				BackdropProps={{ style: { backgroundColor: lightTheme.colors.surfaceL1 } }}
+			>
 				<FullScreenModalContainer>
 					<BackButtonContainer>
 						<BackLinkButton role="button" onClick={handleClose}>
