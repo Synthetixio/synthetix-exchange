@@ -121,10 +121,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 	const isShort = side === 'short';
 
 	useEffect(() => {
-		const init = async () => {
-			// console.log(await BOMContract.refundsEnabled());
-		};
-		init();
 		return () => {
 			if (pricesAfterBidOrRefundTimer) {
 				clearTimeout(pricesAfterBidOrRefundTimer);
