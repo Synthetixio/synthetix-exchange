@@ -77,7 +77,10 @@ const GweiPopup: FC<GweiPopupProps> = ({
 	return (
 		<>
 			<GlobalStyle />
-			<FullScreenModal open={popupIsVisible}>
+			<FullScreenModal
+				open={popupIsVisible}
+				BackdropProps={{ style: { backgroundColor: colors.surfaceL1 } }}
+			>
 				<Container>
 					<FullScreenModalCloseButton onClick={() => toggleGweiPopup(false)}>
 						<CloseCrossIcon />

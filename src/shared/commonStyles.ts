@@ -314,7 +314,6 @@ export const FullScreenModal = styled(Modal).attrs({
 	disableEscapeKeyDown: true,
 	disableAutoFocus: true,
 	disableEnforceFocus: true,
-	hideBackdrop: true,
 	disableRestoreFocus: true,
 })`
 	background-color: ${(props) => props.theme.colors.surfaceL1};
