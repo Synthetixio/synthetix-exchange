@@ -72,15 +72,32 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 			});
 		}
 		if (synth.index) {
-			return t('synths.overview.info.index', {
-				assetDesc,
-				assetSymbol,
-				assets: synth.index
-					.map(({ symbol, name, units }) =>
-						t('synths.overview.info.units-of-symbol-name', { units, symbol, name })
-					)
-					.join(', '),
-			});
+			return (
+				<>
+					{t('synths.overview.info.index', {
+						assetDesc,
+						assetSymbol,
+					})}
+					<Table style={{ marginTop: '48px' }}>
+						<thead>
+							<TableRowHead>
+								<th>{t('common.asset')}</th>
+								<th>{t('common.units')}</th>
+							</TableRowHead>
+						</thead>
+						<tbody>
+							{synth.index.map(({ symbol, name, units }) => (
+								<TableRowBody key={symbol}>
+									<td>
+										{symbol} ({name})
+									</td>
+									<td>{units}</td>
+								</TableRowBody>
+							))}
+						</tbody>
+					</Table>
+				</>
+			);
 		}
 		return t('synths.overview.info.generic', {
 			assetDesc,
@@ -209,6 +226,7 @@ const TableRow = styled.tr`
 const TableRowHead = styled(TableRow)`
 	> th {
 		${tableHeaderSmallCSS};
+		font-weight: normal;
 		background-color: ${(props) => props.theme.colors.accentL1};
 		color: ${(props) => props.theme.colors.fontSecondary};
 	}
