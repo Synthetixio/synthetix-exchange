@@ -402,11 +402,12 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 		}
 	};
 
-	const withdrawalsDisabledTab = (
-		<TabDisabled>
-			{t('options.market.trade-card.bidding.refund.title')} <BlockedIcon />
-		</TabDisabled>
-	);
+	const handleDismissWithdrawalsTooltip = () => {
+		setWithdrawalsDisabledTooltipDismissedMarkets([
+			...withdrawalsDisabledTooltipDismissedMarkets,
+			optionsMarket.address,
+		]);
+	};
 
 	return (
 		<Card>
@@ -419,44 +420,15 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 						{t('options.market.trade-card.bidding.refund.title')}
 					</TabButton>
 				) : (
-					<>
-						{withdrawalsDisabledTooltipDismissed ? (
-							<WithdrawalsTooltip
-								key="withdrawalsTooltip"
-								title={
-									<span>{t('options.market.trade-card.bidding.refund.disabled.tooltip')}</span>
-								}
-								placement="top"
-								arrow={true}
-							>
-								{withdrawalsDisabledTab}
-							</WithdrawalsTooltip>
-						) : (
-							<PaddedWithdrawalsTooltip
-								key="dismissibleWithdrawalsTooltip"
-								open={true}
-								title={
-									<StyledDismissableMessage
-										size="sm"
-										type="info"
-										onDismiss={() =>
-											setWithdrawalsDisabledTooltipDismissedMarkets([
-												...withdrawalsDisabledTooltipDismissedMarkets,
-												optionsMarket.address,
-											])
-										}
-									>
-										{t('options.market.trade-card.bidding.refund.disabled.first-time-tooltip')}
-									</StyledDismissableMessage>
-								}
-								interactive={true}
-								placement="bottom"
-								arrow={true}
-							>
-								{withdrawalsDisabledTab}
-							</PaddedWithdrawalsTooltip>
-						)}
-					</>
+					<WithdrawalsTooltip
+						title={<span>{t('options.market.trade-card.bidding.refund.disabled.tooltip')}</span>}
+						placement="top"
+						arrow={true}
+					>
+						<TabDisabled>
+							{t('options.market.trade-card.bidding.refund.title')} <BlockedIcon />
+						</TabDisabled>
+					</WithdrawalsTooltip>
 				)}
 			</StyledCardHeader>
 			<StyledCardBody>
@@ -509,36 +481,54 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 						fees={fees}
 						amount={isLong ? longSideAmount : shortSideAmount}
 					/>
-					{hasAllowance ? (
-						<Tooltip
-							open={isBid && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
-							title={<span>{t(`${transKey}.confirm-button.high-slippage`)}</span>}
-							arrow={true}
-							placement="bottom"
-						>
-							<ActionButton
-								size="lg"
-								palette="primary"
-								disabled={isBidding || !isWalletConnected || !sUSDBalance || !gasLimit}
-								onClick={handleBidOrRefund}
+					<PaddedWithdrawalsTooltip
+						open={optionsMarket.withdrawalsEnabled ? false : !withdrawalsDisabledTooltipDismissed}
+						title={
+							<StyledDismissableMessage
+								size="sm"
+								type="info"
+								onDismiss={handleDismissWithdrawalsTooltip}
 							>
-								{!isBidding
-									? t(`${transKey}.confirm-button.label`)
-									: t(`${transKey}.confirm-button.progress-label`)}
-							</ActionButton>
-						</Tooltip>
-					) : (
-						<ActionButton
-							size="lg"
-							palette="primary"
-							disabled={isAllowing || !isWalletConnected}
-							onClick={handleAllowance}
-						>
-							{!isAllowing
-								? t('common.enable-wallet-access.label')
-								: t('common.enable-wallet-access.progress-label')}
-						</ActionButton>
-					)}
+								{t('options.market.trade-card.bidding.refund.disabled.first-time-tooltip')}
+							</StyledDismissableMessage>
+						}
+						interactive={true}
+						placement="top"
+						arrow={true}
+					>
+						<span>
+							{hasAllowance ? (
+								<Tooltip
+									open={isBid && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
+									title={<span>{t(`${transKey}.confirm-button.high-slippage`)}</span>}
+									arrow={true}
+									placement="bottom"
+								>
+									<ActionButton
+										size="lg"
+										palette="primary"
+										disabled={isBidding || !isWalletConnected || !sUSDBalance || !gasLimit}
+										onClick={handleBidOrRefund}
+									>
+										{!isBidding
+											? t(`${transKey}.confirm-button.label`)
+											: t(`${transKey}.confirm-button.progress-label`)}
+									</ActionButton>
+								</Tooltip>
+							) : (
+								<ActionButton
+									size="lg"
+									palette="primary"
+									disabled={isAllowing || !isWalletConnected}
+									onClick={handleAllowance}
+								>
+									{!isAllowing
+										? t('common.enable-wallet-access.label')
+										: t('common.enable-wallet-access.progress-label')}
+								</ActionButton>
+							)}
+						</span>
+					</PaddedWithdrawalsTooltip>
 					<PhaseEnd>
 						{t('options.market.trade-card.bidding.footer.end-label')}{' '}
 						<StyledTimeRemaining
@@ -618,6 +608,10 @@ const PaddedWithdrawalsTooltip = withStyles({
 		width: '220px',
 		textAlign: 'center',
 		padding: '10px',
+	},
+	tooltipPlacementTop: {
+		position: 'relative',
+		top: '-10px',
 	},
 })(Tooltip);
 
