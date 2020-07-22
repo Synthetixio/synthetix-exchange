@@ -1,4 +1,5 @@
-import { SynthetixJs } from 'synthetix-js';
+import { SynthetixJs, ContractSettings } from 'synthetix-js';
+
 import { ethers } from 'ethers';
 import {
 	getEthereumNetwork,
@@ -6,14 +7,36 @@ import {
 	INFURA_PROJECT_ID,
 	SUPPORTED_WALLETS_MAP,
 	PORTIS_APP_ID,
+	NetworkId,
 } from './networkUtils';
 import { synthSummaryUtilContract } from './contracts/synthSummaryUtilContract';
 import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
+import LimitOrdersClient from './LimitOrdersClient';
 
-let snxJSConnector = {
+type SnxJSConnector = {
+	initialized: boolean;
+	snxJS: SynthetixJs;
+	synths: SynthetixJs['contractSettings']['synths'];
+	provider: SynthetixJs['contractSettings']['provider'];
+	signer: SynthetixJs['contractSettings']['signer'];
+	signers: typeof SynthetixJs.signers;
+	utils: SynthetixJs['utils'];
+	ethers: typeof ethers;
+	ethersUtils: SynthetixJs['ethers']['utils'];
+	synthSummaryUtilContract: ethers.Contract;
+	binaryOptionsMarketDataContract: ethers.Contract;
+	limitOrdersClient: LimitOrdersClient;
+	setContractSettings: (contractSettings: ContractSettings) => void;
+	binaryOptionsUtils: SynthetixJs['binaryOptionsUtils'];
+	contractSettings: ContractSettings;
+};
+
+// @ts-ignore
+const snxJSConnector: SnxJSConnector = {
 	initialized: false,
 	signers: SynthetixJs.signers,
-	setContractSettings: function (contractSettings) {
+
+	setContractSettings: function (contractSettings: ContractSettings) {
 		this.initialized = true;
 		this.snxJS = new SynthetixJs(contractSettings);
 		this.synths = this.snxJS.contractSettings.synths;
@@ -25,19 +48,22 @@ let snxJSConnector = {
 		this.ethers = ethers;
 		this.contractSettings = contractSettings;
 		this.synthSummaryUtilContract = new ethers.Contract(
+			// @ts-ignore
 			synthSummaryUtilContract.addresses[contractSettings.networkId],
 			synthSummaryUtilContract.abi,
 			this.provider
 		);
 		this.binaryOptionsMarketDataContract = new ethers.Contract(
+			// @ts-ignore
 			binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
 			binaryOptionsMarketDataContract.abi,
 			this.provider
 		);
+		this.limitOrdersClient = new LimitOrdersClient(this.snxJS.contractSettings.provider);
 	},
 };
 
-const connectToMetamask = async (networkId, networkName) => {
+const connectToMetamask = async (networkId: NetworkId, networkName: string) => {
 	const walletState = {
 		walletType: SUPPORTED_WALLETS_MAP.METAMASK,
 		unlocked: false,
@@ -68,7 +94,7 @@ const connectToMetamask = async (networkId, networkName) => {
 	}
 };
 
-const connectToCoinbase = async (networkId, networkName) => {
+const connectToCoinbase = async (networkId: NetworkId, networkName: string) => {
 	const walletState = {
 		walletType: SUPPORTED_WALLETS_MAP.COINBASE,
 		unlocked: false,
@@ -99,21 +125,24 @@ const connectToCoinbase = async (networkId, networkName) => {
 	}
 };
 
-const connectToHardwareWallet = (networkId, networkName, walletType) => {
-	return {
-		walletType,
-		unlocked: true,
-		networkId,
-		networkName: networkName.toLowerCase(),
-	};
-};
+const connectToHardwareWallet = (
+	networkId: NetworkId,
+	networkName: string,
+	walletType: string
+) => ({
+	walletType,
+	unlocked: true,
+	networkId,
+	networkName: networkName.toLowerCase(),
+});
 
-const connectToWalletConnect = async (networkId, networkName) => {
+const connectToWalletConnect = async (networkId: NetworkId, networkName: string) => {
 	const walletState = {
 		walletType: SUPPORTED_WALLETS_MAP.WALLET_CONNECT,
 		unlocked: false,
 	};
 	try {
+		// @ts-ignore
 		await snxJSConnector.signer.provider._web3Provider.enable();
 		const accounts = await snxJSConnector.signer.getNextAddresses();
 		if (accounts && accounts.length > 0) {
@@ -134,7 +163,7 @@ const connectToWalletConnect = async (networkId, networkName) => {
 	}
 };
 
-const connectToPortis = async (networkId, networkName) => {
+const connectToPortis = async (networkId: NetworkId, networkName: string) => {
 	const walletState = {
 		walletType: SUPPORTED_WALLETS_MAP.PORTIS,
 		unlocked: false,
@@ -159,7 +188,17 @@ const connectToPortis = async (networkId, networkName) => {
 	}
 };
 
-const getSignerConfig = ({ type, networkId, derivationPath, networkName }) => {
+const getSignerConfig = ({
+	type,
+	networkId,
+	derivationPath,
+	networkName,
+}: {
+	type: string;
+	networkId: NetworkId;
+	derivationPath: string;
+	networkName: string;
+}) => {
 	if (type === SUPPORTED_WALLETS_MAP.LEDGER) {
 		const DEFAULT_LEDGER_DERIVATION_PATH = "44'/60'/0'/";
 		return { derivationPath: derivationPath || DEFAULT_LEDGER_DERIVATION_PATH };
@@ -186,25 +225,46 @@ const getSignerConfig = ({ type, networkId, derivationPath, networkName }) => {
 	return {};
 };
 
-export const setSigner = ({ type, networkId, derivationPath, networkName }) => {
+export const setSigner = ({
+	type,
+	networkId,
+	derivationPath,
+	networkName,
+}: {
+	type: string;
+	networkId: NetworkId;
+	derivationPath: string;
+	networkName: string;
+}) => {
+	// @ts-ignore
 	const signer = new snxJSConnector.signers[type](
 		getSignerConfig({ type, networkId, derivationPath, networkName })
 	);
+
 	snxJSConnector.setContractSettings({
 		networkId,
 		signer,
 	});
 };
 
-export const connectToWallet = async ({ wallet, derivationPath }) => {
-	const { name, networkId } = await getEthereumNetwork();
-	if (!name) {
+export const connectToWallet = async ({
+	wallet,
+	derivationPath,
+}: {
+	wallet: string;
+	derivationPath: string;
+}) => {
+	const ethereumNetwork = await getEthereumNetwork();
+	if (!ethereumNetwork) {
 		return {
 			walletType: '',
 			unlocked: false,
 			unlockError: 'Network not supported',
 		};
 	}
+
+	const { name, networkId } = ethereumNetwork;
+
 	setSigner({ type: wallet, networkId, derivationPath, networkName: name });
 
 	switch (wallet) {

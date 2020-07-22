@@ -1,16 +1,14 @@
 import throttle from 'lodash/throttle';
 
+export type NetworkId = 1 | 3 | 4 | 42;
+
 export const GWEI_UNIT = 1000000000;
 
-export const SUPPORTED_NETWORKS = {
+export const SUPPORTED_NETWORKS: Record<NetworkId, string> = {
 	1: 'MAINNET',
 	3: 'ROPSTEN',
 	4: 'RINKEBY',
 	42: 'KOVAN',
-	MAINNET: 1,
-	ROPSTEN: 3,
-	RINKEBY: 4,
-	KOVAN: 42,
 };
 
 export const DEFAULT_GAS_LIMIT = {
@@ -25,7 +23,7 @@ export const DEFAULT_GAS_LIMIT = {
 
 export const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
 
-export const INFURA_JSON_RPC_URLS = {
+export const INFURA_JSON_RPC_URLS: Record<NetworkId, string> = {
 	1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
 	3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`,
 	4: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
@@ -34,7 +32,15 @@ export const INFURA_JSON_RPC_URLS = {
 
 export const PORTIS_APP_ID = '26e198be-a8bb-4240-ad78-ae88579085bc';
 
-export const SUPPORTED_WALLETS_MAP = {
+export type WalletType =
+	| 'METAMASK'
+	| 'TREZOR'
+	| 'LEDGER'
+	| 'COINBASE'
+	| 'WALLET_CONNECT'
+	| 'PORTIS';
+
+export const SUPPORTED_WALLETS_MAP: Record<WalletType, string> = {
 	METAMASK: 'Metamask',
 	TREZOR: 'Trezor',
 	LEDGER: 'Ledger',
@@ -44,39 +50,55 @@ export const SUPPORTED_WALLETS_MAP = {
 };
 export const SUPPORTED_WALLETS = Object.values(SUPPORTED_WALLETS_MAP);
 
-export const hasWeb3 = () => {
-	return window.web3;
+export const hasWeb3 = () => !!window.web3;
+
+export const defaultNetwork: { name: string; networkId: NetworkId } = {
+	name: 'MAINNET',
+	networkId: 1,
 };
 
-export const defaultNetwork = { name: 'MAINNET', networkId: 1 };
-
 export async function getEthereumNetwork() {
-	if (!window.web3) return defaultNetwork;
-	let networkId = 1;
+	if (!hasWeb3()) {
+		return defaultNetwork;
+	}
+
+	let networkId: NetworkId = 1;
+
 	try {
 		if (window.web3?.eth?.net) {
 			networkId = await window.web3.eth.net.getId();
-			return { name: SUPPORTED_NETWORKS[networkId], networkId: Number(networkId) };
+
+			return { name: SUPPORTED_NETWORKS[networkId], networkId: Number(networkId) as NetworkId };
 		} else if (window.web3?.version?.network) {
-			networkId = Number(window.web3.version.network);
+			networkId = Number(window.web3.version.network) as NetworkId;
+
 			return { name: SUPPORTED_NETWORKS[networkId], networkId };
 		} else if (window.ethereum?.networkVersion) {
-			networkId = Number(window.ethereum?.networkVersion);
+			networkId = Number(window.ethereum?.networkVersion) as NetworkId;
+
 			return { name: SUPPORTED_NETWORKS[networkId], networkId };
 		}
-		return defaultNetwork;
 	} catch (e) {
 		console.log(e);
+	} finally {
 		return defaultNetwork;
 	}
 }
 
-export const getTransactionPrice = (gasPrice, gasLimit, ethPrice) => {
+export const getTransactionPrice = (
+	gasPrice: number | null,
+	gasLimit: number | null,
+	ethPrice: number | null
+) => {
 	if (!gasPrice || !gasLimit || !ethPrice) return 0;
+
 	return (gasPrice * ethPrice * gasLimit) / GWEI_UNIT;
 };
 
-const getPriceLimit = (networkInfo, gasPriceLimit) => {
+const getPriceLimit = (
+	networkInfo: { fast: number; average: number; safeLow: number },
+	gasPriceLimit: number
+) => {
 	const fast = networkInfo.fast / 10;
 	const average = networkInfo.average / 10;
 	const slow = networkInfo.safeLow / 10;
@@ -113,16 +135,16 @@ export const getGasInfo = async () => {
 	}
 };
 
-export function onMetamaskAccountChange(cb) {
+export function onMetamaskAccountChange(cb: () => void) {
 	if (!window.ethereum) return;
 	const listener = throttle(cb, 1000);
 	window.ethereum.on('accountsChanged', listener);
 }
 
-export function onMetamaskNetworkChange(cb) {
+export function onMetamaskNetworkChange(cb: () => void) {
 	if (!window.ethereum) return;
 	const listener = throttle(cb, 1000);
 	window.ethereum.on('networkChanged', listener);
 }
 
-export const isMainNet = (networkId) => networkId === SUPPORTED_NETWORKS.MAINNET;
+export const isMainNet = (networkId: NetworkId) => networkId === 1;

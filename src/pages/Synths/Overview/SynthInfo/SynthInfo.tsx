@@ -21,9 +21,10 @@ import { subtitleLargeCSS } from 'components/Typography/General';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 import { getEtherscanTokenLink } from 'utils/explorers';
 import { getDecimalPlaces } from 'utils/formatters';
+import { NetworkId } from 'utils/networkUtils';
 
 type StateProps = {
-	networkId: number;
+	networkId: NetworkId;
 };
 
 type Props = {
@@ -48,6 +49,7 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 
 	// @ts-ignore
 	const { snxJS } = snxJSConnector;
+	// @ts-ignore
 	const contractAddress = snxJS[synth.name].contract.address;
 
 	const synthSign = USD_SIGN;
