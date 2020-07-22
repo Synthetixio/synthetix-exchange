@@ -11,7 +11,8 @@ import {
 } from './networkUtils';
 import { synthSummaryUtilContract } from './contracts/synthSummaryUtilContract';
 import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
-import LimitOrdersClient from './LimitOrdersClient';
+import limitOrdersContract from './contracts/limitOrdersContract';
+// import LimitOrdersClient from './LimitOrdersClient';
 
 type SnxJSConnector = {
 	initialized: boolean;
@@ -25,10 +26,10 @@ type SnxJSConnector = {
 	ethersUtils: SynthetixJs['ethers']['utils'];
 	synthSummaryUtilContract: ethers.Contract;
 	binaryOptionsMarketDataContract: ethers.Contract;
-	limitOrdersClient: LimitOrdersClient;
 	setContractSettings: (contractSettings: ContractSettings) => void;
 	binaryOptionsUtils: SynthetixJs['binaryOptionsUtils'];
 	contractSettings: ContractSettings;
+	limitOrdersContract: ethers.Contract;
 };
 
 // @ts-ignore
@@ -48,18 +49,20 @@ const snxJSConnector: SnxJSConnector = {
 		this.ethers = ethers;
 		this.contractSettings = contractSettings;
 		this.synthSummaryUtilContract = new ethers.Contract(
-			// @ts-ignore
 			synthSummaryUtilContract.addresses[contractSettings.networkId],
 			synthSummaryUtilContract.abi,
 			this.provider
 		);
 		this.binaryOptionsMarketDataContract = new ethers.Contract(
-			// @ts-ignore
 			binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
 			binaryOptionsMarketDataContract.abi,
 			this.provider
 		);
-		this.limitOrdersClient = new LimitOrdersClient(this.snxJS.contractSettings.provider);
+		this.limitOrdersContract = new ethers.Contract(
+			limitOrdersContract.addresses[contractSettings.networkId],
+			limitOrdersContract.abi,
+			this.signer
+		);
 	},
 };
 

@@ -19,7 +19,7 @@ class LimitOrdersClient {
 	provider: ethers.providers.Web3Provider;
 
 	constructor(web3Provider: ethers.providers.Web3Provider) {
-		this.provider = new ethers.providers.Web3Provider(web3Provider);
+		this.provider = web3Provider;
 	}
 
 	getContract = async () => {
