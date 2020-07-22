@@ -403,13 +403,19 @@
 				"title": "get synths to start trading:"
 			}
 		},
+		"chart-tooltip": {
+			"trade": "Trade",
+			"trade-total": "Total",
+			"price": "Price"
+		},
 		"chart-card": {
 			"info-boxes": {
 				"price": "Price",
 				"24h-change": "24h change",
 				"24h-high": "24h high",
 				"24h-low": "24h low",
-				"24h-volume": "24h volume"
+				"24h-volume": "24h volume",
+				"your-trades": "Your trades"
 			},
 			"pair-list": {
 				"table": {
