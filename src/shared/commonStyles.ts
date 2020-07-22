@@ -114,7 +114,7 @@ export const LinkTextSmall = styled(DataSmall)`
 export type MessageProps = {
 	size: 'sm' | 'lg';
 	floating?: boolean;
-	type: 'error' | 'success';
+	type: 'error' | 'success' | 'info';
 };
 
 export const Message = styled(FlexDivCentered)<MessageProps>`
@@ -151,6 +151,11 @@ export const Message = styled(FlexDivCentered)<MessageProps>`
 			case 'success': {
 				return css`
 					background-color: ${(props) => props.theme.colors.green};
+				`;
+			}
+			case 'info': {
+				return css`
+					background-color: ${(props) => props.theme.colors.accentL1};
 				`;
 			}
 			default:
