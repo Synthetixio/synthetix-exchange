@@ -291,7 +291,7 @@
 					"date-time-col": "date | time",
 					"type-col": "type",
 					"position-col": "position",
-					"amount-col": "bid amount",
+					"amount-col": "amount",
 					"tx-status-col": "tx status",
 					"no-results-your-activity": "No transactions associated with this wallet.",
 					"no-results-recent-activity": "No transactions associated with this market.",
@@ -333,7 +333,7 @@
 						"disabled": {
 							"tooltip": "Market Creator has disabled all withdrawals - sUSD bids are final",
 							"first-time-tooltip": "WARNING: market creator has disabled withdrawals on this market. All sUSD bids are final."
-						}						
+						}
 					},
 					"common": {
 						"current-position": "current position:",

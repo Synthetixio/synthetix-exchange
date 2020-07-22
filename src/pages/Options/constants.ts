@@ -1,4 +1,4 @@
-import { Phase, Side } from './types';
+import { Phase, Side, OptionsTransactionType } from './types';
 
 export const PHASE: Record<Phase, number> = {
 	bidding: 0,
@@ -12,6 +12,13 @@ export const SIDE: Record<Side | number, number | Side> = {
 	short: 1,
 	0: 'long',
 	1: 'short',
+};
+
+export const TRANSACTION_TYPE: Record<string, OptionsTransactionType> = {
+	refund: 'refund',
+	bid: 'bid',
+	exercise: 'exercise',
+	claim: 'claim',
 };
 
 export const getPhaseAndEndDate = (
