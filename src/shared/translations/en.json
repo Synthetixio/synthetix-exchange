@@ -168,7 +168,7 @@
 			"bidding": "bidding",
 			"trading": "trading",
 			"maturity": "maturity",
-			"expiry": "expiry"
+			"expiry": "expired"
 		},
 		"home": {
 			"market-creation": {
@@ -276,7 +276,7 @@
 					"final-result-col": "final result"
 				}
 			},
-			"chart-card": {				
+			"chart-card": {
 				"chart-types": {
 					"price": "price",
 					"options": "options"
