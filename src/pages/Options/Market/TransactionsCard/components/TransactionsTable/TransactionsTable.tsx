@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CellProps } from 'react-table';
 
 import { SYNTHS_MAP } from 'constants/currency';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 import { TableOverflowContainer, GridDivCenteredCol } from 'shared/commonStyles';
 import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
@@ -11,7 +12,6 @@ import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
 import Table from 'components/Table';
 
 import { OptionsTransaction, OptionsTransactions } from 'pages/Options/types';
-import { TRANSACTION_TYPE } from 'pages/Options/constants';
 
 import ViewLinkCell from 'pages/shared/components/ViewLinkCell';
 import SideIcon from 'pages/Options/Market/components/SideIcon';
@@ -54,8 +54,8 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 							accessor: 'side',
 							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['side']>) => {
 								const side = cellProps.cell.value;
-								const type = cellProps.cell.row.values.type;
-								if (type === TRANSACTION_TYPE.exercise) return '--';
+								const type = cellProps.cell.row.original.type;
+								if (type === 'exercise') return <span>{EMPTY_VALUE}</span>;
 								return (
 									<Position>
 										<SideIcon side={side} />

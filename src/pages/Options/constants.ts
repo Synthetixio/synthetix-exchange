@@ -14,13 +14,6 @@ export const SIDE: Record<Side | number, number | Side> = {
 	1: 'short',
 };
 
-export const TRANSACTION_TYPE: Record<string, OptionsTransactionType> = {
-	refund: 'refund',
-	bid: 'bid',
-	exercise: 'exercise',
-	claim: 'claim',
-};
-
 export const getPhaseAndEndDate = (
 	biddingEndDate: number,
 	maturityDate: number,
