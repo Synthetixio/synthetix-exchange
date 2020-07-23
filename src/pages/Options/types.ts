@@ -17,8 +17,6 @@ export type OptionsTransaction = {
 	amount: number | string;
 	market: string;
 	status?: 'pending' | 'confirmed';
-	claimedShort?: number;
-	claimedLong?: number;
 };
 
 export type OptionValue = {

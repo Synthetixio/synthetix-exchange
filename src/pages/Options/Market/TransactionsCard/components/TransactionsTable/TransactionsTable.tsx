@@ -56,32 +56,12 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 								const side = cellProps.cell.value;
 								const type = cellProps.cell.row.values.type;
 								if (type === TRANSACTION_TYPE.exercise) return '--';
-								if (type === TRANSACTION_TYPE.claim) {
-									const { claimedShort, claimedLong } = cellProps.cell.row.original;
-									return (
-										<div>
-											{claimedLong ? (
-												<Position>
-													<SideIcon side={'long'} />
-													<span>{'long'}</span>
-												</Position>
-											) : null}
-											{claimedShort ? (
-												<Position>
-													<SideIcon side={'short'} />
-													<span>{'short'}</span>
-												</Position>
-											) : null}
-										</div>
-									);
-								} else {
-									return (
-										<Position>
-											<SideIcon side={side} />
-											<span>{side}</span>
-										</Position>
-									);
-								}
+								return (
+									<Position>
+										<SideIcon side={side} />
+										<span>{side}</span>
+									</Position>
+								);
 							},
 							width: 150,
 							sortable: true,
@@ -90,26 +70,9 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 							Header: <>{t('options.market.transactions-card.table.amount-col')}</>,
 							sortType: 'basic',
 							accessor: 'amount',
-							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['amount']>) => {
-								const type = cellProps.cell.row.values.type;
-								if (type === TRANSACTION_TYPE.claim) {
-									const { claimedShort, claimedLong } = cellProps.cell.row.original;
-									return (
-										<div>
-											{claimedLong ? (
-												<div>{formatCurrencyWithKey(SYNTHS_MAP.sUSD, claimedLong)}</div>
-											) : null}
-											{claimedShort ? (
-												<div>{formatCurrencyWithKey(SYNTHS_MAP.sUSD, claimedShort)}</div>
-											) : null}
-										</div>
-									);
-								} else {
-									return (
-										<span>{formatCurrencyWithKey(SYNTHS_MAP.sUSD, cellProps.cell.value)}</span>
-									);
-								}
-							},
+							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['amount']>) => (
+								<span>{formatCurrencyWithKey(SYNTHS_MAP.sUSD, cellProps.cell.value)}</span>
+							),
 							width: 150,
 							sortable: true,
 						},
@@ -151,9 +114,6 @@ const StyledTable = styled(Table)`
 const Position = styled(GridDivCenteredCol)`
 	grid-gap: 8px;
 	text-transform: uppercase;
-	&:not(:first-child) {
-		margin-top: 4px;
-	}
 `;
 
 export default TransactionsTable;
