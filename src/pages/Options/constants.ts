@@ -1,4 +1,4 @@
-import { Phase, Side, OptionsTransactionType } from './types';
+import { Phase, Side } from './types';
 
 export const PHASE: Record<Phase, number> = {
 	bidding: 0,
