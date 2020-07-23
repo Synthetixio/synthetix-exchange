@@ -604,6 +604,11 @@ const WithdrawalsTooltip = withStyles({
 })(Tooltip);
 
 const PaddedWithdrawalsTooltip = withStyles({
+	popper: {
+		// TODO: this is to the MUI default z-index (https://material-ui.com/customization/z-index/) to override the behaviour
+		// We need a central place for both our own z-index and MUI.
+		zIndex: 1300,
+	},
 	tooltip: {
 		width: '220px',
 		textAlign: 'center',
