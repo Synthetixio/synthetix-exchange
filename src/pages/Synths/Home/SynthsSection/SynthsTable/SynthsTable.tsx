@@ -102,21 +102,15 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 							{
 								Header: <>{t('synths.home.table.24h-change-col')}</>,
 								sortType: 'basic',
+								accessor: (originalRow: any) =>
+									get(originalRow.historicalRates, 'ONE_DAY.data.change', null),
 								id: '24change-col',
-								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
-									const change: number | null = get(
-										cellProps.row.original.historicalRates,
-										'ONE_DAY.data.change',
-										null
-									);
-
-									return change == null ? (
+								Cell: (cellProps: CellProps<SynthDefinitionWithRates, number | null>) =>
+									cellProps.cell.value == null ? (
 										<span>{EMPTY_VALUE}</span>
 									) : (
-										<ChangePercent isLabel={true} value={change} />
-									);
-								},
-
+										<ChangePercent isLabel={true} value={cellProps.cell.value} />
+									),
 								sortable: true,
 								width: 100,
 							},

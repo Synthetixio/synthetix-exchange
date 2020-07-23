@@ -36,6 +36,8 @@ export const SearchInput: FC<SearchInputProps> = ({
 				value={value}
 				tabIndex={tabIndex}
 				autoFocus={autoFocus}
+				autoCorrect="off"
+				spellCheck={false}
 			/>
 		</Container>
 	);
