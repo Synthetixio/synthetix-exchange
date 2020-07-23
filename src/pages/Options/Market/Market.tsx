@@ -2,12 +2,12 @@ import React, { FC, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
-
+import { useQuery } from 'react-query';
 import snxJSConnector from 'utils/snxJSConnector';
 
 import { ReactComponent as InfoRoundedIcon } from 'assets/images/info-rounded.svg';
 
-import { OptionsMarketInfo } from 'pages/Options/types';
+import { OptionsMarketInfo, Phase } from 'pages/Options/types';
 import { RootState } from 'ducks/types';
 
 import ROUTES from 'constants/routes';
@@ -32,9 +32,8 @@ import {
 
 import { ReactComponent as ArrowBackIcon } from 'assets/images/arrow-back.svg';
 
-import { getPhaseAndEndDate, SIDE, PHASES } from 'pages/Options/constants';
+import { getPhaseAndEndDate, SIDE } from 'pages/Options/constants';
 import { getAvailableSynthsMap } from 'ducks/synths';
-import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Spinner from 'components/Spinner';
 import Link from 'components/Link';
@@ -45,7 +44,6 @@ import ChartCard from './ChartCard';
 import TradeCard from './TradeCard';
 import TransactionsCard from './TransactionsCard';
 
-import { useQuery /*queryCache*/ } from 'react-query';
 import QUERY_KEYS from 'constants/queryKeys';
 import { Z_INDEX } from 'constants/ui';
 
@@ -55,7 +53,6 @@ import { useBOMContractContext } from './contexts/BOMContractContext';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
-	isWalletConnected: getIsWalletConnected(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -66,7 +63,9 @@ type MarketProps = PropsFromRedux & {
 	marketAddress: string;
 };
 
-const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }) => {
+const PHASES_CARDS = ['bidding', 'trading', 'maturity'] as Phase[];
+
+const Market: FC<MarketProps> = ({ synthsMap, marketAddress }) => {
 	const { t } = useTranslation();
 	const [marketInfoModalVisible, setMarketInfoModalVisible] = useState<boolean>(false);
 	const BOMContract = useBOMContractContext();
@@ -207,7 +206,7 @@ const Market: FC<MarketProps> = ({ synthsMap, marketAddress, isWalletConnected }
 				</LeftCol>
 				<RightCol>
 					<Phases>
-						{PHASES.map((phase, idx: number) => (
+						{PHASES_CARDS.map((phase, idx: number) => (
 							<PhaseItem key={phase} isActive={phase === optionsMarket!.phase} itemIndex={idx}>
 								{t(`options.phases.${phase}`)}
 							</PhaseItem>
