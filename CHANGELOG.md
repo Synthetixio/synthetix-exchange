@@ -1,5 +1,23 @@
 # Changelog
 
+## 23 July 2020 (Galena release)
+
+### Added
+
+- Added binary options markets on the Assets page. (to show created/user bids).
+- Added pending transactions to the binary options trade page (transaction tab).
+- Added claim/exercise events on the binary options trade page (transactions tab).
+- Enhanced the simple search on the Trade page to allow for searches like "sETH / iBTC" or "LINK / ETH" (space can be omitted).
+- Added a table to show the index synths composition.
+- Switched from Netlify to Vercel for faster build times.
+
+### Changed
+
+- Redesigned binary options create market modal + support for withdrawals.
+- Fixed the bug that caused the market creator filter to not work correctly on the binary options page.
+- Disabled withdrawals indication on the binary options trade page. (tooltips, disabled tab, etc).
+- Fixed the "24h change" sort bug on the synths table.
+
 ## 10 July 2020 (Muscovite release)
 
 ### Added
