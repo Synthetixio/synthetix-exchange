@@ -11,7 +11,7 @@ import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
 import Table from 'components/Table';
 
 import { OptionsTransaction, OptionsTransactions } from 'pages/Options/types';
-import { SIDE, TRANSACTION_TYPE } from 'pages/Options/constants';
+import { TRANSACTION_TYPE } from 'pages/Options/constants';
 
 import ViewLinkCell from 'pages/shared/components/ViewLinkCell';
 import SideIcon from 'pages/Options/Market/components/SideIcon';
