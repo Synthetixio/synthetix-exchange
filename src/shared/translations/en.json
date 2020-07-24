@@ -49,6 +49,8 @@
 			"table": {
 				"speed-allowed": "Speed (allowed)",
 				"slow": "Slow",
+				"safe": "Safe",
+				"standard": "Standard",
 				"average": "Average",
 				"fast": "fast",
 				"price": "price"

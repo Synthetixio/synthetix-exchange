@@ -30,7 +30,7 @@ export const SelectGasMenu = ({ gasPrice }: { gasPrice: number }) => {
 			height="auto"
 			isOpen={gasDropdownIsOpen}
 			handleClose={() => setDropdownIsOpen(false)}
-			width="150px"
+			width="170px"
 			onHeaderClick={() => setDropdownIsOpen(!gasDropdownIsOpen)}
 			header={
 				<GasEditFields>

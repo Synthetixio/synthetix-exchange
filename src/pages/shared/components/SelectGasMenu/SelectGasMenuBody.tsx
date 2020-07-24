@@ -62,14 +62,14 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 				isActive={gasPrice === gasSpeed.slowAllowed}
 				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.slowAllowed)}
 			>
-				<div>{t('modals.gwei.table.slow')}</div>
+				<div>{t('modals.gwei.table.safe')}</div>
 				<div>{gasSpeed.slowAllowed}</div>
 			</DefinedGasSelector>
 			<DefinedGasSelector
 				isActive={gasPrice === gasSpeed.averageAllowed}
 				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.averageAllowed)}
 			>
-				<div>{t('modals.gwei.table.average')}</div>
+				<div>{t('modals.gwei.table.standard')}</div>
 				<div>{gasSpeed.averageAllowed}</div>
 			</DefinedGasSelector>
 			<DefinedGasSelector
