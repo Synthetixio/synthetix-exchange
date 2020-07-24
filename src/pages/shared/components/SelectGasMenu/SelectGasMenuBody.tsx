@@ -24,7 +24,11 @@ type GasMenuProps = PropsFromRedux & {
 	setDropdownIsOpen: (isOpen: boolean) => void;
 };
 
-const GasMenu: FC<GasMenuProps> = ({ setGasPrice, gasInfo: { gasSpeed }, setDropdownIsOpen }) => {
+const SelectGasMenuBody: FC<GasMenuProps> = ({
+	setGasPrice,
+	gasInfo: { gasSpeed },
+	setDropdownIsOpen,
+}) => {
 	const { t } = useTranslation();
 	const [customGasPrice, setCustomGasPrice] = useState<number | undefined>(undefined);
 
@@ -111,4 +115,4 @@ const DefinedGasSelector = styled.div`
 	}
 `;
 
-export default connector(GasMenu);
+export default connector(SelectGasMenuBody);
