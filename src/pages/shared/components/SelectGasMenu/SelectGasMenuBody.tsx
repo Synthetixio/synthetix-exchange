@@ -103,9 +103,8 @@ const DefinedGasSelector = styled.div<{ isActive: boolean }>`
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
-	color: ${(props) =>
-		props.isActive ? props.theme.colors.fontPrimary : props.theme.colors.fontTertiary};
-	${(props) => props.isActive && `background-color: ${props.theme.colors.accentL2}`};
+	color: ${(props) => props.theme.colors.fontTertiary};
+	${(props) => props.isActive && `background-color: ${props.theme.colors.accentL1}`};
 	height: 32px;
 	&:hover {
 		color: ${({ theme }) => theme.colors.fontPrimary};
