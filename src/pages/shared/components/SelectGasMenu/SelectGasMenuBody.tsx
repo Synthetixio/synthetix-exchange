@@ -26,20 +26,19 @@ type GasMenuProps = PropsFromRedux & {
 
 const SelectGasMenuBody: FC<GasMenuProps> = ({
 	setGasPrice,
-	gasInfo: { gasSpeed },
+	gasInfo: { gasSpeed, gasPrice },
 	setDropdownIsOpen,
 }) => {
 	const { t } = useTranslation();
 	const [customGasPrice, setCustomGasPrice] = useState<number | undefined>(undefined);
 
-	const setGasPriceAndCloseDropdown = (gasPrice: number) => {
-		setGasPrice(gasPrice);
+	const setGasPriceAndCloseDropdown = (updateGasPrice: number) => {
+		setGasPrice(updateGasPrice);
 		setDropdownIsOpen(false);
 	};
 
 	useEffect(() => {
-		// eslint-disable-next-line eqeqeq
-		if (customGasPrice != undefined) {
+		if (customGasPrice !== undefined) {
 			setGasPrice(customGasPrice);
 		}
 	}, [setGasPrice, customGasPrice]);
@@ -59,15 +58,24 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 				step="0.1"
 				min="0"
 			/>
-			<DefinedGasSelector onClick={() => setGasPriceAndCloseDropdown(gasSpeed.slowAllowed)}>
+			<DefinedGasSelector
+				isActive={gasPrice === gasSpeed.slowAllowed}
+				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.slowAllowed)}
+			>
 				<div>{t('modals.gwei.table.slow')}</div>
 				<div>{gasSpeed.slowAllowed}</div>
 			</DefinedGasSelector>
-			<DefinedGasSelector onClick={() => setGasPriceAndCloseDropdown(gasSpeed.averageAllowed)}>
+			<DefinedGasSelector
+				isActive={gasPrice === gasSpeed.averageAllowed}
+				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.averageAllowed)}
+			>
 				<div>{t('modals.gwei.table.average')}</div>
 				<div>{gasSpeed.averageAllowed}</div>
 			</DefinedGasSelector>
-			<DefinedGasSelector onClick={() => setGasPriceAndCloseDropdown(gasSpeed.fastestAllowed)}>
+			<DefinedGasSelector
+				isActive={gasPrice === gasSpeed.fastestAllowed}
+				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.fastestAllowed)}
+			>
 				<div>{t('modals.gwei.table.fast')}</div>
 				<div>{gasSpeed.fastestAllowed}</div>
 			</DefinedGasSelector>
@@ -89,28 +97,21 @@ const StyledNumericInput = styled(NumericInput)`
 	background-color: ${({ theme }) => theme.colors.accentL1};
 `;
 
-const DefinedGasSelector = styled.div`
+const DefinedGasSelector = styled.div<{ isActive: boolean }>`
 	padding: 10px;
 	margin: 10px;
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
-	color: ${({ theme }) => theme.colors.fontTertiary};
+	color: ${(props) =>
+		props.isActive ? props.theme.colors.fontPrimary : props.theme.colors.fontTertiary};
+	${(props) => props.isActive && `background-color: ${props.theme.colors.accentL2}`};
 	height: 32px;
 	&:hover {
 		color: ${({ theme }) => theme.colors.fontPrimary};
 		background-color: ${({ theme }) => theme.colors.accentL1};
 		span {
 			background-color: ${(props) => props.theme.colors.accentL2};
-		}
-	}
-	&.active {
-		background-color: ${({ theme }) => theme.colors.accentL2};
-		color: ${({ theme }) => theme.colors.fontPrimary};
-		&:hover {
-			span {
-				background-color: ${(props) => props.theme.colors.accentL1};
-			}
 		}
 	}
 `;
