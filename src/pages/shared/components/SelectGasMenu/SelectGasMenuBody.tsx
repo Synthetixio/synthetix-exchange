@@ -8,6 +8,8 @@ import { RootState } from 'ducks/types';
 
 import NumericInput from 'components/Input/NumericInput';
 
+const MAX_GAS_MULTIPLE = 1.5;
+
 const mapStateToProps = (state: RootState) => ({
 	gasInfo: getGasInfo(state),
 });
@@ -29,7 +31,6 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 	gasInfo: { gasSpeed, gasPrice },
 	setDropdownIsOpen,
 }) => {
-	const MAX_GWEI_PER_TX = 300;
 	const { t } = useTranslation();
 	const [customGasPrice, setCustomGasPrice] = useState<number | undefined>(undefined);
 
@@ -50,7 +51,7 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 				value={customGasPrice}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 					const newPrice = Number(e.target.value);
-					if (newPrice < MAX_GWEI_PER_TX) {
+					if (newPrice < gasSpeed.fastestAllowed * MAX_GAS_MULTIPLE) {
 						setCustomGasPrice(newPrice);
 					}
 				}}
