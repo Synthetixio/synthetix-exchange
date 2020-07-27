@@ -29,6 +29,7 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 	gasInfo: { gasSpeed, gasPrice },
 	setDropdownIsOpen,
 }) => {
+	const MAX_GWEI_PER_TX = 300;
 	const { t } = useTranslation();
 	const [customGasPrice, setCustomGasPrice] = useState<number | undefined>(undefined);
 
@@ -46,15 +47,14 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 	return (
 		<Content>
 			<StyledNumericInput
-				id="1"
 				value={customGasPrice}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 					const newPrice = Number(e.target.value);
-					if (newPrice < 300) {
+					if (newPrice < MAX_GWEI_PER_TX) {
 						setCustomGasPrice(newPrice);
 					}
 				}}
-				placeholder="CUSTOM"
+				placeholder={t('modals.gwei.placeholder')}
 				step="0.1"
 				min="0"
 			/>

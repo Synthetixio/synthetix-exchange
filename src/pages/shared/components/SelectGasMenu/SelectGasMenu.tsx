@@ -13,7 +13,11 @@ import SelectGasMenuBody from './SelectGasMenuBody';
 import { ROUTES } from 'constants/routes';
 import DropdownPanel from 'components/DropdownPanel';
 
-export const SelectGasMenu = ({ gasPrice }: { gasPrice: number }) => {
+type SelectGasMenuProps = {
+	gasPrice: number;
+};
+
+export const SelectGasMenu = ({ gasPrice }: SelectGasMenuProps) => {
 	const { t } = useTranslation();
 	const { pathname } = useLocation();
 
@@ -35,12 +39,14 @@ export const SelectGasMenu = ({ gasPrice }: { gasPrice: number }) => {
 			header={
 				<GasEditFields>
 					<div>{formatCurrency(gasPrice) || 0}</div>
-					{pathname === ROUTES.Options.CreateMarketModal ||
-					pathname === ROUTES.Assets.Options.CreateMarketModal ? (
-						<PaddedLinkText>{t('common.actions.edit')}</PaddedLinkText>
-					) : (
-						<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
-					)}
+					<StyledLinkTextSmall
+						addPadding={
+							pathname === ROUTES.Options.CreateMarketModal ||
+							pathname === ROUTES.Assets.Options.CreateMarketModal
+						}
+					>
+						{t('common.actions.edit')}
+					</StyledLinkTextSmall>
 				</GasEditFields>
 			}
 			body={<SelectGasMenuBody setDropdownIsOpen={setDropdownIsOpen} />}
@@ -66,8 +72,8 @@ const GasEditFields = styled.div`
 	cursor: pointer;
 `;
 
-const PaddedLinkText = styled(LinkTextSmall)`
-	padding-top: 2px;
+const StyledLinkTextSmall = styled(LinkTextSmall)<{ addPadding: boolean }>`
+	padding-top: ${(props) => (props.addPadding ? '2px' : '0')};
 `;
 
 export default SelectGasMenu;

@@ -46,6 +46,7 @@
 		"gwei": {
 			"title": "Set transaction speed & price",
 			"desc": "Adjust the slider below to set the transaction speed.",
+			"placeholder": "CUSTOM",
 			"table": {
 				"speed-allowed": "Speed (allowed)",
 				"slow": "Slow",
