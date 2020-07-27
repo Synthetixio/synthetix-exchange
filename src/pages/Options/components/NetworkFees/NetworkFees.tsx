@@ -48,7 +48,7 @@ const NetworkFees: FC<NetworkFeesProps> = ({ className, gasInfo, ethRate, gasLim
 			</FlexDivRow>
 			<FlexDivRow>
 				<div>{t('common.gas-price-gwei')}</div>
-				<SelectGasMenu gasPrice={gasPrice} />
+				<SelectGasMenu gasPrice={gasPrice} addPadding={true} />
 			</FlexDivRow>
 		</Container>
 	);

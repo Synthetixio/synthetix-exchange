@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { formatCurrency } from 'utils/formatters';
@@ -10,16 +9,15 @@ import { media } from 'shared/media';
 
 import SelectGasMenuBody from './SelectGasMenuBody';
 
-import { ROUTES } from 'constants/routes';
 import DropdownPanel from 'components/DropdownPanel';
 
 type SelectGasMenuProps = {
 	gasPrice: number;
+	addPadding?: boolean;
 };
 
-export const SelectGasMenu = ({ gasPrice }: SelectGasMenuProps) => {
+export const SelectGasMenu = ({ gasPrice, addPadding = false }: SelectGasMenuProps) => {
 	const { t } = useTranslation();
-	const { pathname } = useLocation();
 
 	const [gasDropdownIsOpen, setGasDropdownIsOpen] = useState(false);
 	const setDropdownIsOpen = (isOpen: boolean) => {
@@ -39,12 +37,7 @@ export const SelectGasMenu = ({ gasPrice }: SelectGasMenuProps) => {
 			header={
 				<GasEditFields>
 					<div>{formatCurrency(gasPrice) || 0}</div>
-					<StyledLinkTextSmall
-						addPadding={
-							pathname === ROUTES.Options.CreateMarketModal ||
-							pathname === ROUTES.Assets.Options.CreateMarketModal
-						}
-					>
+					<StyledLinkTextSmall addPadding={addPadding}>
 						{t('common.actions.edit')}
 					</StyledLinkTextSmall>
 				</GasEditFields>
