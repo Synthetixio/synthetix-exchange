@@ -367,7 +367,6 @@ export const CreateMarketModal: FC<CreateMarketModalProps> = ({
 		<ThemeProvider theme={lightTheme}>
 			<StyledFullScreenModal
 				open={true}
-				onClose={handleClose}
 				BackdropProps={{ style: { backgroundColor: lightTheme.colors.surfaceL1 } }}
 			>
 				<FullScreenModalContainer>
