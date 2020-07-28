@@ -453,6 +453,7 @@
 				"selling": "Selling",
 				"price": "Price",
 				"total": "Total",
+				"cancel": "Cancel",
 				"status": "Status",
 				"verify": "verify",
 				"no-results": "No pending exchanges associated with this wallet"
