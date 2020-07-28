@@ -78,9 +78,9 @@ export async function getEthereumNetwork() {
 
 			return { name: SUPPORTED_NETWORKS[networkId], networkId };
 		}
+		return defaultNetwork;
 	} catch (e) {
 		console.log(e);
-	} finally {
 		return defaultNetwork;
 	}
 }

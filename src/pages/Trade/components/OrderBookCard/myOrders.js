@@ -72,6 +72,14 @@ const MyOrders = ({ transactions, networkId, synthsMap }) => {
 					sortable: true,
 				},
 				{
+					Header: <>{t('trade.order-book-card.table.type')}</>,
+					accessor: 'orderType',
+					Cell: (cellProps) => (
+						<span style={{ textTransform: 'uppercase' }}>{cellProps.cell.value}</span>
+					),
+					sortable: true,
+				},
+				{
 					Header: <>{t('trade.order-book-card.table.buying')}</>,
 					accessor: 'toAmount',
 					sortType: 'basic',

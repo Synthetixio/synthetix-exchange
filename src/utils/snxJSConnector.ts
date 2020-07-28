@@ -12,7 +12,6 @@ import {
 import { synthSummaryUtilContract } from './contracts/synthSummaryUtilContract';
 import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
 import limitOrdersContract from './contracts/limitOrdersContract';
-// import LimitOrdersClient from './LimitOrdersClient';
 
 type SnxJSConnector = {
 	initialized: boolean;
@@ -61,7 +60,7 @@ const snxJSConnector: SnxJSConnector = {
 		this.limitOrdersContract = new ethers.Contract(
 			limitOrdersContract.addresses[contractSettings.networkId],
 			limitOrdersContract.abi,
-			this.signer
+			this.provider
 		);
 	},
 };

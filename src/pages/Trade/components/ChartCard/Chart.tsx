@@ -106,7 +106,7 @@ const Chart: FC<ChartProps> = ({ synthPair: { quote }, data, isLoading, period, 
 
 const ChartContainer = styled.div`
 	width: 100%;
-	height: 250px;
+	height: 244px;
 	display: flex;
 	justify-content: center;
 	align-items: center;

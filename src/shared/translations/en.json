@@ -418,10 +418,14 @@
 			}
 		},
 		"trade-card": {
-			"title": "Buy/Sell",
+			"tabs": {
+				"limit": "limit",
+				"market": "market"
+			},
 			"reverse-button": "Reverse",
 			"sell-input-label": "Sell",
 			"buy-input-label": "Buy",
+			"price-input-label": "Price",
 			"confirm-trade-button": "Confirm trade",
 			"frozen-synth": "Synth is frozen",
 			"retry-button": "Retry",
@@ -432,7 +436,8 @@
 			"network-info-tooltip": {
 				"exchange-fee": "Exchange fee",
 				"network-fee": "Network fee (gas)"
-			}
+			},
+			"wallet-approval-tooltip": "Wallet approval required on your first order. Click “Enable Wallet Access” below to start."
 		},
 		"order-book-card": {
 			"tabs": {
@@ -443,6 +448,7 @@
 			"table": {
 				"date": "Date | time",
 				"pair": "Pair",
+				"type": "Type",
 				"buying": "Buying",
 				"selling": "Selling",
 				"price": "Price",
@@ -718,6 +724,7 @@
 			"progress-label": "enabling wallet access..."
 		},
 		"asset": "asset",
-		"units": "units"
+		"units": "units",
+		"price-label": "Price:"
 	}
 }

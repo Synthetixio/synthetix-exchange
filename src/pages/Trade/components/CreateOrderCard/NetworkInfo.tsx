@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { formatCurrency } from 'utils/formatters';
+import { formatCurrencyWithSign } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
 import { LinkTextSmall } from 'shared/commonStyles';
@@ -13,8 +12,19 @@ import { TextButton, FlexDivRow } from 'shared/commonStyles';
 import { DataSmall } from 'components/Typography';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 import { formatPercentage } from 'utils/formatters';
+import { USD_SIGN } from 'constants/currency';
 
-export const TransactionInfo = ({
+type TransactionInfoProps = {
+	gasPrice: number;
+	gasLimit: number;
+	ethRate: number | null;
+	usdRate: number;
+	amount: number;
+	exchangeFeeRate: number;
+	onEditButtonClick: () => void;
+};
+
+export const TransactionInfo: FC<TransactionInfoProps> = ({
 	gasPrice,
 	gasLimit,
 	ethRate = 0,
@@ -34,20 +44,20 @@ export const TransactionInfo = ({
 				<TooltipLabel>{`${t(
 					'trade.trade-card.network-info-tooltip.exchange-fee'
 				)} (${formatPercentage(exchangeFeeRate / 100)})`}</TooltipLabel>
-				<TooltipLabel>${formatCurrency(exchangeFee)}</TooltipLabel>
+				<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, exchangeFee)}</TooltipLabel>
 			</TooltipContentRow>
 			<TooltipContentRow>
 				<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
-				<TooltipLabel>${formatCurrency(networkFee)}</TooltipLabel>
+				<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, networkFee)}</TooltipLabel>
 			</TooltipContentRow>
 		</TooltipContent>
 	);
 
 	return (
-		<Container>
+		<div>
 			<NetworkDataRow>
 				<NetworkData>{t('trade.trade-card.network-info.usd-value')}</NetworkData>
-				<NetworkData>${formatCurrency(usdValue) || 0}</NetworkData>
+				<NetworkData>{formatCurrencyWithSign(USD_SIGN, usdValue) || 0}</NetworkData>
 			</NetworkDataRow>
 			<NetworkDataRow>
 				<NetworkDataLabelFlex>
@@ -58,7 +68,7 @@ export const TransactionInfo = ({
 						</QuestionMarkIcon>
 					</Tooltip>
 				</NetworkDataLabelFlex>
-				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
+				<NetworkData>{formatCurrencyWithSign(USD_SIGN, exchangeFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
 			<NetworkDataRow>
 				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
@@ -69,15 +79,8 @@ export const TransactionInfo = ({
 					</ButtonEdit>
 				</NetworkData>
 			</NetworkDataRow>
-		</Container>
+		</div>
 	);
-};
-
-TransactionInfo.propTypes = {
-	gasPrice: PropTypes.number,
-	gasLimit: PropTypes.number,
-	ethRate: PropTypes.number,
-	onEditButtonClick: PropTypes.func.isRequired,
 };
 
 const TooltipContent = styled.div`
@@ -115,10 +118,6 @@ const QuestionMarkStyled = styled(QuestionMark)`
 	height: 8px;
 `;
 
-const Container = styled.div`
-	margin: 18px 0;
-`;
-
 const NetworkData = styled(DataSmall)`
 	color: ${(props) => props.theme.colors.fontTertiary};
 `;
@@ -131,7 +130,7 @@ const NetworkDataLabelFlex = styled(NetworkData)`
 const NetworkDataRow = styled(FlexDivRow)`
 	display: flex;
 	align-items: center;
-	margin-bottom: 8px;
+	margin-bottom: 4px;
 `;
 
 const ButtonEdit = styled(TextButton)`

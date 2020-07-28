@@ -41,7 +41,7 @@ const TradeInput: FC<NumericInputWithCurrencyProps> = ({
 
 	return (
 		<>
-			{label != null && <Label>{label}</Label>}
+			{label != null && <Label className="label">{label}</Label>}
 			<Container className={className}>
 				<CurrencyContainer className="currency-container">
 					<StyledCurrencyName currencyKey={currencyKey} showIcon={showIcon} />
