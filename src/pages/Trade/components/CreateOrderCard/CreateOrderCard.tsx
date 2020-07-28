@@ -404,9 +404,9 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 
 				const gasEstimate = await limitOrdersContractWithSigner.estimate.newOrder(
 					bytesFormatter(quote.name),
-					utils.parseEther(quoteAmount.toString()),
+					utils.parseEther(quoteAmount),
 					bytesFormatter(base.name),
-					utils.parseEther(`${limitPriceNum * baseAmountNum}`),
+					utils.parseEther(baseAmount),
 					executionFee,
 					{
 						value: weiDeposit,
@@ -423,9 +423,9 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 
 				tx = await limitOrdersContractWithSigner.newOrder(
 					bytesFormatter(quote.name),
-					utils.parseEther(quoteAmount.toString()),
+					utils.parseEther(quoteAmount),
 					bytesFormatter(base.name),
-					utils.parseEther(`${limitPriceNum * baseAmountNum}`),
+					utils.parseEther(baseAmount),
 					executionFee,
 					{
 						value: weiDeposit,
