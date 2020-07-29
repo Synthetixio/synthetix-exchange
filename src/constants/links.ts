@@ -10,7 +10,7 @@ export const LINKS = {
 			`https://1inch.exchange/#/${base}/${quote}`,
 	},
 	Learn: {
-		Litepaper: 'https://www.synthetipx.io/litepaper',
+		Litepaper: 'https://www.synthetix.io/litepaper',
 		Tokens: 'https://www.synthetix.io/tokens',
 		Blog: 'https://blog.synthetix.io/',
 	},

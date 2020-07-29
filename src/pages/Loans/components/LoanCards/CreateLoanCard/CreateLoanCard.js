@@ -19,7 +19,6 @@ import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
-import { toggleGweiPopup } from 'ducks/ui';
 import LoanWarningModal from '../LoanWarningModal';
 
 import {
@@ -29,12 +28,11 @@ import {
 	CurrencyKey,
 } from 'shared/commonStyles';
 
-import NetworkInfo from '../NetworkInfo';
+import NetworkInfo from 'pages/Trade/components/CreateOrderCard/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 
 export const CreateLoanCard = ({
-	toggleGweiPopup,
 	gasInfo,
 	ethRate,
 	walletInfo: { balances, currentWallet },
@@ -102,8 +100,6 @@ export const CreateLoanCard = ({
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
 	};
-
-	const showGweiPopup = () => toggleGweiPopup(true);
 
 	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, collateralCurrencyKey);
 	const loanCurrencyBalance = getCurrencyKeyBalance(balances, loanCurrencyKey);
@@ -193,12 +189,7 @@ export const CreateLoanCard = ({
 						}}
 					/>
 				</FormInputRow>
-				<NetworkInfo
-					gasPrice={gasInfo.gasPrice}
-					gasLimit={gasLimit}
-					ethRate={ethRate}
-					onEditButtonClick={showGweiPopup}
-				/>
+				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary
 					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
 					onClick={() => setIsLoanConfirmationModalOpen(true)}
@@ -226,7 +217,6 @@ export const CreateLoanCard = ({
 };
 
 CreateLoanCard.propTypes = {
-	toggleGweiPopup: PropTypes.func.isRequired,
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
@@ -240,7 +230,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
 	createLoan,
 };
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { CloseLoanCard } from './CloseLoanCard';
 import { connectedWalletWithBalances } from '../../../../../../.storybook/mocks/reducers/wallet';
-import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 
 export default {
@@ -13,7 +12,6 @@ export const closeLoan = () => (
 		isInteractive={boolean('isInteractive', true)}
 		gasInfo={{ gasLimit: 0, gasPrice: 0 }}
 		ethRate={0}
-		toggleGweiPopup={action('open gwei popup')}
 		walletInfo={connectedWalletWithBalances}
 	/>
 );

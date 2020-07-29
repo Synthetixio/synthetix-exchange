@@ -13,7 +13,7 @@ import { DataSmall } from '../../../../../components/Typography';
 
 export const NetworkInfo = ({ gasPrice, gasLimit, ethRate, onEditButtonClick, className }) => {
 	const { t } = useTranslation();
-
+	console.log('aaaa');
 	return (
 		<Container className={className}>
 			<NetworkDataRow>
