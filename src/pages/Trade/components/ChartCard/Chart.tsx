@@ -52,7 +52,7 @@ const Chart: FC<ChartProps> = ({
 	isWalletConnected,
 	fetchMyTradesRequest,
 	trades,
-	synthPair: { quote },
+	synthPair: { base, quote },
 	data,
 	isLoading,
 	period,
@@ -86,7 +86,9 @@ const Chart: FC<ChartProps> = ({
 					(trade: HistoricalTrade) =>
 						rate.block < trade.block &&
 						index < data.rates.length - 1 &&
-						data.rates[index + 1].block > trade.block
+						data.rates[index + 1].block > trade.block &&
+						((base.name === trade.fromCurrencyKey && quote.name === trade.toCurrencyKey) ||
+							(quote.name === trade.fromCurrencyKey && base.name === trade.toCurrencyKey))
 				);
 
 				return trade
