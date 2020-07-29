@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import sumBy from 'lodash/sumBy';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
@@ -11,7 +12,7 @@ import { RootState } from 'ducks/types';
 import { SYNTHS_MAP, USD_SIGN } from 'constants/currency';
 
 import { media } from 'shared/media';
-import { GridDiv } from 'shared/commonStyles';
+import { GridDiv, Strong } from 'shared/commonStyles';
 
 import Link from 'components/Link';
 import { tableHeaderSmallCSS, tableDataSmallCSS } from 'components/Typography/Table';
@@ -20,7 +21,7 @@ import { subtitleLargeCSS } from 'components/Typography/General';
 
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 import { getEtherscanTokenLink } from 'utils/explorers';
-import { getDecimalPlaces } from 'utils/formatters';
+import { getDecimalPlaces, formatPercentage } from 'utils/formatters';
 
 type StateProps = {
 	networkId: number;
@@ -72,6 +73,8 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 			});
 		}
 		if (synth.index) {
+			const totalUnits = sumBy(synth.index, 'units');
+
 			return (
 				<>
 					{t('synths.overview.info.index', {
@@ -91,7 +94,9 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 									<td>
 										{symbol} ({name})
 									</td>
-									<td>{units}</td>
+									<td>
+										{units} <Strong>({formatPercentage(units / totalUnits)})</Strong>
+									</td>
 								</TableRowBody>
 							))}
 						</tbody>
