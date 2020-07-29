@@ -383,7 +383,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				createTransaction({
 					...txProps,
 					priceUSD: isBaseCurrencySUSD ? quoteExchangeRateInUSD : baseExchangeRateInUSD,
-					totalUSD: formatCurrency(baseAmountNum * baseExchangeRateInUSD),
+					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
 				tx = await Synthetix.exchange(
@@ -411,12 +411,13 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					}
 				);
 
+				// TODO: make sure the calc is correct
 				createTransaction({
 					...txProps,
-					priceUSD: isBaseCurrencySUSD ? 1 / limitPriceNum : limitPriceNum,
-					totalUSD: formatCurrency(
-						isBaseCurrencySUSD ? baseAmountNum : baseAmountNum * limitPriceNum
-					),
+					priceUSD: isBaseCurrencySUSD
+						? (quoteExchangeRateInUSD * limitPriceNum) / (1 / quoteExchangeRateInUSD)
+						: limitPriceNum * quoteExchangeRateInUSD,
+					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
 				tx = await limitOrdersContractWithSigner.newOrder(
