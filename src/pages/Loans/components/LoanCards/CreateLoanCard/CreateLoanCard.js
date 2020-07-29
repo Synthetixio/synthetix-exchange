@@ -28,7 +28,7 @@ import {
 	CurrencyKey,
 } from 'shared/commonStyles';
 
-import NetworkInfo from 'pages/Trade/components/CreateOrderCard/NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 
