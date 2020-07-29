@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import orderBy from 'lodash/orderBy';
 import snxData from 'synthetix-data';
+import { useQuery } from 'react-query';
+import { CellProps } from 'react-table';
 
 import { getTransactions, updateTransaction } from 'ducks/transaction';
 import {
@@ -23,19 +25,18 @@ import {
 import { getEtherscanTxLink } from 'utils/explorers';
 
 import Table from 'components/Table';
-
 import Currency from 'components/Currency';
-import { USD_SIGN, CurrencyKey } from 'constants/currency';
+
+import { USD_SIGN } from 'constants/currency';
+import { TRANSACTION_STATUS, Transactions, LimitOrders, Transaction } from 'constants/transaction';
+import QUERY_KEYS from 'constants/queryKeys';
 
 import { TableNoResults, TextButton } from 'shared/commonStyles';
 
-import ViewLink, { ArrowIcon } from './ViewLink';
 import { RootState } from 'ducks/types';
 import snxJSConnector from 'utils/snxJSConnector';
-import { TRANSACTION_STATUS } from 'constants/transaction';
-import QUERY_KEYS from 'constants/queryKeys';
-import { useQuery } from 'react-query';
-import { CellProps } from 'react-table';
+
+import ViewLink, { ArrowIcon } from './ViewLink';
 
 const mapStateToProps = (state: RootState) => ({
 	networkId: getNetworkId(state),
@@ -53,35 +54,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MyOrdersProps = PropsFromRedux;
-
-type Transaction = {
-	id: number;
-	date: Date;
-	base: CurrencyKey;
-	quote: CurrencyKey;
-	fromAmount: number;
-	toAmount: number;
-	orderType: 'limit' | 'market';
-	status: string;
-	priceUSD: string;
-	totalUSD: string;
-	hash?: string;
-};
-
-type Transactions = Transaction[];
-
-type LimitOrder = {
-	account: string;
-	deposit: number;
-	destinationCurrencyKey: CurrencyKey;
-	executionFee: number;
-	id: number;
-	minDestinationAmount: number;
-	sourceCurrencyKey: CurrencyKey;
-	status: string;
-};
-
-type LimitOrders = LimitOrder[];
 
 const MyOrders: FC<MyOrdersProps> = ({
 	transactions,

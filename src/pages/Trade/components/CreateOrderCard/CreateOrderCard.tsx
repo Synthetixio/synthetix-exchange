@@ -28,7 +28,7 @@ import { toggleGweiPopup } from 'ducks/ui';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { BALANCE_FRACTIONS } from 'constants/order';
 import { SYNTHS_MAP, CATEGORY_MAP } from 'constants/currency';
-import { TRANSACTION_STATUS } from 'constants/transaction';
+import { TRANSACTION_STATUS, OrderType } from 'constants/transaction';
 
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 import { normalizeGasLimit } from 'utils/transactions';
@@ -82,8 +82,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type CreateOrderCardProps = PropsFromRedux;
-
-type OrderType = 'limit' | 'market';
 
 const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	synthPair,
