@@ -120,13 +120,7 @@ const Chart: FC<ChartProps> = ({
 		if ((payload.trade?.fromAmount ?? 0) > 0) {
 			const { fromCurrencyKey, toCurrencyKey } = payload.trade as HistoricalTrade;
 			const marketPair = getMarketPairByMC(fromCurrencyKey, toCurrencyKey);
-			console.log('marketPair', marketPair);
-			console.log('toCurrencyKey', toCurrencyKey);
 			const color = marketPair.base.startsWith(toCurrencyKey) ? colors.green : colors.red;
-			console.log(
-				'marketPair.base.startsWith(toCurrencyKey)',
-				marketPair.base.startsWith(toCurrencyKey)
-			);
 			return (
 				<svg x={cx - 5} y={cy - 5} width="6" height="15" viewBox="0 0 6 15" fill="none">
 					<rect width="6" height="15" rx="1" fill={color} />
