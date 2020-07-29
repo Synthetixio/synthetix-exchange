@@ -20,6 +20,7 @@ import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
 import { toggleGweiPopup } from 'ducks/ui';
+import LoanWarningModal from '../../LoanWarningModal';
 
 import {
 	FormInputRow,
@@ -48,11 +49,15 @@ export const CreateLoanCard = ({
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
 
 	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
 
-	// ETH collateral is blocked for now
-	// eslint-disable-next-line
+	const onLoanModalConfirmation = () => {
+		setIsLoanConfirmationModalOpen(false);
+		handleSubmit();
+	};
+
 	const handleSubmit = async () => {
 		const {
 			snxJS: { EtherCollateral },
@@ -194,7 +199,10 @@ export const CreateLoanCard = ({
 					ethRate={ethRate}
 					onEditButtonClick={showGweiPopup}
 				/>
-				<ButtonPrimary disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}>
+				<ButtonPrimary
+					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
+					onClick={() => setIsLoanConfirmationModalOpen(true)}
+				>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
 				{txErrorMessage && (
@@ -208,6 +216,11 @@ export const CreateLoanCard = ({
 					</TxErrorMessage>
 				)}
 			</Card.Body>
+			<LoanWarningModal
+				isOpen={isLoanConfirmationModalOpen}
+				onClose={() => setIsLoanConfirmationModalOpen(false)}
+				onConfirm={() => onLoanModalConfirmation()}
+			/>
 		</Card>
 	);
 };
