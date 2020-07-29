@@ -404,9 +404,6 @@
 			}
 		},
 		"chart-tooltip": {
-			"from": "from",
-			"to": "to",
-			"trade": "Trade",
 			"trade-total": "Total",
 			"price": "Price"
 		},

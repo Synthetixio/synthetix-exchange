@@ -157,18 +157,10 @@ const Chart: FC<ChartProps> = ({
 						value
 					)}`}</ItemStyle>
 					{(innerPayload.trade?.fromAmount ?? 0) > 0 ? (
-						<>
-							<ItemStyle>{`
-							  ${t('trade.chart-tooltip.trade')}: ${t('trade.chart-tooltip.from')}: ${
-								(innerPayload.trade as HistoricalTrade).fromCurrencyKey
-							} ${t('trade.chart-tooltip.to')}: ${
-								(innerPayload.trade as HistoricalTrade).toCurrencyKey
-							}`}</ItemStyle>
-							<ItemStyle>{`${t('trade.chart-tooltip.trade-total')}: ${formatCurrencyWithSign(
-								synthSign,
-								(innerPayload.trade as HistoricalTrade).fromAmountInUSD
-							)}`}</ItemStyle>
-						</>
+						<ItemStyle>{`${t('trade.chart-tooltip.trade-total')}: ${formatCurrencyWithSign(
+							synthSign,
+							(innerPayload.trade as HistoricalTrade).fromAmountInUSD
+						)}`}</ItemStyle>
 					) : null}
 				</TooltipContentStyle>
 			);
