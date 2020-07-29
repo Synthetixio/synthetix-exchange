@@ -20,7 +20,7 @@ import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
 import { toggleGweiPopup } from 'ducks/ui';
-import LoanWarningModal from '../../LoanWarningModal';
+import LoanWarningModal from '../LoanWarningModal';
 
 import {
 	FormInputRow,
