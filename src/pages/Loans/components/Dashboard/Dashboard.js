@@ -172,7 +172,7 @@ Dashboard.propTypes = {
 	collateralPair: PropTypes.object.isRequired,
 	isFetchingWalletBalances: PropTypes.bool.isRequired,
 	isRefreshingLoansContractInfo: PropTypes.bool.isRequired,
-	networkId: PropTypes.string.isRequired,
+	networkId: PropTypes.number.isRequired,
 };
 
 const StyledExternalLink = styled(ExternalLink)`
