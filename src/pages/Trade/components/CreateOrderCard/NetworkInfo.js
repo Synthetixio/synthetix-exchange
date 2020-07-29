@@ -7,10 +7,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
-import { LinkTextSmall } from 'shared/commonStyles';
-import { TextButton, FlexDivRow } from 'shared/commonStyles';
+import { FlexDivRow } from 'shared/commonStyles';
+
+import SelectGasMenu from 'pages/shared/components/SelectGasMenu';
 
 import { DataSmall } from 'components/Typography';
+
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 import { formatPercentage } from 'utils/formatters';
 
@@ -21,9 +23,9 @@ export const TransactionInfo = ({
 	usdRate = 0,
 	amount = 0,
 	exchangeFeeRate = 0,
-	onEditButtonClick,
 }) => {
 	const { t } = useTranslation();
+
 	const usdValue = amount * usdRate;
 	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
@@ -63,10 +65,7 @@ export const TransactionInfo = ({
 			<NetworkDataRow>
 				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
 				<NetworkData>
-					{gasPrice || 0}
-					<ButtonEdit onClick={onEditButtonClick}>
-						<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
-					</ButtonEdit>
+					<SelectGasMenu gasPrice={gasPrice} />
 				</NetworkData>
 			</NetworkDataRow>
 		</Container>
@@ -77,7 +76,6 @@ TransactionInfo.propTypes = {
 	gasPrice: PropTypes.number,
 	gasLimit: PropTypes.number,
 	ethRate: PropTypes.number,
-	onEditButtonClick: PropTypes.func.isRequired,
 };
 
 const TooltipContent = styled.div`
@@ -132,10 +130,6 @@ const NetworkDataRow = styled(FlexDivRow)`
 	display: flex;
 	align-items: center;
 	margin-bottom: 8px;
-`;
-
-const ButtonEdit = styled(TextButton)`
-	margin-left: 10px;
 `;
 
 export default TransactionInfo;
