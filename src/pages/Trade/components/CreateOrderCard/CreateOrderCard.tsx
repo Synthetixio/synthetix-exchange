@@ -355,7 +355,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 
 			const txProps = {
 				id: transactionId,
-				date: new Date(),
+				timestamp: Date.now(),
 				base: base.name,
 				quote: quote.name,
 				fromAmount: quoteAmount,

@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import orderBy from 'lodash/orderBy';
 import snxData from 'synthetix-data';
-import { useQuery } from 'react-query';
+import { useQuery, queryCache } from 'react-query';
 import { CellProps } from 'react-table';
+import { useImmer } from 'use-immer';
+import isEmpty from 'lodash/isEmpty';
 
 import { getTransactions, updateTransaction } from 'ducks/transaction';
 import {
@@ -63,18 +65,21 @@ const MyOrders: FC<MyOrdersProps> = ({
 	isWalletConnected,
 }) => {
 	const { t } = useTranslation();
+	const [overrideTransactionStatus, setOverrideTransactionStatus] = useImmer<
+		Record<number, Transaction['status']>
+	>({});
+
+	const limitOrdersQueryKey = QUERY_KEYS.Trades.LimitOrders(currentWalletAddress || '');
 
 	const limitOrders = useQuery<Transactions, any>(
-		QUERY_KEYS.Trades.LimitOrders(currentWalletAddress || ''),
+		limitOrdersQueryKey,
 		async () => {
 			const orders = (await snxData.limitOrders.orders({
 				account: currentWalletAddress,
 			})) as LimitOrders;
-			let id = transactions.length;
-
 			return orders.map((order) => ({
-				id: id++,
-				date: new Date(),
+				timestamp: Date.now(),
+				orderId: order.id,
 				base: order.destinationCurrencyKey,
 				quote: order.sourceCurrencyKey,
 				fromAmount: 0,
@@ -93,20 +98,48 @@ const MyOrders: FC<MyOrdersProps> = ({
 	const orderedTransactions = useMemo(() => {
 		const combinedTransactions =
 			limitOrders.status === 'success' ? [...limitOrders.data, ...transactions] : transactions;
-		return orderBy(combinedTransactions, 'id', 'asc');
-	}, [transactions, limitOrders.status, limitOrders.data]);
 
-	const handleCancelLimitOrder = async (txId: number, orderId: string) => {
+		const orderedTransactions = orderBy(combinedTransactions, 'timestamp', 'desc') as Transactions;
+
+		return !isEmpty(overrideTransactionStatus)
+			? orderedTransactions.map((transaction) => ({
+					...transaction,
+					status: overrideTransactionStatus[transaction.orderId] ?? transaction.status,
+			  }))
+			: orderedTransactions;
+	}, [transactions, limitOrders.status, limitOrders.data, overrideTransactionStatus]);
+
+	const handleCancelLimitOrder = async (transaction: Transaction) => {
+		const {
+			utils: { waitForTransaction },
+		} = snxJSConnector as any;
+
+		const { orderId } = transaction;
+
+		setOverrideTransactionStatus((draft) => {
+			draft[orderId] = TRANSACTION_STATUS.CANCELLING;
+		});
+
 		const { limitOrdersContract } = snxJSConnector;
 		const limitOrdersContractWithSigner = limitOrdersContract.connect(snxJSConnector.signer);
 
-		updateTransaction({ status: TRANSACTION_STATUS.CANCELLING }, txId);
 		try {
-			await limitOrdersContractWithSigner.cancelOrder(orderId);
-			updateTransaction({ status: TRANSACTION_STATUS.CANCELLED }, txId);
+			const tx = await limitOrdersContractWithSigner.cancelOrder(orderId);
+			const status = await waitForTransaction(tx.hash);
+			if (status) {
+				setOverrideTransactionStatus((draft) => {
+					draft[orderId] = TRANSACTION_STATUS.CANCELLED;
+				});
+			} else {
+				setOverrideTransactionStatus((draft) => {
+					delete draft[orderId];
+				});
+			}
 		} catch (e) {
 			console.log(e);
-			updateTransaction({ status: TRANSACTION_STATUS.PENDING }, txId);
+			setOverrideTransactionStatus((draft) => {
+				delete draft[orderId];
+			});
 		}
 	};
 
@@ -117,8 +150,8 @@ const MyOrders: FC<MyOrdersProps> = ({
 			columns={[
 				{
 					Header: <>{t('trade.order-book-card.table.date')}</>,
-					accessor: 'date',
-					Cell: (cellProps: CellProps<Transaction, Transaction['date']>) =>
+					accessor: 'timestamp',
+					Cell: (cellProps: CellProps<Transaction, Transaction['timestamp']>) =>
 						formatTxTimestamp(cellProps.cell.value),
 					sortable: true,
 				},
@@ -210,11 +243,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 					Cell: (cellProps: CellProps<Transaction>) =>
 						cellProps.row.original.orderType === 'limit' &&
 						cellProps.row.original.status === TRANSACTION_STATUS.PENDING ? (
-							<CancelButton
-								onClick={() =>
-									handleCancelLimitOrder(cellProps.row.original.id, cellProps.row.original.hash!)
-								}
-							>
+							<CancelButton onClick={() => handleCancelLimitOrder(cellProps.row.original)}>
 								{t('trade.order-book-card.table.cancel')}
 							</CancelButton>
 						) : null,

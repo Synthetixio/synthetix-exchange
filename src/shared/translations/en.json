@@ -631,6 +631,7 @@
 			"pending": "Pending",
 			"confirmed": "Confirmed",
 			"cancelled": "Cancelled",
+			"cancelling": "Cancelling",
 			"failed": "failed"
 		},
 		"wallet": {

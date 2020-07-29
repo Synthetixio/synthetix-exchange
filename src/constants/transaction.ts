@@ -12,8 +12,8 @@ export const TRANSACTION_STATUS = {
 export type OrderType = 'limit' | 'market';
 
 export type Transaction = {
-	id: number;
-	date: Date;
+	id?: number;
+	timestamp: number;
 	base: CurrencyKey;
 	quote: CurrencyKey;
 	fromAmount: number;
@@ -22,6 +22,7 @@ export type Transaction = {
 	status: string;
 	priceUSD: string;
 	totalUSD: string;
+	orderId: number;
 	hash?: string;
 };
 
