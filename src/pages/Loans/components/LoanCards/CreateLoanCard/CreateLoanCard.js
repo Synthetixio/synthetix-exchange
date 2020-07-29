@@ -22,8 +22,6 @@ import { getEthRate } from 'ducks/rates';
 
 import Link from 'components/Link';
 
-import { toggleGweiPopup } from 'ducks/ui';
-
 import {
 	FormInputRow,
 	FormInputLabel,
@@ -39,7 +37,6 @@ import { TxErrorMessage } from '../commonStyles';
 const ETHER_COLLATERAL_BLOG_POST_LINK = 'https://blog.synthetix.io/bug-disclosure/';
 
 export const CreateLoanCard = ({
-	toggleGweiPopup,
 	gasInfo,
 	ethRate,
 	walletInfo: { balances, currentWallet },
@@ -103,8 +100,6 @@ export const CreateLoanCard = ({
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
 	};
-
-	const showGweiPopup = () => toggleGweiPopup(true);
 
 	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, collateralCurrencyKey);
 	const loanCurrencyBalance = getCurrencyKeyBalance(balances, loanCurrencyKey);
@@ -194,12 +189,7 @@ export const CreateLoanCard = ({
 						}}
 					/>
 				</FormInputRow>
-				<NetworkInfo
-					gasPrice={gasInfo.gasPrice}
-					gasLimit={gasLimit}
-					ethRate={ethRate}
-					onEditButtonClick={showGweiPopup}
-				/>
+				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
@@ -229,7 +219,6 @@ export const CreateLoanCard = ({
 };
 
 CreateLoanCard.propTypes = {
-	toggleGweiPopup: PropTypes.func.isRequired,
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
@@ -258,7 +247,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
 	createLoan,
 };
 
