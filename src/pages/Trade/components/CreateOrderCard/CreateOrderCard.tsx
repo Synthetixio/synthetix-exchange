@@ -414,9 +414,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				// TODO: make sure the calc is correct
 				createTransaction({
 					...txProps,
-					priceUSD: isBaseCurrencySUSD
-						? (quoteExchangeRateInUSD * limitPriceNum) / (1 / quoteExchangeRateInUSD)
-						: limitPriceNum * quoteExchangeRateInUSD,
+					priceUSD: limitPriceNum * quoteExchangeRateInUSD,
 					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
