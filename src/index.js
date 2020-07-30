@@ -37,6 +37,12 @@ const App = () => {
 };
 
 ReactDOM.render(
-	<ErrorBoundary>{SYSTEM_ON_MAINTENANCE ? <MaintenanceMessage /> : <App />}</ErrorBoundary>,
+	SYSTEM_ON_MAINTENANCE ? (
+		<MaintenanceMessage />
+	) : (
+		<ErrorBoundary>
+			<App />
+		</ErrorBoundary>
+	),
 	document.getElementById('root')
 );
