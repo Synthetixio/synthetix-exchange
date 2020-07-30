@@ -43,7 +43,7 @@ import DismissableMessage from 'components/DismissableMessage';
 import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'shared/commonStyles';
 
 import { ReactComponent as ReverseArrow } from 'assets/images/reverse-arrow.svg';
-import NetworkInfo from './NetworkInfo';
+import NetworkInfo from '../../../../components/NetworkInfo/NetworkInfo';
 
 const INPUT_DEFAULT_VALUE = '';
 
