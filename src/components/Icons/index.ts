@@ -1,3 +1,4 @@
 import Arrow from './Arrow';
+import SnowflakeCircle from './SnowflakeCircle';
 
-export { Arrow };
+export { Arrow, SnowflakeCircle };

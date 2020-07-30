@@ -26,7 +26,6 @@ import { media } from 'shared/media';
 import Currency from 'components/Currency';
 import { mockRates } from 'pages/Synths/mockData';
 import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
-import { GridDivCenteredRow } from 'shared/commonStyles';
 
 type StateProps = {
 	synthsWithRatesMap: SynthDefinitionWithRatesMap;
@@ -164,7 +163,8 @@ export const SynthChart: FC<SynthChartProps> = ({
 	);
 };
 
-const FrozenMessage = styled(GridDivCenteredRow)`
+const FrozenMessage = styled.div`
+	justify-items: center;
 	svg {
 		color: ${(props) => props.theme.colors.icons};
 	}

@@ -13,6 +13,8 @@ import Table from 'components/Table';
 import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
 import { SynthDefinitionMap } from 'ducks/synths';
 
+import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
+
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
 };
@@ -30,17 +32,25 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 	return (
 		<StyledTable
 			palette="primary"
+			columnsDeps={[synthsMap]}
 			columns={[
 				{
 					Header: <>{t('markets.table.pair-col')}</>,
 					accessor: 'pair',
 					width: 150,
 					Cell: (cellProps: CellProps<MarketPair>) => (
-						<Currency.Pair
-							baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
-							quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
-							showIcon={true}
-						/>
+						<>
+							{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
+								<SnowflakeIconWrapper>
+									<StyledSnowflakeIcon />
+								</SnowflakeIconWrapper>
+							) : null}
+							<Currency.Pair
+								baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
+								quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
+								showIcon={true}
+							/>
+						</>
 					),
 					sortable: true,
 				},
@@ -101,6 +111,23 @@ const StyledTable = styled(Table)`
 	.table-body-cell {
 		height: 32px;
 	}
+`;
+
+const SnowflakeIconWrapper = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	height: 23px;
+	width: 23px;
+	background-color: ${(props) => props.theme.colors.accentL2};
+	margin-right: 10px;
+`;
+
+const StyledSnowflakeIcon = styled(SnowflakeIcon)`
+	height: 14px;
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
