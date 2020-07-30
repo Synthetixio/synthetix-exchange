@@ -19,7 +19,7 @@ import { HeadingSmall } from 'components/Typography';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from 'shared/commonStyles';
 
-import NetworkInfo from '../NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 

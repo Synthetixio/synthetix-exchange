@@ -4,6 +4,8 @@ import { Provider } from 'react-redux';
 import store from './config/store';
 import Root from './pages/Root';
 
+import MaintenanceMessage from './pages/Root/components/MaintenanceMessage';
+
 import './i18n';
 import './index.css';
 
@@ -21,6 +23,8 @@ console.log(bugsnag.releaseStage);
 
 bugsnagClient.use(bugsnagReact, React);
 
+const SYSTEM_ON_MAINTENANCE = true;
+
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 const App = () => {
 	return (
@@ -33,8 +37,12 @@ const App = () => {
 };
 
 ReactDOM.render(
-	<ErrorBoundary>
-		<App />
-	</ErrorBoundary>,
+	SYSTEM_ON_MAINTENANCE ? (
+		<MaintenanceMessage />
+	) : (
+		<ErrorBoundary>
+			<App />
+		</ErrorBoundary>
+	),
 	document.getElementById('root')
 );
