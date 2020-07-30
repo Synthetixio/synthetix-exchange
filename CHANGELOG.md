@@ -1,5 +1,18 @@
 # Changelog
 
+## 30 July 2020 (Silver release)
+
+### Added
+
+- Added trade markers (Trade page).
+- Re-enable Ether collateral trial.
+- Confirmation popup when submitting new loan.
+
+### Changed
+
+- Replaced the gas GWEI modal with a simplified gas popup.
+- Fixed a bug that caused the binary options create market modal to close when clicked outside the content area.
+
 ## 23 July 2020 (Galena release)
 
 ### Added
