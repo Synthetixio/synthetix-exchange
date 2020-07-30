@@ -1,9 +1,9 @@
 export const limitOrdersContract = {
 	addresses: {
-		1: '0xF771A01C488c24F7755Ad1824650D3e243B65A9c',
-		3: '0xF771A01C488c24F7755Ad1824650D3e243B65A9c',
-		4: '0xF771A01C488c24F7755Ad1824650D3e243B65A9c',
-		42: '0xF771A01C488c24F7755Ad1824650D3e243B65A9c',
+		1: '0x736d22180993e20cac87E9B2035560c1De455027',
+		3: '0xC38776bdB0f02CFa66113F069D1f319f36901736',
+		4: '0x3dCf67EdABe1B97B44ed6F34c91B4DA9ef8f4933',
+		42: '0xc9c7613845A0c26169288C30eEF2604BeBf3A962',
 	},
 	abi: [
 		'function newOrder(bytes32 sourceCurrencyKey, uint sourceAmount, bytes32 destinationCurrencyKey, uint minDestinationAmount, uint executionFee) payable public returns (uint)',
