@@ -733,6 +733,7 @@
 			"progress-label": "enabling wallet access..."
 		},
 		"asset": "asset",
-		"units": "units"
+		"units": "units",
+		"weight": "weight"
 	}
 }
