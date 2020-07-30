@@ -19,7 +19,6 @@ import MainLayout from './components/MainLayout';
 import HomeLayout from './components/HomeLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
-import GweiPopup from '../../components/GweiPopup';
 // import AppBanner from './components/AppBanner';
 
 import Home from '../Home';
@@ -62,7 +61,6 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 								<>
 									<GlobalEventsGate />
 									<WalletPopup />
-									<GweiPopup />
 									{/* <AppBanner /> */}
 								</>
 							)}

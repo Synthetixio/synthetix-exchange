@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 import orderBy from 'lodash/orderBy';
 import snxData from 'synthetix-data';
-import { useQuery, queryCache } from 'react-query';
+import { useQuery } from 'react-query';
 import { CellProps } from 'react-table';
 import { useImmer } from 'use-immer';
 import isEmpty from 'lodash/isEmpty';

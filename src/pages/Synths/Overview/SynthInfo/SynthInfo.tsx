@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import orderBy from 'lodash/orderBy';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
@@ -85,15 +86,17 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 							<TableRowHead>
 								<th>{t('common.asset')}</th>
 								<th>{t('common.units')}</th>
+								<th>{t('common.weight')}</th>
 							</TableRowHead>
 						</thead>
 						<tbody>
-							{synth.index.map(({ symbol, name, units }) => (
+							{orderBy(synth.index, 'weight', 'desc').map(({ symbol, name, units, weight }) => (
 								<TableRowBody key={symbol}>
 									<td>
 										{symbol} ({name})
 									</td>
 									<td>{units}</td>
+									<td>{weight}%</td>
 								</TableRowBody>
 							))}
 						</tbody>

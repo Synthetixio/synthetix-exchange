@@ -214,7 +214,7 @@ const PhaseDiv = styled.div<{ phase: Phase; isLabel: boolean }>`
   border-radius: 2px;
   padding: 5px 8px;
 	text-transform: uppercase;
-	
+
 	color: ${darkTheme.colors.accentL1};
 	${(props) =>
 		props.phase === 'bidding' &&
@@ -231,7 +231,11 @@ const PhaseDiv = styled.div<{ phase: Phase; isLabel: boolean }>`
 			css`
 				background-color: #c5d5ff;
 			`}
-
+		${(props) =>
+			props.phase === 'expiry' &&
+			css`
+				background-color: #f5607066;
+			`}
 	${(props) =>
 		!props.isLabel &&
 		css`

@@ -6,34 +6,35 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatCurrencyWithSign } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
-import { LinkTextSmall } from 'shared/commonStyles';
-import { TextButton, FlexDivRow } from 'shared/commonStyles';
+import { FlexDivRow } from 'shared/commonStyles';
+
+import SelectGasMenu from 'pages/shared/components/SelectGasMenu';
 
 import { DataSmall } from 'components/Typography';
+
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 import { formatPercentage } from 'utils/formatters';
 import { USD_SIGN } from 'constants/currency';
 
-type TransactionInfoProps = {
+type NetworkInfoProps = {
 	gasPrice: number;
 	gasLimit: number;
 	ethRate: number | null;
 	usdRate: number;
 	amount: number;
 	exchangeFeeRate: number;
-	onEditButtonClick: () => void;
 };
 
-export const TransactionInfo: FC<TransactionInfoProps> = ({
+export const NetworkInfo: FC<NetworkInfoProps> = ({
 	gasPrice,
 	gasLimit,
 	ethRate = 0,
 	usdRate = 0,
 	amount = 0,
 	exchangeFeeRate = 0,
-	onEditButtonClick,
 }) => {
 	const { t } = useTranslation();
+
 	const usdValue = amount * usdRate;
 	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
@@ -73,10 +74,7 @@ export const TransactionInfo: FC<TransactionInfoProps> = ({
 			<NetworkDataRow>
 				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
 				<NetworkData>
-					{gasPrice || 0}
-					<ButtonEdit onClick={onEditButtonClick}>
-						<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
-					</ButtonEdit>
+					<SelectGasMenu gasPrice={gasPrice} />
 				</NetworkData>
 			</NetworkDataRow>
 		</div>
@@ -133,8 +131,4 @@ const NetworkDataRow = styled(FlexDivRow)`
 	margin-bottom: 4px;
 `;
 
-const ButtonEdit = styled(TextButton)`
-	margin-left: 10px;
-`;
-
-export default TransactionInfo;
+export default NetworkInfo;

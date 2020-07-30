@@ -46,9 +46,12 @@
 		"gwei": {
 			"title": "Set transaction speed & price",
 			"desc": "Adjust the slider below to set the transaction speed.",
+			"placeholder": "CUSTOM",
 			"table": {
 				"speed-allowed": "Speed (allowed)",
 				"slow": "Slow",
+				"safe": "Safe",
+				"standard": "Standard",
 				"average": "Average",
 				"fast": "fast",
 				"price": "price"
@@ -168,7 +171,7 @@
 			"bidding": "bidding",
 			"trading": "trading",
 			"maturity": "maturity",
-			"expiry": "expiry"
+			"expiry": "expired"
 		},
 		"home": {
 			"market-creation": {
@@ -276,7 +279,7 @@
 					"final-result-col": "final result"
 				}
 			},
-			"chart-card": {				
+			"chart-card": {
 				"chart-types": {
 					"price": "price",
 					"options": "options"
@@ -291,7 +294,7 @@
 					"date-time-col": "date | time",
 					"type-col": "type",
 					"position-col": "position",
-					"amount-col": "bid amount",
+					"amount-col": "amount",
 					"tx-status-col": "tx status",
 					"no-results-your-activity": "No transactions associated with this wallet.",
 					"no-results-recent-activity": "No transactions associated with this market.",
@@ -333,7 +336,7 @@
 						"disabled": {
 							"tooltip": "Market Creator has disabled all withdrawals - sUSD bids are final",
 							"first-time-tooltip": "WARNING: market creator has disabled withdrawals on this market. All sUSD bids are final."
-						}						
+						}
 					},
 					"common": {
 						"current-position": "current position:",
@@ -403,13 +406,18 @@
 				"title": "get synths to start trading:"
 			}
 		},
+		"chart-tooltip": {
+			"trade-total": "Total",
+			"price": "Price"
+		},
 		"chart-card": {
 			"info-boxes": {
 				"price": "Price",
 				"24h-change": "24h change",
 				"24h-high": "24h high",
 				"24h-low": "24h low",
-				"24h-volume": "24h volume"
+				"24h-volume": "24h volume",
+				"your-trades": "Your trades"
 			},
 			"pair-list": {
 				"table": {
@@ -503,6 +511,13 @@
 			},
 			"errors": {
 				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
+			}
+		},
+		"modal": {
+			"loan-trial": {
+				"title": "Please note: this is a trial!",
+				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading the blog post first:",
+				"button-label": "Open loan - I have read the blog post"
 			}
 		}
 	},
@@ -727,6 +742,7 @@
 		},
 		"asset": "asset",
 		"units": "units",
+		"weight": "weight",
 		"price-label": "Price:"
 	}
 }

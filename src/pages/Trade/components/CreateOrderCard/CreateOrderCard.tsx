@@ -23,7 +23,6 @@ import {
 	updateTransaction,
 	getTransactions,
 } from 'ducks/transaction';
-import { toggleGweiPopup } from 'ducks/ui';
 
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { BALANCE_FRACTIONS } from 'constants/order';
@@ -52,7 +51,7 @@ import {
 	FlexDivCentered,
 } from 'shared/commonStyles';
 
-import NetworkInfo from './NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo';
 import { INPUT_SIZES } from 'components/Input/constants';
 import { getCurrencyKeyBalance, getCurrencyKeyUSDBalanceBN } from 'utils/balances';
 import { APPROVAL_EVENTS } from 'constants/events';
@@ -72,7 +71,6 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
 };
@@ -90,7 +88,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	exchangeRates,
 	gasInfo,
 	ethRate,
-	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
 	transactions,
@@ -126,7 +123,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	const isLimitOrder = orderType === 'limit';
 	const isMarketOrder = orderType === 'market';
 
-	const showGweiPopup = () => toggleGweiPopup(true);
 	const handleSwapCurrencies = () => {
 		setPair({ quote: base, base: quote });
 		resetInputAmounts();
@@ -575,7 +571,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 						gasLimit={gasLimit}
 						ethRate={ethRate}
 						exchangeFeeRate={feeRate}
-						onEditButtonClick={showGweiPopup}
 						amount={Number(baseAmount)}
 						usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
 					/>

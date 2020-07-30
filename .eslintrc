@@ -1,9 +1,16 @@
 {
-	"extends": ["react-app"],
-	"plugins": ["prettier"],
+	"extends": [
+		"react-app"
+	],
+	"plugins": [
+		"prettier"
+	],
 	"rules": {
 		"prettier/prettier": "error",
-		"no-mixed-spaces-and-tabs": ["warn", "smart-tabs"],
+		"no-mixed-spaces-and-tabs": [
+			"warn",
+			"smart-tabs"
+		],
 		"comma-dangle": [
 			"error",
 			{
