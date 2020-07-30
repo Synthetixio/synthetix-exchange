@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
+
 import Chart from './Chart';
 import InfoRow from './InfoRow';
 
@@ -94,6 +96,35 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 				<HeaderContainer>
 					<PairListPanel />
 					<Periods>
+						{base.inverted ? (
+							<InverseInfoWrap>
+								<InverseInfo>
+									{t('common.currency.lower-limit-price', {
+										price: `$${base.inverted.lowerLimit}`,
+									})}
+								</InverseInfo>
+								<InverseInfo>
+									{t('common.currency.entry-limit-price', {
+										price: `$${base.inverted.entryPoint}`,
+									})}
+								</InverseInfo>
+								<InverseInfo>
+									{t('common.currency.upper-limit-price', {
+										price: `$${base.inverted.upperLimit}`,
+									})}
+								</InverseInfo>
+								<a
+									rel="noopener noreferrer"
+									href="https://blog.synthetix.io/inverse-synths-are-back/"
+									target="_blank"
+								>
+									<QuestionMarkIcon>
+										<QuestionMarkStyled />
+									</QuestionMarkIcon>
+								</a>
+								<VerticalDivider />
+							</InverseInfoWrap>
+						) : null}
 						{isWalletConnected ? (
 							<>
 								<YourTradesButton
@@ -172,6 +203,35 @@ const YourTradesWrapper = styled.div`
 
 const YourTradesButton = styled(Button)`
 	width: 115px;
+`;
+
+const InverseInfoWrap = styled.div`
+	display: flex;
+	float: left;
+	width: 220px;
+	justify-content: space-between;
+`;
+
+const InverseInfo = styled.div`
+	font-size: 10px;
+	color: ${(props) => props.theme.colors.fontTertiary};
+`;
+
+const QuestionMarkIcon = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	margin-top: 6px;
+	margin-right: 15px;
+`;
+
+const QuestionMarkStyled = styled(QuestionMark)`
+	height: 8px;
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({

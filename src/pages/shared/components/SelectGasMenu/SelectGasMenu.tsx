@@ -55,6 +55,7 @@ const StyledDropdownPanel = styled(DropdownPanel)`
 		border-width: 1px 1px 1px 1px;
 		margin-top: 20px;
 	}
+	z-index: 10;
 `;
 
 const GasEditFields = styled.div`
