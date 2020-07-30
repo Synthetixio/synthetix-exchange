@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import snxJSConnector from 'utils/snxJSConnector';
@@ -20,21 +19,18 @@ import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
-import Link from 'components/Link';
+import LoanWarningModal from '../LoanWarningModal';
 
 import {
 	FormInputRow,
 	FormInputLabel,
 	FormInputLabelSmall,
 	CurrencyKey,
-	FlexDivCentered,
 } from 'shared/commonStyles';
 
-import NetworkInfo from '../NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
-
-const ETHER_COLLATERAL_BLOG_POST_LINK = 'https://blog.synthetix.io/bug-disclosure/';
 
 export const CreateLoanCard = ({
 	gasInfo,
@@ -51,11 +47,15 @@ export const CreateLoanCard = ({
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
 
 	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
 
-	// ETH collateral is blocked for now
-	// eslint-disable-next-line
+	const onLoanModalConfirmation = () => {
+		setIsLoanConfirmationModalOpen(false);
+		handleSubmit();
+	};
+
 	const handleSubmit = async () => {
 		const {
 			snxJS: { EtherCollateral },
@@ -190,7 +190,10 @@ export const CreateLoanCard = ({
 					/>
 				</FormInputRow>
 				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
-				<ButtonPrimary disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}>
+				<ButtonPrimary
+					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
+					onClick={() => setIsLoanConfirmationModalOpen(true)}
+				>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
 				{txErrorMessage && (
@@ -203,17 +206,12 @@ export const CreateLoanCard = ({
 						{txErrorMessage}
 					</TxErrorMessage>
 				)}
-				<BlockingOverlay>
-					<PauseMessage>
-						<HeadingSmall>{t('loans.loan-card.create-loan.paused.message')}</HeadingSmall>
-					</PauseMessage>
-					<Link to={ETHER_COLLATERAL_BLOG_POST_LINK} isExternal={true}>
-						<ButtonPrimary size="sm">
-							{t('loans.loan-card.create-loan.paused.button-label')}
-						</ButtonPrimary>
-					</Link>
-				</BlockingOverlay>
 			</Card.Body>
+			<LoanWarningModal
+				isOpen={isLoanConfirmationModalOpen}
+				onClose={() => setIsLoanConfirmationModalOpen(false)}
+				onConfirm={() => onLoanModalConfirmation()}
+			/>
 		</Card>
 	);
 };
@@ -224,21 +222,6 @@ CreateLoanCard.propTypes = {
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
 };
-
-const BlockingOverlay = styled(FlexDivCentered)`
-	background-color: ${(props) => props.theme.colors.surfaceL2};
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	left: 0;
-	top: 0;
-	flex-direction: column;
-	justify-content: center;
-`;
-
-const PauseMessage = styled.div`
-	padding-bottom: 30px;
-`;
 
 const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
