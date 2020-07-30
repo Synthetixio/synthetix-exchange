@@ -16,6 +16,7 @@ import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency'
 import { HeadingSmall } from 'components/Typography';
 import { getGasInfo } from 'ducks/transaction';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
@@ -35,7 +36,8 @@ import { TxErrorMessage } from '../commonStyles';
 export const CreateLoanCard = ({
 	gasInfo,
 	ethRate,
-	walletInfo: { balances, currentWallet },
+	walletInfo: { currentWallet },
+	walletBalance,
 	createLoan,
 	collateralPair,
 }) => {
@@ -101,8 +103,8 @@ export const CreateLoanCard = ({
 		}
 	};
 
-	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, collateralCurrencyKey);
-	const loanCurrencyBalance = getCurrencyKeyBalance(balances, loanCurrencyKey);
+	const collateralCurrencyBalance = getCurrencyKeyBalance(walletBalance, collateralCurrencyKey);
+	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
 
 	useEffect(() => {
 		setCollateralAmountErrorMessage(null);
@@ -221,12 +223,14 @@ CreateLoanCard.propTypes = {
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
+	walletBalance: PropTypes.number,
 };
 
 const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),
+	walletBalance: getWalletBalancesMap(state),
 });
 
 const mapDispatchToProps = {
