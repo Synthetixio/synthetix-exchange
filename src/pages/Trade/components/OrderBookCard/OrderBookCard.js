@@ -61,6 +61,7 @@ const OrderBookCard = ({
 				utils: { waitForTransaction },
 			} = snxJSConnector;
 			try {
+				console.log(pendingTransactions);
 				if (pendingTransactions.length === 0) return;
 				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
 				removePendingTransaction(latestTransactionHash);

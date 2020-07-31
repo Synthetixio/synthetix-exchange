@@ -9,6 +9,7 @@ const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';
 const SET_NETWORK_GAS_INFO = 'TRANSACTION/NETWORK_GAS_INFO';
 const CREATE_TRANSACTION = 'TRANSACTION/CREATE';
 const UPDATE_TRANSACTION = 'TRANSACTION/UPDATE';
+const REMOVE_TRANSACTION = 'TRANSACTION/REMOVE';
 const ADD_PENDING_TRANSACTION = 'TRANSACTION/ADD_PENDING_TRANSACTION';
 const REMOVE_PENDING_TRANSACTION = 'TRANSACTION/REMOVE_PENDING_TRANSACTION';
 
@@ -53,10 +54,10 @@ const reducer = (state = defaultState, action = {}) => {
 			};
 		}
 		case UPDATE_TRANSACTION: {
-			const { updates, id } = action.payload;
+			const { updates, id, hash } = action.payload;
 			const storeUpdates = {
 				transactions: state.transactions.map((tx) => {
-					if (tx.id === id) {
+					if (tx.id === id || tx.hash === hash) {
 						return {
 							...tx,
 							...updates,
@@ -86,6 +87,14 @@ const reducer = (state = defaultState, action = {}) => {
 			return {
 				...state,
 				pendingTransactions: state.pendingTransactions.filter((txHash) => txHash !== hash),
+			};
+		}
+
+		case REMOVE_TRANSACTION: {
+			const hash = action.payload;
+			return {
+				...state,
+				transactions: state.transactions.filter((txHash) => txHash !== hash),
 			};
 		}
 
@@ -129,10 +138,17 @@ export const removePendingTransaction = (hash) => {
 	};
 };
 
-export const updateTransaction = (updates, id) => {
+export const updateTransaction = (updates, id, hash = null) => {
 	return {
 		type: UPDATE_TRANSACTION,
-		payload: { updates, id },
+		payload: { updates, id, hash },
+	};
+};
+
+export const removeTransaction = (hash) => {
+	return {
+		type: REMOVE_TRANSACTION,
+		payload: hash,
 	};
 };
 

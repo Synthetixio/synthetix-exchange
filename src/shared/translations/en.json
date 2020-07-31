@@ -646,6 +646,7 @@
 			"pending": "Pending",
 			"confirmed": "Confirmed",
 			"cancelled": "Cancelled",
+			"filled": "Filled",
 			"cancelling": "Cancelling",
 			"failed": "failed"
 		},

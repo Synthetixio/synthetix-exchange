@@ -54,7 +54,8 @@ import {
 import NetworkInfo from 'components/NetworkInfo';
 import { INPUT_SIZES } from 'components/Input/constants';
 import { getCurrencyKeyBalance, getCurrencyKeyUSDBalanceBN } from 'utils/balances';
-import { APPROVAL_EVENTS } from 'constants/events';
+import { APPROVAL_EVENTS, LIMIT_ORDERS_EVENTS } from 'constants/events';
+import { BigNumberish } from 'ethers/utils';
 
 const INPUT_DEFAULT_VALUE = '';
 
@@ -295,16 +296,38 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				}
 			});
 		};
+		const registerLimitOrdersEvents = () => {
+			limitOrdersContract.on(
+				LIMIT_ORDERS_EVENTS.ORDER,
+				(
+					orderId: BigNumberish,
+					submitter: string,
+					sourceCurrencyKey: string,
+					sourceAmount: BigNumberish,
+					destinationCurrencyKey: string,
+					minDestinationAmount: BigNumberish,
+					executionFee: BigNumberish,
+					weiDeposit: BigNumberish,
+					txInfo: any
+				) => {
+					if (submitter === currentWallet) {
+						updateTransaction({ orderId: Number(orderId) }, null, txInfo.transactionHash);
+					}
+				}
+			);
+		};
 		if (isWalletConnected && synthContract) {
 			getAllowance();
 			registerAllowanceListener();
+			registerLimitOrdersEvents();
 		}
 		return () => {
 			if (synthContract) {
 				synthContract.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
 			}
+			limitOrdersContract.removeAllListeners(LIMIT_ORDERS_EVENTS.ORDER);
 		};
-	}, [currentWallet, isWalletConnected, quote.name]);
+	}, [currentWallet, isWalletConnected, quote.name, updateTransaction]);
 
 	const handleAllowance = async () => {
 		const { snxJS, limitOrdersContract } = snxJSConnector;
@@ -358,6 +381,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				toAmount: baseAmount,
 				orderType,
 				status: TRANSACTION_STATUS.WAITING,
+				totalUSD: baseAmountNum * baseExchangeRateInUSD,
 			};
 
 			let tx = null;
@@ -379,7 +403,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				createTransaction({
 					...txProps,
 					priceUSD: isBaseCurrencySUSD ? quoteExchangeRateInUSD : baseExchangeRateInUSD,
-					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
 				tx = await Synthetix.exchange(
@@ -406,12 +429,10 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 						value: weiDeposit,
 					}
 				);
-
 				// TODO: make sure the calc is correct
 				createTransaction({
 					...txProps,
 					priceUSD: limitPriceNum * quoteExchangeRateInUSD,
-					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
 				tx = await limitOrdersContractWithSigner.newOrder(

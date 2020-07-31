@@ -9,6 +9,7 @@ import { useQuery } from 'react-query';
 import { CellProps } from 'react-table';
 import { useImmer } from 'use-immer';
 import isEmpty from 'lodash/isEmpty';
+import uniqBy from 'lodash/uniqBy';
 
 import { getTransactions, updateTransaction } from 'ducks/transaction';
 import {
@@ -65,8 +66,16 @@ const MyOrders: FC<MyOrdersProps> = ({
 	isWalletConnected,
 }) => {
 	const { t } = useTranslation();
-	const [overrideTransactionStatus, setOverrideTransactionStatus] = useImmer<
-		Record<number, Transaction['status']>
+
+	// this allows for overriding certain transaction info for both optimistic updates and the fetched data from the graph.
+	const [overrideTransactionInfo, setOverrideTransactionInfo] = useImmer<
+		Record<
+			number,
+			{
+				status: Transaction['status'];
+				hash?: Transaction['hash'];
+			}
+		>
 	>({});
 
 	const limitOrdersQueryKey = QUERY_KEYS.Trades.LimitOrders(currentWalletAddress || '');
@@ -97,17 +106,35 @@ const MyOrders: FC<MyOrdersProps> = ({
 
 	const orderedTransactions = useMemo(() => {
 		const combinedTransactions =
-			limitOrders.status === 'success' ? [...limitOrders.data, ...transactions] : transactions;
+			limitOrders.status === 'success'
+				? [
+						// ensure unique orderIds for limit orders (when the graph + optimistic transactions are mixed)
+						// TODO: maybe remove the optimistic transaction from the transactions in an effect
+						...uniqBy(
+							[
+								...limitOrders.data,
+								...transactions.filter(
+									(transaction: Transaction) => transaction.orderType === 'limit'
+								),
+							],
+							'orderId'
+						),
+						// add market orders
+						...transactions.filter(
+							(transaction: Transaction) => transaction.orderType === 'market'
+						),
+				  ]
+				: transactions;
 
 		const orderedTransactions = orderBy(combinedTransactions, 'timestamp', 'desc') as Transactions;
 
-		return !isEmpty(overrideTransactionStatus)
+		return !isEmpty(overrideTransactionInfo)
 			? orderedTransactions.map((transaction) => ({
 					...transaction,
-					status: overrideTransactionStatus[transaction.orderId] ?? transaction.status,
+					...overrideTransactionInfo[transaction.orderId],
 			  }))
 			: orderedTransactions;
-	}, [transactions, limitOrders.status, limitOrders.data, overrideTransactionStatus]);
+	}, [transactions, limitOrders.status, limitOrders.data, overrideTransactionInfo]);
 
 	const handleCancelLimitOrder = async (transaction: Transaction) => {
 		const {
@@ -116,8 +143,10 @@ const MyOrders: FC<MyOrdersProps> = ({
 
 		const { orderId } = transaction;
 
-		setOverrideTransactionStatus((draft) => {
-			draft[orderId] = TRANSACTION_STATUS.CANCELLING;
+		setOverrideTransactionInfo((draft) => {
+			draft[orderId] = {
+				status: TRANSACTION_STATUS.CANCELLING,
+			};
 		});
 
 		const { limitOrdersContract } = snxJSConnector;
@@ -127,17 +156,20 @@ const MyOrders: FC<MyOrdersProps> = ({
 			const tx = await limitOrdersContractWithSigner.cancelOrder(orderId);
 			const status = await waitForTransaction(tx.hash);
 			if (status) {
-				setOverrideTransactionStatus((draft) => {
-					draft[orderId] = TRANSACTION_STATUS.CANCELLED;
+				setOverrideTransactionInfo((draft) => {
+					draft[orderId] = {
+						status: TRANSACTION_STATUS.CANCELLED,
+						hash: tx.hash,
+					};
 				});
 			} else {
-				setOverrideTransactionStatus((draft) => {
+				setOverrideTransactionInfo((draft) => {
 					delete draft[orderId];
 				});
 			}
 		} catch (e) {
 			console.log(e);
-			setOverrideTransactionStatus((draft) => {
+			setOverrideTransactionInfo((draft) => {
 				delete draft[orderId];
 			});
 		}
@@ -242,7 +274,8 @@ const MyOrders: FC<MyOrdersProps> = ({
 					id: 'cancel',
 					Cell: (cellProps: CellProps<Transaction>) =>
 						cellProps.row.original.orderType === 'limit' &&
-						cellProps.row.original.status === TRANSACTION_STATUS.PENDING ? (
+						cellProps.row.original.status === TRANSACTION_STATUS.PENDING &&
+						cellProps.row.original.orderId ? (
 							<CancelButton onClick={() => handleCancelLimitOrder(cellProps.row.original)}>
 								{t('trade.order-book-card.table.cancel')}
 							</CancelButton>

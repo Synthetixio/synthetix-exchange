@@ -27,3 +27,9 @@ export const BINARY_OPTIONS_EVENTS = {
 	OPTIONS_CLAIMED: 'OptionsClaimed',
 	OPTIONS_EXERCISED: 'OptionsExercised',
 };
+
+export const LIMIT_ORDERS_EVENTS = {
+	ORDER: 'Order',
+	EXECUTE: 'Order',
+	CANCEL: 'Cancel',
+};
