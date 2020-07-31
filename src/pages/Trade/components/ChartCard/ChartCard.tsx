@@ -12,12 +12,14 @@ import { getSynthPair, SynthPair } from 'ducks/synths';
 import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import { PERIOD_IN_HOURS, PERIOD_LABELS_MAP, PeriodLabel, PERIOD_LABELS } from 'constants/period';
+import { USD_SIGN } from 'constants/currency';
 
 import { Button } from 'components/Button';
 import PairListPanel from './PairListPanel';
 
 import { fetchSynthVolumeInUSD, fetchSynthRateUpdates } from 'services/rates/rates';
 import Card from 'components/Card';
+import Link from 'components/Link';
 import { RootState } from 'ducks/types';
 import { ChartData } from './types';
 
@@ -100,28 +102,24 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 							<InverseInfoWrap>
 								<InverseInfo>
 									{t('common.currency.lower-limit-price', {
-										price: `$${base.inverted.lowerLimit}`,
+										price: `${USD_SIGN}${base.inverted.lowerLimit}`,
 									})}
 								</InverseInfo>
 								<InverseInfo>
 									{t('common.currency.entry-limit-price', {
-										price: `$${base.inverted.entryPoint}`,
+										price: `${USD_SIGN}${base.inverted.entryPoint}`,
 									})}
 								</InverseInfo>
 								<InverseInfo>
 									{t('common.currency.upper-limit-price', {
-										price: `$${base.inverted.upperLimit}`,
+										price: `${USD_SIGN}${base.inverted.upperLimit}`,
 									})}
 								</InverseInfo>
-								<a
-									rel="noopener noreferrer"
-									href="https://blog.synthetix.io/inverse-synths-are-back/"
-									target="_blank"
-								>
+								<Link isExternal={true} to="https://blog.synthetix.io/inverse-synths-are-back/">
 									<QuestionMarkIcon>
 										<QuestionMarkStyled />
 									</QuestionMarkIcon>
-								</a>
+								</Link>
 								<VerticalDivider />
 							</InverseInfoWrap>
 						) : null}
@@ -232,6 +230,7 @@ const QuestionMarkIcon = styled.div`
 
 const QuestionMarkStyled = styled(QuestionMark)`
 	height: 8px;
+	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
