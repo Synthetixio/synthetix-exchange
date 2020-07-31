@@ -31,6 +31,9 @@ export type Transactions = Transaction[];
 export type LimitOrder = {
 	account: string;
 	deposit: number;
+	timestamp: number;
+	hash: string;
+	sourceAmount: number;
 	destinationCurrencyKey: CurrencyKey;
 	executionFee: number;
 	id: number;

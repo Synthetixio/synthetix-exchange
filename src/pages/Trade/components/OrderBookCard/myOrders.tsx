@@ -86,16 +86,18 @@ const MyOrders: FC<MyOrdersProps> = ({
 			const orders = (await snxData.limitOrders.orders({
 				account: currentWalletAddress,
 			})) as LimitOrders;
+
 			return orders.map((order) => ({
-				timestamp: Date.now(),
+				timestamp: order.timestamp,
 				orderId: order.id,
 				base: order.destinationCurrencyKey,
 				quote: order.sourceCurrencyKey,
-				fromAmount: 0,
+				fromAmount: order.sourceAmount,
 				toAmount: order.minDestinationAmount,
 				orderType: 'limit',
 				priceUSD: '',
 				totalUSD: '',
+				hash: order.hash,
 				status: order.status,
 			}));
 		},
