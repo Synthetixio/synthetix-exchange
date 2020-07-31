@@ -27,7 +27,7 @@ const SnowflakeCircleWrapper = styled.div<{ radius: number }>`
 
 const StyledSnowflakeCircle = styled(SnowflakeIcon)<{ innerRadius: number }>`
 	height: ${(props) => props.innerRadius}px;
-	color: ${(props) => props.theme.colors.white};
+	color: ${(props) => props.theme.colors.fontTertiary};
 `;
 
 export default SnowflakeCircle;
