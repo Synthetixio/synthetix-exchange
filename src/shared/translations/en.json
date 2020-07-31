@@ -651,6 +651,7 @@
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
+			"gas-exceeds-limit": "Max input is {{gasPrice}}",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
