@@ -34,7 +34,7 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 	setDropdownIsOpen,
 }) => {
 	const { t } = useTranslation();
-	const [customGasPrice, setCustomGasPrice] = useState<number | undefined>(undefined);
+	const [customGasPrice, setCustomGasPrice] = useState<string>('');
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
 	const setGasPriceAndCloseDropdown = (updateGasPrice: number) => {
@@ -47,10 +47,13 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 	]);
 
 	useEffect(() => {
-		if (customGasPrice !== undefined) {
-			setGasPrice(customGasPrice > gasPriceLimit ? gasPriceLimit : customGasPrice);
+		if (customGasPrice) {
+			const customGasPriceNum = Number(customGasPrice);
+			const exceedsGasLimit = customGasPriceNum > gasPriceLimit;
+
+			setGasPrice(exceedsGasLimit ? gasPriceLimit : Math.max(0, customGasPriceNum));
 			setErrorMessage(
-				customGasPrice > gasPriceLimit
+				exceedsGasLimit
 					? t('common.errors.gas-exceeds-limit', { gasPrice: gasPriceLimit })
 					: undefined
 			);
@@ -62,8 +65,7 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 			<StyledNumericInput
 				value={customGasPrice}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-					const newPrice = Number(e.target.value);
-					setCustomGasPrice(newPrice);
+					setCustomGasPrice(e.target.value);
 				}}
 				placeholder={t('modals.gwei.placeholder')}
 				step="0.1"
