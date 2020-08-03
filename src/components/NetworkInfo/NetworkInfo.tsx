@@ -61,7 +61,7 @@ export const NetworkInfo: FC<NetworkInfoProps> = ({
 			</TooltipContentRow>
 			{additionalFees.length
 				? additionalFees.map((additionalFee) => (
-						<TooltipContentRow>
+						<TooltipContentRow key={additionalFee.label}>
 							<TooltipLabel>{additionalFee.label}</TooltipLabel>
 							<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, additionalFee.fee)}</TooltipLabel>
 						</TooltipContentRow>
