@@ -297,9 +297,19 @@ const MyOrders: FC<MyOrdersProps> = ({
 					Header: <>{t('trade.order-book-card.table.total')}</>,
 					accessor: 'totalUSD',
 					sortType: 'basic',
-					Cell: (cellProps: CellProps<Transaction, Transaction['totalUSD']>) => (
-						<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
-					),
+					Cell: (cellProps: CellProps<Transaction, Transaction['totalUSD']>) => {
+						const { orderType, quote } = cellProps.row.original;
+						const isLimitOrder = orderType === 'limit';
+
+						const prefix = isLimitOrder && quote !== SYNTHS_MAP.sUSD ? '≈ ' : '';
+
+						return (
+							<span>
+								{prefix}
+								{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}
+							</span>
+						);
+					},
 					sortable: true,
 				},
 				{
