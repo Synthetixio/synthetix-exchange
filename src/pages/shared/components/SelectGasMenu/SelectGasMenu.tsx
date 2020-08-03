@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { formatCurrency } from 'utils/formatters';
+import { Z_INDEX } from 'constants/ui';
+import DropdownPanel from 'components/DropdownPanel';
 
 import { LinkTextSmall } from 'shared/commonStyles';
 import { media } from 'shared/media';
 
 import SelectGasMenuBody from './SelectGasMenuBody';
-
-import DropdownPanel from 'components/DropdownPanel';
 
 type SelectGasMenuProps = {
 	gasPrice: number;
@@ -55,6 +55,7 @@ const StyledDropdownPanel = styled(DropdownPanel)`
 		border-width: 1px 1px 1px 1px;
 		margin-top: 20px;
 	}
+	z-index: ${Z_INDEX.DROPDOWN};
 `;
 
 const GasEditFields = styled.div`
