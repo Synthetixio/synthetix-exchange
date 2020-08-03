@@ -43,7 +43,7 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 						<>
 							{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
 								<Margin right="10px">
-									<SnowflakeCircle radius={22} innerRadius={14} />
+									<SnowflakeCircle showTooltip={false} radius={22} innerRadius={14} />
 								</Margin>
 							) : null}
 							<Currency.Pair

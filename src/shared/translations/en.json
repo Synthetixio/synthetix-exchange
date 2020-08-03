@@ -676,6 +676,9 @@
 			"buy-currency": "buy <0>{{currencyKey}}</0>",
 			"try-currencyA-currencyB-or-currencyC-currencyD": "Try {{currencyA}} / {{currencyB}} or {{currencyC}} / {{currencyD}}"
 		},
+		"frozen": {
+			"message": "{{name}} price limit hit. Click here for more info."
+		},
 		"currency-category": {
 			"crypto": "crypto",
 			"forex": "forex",

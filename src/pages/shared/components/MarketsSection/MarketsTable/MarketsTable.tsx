@@ -50,7 +50,12 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 								<>
 									{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
 										<Margin right="10px">
-											<SnowflakeCircle radius={23} innerRadius={16} />
+											<SnowflakeCircle
+												showTooltip={true}
+												radius={23}
+												innerRadius={16}
+												name={cellProps.row.original.baseCurrencyKey}
+											/>
 										</Margin>
 									) : null}
 									<StyledCurrencyPair

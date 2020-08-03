@@ -76,7 +76,12 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 									<>
 										{cellProps.row.original.isFrozen ? (
 											<Margin right="10px">
-												<SnowflakeCircle radius={23} innerRadius={16} />
+												<SnowflakeCircle
+													showTooltip={true}
+													radius={23}
+													innerRadius={16}
+													name={cellProps.row.original.name}
+												/>
 											</Margin>
 										) : null}
 										<StyledCurrencyName
