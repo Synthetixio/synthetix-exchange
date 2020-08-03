@@ -1,7 +1,7 @@
 import { CurrencyKey } from './currency';
 
 export const LINKS = {
-	Support: 'https://help.synthetix.io/hc/en-us',
+	Support: 'https://synthetix.community/docs/other',
 	Tokens: 'https://www.synthetix.io/tokens/',
 	Trading: {
 		DexAG: 'https://dex.ag/',
