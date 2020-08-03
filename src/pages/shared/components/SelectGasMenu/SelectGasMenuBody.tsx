@@ -78,23 +78,16 @@ const SelectGasMenuBody: FC<GasMenuProps> = ({
 			)}
 			<DefinedGasSelector
 				needsPadding={errorMessage !== undefined}
-				isActive={gasPrice === gasSpeed.slowAllowed}
 				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.slowAllowed)}
 			>
 				<div>{t('modals.gwei.table.safe')}</div>
 				<div>{gasSpeed.slowAllowed}</div>
 			</DefinedGasSelector>
-			<DefinedGasSelector
-				isActive={gasPrice === gasSpeed.averageAllowed}
-				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.averageAllowed)}
-			>
+			<DefinedGasSelector onClick={() => setGasPriceAndCloseDropdown(gasSpeed.averageAllowed)}>
 				<div>{t('modals.gwei.table.standard')}</div>
 				<div>{gasSpeed.averageAllowed}</div>
 			</DefinedGasSelector>
-			<DefinedGasSelector
-				isActive={gasPrice === gasSpeed.fastestAllowed}
-				onClick={() => setGasPriceAndCloseDropdown(gasSpeed.fastestAllowed)}
-			>
+			<DefinedGasSelector onClick={() => setGasPriceAndCloseDropdown(gasSpeed.fastestAllowed)}>
 				<div>{t('modals.gwei.table.fast')}</div>
 				<div>{gasSpeed.fastestAllowed}</div>
 			</DefinedGasSelector>
@@ -116,14 +109,13 @@ const StyledNumericInput = styled(NumericInput)`
 	background-color: ${({ theme }) => theme.colors.accentL1};
 `;
 
-const DefinedGasSelector = styled.div<{ isActive: boolean; needsPadding?: boolean }>`
+const DefinedGasSelector = styled.div<{ needsPadding?: boolean }>`
 	padding: 10px;
 	margin: 10px;
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
 	color: ${(props) => props.theme.colors.fontTertiary};
-	${(props) => props.isActive && `background-color: ${props.theme.colors.accentL1}`};
 	${(props) => props.needsPadding && 'margin-top: 37px'};
 	height: 32px;
 	&:hover {
