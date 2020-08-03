@@ -13,6 +13,9 @@ import Table from 'components/Table';
 import { CurrencyCol, RightAlignedCell } from 'components/Table/common';
 import { SynthDefinitionMap } from 'ducks/synths';
 
+import { SnowflakeCircle } from 'components/Icons';
+import Margin from 'components/Margin';
+
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
 };
@@ -30,17 +33,25 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 	return (
 		<StyledTable
 			palette="primary"
+			columnsDeps={[synthsMap]}
 			columns={[
 				{
 					Header: <>{t('markets.table.pair-col')}</>,
 					accessor: 'pair',
 					width: 150,
 					Cell: (cellProps: CellProps<MarketPair>) => (
-						<Currency.Pair
-							baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
-							quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
-							showIcon={true}
-						/>
+						<>
+							{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
+								<Margin right="10px">
+									<SnowflakeCircle showTooltip={false} radius={22} innerRadius={14} />
+								</Margin>
+							) : null}
+							<Currency.Pair
+								baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
+								quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
+								showIcon={true}
+							/>
+						</>
 					),
 					sortable: true,
 				},

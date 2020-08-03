@@ -8,25 +8,23 @@ import { SynthDefinition, getSynthsWithRatesMap, SynthDefinitionWithRatesMap } f
 import { RootState } from 'ducks/types';
 import { fetchHistoricalRatesRequest, HistoricalRatesData } from 'ducks/historicalRates';
 
-import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
-
 import { SYNTHS_MAP, sUSD_EXCHANGE_RATE, USD_SIGN } from 'constants/currency';
 import { BaseRateUpdates } from 'constants/rates';
 import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 import { PeriodLabel, PERIOD_LABELS_MAP } from 'constants/period';
 
-import ChartCard from 'components/ChartCard';
-import useInterval from 'shared/hooks/useInterval';
-
+import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
 import { formatCurrencyWithSign } from 'utils/formatters';
-
-import { darkTheme, lightTheme } from 'styles/theme';
-import { media } from 'shared/media';
-
-import Currency from 'components/Currency';
 import { mockRates } from 'pages/Synths/mockData';
-import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
+import { darkTheme, lightTheme } from 'styles/theme';
+
+import useInterval from 'shared/hooks/useInterval';
+import { media } from 'shared/media';
 import { GridDivCenteredRow } from 'shared/commonStyles';
+
+import ChartCard from 'components/ChartCard';
+import Currency from 'components/Currency';
+import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
 
 type StateProps = {
 	synthsWithRatesMap: SynthDefinitionWithRatesMap;
@@ -165,6 +163,7 @@ export const SynthChart: FC<SynthChartProps> = ({
 };
 
 const FrozenMessage = styled(GridDivCenteredRow)`
+	justify-items: center;
 	svg {
 		color: ${(props) => props.theme.colors.icons};
 	}
