@@ -39,6 +39,7 @@ import {
 	bigNumberFormatter,
 	secondsToTime,
 	getAddress,
+	parseBytes32String,
 } from 'utils/formatters';
 
 import { Button } from 'components/Button';
@@ -55,6 +56,7 @@ import NetworkInfo from 'components/NetworkInfo';
 import { INPUT_SIZES } from 'components/Input/constants';
 import { getCurrencyKeyBalance, getCurrencyKeyUSDBalanceBN } from 'utils/balances';
 import { APPROVAL_EVENTS, LIMIT_ORDERS_EVENTS } from 'constants/events';
+import { DELEGATE_ACTIONS } from 'constants/delegateActions';
 import { BigNumberish } from 'ethers/utils';
 
 const INPUT_DEFAULT_VALUE = '';
@@ -112,8 +114,8 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	const [feeReclamationError, setFeeReclamationError] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [hasMarketClosed, setHasMarketClosed] = useState<boolean>(false);
-	const [hasAllowance, setAllowance] = useState<boolean>(false);
-	const [isAllowing, setIsAllowing] = useState<boolean>(false);
+	const [hasDelegation, setDelegation] = useState<boolean>(false);
+	const [isDelegating, setIsDelegating] = useState<boolean>(false);
 
 	const resetInputAmounts = () => {
 		setBaseAmount(INPUT_DEFAULT_VALUE);
@@ -279,22 +281,33 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	}, [isLimitOrder, inverseRate]);
 
 	useEffect(() => {
-		const { snxJS, limitOrdersContract } = snxJSConnector;
-		// @ts-ignore
-		const synthContract = snxJS[quote.name];
+		const {
+			snxJS: { DelegateApprovals },
+			limitOrdersContract,
+		} = snxJSConnector as any;
 
-		const getAllowance = async () => {
-			const allowance = await synthContract.allowance(currentWallet, limitOrdersContract.address);
-			setAllowance(!!Number(allowance));
+		const getDelegation = async () => {
+			const canExchange = await DelegateApprovals.canExchangeFor(
+				currentWallet,
+				limitOrdersContract.address
+			);
+			setDelegation(!!Number(canExchange));
 		};
 
-		const registerAllowanceListener = () => {
-			synthContract.contract.on(APPROVAL_EVENTS.APPROVAL, (owner: string, spender: string) => {
-				if (owner === currentWallet && spender === getAddress(limitOrdersContract.address)) {
-					setAllowance(true);
-					setIsAllowing(false);
+		const registerDelegationListener = () => {
+			DelegateApprovals.contract.on(
+				APPROVAL_EVENTS.APPROVAL,
+				(authorizer: string, delegate: string, action: string) => {
+					if (
+						authorizer === currentWallet &&
+						delegate === getAddress(limitOrdersContract.address) &&
+						parseBytes32String(action) === DELEGATE_ACTIONS.EXCHANGE_FOR_ADDRESS
+					) {
+						setDelegation(true);
+						setIsDelegating(false);
+					}
 				}
-			});
+			);
 		};
 		const registerLimitOrdersEvents = () => {
 			limitOrdersContract.on(
@@ -316,38 +329,37 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				}
 			);
 		};
-		if (isWalletConnected && synthContract) {
-			getAllowance();
-			registerAllowanceListener();
+		if (isWalletConnected) {
+			getDelegation();
+			registerDelegationListener();
 			registerLimitOrdersEvents();
 		}
 		return () => {
-			if (synthContract) {
-				synthContract.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
-			}
+			DelegateApprovals.contract.removeAllListeners(APPROVAL_EVENTS.APPROVAL);
+
 			limitOrdersContract.removeAllListeners(LIMIT_ORDERS_EVENTS.ORDER);
 		};
 	}, [currentWallet, isWalletConnected, quote.name, updateTransaction]);
 
-	const handleAllowance = async () => {
-		const { snxJS, limitOrdersContract } = snxJSConnector;
+	const handleDelegation = async () => {
+		const {
+			snxJS: { DelegateApprovals },
+			limitOrdersContract,
+		} = snxJSConnector as any;
 		// @ts-ignore
-		const synthContract = snxJS[quote.name];
 
 		try {
-			setIsAllowing(true);
-			const maxInt = `0x${'f'.repeat(64)}`;
-			const gasEstimate = await synthContract.contract.estimate.approve(
-				limitOrdersContract.address,
-				maxInt
+			setIsDelegating(true);
+			const gasEstimate = await DelegateApprovals.contract.estimate.approveExchangeOnBehalf(
+				limitOrdersContract.address
 			);
-			await synthContract.approve(limitOrdersContract.address, maxInt, {
+			await DelegateApprovals.approveExchangeOnBehalf(limitOrdersContract.address, {
 				gasLimit: normalizeGasLimit(Number(gasEstimate)),
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 			});
 		} catch (e) {
 			console.log(e);
-			setIsAllowing(false);
+			setIsDelegating(false);
 		}
 	};
 
@@ -416,8 +428,10 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				);
 			} else {
 				const executionFee = utils.parseEther('0');
-				// TODO: we might need to add an extra buffer
-				const weiDeposit = gasInfo.gasSpeed.fast;
+				// TODO: replace with more accurate value
+				const GAS_LIMIT = 1000000;
+				const gwei = gasInfo.gasSpeed.fast;
+				const weiDeposit = (GAS_LIMIT * gwei) / 1e9;
 
 				const gasEstimate = await limitOrdersContractWithSigner.estimate.newOrder(
 					bytesFormatter(quote.name),
@@ -426,7 +440,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					utils.parseEther(baseAmount),
 					executionFee,
 					{
-						value: weiDeposit,
+						value: utils.parseEther(weiDeposit.toString()),
 					}
 				);
 				// TODO: make sure the calc is correct
@@ -442,7 +456,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					utils.parseEther(baseAmount),
 					executionFee,
 					{
-						value: weiDeposit,
+						value: utils.parseEther(weiDeposit.toString()),
 						gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 						gasLimit: normalizeGasLimit(Number(gasEstimate)),
 					}
@@ -608,13 +622,13 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				) : synthsMap[base.name].isFrozen ? (
 					<ActionButton disabled={true}>{t('trade.trade-card.frozen-synth')}</ActionButton>
 				) : isLimitOrder ? (
-					hasAllowance ? (
+					hasDelegation ? (
 						<ActionButton disabled={buttonDisabled} onClick={handleSubmit}>
 							{t('trade.trade-card.confirm-trade-button')}
 						</ActionButton>
 					) : (
-						<ActionButton disabled={isAllowing || !isWalletConnected} onClick={handleAllowance}>
-							{!isAllowing
+						<ActionButton disabled={isDelegating || !isWalletConnected} onClick={handleDelegation}>
+							{!isDelegating
 								? t('common.enable-wallet-access.label')
 								: t('common.enable-wallet-access.progress-label')}
 						</ActionButton>
