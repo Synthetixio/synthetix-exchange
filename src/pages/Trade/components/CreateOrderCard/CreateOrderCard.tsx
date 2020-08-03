@@ -395,6 +395,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 			const isBaseCurrencySUSD = base.name === SYNTHS_MAP.sUSD;
 
 			const baseAmountNum = Number(baseAmount);
+			const quoteAmountNum = Number(quoteAmount);
 			const limitPriceNum = Number(limitPrice);
 
 			const txProps = {
@@ -406,6 +407,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				toAmount: baseAmount,
 				orderType,
 				status: TRANSACTION_STATUS.WAITING,
+				price: quoteAmountNum / baseAmountNum,
 			};
 
 			let tx = null;

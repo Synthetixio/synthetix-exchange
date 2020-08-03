@@ -19,6 +19,7 @@ export type Transaction = {
 	fromAmount: number;
 	toAmount: number;
 	orderType: 'limit' | 'market';
+	price: number;
 	status: string;
 	priceUSD: number;
 	totalUSD: number;

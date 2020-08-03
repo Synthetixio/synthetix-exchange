@@ -25,6 +25,7 @@ import {
 	LONG_CRYPTO_CURRENCY_DECIMALS,
 	formatCurrencyWithSign,
 	formatCurrencyWithKey,
+	SHORT_CRYPTO_CURRENCY_DECIMALS,
 } from 'utils/formatters';
 import { getEtherscanTxLink } from 'utils/explorers';
 
@@ -118,6 +119,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 					fromAmount: quoteAmount,
 					toAmount: baseAmount,
 					orderType: 'limit',
+					price: limitPrice,
 					priceUSD,
 					totalUSD,
 					hash: order.hash,
@@ -269,14 +271,26 @@ const MyOrders: FC<MyOrdersProps> = ({
 					Header: <>{t('trade.order-book-card.table.price')}</>,
 					accessor: 'priceUSD',
 					sortType: 'basic',
-					Cell: (cellProps: CellProps<Transaction, Transaction['priceUSD']>) => (
-						<Tooltip
-							title={formatCurrency(cellProps.cell.value, LONG_CRYPTO_CURRENCY_DECIMALS)}
-							placement="top"
-						>
-							<span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>
-						</Tooltip>
-					),
+					Cell: (cellProps: CellProps<Transaction, Transaction['priceUSD']>) => {
+						const { orderType, price, quote } = cellProps.row.original;
+
+						const isLimitOrder = orderType === 'limit';
+
+						const shouldShowPrice = isLimitOrder && quote !== SYNTHS_MAP.sUSD;
+						const usdPrice = <span>{formatCurrencyWithSign(USD_SIGN, cellProps.cell.value)}</span>;
+
+						return shouldShowPrice ? (
+							<span>
+								<Tooltip title={price} placement="top">
+									<span>{parseFloat(price.toFixed(SHORT_CRYPTO_CURRENCY_DECIMALS))}</span>
+								</Tooltip>{' '}
+								(≈ {usdPrice})
+							</span>
+						) : (
+							usdPrice
+						);
+					},
+					width: 200,
 					sortable: true,
 				},
 				{
