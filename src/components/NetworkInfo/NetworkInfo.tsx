@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
+import sumBy from 'lodash/sumBy';
 
 import { formatCurrencyWithSign } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
@@ -23,6 +24,8 @@ type NetworkInfoProps = {
 	usdRate: number;
 	amount: number;
 	exchangeFeeRate: number;
+	additionalFees?: Array<{ label: string; fee: number }>;
+	className?: string;
 };
 
 export const NetworkInfo: FC<NetworkInfoProps> = ({
@@ -32,12 +35,17 @@ export const NetworkInfo: FC<NetworkInfoProps> = ({
 	usdRate = 0,
 	amount = 0,
 	exchangeFeeRate = 0,
+	additionalFees = [],
+	className,
 }) => {
 	const { t } = useTranslation();
 
 	const usdValue = amount * usdRate;
 	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
+
+	const additionalFeesTotal = additionalFees.length ? sumBy(additionalFees, 'fee') : 0;
+	const totalFees = exchangeFee + networkFee + additionalFeesTotal;
 
 	const getTooltipBody = () => (
 		<TooltipContent>
@@ -51,11 +59,19 @@ export const NetworkInfo: FC<NetworkInfoProps> = ({
 				<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
 				<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, networkFee)}</TooltipLabel>
 			</TooltipContentRow>
+			{additionalFees.length
+				? additionalFees.map((additionalFee) => (
+						<TooltipContentRow>
+							<TooltipLabel>{additionalFee.label}</TooltipLabel>
+							<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, additionalFee.fee)}</TooltipLabel>
+						</TooltipContentRow>
+				  ))
+				: undefined}
 		</TooltipContent>
 	);
 
 	return (
-		<div>
+		<Container className={className}>
 			<NetworkDataRow>
 				<NetworkData>{t('trade.trade-card.network-info.usd-value')}</NetworkData>
 				<NetworkData>{formatCurrencyWithSign(USD_SIGN, usdValue) || 0}</NetworkData>
@@ -69,17 +85,19 @@ export const NetworkInfo: FC<NetworkInfoProps> = ({
 						</QuestionMarkIcon>
 					</Tooltip>
 				</NetworkDataLabelFlex>
-				<NetworkData>{formatCurrencyWithSign(USD_SIGN, exchangeFee + networkFee)}</NetworkData>
+				<NetworkData>{formatCurrencyWithSign(USD_SIGN, totalFees)}</NetworkData>
 			</NetworkDataRow>
 			<NetworkDataRow>
-				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
-				<NetworkData>
+				<NetworkData className="gas-menu-label">{t('common.gas-price-gwei')}</NetworkData>
+				<NetworkData className="gas-menu-dropdown-container">
 					<SelectGasMenu gasPrice={gasPrice} />
 				</NetworkData>
 			</NetworkDataRow>
-		</div>
+		</Container>
 	);
 };
+
+const Container = styled.div``;
 
 const TooltipContent = styled.div`
 	width: 200px;

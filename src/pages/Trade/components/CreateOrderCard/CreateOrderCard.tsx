@@ -84,6 +84,9 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type CreateOrderCardProps = PropsFromRedux;
 
+const LIMIT_ORDERS_EXECUTION_FEE = 0;
+const LIMIT_ORDERS_GAS_LIMIT = 1000000;
+
 const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	synthPair,
 	walletInfo: { currentWallet, walletType },
@@ -130,6 +133,16 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 		setPair({ quote: base, base: quote });
 		resetInputAmounts();
 	};
+
+	const limitOrdersWeiDeposit = useMemo(() => {
+		if (isLimitOrder) {
+			const gwei = gasInfo.gasSpeed.fast;
+
+			return (LIMIT_ORDERS_GAS_LIMIT * gwei) / 1e9;
+		}
+
+		return 0;
+	}, [isLimitOrder, gasInfo]);
 
 	useEffect(() => {
 		if (synthPair.reversed) {
@@ -427,11 +440,8 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					}
 				);
 			} else {
-				const executionFee = utils.parseEther('0');
-				// TODO: replace with more accurate value
-				const GAS_LIMIT = 1000000;
-				const gwei = gasInfo.gasSpeed.fast;
-				const weiDeposit = (GAS_LIMIT * gwei) / 1e9;
+				const executionFee = utils.parseEther(`${LIMIT_ORDERS_EXECUTION_FEE}`);
+				const weiDeposit = utils.parseEther(limitOrdersWeiDeposit.toString());
 
 				const gasEstimate = await limitOrdersContractWithSigner.estimate.newOrder(
 					bytesFormatter(quote.name),
@@ -440,7 +450,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					utils.parseEther(baseAmount),
 					executionFee,
 					{
-						value: utils.parseEther(weiDeposit.toString()),
+						value: weiDeposit,
 					}
 				);
 				// TODO: make sure the calc is correct
@@ -456,7 +466,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					utils.parseEther(baseAmount),
 					executionFee,
 					{
-						value: utils.parseEther(weiDeposit.toString()),
+						value: weiDeposit,
 						gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 						gasLimit: normalizeGasLimit(Number(gasEstimate)),
 					}
@@ -601,13 +611,27 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					/>
 				</FormInputRow>
 				<NetworkInfoContainer>
-					<NetworkInfo
+					<StyledNetworkInfo
 						gasPrice={gasInfo.gasPrice}
 						gasLimit={gasLimit}
 						ethRate={ethRate}
 						exchangeFeeRate={feeRate}
 						amount={Number(baseAmount)}
 						usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
+						additionalFees={
+							isLimitOrder
+								? [
+										{
+											label: t('trade.trade-card.network-info-tooltip.execution-fee'),
+											fee: LIMIT_ORDERS_EXECUTION_FEE,
+										},
+										{
+											label: t('trade.trade-card.network-info-tooltip.ether-deposit'),
+											fee: limitOrdersWeiDeposit,
+										},
+								  ]
+								: undefined
+						}
 					/>
 				</NetworkInfoContainer>
 
@@ -728,6 +752,17 @@ const ReverseArrowButton = styled.button`
 	padding-left: 49px;
 	svg {
 		width: 12px;
+	}
+`;
+
+// TODO: This is a hacky solution to the label that breaks into 2 lines because the dropdown is not a portal yet...
+const StyledNetworkInfo = styled(NetworkInfo)`
+	.gas-menu-label {
+		white-space: nowrap;
+	}
+	.gas-menu-dropdown-container {
+		position: relative;
+		right: 12px;
 	}
 `;
 

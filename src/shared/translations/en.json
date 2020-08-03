@@ -443,7 +443,9 @@
 			},
 			"network-info-tooltip": {
 				"exchange-fee": "Exchange fee",
-				"network-fee": "Network fee (gas)"
+				"network-fee": "Network fee (gas)",
+				"execution-fee": "Execution fee",
+				"ether-deposit": "Ether deposit"
 			},
 			"wallet-approval-tooltip": "Wallet approval required on your first order. Click “Enable Wallet Access” below to start."
 		},
