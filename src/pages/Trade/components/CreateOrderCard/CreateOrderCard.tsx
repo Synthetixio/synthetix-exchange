@@ -406,7 +406,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				toAmount: baseAmount,
 				orderType,
 				status: TRANSACTION_STATUS.WAITING,
-				totalUSD: baseAmountNum * baseExchangeRateInUSD,
 			};
 
 			let tx = null;
@@ -428,6 +427,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				createTransaction({
 					...txProps,
 					priceUSD: isBaseCurrencySUSD ? quoteExchangeRateInUSD : baseExchangeRateInUSD,
+					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
 				tx = await Synthetix.exchange(
@@ -453,10 +453,17 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 						value: weiDeposit,
 					}
 				);
-				// TODO: make sure the calc is correct
+
+				const priceUSD = isBaseCurrencySUSD
+					? (1 / limitPriceNum) * baseExchangeRateInUSD
+					: limitPriceNum * quoteExchangeRateInUSD;
+
 				createTransaction({
 					...txProps,
-					priceUSD: limitPriceNum * quoteExchangeRateInUSD,
+					priceUSD,
+					// temp orderId - ensures its unique (will be)
+					orderId: Date.now(),
+					totalUSD: baseAmountNum * (isBaseCurrencySUSD ? baseExchangeRateInUSD : priceUSD),
 				});
 
 				tx = await limitOrdersContractWithSigner.newOrder(
