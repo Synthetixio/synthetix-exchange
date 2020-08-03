@@ -20,8 +20,8 @@ export type Transaction = {
 	toAmount: number;
 	orderType: 'limit' | 'market';
 	status: string;
-	priceUSD: string;
-	totalUSD: string;
+	priceUSD: number;
+	totalUSD: number;
 	orderId: number;
 	hash?: string;
 };

@@ -10,6 +10,7 @@ import { CellProps } from 'react-table';
 import { useImmer } from 'use-immer';
 import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
+import get from 'lodash/get';
 
 import { getTransactions, updateTransaction } from 'ducks/transaction';
 import {
@@ -30,7 +31,7 @@ import { getEtherscanTxLink } from 'utils/explorers';
 import Table from 'components/Table';
 import Currency from 'components/Currency';
 
-import { USD_SIGN } from 'constants/currency';
+import { USD_SIGN, SYNTHS_MAP } from 'constants/currency';
 import { TRANSACTION_STATUS, Transactions, LimitOrders, Transaction } from 'constants/transaction';
 import QUERY_KEYS from 'constants/queryKeys';
 
@@ -40,12 +41,14 @@ import { RootState } from 'ducks/types';
 import snxJSConnector from 'utils/snxJSConnector';
 
 import ViewLink, { ArrowIcon } from './ViewLink';
+import { getRatesExchangeRates } from 'ducks/rates';
 
 const mapStateToProps = (state: RootState) => ({
 	networkId: getNetworkId(state),
 	transactions: getTransactions(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 	isWalletConnected: getIsWalletConnected(state),
+	exchangeRates: getRatesExchangeRates(state),
 });
 
 const mapDispatchToProps = {
@@ -64,6 +67,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 	updateTransaction,
 	currentWalletAddress,
 	isWalletConnected,
+	exchangeRates,
 }) => {
 	const { t } = useTranslation();
 
@@ -87,19 +91,39 @@ const MyOrders: FC<MyOrdersProps> = ({
 				account: currentWalletAddress,
 			})) as LimitOrders;
 
-			return orders.map((order) => ({
-				timestamp: order.timestamp,
-				orderId: order.id,
-				base: order.destinationCurrencyKey,
-				quote: order.sourceCurrencyKey,
-				fromAmount: order.sourceAmount,
-				toAmount: order.minDestinationAmount,
-				orderType: 'limit',
-				priceUSD: '',
-				totalUSD: '',
-				hash: order.hash,
-				status: order.status,
-			}));
+			return orders.map((order) => {
+				const baseCurrencyKey = order.destinationCurrencyKey;
+				const quoteCurrencyKey = order.sourceCurrencyKey;
+
+				const baseAmount = order.minDestinationAmount;
+				const quoteAmount = order.sourceAmount;
+
+				const baseExchangeRateInUSD = get(exchangeRates, [baseCurrencyKey], 0);
+				const quoteExchangeRateInUSD = get(exchangeRates, [quoteCurrencyKey], 0);
+
+				const isBaseCurrencySUSD = order.destinationCurrencyKey === SYNTHS_MAP.sUSD;
+				const limitPrice = quoteAmount / baseAmount;
+
+				const priceUSD = isBaseCurrencySUSD
+					? (1 / limitPrice) * baseExchangeRateInUSD
+					: limitPrice * quoteExchangeRateInUSD;
+
+				const totalUSD = baseAmount * (isBaseCurrencySUSD ? baseExchangeRateInUSD : priceUSD);
+
+				return {
+					timestamp: order.timestamp,
+					orderId: order.id,
+					base: baseCurrencyKey,
+					quote: quoteCurrencyKey,
+					fromAmount: quoteAmount,
+					toAmount: baseAmount,
+					orderType: 'limit',
+					priceUSD,
+					totalUSD,
+					hash: order.hash,
+					status: order.status,
+				};
+			});
 		},
 		{
 			enabled: isWalletConnected,
