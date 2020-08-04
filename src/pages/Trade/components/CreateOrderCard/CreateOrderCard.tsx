@@ -422,11 +422,9 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				: utils.parseEther(quoteAmount.toString());
 
 			if (isMarketOrder) {
-				const gasEstimate = await Synthetix.contract.estimate.exchange(
-					bytesFormatter(quote.name),
-					amountToExchange,
-					bytesFormatter(base.name)
-				);
+				const params = [bytesFormatter(quote.name), amountToExchange, bytesFormatter(base.name)];
+
+				const gasEstimate = await Synthetix.contract.estimate.exchange(...params);
 				const rectifiedGasLimit = normalizeGasLimit(Number(gasEstimate));
 
 				setGasLimit(rectifiedGasLimit);
@@ -437,50 +435,38 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					totalUSD: baseAmountNum * baseExchangeRateInUSD,
 				});
 
-				tx = await Synthetix.exchange(
-					bytesFormatter(quote.name),
-					amountToExchange,
-					bytesFormatter(base.name),
-					{
-						gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-						gasLimit: rectifiedGasLimit,
-					}
-				);
+				// @ts-ignore
+				tx = await Synthetix.exchange(...params, {
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasLimit: rectifiedGasLimit,
+				});
 			} else {
 				const executionFee = utils.parseEther(`${LIMIT_ORDERS_EXECUTION_FEE}`);
 				const weiDeposit = utils.parseEther(limitOrdersWeiDeposit.toString());
 
-				const gasEstimate = await limitOrdersContractWithSigner.estimate.newOrder(
+				const params = [
 					bytesFormatter(quote.name),
 					utils.parseEther(quoteAmount),
 					bytesFormatter(base.name),
 					utils.parseEther(baseAmount),
 					executionFee,
-					{
-						value: weiDeposit,
-					}
-				);
+				];
+
+				const gasEstimate = await limitOrdersContractWithSigner.estimate.newOrder(...params, {
+					value: weiDeposit,
+				});
 
 				createTransaction({
 					...txProps,
 					priceUSD: limitPriceUSD,
-					// temp orderId - ensures its unique (will be)
-					orderId: Date.now(),
 					totalUSD: limitOrderTotalUSD,
 				});
 
-				tx = await limitOrdersContractWithSigner.newOrder(
-					bytesFormatter(quote.name),
-					utils.parseEther(quoteAmount),
-					bytesFormatter(base.name),
-					utils.parseEther(baseAmount),
-					executionFee,
-					{
-						value: weiDeposit,
-						gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-						gasLimit: normalizeGasLimit(Number(gasEstimate)),
-					}
-				);
+				tx = await limitOrdersContractWithSigner.newOrder(...params, {
+					value: weiDeposit,
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasLimit: normalizeGasLimit(Number(gasEstimate)),
+				});
 			}
 			if (tx) {
 				updateTransaction({ status: TRANSACTION_STATUS.PENDING, ...tx }, transactionId);

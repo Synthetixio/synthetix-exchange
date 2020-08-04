@@ -9,8 +9,9 @@ import { useQuery } from 'react-query';
 import { CellProps } from 'react-table';
 import { useImmer } from 'use-immer';
 import isEmpty from 'lodash/isEmpty';
-import uniqBy from 'lodash/uniqBy';
+import uniqWith from 'lodash/uniqWith';
 import get from 'lodash/get';
+import groupBy from 'lodash/groupBy';
 
 import { getTransactions, updateTransaction } from 'ducks/transaction';
 import {
@@ -134,27 +135,24 @@ const MyOrders: FC<MyOrdersProps> = ({
 	);
 
 	const orderedTransactions = useMemo(() => {
-		const combinedTransactions =
-			limitOrders.status === 'success'
-				? [
-						// ensure unique orderIds for limit orders (when the graph + optimistic transactions are mixed)
-						// TODO: maybe remove the optimistic transaction from the transactions in an effect
-						...uniqBy(
-							[
-								...limitOrders.data,
-								...transactions.filter(
-									(transaction: Transaction) => transaction.orderType === 'limit'
-								),
-							],
-							'orderId'
-						),
-						// add market orders
-						...transactions.filter(
-							(transaction: Transaction) => transaction.orderType === 'market'
-						),
-				  ]
-				: transactions;
+		let combinedTransactions = transactions;
 
+		if (limitOrders.status === 'success' && limitOrders.data && limitOrders.data.length) {
+			const optimisticOrders = groupBy(transactions, 'orderType');
+			const optimisticLimitOrders = optimisticOrders.limit ?? [];
+			const optimisticMarketOrders = optimisticOrders.market ?? [];
+
+			combinedTransactions = [
+				// ensure unique orderIds for limit orders (when the graph + optimistic transactions are mixed)
+				...uniqWith(
+					[...limitOrders.data, ...optimisticLimitOrders],
+					(arrVal: Transaction, othVal: Transaction) =>
+						// optimistic transaction that are still in the pending phase have no orderId. we still want to show them.
+						!arrVal.orderId ? false : arrVal.orderId === othVal.orderId
+				),
+				...optimisticMarketOrders,
+			];
+		}
 		const orderedTransactions = orderBy(combinedTransactions, 'timestamp', 'desc') as Transactions;
 
 		return !isEmpty(overrideTransactionInfo)
