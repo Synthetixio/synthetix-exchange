@@ -155,7 +155,7 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 					</Periods>
 				</HeaderContainer>
 			</StyledCardHeader>
-			<Card.Body>
+			<StyledCardBody>
 				<Chart
 					data={chartData}
 					showTrades={showTrades}
@@ -164,13 +164,17 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 					synthPair={synthPair}
 				/>
 				<InfoRow data={chartData} volume24H={volume24H} synthPair={synthPair} />
-			</Card.Body>
+			</StyledCardBody>
 		</Card>
 	);
 };
 
 const StyledCardHeader = styled(Card.Header)`
 	padding-left: 0;
+`;
+
+const StyledCardBody = styled(Card.Body)`
+	padding: 12px 12px 16px 12px;
 `;
 
 const HeaderContainer = styled.div`

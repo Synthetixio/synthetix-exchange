@@ -2,6 +2,9 @@ import { CurrencyKey } from './currency';
 import { Period } from './period';
 
 export const QUERY_KEYS = {
+	Trades: {
+		LimitOrders: (walletAddress: string) => ['trades', 'limitOrders', walletAddress],
+	},
 	Synths: {
 		HistoricalRates: (currencyKey: CurrencyKey, period: Period) => [
 			'synths',

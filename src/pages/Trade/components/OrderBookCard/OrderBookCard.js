@@ -67,7 +67,15 @@ const OrderBookCard = ({
 				const status = await waitForTransaction(latestTransactionHash);
 				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
 				if (status) {
-					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
+					updateTransaction(
+						{
+							status:
+								matchingTransaction.orderType === 'limit'
+									? TRANSACTION_STATUS.PENDING
+									: TRANSACTION_STATUS.CONFIRMED,
+						},
+						matchingTransaction.id
+					);
 				} else {
 					updateTransaction(
 						{ status: TRANSACTION_STATUS.FAILED, error: 'Transaction failed' },

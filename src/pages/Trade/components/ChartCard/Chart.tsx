@@ -235,7 +235,7 @@ const Chart: FC<ChartProps> = ({
 
 const ChartContainer = styled.div`
 	width: 100%;
-	height: 250px;
+	height: 244px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
