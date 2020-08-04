@@ -26,6 +26,7 @@ type NetworkInfoProps = {
 	exchangeFeeRate: number;
 	additionalFees?: Array<{ label: string; fee: number }>;
 	className?: string;
+	totalPrice?: number;
 };
 
 export const NetworkInfo: FC<NetworkInfoProps> = ({
@@ -37,10 +38,11 @@ export const NetworkInfo: FC<NetworkInfoProps> = ({
 	exchangeFeeRate = 0,
 	additionalFees = [],
 	className,
+	totalPrice,
 }) => {
 	const { t } = useTranslation();
 
-	const usdValue = amount * usdRate;
+	const usdValue = totalPrice || amount * usdRate;
 	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
 

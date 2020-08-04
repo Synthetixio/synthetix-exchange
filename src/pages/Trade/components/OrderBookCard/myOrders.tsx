@@ -283,7 +283,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 						return shouldShowPrice ? (
 							<span>
 								<Tooltip title={price} placement="top">
-									<span>{parseFloat(price.toFixed(SHORT_CRYPTO_CURRENCY_DECIMALS))}</span>
+									<span>{price.toFixed(SHORT_CRYPTO_CURRENCY_DECIMALS)}</span>
 								</Tooltip>{' '}
 								({ESTIMATE_VALUE} {usdPrice})
 							</span>

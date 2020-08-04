@@ -120,6 +120,20 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	const [hasDelegation, setDelegation] = useState<boolean>(false);
 	const [isDelegating, setIsDelegating] = useState<boolean>(false);
 
+	const baseExchangeRateInUSD = get(exchangeRates, [base.name], 0);
+	const quoteExchangeRateInUSD = get(exchangeRates, [quote.name], 0);
+
+	const isBaseCurrencySUSD = base.name === SYNTHS_MAP.sUSD;
+	const baseAmountNum = Number(baseAmount);
+	const quoteAmountNum = Number(quoteAmount);
+	const limitPriceNum = Number(limitPrice);
+
+	const limitPriceUSD = isBaseCurrencySUSD
+		? (1 / limitPriceNum) * baseExchangeRateInUSD
+		: limitPriceNum * quoteExchangeRateInUSD;
+	const limitOrderTotalUSD =
+		baseAmountNum * (isBaseCurrencySUSD ? baseExchangeRateInUSD : limitPriceUSD);
+
 	const resetInputAmounts = () => {
 		setBaseAmount(INPUT_DEFAULT_VALUE);
 		setQuoteAmount(INPUT_DEFAULT_VALUE);
@@ -389,15 +403,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 		setIsSubmitting(true);
 
 		try {
-			const baseExchangeRateInUSD = get(exchangeRates, [base.name], 0);
-			const quoteExchangeRateInUSD = get(exchangeRates, [quote.name], 0);
-
-			const isBaseCurrencySUSD = base.name === SYNTHS_MAP.sUSD;
-
-			const baseAmountNum = Number(baseAmount);
-			const quoteAmountNum = Number(quoteAmount);
-			const limitPriceNum = Number(limitPrice);
-
 			const txProps = {
 				id: transactionId,
 				timestamp: Date.now(),
@@ -416,7 +421,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 				? quoteBalanceBN
 				: utils.parseEther(quoteAmount.toString());
 
-			if (orderType === 'market') {
+			if (isMarketOrder) {
 				const gasEstimate = await Synthetix.contract.estimate.exchange(
 					bytesFormatter(quote.name),
 					amountToExchange,
@@ -456,16 +461,12 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 					}
 				);
 
-				const priceUSD = isBaseCurrencySUSD
-					? (1 / limitPriceNum) * baseExchangeRateInUSD
-					: limitPriceNum * quoteExchangeRateInUSD;
-
 				createTransaction({
 					...txProps,
-					priceUSD,
+					priceUSD: limitPriceUSD,
 					// temp orderId - ensures its unique (will be)
 					orderId: Date.now(),
-					totalUSD: baseAmountNum * (isBaseCurrencySUSD ? baseExchangeRateInUSD : priceUSD),
+					totalUSD: limitOrderTotalUSD,
 				});
 
 				tx = await limitOrdersContractWithSigner.newOrder(
@@ -575,7 +576,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 								onChange={(_, value) => {
 									setLimitPrice(value);
 									if (baseAmount) {
-										setBaseAmount(`${Number(quoteAmount) * (1 / Number(value))}`);
+										setBaseAmount(`${quoteAmountNum * (1 / Number(value))}`);
 									}
 								}}
 							/>
@@ -613,9 +614,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 						onChange={(_, value) => {
 							setTradeAllBalance(false);
 							setBaseAmount(value);
-							setQuoteAmount(
-								`${Number(value) * (isMarketOrder ? inverseRate : Number(limitPrice))}`
-							);
+							setQuoteAmount(`${Number(value) * (isMarketOrder ? inverseRate : limitPriceNum)}`);
 						}}
 					/>
 				</FormInputRow>
@@ -625,7 +624,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 						gasLimit={gasLimit}
 						ethRate={ethRate}
 						exchangeFeeRate={feeRate}
-						amount={Number(baseAmount)}
+						amount={baseAmountNum}
 						usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
 						additionalFees={
 							isLimitOrder
@@ -641,6 +640,7 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 								  ]
 								: undefined
 						}
+						totalPrice={isLimitOrder ? limitOrderTotalUSD : undefined}
 					/>
 				</NetworkInfoContainer>
 
