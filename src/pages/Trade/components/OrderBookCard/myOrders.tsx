@@ -13,7 +13,7 @@ import uniqWith from 'lodash/uniqWith';
 import get from 'lodash/get';
 import groupBy from 'lodash/groupBy';
 
-import { getTransactions, updateTransaction } from 'ducks/transaction';
+import { getTransactions, getGasInfo } from 'ducks/transaction';
 import {
 	getNetworkId,
 	getIsWalletConnected,
@@ -45,6 +45,8 @@ import snxJSConnector from 'utils/snxJSConnector';
 import ViewLink, { ArrowIcon } from './ViewLink';
 import { getRatesExchangeRates } from 'ducks/rates';
 import { ESTIMATE_VALUE } from 'constants/placeholder';
+import { normalizeGasLimit } from 'utils/transactions';
+import { GWEI_UNIT } from 'utils/networkUtils';
 
 const mapStateToProps = (state: RootState) => ({
 	networkId: getNetworkId(state),
@@ -52,13 +54,10 @@ const mapStateToProps = (state: RootState) => ({
 	currentWalletAddress: getCurrentWalletAddress(state),
 	isWalletConnected: getIsWalletConnected(state),
 	exchangeRates: getRatesExchangeRates(state),
+	gasInfo: getGasInfo(state),
 });
 
-const mapDispatchToProps = {
-	updateTransaction,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -67,11 +66,12 @@ type MyOrdersProps = PropsFromRedux;
 const MyOrders: FC<MyOrdersProps> = ({
 	transactions,
 	networkId,
-	updateTransaction,
 	currentWalletAddress,
 	isWalletConnected,
 	exchangeRates,
+	gasInfo,
 }) => {
+	console.log(gasInfo);
 	const { t } = useTranslation();
 
 	// this allows for overriding certain transaction info for both optimistic updates and the fetched data from the graph.
@@ -180,7 +180,12 @@ const MyOrders: FC<MyOrdersProps> = ({
 		const limitOrdersContractWithSigner = limitOrdersContract.connect(snxJSConnector.signer);
 
 		try {
-			const tx = await limitOrdersContractWithSigner.cancelOrder(orderId);
+			const gasEstimate = await limitOrdersContractWithSigner.estimate.cancelOrder(orderId);
+
+			const tx = await limitOrdersContractWithSigner.cancelOrder(orderId, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: normalizeGasLimit(Number(gasEstimate)),
+			});
 			const status = await waitForTransaction(tx.hash);
 			if (status) {
 				setOverrideTransactionInfo((draft) => {
@@ -349,6 +354,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 					<TableNoResults>{t('trade.order-book-card.table.no-results')}</TableNoResults>
 				) : undefined
 			}
+			columnsDeps={[gasInfo]}
 		/>
 	);
 };
