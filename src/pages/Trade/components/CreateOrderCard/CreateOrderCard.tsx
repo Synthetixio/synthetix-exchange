@@ -131,7 +131,8 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 
 	const handleSwapCurrencies = () => {
 		setPair({ quote: base, base: quote });
-		resetInputAmounts();
+		setBaseAmount(quoteAmount);
+		setQuoteAmount(baseAmount);
 	};
 
 	const limitOrdersWeiDeposit = useMemo(() => {
@@ -287,7 +288,6 @@ const CreateOrderCard: FC<CreateOrderCardProps> = ({
 	};
 
 	useEffect(() => {
-		resetInputAmounts();
 		if (isLimitOrder) {
 			setLimitPrice(`${inverseRate}`);
 		}
