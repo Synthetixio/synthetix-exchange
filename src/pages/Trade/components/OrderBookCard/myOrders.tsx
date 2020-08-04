@@ -43,6 +43,7 @@ import snxJSConnector from 'utils/snxJSConnector';
 
 import ViewLink, { ArrowIcon } from './ViewLink';
 import { getRatesExchangeRates } from 'ducks/rates';
+import { ESTIMATE_VALUE } from 'constants/placeholder';
 
 const mapStateToProps = (state: RootState) => ({
 	networkId: getNetworkId(state),
@@ -284,7 +285,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 								<Tooltip title={price} placement="top">
 									<span>{parseFloat(price.toFixed(SHORT_CRYPTO_CURRENCY_DECIMALS))}</span>
 								</Tooltip>{' '}
-								(≈ {usdPrice})
+								({ESTIMATE_VALUE} {usdPrice})
 							</span>
 						) : (
 							usdPrice
@@ -301,7 +302,7 @@ const MyOrders: FC<MyOrdersProps> = ({
 						const { orderType, quote } = cellProps.row.original;
 						const isLimitOrder = orderType === 'limit';
 
-						const prefix = isLimitOrder && quote !== SYNTHS_MAP.sUSD ? '≈ ' : '';
+						const prefix = isLimitOrder && quote !== SYNTHS_MAP.sUSD ? `${ESTIMATE_VALUE} ` : '';
 
 						return (
 							<span>
