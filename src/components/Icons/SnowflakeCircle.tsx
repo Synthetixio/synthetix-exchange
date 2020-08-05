@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import styled from 'styled-components';
 import { withStyles, Tooltip } from '@material-ui/core';
 
@@ -19,21 +19,29 @@ const SnowflakeCircle: FC<SnowflakeCircleProps> = ({
 	innerRadius = 16,
 	showTooltip = true,
 	currencyKey,
-}) => {
-	const { t } = useTranslation();
-
-	return (
-		<StyledTooltip
-			title={showTooltip ? <>{t('common.frozen.message', { currencyKey })}</> : ''}
-			placement="top"
-			arrow={true}
-		>
-			<SnowflakeCircleWrapper radius={radius}>
-				<StyledSnowflakeCircle height={innerRadius} />
-			</SnowflakeCircleWrapper>
-		</StyledTooltip>
-	);
-};
+}) => (
+	<StyledTooltip
+		title={
+			showTooltip ? (
+				<>
+					<Trans
+						i18nKey="common.frozen.message"
+						values={{ currencyKey }}
+						components={[<div />, <div />]}
+					/>
+				</>
+			) : (
+				''
+			)
+		}
+		placement="top"
+		arrow={true}
+	>
+		<SnowflakeCircleWrapper radius={radius}>
+			<StyledSnowflakeCircle height={innerRadius} />
+		</SnowflakeCircleWrapper>
+	</StyledTooltip>
+);
 
 const SnowflakeCircleWrapper = styled.div<{ radius: number }>`
 	cursor: pointer;
@@ -53,7 +61,7 @@ const StyledSnowflakeCircle = styled(SnowflakeIcon)`
 
 const StyledTooltip = withStyles({
 	tooltip: {
-		width: '150px',
+		width: '180px',
 		textAlign: 'center',
 	},
 })(Tooltip);
