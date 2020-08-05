@@ -678,7 +678,7 @@
 			"try-currencyA-currencyB-or-currencyC-currencyD": "Try {{currencyA}} / {{currencyB}} or {{currencyC}} / {{currencyD}}"
 		},
 		"frozen": {
-			"message": "{{name}} price limit hit. Click here for more info."
+			"message": "{{currencyKey}} price limit hit."
 		},
 		"currency-category": {
 			"crypto": "crypto",

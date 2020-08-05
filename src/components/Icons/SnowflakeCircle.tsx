@@ -3,28 +3,35 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { withStyles, Tooltip } from '@material-ui/core';
 
+import { CurrencyKey } from 'constants/currency';
 import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
+import { darkTheme } from 'styles/theme';
 
 type SnowflakeCircleProps = {
-	radius: number;
-	innerRadius: number;
-	showTooltip: boolean;
-	name?: string;
+	radius?: number;
+	innerRadius?: number;
+	showTooltip?: boolean;
+	currencyKey?: CurrencyKey;
 };
 
-const SnowflakeCircle: FC<SnowflakeCircleProps> = ({ radius, innerRadius, showTooltip, name }) => {
+const SnowflakeCircle: FC<SnowflakeCircleProps> = ({
+	radius = 20,
+	innerRadius = 16,
+	showTooltip = true,
+	currencyKey,
+}) => {
 	const { t } = useTranslation();
-	const FrozenIcon = (
-		<SnowflakeCircleWrapper radius={radius}>
-			<StyledSnowflakeCircle innerRadius={innerRadius} />
-		</SnowflakeCircleWrapper>
-	);
-	return showTooltip ? (
-		<StyledTooltip title={<>{t('common.frozen.message', { name })}</>} placement="top" arrow={true}>
-			{FrozenIcon}
+
+	return (
+		<StyledTooltip
+			title={showTooltip ? <>{t('common.frozen.message', { currencyKey })}</> : ''}
+			placement="top"
+			arrow={true}
+		>
+			<SnowflakeCircleWrapper radius={radius}>
+				<StyledSnowflakeCircle height={innerRadius} />
+			</SnowflakeCircleWrapper>
 		</StyledTooltip>
-	) : (
-		<>{FrozenIcon}</>
 	);
 };
 
@@ -36,17 +43,17 @@ const SnowflakeCircleWrapper = styled.div<{ radius: number }>`
 	border-radius: 50%;
 	width: ${(props) => props.radius}px;
 	height: ${(props) => props.radius}px;
-	background-color: ${(props) => props.theme.colors.brand};
+	background-color: ${(props) =>
+		props.theme.isLightTheme ? props.theme.colors.brand : props.theme.colors.accentL2};
 `;
 
-const StyledSnowflakeCircle = styled(SnowflakeIcon)<{ innerRadius: number }>`
-	height: ${(props) => props.innerRadius}px;
-	color: ${(props) => props.theme.colors.fontTertiary};
+const StyledSnowflakeCircle = styled(SnowflakeIcon)`
+	color: ${darkTheme.colors.fontSecondary};
 `;
 
 const StyledTooltip = withStyles({
 	tooltip: {
-		width: '180px',
+		width: '150px',
 		textAlign: 'center',
 	},
 })(Tooltip);
