@@ -1,32 +1,47 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import styled from 'styled-components';
 import { withStyles, Tooltip } from '@material-ui/core';
 
+import { CurrencyKey } from 'constants/currency';
 import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
+import { darkTheme } from 'styles/theme';
 
 type SnowflakeCircleProps = {
-	radius: number;
-	innerRadius: number;
-	showTooltip: boolean;
-	name?: string;
+	radius?: number;
+	innerRadius?: number;
+	showTooltip?: boolean;
+	currencyKey?: CurrencyKey;
 };
 
-const SnowflakeCircle: FC<SnowflakeCircleProps> = ({ radius, innerRadius, showTooltip, name }) => {
-	const { t } = useTranslation();
-	const FrozenIcon = (
+const SnowflakeCircle: FC<SnowflakeCircleProps> = ({
+	radius = 20,
+	innerRadius = 16,
+	showTooltip = true,
+	currencyKey,
+}) => (
+	<StyledTooltip
+		title={
+			showTooltip ? (
+				<>
+					<Trans
+						i18nKey="common.frozen.message"
+						values={{ currencyKey }}
+						components={[<div />, <div />]}
+					/>
+				</>
+			) : (
+				''
+			)
+		}
+		placement="top"
+		arrow={true}
+	>
 		<SnowflakeCircleWrapper radius={radius}>
-			<StyledSnowflakeCircle innerRadius={innerRadius} />
+			<StyledSnowflakeCircle height={innerRadius} />
 		</SnowflakeCircleWrapper>
-	);
-	return showTooltip ? (
-		<StyledTooltip title={<>{t('common.frozen.message', { name })}</>} placement="top" arrow={true}>
-			{FrozenIcon}
-		</StyledTooltip>
-	) : (
-		<>{FrozenIcon}</>
-	);
-};
+	</StyledTooltip>
+);
 
 const SnowflakeCircleWrapper = styled.div<{ radius: number }>`
 	cursor: pointer;
@@ -36,12 +51,12 @@ const SnowflakeCircleWrapper = styled.div<{ radius: number }>`
 	border-radius: 50%;
 	width: ${(props) => props.radius}px;
 	height: ${(props) => props.radius}px;
-	background-color: ${(props) => props.theme.colors.brand};
+	background-color: ${(props) =>
+		props.theme.isLightTheme ? props.theme.colors.brand : props.theme.colors.accentL2};
 `;
 
-const StyledSnowflakeCircle = styled(SnowflakeIcon)<{ innerRadius: number }>`
-	height: ${(props) => props.innerRadius}px;
-	color: ${(props) => props.theme.colors.fontTertiary};
+const StyledSnowflakeCircle = styled(SnowflakeIcon)`
+	color: ${darkTheme.colors.fontSecondary};
 `;
 
 const StyledTooltip = withStyles({

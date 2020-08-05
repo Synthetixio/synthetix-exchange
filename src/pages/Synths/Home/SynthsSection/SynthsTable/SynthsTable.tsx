@@ -74,25 +74,20 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 									cellProps: CellProps<SynthDefinitionWithRates, SynthDefinitionWithRates['name']>
 								) => (
 									<>
-										{cellProps.row.original.isFrozen ? (
-											<Margin right="10px">
-												<SnowflakeCircle
-													showTooltip={true}
-													radius={23}
-													innerRadius={16}
-													name={cellProps.row.original.name}
-												/>
-											</Margin>
-										) : null}
 										<StyledCurrencyName
 											currencyKey={cellProps.cell.value}
 											currencyDesc={cellProps.row.original.desc}
 											showIcon={true}
 											iconProps={{ width: '24px', height: '24px' }}
 										/>
+										{cellProps.row.original.isFrozen ? (
+											<Margin left="10px" right="10px">
+												<SnowflakeCircle currencyKey={cellProps.row.original.name} />
+											</Margin>
+										) : null}
 									</>
 								),
-								width: 200,
+								width: 220,
 								sortable: true,
 							},
 							{
@@ -216,6 +211,9 @@ const StyledTable = styled(Table)`
 
 const StyledCurrencyName = styled(Currency.Name)`
 	${bodyCSS};
+	.currency-desc {
+		max-width: 180px;
+	}
 `;
 
 const StyledPopover = styled(Popover)`

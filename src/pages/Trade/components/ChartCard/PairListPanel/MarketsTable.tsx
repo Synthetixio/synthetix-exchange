@@ -41,16 +41,20 @@ const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableR
 					width: 150,
 					Cell: (cellProps: CellProps<MarketPair>) => (
 						<>
-							{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
-								<Margin right="10px">
-									<SnowflakeCircle showTooltip={false} radius={22} innerRadius={14} />
-								</Margin>
-							) : null}
 							<Currency.Pair
 								baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 								quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
 								showIcon={true}
 							/>
+							{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
+								<Margin left="10px">
+									<SnowflakeCircle
+										radius={16}
+										innerRadius={10}
+										currencyKey={cellProps.row.original.baseCurrencyKey}
+									/>
+								</Margin>
+							) : null}
 						</>
 					),
 					sortable: true,

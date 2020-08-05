@@ -48,25 +48,20 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							accessor: 'pair',
 							Cell: (cellProps: CellProps<MarketPair>) => (
 								<>
-									{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
-										<Margin right="10px">
-											<SnowflakeCircle
-												showTooltip={true}
-												radius={23}
-												innerRadius={16}
-												name={cellProps.row.original.baseCurrencyKey}
-											/>
-										</Margin>
-									) : null}
 									<StyledCurrencyPair
 										baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 										quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
 										showIcon={true}
 										iconProps={{ width: '24px', height: '24px' }}
 									/>
+									{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
+										<Margin left="10px" right="10px">
+											<SnowflakeCircle currencyKey={cellProps.row.original.baseCurrencyKey} />
+										</Margin>
+									) : null}
 								</>
 							),
-							width: 150,
+							width: 190,
 							sortable: true,
 						},
 						{
