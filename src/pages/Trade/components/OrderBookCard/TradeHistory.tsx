@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@material-ui/core/Tooltip';
+import { CellProps } from 'react-table';
 
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 
@@ -26,10 +27,10 @@ import {
 	formatCurrency,
 	formatCurrencyWithSign,
 } from 'utils/formatters';
-import { CellProps } from 'react-table';
+import { NetworkId } from 'utils/networkUtils';
 
 type StateProps = {
-	networkId: number;
+	networkId: NetworkId;
 };
 
 type Props = {
