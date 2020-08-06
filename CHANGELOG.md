@@ -1,5 +1,17 @@
 # Changelog
 
+## 6 August 2020 (Gold release)
+
+### Added
+
+- Add iSynth limits to trading charts
+- Add frozen synths indicators (Markets/Synths/Trade page).
+
+### Changed
+
+- Update support link.
+- Improve error handling for custom gas input.
+
 ## 30 July 2020 (Silver release)
 
 ### Added

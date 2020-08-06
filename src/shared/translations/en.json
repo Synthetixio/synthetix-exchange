@@ -651,6 +651,7 @@
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
+			"gas-exceeds-limit": "Max input is {{gasPrice}}",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
@@ -675,6 +676,9 @@
 			"trade-synths-for-currency": "trade synths for <0>{{currencyKey}}</0>",
 			"buy-currency": "buy <0>{{currencyKey}}</0>",
 			"try-currencyA-currencyB-or-currencyC-currencyD": "Try {{currencyA}} / {{currencyB}} or {{currencyC}} / {{currencyD}}"
+		},
+		"frozen": {
+			"message": "<0>{{currencyKey}} price limit hit.</0><1>Synth reset in progress.</1>"
 		},
 		"currency-category": {
 			"crypto": "crypto",

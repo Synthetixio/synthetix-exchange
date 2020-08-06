@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
+
 import Chart from './Chart';
 import InfoRow from './InfoRow';
 
@@ -10,12 +12,14 @@ import { getSynthPair, SynthPair } from 'ducks/synths';
 import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import { PERIOD_IN_HOURS, PERIOD_LABELS_MAP, PeriodLabel, PERIOD_LABELS } from 'constants/period';
+import { USD_SIGN } from 'constants/currency';
 
 import { Button } from 'components/Button';
 import PairListPanel from './PairListPanel';
 
 import { fetchSynthVolumeInUSD, fetchSynthRateUpdates } from 'services/rates/rates';
 import Card from 'components/Card';
+import Link from 'components/Link';
 import { RootState } from 'ducks/types';
 import { ChartData } from './types';
 
@@ -94,6 +98,31 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 				<HeaderContainer>
 					<PairListPanel />
 					<Periods>
+						{base.inverted ? (
+							<InverseInfoWrap>
+								<InverseInfo>
+									{t('common.currency.lower-limit-price', {
+										price: `${USD_SIGN}${base.inverted.lowerLimit}`,
+									})}
+								</InverseInfo>
+								<InverseInfo>
+									{t('common.currency.entry-limit-price', {
+										price: `${USD_SIGN}${base.inverted.entryPoint}`,
+									})}
+								</InverseInfo>
+								<InverseInfo>
+									{t('common.currency.upper-limit-price', {
+										price: `${USD_SIGN}${base.inverted.upperLimit}`,
+									})}
+								</InverseInfo>
+								<Link isExternal={true} to="https://blog.synthetix.io/inverse-synths-are-back/">
+									<QuestionMarkIcon>
+										<QuestionMarkStyled />
+									</QuestionMarkIcon>
+								</Link>
+								<VerticalDivider />
+							</InverseInfoWrap>
+						) : null}
 						{isWalletConnected ? (
 							<>
 								<YourTradesButton
@@ -172,6 +201,36 @@ const YourTradesWrapper = styled.div`
 
 const YourTradesButton = styled(Button)`
 	width: 115px;
+`;
+
+const InverseInfoWrap = styled.div`
+	display: flex;
+	float: left;
+	width: 220px;
+	justify-content: space-between;
+`;
+
+const InverseInfo = styled.div`
+	font-size: 10px;
+	color: ${(props) => props.theme.colors.fontTertiary};
+`;
+
+const QuestionMarkIcon = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	margin-top: 6px;
+	margin-right: 15px;
+`;
+
+const QuestionMarkStyled = styled(QuestionMark)`
+	height: 8px;
+	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
