@@ -35,5 +35,6 @@ export const LINKS = {
 	},
 	Blog: {
 		HowBinaryOptionsWork: 'https://blog.synthetix.io/how-binary-options-work/',
+		HowFeeReclamationRebatesWork: 'https://blog.synthetix.io/how-fee-reclamation-rebates-work/',
 	},
 };

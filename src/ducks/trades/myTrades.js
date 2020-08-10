@@ -1,6 +1,7 @@
-import { takeLatest, put, select } from 'redux-saga/effects';
+import { all, takeLatest, put, select } from 'redux-saga/effects';
 import { createSlice } from '@reduxjs/toolkit';
 import snxData from 'synthetix-data';
+import { SYNTHS_MAP } from 'constants/currency';
 
 import { normalizeTrades } from './utils';
 
@@ -50,6 +51,8 @@ export const getMyTrades = (state) => getMyTradesState(state).trades;
 
 const { fetchMyTradesRequest, fetchMyTradesSuccess, fetchMyTradesFailure } = myTradesSlice.actions;
 
+const MAX_TRADES = 100;
+
 function* fetchMyTrades() {
 	const currentWalletAddress = yield select(getCurrentWalletAddress);
 
@@ -57,13 +60,44 @@ function* fetchMyTrades() {
 		yield put(fetchMyTradesFailure({ error: 'you need to be connected to a wallet' }));
 	} else {
 		try {
-			const trades = yield snxData.exchanges.since({
-				fromAddress: currentWalletAddress,
-				maxBlock: Number.MAX_SAFE_INTEGER,
-				max: 100,
+			const [trades, settledTrades] = yield all([
+				snxData.exchanges.since({
+					fromAddress: currentWalletAddress,
+					maxBlock: Number.MAX_SAFE_INTEGER,
+					max: MAX_TRADES,
+				}),
+				snxData.exchanger.exchangeEntriesSettled({ from: currentWalletAddress, max: MAX_TRADES }),
+			]);
+
+			const normalizedTrades = normalizeTrades(trades);
+
+			normalizedTrades.forEach((trade, idx) => {
+				const settledTrade = settledTrades.find(
+					(settledTrade) =>
+						trade.timestamp === settledTrade.exchangeTimestamp &&
+						settledTrade.dest === trade.toCurrencyKey &&
+						settledTrade.src === trade.fromCurrencyKey &&
+						trade.fromAmount === settledTrade.amount
+				);
+
+				normalizedTrades[idx].isSettled = false;
+
+				if (settledTrade) {
+					normalizedTrades[idx].rebate = settledTrade.rebate;
+					normalizedTrades[idx].reclaim = settledTrade.reclaim;
+
+					let totalFeeReclaim =
+						trade.toCurrencyKey === SYNTHS_MAP.sUSD
+							? settledTrade.rebate - settledTrade.reclaim
+							: settledTrade.reclaim - settledTrade.rebate;
+
+					normalizedTrades[idx].settledPrice =
+						(totalFeeReclaim / trade.toAmount) * trade.price + trade.price;
+					normalizedTrades[idx].isSettled = true;
+				}
 			});
 
-			yield put(fetchMyTradesSuccess({ trades: normalizeTrades(trades) }));
+			yield put(fetchMyTradesSuccess({ trades: normalizedTrades }));
 		} catch (e) {
 			yield put(fetchMyTradesFailure({ error: e.message }));
 		}

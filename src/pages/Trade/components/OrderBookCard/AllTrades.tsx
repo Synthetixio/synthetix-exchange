@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
 import {
 	fetchAllTradesRequest,
@@ -9,7 +9,6 @@ import {
 } from 'ducks/trades/allTrades';
 
 import { RootState } from 'ducks/types';
-import { HistoricalTrades } from 'ducks/trades/types';
 
 import useInterval from 'shared/hooks/useInterval';
 
@@ -17,17 +16,21 @@ import TradeHistory from './TradeHistory';
 
 import { REFRESH_INTERVAL } from './constants';
 
-type StateProps = {
-	trades: HistoricalTrades;
-	isLoading: boolean;
-	isLoaded: boolean;
+const mapStateToProps = (state: RootState) => ({
+	trades: getAllTrades(state),
+	isLoaded: getIsLoadedAllTrades(state),
+	isLoading: getIsLoadingAllTrades(state),
+});
+
+const mapDispatchToProps = {
+	fetchAllTradesRequest,
 };
 
-type DispatchProps = {
-	fetchAllTradesRequest: typeof fetchAllTradesRequest;
-};
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
-type AllTradesProps = StateProps & DispatchProps;
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type AllTradesProps = PropsFromRedux;
 
 const AllTrades: FC<AllTradesProps> = ({ fetchAllTradesRequest, trades, isLoading, isLoaded }) => {
 	useEffect(() => {
@@ -42,17 +45,4 @@ const AllTrades: FC<AllTradesProps> = ({ fetchAllTradesRequest, trades, isLoadin
 	return <TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} />;
 };
 
-const mapStateToProps = (state: RootState): StateProps => ({
-	trades: getAllTrades(state),
-	isLoaded: getIsLoadedAllTrades(state),
-	isLoading: getIsLoadingAllTrades(state),
-});
-
-const mapDispatchToProps: DispatchProps = {
-	fetchAllTradesRequest,
-};
-
-export default connect<StateProps, DispatchProps, {}, RootState>(
-	mapStateToProps,
-	mapDispatchToProps
-)(AllTrades);
+export default connector(AllTrades);

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { connect } from 'react-redux';
+import React, { FC, useState, useEffect, useMemo } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -14,15 +14,34 @@ import {
 	removePendingTransaction,
 	updateTransaction,
 } from 'ducks/transaction';
-import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Card from 'components/Card';
+
 import MyOrders from './myOrders';
 import AllTrades from './AllTrades';
 import MyTrades from './MyTrades';
+import { RootState } from 'ducks/types';
 
-const OrderBookCard = ({
-	walletInfo: { currentWallet },
+const mapStateToProps = (state: RootState) => ({
+	transactions: getTransactions(state),
+	pendingTransactions: getPendingTransactions(state),
+	isWalletConnected: getIsWalletConnected(state),
+});
+
+const mapDispatchToProps = {
+	updateTransaction,
+	removePendingTransaction,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type OrderBookCardProps = PropsFromRedux;
+
+const OrderBookCard: FC<OrderBookCardProps> = ({
+	isWalletConnected,
 	pendingTransactions,
 	transactions,
 	removePendingTransaction,
@@ -35,21 +54,24 @@ const OrderBookCard = ({
 			{
 				name: t('trade.order-book-card.tabs.your-orders'),
 				id: 'yourOrder',
+				// @ts-ignore
 				component: <MyOrders />,
+				isDisabled: false,
 			},
 			{
 				name: t('trade.order-book-card.tabs.your-trades'),
 				id: 'yourTrades',
 				component: <MyTrades />,
+				isDisabled: !isWalletConnected,
 			},
 			{
 				name: t('trade.order-book-card.tabs.all-trades'),
 				id: 'allTrades',
 				component: <AllTrades />,
+				isDisabled: false,
 			},
 		],
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+		[t, isWalletConnected]
 	);
 
 	const [activeTab, setActiveTab] = useState(tabContent[0]);
@@ -58,6 +80,7 @@ const OrderBookCard = ({
 	useEffect(() => {
 		const handlePendingTransactions = async () => {
 			const {
+				// @ts-ignore
 				utils: { waitForTransaction },
 			} = snxJSConnector;
 			try {
@@ -65,6 +88,7 @@ const OrderBookCard = ({
 				const latestTransactionHash = pendingTransactions[pendingTransactions.length - 1];
 				removePendingTransaction(latestTransactionHash);
 				const status = await waitForTransaction(latestTransactionHash);
+				// @ts-ignore
 				const matchingTransaction = transactions.find((tx) => tx.hash === latestTransactionHash);
 				if (status) {
 					updateTransaction({ status: TRANSACTION_STATUS.CONFIRMED }, matchingTransaction.id);
@@ -89,7 +113,7 @@ const OrderBookCard = ({
 					{tabContent.map((tab) => (
 						<Tab
 							key={tab.id}
-							isDisabled={tab.id === 'yourTrades' && !currentWallet}
+							isDisabled={tab.isDisabled}
 							onClick={() => setActiveTab(tab)}
 							active={tab.id === activeTab.id}
 						>
@@ -124,7 +148,7 @@ const Tabs = styled.div`
 	display: flex;
 `;
 
-const Tab = styled.button`
+const Tab = styled.button<{ isDisabled: boolean; active: boolean }>`
 	min-width: 134px;
 	height: 42px;
 	padding: 0 18px;
@@ -147,15 +171,4 @@ const Tab = styled.button`
 		`}
 `;
 
-const mapStateToProps = (state) => ({
-	transactions: getTransactions(state),
-	pendingTransactions: getPendingTransactions(state),
-	walletInfo: getWalletInfo(state),
-});
-
-const mapDispatchToProps = {
-	updateTransaction,
-	removePendingTransaction,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrderBookCard);
+export default connector(OrderBookCard);

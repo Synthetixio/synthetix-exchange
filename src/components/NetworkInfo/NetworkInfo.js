@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
-import { FlexDivRow } from 'shared/commonStyles';
+import { FlexDivRow, QuestionMarkIcon } from 'shared/commonStyles';
 
 import SelectGasMenu from 'pages/shared/components/SelectGasMenu';
 
@@ -56,7 +56,7 @@ export const TransactionInfo = ({
 					{t('trade.trade-card.network-info.fee')}
 					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
 						<QuestionMarkIcon>
-							<QuestionMarkStyled />
+							<QuestionMark />
 						</QuestionMarkIcon>
 					</Tooltip>
 				</NetworkDataLabelFlex>
@@ -95,22 +95,6 @@ const TooltipContentRow = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-`;
-
-const QuestionMarkIcon = styled.div`
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 50%;
-	width: 12px;
-	height: 12px;
-	background-color: ${(props) => props.theme.colors.accentL1};
-	margin-left: 4px;
-`;
-
-const QuestionMarkStyled = styled(QuestionMark)`
-	height: 8px;
 `;
 
 const Container = styled.div`

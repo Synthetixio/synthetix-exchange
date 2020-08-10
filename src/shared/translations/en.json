@@ -565,9 +565,12 @@
 				"selling-col": "selling",
 				"price-col": "price",
 				"total-col": "total",
+				"fee-reclaim-col": "fee reclamation",
+				"settled-price-col": "settled price",
 				"status-col": "status",
 				"verify-col": "verify",
-				"no-results": "No exchanges associated with this wallet."
+				"no-results": "No exchanges associated with this wallet.",
+				"fee-reclaim-tooltip": "Synth trades can have delays between submitting a trade and it executing, so there is a waiting period to check if a trade was affected by a lag in on-chain price updates. In this waiting period, users cannot exchange, transfer, or burn the Synth they’ve just traded into, and if there was a lag they will be either <0>reclaimed</0> or <1>rebated</1> the difference on their next transaction with that Synth."
 			}
 		},
 		"transfers": {
@@ -738,6 +741,8 @@
 		},
 		"asset": "asset",
 		"units": "units",
-		"weight": "weight"
+		"weight": "weight",
+		"more-info": "More info",
+		"not-available": "None"
 	}
 }
