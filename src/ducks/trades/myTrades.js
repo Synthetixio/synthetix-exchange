@@ -72,6 +72,7 @@ function* fetchMyTrades() {
 			const normalizedTrades = normalizeTrades(trades);
 
 			normalizedTrades.forEach((trade, idx) => {
+				// if the input size gets large, a binary search could be used.
 				const settledTrade = settledTrades.find(
 					(settledTrade) =>
 						trade.timestamp === settledTrade.exchangeTimestamp &&
@@ -86,13 +87,16 @@ function* fetchMyTrades() {
 					normalizedTrades[idx].rebate = settledTrade.rebate;
 					normalizedTrades[idx].reclaim = settledTrade.reclaim;
 
-					let totalFeeReclaim =
+					// special case for when the currency is priced in sUSD
+					const feeReclaimRebateAmount =
 						trade.toCurrencyKey === SYNTHS_MAP.sUSD
 							? settledTrade.rebate - settledTrade.reclaim
 							: settledTrade.reclaim - settledTrade.rebate;
 
+					// ( shiftAmount / amount ) * price -> gets us the price shift
+					// to get the new price, we just add the price shift (which might be a negative or positive number)
 					normalizedTrades[idx].settledPrice =
-						(totalFeeReclaim / trade.toAmount) * trade.price + trade.price;
+						(feeReclaimRebateAmount / trade.toAmount) * trade.price + trade.price;
 					normalizedTrades[idx].isSettled = true;
 				}
 			});
