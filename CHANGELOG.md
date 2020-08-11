@@ -1,9 +1,10 @@
 # Changelog
 
-## 6 August 2020 (Gold release)
+## 13 August 2020 (Gold release)
 
 ### Added
 
+- Add settled price (rebate/reclaim) to "My Trades" on Trade page.
 - Add iSynth limits to trading charts
 - Add frozen synths indicators (Markets/Synths/Trade page).
 
