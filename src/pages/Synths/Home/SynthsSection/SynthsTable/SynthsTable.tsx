@@ -29,6 +29,8 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 import { mockRates } from 'pages/Synths/mockData';
 import { bodyCSS } from 'components/Typography/General';
+import { SnowflakeCircle } from 'components/Icons';
+import Margin from 'components/Margin';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -71,14 +73,21 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								Cell: (
 									cellProps: CellProps<SynthDefinitionWithRates, SynthDefinitionWithRates['name']>
 								) => (
-									<StyledCurrencyName
-										currencyKey={cellProps.cell.value}
-										currencyDesc={cellProps.row.original.desc}
-										showIcon={true}
-										iconProps={{ width: '24px', height: '24px' }}
-									/>
+									<>
+										<StyledCurrencyName
+											currencyKey={cellProps.cell.value}
+											currencyDesc={cellProps.row.original.desc}
+											showIcon={true}
+											iconProps={{ width: '24px', height: '24px' }}
+										/>
+										{cellProps.row.original.isFrozen ? (
+											<Margin left="10px" right="10px">
+												<SnowflakeCircle currencyKey={cellProps.row.original.name} />
+											</Margin>
+										) : null}
+									</>
 								),
-								width: 200,
+								width: 220,
 								sortable: true,
 							},
 							{
@@ -202,6 +211,9 @@ const StyledTable = styled(Table)`
 
 const StyledCurrencyName = styled(Currency.Name)`
 	${bodyCSS};
+	.currency-desc {
+		max-width: 180px;
+	}
 `;
 
 const StyledPopover = styled(Popover)`
