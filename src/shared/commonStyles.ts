@@ -342,3 +342,18 @@ export const FullScreenModalCloseButton = styled.button`
 	top: 5%;
 	color: ${({ theme }) => theme.colors.fontTertiary};
 `;
+
+export const QuestionMarkIcon = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	margin-left: 4px;
+	svg {
+		height: 8px;
+	}
+`;

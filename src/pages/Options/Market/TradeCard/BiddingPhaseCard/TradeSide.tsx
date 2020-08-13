@@ -5,7 +5,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { OptionsTransaction } from 'pages/Options/types';
 
-import { GridDivRow, CurrencyKey, FlexDiv, FlexDivRow, resetButtonCSS } from 'shared/commonStyles';
+import {
+	GridDivRow,
+	CurrencyKey,
+	FlexDiv,
+	FlexDivRow,
+	resetButtonCSS,
+	QuestionMarkIcon,
+} from 'shared/commonStyles';
 
 import { SYNTHS_MAP } from 'constants/currency';
 import { USD_SIGN } from 'constants/currency';
@@ -108,7 +115,7 @@ const TradeSide: FC<TradeSideProps> = ({
 										arrow={true}
 									>
 										<QuestionMarkIcon>
-											<QuestionMarkStyled />
+											<QuestionMark />
 										</QuestionMarkIcon>
 									</Tooltip>
 								) : null}
@@ -256,22 +263,6 @@ const StyledCurrencyKey = styled(CurrencyKey)`
 
 const SectionBody = styled.div`
 	padding-bottom: 3px;
-`;
-
-const QuestionMarkIcon = styled.div`
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 50%;
-	width: 12px;
-	height: 12px;
-	background-color: ${(props) => props.theme.colors.accentL1};
-	margin-left: 4px;
-`;
-
-const QuestionMarkStyled = styled(QuestionMark)`
-	height: 8px;
 `;
 
 const MaxButton = styled.button`
