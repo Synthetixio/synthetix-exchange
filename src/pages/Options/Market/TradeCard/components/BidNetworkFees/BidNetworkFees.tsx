@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { FlexDivRow, GridDivRow, FlexDivCentered, FlexDiv } from 'shared/commonStyles';
+import {
+	FlexDivRow,
+	GridDivRow,
+	FlexDivCentered,
+	FlexDiv,
+	QuestionMarkIcon,
+} from 'shared/commonStyles';
 import { DataSmall } from 'components/Typography';
 
 import { formatCurrencyWithSign, formatPercentage } from 'utils/formatters';
@@ -88,7 +94,7 @@ const NetworkFees: FC<NetworkFeesProps> = ({
 					{t(`options.market.trade-card.bidding.common.${type}-fee`)}
 					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
 						<QuestionMarkIcon>
-							<QuestionMarkStyled />
+							<QuestionMark />
 						</QuestionMarkIcon>
 					</Tooltip>
 				</FlexDivCentered>
@@ -108,22 +114,6 @@ export const Container = styled(GridDivRow)`
 	text-transform: uppercase;
 	grid-gap: 8px;
 	padding-bottom: 16px;
-`;
-
-const QuestionMarkIcon = styled.div`
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 50%;
-	width: 12px;
-	height: 12px;
-	background-color: ${(props) => props.theme.colors.accentL1};
-	margin-left: 4px;
-`;
-
-const QuestionMarkStyled = styled(QuestionMark)`
-	height: 8px;
 `;
 
 const TooltipContent = styled.div`
