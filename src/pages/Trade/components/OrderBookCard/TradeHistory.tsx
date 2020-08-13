@@ -100,7 +100,7 @@ const TradeHistory: FC<TradeHistoryProps> = memo(
 											placement="top"
 										>
 											<span>
-												{amount > 0 ? '+' : '-'}
+												{isRebate ? '+' : '-'}
 												{formatCurrencyWithKey(
 													toCurrencyKey,
 													amount,
