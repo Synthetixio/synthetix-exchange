@@ -66,7 +66,10 @@ function* fetchMyTrades() {
 					maxBlock: Number.MAX_SAFE_INTEGER,
 					max: MAX_TRADES,
 				}),
-				snxData.exchanger.exchangeEntriesSettled({ from: currentWalletAddress, max: MAX_TRADES }),
+				snxData.exchanger.exchangeEntriesSettled({
+					from: currentWalletAddress,
+					max: MAX_TRADES,
+				}),
 			]);
 
 			const normalizedTrades = normalizeTrades(trades);
@@ -87,11 +90,9 @@ function* fetchMyTrades() {
 					normalizedTrades[idx].rebate = settledTrade.rebate;
 					normalizedTrades[idx].reclaim = settledTrade.reclaim;
 
-					// special case for when the currency is priced in sUSD
-					const feeReclaimRebateAmount =
-						trade.toCurrencyKey === SYNTHS_MAP.sUSD
-							? settledTrade.rebate - settledTrade.reclaim
-							: settledTrade.reclaim - settledTrade.rebate;
+					const feeReclaimRebateAmount = settledTrade.rebate
+						? settledTrade.rebate
+						: -settledTrade.reclaim;
 
 					// ( shiftAmount / amount ) * price -> gets us the price shift
 					// to get the new price, we just add the price shift (which might be a negative or positive number)
