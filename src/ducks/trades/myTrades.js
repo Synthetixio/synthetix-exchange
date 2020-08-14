@@ -101,7 +101,7 @@ function* fetchMyTrades() {
 					normalizedTrades[idx].settledPrice =
 						(feeReclaimRebateAmount / trade.toAmount) * trade.price + trade.price;
 					normalizedTrades[idx].isSettled = true;
-					normalizedTrades[idx].amount = feeReclaimRebateAmount;
+					normalizedTrades[idx].amount = Math.abs(feeReclaimRebateAmount);
 				}
 			});
 

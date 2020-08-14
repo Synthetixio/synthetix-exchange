@@ -85,19 +85,20 @@ const TradeHistory: FC<TradeHistoryProps> = memo(
 						accessor: 'isSettled',
 						sortType: 'basic',
 						Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['isSettled']>) => {
-							const { toCurrencyKey, amount } = cellProps.row.original;
+							const { toCurrencyKey, amount, rebate } = cellProps.row.original;
+							const isRebate = rebate > 0;
 
 							return cellProps.cell.value ? (
 								amount === 0 ? (
 									<span>{t('common.not-available')}</span>
 								) : (
-									<FeeReclaim isRebate={amount > 0}>
+									<FeeReclaim isRebate={isRebate}>
 										<Tooltip
 											title={formatCurrency(amount, LONG_CRYPTO_CURRENCY_DECIMALS)}
 											placement="top"
 										>
 											<span>
-												{amount >= 0 ? '+' : ''}
+												{isRebate ? '+' : '-'}
 												{formatCurrencyWithKey(
 													toCurrencyKey,
 													amount,
