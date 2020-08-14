@@ -66,7 +66,10 @@ function* fetchMyTrades() {
 					maxBlock: Number.MAX_SAFE_INTEGER,
 					max: MAX_TRADES,
 				}),
-				snxData.exchanger.exchangeEntriesSettled({ from: currentWalletAddress, max: MAX_TRADES }),
+				snxData.exchanger.exchangeEntriesSettled({
+					from: currentWalletAddress,
+					max: MAX_TRADES,
+				}),
 			]);
 
 			const normalizedTrades = normalizeTrades(trades);
@@ -98,6 +101,7 @@ function* fetchMyTrades() {
 					normalizedTrades[idx].settledPrice =
 						(feeReclaimRebateAmount / trade.toAmount) * trade.price + trade.price;
 					normalizedTrades[idx].isSettled = true;
+					normalizedTrades[idx].amount = Math.abs(feeReclaimRebateAmount);
 				}
 			});
 

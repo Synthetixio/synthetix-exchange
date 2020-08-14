@@ -85,10 +85,8 @@ const TradeHistory: FC<TradeHistoryProps> = memo(
 						accessor: 'isSettled',
 						sortType: 'basic',
 						Cell: (cellProps: CellProps<HistoricalTrade, HistoricalTrade['isSettled']>) => {
-							const { toCurrencyKey, rebate, reclaim } = cellProps.row.original;
-
+							const { toCurrencyKey, amount, rebate } = cellProps.row.original;
 							const isRebate = rebate > 0;
-							const amount = rebate || reclaim;
 
 							return cellProps.cell.value ? (
 								amount === 0 ? (
@@ -100,7 +98,7 @@ const TradeHistory: FC<TradeHistoryProps> = memo(
 											placement="top"
 										>
 											<span>
-												{amount > 0 ? '+' : '-'}
+												{isRebate ? '+' : '-'}
 												{formatCurrencyWithKey(
 													toCurrencyKey,
 													amount,
