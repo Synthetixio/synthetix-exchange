@@ -629,6 +629,7 @@
 			"info": "info",
 			"convert-to-eth": "convert to eth",
 			"swap-via-1inch": "swap via 1inch",
+			"add-to-metamask": "add to metamask",
 			"view": "view"
 		},
 		"tx-status": {
