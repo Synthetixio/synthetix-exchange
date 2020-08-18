@@ -1,4 +1,5 @@
 import { currencyKeyToIconMap, CurrencyKey } from 'constants/currency';
+import { getEthereumNetwork } from 'utils/networkUtils';
 
 const { SynthetixJs } = require('synthetix-js');
 
@@ -16,7 +17,9 @@ export const getCurrencyKeyURLPath = (currencyKey: CurrencyKey) =>
 
 export const getCurrencyDetails = async (currencyKey: CurrencyKey): Promise<ICurrencyDetails> => {
 	// Uses default setup - can't find anything in synthetix docs to set this to testnet
-	const snxjs = new SynthetixJs();
+	const networkID = (await getEthereumNetwork()).networkId;
+	const metaMaskSigner = new SynthetixJs.signers.Metamask();
+	const snxjs = new SynthetixJs({ provider: null, signer: metaMaskSigner, networkId: networkID });
 	const tokenAddress = snxjs[currencyKey].contract.address;
 	const tokenSymbol = await snxjs[currencyKey].symbol();
 	const tokenDecimals = await snxjs[currencyKey].decimals();
