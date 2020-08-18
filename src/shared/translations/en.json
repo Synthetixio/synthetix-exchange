@@ -628,7 +628,7 @@
 			"trade": "trade",
 			"info": "info",
 			"convert-to-eth": "convert to eth",
-			"swap-via-1inch": "swap-via-1inch",
+			"swap-via-1inch": "swap via 1inch",
 			"view": "view"
 		},
 		"tx-status": {
