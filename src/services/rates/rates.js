@@ -15,11 +15,11 @@ export const fetchSynthRateUpdate = async (
 	periodInHours = PERIOD_IN_HOURS.ONE_DAY
 ) => {
 	try {
-		const now = new Date().getTime();
+		// const now = new Date().getTime();
 
 		const rates = await snxData.rate.updates({
 			synth: currencyKey,
-			maxTimestamp: Math.trunc(now / 1000),
+			// maxTimestamp: Math.trunc(now / 1000),
 			minTimestamp: calculateTimestampForPeriod(periodInHours),
 			max: 6000,
 		});
@@ -44,13 +44,13 @@ export const fetchSynthRateUpdates = async (
 	periodInHours = PERIOD_IN_HOURS.ONE_DAY
 ) => {
 	try {
-		const now = new Date().getTime();
+		// const now = new Date().getTime();
 
 		const [baseRates, quoteRates] = await Promise.all(
 			[baseCurrencyKey, quoteCurrencyKey].map((synthName) =>
 				snxData.rate.updates({
 					synth: synthName,
-					maxTimestamp: Math.trunc(now / 1000),
+					// maxTimestamp: Math.trunc(now / 1000),
 					minTimestamp: calculateTimestampForPeriod(periodInHours),
 					max: 6000,
 				})
