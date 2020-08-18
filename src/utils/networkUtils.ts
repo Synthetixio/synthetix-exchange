@@ -147,4 +147,11 @@ export function onMetamaskNetworkChange(cb: () => void) {
 	window.ethereum.on('networkChanged', listener);
 }
 
+export function hasMetamaskInstalled() {
+	if (typeof window.ethereum !== 'undefined') {
+		return true;
+	}
+	return false;
+}
+
 export const isMainNet = (networkId: NetworkId) => networkId === 1;
