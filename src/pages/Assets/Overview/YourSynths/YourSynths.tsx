@@ -87,13 +87,13 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 		const handleAddToMetamask = async (currencyKey: string) => {
 			try {
 				const { snxJS } = snxJSConnector as any;
-				const contract = snxJS[currencyKey].contract;
+				const synthContract = snxJS[currencyKey].contract;
 				const wasAdded = await window?.ethereum?.request({
 					method: 'wallet_watchAsset',
 					params: {
 						type: 'ERC20',
 						options: {
-							address: contract.address,
+							address: synthContract.address,
 							symbol: currencyKey,
 							decimals: 18,
 							image: getCurrencyKeyURLPath(currencyKey),
