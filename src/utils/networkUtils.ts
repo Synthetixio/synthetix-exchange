@@ -148,10 +148,7 @@ export function onMetamaskNetworkChange(cb: () => void) {
 }
 
 export function hasMetamaskInstalled() {
-	if (typeof window.ethereum !== 'undefined') {
-		return true;
-	}
-	return false;
+	return window.ethereum?.isMetaMask || false;
 }
 
 export const isMainNet = (networkId: NetworkId) => networkId === 1;
