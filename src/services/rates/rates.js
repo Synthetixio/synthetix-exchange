@@ -5,6 +5,7 @@ import {
 	getMinAndMaxRate,
 	calculateRateChange,
 	calculateTimestampForPeriod,
+	calculateTotalVolumeForExchanges,
 } from './utils';
 
 import { SYNTHS_MAP } from 'constants/currency';
@@ -80,28 +81,20 @@ export const fetchSynthRateUpdates = async (
 	}
 };
 
+export const fetchExchanges = (periodInHours = PERIOD_IN_HOURS.ONE_DAY) =>
+	snxData.exchanges.since({
+		minTimestamp: calculateTimestampForPeriod(periodInHours),
+	});
+
 export const fetchSynthVolumeInUSD = async (
 	baseCurrencyKey,
 	quoteCurrencyKey,
 	periodInHours = PERIOD_IN_HOURS.ONE_DAY
 ) => {
 	try {
-		const exchanges = await snxData.exchanges.since({
-			minTimestamp: calculateTimestampForPeriod(periodInHours),
-		});
+		const exchanges = await fetchExchanges(periodInHours);
 
-		return exchanges
-			.filter(
-				(exchange) =>
-					(exchange.fromCurrencyKey === quoteCurrencyKey &&
-						exchange.toCurrencyKey === baseCurrencyKey) ||
-					(exchange.fromCurrencyKey === baseCurrencyKey &&
-						exchange.toCurrencyKey === quoteCurrencyKey)
-			)
-			.reduce((totalVolume, exchange) => {
-				totalVolume += exchange.fromAmountInUSD;
-				return totalVolume;
-			}, 0);
+		return calculateTotalVolumeForExchanges(baseCurrencyKey, quoteCurrencyKey, exchanges);
 	} catch (e) {
 		return null;
 	}
