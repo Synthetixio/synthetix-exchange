@@ -34,7 +34,8 @@ import {
 } from 'ducks/wallet/walletBalances';
 
 import { hasMetamaskInstalled } from 'utils/networkUtils';
-import { getCurrencyDetails } from 'utils/currency';
+import { getCurrencyKeyURLPath } from 'utils/currency';
+import snxJSConnector from 'utils/snxJSConnector';
 
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP, CurrencyKey, USD_SIGN } from 'constants/currency';
 import Spinner from 'components/Spinner';
@@ -85,16 +86,17 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 
 		const handleAddToMetamask = async (currencyKey: string) => {
 			try {
-				const tokenDetails = await getCurrencyDetails(currencyKey);
+				const { snxJS } = snxJSConnector as any;
+				const contract = snxJS[currencyKey].contract;
 				const wasAdded = await window?.ethereum?.request({
 					method: 'wallet_watchAsset',
 					params: {
 						type: 'ERC20',
 						options: {
-							address: tokenDetails.tokenAddress,
-							symbol: tokenDetails.tokenSymbol,
-							decimals: tokenDetails.tokenDecimals,
-							image: tokenDetails.tokenImage,
+							address: contract.address,
+							symbol: currencyKey,
+							decimals: 18,
+							image: getCurrencyKeyURLPath(currencyKey),
 						},
 					},
 				});
@@ -108,7 +110,6 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 
 		const tradeButtonPopoverOpen = Boolean(tradeButtonAnchorEl);
 		const id = tradeButtonPopoverOpen ? 'trade-button-popover' : undefined;
-
 		return (
 			<>
 				<StyledCard>
