@@ -1,5 +1,10 @@
 import { NetworkId } from 'utils/networkUtils';
 
+interface RequestArguments {
+	method: string;
+	params?: unknown[] | object;
+}
+
 declare global {
 	interface Window {
 		web3?: {
@@ -16,6 +21,8 @@ declare global {
 		ethereum?: {
 			on: (event: string, cb: () => void) => void;
 			networkVersion: NetworkId;
+			request: (args: RequestArguments) => Promise<unknown>;
+			isMetaMask: boolean;
 		};
 	}
 }
