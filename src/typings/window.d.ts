@@ -22,6 +22,7 @@ declare global {
 			on: (event: string, cb: () => void) => void;
 			networkVersion: NetworkId;
 			request: (args: RequestArguments) => Promise<unknown>;
+			isMetaMask: boolean;
 		};
 	}
 }
