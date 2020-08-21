@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { ReactComponent as SortIcon } from '../../assets/images/sort.svg';
+
 import { DataSmall } from '../Typography';
 
 const ButtonSort = ({ children, onClick }) => {
 	return (
 		<Button onClick={onClick}>
 			<DataSmall>{children}</DataSmall>
-			<SortIcon src={'/images/sort-arrows.svg'} />
+			<StyledSortIcon />
 		</Button>
 	);
 };
@@ -21,7 +23,7 @@ const Button = styled.button`
 	white-space: nowrap;
 `;
 
-const SortIcon = styled.img`
+const StyledSortIcon = styled(SortIcon)`
 	width: 6.5px;
 	height: 8px;
 	margin-left: 5px;
