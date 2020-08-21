@@ -15,6 +15,7 @@ const ERROR_CODES = {
 };
 
 export default (error, walletType) => {
+	if (!error.code && !error.statusCode) return error;
 	const code = (error.code || error.statusCode).toString();
 	if (!code || !ERROR_CODES[walletType][code]) {
 		return { message: error.message || 'Error' };

@@ -1,42 +1,52 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
+
+import { ReactComponent as ArrowDownIcon } from '../../assets/images/arrow-down.svg';
+
 import { DataSmall } from '../Typography';
 
-export const ButtonFilter = ({ children, onClick, height, active }) => {
-	return (
-		<Button onClick={onClick} height={height} active={active}>
-			<ButtonLabel>{children}</ButtonLabel>
-		</Button>
-	);
-};
+import { Z_INDEX } from '../../constants/ui';
 
-export const ButtonFilterWithDropdown = ({ children, active, synths = [], onClick, quote }) => {
+import Currency from '../../components/Currency';
+
+export const ButtonFilter = ({ children, onClick, active, ...rest }) => (
+	<Button onClick={onClick} active={active} {...rest}>
+		<ButtonLabel>{children}</ButtonLabel>
+	</Button>
+);
+
+export const ButtonFilterWithDropdown = ({
+	children,
+	active,
+	synths = [],
+	onClick,
+	quote,
+	...rest
+}) => {
 	const [isVisible, setIsVisible] = useState(false);
+
 	return (
 		<OutsideClickHandler onOutsideClick={() => setIsVisible(false)}>
 			<ButtonContainer>
-				<Button onClick={() => setIsVisible(!isVisible)} active={active}>
+				<Button onClick={() => setIsVisible(!isVisible)} active={active} {...rest}>
 					<ButtonLabel>{children}</ButtonLabel>
-					<AngleDownIcon src="/images/arrow-down.svg" />
+					<StyledArrowDownIcon />
 				</Button>
 				<DropDown isVisible={isVisible}>
 					<List>
-						{synths.map((synth, i) => {
-							return (
-								<Synth
-									key={i}
-									isActive={synth.name === quote}
-									onClick={() => {
-										setIsVisible(false);
-										onClick(synth);
-									}}
-								>
-									<SynthIcon src={`/images/synths/${synth.name}.svg`}></SynthIcon>
-									<SynthLabel>{synth.name}</SynthLabel>
-								</Synth>
-							);
-						})}
+						{synths.map((synth) => (
+							<Synth
+								key={synth.name}
+								isActive={synth.name === quote}
+								onClick={() => {
+									setIsVisible(false);
+									onClick(synth);
+								}}
+							>
+								<Currency.Name currencyKey={synth.name} showIcon={true} />
+							</Synth>
+						))}
 					</List>
 				</DropDown>
 			</ButtonContainer>
@@ -51,7 +61,7 @@ const ButtonContainer = styled.div`
 	}
 `;
 
-const AngleDownIcon = styled.img`
+const StyledArrowDownIcon = styled(ArrowDownIcon)`
 	width: 6px;
 	height: 6px;
 	margin-left: 8px;
@@ -62,10 +72,10 @@ const DropDown = styled.div`
 	overflow-x: visible;
 	overflow-y: hidden;
 	position: absolute;
-	background-color: ${props => props.theme.colors.accentDark};
-	border: 1px solid ${props => props.theme.colors.accentLight};
-	visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
-	z-index: 100;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	border: 1px solid ${(props) => props.theme.colors.accentL2};
+	visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
+	z-index: ${Z_INDEX.DROPDOWN};
 `;
 
 const List = styled.ul`
@@ -83,43 +93,46 @@ const Synth = styled.li`
 	padding: 8px 16px;
 	cursor: pointer;
 	&:hover {
-		background-color: ${props => props.theme.colors.accentLight};
+		background-color: ${(props) => props.theme.colors.accentL2};
 	}
-	background-color: ${props =>
-		props.isActive ? props.theme.colors.accentLight : props.theme.colors.accentDark};
+	background-color: ${(props) =>
+		props.isActive ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 `;
 
-const SynthIcon = styled.img`
-	width: 22px;
-	height: 22px;
-	margin-right: 8px;
-`;
-
-const SynthLabel = styled(DataSmall)`
-	text-transform: none;
-	font-size: 14px;
+const fullRow = css`
+	flex: 1;
+	margin: 0 6px;
+	&:first-child {
+		margin-right: 6px;
+		margin-left: 0;
+	}
+	&:last-child {
+		margin-right: 0;
+		margin-left: 6px;
+	}
 `;
 
 const Button = styled.button`
 	border-radius: 1px;
 	outline: none;
-	height: ${props => (props.height ? props.height : '32px')};
+	height: ${(props) => (props.height ? props.height : '32px')};
 	cursor: pointer;
 	padding: 0 6px;
-	background-color: ${props =>
-		props.active ? props.theme.colors.accentLight : props.theme.colors.accentDark};
+	background-color: ${(props) =>
+		props.active ? props.theme.colors.accentL2 : props.theme.colors.accentL1};
 	& > * {
-		color: ${props =>
+		color: ${(props) =>
 			props.active ? props.theme.colors.fontSecondary : props.theme.colors.fontTertiary} !important;
 	}
 	&:hover {
-		background-color: ${props => props.theme.colors.accentLight};
+		background-color: ${(props) => props.theme.colors.accentL2};
 	}
 	border: none;
+	${(props) => props.fullRow && fullRow}
 `;
 
 const ButtonLabel = styled(DataSmall)`
 	text-transform: none;
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	font-family: 'apercu-medium', sans-serif;
 `;

@@ -1,134 +1,118 @@
-/* eslint-disable */
-import { hot } from 'react-hot-loader/root';
 import React, { useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
-import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import snxJSConnector from '../../utils/snxJSConnector';
-import { getEthereumNetwork } from '../../utils/metamaskTools';
-import { getExchangeData, getWalletBalances } from '../../dataFetcher';
+import snxJSConnector from 'utils/snxJSConnector';
+import { getEthereumNetwork } from 'utils/networkUtils';
+import { getExchangeData } from 'dataFetcher';
 
-import { getAvailableSynths, getCurrentTheme, getWalletInfo } from '../../ducks';
-import {
-	updateExchangeRates,
-	setAvailableSynths,
-	updateFrozenSynths,
-	updateTopSynthByVolume,
-} from '../../ducks/synths';
-import { updateWalletStatus, updateWalletBalances } from '../../ducks/wallet';
-import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { setAvailableSynths, updateFrozenSynths } from 'ducks/synths';
+import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
+import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
+import { fetchRatesRequest } from 'ducks/rates';
+import { setNetworkGasInfo } from 'ducks/transaction';
 
-import Trade from '../Trade';
-import Home from '../Home';
+import { setAppReady, getIsAppReady, setSystemSuspended } from 'ducks/app';
 
-import Theme from '../../styles/theme';
+import App from './App';
+
+const REFRESH_INTERVAL = 3 * 60 * 1000;
 
 const Root = ({
 	setAvailableSynths,
-	updateExchangeRates,
 	setNetworkGasInfo,
-	setExchangeFeeRate,
 	updateFrozenSynths,
-	updateWalletStatus,
-	updateWalletBalances,
-	updateTopSynthByVolume,
-	currentTheme,
+	updateNetworkSettings,
 	walletInfo: { currentWallet },
+	fetchWalletBalancesRequest,
+	fetchRatesRequest,
+	setAppReady,
+	isAppReady,
+	setSystemSuspended,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
-	const fetchAndSetExchangeData = useCallback(async synths => {
-		const {
-			exchangeRates,
-			exchangeFeeRate,
-			networkPrices,
-			frozenSynths,
-			topSynthByVolume,
-		} = await getExchangeData(synths);
-		updateExchangeRates(exchangeRates);
-		setExchangeFeeRate(exchangeFeeRate);
+	const fetchAndSetExchangeData = useCallback(async () => {
+		const { networkPrices, frozenSynths } = await getExchangeData();
 		setNetworkGasInfo(networkPrices);
-		updateFrozenSynths(frozenSynths);
-		updateTopSynthByVolume(topSynthByVolume);
+		updateFrozenSynths({ frozenSynths });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const fetchAndSetWalletBalances = useCallback(
-		async synths => {
-			if (!currentWallet) return;
-			updateWalletBalances(await getWalletBalances(currentWallet, synths));
-		},
-		[currentWallet]
-	);
+	useEffect(() => {
+		if (isAppReady && currentWallet != null) {
+			fetchWalletBalancesRequest();
+		}
+	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
 
 	useEffect(() => {
-		let intervalId;
+		if (isAppReady) {
+			fetchRatesRequest();
+
+			const checkSystemStatus = async () => {
+				const {
+					snxJS: { SystemStatus },
+				} = snxJSConnector;
+				try {
+					const isSystemUpgrading = await SystemStatus.isSystemUpgrading();
+					if (isSystemUpgrading) {
+						setSystemSuspended({ status: true });
+					}
+				} catch (e) {}
+			};
+
+			checkSystemStatus();
+		}
+	}, [isAppReady, fetchRatesRequest, setSystemSuspended]);
+
+	useEffect(() => {
 		const init = async () => {
 			const { networkId, name } = await getEthereumNetwork();
+
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({ networkId });
 			}
-			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
-			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
-			setAvailableSynths(synths);
-			fetchAndSetExchangeData(synths);
-			fetchAndSetWalletBalances(synths);
+
+			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
+
+			const synths = snxJSConnector.snxJS.contractSettings.synths.filter((synth) => synth.asset);
+
+			setAvailableSynths({ synths });
+			setAppReady();
+			fetchAndSetExchangeData();
+			// TODO: stop fetching data when system is suspended
 			clearInterval(intervalId);
-			intervalId = setInterval(() => {
-				fetchAndSetExchangeData(synths);
-				fetchAndSetWalletBalances(synths);
-			}, 30 * 1000);
-			setIntervalId(intervalId);
+			const _intervalId = setInterval(() => {
+				fetchAndSetExchangeData();
+				fetchWalletBalancesRequest();
+			}, REFRESH_INTERVAL);
+			setIntervalId(_intervalId);
 		};
+
 		init();
+
 		return () => {
 			clearInterval(intervalId);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [fetchAndSetExchangeData, fetchAndSetWalletBalances]);
-	const themeStyle = currentTheme ? Theme(currentTheme) : Theme('light');
-	return (
-		<ThemeProvider theme={themeStyle}>
-			<div>
-				<Router>
-					<RootContainer>
-						<Switch>
-							<Route path="/trade">
-								<Trade />
-							</Route>
-							<Route path="/">
-								<Trade />
-							</Route>
-						</Switch>
-					</RootContainer>
-				</Router>
-			</div>
-		</ThemeProvider>
-	);
+	}, [fetchAndSetExchangeData, fetchWalletBalancesRequest]);
+
+	return <App isAppReady={isAppReady} />;
 };
 
-const RootContainer = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL1};
-`;
-
-const mapStateToProps = state => {
-	return {
-		availableSynths: getAvailableSynths(state),
-		walletInfo: getWalletInfo(state),
-		currentTheme: getCurrentTheme(state),
-	};
-};
+const mapStateToProps = (state) => ({
+	walletInfo: getWalletInfo(state),
+	isAppReady: getIsAppReady(state),
+});
 
 const mapDispatchToProps = {
-	updateExchangeRates,
 	setAvailableSynths,
 	setNetworkGasInfo,
 	updateFrozenSynths,
-	updateWalletStatus,
-	updateWalletBalances,
-	setExchangeFeeRate,
-	updateTopSynthByVolume,
+	updateNetworkSettings,
+	fetchWalletBalancesRequest,
+	fetchRatesRequest,
+	setAppReady,
+	setSystemSuspended,
 };
 
-export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));
+export default connect(mapStateToProps, mapDispatchToProps)(Root);

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-
 import { Provider } from 'react-redux';
 import store from './config/store';
-import './index.css';
 import Root from './pages/Root';
+
+import MaintenanceMessage from './pages/Root/components/MaintenanceMessage';
+
+import './i18n';
+import './index.css';
 
 import bugsnag from '@bugsnag/js';
 import bugsnagReact from '@bugsnag/plugin-react';
@@ -19,17 +22,27 @@ console.log('NODE_ENV', process.env.NODE_ENV);
 console.log(bugsnag.releaseStage);
 
 bugsnagClient.use(bugsnagReact, React);
+
+const SYSTEM_ON_MAINTENANCE = false;
+
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 const App = () => {
 	return (
-		<Provider store={store}>
-			<Root />
-		</Provider>
+		<Suspense fallback={<div />}>
+			<Provider store={store}>
+				<Root />
+			</Provider>
+		</Suspense>
 	);
 };
+
 ReactDOM.render(
-	<ErrorBoundary>
-		<App />
-	</ErrorBoundary>,
+	SYSTEM_ON_MAINTENANCE ? (
+		<MaintenanceMessage />
+	) : (
+		<ErrorBoundary>
+			<App />
+		</ErrorBoundary>
+	),
 	document.getElementById('root')
 );
