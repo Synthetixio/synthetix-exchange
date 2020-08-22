@@ -1,6 +1,6 @@
 import { SUPPORTED_NETWORKS, isMainNet } from '../utils/networkUtils';
 
-const getEtherScanBaseURL = networkId => {
+const getEtherScanBaseURL = (networkId) => {
 	const network = SUPPORTED_NETWORKS[networkId];
 
 	if (isMainNet(networkId) || network == null) {
@@ -20,4 +20,10 @@ export const getEtherscanAddressLink = (networkId, address) => {
 	const baseURL = getEtherScanBaseURL(networkId);
 
 	return `${baseURL}/address/${address}`;
+};
+
+export const getEtherscanTokenLink = (networkId, address) => {
+	const baseURL = getEtherScanBaseURL(networkId);
+
+	return `${baseURL}/token/${address}`;
 };

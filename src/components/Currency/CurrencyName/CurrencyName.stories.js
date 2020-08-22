@@ -10,7 +10,7 @@ export default {
 
 export const synths = () => (
 	<Container>
-		{SYNTHS.map(currencyKey => (
+		{SYNTHS.map((currencyKey) => (
 			<CurrencyName key={currencyKey} currencyKey={currencyKey} />
 		))}
 	</Container>
@@ -18,7 +18,7 @@ export const synths = () => (
 
 export const crypto = () => (
 	<Container>
-		{CRYPTO_CURRENCY.map(currencyKey => (
+		{CRYPTO_CURRENCY.map((currencyKey) => (
 			<CurrencyName key={currencyKey} currencyKey={currencyKey} />
 		))}
 	</Container>
@@ -26,7 +26,7 @@ export const crypto = () => (
 
 export const fiat = () => (
 	<Container>
-		{FIAT_CURRENCY.map(currencyKey => (
+		{FIAT_CURRENCY.map((currencyKey) => (
 			<CurrencyName key={currencyKey} currencyKey={currencyKey} />
 		))}
 	</Container>

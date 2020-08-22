@@ -5,8 +5,10 @@
 			"trade": "trade",
 			"loans": "loans",
 			"markets": "markets",
-			"tokens": "tokens",
-			"support": "support"
+			"synths": "synths",
+			"support": "support",
+			"assets": "assets",
+			"options": "options"
 		},
 		"theme": {
 			"light": "light mode",
@@ -14,32 +16,53 @@
 		},
 		"announcements": {
 			"ether-collateral": "NEW: ETH Collateral is live!"
+		},
+		"wallet-menu": {
+			"cards": {
+				"wallet-details": "Wallet details",
+				"estimated-wallet-value": "Estimated wallet value",
+				"synth-balance": "Synth balance",
+				"account": "Account"
+			},
+			"buttons": {
+				"wallet-overview": "Wallet overview",
+				"log-out": "Log out",
+				"change": "Change"
+			}
 		}
 	},
 	"modals": {
 		"wallet": {
-			"wallet-selector": {
-				"title": "Connect your wallet"
-			}
+			"back-to-wallet-selection": "Back to wallet selection",
+			"select-your-wallet": "Select your wallet",
+			"connect-your-wallet": "Connect your wallet",
+			"errors": {
+				"could-not-get-address": "Could not get addresses from wallet",
+				"ledger-error": "Please make sure your Ledger is unlocked, on Ethereum app with contract data setting allowed",
+				"generic-error": "Error"
+			},
+			"retry": "Retry"
+		},
+		"gwei": {
+			"title": "Set transaction speed & price",
+			"desc": "Adjust the slider below to set the transaction speed.",
+			"placeholder": "CUSTOM",
+			"table": {
+				"speed-allowed": "Speed (allowed)",
+				"slow": "Slow",
+				"safe": "Safe",
+				"standard": "Standard",
+				"average": "Average",
+				"fast": "fast",
+				"price": "price"
+			},
+			"submit": "Submit changes"
 		}
 	},
 	"home": {
 		"hero": {
 			"title": "On-chain exposure to any asset class",
 			"subtitle": "Trade synthetic cryptocurrencies (long and short), commodities, indexes and Forex"
-		},
-		"markets": {
-			"table": {
-				"pair-col": "pair",
-				"last-price-col": "last price",
-				"24h-change-col": "24hr change",
-				"24h-low-col": "24hr low",
-				"24h-high-col": "24hr high",
-				"24h-volume-col": "24hr volume",
-				"actions": {
-					"see-all-pairs": "see all pairs"
-				}
-			}
 		},
 		"new-user-promo": {
 			"title": "New to Synthetix.Exchange?",
@@ -59,7 +82,7 @@
 				},
 				"distributed-collateral-pool": {
 					"title": "Distributed Collateral Pool",
-					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
+					"desc": "Trade assets backed by a distributed pool of cryptocollateral — censorship resistant."
 				}
 			},
 			"start-trading-button": "start trading now"
@@ -90,6 +113,288 @@
 			}
 		}
 	},
+	"markets": {
+		"table": {
+			"pair-col": "pair",
+			"last-price-col": "last price",
+			"24h-change-col": "24hr change",
+			"24h-low-col": "24hr low",
+			"24h-high-col": "24hr high",
+			"24h-volume-col": "24hr volume",
+			"actions": {
+				"see-all-pairs": "see all pairs",
+				"start-trading-now": "start trading now"
+			}
+		}
+	},
+	"synths": {
+		"home": {
+			"hero": {
+				"title": "A comprehensive overview of each asset available on Synthetix.Exchange"
+			},
+			"table": {
+				"synth-col": "synth",
+				"last-price-col": "last price",
+				"24h-change-col": "24hr change",
+				"24h-trend-col": "24h trend",
+				"trade-now-col": "trade now"
+			},
+			"charts": {
+				"biggest-gainers-24h": "biggest gainers (24h)",
+				"biggest-losers-24h": "biggest losers (24h)"
+			}
+		},
+		"overview": {
+			"chart": {
+				"back-to-synths": "Back to Synths",
+				"toggle": {
+					"standard": "standard",
+					"inverse": "inverse"
+				}
+			},
+			"synth-markets": {
+				"title": "Explore {{currencyKey}} markets:",
+				"back-button-label": "back to all synths",
+				"top-rank-synth-tooltip": "Based on 24HR volume. Click on a pair to trade."
+			},
+			"info": {
+				"title": "{{name}} | <0>{{desc}}</0>",
+				"sUSD": "Tracks the price of a single US Dollar (USD). This Synth always remains constant at 1.",
+				"iSynth": "Inversely tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. The entry point is {{entryPoint}} (the approximate market price at time of creation). This Synth freezes when it reaches its upper limit of {{upperLimit}} (i.e. when {{assetDesc}}'s value reaches {{roundedUpper}}) or its lower limit of {{lowerLimit}} (i.e. when {{assetDesc}}’s value reaches {{roundedLower}}). If it reaches either of its limits and gets frozen, it will no longer be able to be purchased on Synthetix.Exchange, but can still be traded for other Synths at its frozen value. At some point after it has reached either of its limits, it will be substituted for another {{synthName}} with different limits.",
+				"index": "Tracks the price of the index: {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. This index is made up of the following assets and weights:",
+				"generic": "Tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle."
+			}
+		}
+	},
+	"options": {
+		"phases": {
+			"bidding": "bidding",
+			"trading": "trading",
+			"maturity": "maturity",
+			"expiry": "expired"
+		},
+		"home": {
+			"market-creation": {
+				"not-connected": {
+					"title": "Connect a wallet to create a market or place a bid"
+				},
+				"no-markets": {
+					"title": "Create a market or place a bid to get started"
+				},
+				"create-market-button-label": "create a new market"
+			},
+			"explore-markets": {
+				"title": "Bid on open markets:",
+				"table": {
+					"filters": {
+						"markets": {
+							"no-results": "No markets found, please try again."
+						},
+						"creator": {
+							"tooltip-connected": "Markets you’ve created. Connect a wallet to start.",
+							"tooltip-not-connected": "Markets you’ve created. Click on the row to enter.",
+							"no-results": "You haven't created any markets yet."
+						},
+						"user-bids": {
+							"tooltip-connected": "Markets you’ve bid on. Connect a wallet to start.",
+							"tooltip-not-connected": "Markets you’ve bid on. Click on the row to enter.",
+							"no-results": "You haven't placed any bids yet."
+						}
+					},
+					"view-all-markets": "view all markets",
+					"view-all-open-markets": "view all open markets"
+				}
+			},
+			"markets-table": {
+				"asset-col": "asset",
+				"strike-price-col": "strike price ({{currencyKey}})",
+				"maturity-date-col": "maturity date",
+				"long-short-col": "long / short",
+				"phase-col": "phase",
+				"pool-size-col": "pool size (<0>{{currencyKey}}</0>)",
+				"time-remaining-col": "time remaining"
+			}
+		},
+		"create-market-modal": {
+			"back-to-markets": "back to markets",
+			"title": "Create a new Binary Options market",
+			"subtitle": "Here you can create a new Binary Options market by selecting an asset, the strike price that bidders can take either side of, when to close the market, the long/short skew, and how much you’re bidding.",
+			"details": {
+				"select-asset-label": "select asset:",
+				"strike-price-label": "strike price:",
+				"bidding-end-date-label": "bidding end date:",
+				"market-maturity-date-label": "market maturity date:",
+				"long-short-skew-label": "long/short price skew:",
+				"funding-amount": {
+					"label": "market funding amount:",
+					"desc": "Note: your sUSD will be locked up in this contract until the market maturity date"
+				}
+			},
+			"summary": {
+				"title": "new market summary:",
+				"dates": {
+					"bidding-end": "Bidding end",
+					"maturity-date": "Maturity date",
+					"time-to-exercise": "Time to exercise"
+				},
+				"fees": {
+					"bidding": "Bidding fee",
+					"creator": "Creator earns",
+					"refund": "Withdrawal penalty",
+					"pool": "Fee pool earns"
+				},
+				"withdrawals": {
+					"tooltip": "Here you can choose to allow withdrawals, which can affect the pay-out and odds dramatically, particularly late in the Bidding phase."
+				},
+				"wallet-access": "Before you can create a new market, enable wallet access:",
+				"create-market-button-label": "create market",
+				"creating-market-button-label": "creating market...",
+				"approve-manager-button-label": "enable wallet access",
+				"waiting-for-approval-button-label": "enabling wallet access..."
+			}
+		},
+		"market": {
+			"heading": {
+				"all-markets": "all markets",
+				"market-details": "market details",
+				"market-sentiment": "market sentiment:"
+			},
+			"info-modal": {
+				"title": "market information:",
+				"table": {
+					"currency-col": "currency",
+					"strike-price-col": "strike price",
+					"phase-col": "phase",
+					"bidding-end-col": "bidding end",
+					"maturity-col": "maturity",
+					"expiry-col": "expiry",
+					"option-prices-col": "option prices",
+					"total-outstanding-bids-col": "total outstanding bids",
+					"total-outstanding-options-col": "total outstanding options",
+					"deposited-currency-col": "deposited <0>{{currencyKey}}</0>",
+					"currency-price-col": "current <0>{{currencyKey}}</0> price",
+					"final-price-col": "final <0>{{currencyKey}}</0> price",
+					"current-price-col": "current <0>{{currencyKey}}</0> price",
+					"current-result-col": "current result",
+					"final-result-col": "final result"
+				}
+			},
+			"chart-card": {
+				"chart-types": {
+					"price": "price",
+					"options": "options"
+				},
+				"no-chart-data": "No chart data"
+			},
+			"transactions-card": {
+				"recent-market-tab-title": "recent market activity",
+				"your-activity-tab-title": "your activity",
+				"pending-transactions-tab-title": "pending transactions",
+				"table": {
+					"date-time-col": "date | time",
+					"type-col": "type",
+					"position-col": "position",
+					"amount-col": "amount",
+					"tx-status-col": "tx status",
+					"no-results-your-activity": "No transactions associated with this wallet.",
+					"no-results-recent-activity": "No transactions associated with this market.",
+					"no-results-pending-transactions": "No pending transactions associated with this wallet.",
+					"types": {
+						"bid": "Bid",
+						"refund": "Withdrawal",
+						"claim": "Claim",
+						"exercise": "Exercise"
+					}
+				}
+			},
+			"trade-card": {
+				"shared": {
+					"price-shift": "If a bid is too large for the current size of the market, it will cause slippage."
+				},
+				"bidding": {
+					"bid": {
+						"title": "place bid",
+						"subtitle": "Pick a side to place a bid:",
+						"amount-label": "bid amount:",
+						"price-label": "price:",
+						"confirm-bid": "confirm-bid",
+						"confirm-button": {
+							"label": "confirm bid",
+							"progress-label": "bidding in progress...",
+							"high-slippage": "Warning this bid will shift market prices by more than 10% make sure you have entered the right bid amount."
+						}
+					},
+					"refund": {
+						"title": "withdraw",
+						"subtitle": "From your existing bid:",
+						"amount-label": "withdrawing:",
+						"price-label": "price:",
+						"confirm-button": {
+							"label": "confirm withdrawal",
+							"progress-label": "withdrawal in progress..."
+						},
+						"disabled": {
+							"tooltip": "Market Creator has disabled all withdrawals - sUSD bids are final",
+							"first-time-tooltip": "WARNING: market creator has disabled withdrawals on this market. All sUSD bids are final."
+						}
+					},
+					"common": {
+						"current-position": "current position:",
+						"bid": "bid:",
+						"payout": "payout:",
+						"bid-fee": "Bid fee",
+						"refund-fee": "Refund fee"
+					},
+					"footer": {
+						"end-label": "bidding period closing in:"
+					}
+				},
+				"trading": {
+					"title": "claim options",
+					"card-title": "bidding has closed",
+					"card-subtitle": "Options available:",
+					"confirm-button": {
+						"label": "claim options",
+						"progress-label": "claiming in progress...",
+						"success-label": "nothing to claim"
+					},
+					"footer": {
+						"end-label": "trading period closing in:"
+					}
+				},
+				"maturity": {
+					"title": "exercise options",
+					"card-title": "market has closed",
+					"card-subtitle": "Options available:",
+					"payout-amount": "payout amount",
+					"confirm-button": {
+						"label": "exercise options",
+						"progress-label": "exercising in progress...",
+						"success-label": "nothing to exercise"
+					},
+					"footer": {
+						"end-label": "time left to exercise:"
+					}
+				}
+			}
+		},
+		"common": {
+			"time-remaining": {
+				"ended": "ended"
+			},
+			"long": "long",
+			"short": "short",
+			"price": "price",
+			"amount-long": "{{amount}} long",
+			"amount-short": "{{amount}} short",
+			"final-price": "final price:",
+			"claimable-amount": "claimable: {{amount}}",
+			"long-price": "Long price",
+			"short-price": "Short price",
+			"new-to-binary-options": "New to Binary Options on Synthetix? Make sure to read <0>how it works</0> first!",
+			"withdrawals": "withdrawals"
+		}
+	},
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
@@ -99,6 +404,60 @@
 		"promo": {
 			"ether-promo-card": {
 				"title": "get synths to start trading:"
+			}
+		},
+		"chart-tooltip": {
+			"trade-total": "Total",
+			"price": "Price"
+		},
+		"chart-card": {
+			"info-boxes": {
+				"price": "Price",
+				"24h-change": "24h change",
+				"24h-high": "24h high",
+				"24h-low": "24h low",
+				"24h-volume": "24h volume",
+				"your-trades": "Your trades"
+			},
+			"pair-list": {
+				"table": {
+					"no-results": "No pairs found"
+				}
+			}
+		},
+		"trade-card": {
+			"title": "Buy/Sell",
+			"reverse-button": "Reverse",
+			"sell-input-label": "Sell",
+			"buy-input-label": "Buy",
+			"confirm-trade-button": "Confirm trade",
+			"frozen-synth": "Synth is frozen",
+			"retry-button": "Retry",
+			"network-info": {
+				"usd-value": "USD Value",
+				"fee": "Fee"
+			},
+			"network-info-tooltip": {
+				"exchange-fee": "Exchange fee",
+				"network-fee": "Network fee (gas)"
+			}
+		},
+		"order-book-card": {
+			"tabs": {
+				"your-orders": "Your orders",
+				"your-trades": "Your trades",
+				"all-trades": "All trades"
+			},
+			"table": {
+				"date": "Date | time",
+				"pair": "Pair",
+				"buying": "Buying",
+				"selling": "Selling",
+				"price": "Price",
+				"total": "Total",
+				"status": "Status",
+				"verify": "verify",
+				"no-results": "No pending exchanges associated with this wallet"
 			}
 		}
 	},
@@ -117,7 +476,7 @@
 			}
 		},
 		"my-loans": {
-			"title": "my loans",
+			"title": "your loans",
 			"table": {
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
@@ -132,7 +491,11 @@
 			"create-loan": {
 				"title": "create a loan",
 				"currency-locked": "<0>{{currencyKey}}</0> being locked:",
-				"currency-borrowed": "<0>{{currencyKey}}</0> being borrowed:"
+				"currency-borrowed": "<0>{{currencyKey}}</0> being borrowed:",
+				"paused": {
+					"message": "Ether Collateral loans have been paused.",
+					"button-label": "read this post for info"
+				}
 			},
 			"close-loan": {
 				"title": "close loan",
@@ -142,12 +505,117 @@
 			"errors": {
 				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
 			}
+		},
+		"modal": {
+			"loan-trial": {
+				"title": "Please note: this is a trial!",
+				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading the blog post first:",
+				"button-label": "Open loan - I have read the blog post"
+			}
+		}
+	},
+	"assets": {
+		"navigation": {
+			"overview": "overview",
+			"exchanges": "exchanges",
+			"transfers": "transfers",
+			"options": "options"
+		},
+		"balances": {
+			"hide-small-value": "Hide small value assets",
+			"show-small-value": "Show small value assets"
+		},
+		"overview": {
+			"dashboard": {
+				"total-balance": {
+					"title": "estimated synths value"
+				},
+				"balance-chart": {
+					"title": "synth balance",
+					"period": {
+						"1mo": "last month"
+					}
+				},
+				"synth-breakdown": {
+					"title": "synth breakdown",
+					"description": "top 4 assets",
+					"assets": {
+						"other": "Other"
+					}
+				}
+			},
+			"your-synths": {
+				"title": "your synths",
+				"table": {
+					"asset-col": "asset",
+					"asset-description-col": "description",
+					"total-col": "total",
+					"usd-value-col": "usd value",
+					"actions-col": "actions",
+					"no-results": "No assets associated with this wallet."
+				}
+			}
+		},
+		"exchanges": {
+			"title": "exchange history",
+			"table": {
+				"date-time-col": "date | time",
+				"pair-col": "pair",
+				"buying-col": "buying",
+				"selling-col": "selling",
+				"price-col": "price",
+				"total-col": "total",
+				"fee-reclaim-col": "fee reclamation",
+				"settled-price-col": "settled price",
+				"status-col": "status",
+				"verify-col": "verify",
+				"no-results": "No exchanges associated with this wallet.",
+				"fee-reclaim-tooltip": "Synth trades can have delays between submitting a trade and it executing, so there is a waiting period to check if a trade was affected by a lag in on-chain price updates. In this waiting period, users cannot exchange, transfer, or burn the Synth they’ve just traded into, and if there was a lag they will be either <0>reclaimed</0> or <1>rebated</1> the difference on their next transaction with that Synth."
+			}
+		},
+		"transfers": {
+			"title": "synth transfer history",
+			"table": {
+				"date-time-col": "date | time",
+				"asset-col": "asset",
+				"total-col": "total",
+				"status-col": "details",
+				"verify-col": "verify"
+			}
+		},
+		"options": {
+			"banner": {
+				"has-markets": {
+					"title": "Binary Options",
+					"subtitle": "Here you can see all the binary options markets you’ve bid on or markets you’ve created."
+				},
+				"no-susd": {
+					"title": "Get {{currencyKey}} to start bidding"
+				},
+				"no-markets": {
+					"title": "You have no bids or markets"
+				},
+				"common": {
+					"buttons": {
+						"view-all-markets-label": "view all markets",
+						"create-new-market-label": "create new market"
+					}
+				}
+			},
+			"table": {
+				"title": "your markets"
+			}
 		}
 	},
 	"common": {
 		"max": "max",
 		"gas-limit": "gas limit",
+		"network-fee-gas": "network fee (gas)",
 		"gas-price-gwei": "gas price (gwei)",
+		"gwei": "gwei",
+		"transaction": {
+			"view": "View"
+		},
 		"contracts": {
 			"view": "View Contract"
 		},
@@ -156,34 +624,125 @@
 			"close": "close",
 			"edit": "edit",
 			"confirm": "confirm",
-			"click-to-retry": "click to retry"
+			"click-to-retry": "click to retry",
+			"trade": "trade",
+			"info": "info",
+			"convert-to-eth": "convert to eth",
+			"swap-via-1inch": "swap-via-1inch",
+			"view": "view"
 		},
 		"tx-status": {
 			"waiting": "Waiting",
 			"open": "Open",
 			"closed": "Closed",
-			"closing": "Closing"
+			"closing": "Closing",
+			"in": "Transferred in",
+			"out": "Transferred out",
+			"complete": "Complete",
+			"pending": "Pending",
+			"confirmed": "Confirmed",
+			"cancelled": "Cancelled",
+			"failed": "failed"
 		},
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
 			"currency-balance": "{{currencyKey}} BALANCE",
 			"balance-currency": "Balance: {{balance}}",
 			"no-wallet-connected": "No wallet currently connected",
-			"connect-currency-wallet": "connect {{currencyKey}} wallet to start"
+			"connect-currency-wallet": "connect {{currencyKey}} wallet to start",
+			"connect-your-wallet": "Connect your wallet"
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
-			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again",
-			"error-loading": "An error occurred trying to load"
+			"gas-exceeds-limit": "Max input is {{gasPrice}}",
+			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
+			"error-loading": "An error occurred trying to load",
+			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
 			"buy-currencyA-with-currencyB-on-uniswap": "Buy {{currencyKeyA}} with {{currencyKeyB}} on Uniswap",
 			"borrow-currency": "Borrow {{currencyKey}}",
+			"synthetic-currency": "Synthetic {{currencyKey}}",
+			"fiat-synths": "sFiat",
+			"decimals": "decimals",
+			"contract-address": "contract address",
+			"lower-limit": "lower limit",
+			"upper-limit": "upper limit",
+			"entry": "entry",
+			"lower-limit-price": "lower {{price}}",
+			"upper-limit-price": "upper {{price}}",
+			"entry-limit-price": "entry {{price}}",
+			"frozen-synth": "This Synth has been frozen",
+			"lower-limit-reached-reset": "Lower limit reached, reset in progress.",
+			"upper-limit-reached-reset": "Upper limit reached, reset in progress.",
+			"trade-synths-for-currency": "trade synths for <0>{{currencyKey}}</0>",
+			"buy-currency": "buy <0>{{currencyKey}}</0>",
+			"try-currencyA-currencyB-or-currencyC-currencyD": "Try {{currencyA}} / {{currencyB}} or {{currencyC}} / {{currencyD}}"
+		},
+		"frozen": {
+			"message": "<0>{{currencyKey}} price limit hit.</0><1>Synth reset in progress.</1>"
+		},
+		"currency-category": {
 			"crypto": "crypto",
 			"forex": "forex",
-			"commodities": "commodities"
+			"commodity": "commodities",
+			"equities": "equities",
+			"index": "indices",
+			"inverse": "inverse"
 		},
-		"search": "search"
+		"search": "search",
+		"features": {
+			"coming-soon": "coming soon"
+		},
+		"search-results": {
+			"no-results-for-query": "No results for <0>{{searchQuery}}</0>"
+		},
+		"chart": {
+			"no-data-available": "No data available"
+		},
+		"systemStatus": {
+			"suspended-synths": {
+				"reasons": {
+					"market-closed": "Market closed"
+				}
+			}
+		},
+		"filters": {
+			"all": "all"
+		},
+		"pagination": {
+			"page": "Page",
+			"page-number": "Page {{pageNumber}}"
+		},
+		"buy": "buy",
+		"sell": "sell",
+		"chart-periods": {
+			"1H": "1H",
+			"4H": "4H",
+			"1D": "1D",
+			"1W": "1W",
+			"1M": "1M"
+		},
+		"top-number": "top {{number}}",
+		"by-date": "by {{date}}",
+		"val-in-cents": "{{val}}c",
+		"eg-val": "e.g. {{val}}",
+		"select-date": "select date",
+		"beta": "beta",
+		"or": "or",
+		"toggle": {
+			"on": "on",
+			"off": "off"
+		},
+		"enable-wallet-access": {
+			"label": "enable wallet access",
+			"progress-label": "enabling wallet access..."
+		},
+		"asset": "asset",
+		"units": "units",
+		"weight": "weight",
+		"more-info": "More info",
+		"not-available": "None"
 	}
 }

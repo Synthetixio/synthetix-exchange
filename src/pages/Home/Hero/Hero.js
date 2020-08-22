@@ -1,12 +1,12 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { HeadingLarge } from 'src/components/Typography/Heading';
-import { media } from 'src/shared/media';
-import { darkTheme } from 'src/styles/theme';
+import { headingH2CSS } from 'components/Typography/Heading';
+import { media } from 'shared/media';
+import { darkTheme } from 'styles/theme';
 
-export const Hero = memo(() => {
+export const Hero = () => {
 	const { t } = useTranslation();
 
 	return (
@@ -17,7 +17,7 @@ export const Hero = memo(() => {
 			</Content>
 		</Container>
 	);
-});
+};
 
 const Container = styled.div`
 	width: 100%;
@@ -36,7 +36,8 @@ const Content = styled.div`
 	margin: 0 auto;
 `;
 
-const HeroTitle = styled(HeadingLarge)`
+const HeroTitle = styled.div`
+	${headingH2CSS};
 	color: ${darkTheme.colors.fontPrimary};
 	padding-bottom: 24px;
 	${media.large`
@@ -52,7 +53,7 @@ const HeroTitle = styled(HeadingLarge)`
 const HeroSubtitle = styled.div`
 	font-size: 24px;
 	color: ${darkTheme.colors.fontTertiary};
-	font-family: ${props => props.theme.fonts.regular};
+	font-family: ${(props) => props.theme.fonts.regular};
 	${media.large`
 		font-size: 16px;
 	`}

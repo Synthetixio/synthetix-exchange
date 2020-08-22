@@ -6,18 +6,18 @@ import PropTypes from 'prop-types';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { ReactComponent as NoWalletIcon } from '../../../../assets/images/no-wallet.svg';
-import { ReactComponent as ErrorCircleIcon } from '../../../../assets/images/error-circle.svg';
-import { ReactComponent as SortDownIcon } from '../../../../assets/images/sort-down.svg';
-import { ReactComponent as SortUpIcon } from '../../../../assets/images/sort-up.svg';
-import { ReactComponent as SortIcon } from '../../../../assets/images/sort.svg';
+import { ReactComponent as NoWalletIcon } from 'assets/images/no-wallet.svg';
+import { ReactComponent as ErrorCircleIcon } from 'assets/images/error-circle.svg';
+import { ReactComponent as SortDownIcon } from 'assets/images/sort-down.svg';
+import { ReactComponent as SortUpIcon } from 'assets/images/sort-up.svg';
+import { ReactComponent as SortIcon } from 'assets/images/sort.svg';
 
-import Card from '../../../../components/Card';
-import { ButtonPrimarySmall } from '../../../../components/Button';
-import { HeadingSmall } from '../../../../components/Typography';
-import Spinner from '../../../../components/Spinner';
+import Card from 'components/Card';
+import { ButtonPrimarySmall } from 'components/Button';
+import { HeadingSmall } from 'components/Typography';
+import Spinner from 'components/Spinner';
 
-import { absoluteCenteredCSS } from '../../../../shared/commonStyles';
+import { absoluteCenteredCSS, TableNoResults } from 'shared/commonStyles';
 
 import {
 	fetchLoans,
@@ -27,17 +27,13 @@ import {
 	getMyLoansLoadingError,
 	getIsLoadedMyLoans,
 	LOAN_STATUS,
-} from '../../../../ducks/loans/myLoans';
-import { getWalletInfo } from '../../../../ducks';
-import { showWalletPopup } from '../../../../ducks/ui';
+} from 'ducks/loans/myLoans';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { showWalletPopup } from 'ducks/ui';
 
-import {
-	formatTxTimestamp,
-	formatCurrencyWithKey,
-	formatCurrency,
-} from '../../../../utils/formatters';
+import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'utils/formatters';
 
-import { CARD_HEIGHT } from '../../../../constants/ui';
+import { CARD_HEIGHT } from 'constants/ui';
 
 export const MyLoans = ({
 	onSelectLoan,
@@ -58,30 +54,30 @@ export const MyLoans = ({
 	const columns = useMemo(
 		() => [
 			{
-				Header: t('loans.my-loans.table.amount-borrowed-col'),
+				Header: <>{t('loans.my-loans.table.amount-borrowed-col')}</>,
 				accessor: 'loanAmount',
-				Cell: cellProps => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.collateral-col'),
+				Header: <>{t('loans.my-loans.table.collateral-col')}</>,
 				accessor: 'collateralAmount',
-				Cell: cellProps => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.time-opened-col'),
+				Header: <>{t('loans.my-loans.table.time-opened-col')}</>,
 				accessor: 'timeCreated',
-				Cell: cellProps => formatTxTimestamp(cellProps.cell.value),
+				Cell: (cellProps) => formatTxTimestamp(cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.current-interest-fee-col'),
+				Header: <>{t('loans.my-loans.table.current-interest-fee-col')}</>,
 				accessor: 'currentInterest',
-				Cell: cellProps => (
+				Cell: (cellProps) => (
 					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
 						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value, 4)}</span>
 					</Tooltip>
@@ -90,9 +86,9 @@ export const MyLoans = ({
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.fees-payable-col'),
+				Header: <>{t('loans.my-loans.table.fees-payable-col')}</>,
 				accessor: 'feesPayable',
-				Cell: cellProps => (
+				Cell: (cellProps) => (
 					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
 						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value, 4)}</span>
 					</Tooltip>
@@ -101,15 +97,15 @@ export const MyLoans = ({
 				sortable: true,
 			},
 			{
-				Header: t('loans.my-loans.table.status-col'),
+				Header: <>{t('loans.my-loans.table.status-col')}</>,
 				accessor: 'status',
-				Cell: cellProps => t(`common.tx-status.${cellProps.cell.value}`),
+				Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
 				width: 100,
 				sortable: true,
 			},
 			{
 				id: 'close',
-				Cell: cellProps => {
+				Cell: (cellProps) => {
 					const loanData = cellProps.row.original;
 					const isLoanClosed = loanData.status === LOAN_STATUS.CLOSED;
 
@@ -154,9 +150,9 @@ export const MyLoans = ({
 			</Card.Header>
 			<StyledCardBody>
 				<Table {...getTableProps()}>
-					{headerGroups.map(headerGroup => (
+					{headerGroups.map((headerGroup) => (
 						<TableRow {...headerGroup.getHeaderGroupProps()}>
-							{headerGroup.headers.map(column => (
+							{headerGroup.headers.map((column) => (
 								<TableCellHead
 									{...column.getHeaderProps(column.getSortByToggleProps())}
 									className="th"
@@ -181,7 +177,7 @@ export const MyLoans = ({
 					))}
 					{isLoadedMyLoans && rows.length > 0 ? (
 						<TableBody {...getTableBodyProps()}>
-							{rows.map(row => {
+							{rows.map((row) => {
 								prepareRow(row);
 
 								return (
@@ -192,7 +188,7 @@ export const MyLoans = ({
 											selectedLoan != null && selectedLoan.loanID === row.original.loanID
 										}
 									>
-										{row.cells.map(cell => (
+										{row.cells.map((cell) => (
 											<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
 										))}
 									</TableBodyRow>
@@ -221,7 +217,9 @@ export const MyLoans = ({
 						<HeaderSpinner size="sm" centered={true} />
 					) : (
 						rows.length === 0 &&
-						isLoadedMyLoans && <NoResults>{t('loans.my-loans.table.no-results')}</NoResults>
+						isLoadedMyLoans && (
+							<TableNoResults>{t('loans.my-loans.table.no-results')}</TableNoResults>
+						)
 					)}
 				</Table>
 			</StyledCardBody>
@@ -241,7 +239,7 @@ const StyledCardBody = styled(Card.Body)`
 `;
 
 const HeaderSpinner = styled(Spinner)`
-	${props =>
+	${(props) =>
 		props.centered
 			? absoluteCenteredCSS
 			: css`
@@ -257,7 +255,7 @@ const Table = styled.div`
 `;
 
 const TableRow = styled.div`
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 	margin-bottom: 8px;
 `;
 
@@ -268,10 +266,10 @@ const TableBody = styled.div`
 `;
 
 const TableBodyRow = styled(TableRow)`
-	background-color: ${props =>
-		props.isSelectedLoan ? props.theme.colors.accentDark : props.theme.colors.surfaceL3};
+	background-color: ${(props) =>
+		props.isSelectedLoan ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
 	&:hover {
-		background-color: ${props => props.theme.colors.accentDark};
+		background-color: ${(props) => props.theme.colors.accentL1};
 		> * {
 			transition: transform 0.2s ease-out;
 			transform: scale(1.02);
@@ -282,7 +280,7 @@ const TableBodyRow = styled(TableRow)`
 const TableCell = styled.div`
 	display: flex;
 	align-items: center;
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 	font-size: 12px;
 	padding: 10px 0;
 	height: ${CARD_HEIGHT};
@@ -297,17 +295,10 @@ const TableCell = styled.div`
 `;
 
 const TableCellHead = styled(TableCell)`
-	color: ${props => props.theme.colors.fontTertiary};
+	color: ${(props) => props.theme.colors.fontTertiary};
 	user-select: none;
 	text-transform: uppercase;
-	background-color: ${props => props.theme.colors.surfaceL3};
-`;
-
-const NoResults = styled.div`
-	margin-top: 20px;
-	color: ${props => props.theme.colors.fontPrimary};
-	font-size: 13px;
-	padding: 0 18px;
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 `;
 
 const MessageContainer = styled.div`
@@ -317,13 +308,13 @@ const MessageContainer = styled.div`
 	width: 300px;
 	justify-items: center;
 	padding: 30px;
-	background-color: ${props => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL3};
 	${absoluteCenteredCSS};
 `;
 
 const MessageLabel = styled.div`
 	font-size: 15px;
-	color: ${props => props.theme.colors.fontPrimary};
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
 const SortIconContainer = styled.span`
@@ -342,7 +333,7 @@ MyLoans.propTypes = {
 	isLoadedMyLoans: PropTypes.bool,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	loans: getMyLoans(state),
 	isLoadingMyLoans: getIsLoadingMyLoans(state),

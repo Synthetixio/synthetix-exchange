@@ -9,24 +9,32 @@ const smallButtonCSS = css`
 	line-height: 34px;
 `;
 
+const extraSmallButtonCSS = css`
+	height: 24px;
+	font-size: 11px;
+	padding: 0 10px;
+	width: auto;
+	line-height: 24px;
+`;
+
 const ButtonPrimary = styled.button`
 	border-radius: 1px;
 	height: 48px;
 	width: 100%;
 	font-size: 16px;
-	letter-spacing: 0.5px;
-	font-family: ${props => props.theme.fonts.medium};
-	color: ${props => props.theme.colors.white};
+	letter-spacing: 0.2px;
+	font-family: ${(props) => props.theme.fonts.medium};
+	color: ${(props) => props.theme.colors.white};
 	cursor: pointer;
 	padding: 0 6px;
-	background-color: ${props => props.theme.colors.buttonDefault};
+	background-color: ${(props) => props.theme.colors.buttonDefault};
 	&:disabled {
 		opacity: 0.5;
 		cursor: default;
 	}
 	&:hover {
 		&:not(:disabled) {
-			background-color: ${props => props.theme.colors.buttonHover};
+			background-color: ${(props) => props.theme.colors.buttonHover};
 		}
 	}
 	border: none;
@@ -34,11 +42,16 @@ const ButtonPrimary = styled.button`
 	line-height: 44px;
 	white-space: nowrap;
 	${width};
-	${props => props.size === 'sm' && smallButtonCSS}
+	${(props) => props.size === 'sm' && smallButtonCSS}
+	${(props) => props.size === 'xs' && extraSmallButtonCSS}
 `;
 
 export const ButtonPrimarySmall = styled(ButtonPrimary)`
 	${smallButtonCSS}
+`;
+
+export const ButtonPrimaryExtraSmall = styled(ButtonPrimary)`
+	${extraSmallButtonCSS}
 `;
 
 export default ButtonPrimary;

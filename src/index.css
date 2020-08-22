@@ -1,12 +1,19 @@
-body {
-	margin: 0;
-	font-family: 'apercu-regular';
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
 * {
 	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: 'apercu-regular', -apple-system, BlinkMacSystemFont, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	letter-spacing: 0.2px;
+	line-height: 1.2;
+	font-size: 16px;
+}
+
+button {
+	letter-spacing: 0.2px;
 }
 
 @font-face {
@@ -82,6 +89,12 @@ body {
 }
 input[type='number'] {
 	-moz-appearance: textfield;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 input::-webkit-outer-spin-button,

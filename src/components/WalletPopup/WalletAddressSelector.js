@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
-import snxJSConnector from '../../utils/snxJSConnector';
+import snxJSConnector from 'utils/snxJSConnector';
 import {
-	updateWalletStatus,
+	updateWalletReducer,
 	updateWalletPaginatorIndex,
-	derivationPathChange,
-	resetWalletStatus,
-} from '../../ducks/wallet';
-import { toggleWalletPopup } from '../../ducks/ui';
-import { getWalletInfo } from '../../ducks';
+	setDerivationPath,
+	resetWalletReducer,
+} from 'ducks/wallet/walletDetails';
+import { toggleWalletPopup } from 'ducks/ui';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
-import { HeadingMedium } from '../Typography';
+import { headingH3CSS, headingH5CSS } from 'components/Typography/Heading';
 import WalletAddressTable from '../WalletAddressTable';
 import WalletPaginator from '../WalletPaginator';
 import Spinner from '../Spinner';
 import Select from '../Select';
 import { ButtonPrimary } from '../Button';
 
-import { bigNumberFormatter } from '../../utils/formatters';
+import { media } from 'shared/media';
 
 const WALLET_PAGE_SIZE = 5;
 const LEDGER_DERIVATION_PATHS = [
@@ -29,59 +30,66 @@ const LEDGER_DERIVATION_PATHS = [
 
 const useGetWallets = () => {
 	const { walletPaginatorIndex, derivationPath, availableWallets } = useSelector(
-		state => state.wallet
+		(state) => state.wallet.walletDetails
 	);
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const { t } = useTranslation();
+
 	useEffect(() => {
 		const walletIndex = walletPaginatorIndex * WALLET_PAGE_SIZE;
 		if (availableWallets[walletIndex]) return;
 		setIsLoading(true);
 		const getWallets = async () => {
 			try {
-				const results = await snxJSConnector.signer.getNextAddresses(walletIndex, WALLET_PAGE_SIZE);
-				if (!results) throw new Error('Could not get addresses from wallet');
-				const nextWallets = results.map(address => {
-					return {
-						address,
-						balances: [],
-					};
-				});
+				const nextWalletAddresses = await snxJSConnector.signer.getNextAddresses(
+					walletIndex,
+					WALLET_PAGE_SIZE
+				);
+				if (!nextWalletAddresses) throw new Error(t('modals.wallet.errors.could-not-get-address'));
+
+				const nextWallets = nextWalletAddresses.map((address) => ({
+					address,
+					balances: {
+						snxBalance: null,
+						sUSDBalance: null,
+						ethBalance: null,
+					},
+				}));
+
 				dispatch(
-					updateWalletStatus({
+					updateWalletReducer({
 						unlocked: true,
 						availableWallets: [...availableWallets, ...nextWallets],
 					})
 				);
+
 				setIsLoading(false);
 
-				const getBalanceForWallet = async wallet => {
-					return {
-						snxBalance: await snxJSConnector.snxJS.Synthetix.collateral(wallet.address),
-						sUSDBalance: await snxJSConnector.snxJS.sUSD.balanceOf(wallet.address),
-						ethBalance: await snxJSConnector.provider.getBalance(wallet.address),
-					};
-				};
+				const nextWalletsWithBalances = [];
 
-				nextWallets.forEach((wallet, index) => {
-					getBalanceForWallet(wallet, index).then(balance => {
-						wallet.balances = {
-							snxBalance: bigNumberFormatter(balance.snxBalance),
-							sUSDBalance: bigNumberFormatter(balance.sUSDBalance),
-							ethBalance: bigNumberFormatter(balance.ethBalance),
-						};
-
-						dispatch(
-							updateWalletStatus({ availableWallets: [...availableWallets, ...nextWallets] })
-						);
+				for (const nextWallet of nextWallets) {
+					nextWalletsWithBalances.push({
+						address: nextWallet.address,
+						balances: {
+							snxBalance: await snxJSConnector.snxJS.Synthetix.collateral(nextWallet.address),
+							sUSDBalance: await snxJSConnector.snxJS.sUSD.balanceOf(nextWallet.address),
+							ethBalance: await snxJSConnector.provider.getBalance(nextWallet.address),
+						},
 					});
-				});
+				}
+
+				dispatch(
+					updateWalletReducer({
+						availableWallets: [...availableWallets, ...nextWalletsWithBalances],
+					})
+				);
 			} catch (e) {
 				console.log(e);
 				setError(e.message);
 				dispatch(
-					updateWalletStatus({
+					updateWalletReducer({
 						unlocked: false,
 					})
 				);
@@ -94,21 +102,16 @@ const useGetWallets = () => {
 };
 
 const ErrorMessage = ({ error, isLedger, onRetry }) => {
+	const { t } = useTranslation();
+
 	return (
 		<ErrorContainer>
-			<HeadingMedium>Error</HeadingMedium>
-			<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-				{error}
-			</HeadingMedium>
-			{isLedger ? (
-				<HeadingMedium fontFamily="apercu-light" fontSize={'18px'}>
-					Please make sure your Ledger is unlocked, on Ethereum app with contract data setting
-					allowed
-				</HeadingMedium>
-			) : null}
+			<Title>{t('modals.wallet.errors.generic-error')}</Title>
+			<Label>{error}</Label>
+			{isLedger ? <Label>{t('modals.wallet.errors.ledger-error')}</Label> : null}
 
 			<ButtonPrimary onClick={() => onRetry()} width="250px">
-				Retry
+				{t('modals.wallet.retry')}
 			</ButtonPrimary>
 		</ErrorContainer>
 	);
@@ -116,10 +119,10 @@ const ErrorMessage = ({ error, isLedger, onRetry }) => {
 
 const WalletAddressSelector = ({
 	toggleWalletPopup,
-	updateWalletStatus,
-	resetWalletStatus,
+	updateWalletReducer,
+	resetWalletReducer,
 	updateWalletPaginatorIndex,
-	derivationPathChange,
+	setDerivationPath,
 	goBack,
 	walletInfo: {
 		derivationPath,
@@ -131,13 +134,14 @@ const WalletAddressSelector = ({
 	},
 }) => {
 	const { isLoading, getAddressError } = useGetWallets(walletPaginatorIndex, derivationPath);
+	const { t } = useTranslation();
 	const isHardwareWallet = ['Ledger', 'Trezor'].includes(walletType);
 	const isLedger = walletType === 'Ledger';
 	const selectedDerivationPath = derivationPath
-		? LEDGER_DERIVATION_PATHS.find(path => path.value === derivationPath)
+		? LEDGER_DERIVATION_PATHS.find((path) => path.value === derivationPath)
 		: LEDGER_DERIVATION_PATHS[0];
 	const onRetry = () => {
-		resetWalletStatus();
+		resetWalletReducer();
 		goBack();
 	};
 	const error = unlockError || getAddressError;
@@ -145,7 +149,7 @@ const WalletAddressSelector = ({
 	if (error) return <ErrorMessage error={error} isLedger={isLedger} onRetry={onRetry} />;
 	return (
 		<Container>
-			<HeadingMedium>Select your wallet</HeadingMedium>
+			<Title>{t('modals.wallet.select-your-wallet')}</Title>
 			<Body>
 				{isLedger && (
 					<SelectWrapper>
@@ -154,14 +158,14 @@ const WalletAddressSelector = ({
 							searchable={false}
 							options={LEDGER_DERIVATION_PATHS}
 							value={selectedDerivationPath}
-							onChange={option => {
+							onChange={(option) => {
 								if (option.value === derivationPath) return;
 								const signerOptions = {
 									type: 'Ledger',
 									networkId,
 									derivationPath: option.value,
 								};
-								derivationPathChange(signerOptions, option.value);
+								setDerivationPath({ signerOptions, derivationPath: option.value });
 							}}
 						></Select>
 					</SelectWrapper>
@@ -180,7 +184,7 @@ const WalletAddressSelector = ({
 								if (isHardwareWallet) {
 									snxJSConnector.signer.setAddressIndex(walletIndex);
 								}
-								updateWalletStatus({ currentWallet: wallet.address });
+								updateWalletReducer({ currentWallet: wallet.address });
 								toggleWalletPopup(false);
 							}}
 						/>
@@ -190,7 +194,7 @@ const WalletAddressSelector = ({
 					<WalletPaginator
 						disabled={isLoading || !isHardwareWallet}
 						currentIndex={walletPaginatorIndex}
-						onIndexChange={index => updateWalletPaginatorIndex(index)}
+						onIndexChange={(index) => updateWalletPaginatorIndex(index)}
 					/>
 				) : null}
 			</Body>
@@ -207,7 +211,10 @@ const SelectWrapper = styled.div`
 
 const Container = styled.div`
 	text-align: center;
-	width: 100%;
+	min-width: 1024px;
+	${media.large`
+		min-width: unset;
+	`}
 `;
 
 const ErrorContainer = styled.div`
@@ -225,18 +232,27 @@ const AddressesContainer = styled.div`
 	justify-content: center;
 `;
 
-const mapStateToProps = state => {
+const Title = styled.div`
+	${headingH3CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
+const Label = styled.div`
+	${headingH5CSS};
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+const mapStateToProps = (state) => {
 	return {
 		walletInfo: getWalletInfo(state),
 	};
 };
 
 const mapDispatchToProps = {
-	updateWalletStatus,
+	updateWalletReducer,
 	toggleWalletPopup,
 	updateWalletPaginatorIndex,
-	derivationPathChange,
-	resetWalletStatus,
+	setDerivationPath,
+	resetWalletReducer,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletAddressSelector);
