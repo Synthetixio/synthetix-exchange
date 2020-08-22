@@ -20,7 +20,6 @@ import {
 	updateTransaction,
 	getTransactions,
 } from 'ducks/transaction';
-import { toggleGweiPopup } from 'ducks/ui';
 
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { BALANCE_FRACTIONS } from 'constants/order';
@@ -44,7 +43,7 @@ import DismissableMessage from 'components/DismissableMessage';
 import { FormInputRow, FormInputLabel, FormInputLabelSmall } from 'shared/commonStyles';
 
 import { ReactComponent as ReverseArrow } from 'assets/images/reverse-arrow.svg';
-import NetworkInfo from './NetworkInfo';
+import NetworkInfo from '../../../../components/NetworkInfo/NetworkInfo';
 
 const INPUT_DEFAULT_VALUE = '';
 
@@ -55,7 +54,6 @@ const CreateOrderCard = ({
 	exchangeRates,
 	gasInfo,
 	ethRate,
-	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
 	transactions,
@@ -82,8 +80,6 @@ const CreateOrderCard = ({
 		setBaseAmount(INPUT_DEFAULT_VALUE);
 		setQuoteAmount(INPUT_DEFAULT_VALUE);
 	};
-
-	const showGweiPopup = () => toggleGweiPopup(true);
 
 	useEffect(() => {
 		if (synthPair.reversed) {
@@ -395,7 +391,6 @@ const CreateOrderCard = ({
 					gasLimit={gasLimit}
 					ethRate={ethRate}
 					exchangeFeeRate={feeRate}
-					onEditButtonClick={showGweiPopup}
 					amount={baseAmount}
 					usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
 				/>
@@ -498,7 +493,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
 	createTransaction,
 	updateTransaction,
 };

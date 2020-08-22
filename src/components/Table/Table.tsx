@@ -15,7 +15,7 @@ import Spinner from 'components/Spinner';
 import { tableHeaderLargeCSS } from 'components/Typography/Table';
 import { bodyCSS } from 'components/Typography/General';
 
-type TablePalette = 'primary' | 'light-secondary' | 'striped';
+export type TablePalette = 'primary' | 'light-secondary' | 'striped';
 
 type ColumnWithSorting<D extends object = {}> = Column<D> & {
 	sortType?: string;

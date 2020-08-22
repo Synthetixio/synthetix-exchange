@@ -49,7 +49,6 @@ export const MarketInfoModal: FC<MarketInfoModalProps> = ({
 	networkId,
 }) => {
 	const { t } = useTranslation();
-	console.log(optionMarket.isResolved);
 	return (
 		<StyledModal
 			open={true}

@@ -33,6 +33,7 @@ export type SynthDefinition = {
 		symbol: CurrencyKey;
 		name: string;
 		units: number;
+		weight: number;
 	}>;
 	isFrozen?: boolean;
 };

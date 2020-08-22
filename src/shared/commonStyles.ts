@@ -114,7 +114,7 @@ export const LinkTextSmall = styled(DataSmall)`
 export type MessageProps = {
 	size: 'sm' | 'lg';
 	floating?: boolean;
-	type: 'error' | 'success';
+	type: 'error' | 'success' | 'info';
 };
 
 export const Message = styled(FlexDivCentered)<MessageProps>`
@@ -151,6 +151,11 @@ export const Message = styled(FlexDivCentered)<MessageProps>`
 			case 'success': {
 				return css`
 					background-color: ${(props) => props.theme.colors.green};
+				`;
+			}
+			case 'info': {
+				return css`
+					background-color: ${(props) => props.theme.colors.accentL1};
 				`;
 			}
 			default:
@@ -314,7 +319,6 @@ export const FullScreenModal = styled(Modal).attrs({
 	disableEscapeKeyDown: true,
 	disableAutoFocus: true,
 	disableEnforceFocus: true,
-	hideBackdrop: true,
 	disableRestoreFocus: true,
 })`
 	background-color: ${(props) => props.theme.colors.surfaceL1};
@@ -337,4 +341,19 @@ export const FullScreenModalCloseButton = styled.button`
 	right: 5%;
 	top: 5%;
 	color: ${({ theme }) => theme.colors.fontTertiary};
+`;
+
+export const QuestionMarkIcon = styled.div`
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	margin-left: 4px;
+	svg {
+		height: 8px;
+	}
 `;

@@ -65,7 +65,6 @@ function Select<T>(props: Props<T>) {
 			placeholder: (provided) => ({
 				...provided,
 				fontSize: '14px',
-				opacity: 0.5,
 				color: colors.fontTertiary,
 			}),
 		};

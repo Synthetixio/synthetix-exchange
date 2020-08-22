@@ -10,7 +10,6 @@ import { normalizeGasLimit } from 'utils/transactions';
 
 import { getGasInfo } from 'ducks/transaction';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
-import { toggleGweiPopup } from 'ducks/ui';
 import { updateLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
@@ -20,12 +19,11 @@ import { HeadingSmall } from 'components/Typography';
 
 import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from 'shared/commonStyles';
 
-import NetworkInfo from '../NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 
 export const CloseLoanCard = ({
-	toggleGweiPopup,
 	gasInfo,
 	ethRate,
 	isInteractive = true,
@@ -84,8 +82,6 @@ export const CloseLoanCard = ({
 		}
 	};
 
-	const showGweiPopup = () => toggleGweiPopup(true);
-
 	return (
 		<StyledCard isInteractive={isInteractive}>
 			<Card.Header>
@@ -118,12 +114,7 @@ export const CloseLoanCard = ({
 						</InfoBoxValue>
 					</InfoBox>
 				</LoanInfoContainer>
-				<NetworkInfo
-					gasPrice={gasInfo.gasPrice}
-					gasLimit={gasLimit}
-					ethRate={ethRate}
-					onEditButtonClick={showGweiPopup}
-				/>
+				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary onClick={handleSubmit} disabled={!selectedLoan || !currentWallet}>
 					{t('common.actions.confirm')}
 				</ButtonPrimary>
@@ -143,7 +134,6 @@ export const CloseLoanCard = ({
 };
 
 CloseLoanCard.propTypes = {
-	toggleGweiPopup: PropTypes.func.isRequired,
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.number,
 	isInteractive: PropTypes.bool,
@@ -175,7 +165,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
 	updateLoan,
 };
 

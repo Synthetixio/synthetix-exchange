@@ -29,7 +29,9 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const TradeCard: FC<PropsFromRedux> = ({ isWalletConnected, currentWalletAddress }) => {
+type TradeCardProps = PropsFromRedux;
+
+const TradeCard: FC<TradeCardProps> = ({ isWalletConnected, currentWalletAddress }) => {
 	const optionsMarket = useMarketContext();
 	const BOMContract = useBOMContractContext();
 

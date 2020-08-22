@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
@@ -9,9 +9,8 @@ type OverlayProps = {
 	onClick: () => void;
 };
 
-export const Overlay: FC<OverlayProps> = memo(({ onClick }) =>
-	ReactDOM.createPortal(<Container onClick={onClick} />, document.body)
-);
+export const Overlay: FC<OverlayProps> = ({ onClick }) =>
+	ReactDOM.createPortal(<Container onClick={onClick} />, document.body);
 
 const Container = styled.div`
 	top: ${APP_HEADER_HEIGHT};

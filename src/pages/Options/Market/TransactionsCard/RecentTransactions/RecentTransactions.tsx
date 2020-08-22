@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 
@@ -15,15 +15,12 @@ type RecentTransactionsProps = {
 	marketAddress: OptionsMarketInfo['address'];
 };
 
-const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress }) => {
+const RecentTransactions: FC<RecentTransactionsProps> = ({ marketAddress }) => {
 	const { t } = useTranslation();
 
 	const transactionsQuery = useQuery<OptionsTransactions, any>(
 		QUERY_KEYS.BinaryOptions.RecentTransactions(marketAddress),
-		() => snxData.binaryOptions.optionTransactions({ market: marketAddress }),
-		{
-			refetchOnWindowFocus: false,
-		}
+		() => snxData.binaryOptions.optionTransactions({ market: marketAddress })
 	);
 
 	const noResults =
@@ -42,6 +39,6 @@ const RecentTransactions: FC<RecentTransactionsProps> = memo(({ marketAddress })
 			}
 		/>
 	);
-});
+};
 
 export default RecentTransactions;

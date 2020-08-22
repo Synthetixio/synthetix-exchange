@@ -128,13 +128,14 @@ const Wallet = styled.button`
 	align-items: center;
 	width: 180px;
 	height: 240px;
-	&:hover {
-		transform: translateY(-20px);
-		background-color: ${(props) => props.theme.colors.accentL1};
-	}
 	&:disabled {
 		opacity: 0.5;
 		transform: none;
+		cursor: not-allowed;
+	}
+	&:hover:not([disabled]) {
+		transform: translateY(-20px);
+		background-color: ${(props) => props.theme.colors.accentL1};
 	}
 	transition: transform 0.2s ease-in-out;
 	${media.medium`

@@ -1,11 +1,13 @@
 import React, { useMemo, FC, useContext } from 'react';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import { LineChart, XAxis, YAxis, Line, Tooltip } from 'recharts';
 import format from 'date-fns/format';
 import isNumber from 'lodash/isNumber';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import snxData from 'synthetix-data';
+
+import { ReactComponent as ExclamationIcon } from 'assets/images/exclamation.svg';
 
 import { USD_SIGN } from 'constants/currency';
 
@@ -17,10 +19,8 @@ import Spinner from 'components/Spinner';
 
 import QUERY_KEYS from 'constants/queryKeys';
 
-import { ChartContainer } from '../common';
+import { ChartContainer, NoChartData } from '../common';
 import { OptionsMarketInfo, OptionsTransactions } from 'pages/Options/types';
-import { GridDivCenteredRow, absoluteCenteredCSS } from 'shared/commonStyles';
-import { subtitleSmallCSS } from 'components/Typography/General';
 import { calculateTimestampForPeriod } from 'services/rates/utils';
 
 type OptionsChartProps = {
@@ -30,7 +30,6 @@ type OptionsChartProps = {
 
 const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) => {
 	const { t } = useTranslation();
-
 	const theme = useContext(ThemeContext);
 
 	const historicalOptionPriceQuery = useQuery<OptionsTransactions, any>(
@@ -52,7 +51,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 	}, [historicalOptionPriceQuery.data]);
 
 	const isLoading = historicalOptionPriceQuery.isLoading;
-	const noResults = historicalOptionPriceQuery.isSuccess && chartData.length < 2;
+	const noChartData = historicalOptionPriceQuery.isSuccess && chartData.length < 2;
 
 	const fontStyle = {
 		fontSize: '12px',
@@ -69,7 +68,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 		<>
 			<ChartContainer semiTransparent={isLoading}>
 				<RechartsResponsiveContainer width="100%" height="100%">
-					<LineChart data={noResults ? [] : chartData}>
+					<LineChart data={noChartData ? [] : chartData}>
 						<XAxis
 							dataKey="timestamp"
 							tick={fontStyleMedium}
@@ -110,7 +109,7 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 							strokeWidth={1.5}
 							isAnimationActive={false}
 						/>
-						{!noResults && (
+						{!noChartData && (
 							<Tooltip
 								className="tooltip"
 								// @ts-ignore
@@ -138,15 +137,14 @@ const OptionsChart: FC<OptionsChartProps> = ({ selectedPeriod, optionsMarket }) 
 				</RechartsResponsiveContainer>
 			</ChartContainer>
 			{isLoading && <Spinner size="sm" centered={true} />}
-			{noResults && <NoResults>{t('options.market.chart-card.no-results')}</NoResults>}
+			{noChartData && (
+				<NoChartData>
+					<ExclamationIcon />
+					{t('options.market.chart-card.no-chart-data')}
+				</NoChartData>
+			)}
 		</>
 	);
 };
-
-const NoResults = styled(GridDivCenteredRow)`
-	${absoluteCenteredCSS};
-	${subtitleSmallCSS};
-	color: ${(props) => props.theme.colors.fontPrimary};
-`;
 
 export default OptionsChart;

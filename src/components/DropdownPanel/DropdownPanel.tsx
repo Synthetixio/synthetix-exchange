@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 import OutsideClickHandler from 'react-outside-click-handler';
 
@@ -14,25 +14,32 @@ type DropdownPanelProps = {
 	handleClose: () => void;
 };
 
-const DropdownPanel: FC<DropdownPanelProps> = memo(
-	({ header, body, isOpen, onHeaderClick, handleClose, width, height, ...rest }) => (
-		<OutsideClickHandler onOutsideClick={handleClose}>
-			<Container isOpen={isOpen} width={width} height={height} {...rest}>
-				<Header
-					className="header"
-					isOpen={isOpen}
-					width={width}
-					height={height}
-					onClick={onHeaderClick}
-				>
-					{header}
-				</Header>
-				<Body className="body" width={width} height={height} isOpen={isOpen}>
-					{body}
-				</Body>
-			</Container>
-		</OutsideClickHandler>
-	)
+const DropdownPanel: FC<DropdownPanelProps> = ({
+	header,
+	body,
+	isOpen,
+	onHeaderClick,
+	handleClose,
+	width,
+	height,
+	...rest
+}) => (
+	<OutsideClickHandler onOutsideClick={handleClose}>
+		<Container isOpen={isOpen} width={width} height={height} {...rest}>
+			<Header
+				className="header"
+				isOpen={isOpen}
+				width={width}
+				height={height}
+				onClick={onHeaderClick}
+			>
+				{header}
+			</Header>
+			<Body className="body" width={width} height={height} isOpen={isOpen}>
+				{body}
+			</Body>
+		</Container>
+	</OutsideClickHandler>
 );
 
 const isOpen = css<{ height?: string }>`

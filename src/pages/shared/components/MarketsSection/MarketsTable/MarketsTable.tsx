@@ -17,9 +17,10 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 import ChangePercent from 'components/ChangePercent';
 import Table from 'components/Table';
 import { CurrencyCol } from 'components/Table/common';
-
 import Currency from 'components/Currency';
 import { bodyCSS } from 'components/Typography/General';
+import { SnowflakeCircle } from 'components/Icons';
+import Margin from 'components/Margin';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -46,14 +47,21 @@ export const MarketsTable: FC<MarketsTableProps> = memo(
 							Header: <>{t('markets.table.pair-col')}</>,
 							accessor: 'pair',
 							Cell: (cellProps: CellProps<MarketPair>) => (
-								<StyledCurrencyPair
-									baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
-									quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
-									showIcon={true}
-									iconProps={{ width: '24px', height: '24px' }}
-								/>
+								<>
+									<StyledCurrencyPair
+										baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
+										quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
+										showIcon={true}
+										iconProps={{ width: '24px', height: '24px' }}
+									/>
+									{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
+										<Margin left="10px" right="10px">
+											<SnowflakeCircle currencyKey={cellProps.row.original.baseCurrencyKey} />
+										</Margin>
+									) : null}
+								</>
 							),
-							width: 150,
+							width: 190,
 							sortable: true,
 						},
 						{
