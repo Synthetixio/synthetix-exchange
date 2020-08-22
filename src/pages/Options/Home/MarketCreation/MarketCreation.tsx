@@ -1,4 +1,4 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -8,33 +8,52 @@ import { media } from 'shared/media';
 import ROUTES, { navigateTo } from 'constants/routes';
 
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { toggleWalletPopup } from 'ducks/ui';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import { Button } from 'components/Button';
 import { headingH4CSS } from 'components/Typography/Heading';
 import { bodyCSS } from 'components/Typography/General';
 
+import NewToBinaryOptions from 'pages/Options/components/NewToBinaryOptions';
+
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = {
+	toggleWalletPopup,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MarketCreationProps = PropsFromRedux;
 
-const MarketCreation: FC<MarketCreationProps> = memo(({ isLoggedIn }) => {
+const MarketCreation: FC<MarketCreationProps> = ({ isWalletConnected, toggleWalletPopup }) => {
 	const { t } = useTranslation();
+
+	const subTitle = (
+		<Subtitle>
+			<NewToBinaryOptions />
+		</Subtitle>
+	);
 
 	return (
 		<Container>
-			{!isLoggedIn ? (
-				<div>{t('options.home.market-creation.login-to-create')}</div>
+			{!isWalletConnected ? (
+				<>
+					<Title>{t('options.home.market-creation.not-connected.title')}</Title>
+					{subTitle}
+					<StyledButton palette="primary" onClick={() => toggleWalletPopup(true)}>
+						{t('common.wallet.connect-your-wallet')}
+					</StyledButton>
+				</>
 			) : (
 				<>
 					<Title>{t('options.home.market-creation.no-markets.title')}</Title>
-					<Subtitle>{t('options.home.market-creation.no-markets.subtitle')}</Subtitle>
+					{subTitle}
 					<StyledButton
 						palette="primary"
 						onClick={() => navigateTo(ROUTES.Options.CreateMarketModal)}
@@ -45,7 +64,7 @@ const MarketCreation: FC<MarketCreationProps> = memo(({ isLoggedIn }) => {
 			)}
 		</Container>
 	);
-});
+};
 
 const Title = styled.div`
 	${headingH4CSS};
@@ -64,7 +83,7 @@ const Container = styled.div`
 	background-color: ${(props) => props.theme.colors.surfaceL2};
 	border: 1px solid ${(props) => props.theme.colors.accentL2};
 	text-align: center;
-	padding: 23px 54px;
+	padding: 56px;
 	${media.medium`
 		border: 0;
 	`}

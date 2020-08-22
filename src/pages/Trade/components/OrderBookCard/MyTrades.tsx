@@ -1,5 +1,5 @@
-import React, { FC, memo, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { FC, useEffect } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import {
 	fetchMyTradesRequest,
@@ -9,7 +9,6 @@ import {
 } from 'ducks/trades/myTrades';
 
 import { RootState } from 'ducks/types';
-import { HistoricalTrades } from 'ducks/trades/types';
 
 import useInterval from 'shared/hooks/useInterval';
 
@@ -17,44 +16,35 @@ import TradeHistory from './TradeHistory';
 
 import { REFRESH_INTERVAL } from './constants';
 
-type StateProps = {
-	trades: HistoricalTrades;
-	isLoading: boolean;
-	isLoaded: boolean;
-};
-
-type DispatchProps = {
-	fetchMyTradesRequest: typeof fetchMyTradesRequest;
-};
-
-type MyTradesProps = StateProps & DispatchProps;
-
-const MyTrades: FC<MyTradesProps> = memo(
-	({ fetchMyTradesRequest, trades, isLoading, isLoaded }) => {
-		useEffect(() => {
-			fetchMyTradesRequest();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		useInterval(() => {
-			fetchMyTradesRequest();
-		}, REFRESH_INTERVAL);
-
-		return <TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} />;
-	}
-);
-
-const mapStateToProps = (state: RootState): StateProps => ({
+const mapStateToProps = (state: RootState) => ({
 	trades: getMyTrades(state),
 	isLoading: getIsLoadingMyTrades(state),
 	isLoaded: getIsLoadedMyTrades(state),
 });
 
-const mapDispatchToProps: DispatchProps = {
+const mapDispatchToProps = {
 	fetchMyTradesRequest,
 };
 
-export default connect<StateProps, DispatchProps, {}, RootState>(
-	mapStateToProps,
-	mapDispatchToProps
-)(MyTrades);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type MyTradesProps = PropsFromRedux;
+
+const MyTrades: FC<MyTradesProps> = ({ fetchMyTradesRequest, trades, isLoading, isLoaded }) => {
+	useEffect(() => {
+		fetchMyTradesRequest();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useInterval(() => {
+		fetchMyTradesRequest();
+	}, REFRESH_INTERVAL);
+
+	return (
+		<TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} showSettled={true} />
+	);
+};
+
+export default connector(MyTrades);

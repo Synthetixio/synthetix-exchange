@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import get from 'lodash/get';
@@ -8,25 +8,23 @@ import { SynthDefinition, getSynthsWithRatesMap, SynthDefinitionWithRatesMap } f
 import { RootState } from 'ducks/types';
 import { fetchHistoricalRatesRequest, HistoricalRatesData } from 'ducks/historicalRates';
 
-import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
-
 import { SYNTHS_MAP, sUSD_EXCHANGE_RATE, USD_SIGN } from 'constants/currency';
 import { BaseRateUpdates } from 'constants/rates';
 import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 import { PeriodLabel, PERIOD_LABELS_MAP } from 'constants/period';
 
-import ChartCard from 'components/ChartCard';
-import useInterval from 'shared/hooks/useInterval';
-
+import { ReactComponent as SnowflakeIcon } from 'assets/images/snowflake.svg';
 import { formatCurrencyWithSign } from 'utils/formatters';
-
-import { darkTheme, lightTheme } from 'styles/theme';
-import { media } from 'shared/media';
-
-import Currency from 'components/Currency';
 import { mockRates } from 'pages/Synths/mockData';
-import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
+import { darkTheme, lightTheme } from 'styles/theme';
+
+import useInterval from 'shared/hooks/useInterval';
+import { media } from 'shared/media';
 import { GridDivCenteredRow } from 'shared/commonStyles';
+
+import ChartCard from 'components/ChartCard';
+import Currency from 'components/Currency';
+import { bodyCSS, subtitleSmallCSS } from 'components/Typography/General';
 
 type StateProps = {
 	synthsWithRatesMap: SynthDefinitionWithRatesMap;
@@ -42,127 +40,130 @@ type Props = {
 
 type SynthChartProps = StateProps & DispatchProps & Props;
 
-export const SynthChart: FC<SynthChartProps> = memo(
-	({ synth, fetchHistoricalRatesRequest, synthsWithRatesMap }) => {
-		const { t } = useTranslation();
-		const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
-		const [historicalRateUpdates, setHistoricalRatesUpdates] = useState<BaseRateUpdates>([]);
-		const [historicalRateChange, setHistoricalRatesChange] = useState<number | null>(0);
-		const [loading, setLoading] = useState<boolean>(true);
+export const SynthChart: FC<SynthChartProps> = ({
+	synth,
+	fetchHistoricalRatesRequest,
+	synthsWithRatesMap,
+}) => {
+	const { t } = useTranslation();
+	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
+	const [historicalRateUpdates, setHistoricalRatesUpdates] = useState<BaseRateUpdates>([]);
+	const [historicalRateChange, setHistoricalRatesChange] = useState<number | null>(0);
+	const [loading, setLoading] = useState<boolean>(true);
 
-		const isUSD = synth.name === SYNTHS_MAP.sUSD;
+	const isUSD = synth.name === SYNTHS_MAP.sUSD;
 
-		useEffect(() => {
-			if (!isUSD) {
-				fetchHistoricalRatesRequest({
-					currencyKeys: [synth.name],
-					periods: [selectedPeriod.period],
-				});
-			}
-		}, [fetchHistoricalRatesRequest, synth, selectedPeriod.period, isUSD]);
+	useEffect(() => {
+		if (!isUSD) {
+			fetchHistoricalRatesRequest({
+				currencyKeys: [synth.name],
+				periods: [selectedPeriod.period],
+			});
+		}
+	}, [fetchHistoricalRatesRequest, synth, selectedPeriod.period, isUSD]);
 
-		useInterval(
-			() => {
-				fetchHistoricalRatesRequest({
-					currencyKeys: [synth.name],
-					periods: [selectedPeriod.period],
-				});
-			},
-			isUSD ? null : DEFAULT_REQUEST_REFRESH_INTERVAL
-		);
+	useInterval(
+		() => {
+			fetchHistoricalRatesRequest({
+				currencyKeys: [synth.name],
+				periods: [selectedPeriod.period],
+			});
+		},
+		isUSD ? null : DEFAULT_REQUEST_REFRESH_INTERVAL
+	);
 
-		useEffect(() => {
-			if (isUSD) {
-				const rates = mockRates(selectedPeriod.value, sUSD_EXCHANGE_RATE);
+	useEffect(() => {
+		if (isUSD) {
+			const rates = mockRates(selectedPeriod.value, sUSD_EXCHANGE_RATE);
 
+			setLoading(false);
+			setHistoricalRatesUpdates(rates);
+		} else {
+			const historicalRates: HistoricalRatesData | null = get(
+				synthsWithRatesMap,
+				[synth.name, 'historicalRates', selectedPeriod.period, 'data'],
+				null
+			);
+
+			if (historicalRates != null) {
 				setLoading(false);
-				setHistoricalRatesUpdates(rates);
+				setHistoricalRatesUpdates(historicalRates?.rates || []);
+				setHistoricalRatesChange(historicalRates?.change || 0);
 			} else {
-				const historicalRates: HistoricalRatesData | null = get(
-					synthsWithRatesMap,
-					[synth.name, 'historicalRates', selectedPeriod.period, 'data'],
-					null
-				);
-
-				if (historicalRates != null) {
-					setLoading(false);
-					setHistoricalRatesUpdates(historicalRates?.rates || []);
-					setHistoricalRatesChange(historicalRates?.change || 0);
-				} else {
-					setLoading(true);
-				}
+				setLoading(true);
 			}
-		}, [synthsWithRatesMap, selectedPeriod, synth.name, isUSD]);
+		}
+	}, [synthsWithRatesMap, selectedPeriod, synth.name, isUSD]);
 
-		const lastPrice = get(synthsWithRatesMap, [synth.name, 'lastPrice'], null);
-		const synthSign = USD_SIGN;
+	const lastPrice = get(synthsWithRatesMap, [synth.name, 'lastPrice'], null);
+	const synthSign = USD_SIGN;
 
-		return (
-			<StyledChartCard
-				tooltipVisible={true}
-				currencyLabel={
-					<Currency.Name
-						currencyKey={synth.name}
-						showIcon={true}
-						iconProps={{ width: '24px', height: '24px' }}
-					/>
-				}
-				price={lastPrice != null ? formatCurrencyWithSign(synthSign, lastPrice) : null}
-				change={historicalRateChange}
-				chartData={historicalRateUpdates}
-				variableGradient={false}
-				selectedPeriod={selectedPeriod}
-				onPeriodClick={setSelectedPeriod}
-				showLoader={loading}
-				synthSign={synthSign}
-				xAxisVisible={true}
-				yAxisDomain={
-					synth.inverted ? [synth.inverted.lowerLimit, synth.inverted.upperLimit] : undefined
-				}
-				yAxisRefLines={
-					synth.inverted
-						? [
-								{
-									label: t('common.currency.lower-limit-price', {
-										price: `${synthSign}${synth.inverted.lowerLimit}`,
-									}),
-									value: synth.inverted.lowerLimit,
-								},
-								{
-									label: t('common.currency.entry-limit-price', {
-										price: `${synthSign}${synth.inverted.entryPoint}`,
-									}),
-									value: synth.inverted.entryPoint,
-								},
-								{
-									label: t('common.currency.upper-limit-price', {
-										price: `${synthSign}${synth.inverted.upperLimit}`,
-									}),
-									// TODO: this isn't an optimal solution... the label is cut when its using the true upper limit
-									value: synth.inverted.upperLimit * 0.95,
-								},
-						  ]
-						: undefined
-				}
-				overlayMessage={
-					synth.inverted && synth.isFrozen ? (
-						<FrozenMessage>
-							<SnowflakeIcon />
-							<FrozenMessageTitle>{t('common.currency.frozen-synth')}</FrozenMessageTitle>
-							<FrozenMessageSubtitle>
-								{lastPrice === synth.inverted.lowerLimit
-									? t('common.currency.lower-limit-reached-reset')
-									: t('common.currency.upper-limit-reached-reset')}
-							</FrozenMessageSubtitle>
-						</FrozenMessage>
-					) : undefined
-				}
-			/>
-		);
-	}
-);
+	return (
+		<StyledChartCard
+			tooltipVisible={true}
+			currencyLabel={
+				<Currency.Name
+					currencyKey={synth.name}
+					showIcon={true}
+					iconProps={{ width: '24px', height: '24px' }}
+				/>
+			}
+			price={lastPrice != null ? formatCurrencyWithSign(synthSign, lastPrice) : null}
+			change={historicalRateChange}
+			chartData={historicalRateUpdates}
+			variableGradient={false}
+			selectedPeriod={selectedPeriod}
+			onPeriodClick={setSelectedPeriod}
+			showLoader={loading}
+			synthSign={synthSign}
+			xAxisVisible={true}
+			yAxisDomain={
+				synth.inverted ? [synth.inverted.lowerLimit, synth.inverted.upperLimit] : undefined
+			}
+			yAxisRefLines={
+				synth.inverted
+					? [
+							{
+								label: t('common.currency.lower-limit-price', {
+									price: `${synthSign}${synth.inverted.lowerLimit}`,
+								}),
+								value: synth.inverted.lowerLimit,
+							},
+							{
+								label: t('common.currency.entry-limit-price', {
+									price: `${synthSign}${synth.inverted.entryPoint}`,
+								}),
+								value: synth.inverted.entryPoint,
+							},
+							{
+								label: t('common.currency.upper-limit-price', {
+									price: `${synthSign}${synth.inverted.upperLimit}`,
+								}),
+								// TODO: this isn't an optimal solution... the label is cut when its using the true upper limit
+								value: synth.inverted.upperLimit * 0.95,
+							},
+					  ]
+					: undefined
+			}
+			overlayMessage={
+				synth.inverted && synth.isFrozen ? (
+					<FrozenMessage>
+						<SnowflakeIcon />
+						<FrozenMessageTitle>{t('common.currency.frozen-synth')}</FrozenMessageTitle>
+						<FrozenMessageSubtitle>
+							{lastPrice === synth.inverted.lowerLimit
+								? t('common.currency.lower-limit-reached-reset')
+								: t('common.currency.upper-limit-reached-reset')}
+						</FrozenMessageSubtitle>
+					</FrozenMessage>
+				) : undefined
+			}
+		/>
+	);
+};
 
 const FrozenMessage = styled(GridDivCenteredRow)`
+	justify-items: center;
 	svg {
 		color: ${(props) => props.theme.colors.icons};
 	}

@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { useQuery, queryCache } from 'react-query';
+import { useQuery, queryCache, AnyQueryKey } from 'react-query';
+
 import BiddingPhaseCard from './BiddingPhaseCard';
 import TradingPhaseCard from './TradingPhaseCard';
 import MaturityPhaseCard from './MaturityPhaseCard';
@@ -8,7 +9,7 @@ import MaturityPhaseCard from './MaturityPhaseCard';
 import snxJSConnector from 'utils/snxJSConnector';
 
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 
 import { BINARY_OPTIONS_EVENTS } from 'constants/events';
 import QUERY_KEYS from 'constants/queryKeys';
@@ -16,11 +17,11 @@ import QUERY_KEYS from 'constants/queryKeys';
 import { useMarketContext } from '../contexts/MarketContext';
 import { useBOMContractContext } from '../contexts/BOMContractContext';
 
-import { bigNumberFormatter, toBigNumber } from 'utils/formatters';
-import { AccountMarketInfo } from 'ducks/options/types';
+import { bigNumberFormatter } from 'utils/formatters';
+import { AccountMarketInfo } from 'pages/Options/types';
 
 const mapStateToProps = (state: RootState) => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
@@ -28,25 +29,19 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => {
+type TradeCardProps = PropsFromRedux;
+
+const TradeCard: FC<TradeCardProps> = ({ isWalletConnected, currentWalletAddress }) => {
 	const optionsMarket = useMarketContext();
 	const BOMContract = useBOMContractContext();
 
-	let claimableLongAmount = 0;
-	let claimableShortAmount = 0;
-	let bidLongAmount = 0;
-	let bidShortAmount = 0;
-	let totalLongPrice = 0;
-	let totalShortPrice = 0;
-	let nothingToClaim = true;
-
-	const accountMarketInfoQuery = useQuery(
+	const accountMarketInfoQuery = useQuery<AccountMarketInfo, any>(
 		QUERY_KEYS.BinaryOptions.AccountMarketInfo(
 			optionsMarket.address,
 			currentWalletAddress as string
 		),
 		async () => {
-			const result = await (snxJSConnector as any).binaryOptionsMarketDataContract.getAccountMarketInfo(
+			const result = await (snxJSConnector as any).binaryOptionsMarketDataContract.getAccountMarketData(
 				optionsMarket.address,
 				currentWalletAddress
 			);
@@ -66,75 +61,88 @@ const TradeCard: FC<PropsFromRedux> = ({ isLoggedIn, currentWalletAddress }) => 
 			};
 		},
 		{
-			enabled: isLoggedIn,
+			enabled: isWalletConnected,
 		}
 	);
 
-	let accountMarketInfo: AccountMarketInfo | null = null;
-
-	if (isLoggedIn && accountMarketInfoQuery.isSuccess && accountMarketInfoQuery.data) {
-		const { bids, claimable } = accountMarketInfoQuery.data;
-
-		claimableLongAmount = claimable.long;
-		claimableShortAmount = claimable.short;
-		bidLongAmount = bids.long;
-		bidShortAmount = bids.short;
-		totalLongPrice = optionsMarket.longPrice * bidLongAmount;
-		totalShortPrice = optionsMarket.shortPrice * bidShortAmount;
-		nothingToClaim = !bidLongAmount && !bidShortAmount;
-	}
-
-	accountMarketInfo = {
-		claimableLongAmount,
-		claimableShortAmount,
-		bidLongAmount,
-		bidShortAmount,
-		totalLongPrice,
-		totalShortPrice,
-		nothingToClaim,
+	let accountMarketInfo = {
+		balances: {
+			long: 0,
+			short: 0,
+		},
+		claimable: {
+			long: 0,
+			short: 0,
+		},
+		bids: {
+			long: 0,
+			short: 0,
+		},
 	};
 
+	if (isWalletConnected && accountMarketInfoQuery.isSuccess && accountMarketInfoQuery.data) {
+		const { balances, claimable, bids } = accountMarketInfoQuery.data as AccountMarketInfo;
+
+		accountMarketInfo.balances = balances;
+		accountMarketInfo.claimable = claimable;
+		accountMarketInfo.bids = bids;
+	}
+
 	useEffect(() => {
-		BOMContract.on(BINARY_OPTIONS_EVENTS.BID, () => {
-			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(BOMContract.address));
+		const refetchQueries = () => {
+			queryCache.invalidateQueries(
+				(QUERY_KEYS.BinaryOptions.Market(BOMContract.address) as unknown) as AnyQueryKey
+			);
+
 			if (currentWalletAddress) {
 				queryCache.invalidateQueries(
-					QUERY_KEYS.BinaryOptions.AccountMarketInfo(
+					(QUERY_KEYS.BinaryOptions.AccountMarketInfo(
 						optionsMarket.address,
 						currentWalletAddress as string
-					)
+					) as unknown) as AnyQueryKey
 				);
 			}
+		};
+		BOMContract.on(BINARY_OPTIONS_EVENTS.BID, () => {
+			refetchQueries();
 		});
 		BOMContract.on(BINARY_OPTIONS_EVENTS.REFUND, () => {
-			queryCache.invalidateQueries(QUERY_KEYS.BinaryOptions.Market(BOMContract.address));
-			if (currentWalletAddress) {
-				queryCache.invalidateQueries(
-					QUERY_KEYS.BinaryOptions.AccountMarketInfo(
-						optionsMarket.address,
-						currentWalletAddress as string
-					)
-				);
-			}
+			refetchQueries();
 		});
+
+		if (currentWalletAddress) {
+			BOMContract.on(BINARY_OPTIONS_EVENTS.OPTIONS_CLAIMED, (account: string) => {
+				if (currentWalletAddress === account) {
+					refetchQueries();
+				}
+			});
+			BOMContract.on(BINARY_OPTIONS_EVENTS.OPTIONS_EXERCISED, (account: string) => {
+				if (currentWalletAddress === account) {
+					refetchQueries();
+				}
+			});
+		}
 		return () => {
 			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.BID);
 			BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.REFUND);
+			if (currentWalletAddress) {
+				BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.OPTIONS_CLAIMED);
+				BOMContract.removeAllListeners(BINARY_OPTIONS_EVENTS.OPTIONS_EXERCISED);
+			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const sharedProps = {
+		optionsMarket,
+		accountMarketInfo,
+	};
+
 	return (
 		<>
-			{optionsMarket.phase === 'bidding' && (
-				<BiddingPhaseCard optionsMarket={optionsMarket} accountMarketInfo={accountMarketInfo} />
-			)}
-			{optionsMarket.phase === 'trading' && (
-				<TradingPhaseCard optionsMarket={optionsMarket} accountMarketInfo={accountMarketInfo} />
-			)}
-			{optionsMarket.phase === 'maturity' && (
-				<MaturityPhaseCard optionsMarket={optionsMarket} accountMarketInfo={accountMarketInfo} />
-			)}
+			{optionsMarket.phase === 'bidding' && <BiddingPhaseCard {...sharedProps} />}
+			{optionsMarket.phase === 'trading' && <TradingPhaseCard {...sharedProps} />}
+			{optionsMarket.phase === 'maturity' && <MaturityPhaseCard {...sharedProps} />}
 		</>
 	);
 };

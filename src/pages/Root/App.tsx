@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, lazy } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
@@ -13,21 +13,22 @@ import GlobalEventsGate from 'gates/GlobalEventsGate';
 
 import { isDarkTheme, lightTheme, darkTheme } from 'styles/theme';
 
+import MaterialUIThemeProvider from './components/MaterialUIThemeProvider';
 import MaintenanceMessage from './components/MaintenanceMessage';
 import MainLayout from './components/MainLayout';
 import HomeLayout from './components/HomeLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
-import GweiPopup from '../../components/GweiPopup';
-import AppBanner from './components/AppBanner';
+// import AppBanner from './components/AppBanner';
 
-import Trade from '../Trade';
-import Loans from '../Loans';
-import Assets from '../Assets';
 import Home from '../Home';
-import Markets from '../Markets';
-import Synths from '../Synths';
 import Options from '../Options';
+import Synths from '../Synths';
+
+const Trade = lazy(() => import('../Trade'));
+const Loans = lazy(() => import('../Loans'));
+const Markets = lazy(() => import('../Markets'));
+const Assets = lazy(() => import('../Assets'));
 
 const mapStateToProps = (state: RootState) => ({
 	currentTheme: getCurrentTheme(state),
@@ -47,87 +48,88 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 
 	return (
 		<ThemeProvider theme={themeStyle}>
-			{isSystemSuspended ? (
-				<>
-					<GlobalEventsGate />
-					<MaintenanceMessage />
-				</>
-			) : (
-				<>
-					<Router>
-						{isAppReady && (
-							<>
-								<GlobalEventsGate />
-								<WalletPopup />
-								<GweiPopup />
-								<AppBanner />
-							</>
-						)}
-						<Switch>
-							<Route
-								path={ROUTES.TradeMatch}
-								render={(routeProps) => (
-									<MainLayout isAppReady={isAppReady}>
-										<Trade {...routeProps} />
-									</MainLayout>
-								)}
-							/>
-							<Route
-								path={ROUTES.Trade}
-								render={(routeProps) => (
-									<MainLayout isAppReady={isAppReady}>
-										<Trade {...routeProps} />
-									</MainLayout>
-								)}
-							/>
-							<Route
-								path={ROUTES.Loans}
-								render={() => (
-									<MainLayout isAppReady={isAppReady}>
-										<Loans />
-									</MainLayout>
-								)}
-							/>
-							<ProtectedRoute
-								path={ROUTES.Assets.Home}
-								render={() => (
-									<MainLayout isAppReady={isAppReady}>
-										<Assets />
-									</MainLayout>
-								)}
-							/>
-							<Route
-								path={ROUTES.Markets}
-								render={() => (
-									<HomeLayout>
-										<Markets />
-									</HomeLayout>
-								)}
-							/>
-							<Route
-								path={ROUTES.Synths.Home}
-								render={() => (
-									<HomeLayout>
-										<Synths />
-									</HomeLayout>
-								)}
-							/>
-							<Route
-								path={ROUTES.Options.Home}
-								render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
-							/>
-							<Route
-								path={ROUTES.Home}
-								render={() => (
-									<HomeLayout>
-										<Home />
-									</HomeLayout>
-								)}
-							/>
-						</Switch>
-					</Router>
-				</>
-			)}
+			<MaterialUIThemeProvider>
+				{isSystemSuspended ? (
+					<>
+						<GlobalEventsGate />
+						<MaintenanceMessage />
+					</>
+				) : (
+					<>
+						<Router>
+							{isAppReady && (
+								<>
+									<GlobalEventsGate />
+									<WalletPopup />
+									{/* <AppBanner /> */}
+								</>
+							)}
+							<Switch>
+								<Route
+									path={ROUTES.TradeMatch}
+									render={(routeProps) => (
+										<MainLayout isAppReady={isAppReady}>
+											<Trade {...routeProps} />
+										</MainLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.Trade}
+									render={(routeProps) => (
+										<MainLayout isAppReady={isAppReady}>
+											<Trade {...routeProps} />
+										</MainLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.Loans}
+									render={() => (
+										<MainLayout isAppReady={isAppReady}>
+											<Loans />
+										</MainLayout>
+									)}
+								/>
+								<ProtectedRoute
+									path={ROUTES.Assets.Home}
+									render={() => (
+										<MainLayout isAppReady={isAppReady}>
+											<Assets />
+										</MainLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.Markets}
+									render={() => (
+										<HomeLayout>
+											<Markets />
+										</HomeLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.Synths.Home}
+									render={() => (
+										<HomeLayout>
+											<Synths />
+										</HomeLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.Options.Home}
+									render={(routeProps) => <Options isAppReady={isAppReady} {...routeProps} />}
+								/>
+								<Route
+									path={ROUTES.Home}
+									render={() => (
+										<HomeLayout>
+											<Home />
+										</HomeLayout>
+									)}
+								/>
+							</Switch>
+						</Router>
+					</>
+				)}
+			</MaterialUIThemeProvider>
 		</ThemeProvider>
 	);
 };

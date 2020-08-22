@@ -1,6 +1,14 @@
 import ROUTES from 'constants/routes';
 
-export const MENU_LINKS = [
+export type MenuLink = {
+	i18nLabel: string;
+	link: string;
+	isBeta?: boolean;
+};
+
+export type MenuLinks = MenuLink[];
+
+export const MENU_LINKS: MenuLinks = [
 	{
 		i18nLabel: 'header.links.markets',
 		link: ROUTES.Markets,
@@ -20,10 +28,11 @@ export const MENU_LINKS = [
 	{
 		i18nLabel: 'header.links.options',
 		link: ROUTES.Options.Home,
+		isBeta: true,
 	},
 ];
 
-export const MENU_LINKS_LOGGED_IN = [
+export const MENU_LINKS_WALLET_CONNECTED: MenuLinks = [
 	{
 		i18nLabel: 'header.links.assets',
 		link: ROUTES.Assets.Home,

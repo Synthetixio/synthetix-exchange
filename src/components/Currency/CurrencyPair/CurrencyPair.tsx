@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 
 import { formatCurrencyPair } from '../../../utils/formatters';
 
@@ -15,20 +15,18 @@ type CurrencyPairProps = {
 	iconProps?: any;
 };
 
-export const CurrencyPair: FC<CurrencyPairProps> = memo(
-	({
-		baseCurrencyKey,
-		baseCurrencyAsset,
-		quoteCurrencyKey,
-		showIcon = true,
-		iconProps = {},
-		...rest
-	}) => (
-		<Container showIcon={showIcon} {...rest}>
-			{showIcon && <CurrencyIcon currencyKey={baseCurrencyKey} {...iconProps} />}
-			{formatCurrencyPair(baseCurrencyAsset || baseCurrencyKey, quoteCurrencyKey)}
-		</Container>
-	)
+export const CurrencyPair: FC<CurrencyPairProps> = ({
+	baseCurrencyKey,
+	baseCurrencyAsset,
+	quoteCurrencyKey,
+	showIcon = true,
+	iconProps = {},
+	...rest
+}) => (
+	<Container showIcon={showIcon} {...rest}>
+		{showIcon && <CurrencyIcon currencyKey={baseCurrencyKey} {...iconProps} />}
+		{formatCurrencyPair(baseCurrencyAsset || baseCurrencyKey, quoteCurrencyKey)}
+	</Container>
 );
 
 export default CurrencyPair;

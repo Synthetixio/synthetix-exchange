@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
@@ -25,7 +25,7 @@ type DispatchProps = {
 
 type ThemeToggleProps = StateProps & DispatchProps;
 
-export const ThemeToggle: FC<ThemeToggleProps> = memo(({ currentTheme, toggleTheme }) => (
+export const ThemeToggle: FC<ThemeToggleProps> = ({ currentTheme, toggleTheme }) => (
 	<StyledButton onClick={toggleTheme}>
 		{isLightTheme(currentTheme) ? (
 			<>
@@ -39,7 +39,7 @@ export const ThemeToggle: FC<ThemeToggleProps> = memo(({ currentTheme, toggleThe
 			</>
 		)}
 	</StyledButton>
-));
+);
 
 const StyledButton = styled.button`
 	width: 52px;

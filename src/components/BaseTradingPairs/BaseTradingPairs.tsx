@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 
 import { BASE_TRADING_PAIRS, CurrencyKey, getMarketPairByMC } from 'constants/currency';
 import { buildTradeLink } from 'constants/routes';
@@ -10,7 +10,7 @@ type BaseTradingPairsProps = {
 	currencyKey: CurrencyKey;
 };
 
-const BaseTradingPairs: FC<BaseTradingPairsProps> = memo(({ currencyKey }) => (
+const BaseTradingPairs: FC<BaseTradingPairsProps> = ({ currencyKey }) => (
 	<>
 		{BASE_TRADING_PAIRS.filter((quote) => quote !== currencyKey).map((quote) => {
 			const { base: baseCurrencyKey, quote: quoteCurrencyKey } = getMarketPairByMC(
@@ -32,6 +32,6 @@ const BaseTradingPairs: FC<BaseTradingPairsProps> = memo(({ currencyKey }) => (
 			);
 		})}
 	</>
-));
+);
 
 export default BaseTradingPairs;

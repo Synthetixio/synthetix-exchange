@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import { FlexDivCentered } from 'shared/commonStyles';
 import { mediumMediaQuery } from 'shared/media';
 
 import { RootState } from 'ducks/types';
-import { getIsLoggedIn } from 'ducks/wallet/walletDetails';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
@@ -24,10 +24,11 @@ import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
 
-import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from './constants';
+import { MENU_LINKS, MENU_LINKS_WALLET_CONNECTED } from './constants';
+import { BetaLabel } from './common';
 
 type StateProps = {
-	isLoggedIn: boolean;
+	isWalletConnected: boolean;
 };
 
 type Props = {
@@ -38,8 +39,8 @@ type Props = {
 
 type AppHeaderProps = StateProps & Props;
 
-export const AppHeader: FC<AppHeaderProps> = memo((props) => {
-	const { showThemeToggle = true, isOnSplashPage, isLoggedIn, ...rest } = props;
+export const AppHeader: FC<AppHeaderProps> = (props) => {
+	const { showThemeToggle = true, isOnSplashPage, isWalletConnected, ...rest } = props;
 	const { t } = useTranslation();
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -57,13 +58,15 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 							<Logo />
 						</StyledLogoLink>
 					</MenuItem>
-					{MENU_LINKS.map(({ i18nLabel, link }) => (
+					{MENU_LINKS.map(({ i18nLabel, link, isBeta }) => (
 						<MenuLinkItem key={link}>
-							<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
+							<MenuLink to={link}>
+								{t(i18nLabel)} {isBeta && <BetaLabel>{t('common.beta')}</BetaLabel>}
+							</MenuLink>
 						</MenuLinkItem>
 					))}
-					{isLoggedIn &&
-						MENU_LINKS_LOGGED_IN.map(({ i18nLabel, link }) => (
+					{isWalletConnected &&
+						MENU_LINKS_WALLET_CONNECTED.map(({ i18nLabel, link }) => (
 							<MenuLinkItem key={link}>
 								<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
 							</MenuLinkItem>
@@ -85,7 +88,7 @@ export const AppHeader: FC<AppHeaderProps> = memo((props) => {
 			</Content>
 		</Container>
 	);
-});
+};
 
 const StyledLogoLink = styled(Link)`
 	height: 24px;
@@ -126,10 +129,18 @@ const MenuLink = styled(Link)`
 	&:hover {
 		color: ${({ theme }) => theme.colors.fontPrimary};
 		background-color: ${({ theme }) => theme.colors.accentL1};
+		span {
+			background-color: ${(props) => props.theme.colors.accentL2};
+		}
 	}
 	&.active {
 		background-color: ${({ theme }) => theme.colors.accentL2};
 		color: ${({ theme }) => theme.colors.fontPrimary};
+		&:hover {
+			span {
+				background-color: ${(props) => props.theme.colors.accentL1};
+			}
+		}
 	}
 `;
 
@@ -153,7 +164,7 @@ const MenuItemsRight = styled(MenuItems)`
 `;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	isLoggedIn: getIsLoggedIn(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 export default connect<StateProps, {}, Props, RootState>(mapStateToProps)(AppHeader);

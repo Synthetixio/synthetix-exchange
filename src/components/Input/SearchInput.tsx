@@ -1,10 +1,11 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { ReactComponent as SearchIcon } from 'assets/images/search.svg';
 
 import GenericInput from './Input';
+import { INPUT_SIZES } from './constants';
 
 type SearchInputProps = {
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,33 +15,40 @@ type SearchInputProps = {
 	autoFocus?: boolean;
 };
 
-export const SearchInput: FC<SearchInputProps> = memo(
-	({ onChange, value, placeholder, tabIndex, autoFocus, ...rest }) => {
-		const { t } = useTranslation();
+export const SearchInput: FC<SearchInputProps> = ({
+	onChange,
+	value,
+	placeholder,
+	tabIndex,
+	autoFocus,
+	...rest
+}) => {
+	const { t } = useTranslation();
 
-		return (
-			<Container {...rest}>
-				<StyledSearchIcon />
-				<StyledInput
-					className="search-input"
-					type="search"
-					placeholder={placeholder || t('common.search')}
-					onChange={onChange}
-					value={value}
-					tabIndex={tabIndex}
-					autoFocus={autoFocus}
-				/>
-			</Container>
-		);
-	}
-);
+	return (
+		<Container {...rest}>
+			<StyledSearchIcon />
+			<StyledInput
+				className="search-input"
+				type="search"
+				placeholder={placeholder || t('common.search')}
+				onChange={onChange}
+				value={value}
+				tabIndex={tabIndex}
+				autoFocus={autoFocus}
+				autoCorrect="off"
+				spellCheck={false}
+			/>
+		</Container>
+	);
+};
 
 const Container = styled.div`
 	position: relative;
 `;
 
 const StyledInput = styled(GenericInput)`
-	height: 32px;
+	height: ${INPUT_SIZES.xs};
 	border-radius: 1px;
 	padding: 0 10px 0 25px;
 	&::placeholder {

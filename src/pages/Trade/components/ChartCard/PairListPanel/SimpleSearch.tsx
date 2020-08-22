@@ -1,7 +1,8 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
-import { SYNTHS_MAP, CurrencyKey, CurrencyKeys } from 'constants/currency';
+import { SYNTHS_MAP, CurrencyKey, CurrencyKeys, CRYPTO_CURRENCY_MAP } from 'constants/currency';
 
 import { ReactComponent as CogIcon } from 'assets/images/cog.svg';
 
@@ -22,10 +23,27 @@ type SimpleSearchProps = {
 	onAdvancedSearchClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
-const SimpleSearch: FC<SimpleSearchProps> = memo(
-	({ marketsAssetFilter, onSearchChange, onAdvancedSearchClick, search, onAssetFilterClick }) => (
+const SimpleSearch: FC<SimpleSearchProps> = ({
+	marketsAssetFilter,
+	onSearchChange,
+	onAdvancedSearchClick,
+	search,
+	onAssetFilterClick,
+}) => {
+	const { t } = useTranslation();
+
+	return (
 		<>
-			<SearchInput value={search} onChange={onSearchChange} />
+			<StyledSearchInput
+				value={search}
+				onChange={onSearchChange}
+				placeholder={t('common.currency.try-currencyA-currencyB-or-currencyC-currencyD', {
+					currencyA: SYNTHS_MAP.sETH,
+					currencyB: SYNTHS_MAP.iBTC,
+					currencyC: CRYPTO_CURRENCY_MAP.LINK,
+					currencyD: CRYPTO_CURRENCY_MAP.ETH,
+				})}
+			/>
 			<ButtonsRow>
 				{ASSET_FILTERS.map((asset) => (
 					<StyledButton
@@ -41,13 +59,21 @@ const SimpleSearch: FC<SimpleSearchProps> = memo(
 				</IconButton>
 			</ButtonsRow>
 		</>
-	)
-);
+	);
+};
 
 const ButtonsRow = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr auto;
 	grid-gap: 8px;
+`;
+
+const StyledSearchInput = styled(SearchInput)`
+	.search-input {
+		&::placeholder {
+			text-transform: none;
+		}
+	}
 `;
 
 export default SimpleSearch;

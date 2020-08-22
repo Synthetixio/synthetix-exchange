@@ -5,6 +5,7 @@ import {
 	getMinAndMaxRate,
 	calculateRateChange,
 	calculateTimestampForPeriod,
+	calculateTotalVolumeForExchanges,
 } from './utils';
 
 import { SYNTHS_MAP } from 'constants/currency';
@@ -15,11 +16,11 @@ export const fetchSynthRateUpdate = async (
 	periodInHours = PERIOD_IN_HOURS.ONE_DAY
 ) => {
 	try {
-		const now = new Date().getTime();
+		// const now = new Date().getTime();
 
 		const rates = await snxData.rate.updates({
 			synth: currencyKey,
-			maxTimestamp: Math.trunc(now / 1000),
+			// maxTimestamp: Math.trunc(now / 1000),
 			minTimestamp: calculateTimestampForPeriod(periodInHours),
 			max: 6000,
 		});
@@ -44,13 +45,13 @@ export const fetchSynthRateUpdates = async (
 	periodInHours = PERIOD_IN_HOURS.ONE_DAY
 ) => {
 	try {
-		const now = new Date().getTime();
+		// const now = new Date().getTime();
 
 		const [baseRates, quoteRates] = await Promise.all(
 			[baseCurrencyKey, quoteCurrencyKey].map((synthName) =>
 				snxData.rate.updates({
 					synth: synthName,
-					maxTimestamp: Math.trunc(now / 1000),
+					// maxTimestamp: Math.trunc(now / 1000),
 					minTimestamp: calculateTimestampForPeriod(periodInHours),
 					max: 6000,
 				})
@@ -80,28 +81,20 @@ export const fetchSynthRateUpdates = async (
 	}
 };
 
+export const fetchExchanges = (periodInHours = PERIOD_IN_HOURS.ONE_DAY) =>
+	snxData.exchanges.since({
+		minTimestamp: calculateTimestampForPeriod(periodInHours),
+	});
+
 export const fetchSynthVolumeInUSD = async (
 	baseCurrencyKey,
 	quoteCurrencyKey,
 	periodInHours = PERIOD_IN_HOURS.ONE_DAY
 ) => {
 	try {
-		const exchanges = await snxData.exchanges.since({
-			minTimestamp: calculateTimestampForPeriod(periodInHours),
-		});
+		const exchanges = await fetchExchanges(periodInHours);
 
-		return exchanges
-			.filter(
-				(exchange) =>
-					(exchange.fromCurrencyKey === quoteCurrencyKey &&
-						exchange.toCurrencyKey === baseCurrencyKey) ||
-					(exchange.fromCurrencyKey === baseCurrencyKey &&
-						exchange.toCurrencyKey === quoteCurrencyKey)
-			)
-			.reduce((totalVolume, exchange) => {
-				totalVolume += exchange.fromAmountInUSD;
-				return totalVolume;
-			}, 0);
+		return calculateTotalVolumeForExchanges(baseCurrencyKey, quoteCurrencyKey, exchanges);
 	} catch (e) {
 		return null;
 	}

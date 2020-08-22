@@ -1,4 +1,4 @@
 export type CurrentPosition = {
 	bid: number;
-	payoff: number;
+	payout: number;
 };

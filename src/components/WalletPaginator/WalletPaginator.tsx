@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,7 @@ type PaginatorProps = {
 	onIndexChange: (index: number) => void;
 };
 
-const Paginator: FC<PaginatorProps> = memo(({ currentIndex, disabled, onIndexChange }) => {
+const Paginator: FC<PaginatorProps> = ({ currentIndex, disabled, onIndexChange }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -35,7 +35,7 @@ const Paginator: FC<PaginatorProps> = memo(({ currentIndex, disabled, onIndexCha
 			</Button>
 		</Wrapper>
 	);
-});
+};
 
 const Wrapper = styled.div<{ disabled: boolean }>`
 	width: 100%;

@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { CellProps } from 'react-table';
 
-import { SYNTHS_MAP, USD_SIGN } from 'constants/currency';
+import { SYNTHS_MAP } from 'constants/currency';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
 import { TableOverflowContainer, GridDivCenteredCol } from 'shared/commonStyles';
 import { formatTxTimestamp, formatCurrencyWithKey } from 'utils/formatters';
 
 import Table from 'components/Table';
 
-import { OptionsTransaction, OptionsTransactions } from 'ducks/options/types';
+import { OptionsTransaction, OptionsTransactions } from 'pages/Options/types';
 
 import ViewLinkCell from 'pages/shared/components/ViewLinkCell';
 import SideIcon from 'pages/Options/Market/components/SideIcon';
@@ -24,7 +25,6 @@ type TransactionsTableProps = {
 export const TransactionsTable: FC<TransactionsTableProps> = memo(
 	({ optionsTransactions, noResultsMessage, isLoading }) => {
 		const { t } = useTranslation();
-
 		return (
 			<StyledTableOverflowContainer>
 				<StyledTable
@@ -54,7 +54,8 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 							accessor: 'side',
 							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['side']>) => {
 								const side = cellProps.cell.value;
-
+								const type = cellProps.cell.row.original.type;
+								if (type === 'exercise') return <span>{EMPTY_VALUE}</span>;
 								return (
 									<Position>
 										<SideIcon side={side} />
@@ -70,10 +71,7 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 							sortType: 'basic',
 							accessor: 'amount',
 							Cell: (cellProps: CellProps<OptionsTransaction, OptionsTransaction['amount']>) => (
-								<span>{`${USD_SIGN}${formatCurrencyWithKey(
-									SYNTHS_MAP.sUSD,
-									cellProps.cell.value
-								)}`}</span>
+								<span>{formatCurrencyWithKey(SYNTHS_MAP.sUSD, cellProps.cell.value)}</span>
 							),
 							width: 150,
 							sortable: true,
@@ -81,9 +79,13 @@ export const TransactionsTable: FC<TransactionsTableProps> = memo(
 						{
 							Header: <>{t('options.market.transactions-card.table.tx-status-col')}</>,
 							id: 'tx-status',
-							Cell: (cellProps: CellProps<OptionsTransaction>) => (
-								<ViewLinkCell hash={cellProps.cell.row.original.hash} />
-							),
+							Cell: (cellProps: CellProps<OptionsTransaction>) =>
+								cellProps.cell.row.original.status &&
+								cellProps.cell.row.original.status === 'pending' ? (
+									<span>{t('common.tx-status.pending')}</span>
+								) : (
+									<ViewLinkCell hash={cellProps.cell.row.original.hash} />
+								),
 							width: 150,
 						},
 					]}

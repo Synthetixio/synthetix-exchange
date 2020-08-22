@@ -1,8 +1,8 @@
-import React, { memo, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import { OptionsMarkets } from 'ducks/options/types';
+import { OptionsMarkets } from 'pages/Options/types';
 
 import Currency from 'components/Currency';
 import { labelSmallCSS } from 'components/Typography/Label';
@@ -30,7 +30,7 @@ type HotMarketsProps = {
 	optionsMarkets: OptionsMarkets;
 };
 
-export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
+export const HotMarkets: FC<HotMarketsProps> = ({ optionsMarkets }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -62,7 +62,7 @@ export const HotMarkets: FC<HotMarketsProps> = memo(({ optionsMarkets }) => {
 			))}
 		</Cards>
 	);
-});
+};
 
 const Cards = styled(GridDivCentered)`
 	grid-gap: 24px;
@@ -109,6 +109,7 @@ const MarketDetailsRow = styled(GridDivCentered)`
 
 const StrikePrice = styled.div`
 	${headingH5CSS};
+	text-align: center;
 	${(props) => props.theme.colors.fontPrimary};
 `;
 

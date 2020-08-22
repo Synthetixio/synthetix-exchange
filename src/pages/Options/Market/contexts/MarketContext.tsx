@@ -1,5 +1,5 @@
 import React, { FC, createContext, useContext } from 'react';
-import { OptionsMarketInfo } from 'ducks/options/types';
+import { OptionsMarketInfo } from 'pages/Options/types';
 
 const MarketContext = createContext<OptionsMarketInfo | null>(null);
 

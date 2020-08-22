@@ -1,4 +1,4 @@
-import React, { FC, memo, ReactElement } from 'react';
+import React, { FC, ReactElement } from 'react';
 import styled from 'styled-components';
 import { ResponsiveContainer } from 'recharts';
 
@@ -15,13 +15,13 @@ type RechartsResponsiveContainerProps = {
 	className?: string | number;
 };
 
-export const RechartsResponsiveContainer: FC<RechartsResponsiveContainerProps> = memo((props) => (
+export const RechartsResponsiveContainer: FC<RechartsResponsiveContainerProps> = (props) => (
 	<OuterContainer>
 		<InnerContainer>
 			<ResponsiveContainer {...props} />
 		</InnerContainer>
 	</OuterContainer>
-));
+);
 
 const OuterContainer = styled.div`
 	width: 100%;

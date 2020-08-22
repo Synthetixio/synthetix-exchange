@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -28,7 +28,7 @@ const MOCK_TRANSFERS = [
 	},
 ];
 
-export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
+export const Transfers = ({ transfers = MOCK_TRANSFERS, networkId }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -88,7 +88,7 @@ export const Transfers = memo(({ transfers = MOCK_TRANSFERS, networkId }) => {
 			</StyledCardBody>
 		</Card>
 	);
-});
+};
 
 Transfers.propTypes = {
 	transfers: PropTypes.array,

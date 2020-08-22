@@ -1,4 +1,4 @@
-import React, { FC, useState, memo, useContext } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
 import { connect } from 'react-redux';
 
@@ -26,14 +26,15 @@ import UserInfo from '../UserInfo';
 import Overlay from './Overlay';
 import Dropdown from './Dropdown';
 
-import { MENU_LINKS, MENU_LINKS_LOGGED_IN } from '../constants';
+import { MENU_LINKS, MENU_LINKS_WALLET_CONNECTED } from '../constants';
+import { BetaLabel } from '../common';
 
 type DispatchProps = {
 	toggleTheme: typeof toggleTheme;
 };
 
 type Props = {
-	isLoggedIn: boolean;
+	isWalletConnected: boolean;
 	showThemeToggle?: boolean;
 	className?: string;
 	isOnSplashPage?: boolean;
@@ -41,73 +42,78 @@ type Props = {
 
 type MobileAppHeaderProps = DispatchProps & Props;
 
-export const MobileAppHeader: FC<MobileAppHeaderProps> = memo(
-	({ showThemeToggle = true, toggleTheme, isOnSplashPage, isLoggedIn, ...rest }) => {
-		const [menuOpen, setMenuOpen] = useState(false);
-		const { t } = useTranslation();
+export const MobileAppHeader: FC<MobileAppHeaderProps> = ({
+	showThemeToggle = true,
+	toggleTheme,
+	isOnSplashPage,
+	isWalletConnected,
+	...rest
+}) => {
+	const [menuOpen, setMenuOpen] = useState(false);
+	const { t } = useTranslation();
 
-		const toggleMenu = () => setMenuOpen(!menuOpen);
-		const theme = useContext(ThemeContext);
+	const toggleMenu = () => setMenuOpen(!menuOpen);
+	const theme = useContext(ThemeContext);
 
-		return (
-			<>
-				<Container isOnSplashPage={isOnSplashPage} {...rest}>
-					<Content>
-						<MenuItemsLeft>
-							<MenuItem>
-								<StyledLogoLink to={ROUTES.Home}>
-									<Logo />
-								</StyledLogoLink>
-							</MenuItem>
-						</MenuItemsLeft>
-						<MenuItemsRight>
-							<MenuItem>
-								<UserInfo isOnSplashPage={isOnSplashPage} />
-							</MenuItem>
-							<MenuItem>
-								<MenuToggleButton onClick={toggleMenu}>
-									{menuOpen ? <MenuCloseIcon /> : <MenuHamburgerIcon />}
-								</MenuToggleButton>
-							</MenuItem>
-						</MenuItemsRight>
-					</Content>
-				</Container>
-				<MenuPusher />
-				{menuOpen && (
-					<>
-						<Overlay onClick={toggleMenu} />
-						<StyledDropdown isOnSplashPage={isOnSplashPage}>
-							{MENU_LINKS.map(({ i18nLabel, link }) => (
-								<DropdownMenuLink to={link} onClick={toggleMenu} key={link}>
+	return (
+		<>
+			<Container isOnSplashPage={isOnSplashPage} {...rest}>
+				<Content>
+					<MenuItemsLeft>
+						<MenuItem>
+							<StyledLogoLink to={ROUTES.Home}>
+								<Logo />
+							</StyledLogoLink>
+						</MenuItem>
+					</MenuItemsLeft>
+					<MenuItemsRight>
+						<MenuItem>
+							<UserInfo isOnSplashPage={isOnSplashPage} />
+						</MenuItem>
+						<MenuItem>
+							<MenuToggleButton onClick={toggleMenu}>
+								{menuOpen ? <MenuCloseIcon /> : <MenuHamburgerIcon />}
+							</MenuToggleButton>
+						</MenuItem>
+					</MenuItemsRight>
+				</Content>
+			</Container>
+			<MenuPusher />
+			{menuOpen && (
+				<>
+					<Overlay onClick={toggleMenu} />
+					<StyledDropdown isOnSplashPage={isOnSplashPage}>
+						{MENU_LINKS.map(({ i18nLabel, link, isBeta }) => (
+							<DropdownMenuLink to={link} onClick={toggleMenu} key={link}>
+								{t(i18nLabel)}
+								{isBeta && <BetaLabel>{t('common.beta')}</BetaLabel>}
+							</DropdownMenuLink>
+						))}
+						{isWalletConnected &&
+							MENU_LINKS_WALLET_CONNECTED.map(({ i18nLabel, link }) => (
+								<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
 									{t(i18nLabel)}
 								</DropdownMenuLink>
 							))}
-							{isLoggedIn &&
-								MENU_LINKS_LOGGED_IN.map(({ i18nLabel, link }) => (
-									<DropdownMenuLink to={ROUTES.Assets.Home} onClick={toggleMenu}>
-										{t(i18nLabel)}
-									</DropdownMenuLink>
-								))}
-							<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
-								{t('header.links.support')}
-							</DropdownMenuLink>
-							{showThemeToggle && (
-								<DropdownMenuItem
-									onClick={() => {
-										toggleMenu();
-										toggleTheme();
-									}}
-								>
-									{theme.isLightTheme ? t('header.theme.dark') : t('header.theme.light')}
-								</DropdownMenuItem>
-							)}
-						</StyledDropdown>
-					</>
-				)}
-			</>
-		);
-	}
-);
+						<DropdownMenuLink to={LINKS.Support} isExternal={true} onClick={toggleMenu}>
+							{t('header.links.support')}
+						</DropdownMenuLink>
+						{showThemeToggle && (
+							<DropdownMenuItem
+								onClick={() => {
+									toggleMenu();
+									toggleTheme();
+								}}
+							>
+								{theme.isLightTheme ? t('header.theme.dark') : t('header.theme.light')}
+							</DropdownMenuItem>
+						)}
+					</StyledDropdown>
+				</>
+			)}
+		</>
+	);
+};
 
 const Container = styled.header<{ isOnSplashPage?: boolean }>`
 	height: ${APP_HEADER_HEIGHT};

@@ -4,7 +4,7 @@ import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 
 import { setSigner } from 'utils/snxJSConnector';
 import { getAddress } from 'utils/formatters';
-import { defaultNetwork } from 'utils/networkUtils';
+import { defaultNetwork, NetworkId } from 'utils/networkUtils';
 import { RootState } from 'ducks/types';
 
 export type WalletDetailsSliceState = {
@@ -15,7 +15,7 @@ export type WalletDetailsSliceState = {
 	walletPaginatorIndex: number;
 	availableWallets: string[];
 	derivationPath: string | null;
-	networkId: string | number;
+	networkId: NetworkId;
 	networkName: string;
 };
 
@@ -57,7 +57,7 @@ export const walletDetailsSlice = createSlice({
 		updateNetworkSettings: (
 			state,
 			action: PayloadAction<{
-				networkId: string | number;
+				networkId: NetworkId;
 				networkName: string;
 			}>
 		) => {
@@ -71,8 +71,9 @@ export const walletDetailsSlice = createSlice({
 			action: PayloadAction<{
 				signerOptions: {
 					type: string;
-					networkId: string;
+					networkId: NetworkId;
 					derivationPath: string;
+					networkName: string;
 				};
 				derivationPath: string;
 			}>
@@ -98,7 +99,7 @@ export const getNetwork = (state: RootState) => ({
 	networkName: getNetworkName(state),
 });
 export const getCurrentWalletAddress = (state: RootState) => getWalletState(state).currentWallet;
-export const getIsLoggedIn = createSelector(getCurrentWalletAddress, (currentWallet) =>
+export const getIsWalletConnected = createSelector(getCurrentWalletAddress, (currentWallet) =>
 	currentWallet != null ? true : false
 );
 export const getWalletInfo = (state: RootState) => getWalletState(state);

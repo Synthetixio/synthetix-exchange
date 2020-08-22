@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled, { css } from 'styled-components';
 
 import { GridDivCenteredCol } from 'shared/commonStyles';
-import { Side } from 'ducks/options/types';
+import { Side } from 'pages/Options/types';
 
 import { headingH6CSS } from 'components/Typography/Heading';
 
@@ -14,10 +14,12 @@ type ResultCardProps = {
 	subTitle: React.ReactNode;
 	longAmount: number;
 	shortAmount: number;
-	totalLongPrice?: number;
-	totalShortPrice?: number;
+	longPrice?: number;
+	shortPrice?: number;
 	result?: Side;
 	exercised?: boolean;
+	claimableLongAmount?: number;
+	claimableShortAmount?: number;
 };
 
 const ResultCard: FC<ResultCardProps> = ({
@@ -26,10 +28,12 @@ const ResultCard: FC<ResultCardProps> = ({
 	subTitle,
 	longAmount,
 	shortAmount,
-	totalLongPrice,
-	totalShortPrice,
+	longPrice,
+	shortPrice,
 	result,
 	exercised,
+	claimableLongAmount,
+	claimableShortAmount,
 	...rest
 }) => (
 	<Container {...rest}>
@@ -37,8 +41,18 @@ const ResultCard: FC<ResultCardProps> = ({
 		<Title>{title}</Title>
 		<Subtitle>{subTitle}</Subtitle>
 		<OptionResults result={result} exercised={exercised}>
-			<OptionResult side="long" amount={longAmount} totalPrice={totalLongPrice} />
-			<OptionResult side="short" amount={shortAmount} totalPrice={totalShortPrice} />
+			<OptionResult
+				side="long"
+				amount={longAmount}
+				price={longPrice}
+				claimableAmount={claimableLongAmount}
+			/>
+			<OptionResult
+				side="short"
+				amount={shortAmount}
+				price={shortPrice}
+				claimableAmount={claimableShortAmount}
+			/>
 		</OptionResults>
 	</Container>
 );
