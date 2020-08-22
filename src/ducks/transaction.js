@@ -1,14 +1,16 @@
+import { DEFAULT_GAS_LIMIT } from '../constants/transaction';
+
+import { normalizeGasLimit } from '../utils/transactions';
+
+import { TRANSACTION_STATUS } from 'constants/transaction';
+
 const SET_GAS_PRICE = 'TRANSACTION/SET_GAS_PRICE';
 const SET_GAS_LIMIT = 'TRANSACTION/SET_GAS_LIMIT';
-const SET_EXCHANGE_FEE_RATE = 'TRANSACTION/SET_FEE_RATE';
 const SET_NETWORK_GAS_INFO = 'TRANSACTION/NETWORK_GAS_INFO';
 const CREATE_TRANSACTION = 'TRANSACTION/CREATE';
 const UPDATE_TRANSACTION = 'TRANSACTION/UPDATE';
 const ADD_PENDING_TRANSACTION = 'TRANSACTION/ADD_PENDING_TRANSACTION';
 const REMOVE_PENDING_TRANSACTION = 'TRANSACTION/REMOVE_PENDING_TRANSACTION';
-
-const GAS_LIMIT_BUFFER = 5000;
-const DEFAULT_GAS_LIMIT = 300000;
 
 const defaultState = {
 	gasPrice: null,
@@ -32,12 +34,6 @@ const reducer = (state = defaultState, action = {}) => {
 				gasLimit: action.payload,
 			};
 		}
-		case SET_EXCHANGE_FEE_RATE: {
-			return {
-				...state,
-				exchangeFeeRate: action.payload,
-			};
-		}
 		case SET_NETWORK_GAS_INFO: {
 			const gasSpeed = action.payload;
 			const currentGasPrice = state.gasPrice || gasSpeed['slowAllowed'];
@@ -59,7 +55,7 @@ const reducer = (state = defaultState, action = {}) => {
 		case UPDATE_TRANSACTION: {
 			const { updates, id } = action.payload;
 			const storeUpdates = {
-				transactions: state.transactions.map(tx => {
+				transactions: state.transactions.map((tx) => {
 					if (tx.id === id) {
 						return {
 							...tx,
@@ -69,7 +65,7 @@ const reducer = (state = defaultState, action = {}) => {
 					return tx;
 				}),
 			};
-			if (updates.status === 'Pending' && updates.hash) {
+			if (updates.status === TRANSACTION_STATUS.PENDING && updates.hash) {
 				storeUpdates.pendingTransactions = [...state.pendingTransactions, updates.hash];
 			}
 			return {
@@ -79,7 +75,7 @@ const reducer = (state = defaultState, action = {}) => {
 		}
 		case ADD_PENDING_TRANSACTION: {
 			const hash = action.payload;
-			if (state.pendingTransactions.find(tx => tx.hash === hash)) return state;
+			if (state.pendingTransactions.find((tx) => tx.hash === hash)) return state;
 			return {
 				...state,
 				pendingTransactions: [...state.pendingTransactions, hash],
@@ -89,7 +85,7 @@ const reducer = (state = defaultState, action = {}) => {
 			const hash = action.payload;
 			return {
 				...state,
-				pendingTransactions: state.pendingTransactions.filter(txHash => txHash !== hash),
+				pendingTransactions: state.pendingTransactions.filter((txHash) => txHash !== hash),
 			};
 		}
 
@@ -98,42 +94,35 @@ const reducer = (state = defaultState, action = {}) => {
 	}
 };
 
-export const setGasPrice = gasPrice => {
+export const setGasPrice = (gasPrice) => {
 	return {
 		type: SET_GAS_PRICE,
 		payload: gasPrice,
 	};
 };
 
-export const setGasLimit = gasLimit => {
+export const setGasLimit = (gasLimit) => {
 	return {
 		type: SET_GAS_LIMIT,
-		payload: gasLimit + GAS_LIMIT_BUFFER,
+		payload: normalizeGasLimit(gasLimit),
 	};
 };
 
-export const setExchangeFeeRate = feeRate => {
-	return {
-		type: SET_EXCHANGE_FEE_RATE,
-		payload: feeRate,
-	};
-};
-
-export const setNetworkGasInfo = gasInfo => {
+export const setNetworkGasInfo = (gasInfo) => {
 	return {
 		type: SET_NETWORK_GAS_INFO,
 		payload: gasInfo,
 	};
 };
 
-export const createTransaction = transaction => {
+export const createTransaction = (transaction) => {
 	return {
 		type: CREATE_TRANSACTION,
 		payload: transaction,
 	};
 };
 
-export const removePendingTransaction = hash => {
+export const removePendingTransaction = (hash) => {
 	return {
 		type: REMOVE_PENDING_TRANSACTION,
 		payload: hash,
@@ -146,5 +135,13 @@ export const updateTransaction = (updates, id) => {
 		payload: { updates, id },
 	};
 };
+
+export const getTransactionState = (state) => state.transaction;
+export const getGasInfo = (state) => {
+	const { gasPrice, gasLimit, gasSpeed } = getTransactionState(state);
+	return { gasPrice, gasLimit, gasSpeed };
+};
+export const getTransactions = (state) => getTransactionState(state).transactions;
+export const getPendingTransactions = (state) => getTransactionState(state).pendingTransactions;
 
 export default reducer;
