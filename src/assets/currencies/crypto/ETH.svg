@@ -1,9 +1,1 @@
-<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="150" cy="150" r="150" fill="#7986CB"/>
-<path d="M201 143.318L192.515 148.134L149.372 164.417L99 143.318L149.372 57L201 143.318Z" fill="#FEFEFE"/>
-<path d="M201 143.318L149.372 172.607L99 143.318L149.372 119.8L201 143.318Z" fill="#C0CBF8"/>
-<path d="M201 163.914L149.372 242.609L99 163.914L149.372 193.198L201 163.914Z" fill="#FEFEFE"/>
-<path d="M201 163.914L149.372 242.609V193.198L201 163.914Z" fill="#C0CBF8"/>
-<path d="M201 143.318L192.515 148.134L149.372 123.464V57L201 143.318Z" fill="#C0CBF8"/>
-<path d="M201 143.318L149.372 172.607V119.8L201 143.318Z" fill="#9EABE2"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><g fill="none" fill-rule="evenodd"><circle cx="16" cy="16" r="16" fill="#627EEA"/><g fill="#FFF" fill-rule="nonzero"><path fill-opacity=".602" d="M16.498 4v8.87l7.497 3.35z"/><path d="M16.498 4L9 16.22l7.498-3.35z"/><path fill-opacity=".602" d="M16.498 21.968v6.027L24 17.616z"/><path d="M16.498 27.995v-6.028L9 17.616z"/><path fill-opacity=".2" d="M16.498 20.573l7.497-4.353-7.497-3.348z"/><path fill-opacity=".602" d="M9 16.22l7.498 4.353v-7.701z"/></g></g></svg>

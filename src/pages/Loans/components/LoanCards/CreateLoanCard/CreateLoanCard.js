@@ -3,39 +3,41 @@ import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import snxJSConnector from '../../../../../utils/snxJSConnector';
-import { GWEI_UNIT } from '../../../../../utils/networkUtils';
-import { normalizeGasLimit } from '../../../../../utils/transactions';
-import { getCurrencyKeyBalance } from '../../../../../utils/balances';
+import snxJSConnector from 'utils/snxJSConnector';
+import { GWEI_UNIT } from 'utils/networkUtils';
+import { normalizeGasLimit } from 'utils/transactions';
+import { getCurrencyKeyBalance } from 'utils/balances';
 
-import { EMPTY_BALANCE } from '../../../../../constants/placeholder';
+import { EMPTY_VALUE } from 'constants/placeholder';
 
-import { ButtonPrimary } from '../../../../../components/Button';
-import Card from '../../../../../components/Card';
-import { TradeInput } from '../../../../../components/Input';
-import { HeadingSmall } from '../../../../../components/Typography';
-import { getGasInfo, getWalletInfo } from '../../../../../ducks';
-import { createLoan, LOAN_STATUS } from '../../../../../ducks/loans/myLoans';
-import { getEthRate } from '../../../../../ducks/rates';
+import { ButtonPrimary } from 'components/Button';
+import Card from 'components/Card';
+import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
+import { HeadingSmall } from 'components/Typography';
+import { getGasInfo } from 'ducks/transaction';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
+import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { getEthRate } from 'ducks/rates';
 
-import { toggleGweiPopup } from '../../../../../ducks/ui';
+import LoanWarningModal from '../LoanWarningModal';
 
 import {
 	FormInputRow,
 	FormInputLabel,
 	FormInputLabelSmall,
 	CurrencyKey,
-} from '../../../../../shared/commonStyles';
+} from 'shared/commonStyles';
 
-import NetworkInfo from '../NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 
 export const CreateLoanCard = ({
-	toggleGweiPopup,
 	gasInfo,
 	ethRate,
-	walletInfo: { balances, currentWallet },
+	walletInfo: { currentWallet },
+	walletBalance,
 	createLoan,
 	collateralPair,
 }) => {
@@ -47,8 +49,14 @@ export const CreateLoanCard = ({
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
 
 	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
+
+	const onLoanModalConfirmation = () => {
+		setIsLoanConfirmationModalOpen(false);
+		handleSubmit();
+	};
 
 	const handleSubmit = async () => {
 		const {
@@ -95,14 +103,12 @@ export const CreateLoanCard = ({
 		}
 	};
 
-	const showGweiPopup = () => toggleGweiPopup(true);
-
-	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, collateralCurrencyKey);
-	const loanCurrencyBalance = getCurrencyKeyBalance(balances, loanCurrencyKey);
+	const collateralCurrencyBalance = getCurrencyKeyBalance(walletBalance, collateralCurrencyKey);
+	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
 
 	useEffect(() => {
 		setCollateralAmountErrorMessage(null);
-		if (collateralAmount != '') {
+		if (collateralAmount !== '') {
 			if (currentWallet && collateralAmount > collateralCurrencyBalance) {
 				setCollateralAmountErrorMessage(t('common.errors.amount-exceeds-balance'));
 			} else if (collateralAmount < minLoanSize) {
@@ -133,9 +139,9 @@ export const CreateLoanCard = ({
 			</Card.Header>
 			<Card.Body>
 				<FormInputRow>
-					<TradeInput
-						synth={collateralCurrencyKey}
-						amount={`${collateralAmount}`}
+					<NumericInputWithCurrency
+						currencyKey={collateralCurrencyKey}
+						value={`${collateralAmount}`}
 						label={
 							<>
 								<FormInputLabel>
@@ -147,7 +153,7 @@ export const CreateLoanCard = ({
 								</FormInputLabel>
 								<FormInputLabelSmall>
 									{t('common.wallet.balance-currency', {
-										balance: currentWallet ? collateralCurrencyBalance : EMPTY_BALANCE,
+										balance: currentWallet ? collateralCurrencyBalance : EMPTY_VALUE,
 									})}
 								</FormInputLabelSmall>
 							</>
@@ -160,9 +166,9 @@ export const CreateLoanCard = ({
 					/>
 				</FormInputRow>
 				<FormInputRow>
-					<TradeInput
-						synth={loanCurrencyKey}
-						amount={loanAmount}
+					<NumericInputWithCurrency
+						currencyKey={loanCurrencyKey}
+						value={loanAmount}
 						label={
 							<>
 								<FormInputLabel>
@@ -174,7 +180,7 @@ export const CreateLoanCard = ({
 								</FormInputLabel>
 								<FormInputLabelSmall>
 									{t('common.wallet.balance-currency', {
-										balance: currentWallet ? loanCurrencyBalance : EMPTY_BALANCE,
+										balance: currentWallet ? loanCurrencyBalance : EMPTY_VALUE,
 									})}
 								</FormInputLabelSmall>
 							</>
@@ -185,15 +191,10 @@ export const CreateLoanCard = ({
 						}}
 					/>
 				</FormInputRow>
-				<NetworkInfo
-					gasPrice={gasInfo.gasPrice}
-					gasLimit={gasLimit}
-					ethRate={ethRate}
-					onEditButtonClick={showGweiPopup}
-				/>
+				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary
-					onClick={handleSubmit}
 					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
+					onClick={() => setIsLoanConfirmationModalOpen(true)}
 				>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
@@ -208,26 +209,31 @@ export const CreateLoanCard = ({
 					</TxErrorMessage>
 				)}
 			</Card.Body>
+			<LoanWarningModal
+				isOpen={isLoanConfirmationModalOpen}
+				onClose={() => setIsLoanConfirmationModalOpen(false)}
+				onConfirm={() => onLoanModalConfirmation()}
+			/>
 		</Card>
 	);
 };
 
 CreateLoanCard.propTypes = {
-	toggleGweiPopup: PropTypes.func.isRequired,
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
+	walletBalance: PropTypes.number,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),
+	walletBalance: getWalletBalancesMap(state),
 });
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
 	createLoan,
 };
 

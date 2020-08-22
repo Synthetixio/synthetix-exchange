@@ -1,9 +1,10 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-
 import { Provider } from 'react-redux';
 import store from './config/store';
 import Root from './pages/Root';
+
+import MaintenanceMessage from './pages/Root/components/MaintenanceMessage';
 
 import './i18n';
 import './index.css';
@@ -21,6 +22,9 @@ console.log('NODE_ENV', process.env.NODE_ENV);
 console.log(bugsnag.releaseStage);
 
 bugsnagClient.use(bugsnagReact, React);
+
+const SYSTEM_ON_MAINTENANCE = false;
+
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 const App = () => {
 	return (
@@ -31,9 +35,14 @@ const App = () => {
 		</Suspense>
 	);
 };
+
 ReactDOM.render(
-	<ErrorBoundary>
-		<App />
-	</ErrorBoundary>,
+	SYSTEM_ON_MAINTENANCE ? (
+		<MaintenanceMessage />
+	) : (
+		<ErrorBoundary>
+			<App />
+		</ErrorBoundary>
+	),
 	document.getElementById('root')
 );

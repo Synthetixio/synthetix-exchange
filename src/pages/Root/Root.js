@@ -1,19 +1,18 @@
-import { hot } from 'react-hot-loader/root';
-
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import snxJSConnector from '../../utils/snxJSConnector';
-import { getEthereumNetwork } from '../../utils/metamaskTools';
-import { getExchangeData } from '../../dataFetcher';
+import snxJSConnector from 'utils/snxJSConnector';
+import { getEthereumNetwork } from 'utils/networkUtils';
+import { getExchangeData } from 'dataFetcher';
 
-import { getWalletInfo } from '../../ducks';
-import { setAvailableSynths, updateFrozenSynths } from '../../ducks/synths';
-import { updateWalletStatus, fetchWalletBalances } from '../../ducks/wallet';
-import { fetchRates } from '../../ducks/rates';
-import { setExchangeFeeRate, setNetworkGasInfo } from '../../ducks/transaction';
+import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { setAvailableSynths, updateFrozenSynths } from 'ducks/synths';
+import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
+import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
+import { fetchRatesRequest } from 'ducks/rates';
+import { setNetworkGasInfo } from 'ducks/transaction';
 
-import { setAppReady, getIsAppReady } from '../../ducks/app';
+import { setAppReady, getIsAppReady, setSystemSuspended } from 'ducks/app';
 
 import App from './App';
 
@@ -22,19 +21,18 @@ const REFRESH_INTERVAL = 3 * 60 * 1000;
 const Root = ({
 	setAvailableSynths,
 	setNetworkGasInfo,
-	setExchangeFeeRate,
 	updateFrozenSynths,
-	updateWalletStatus,
+	updateNetworkSettings,
 	walletInfo: { currentWallet },
-	fetchWalletBalances,
-	fetchRates,
+	fetchWalletBalancesRequest,
+	fetchRatesRequest,
 	setAppReady,
 	isAppReady,
+	setSystemSuspended,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
-	const fetchAndSetExchangeData = useCallback(async synths => {
-		const { exchangeFeeRate, networkPrices, frozenSynths } = await getExchangeData(synths);
-		setExchangeFeeRate(exchangeFeeRate);
+	const fetchAndSetExchangeData = useCallback(async () => {
+		const { networkPrices, frozenSynths } = await getExchangeData();
 		setNetworkGasInfo(networkPrices);
 		updateFrozenSynths({ frozenSynths });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,15 +40,29 @@ const Root = ({
 
 	useEffect(() => {
 		if (isAppReady && currentWallet != null) {
-			fetchWalletBalances();
+			fetchWalletBalancesRequest();
 		}
-	}, [isAppReady, currentWallet, fetchWalletBalances]);
+	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
 
 	useEffect(() => {
 		if (isAppReady) {
-			fetchRates();
+			fetchRatesRequest();
+
+			const checkSystemStatus = async () => {
+				const {
+					snxJS: { SystemStatus },
+				} = snxJSConnector;
+				try {
+					const isSystemUpgrading = await SystemStatus.isSystemUpgrading();
+					if (isSystemUpgrading) {
+						setSystemSuspended({ status: true });
+					}
+				} catch (e) {}
+			};
+
+			checkSystemStatus();
 		}
-	}, [isAppReady, fetchRates]);
+	}, [isAppReady, fetchRatesRequest, setSystemSuspended]);
 
 	useEffect(() => {
 		const init = async () => {
@@ -59,18 +71,19 @@ const Root = ({
 			if (!snxJSConnector.initialized) {
 				snxJSConnector.setContractSettings({ networkId });
 			}
-			updateWalletStatus({ networkId, networkName: name.toLowerCase() });
 
-			const synths = snxJSConnector.snxJS.contractSettings.synths.filter(synth => synth.asset);
+			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
+
+			const synths = snxJSConnector.snxJS.contractSettings.synths.filter((synth) => synth.asset);
 
 			setAvailableSynths({ synths });
 			setAppReady();
-			fetchAndSetExchangeData(synths);
-
+			fetchAndSetExchangeData();
+			// TODO: stop fetching data when system is suspended
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
-				fetchAndSetExchangeData(synths);
-				fetchWalletBalances();
+				fetchAndSetExchangeData();
+				fetchWalletBalancesRequest();
 			}, REFRESH_INTERVAL);
 			setIntervalId(_intervalId);
 		};
@@ -81,12 +94,12 @@ const Root = ({
 			clearInterval(intervalId);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [fetchAndSetExchangeData, fetchWalletBalances]);
+	}, [fetchAndSetExchangeData, fetchWalletBalancesRequest]);
 
 	return <App isAppReady={isAppReady} />;
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	isAppReady: getIsAppReady(state),
 });
@@ -95,11 +108,11 @@ const mapDispatchToProps = {
 	setAvailableSynths,
 	setNetworkGasInfo,
 	updateFrozenSynths,
-	updateWalletStatus,
-	setExchangeFeeRate,
-	fetchWalletBalances,
-	fetchRates,
+	updateNetworkSettings,
+	fetchWalletBalancesRequest,
+	fetchRatesRequest,
 	setAppReady,
+	setSystemSuspended,
 };
 
-export default hot(connect(mapStateToProps, mapDispatchToProps)(Root));
+export default connect(mapStateToProps, mapDispatchToProps)(Root);
