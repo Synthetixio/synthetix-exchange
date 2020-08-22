@@ -1,61 +1,103 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Aeonik-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #131722;
-}
-
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-#root {
-  position: relative;
+body {
+	margin: 0;
+	font-family: 'apercu-regular', -apple-system, BlinkMacSystemFont, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	letter-spacing: 0.2px;
+	line-height: 1.2;
+	font-size: 16px;
 }
 
-@font-face {
-  font-family: 'Aeonik-Bold';
-  src: url('/fonts/Aeonik-Bold.eot');
-  src: url('/fonts/Aeonik-Bold.woff2') format('woff2'),
-    url('/fonts/Aeonik-Bold.woff') format('woff'),
-    url('/fonts/Aeonik-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Aeonik-Regular';
-  src: url('/fonts/Aeonik-Regular.eot');
-  src: url('/fonts/Aeonik-Regular.woff2') format('woff2'),
-    url('/fonts/Aeonik-Regular.woff') format('woff'),
-    url('/fonts/Aeonik-Regular.ttf') format('truetype');
+button {
+	letter-spacing: 0.2px;
 }
 
 @font-face {
-  font-family: 'Aeonik-Light';
-  src: url('/fonts/Aeonik-Light.eot');
-  src: url('/fonts/Aeonik-Light.woff2') format('woff2'),
-    url('/fonts/Aeonik-Light.woff') format('woff'),
-    url('/fonts/Aeonik-Light.ttf') format('truetype');
+	font-family: 'apercu-bold';
+	src: url('./assets/fonts/apercu-bold.eot');
+	src: url('./assets/fonts/apercu-bold.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-bold.woff2') format('woff2'),
+		url('./assets/fonts/apercu-bold.woff') format('woff'),
+		url('./assets/fonts/apercu-bold.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @font-face {
-  font-family: 'RobotoMono-Regular';
-  src: url('/fonts/RobotoMono-Regular.ttf');
+	font-family: 'apercu-medium';
+	src: url('./assets/fonts/apercu-medium.eot');
+	src: url('./assets/fonts/apercu-medium.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-medium.woff2') format('woff2'),
+		url('./assets/fonts/apercu-medium.woff') format('woff'),
+		url('./assets/fonts/apercu-medium.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
-h2 {
-  font-family: 'Aeonik-Bold';
-  color: #ffffff;
-  font-size: 20px;
+@font-face {
+	font-family: 'apercu-regular';
+	src: url('./assets/fonts/apercu-regular.eot');
+	src: url('./assets/fonts/apercu-regular.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-regular.woff2') format('woff2'),
+		url('./assets/fonts/apercu-regular.woff') format('woff'),
+		url('./assets/fonts/apercu-regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
-h3 {
-  font-family: 'RobotoMono-Regular';
-  color: #4a4762;
-  font-size: 14px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+@font-face {
+	font-family: 'apercu-light';
+	src: url('./assets/fonts/apercu-light.eot');
+	src: url('./assets/fonts/apercu-light.eot?#iefix') format('embedded-opentype'),
+		url('./assets/fonts/apercu-light.woff2') format('woff2'),
+		url('./assets/fonts/apercu-light.woff') format('woff'),
+		url('./assets/fonts/apercu-light.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+/* Customize website's scrollbar like Mac OS
+/* total width */
+*::-webkit-scrollbar {
+	visibility: hidden;
+	background-color: transparent;
+	width: 8px;
+}
+
+/* background of the scrollbar except button or resizer */
+*::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+/* scrollbar itself */
+*::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 16px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	visibility: hidden;
+}
+*:hover::-webkit-scrollbar-thumb {
+	visibility: visible;
+}
+
+/* set button(top and bottom of the scrollbar) */
+*::-webkit-scrollbar-button {
+	display: none;
+}
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
 }
