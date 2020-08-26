@@ -33,6 +33,9 @@ export const QUERY_KEYS = {
 			period,
 		],
 	},
+	HistoricalTrades: {
+		AllTrades: ['historicalTrades', 'trades'],
+	},
 };
 
 export default QUERY_KEYS;
