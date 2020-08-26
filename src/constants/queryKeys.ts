@@ -35,6 +35,7 @@ export const QUERY_KEYS = {
 	},
 	HistoricalTrades: {
 		AllTrades: ['historicalTrades', 'trades'],
+		MyTrades: (walletAddress: string) => ['historicalTrades', 'trades', walletAddress],
 	},
 };
 
