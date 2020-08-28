@@ -16,7 +16,7 @@ import { ReactComponent as LINKIcon } from 'assets/currencies/crypto/LINK.svg';
 import { ReactComponent as TRXIcon } from 'assets/currencies/crypto/TRX.svg';
 import { ReactComponent as DASHIcon } from 'assets/currencies/crypto/DASH.svg';
 import { ReactComponent as ETCIcon } from 'assets/currencies/crypto/ETC.svg';
-import { ReactComponent as SNXIcon } from 'assets/currencies/crypto/SNX.svg';
+import { ReactComponent as SNXIcon } from '@synthetixio/assets/snx/SNX.svg';
 import { ReactComponent as COMPIcon } from 'assets/currencies/crypto/COMP.svg';
 import { ReactComponent as RENIcon } from 'assets/currencies/crypto/REN.svg';
 import { ReactComponent as LENDIcon } from 'assets/currencies/crypto/LEND.svg';
