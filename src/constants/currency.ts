@@ -16,7 +16,7 @@ import { ReactComponent as LINKIcon } from 'assets/currencies/crypto/LINK.svg';
 import { ReactComponent as TRXIcon } from 'assets/currencies/crypto/TRX.svg';
 import { ReactComponent as DASHIcon } from 'assets/currencies/crypto/DASH.svg';
 import { ReactComponent as ETCIcon } from 'assets/currencies/crypto/ETC.svg';
-import { ReactComponent as SNXIcon } from 'assets/currencies/crypto/SNX.svg';
+import { ReactComponent as SNXIcon } from '@synthetixio/assets/snx/SNX.svg';
 import { ReactComponent as COMPIcon } from 'assets/currencies/crypto/COMP.svg';
 import { ReactComponent as RENIcon } from 'assets/currencies/crypto/REN.svg';
 import { ReactComponent as LENDIcon } from 'assets/currencies/crypto/LEND.svg';
@@ -72,7 +72,7 @@ import { ReactComponent as iETCIcon } from '@synthetixio/assets/synths/iETC.svg'
 // Commoditiy Synths
 import { ReactComponent as sXAUIcon } from '@synthetixio/assets/synths/sXAU.svg';
 import { ReactComponent as sXAGIcon } from '@synthetixio/assets/synths/sXAG.svg';
-import { ReactComponent as sBZIcon } from '@synthetixio/assets/synths/sBZ.svg';
+// import { ReactComponent as sOILIcon } from '@synthetixio/assets/synths/sOIL.svg';
 // Crypto Index Synths
 import { ReactComponent as sDEFIIcon } from '@synthetixio/assets/synths/sDEFI.svg';
 import { ReactComponent as sCEXIcon } from '@synthetixio/assets/synths/sCEX.svg';
@@ -261,7 +261,8 @@ export const currencyKeyToIconMap = {
 	[SYNTHS_MAP.sCHF]: { SynthIcon: sCHFIcon, AssetIcon: CHFIcon },
 	[SYNTHS_MAP.sXAU]: { SynthIcon: sXAUIcon, AssetIcon: GOLDIcon },
 	[SYNTHS_MAP.sXAG]: { SynthIcon: sXAGIcon, AssetIcon: SILVERIcon },
-	[SYNTHS_MAP.sBZ]: { SynthIcon: sBZIcon, AssetIcon: sBZIcon },
+	// disable for now
+	// [SYNTHS_MAP.sOIL]: { SynthIcon: sOILIcon, AssetIcon: sOILIcon },
 	[SYNTHS_MAP.sCEX]: { SynthIcon: sCEXIcon, AssetIcon: CEXIcon },
 	[SYNTHS_MAP.sDEFI]: { SynthIcon: sDEFIIcon, AssetIcon: DEFIIcon },
 	[SYNTHS_MAP.iCEX]: { SynthIcon: iCEXIcon, AssetIcon: CEXIcon },
