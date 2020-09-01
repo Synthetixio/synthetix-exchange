@@ -20,10 +20,7 @@ const RecentTransactions: FC<RecentTransactionsProps> = ({ marketAddress, wallet
 	const transactionsQuery = useQuery<OptionsTransactions, any>(
 		QUERY_KEYS.BinaryOptions.UserTransactions(marketAddress, walletAddress),
 		() =>
-			snxData.binaryOptions.optionTransactions({ market: marketAddress, account: walletAddress }),
-		{
-			refetchOnWindowFocus: false,
-		}
+			snxData.binaryOptions.optionTransactions({ market: marketAddress, account: walletAddress })
 	);
 
 	const noResults =
