@@ -77,11 +77,23 @@ const PairListPanel: FC<PairListPanelProps> = ({
 					});
 				} else {
 					const searchLowered = search.toLowerCase();
-					return allMarkets.filter(
-						({ baseCurrencyKey, quoteCurrencyKey }) =>
-							baseCurrencyKey.toLowerCase().includes(searchLowered) ||
-							quoteCurrencyKey.toLowerCase().includes(searchLowered)
-					);
+
+					// try to match "eth / btc", "eth/btc", etc...
+					const searchParts = searchLowered.replace(/([^a-z0-9]+)/gi, ' ').split(' ');
+
+					if (searchParts.length > 1) {
+						return allMarkets.filter(
+							({ baseCurrencyKey, quoteCurrencyKey }) =>
+								baseCurrencyKey.toLowerCase().includes(searchParts[0]) &&
+								quoteCurrencyKey.toLowerCase().includes(searchParts[searchParts.length - 1])
+						);
+					} else {
+						return allMarkets.filter(
+							({ baseCurrencyKey, quoteCurrencyKey }) =>
+								baseCurrencyKey.toLowerCase().includes(searchLowered) ||
+								quoteCurrencyKey.toLowerCase().includes(searchLowered)
+						);
+					}
 				}
 			}
 		},

@@ -46,9 +46,12 @@
 		"gwei": {
 			"title": "Set transaction speed & price",
 			"desc": "Adjust the slider below to set the transaction speed.",
+			"placeholder": "CUSTOM",
 			"table": {
 				"speed-allowed": "Speed (allowed)",
 				"slow": "Slow",
+				"safe": "Safe",
+				"standard": "Standard",
 				"average": "Average",
 				"fast": "fast",
 				"price": "price"
@@ -158,9 +161,7 @@
 				"title": "{{name}} | <0>{{desc}}</0>",
 				"sUSD": "Tracks the price of a single US Dollar (USD). This Synth always remains constant at 1.",
 				"iSynth": "Inversely tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. The entry point is {{entryPoint}} (the approximate market price at time of creation). This Synth freezes when it reaches its upper limit of {{upperLimit}} (i.e. when {{assetDesc}}'s value reaches {{roundedUpper}}) or its lower limit of {{lowerLimit}} (i.e. when {{assetDesc}}’s value reaches {{roundedLower}}). If it reaches either of its limits and gets frozen, it will no longer be able to be purchased on Synthetix.Exchange, but can still be traded for other Synths at its frozen value. At some point after it has reached either of its limits, it will be substituted for another {{synthName}} with different limits.",
-				"index": "Tracks the price of the index: {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. This index is made up of the following assets and weights: {{assets}}.",
-				"units-of-symbol-name": "{{units}} of {{symbol}} ({{name}})",
-				"units-of-symbol": "{{units}} of {{symbol}}",
+				"index": "Tracks the price of the index: {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle. This index is made up of the following assets and weights:",
 				"generic": "Tracks the price of {{assetDesc}}{{assetSymbol}} through price feeds supplied by an oracle."
 			}
 		}
@@ -170,7 +171,7 @@
 			"bidding": "bidding",
 			"trading": "trading",
 			"maturity": "maturity",
-			"expiry": "expiry"
+			"expiry": "expired"
 		},
 		"home": {
 			"market-creation": {
@@ -278,7 +279,7 @@
 					"final-result-col": "final result"
 				}
 			},
-			"chart-card": {				
+			"chart-card": {
 				"chart-types": {
 					"price": "price",
 					"options": "options"
@@ -293,7 +294,7 @@
 					"date-time-col": "date | time",
 					"type-col": "type",
 					"position-col": "position",
-					"amount-col": "bid amount",
+					"amount-col": "amount",
 					"tx-status-col": "tx status",
 					"no-results-your-activity": "No transactions associated with this wallet.",
 					"no-results-recent-activity": "No transactions associated with this market.",
@@ -333,7 +334,8 @@
 							"progress-label": "withdrawal in progress..."
 						},
 						"disabled": {
-							"tooltip": "Market Creator has disabled all. withdrawals - sUSD bids are final"
+							"tooltip": "Market Creator has disabled all withdrawals - sUSD bids are final",
+							"first-time-tooltip": "WARNING: market creator has disabled withdrawals on this market. All sUSD bids are final."
 						}
 					},
 					"common": {
@@ -404,13 +406,18 @@
 				"title": "get synths to start trading:"
 			}
 		},
+		"chart-tooltip": {
+			"trade-total": "Total",
+			"price": "Price"
+		},
 		"chart-card": {
 			"info-boxes": {
 				"price": "Price",
 				"24h-change": "24h change",
 				"24h-high": "24h high",
 				"24h-low": "24h low",
-				"24h-volume": "24h volume"
+				"24h-volume": "24h volume",
+				"your-trades": "Your trades"
 			},
 			"pair-list": {
 				"table": {
@@ -498,6 +505,13 @@
 			"errors": {
 				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
 			}
+		},
+		"modal": {
+			"loan-trial": {
+				"title": "Please note: this is a trial!",
+				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading the blog post first:",
+				"button-label": "Open loan - I have read the blog post"
+			}
 		}
 	},
 	"assets": {
@@ -551,9 +565,12 @@
 				"selling-col": "selling",
 				"price-col": "price",
 				"total-col": "total",
+				"fee-reclaim-col": "fee reclamation",
+				"settled-price-col": "settled price",
 				"status-col": "status",
 				"verify-col": "verify",
-				"no-results": "No exchanges associated with this wallet."
+				"no-results": "No exchanges associated with this wallet.",
+				"fee-reclaim-tooltip": "Synth trades can have delays between submitting a trade and it executing, so there is a waiting period to check if a trade was affected by a lag in on-chain price updates. In this waiting period, users cannot exchange, transfer, or burn the Synth they’ve just traded into, and if there was a lag they will be either <0>reclaimed</0> or <1>rebated</1> the difference on their next transaction with that Synth."
 			}
 		},
 		"transfers": {
@@ -637,6 +654,7 @@
 		},
 		"errors": {
 			"amount-exceeds-balance": "Amount exceeds balance",
+			"gas-exceeds-limit": "Max input is {{gasPrice}}",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
@@ -659,7 +677,11 @@
 			"lower-limit-reached-reset": "Lower limit reached, reset in progress.",
 			"upper-limit-reached-reset": "Upper limit reached, reset in progress.",
 			"trade-synths-for-currency": "trade synths for <0>{{currencyKey}}</0>",
-			"buy-currency": "buy <0>{{currencyKey}}</0>"
+			"buy-currency": "buy <0>{{currencyKey}}</0>",
+			"try-currencyA-currencyB-or-currencyC-currencyD": "Try {{currencyA}} / {{currencyB}} or {{currencyC}} / {{currencyD}}"
+		},
+		"frozen": {
+			"message": "<0>{{currencyKey}} price limit hit.</0><1>Synth reset in progress.</1>"
 		},
 		"currency-category": {
 			"crypto": "crypto",
@@ -716,6 +738,11 @@
 		"enable-wallet-access": {
 			"label": "enable wallet access",
 			"progress-label": "enabling wallet access..."
-		}
+		},
+		"asset": "asset",
+		"units": "units",
+		"weight": "weight",
+		"more-info": "More info",
+		"not-available": "None"
 	}
 }

@@ -19,6 +19,10 @@ export type HistoricalTrade = {
 	toCurrencyKeyBytes: string;
 	price: number;
 	amount: number;
+	isSettled: boolean;
+	reclaim: number;
+	rebate: number;
+	settledPrice: number;
 };
 
 export type HistoricalTrades = HistoricalTrade[];

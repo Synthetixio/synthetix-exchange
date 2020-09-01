@@ -50,6 +50,9 @@ import {
 import TradeSide from './TradeSide';
 import { ethers } from 'ethers';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useLocalStorage } from 'shared/hooks/useLocalStorage';
+import { LOCAL_STORAGE_KEYS } from 'constants/storage';
+import DismissableMessage from 'components/DismissableMessage';
 
 const TIMEOUT_DELAY = 2500;
 
@@ -98,6 +101,14 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 	const [shortSideAmount, setShortSideAmount] = useState<OptionsTransaction['amount'] | string>('');
 	const [longPriceAmount, setLongPriceAmount] = useState<string | number>('');
 	const [shortPriceAmount, setShortPriceAmount] = useState<string | number>('');
+	const [
+		withdrawalsDisabledTooltipDismissedMarkets,
+		setWithdrawalsDisabledTooltipDismissedMarkets,
+	] = useLocalStorage(LOCAL_STORAGE_KEYS.BO_WITHDRAWALS_DISABLED_TOOLTIP_DISMISSED, []);
+
+	const withdrawalsDisabledTooltipDismissed = withdrawalsDisabledTooltipDismissedMarkets.includes(
+		optionsMarket.address
+	);
 
 	const [side, setSide] = useState<OptionsTransaction['side']>('long');
 
@@ -121,10 +132,6 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 	const isShort = side === 'short';
 
 	useEffect(() => {
-		const init = async () => {
-			// console.log(await BOMContract.refundsEnabled());
-		};
-		init();
 		return () => {
 			if (pricesAfterBidOrRefundTimer) {
 				clearTimeout(pricesAfterBidOrRefundTimer);
@@ -395,6 +402,13 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 		}
 	};
 
+	const handleDismissWithdrawalsTooltip = () => {
+		setWithdrawalsDisabledTooltipDismissedMarkets([
+			...withdrawalsDisabledTooltipDismissedMarkets,
+			optionsMarket.address,
+		]);
+	};
+
 	return (
 		<Card>
 			<StyledCardHeader>
@@ -467,36 +481,54 @@ const BiddingPhaseCard: FC<BiddingPhaseCardProps> = ({
 						fees={fees}
 						amount={isLong ? longSideAmount : shortSideAmount}
 					/>
-					{hasAllowance ? (
-						<Tooltip
-							open={isBid && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
-							title={<span>{t(`${transKey}.confirm-button.high-slippage`)}</span>}
-							arrow={true}
-							placement="bottom"
-						>
-							<ActionButton
-								size="lg"
-								palette="primary"
-								disabled={isBidding || !isWalletConnected || !sUSDBalance || !gasLimit}
-								onClick={handleBidOrRefund}
+					<PaddedWithdrawalsTooltip
+						open={optionsMarket.withdrawalsEnabled ? false : !withdrawalsDisabledTooltipDismissed}
+						title={
+							<StyledDismissableMessage
+								size="sm"
+								type="info"
+								onDismiss={handleDismissWithdrawalsTooltip}
 							>
-								{!isBidding
-									? t(`${transKey}.confirm-button.label`)
-									: t(`${transKey}.confirm-button.progress-label`)}
-							</ActionButton>
-						</Tooltip>
-					) : (
-						<ActionButton
-							size="lg"
-							palette="primary"
-							disabled={isAllowing || !isWalletConnected}
-							onClick={handleAllowance}
-						>
-							{!isAllowing
-								? t('common.enable-wallet-access.label')
-								: t('common.enable-wallet-access.progress-label')}
-						</ActionButton>
-					)}
+								{t('options.market.trade-card.bidding.refund.disabled.first-time-tooltip')}
+							</StyledDismissableMessage>
+						}
+						interactive={true}
+						placement="top"
+						arrow={true}
+					>
+						<span>
+							{hasAllowance ? (
+								<Tooltip
+									open={isBid && Math.abs(priceShift) > SLIPPAGE_THRESHOLD}
+									title={<span>{t(`${transKey}.confirm-button.high-slippage`)}</span>}
+									arrow={true}
+									placement="bottom"
+								>
+									<ActionButton
+										size="lg"
+										palette="primary"
+										disabled={isBidding || !isWalletConnected || !sUSDBalance || !gasLimit}
+										onClick={handleBidOrRefund}
+									>
+										{!isBidding
+											? t(`${transKey}.confirm-button.label`)
+											: t(`${transKey}.confirm-button.progress-label`)}
+									</ActionButton>
+								</Tooltip>
+							) : (
+								<ActionButton
+									size="lg"
+									palette="primary"
+									disabled={isAllowing || !isWalletConnected}
+									onClick={handleAllowance}
+								>
+									{!isAllowing
+										? t('common.enable-wallet-access.label')
+										: t('common.enable-wallet-access.progress-label')}
+								</ActionButton>
+							)}
+						</span>
+					</PaddedWithdrawalsTooltip>
 					<PhaseEnd>
 						{t('options.market.trade-card.bidding.footer.end-label')}{' '}
 						<StyledTimeRemaining
@@ -570,5 +602,27 @@ const WithdrawalsTooltip = withStyles({
 		textAlign: 'center',
 	},
 })(Tooltip);
+
+const PaddedWithdrawalsTooltip = withStyles({
+	popper: {
+		// TODO: this is set to the default modal z-index (https://material-ui.com/customization/z-index/) to override the behaviour (the tooltip overlays the modals since it has higher z-index)
+		// We need a central place for both our own z-index and MUI.
+		zIndex: 1300,
+	},
+	tooltip: {
+		width: '220px',
+		textAlign: 'center',
+		padding: '10px',
+	},
+	tooltipPlacementTop: {
+		position: 'relative',
+		top: '-10px',
+	},
+})(Tooltip);
+
+const StyledDismissableMessage = styled(DismissableMessage)`
+	padding: 0;
+	align-items: flex-start;
+`;
 
 export default connector(BiddingPhaseCard);

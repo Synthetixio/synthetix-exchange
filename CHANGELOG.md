@@ -1,5 +1,49 @@
 # Changelog
 
+## 13 August 2020 (Gold release)
+
+### Added
+
+- Add settled price (rebate/reclaim) to "My Trades" on Trade page.
+- Add iSynth limits to trading charts
+- Add frozen synths indicators (Markets/Synths/Trade page).
+
+### Changed
+
+- Update support link.
+- Improve error handling for custom gas input.
+
+## 30 July 2020 (Silver release)
+
+### Added
+
+- Added trade markers (Trade page).
+- Re-enable Ether collateral trial.
+- Confirmation popup when submitting new loan.
+
+### Changed
+
+- Replaced the gas GWEI modal with a simplified gas popup.
+- Fixed a bug that caused the binary options create market modal to close when clicked outside the content area.
+
+## 23 July 2020 (Galena release)
+
+### Added
+
+- Added binary options markets on the Assets page. (to show created/user bids).
+- Added pending transactions to the binary options trade page (transaction tab).
+- Added claim/exercise events on the binary options trade page (transactions tab).
+- Enhanced the simple search on the Trade page to allow for searches like "sETH / iBTC" or "LINK / ETH" (space can be omitted).
+- Added a table to show the index synths composition.
+- Switched from Netlify to Vercel for faster build times.
+
+### Changed
+
+- Redesigned binary options create market modal + support for withdrawals.
+- Fixed the bug that caused the market creator filter to not work correctly on the binary options page.
+- Disabled withdrawals indication on the binary options trade page. (tooltips, disabled tab, etc).
+- Fixed the "24h change" sort bug on the synths table.
+
 ## 10 July 2020 (Muscovite release)
 
 ### Added

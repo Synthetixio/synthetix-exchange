@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import orderBy from 'lodash/orderBy';
 
 import snxJSConnector from 'utils/snxJSConnector';
 
@@ -21,9 +22,10 @@ import { subtitleLargeCSS } from 'components/Typography/General';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 import { getEtherscanTokenLink } from 'utils/explorers';
 import { getDecimalPlaces } from 'utils/formatters';
+import { NetworkId } from 'utils/networkUtils';
 
 type StateProps = {
-	networkId: number;
+	networkId: NetworkId;
 };
 
 type Props = {
@@ -46,8 +48,8 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 	const assetDesc = synth.desc.replace(/^Inverse /, '');
 	const assetSymbol = synth.desc !== synth.asset ? ` (${synth.asset})` : '';
 
-	// @ts-ignore
 	const { snxJS } = snxJSConnector;
+	// @ts-ignore
 	const contractAddress = snxJS[synth.name].contract.address;
 
 	const synthSign = USD_SIGN;
@@ -72,15 +74,34 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 			});
 		}
 		if (synth.index) {
-			return t('synths.overview.info.index', {
-				assetDesc,
-				assetSymbol,
-				assets: synth.index
-					.map(({ symbol, name, units }) =>
-						t('synths.overview.info.units-of-symbol-name', { units, symbol, name })
-					)
-					.join(', '),
-			});
+			return (
+				<>
+					{t('synths.overview.info.index', {
+						assetDesc,
+						assetSymbol,
+					})}
+					<Table style={{ marginTop: '48px' }}>
+						<thead>
+							<TableRowHead>
+								<th>{t('common.asset')}</th>
+								<th>{t('common.units')}</th>
+								<th>{t('common.weight')}</th>
+							</TableRowHead>
+						</thead>
+						<tbody>
+							{orderBy(synth.index, 'weight', 'desc').map(({ symbol, name, units, weight }) => (
+								<TableRowBody key={symbol}>
+									<td>
+										{symbol} ({name})
+									</td>
+									<td>{units}</td>
+									<td>{weight}%</td>
+								</TableRowBody>
+							))}
+						</tbody>
+					</Table>
+				</>
+			);
 		}
 		return t('synths.overview.info.generic', {
 			assetDesc,
@@ -209,6 +230,7 @@ const TableRow = styled.tr`
 const TableRowHead = styled(TableRow)`
 	> th {
 		${tableHeaderSmallCSS};
+		font-weight: normal;
 		background-color: ${(props) => props.theme.colors.accentL1};
 		color: ${(props) => props.theme.colors.fontSecondary};
 	}

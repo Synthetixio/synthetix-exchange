@@ -7,10 +7,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatCurrency } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
-import { LinkTextSmall } from 'shared/commonStyles';
-import { TextButton, FlexDivRow } from 'shared/commonStyles';
+import { FlexDivRow, QuestionMarkIcon } from 'shared/commonStyles';
+
+import SelectGasMenu from 'pages/shared/components/SelectGasMenu';
 
 import { DataSmall } from 'components/Typography';
+
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
 import { formatPercentage } from 'utils/formatters';
 
@@ -21,9 +23,9 @@ export const TransactionInfo = ({
 	usdRate = 0,
 	amount = 0,
 	exchangeFeeRate = 0,
-	onEditButtonClick,
 }) => {
 	const { t } = useTranslation();
+
 	const usdValue = amount * usdRate;
 	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
@@ -54,7 +56,7 @@ export const TransactionInfo = ({
 					{t('trade.trade-card.network-info.fee')}
 					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
 						<QuestionMarkIcon>
-							<QuestionMarkStyled />
+							<QuestionMark />
 						</QuestionMarkIcon>
 					</Tooltip>
 				</NetworkDataLabelFlex>
@@ -63,10 +65,7 @@ export const TransactionInfo = ({
 			<NetworkDataRow>
 				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
 				<NetworkData>
-					{gasPrice || 0}
-					<ButtonEdit onClick={onEditButtonClick}>
-						<LinkTextSmall>{t('common.actions.edit')}</LinkTextSmall>
-					</ButtonEdit>
+					<SelectGasMenu gasPrice={gasPrice} />
 				</NetworkData>
 			</NetworkDataRow>
 		</Container>
@@ -77,7 +76,6 @@ TransactionInfo.propTypes = {
 	gasPrice: PropTypes.number,
 	gasLimit: PropTypes.number,
 	ethRate: PropTypes.number,
-	onEditButtonClick: PropTypes.func.isRequired,
 };
 
 const TooltipContent = styled.div`
@@ -99,22 +97,6 @@ const TooltipContentRow = styled.div`
 	justify-content: space-between;
 `;
 
-const QuestionMarkIcon = styled.div`
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 50%;
-	width: 12px;
-	height: 12px;
-	background-color: ${(props) => props.theme.colors.accentL1};
-	margin-left: 4px;
-`;
-
-const QuestionMarkStyled = styled(QuestionMark)`
-	height: 8px;
-`;
-
 const Container = styled.div`
 	margin: 18px 0;
 `;
@@ -132,10 +114,6 @@ const NetworkDataRow = styled(FlexDivRow)`
 	display: flex;
 	align-items: center;
 	margin-bottom: 8px;
-`;
-
-const ButtonEdit = styled(TextButton)`
-	margin-left: 10px;
 `;
 
 export default TransactionInfo;

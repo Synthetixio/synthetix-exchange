@@ -4,7 +4,7 @@ import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 
 import { setSigner } from 'utils/snxJSConnector';
 import { getAddress } from 'utils/formatters';
-import { defaultNetwork } from 'utils/networkUtils';
+import { defaultNetwork, NetworkId } from 'utils/networkUtils';
 import { RootState } from 'ducks/types';
 
 export type WalletDetailsSliceState = {
@@ -15,7 +15,7 @@ export type WalletDetailsSliceState = {
 	walletPaginatorIndex: number;
 	availableWallets: string[];
 	derivationPath: string | null;
-	networkId: number;
+	networkId: NetworkId;
 	networkName: string;
 };
 
@@ -57,7 +57,7 @@ export const walletDetailsSlice = createSlice({
 		updateNetworkSettings: (
 			state,
 			action: PayloadAction<{
-				networkId: number;
+				networkId: NetworkId;
 				networkName: string;
 			}>
 		) => {
@@ -71,7 +71,7 @@ export const walletDetailsSlice = createSlice({
 			action: PayloadAction<{
 				signerOptions: {
 					type: string;
-					networkId: number;
+					networkId: NetworkId;
 					derivationPath: string;
 					networkName: string;
 				};

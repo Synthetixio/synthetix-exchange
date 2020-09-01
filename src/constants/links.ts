@@ -1,7 +1,7 @@
 import { CurrencyKey } from './currency';
 
 export const LINKS = {
-	Support: 'https://help.synthetix.io/hc/en-us',
+	Support: 'https://synthetix.community/docs/other',
 	Tokens: 'https://www.synthetix.io/tokens/',
 	Trading: {
 		DexAG: 'https://dex.ag/',
@@ -10,7 +10,7 @@ export const LINKS = {
 			`https://1inch.exchange/#/${base}/${quote}`,
 	},
 	Learn: {
-		Litepaper: 'https://www.synthetipx.io/litepaper',
+		Litepaper: 'https://www.synthetix.io/litepaper',
 		Tokens: 'https://www.synthetix.io/tokens',
 		Blog: 'https://blog.synthetix.io/',
 	},
@@ -35,5 +35,6 @@ export const LINKS = {
 	},
 	Blog: {
 		HowBinaryOptionsWork: 'https://blog.synthetix.io/how-binary-options-work/',
+		HowFeeReclamationRebatesWork: 'https://blog.synthetix.io/how-fee-reclamation-rebates-work/',
 	},
 };
