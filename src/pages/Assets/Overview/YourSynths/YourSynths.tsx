@@ -33,6 +33,10 @@ import {
 	getIsFetchingWalletBalances,
 } from 'ducks/wallet/walletBalances';
 
+import { hasMetamaskInstalled } from 'utils/networkUtils';
+import { getCurrencyKeyURLPath } from 'utils/currency';
+import snxJSConnector from 'utils/snxJSConnector';
+
 import { CRYPTO_CURRENCY_MAP, SYNTHS_MAP, CurrencyKey, USD_SIGN } from 'constants/currency';
 import Spinner from 'components/Spinner';
 import BaseTradingPairs from 'components/BaseTradingPairs';
@@ -80,9 +84,32 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 			setSelectedSynth(null);
 		};
 
+		const handleAddToMetamask = async (currencyKey: string) => {
+			try {
+				const { snxJS } = snxJSConnector as any;
+				const synthContract = snxJS[currencyKey].contract;
+				const wasAdded = await window?.ethereum?.request({
+					method: 'wallet_watchAsset',
+					params: {
+						type: 'ERC20',
+						options: {
+							address: synthContract.address,
+							symbol: currencyKey,
+							decimals: 18,
+							image: getCurrencyKeyURLPath(currencyKey),
+						},
+					},
+				});
+				if (!wasAdded) {
+					throw new Error('Error: Adding to metamask failed');
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
 		const tradeButtonPopoverOpen = Boolean(tradeButtonAnchorEl);
 		const id = tradeButtonPopoverOpen ? 'trade-button-popover' : undefined;
-
 		return (
 			<>
 				<StyledCard>
@@ -183,6 +210,17 @@ export const YourSynths: FC<YourSynthsProps> = memo(
 															{t('common.actions.swap-via-1inch')}
 														</Button>
 													</Link>
+												)}
+												{hasMetamaskInstalled() && (
+													<Button
+														palette="primary"
+														size="xs"
+														onClick={() => {
+															handleAddToMetamask(currencyKey);
+														}}
+													>
+														{t('common.actions.add-to-metamask')}
+													</Button>
 												)}
 											</ActionsCol>
 										);

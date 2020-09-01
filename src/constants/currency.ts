@@ -70,9 +70,9 @@ import { ReactComponent as iTRXIcon } from '@synthetixio/assets/synths/iTRX.svg'
 import { ReactComponent as iDASHIcon } from '@synthetixio/assets/synths/iDASH.svg';
 import { ReactComponent as iETCIcon } from '@synthetixio/assets/synths/iETC.svg';
 // Commoditiy Synths
-import { ReactComponent as sGOLDIcon } from '@synthetixio/assets/synths/sGOLD.svg';
-import { ReactComponent as sSILVERIcon } from '@synthetixio/assets/synths/sSILVER.svg';
-import { ReactComponent as sOILIcon } from '@synthetixio/assets/synths/sOIL.svg';
+import { ReactComponent as sXAUIcon } from '@synthetixio/assets/synths/sXAU.svg';
+import { ReactComponent as sXAGIcon } from '@synthetixio/assets/synths/sXAG.svg';
+// import { ReactComponent as sOILIcon } from '@synthetixio/assets/synths/sOIL.svg';
 // Crypto Index Synths
 import { ReactComponent as sDEFIIcon } from '@synthetixio/assets/synths/sDEFI.svg';
 import { ReactComponent as sCEXIcon } from '@synthetixio/assets/synths/sCEX.svg';
@@ -259,9 +259,10 @@ export const currencyKeyToIconMap = {
 	[SYNTHS_MAP.sAUD]: { SynthIcon: sAUDIcon, AssetIcon: AUDIcon },
 	[SYNTHS_MAP.sGBP]: { SynthIcon: sGBPIcon, AssetIcon: GBPIcon },
 	[SYNTHS_MAP.sCHF]: { SynthIcon: sCHFIcon, AssetIcon: CHFIcon },
-	[SYNTHS_MAP.sXAU]: { SynthIcon: sGOLDIcon, AssetIcon: GOLDIcon },
-	[SYNTHS_MAP.sXAG]: { SynthIcon: sSILVERIcon, AssetIcon: SILVERIcon },
-	[SYNTHS_MAP.sBZ]: { SynthIcon: sOILIcon, AssetIcon: sOILIcon },
+	[SYNTHS_MAP.sXAU]: { SynthIcon: sXAUIcon, AssetIcon: GOLDIcon },
+	[SYNTHS_MAP.sXAG]: { SynthIcon: sXAGIcon, AssetIcon: SILVERIcon },
+	// disable for now
+	// [SYNTHS_MAP.sOIL]: { SynthIcon: sOILIcon, AssetIcon: sOILIcon },
 	[SYNTHS_MAP.sCEX]: { SynthIcon: sCEXIcon, AssetIcon: CEXIcon },
 	[SYNTHS_MAP.sDEFI]: { SynthIcon: sDEFIIcon, AssetIcon: DEFIIcon },
 	[SYNTHS_MAP.iCEX]: { SynthIcon: iCEXIcon, AssetIcon: CEXIcon },
