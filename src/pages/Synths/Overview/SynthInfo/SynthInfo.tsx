@@ -89,15 +89,17 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 							</TableRowHead>
 						</thead>
 						<tbody>
-							{orderBy(synth.index, 'weight', 'desc').map(({ symbol, name, units, weight }) => (
-								<TableRowBody key={symbol}>
-									<td>
-										{symbol} ({name})
-									</td>
-									<td>{units}</td>
-									<td>{weight}%</td>
-								</TableRowBody>
-							))}
+							{orderBy(synth.index, 'weight', 'desc').map(
+								({ asset, desc, description, units, weight }) => (
+									<TableRowBody key={asset}>
+										<td>
+											{asset} ({description ?? desc})
+										</td>
+										<td>{units}</td>
+										<td>{weight}%</td>
+									</TableRowBody>
+								)
+							)}
 						</tbody>
 					</Table>
 				</>
