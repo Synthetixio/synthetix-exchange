@@ -30,8 +30,9 @@ export type SynthDefinition = {
 		lowerLimit: number;
 	};
 	index?: Array<{
-		symbol: CurrencyKey;
-		name: string;
+		asset: CurrencyKey;
+		desc: string;
+		description: string;
 		units: number;
 		weight: number;
 	}>;
