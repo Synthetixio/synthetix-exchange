@@ -34,46 +34,50 @@ export const useAllTradesQuery = () =>
 	);
 
 export const useSettledTradesQuery = ({ walletAddress }: { walletAddress: string }) =>
-	useQuery<SettledTrades, any>(QUERY_KEYS.HistoricalTrades.AllTrades, () =>
-		snxData.exchanger.exchangeEntriesSettled({
-			from: walletAddress,
-			max: MAX_TRADES,
-		})
+	useQuery<SettledTrades, any>(
+		QUERY_KEYS.HistoricalTrades.UserSettledTrades(walletAddress),
+		() =>
+			snxData.exchanger.exchangeEntriesSettled({
+				from: walletAddress,
+				max: MAX_TRADES,
+			}),
+		{
+			enabled: walletAddress !== '',
+		}
 	);
 
 export const useTradesQuery = ({ walletAddress }: { walletAddress: string }) => {
 	const settledTradesQuery = useSettledTradesQuery({ walletAddress });
 	const tradesQuery = useQuery<HistoricalTrades, any>(
-		QUERY_KEYS.HistoricalTrades.MyTrades(walletAddress),
+		QUERY_KEYS.HistoricalTrades.UserTrades(walletAddress),
 		() =>
-			snxData.exchanges.since({
-				fromAddress: walletAddress,
-				maxBlock: Number.MAX_SAFE_INTEGER,
-				max: MAX_TRADES,
-			}),
+			snxData.exchanges
+				.since({
+					fromAddress: walletAddress,
+					maxBlock: Number.MAX_SAFE_INTEGER,
+					max: MAX_TRADES,
+				})
+				.then((trades: HistoricalTrades) =>
+					mergeSettledTradesQueryData(trades, settledTradesQuery.data || [])
+				),
 		{
 			refetchInterval: REFRESH_INTERVAL,
-			enabled: !!settledTradesQuery.data,
+			enabled: walletAddress !== '' && !!settledTradesQuery.data,
 		}
 	);
 
-	tradesQuery.data = mergeSettledTradesQueryData(tradesQuery, settledTradesQuery);
 	return tradesQuery;
 };
 
-const mergeSettledTradesQueryData = (tradesQuery: any, settledTradesQuery: any) => {
-	let trades = normalizeTrades(tradesQuery.data || []);
-	return trades.map((trade) => {
-		const settledTrade =
-			!!settledTradesQuery &&
-			!!settledTradesQuery.data &&
-			settledTradesQuery.data.find(
-				(settledTrade: any) =>
-					trade.timestamp === settledTrade.exchangeTimestamp &&
-					settledTrade.dest === trade.toCurrencyKey &&
-					settledTrade.src === trade.fromCurrencyKey &&
-					trade.fromAmount === settledTrade.amount
-			);
+const mergeSettledTradesQueryData = (trades: HistoricalTrades, settledTrades: SettledTrades) => {
+	return normalizeTrades(trades).map((trade) => {
+		const settledTrade = settledTrades.find(
+			(settledTrade: SettledTrade) =>
+				trade.timestamp === settledTrade.exchangeTimestamp &&
+				settledTrade.dest === trade.toCurrencyKey &&
+				settledTrade.src === trade.fromCurrencyKey &&
+				trade.fromAmount === settledTrade.amount
+		);
 
 		trade.isSettled = false;
 		if (!!settledTrade) {
