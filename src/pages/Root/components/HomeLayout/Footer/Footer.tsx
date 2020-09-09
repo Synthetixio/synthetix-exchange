@@ -61,21 +61,6 @@ const FOOTER_LINKS = [
 			},
 		],
 	},
-	{
-		i18nTitle: 'home.footer.connect.title',
-		links: [
-			{
-				i18nLabel: 'home.footer.connect.links.community',
-				link: LINKS.Connect.Community,
-				isExternal: true,
-			},
-			{
-				i18nLabel: 'home.footer.connect.links.contact-us',
-				link: LINKS.Connect.ContactUs,
-				isExternal: true,
-			},
-		],
-	},
 ];
 
 const SOCIAL_LINKS = [

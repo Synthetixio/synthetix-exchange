@@ -103,13 +103,6 @@
 					"mintr": "Mintr",
 					"dashboard": "Dashboard"
 				}
-			},
-			"connect": {
-				"title": "community",
-				"links": {
-					"community": "Community",
-					"contact-us": "Contact Us"
-				}
 			}
 		}
 	},
