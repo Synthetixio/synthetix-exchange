@@ -10,17 +10,13 @@ export const LINKS = {
 			`https://1inch.exchange/#/${base}/${quote}`,
 	},
 	Learn: {
-		Litepaper: 'https://www.synthetix.io/litepaper',
-		Tokens: 'https://www.synthetix.io/tokens',
+		Litepaper: 'https://docs.synthetix.io/litepaper/',
+		Tokens: 'https://docs.synthetix.io/tokens/',
 		Blog: 'https://blog.synthetix.io/',
 	},
 	Products: {
-		Mintr: 'https://www.synthetix.io/products/mintr',
+		Mintr: 'https://mintr.synthetix.io',
 		Dashboard: 'https://dashboard.synthetix.io/',
-	},
-	Connect: {
-		Community: 'https://www.synthetix.io/community',
-		ContactUs: 'https://www.synthetix.io/contact-us',
 	},
 	Social: {
 		Twitter: 'https://twitter.com/synthetix_io',
