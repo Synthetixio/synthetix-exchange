@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
 import { AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
@@ -12,31 +12,25 @@ import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer'
 import { DataLarge } from 'components/Typography';
 import Spinner from 'components/Spinner';
 
-import useInterval from 'shared/hooks/useInterval';
 import { formatCurrencyWithSign } from 'utils/formatters';
 
 import { RootState } from 'ducks/types';
-import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
-import { fetchMyTradesRequest, getMyTrades } from 'ducks/trades/myTrades';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { useTradesQuery } from 'queries/myTrades';
 import { HistoricalTrade } from 'ducks/trades/types';
 import { SynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { PeriodLabel, PERIOD_IN_HOURS } from 'constants/period';
-import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 import { getMarketPairByMC } from 'constants/currency';
 
 import { ChartData } from './types';
 
 const mapStateToProps = (state: RootState) => ({
 	synthsMap: getAvailableSynthsMap(state),
-	trades: getMyTrades(state),
 	isWalletConnected: getIsWalletConnected(state),
+	walletAddress: getCurrentWalletAddress(state),
 });
 
-const mapDispatchToProps = {
-	fetchMyTradesRequest,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -50,39 +44,27 @@ type ChartProps = PropsFromRedux & {
 
 const Chart: FC<ChartProps> = ({
 	isWalletConnected,
-	fetchMyTradesRequest,
-	trades,
 	synthPair: { base, quote },
 	data,
 	isLoading,
 	period,
 	synthsMap,
 	showTrades,
+	walletAddress,
 }) => {
 	const { colors } = useContext(ThemeContext);
 	const { t } = useTranslation();
+	const myTradesQuery = useTradesQuery({ walletAddress: walletAddress || '' });
 	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
 
-	useEffect(() => {
-		if (isWalletConnected && showTrades) {
-			fetchMyTradesRequest();
-		}
-	}, [isWalletConnected, showTrades, fetchMyTradesRequest]);
-
-	const intervalOrNull = isWalletConnected && showTrades ? DEFAULT_REQUEST_REFRESH_INTERVAL : null;
-
-	useInterval(() => {
-		fetchMyTradesRequest();
-	}, intervalOrNull);
-
 	const ratesLength = (data?.rates ?? []).length;
-	const tradesLength = (trades ?? []).length;
+	const tradesLength = ((myTradesQuery != null && myTradesQuery.data) || []).length;
 
 	const dataWithTrades = useMemo(() => {
 		if (tradesLength > 0 && ratesLength > 0 && isWalletConnected && showTrades) {
 			const newRates = data.rates.map((rate, index) => {
 				const trade = find(
-					trades,
+					myTradesQuery != null ? myTradesQuery.data : [],
 					(trade: HistoricalTrade) =>
 						rate.block < trade.block &&
 						index < data.rates.length - 1 &&

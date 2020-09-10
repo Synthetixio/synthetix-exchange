@@ -33,6 +33,15 @@ export const QUERY_KEYS = {
 			period,
 		],
 	},
+	HistoricalTrades: {
+		AllTrades: ['historicalTrades', 'trades'],
+		UserTrades: (walletAddress: string) => ['historicalTrades', 'trades', walletAddress],
+		UserSettledTrades: (walletAddress: string) => [
+			'historicalSettledTrades',
+			'trades',
+			walletAddress,
+		],
+	},
 };
 
 export default QUERY_KEYS;
