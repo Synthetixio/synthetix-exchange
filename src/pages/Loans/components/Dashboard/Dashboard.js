@@ -17,12 +17,15 @@ import { formatPercentage, formatCurrency, formatCurrencyWithKey } from 'utils/f
 
 import { CARD_HEIGHT } from 'constants/ui';
 
+import { Button } from 'components/Button';
+
 import {
 	InfoBox,
 	InfoBoxLabel,
 	InfoBoxValue,
 	CurrencyKey,
 	ExternalLink,
+	FlexDiv,
 } from 'shared/commonStyles';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import Spinner from 'components/Spinner';
@@ -110,9 +113,19 @@ export const Dashboard = ({
 		<>
 			<Card>
 				<Card.Header>
-					<HeadingSmall>
-						{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
-					</HeadingSmall>
+					<>
+						<HeadingSmall>
+							{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
+						</HeadingSmall>
+						<FlexDiv>
+							<StyledButton isActive={true} size="sm" palette="secondary">
+								{t('loans.dashboard.tabs.sETH')}
+							</StyledButton>
+							<StyledButton isActive={false} size="sm" palette="secondary">
+								{t('loans.dashboard.tabs.sUSD')}
+							</StyledButton>
+						</FlexDiv>
+					</>
 					{isRefreshingLoansContractInfo && <Spinner size="sm" />}
 					<StyledExternalLink
 						href={getEtherscanAddressLink(networkId, EtherCollateral.contract.address)}
@@ -235,6 +248,11 @@ const Table = styled.table`
 
 const TableRowHeader = styled.tr`
 	background-color: ${(props) => props.theme.colors.surfaceL3};
+`;
+
+const StyledButton = styled(Button)`
+	margin-right: 8px;
+	text-transform: none;
 `;
 
 const mapStateToProps = (state) => ({

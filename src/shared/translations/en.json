@@ -457,6 +457,10 @@
 	"loans": {
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",
+			"tabs": {
+				"sUSD": "sUSD",
+				"sETH": "sETH"
+			},
 			"loan-info": {
 				"interest-fee": "interest fee",
 				"minting-fee": "minting fee",
