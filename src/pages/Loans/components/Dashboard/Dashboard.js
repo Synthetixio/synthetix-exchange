@@ -8,7 +8,12 @@ import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperl
 
 import Card from 'components/Card';
 import { HeadingSmall } from 'components/Typography';
-import { getIsRefreshingLoansContractInfo } from 'ducks/loans/contractInfo';
+import {
+	getContract,
+	getContractType,
+	getIsRefreshingLoansContractInfo,
+	setSelectedContractType,
+} from 'ducks/loans/contractInfo';
 import { getIsFetchingWalletBalances } from 'ducks/wallet/walletBalances';
 import { getWalletInfo, getNetworkId } from 'ducks/wallet/walletDetails';
 
@@ -30,7 +35,6 @@ import {
 import { EMPTY_VALUE } from 'constants/placeholder';
 import Spinner from 'components/Spinner';
 
-import snxJSConnector from 'utils/snxJSConnector';
 import { getEtherscanAddressLink } from 'utils/explorers';
 
 export const Dashboard = ({
@@ -39,6 +43,9 @@ export const Dashboard = ({
 	isFetchingWalletBalances,
 	isRefreshingLoansContractInfo,
 	networkId,
+	setSelectedContractType,
+	contractType,
+	contract,
 }) => {
 	const { t } = useTranslation();
 
@@ -54,10 +61,6 @@ export const Dashboard = ({
 		totalIssuedSynths,
 		lockedCollateralAmount,
 	} = collateralPair;
-
-	const {
-		snxJS: { EtherCollateral },
-	} = snxJSConnector;
 
 	const loanInfoItems = [
 		{
@@ -118,18 +121,26 @@ export const Dashboard = ({
 							{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
 						</HeadingSmall>
 						<FlexDiv>
-							<StyledButton isActive={true} size="sm" palette="secondary">
+							<StyledButton
+								isActive={contractType === 'sETH'}
+								size="sm"
+								palette="secondary"
+								onClick={() => setSelectedContractType('sETH')}
+							>
 								{t('loans.dashboard.tabs.sETH')}
 							</StyledButton>
-							<StyledButton isActive={false} size="sm" palette="secondary">
+							<StyledButton
+								isActive={contractType === 'sUSD'}
+								size="sm"
+								palette="secondary"
+								onClick={() => setSelectedContractType('sUSD')}
+							>
 								{t('loans.dashboard.tabs.sUSD')}
 							</StyledButton>
 						</FlexDiv>
 					</>
 					{isRefreshingLoansContractInfo && <Spinner size="sm" />}
-					<StyledExternalLink
-						href={getEtherscanAddressLink(networkId, EtherCollateral.contract.address)}
-					>
+					<StyledExternalLink href={getEtherscanAddressLink(networkId, contract.address)}>
 						{t('common.contracts.view')}
 						<StyledArrowHyperlinkIcon width="8" height="8" />
 					</StyledExternalLink>
@@ -260,6 +271,12 @@ const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),
+	contractType: getContractType(state),
+	contract: getContract(state),
 });
 
-export default connect(mapStateToProps, null)(Dashboard);
+const mapDispatchToProps = {
+	setSelectedContractType,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

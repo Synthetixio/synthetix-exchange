@@ -13,20 +13,25 @@ import MyLoans from './components/MyLoans';
 
 import Spinner from '../../components/Spinner';
 
-import { fetchLoansContractInfo, getLoansCollateralPair } from '../../ducks/loans/contractInfo';
+import {
+	fetchLoansContractInfo,
+	getContractType,
+	getLoansCollateralPair,
+} from '../../ducks/loans/contractInfo';
 
-const Loans = ({ collateralPair, fetchLoansContractInfo }) => {
+const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 
 	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
+
 	const clearSelectedLoan = () => {
 		setSelectedLoan(null);
 	};
 
 	useEffect(() => {
-		fetchLoansContractInfo();
+		fetchLoansContractInfo(contractType);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [contractType]);
 
 	if (collateralPair == null) {
 		return <Spinner centered={true} size="sm" />;
@@ -77,6 +82,7 @@ const LoanCardsContainer = styled.div`
 
 const mapStateToProps = (state) => ({
 	collateralPair: getLoansCollateralPair(state),
+	contractType: getContractType(state),
 });
 
 const mapDispatchToProps = {

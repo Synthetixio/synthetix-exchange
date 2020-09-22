@@ -13,6 +13,8 @@ export const contractInfoSlice = createSlice({
 		isLoading: false,
 		isLoaded: false,
 		isRefreshing: false,
+		contractType: 'sETH',
+		contract: null,
 	},
 	reducers: {
 		fetchLoansContractInfoRequest: (state) => {
@@ -33,6 +35,12 @@ export const contractInfoSlice = createSlice({
 			state.isRefreshing = false;
 			state.isLoaded = true;
 		},
+		setContractType: (state, action) => {
+			state.contractType = action.payload.contractType;
+		},
+		setContract: (state, action) => {
+			state.contract = action.payload.contract;
+		},
 	},
 });
 
@@ -44,25 +52,40 @@ export const getIsLoadedLoansContractInfo = (state) => getLoansContractInfoState
 export const getLoansContractInfoLoadingError = (state) =>
 	getLoansContractInfoState(state).loadingError;
 export const getLoansCollateralPair = (state) => getLoansContractInfoState(state).collateralPair;
+export const getContractType = (state) => getLoansContractInfoState(state).contractType;
+export const getContract = (state) => getLoansContractInfoState(state).contract;
 
 const {
 	fetchLoansContractInfoRequest,
 	fetchLoansContractInfoSuccess,
 	fetchLoansContractInfoFailure,
+	setContractType,
+	setContract,
 } = contractInfoSlice.actions;
 
-export const fetchLoansContractInfo = () => async (dispatch) => {
+export const fetchLoansContractInfo = (contractType) => async (dispatch) => {
 	const {
 		snxJS: { EtherCollateral },
+		etherCollateralsUSDContract,
 	} = snxJSConnector;
+	let contract;
 
+	if (contractType === 'sETH') {
+		contract = EtherCollateral.contract;
+	} else {
+		contract = etherCollateralsUSDContract;
+	}
+
+	dispatch(setContract({ contract }));
 	dispatch(fetchLoansContractInfoRequest());
 
 	try {
 		const [contractInfo, lockedETHBalance] = await Promise.all([
-			EtherCollateral.getContractInfo(),
-			snxJSConnector.provider.getBalance(EtherCollateral.contract.address),
+			contract.getContractInfo(),
+			snxJSConnector.provider.getBalance(contract.address),
 		]);
+
+		console.log(contractInfo);
 
 		const collateralPair = {
 			collateralCurrencyKey: CRYPTO_CURRENCY_MAP.ETH,
@@ -82,6 +105,10 @@ export const fetchLoansContractInfo = () => async (dispatch) => {
 	} catch (e) {
 		dispatch(fetchLoansContractInfoFailure({ error: e.message }));
 	}
+};
+
+export const setSelectedContractType = (contractType) => (dispatch) => {
+	dispatch(setContractType({ contractType }));
 };
 
 export default contractInfoSlice.reducer;
