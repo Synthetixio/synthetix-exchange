@@ -43,6 +43,11 @@
 			},
 			"retry": "Retry"
 		},
+		"c-ratio": {
+			"safe": "Safe",
+			"safe-max": "Safe Max",
+			"high-risk": "High Risk"
+		},
 		"gwei": {
 			"title": "Set transaction speed & price",
 			"desc": "Adjust the slider below to set the transaction speed.",
@@ -427,6 +432,7 @@
 			"frozen-synth": "Synth is frozen",
 			"retry-button": "Retry",
 			"network-info": {
+				"c-ratio": "C-Ratio",
 				"usd-value": "USD Value",
 				"fee": "Fee"
 			},
@@ -655,7 +661,8 @@
 			"gas-exceeds-limit": "Max input is {{gasPrice}}",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
-			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
+			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}",
+			"c-ratio-exceeded": "Min c-ratio is 150%"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",

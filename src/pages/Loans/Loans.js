@@ -5,7 +5,9 @@ import styled from 'styled-components';
 
 import { CenteredPageLayout, SectionVerticalSpacer } from '../../shared/commonStyles';
 
-import CreateLoanCard from './components/LoanCards/CreateLoanCard';
+import CreateLoanCard from './components/LoanCards/CreateLoanCard/CreateLoanCard';
+import CreateLoanCardsUSD from './components/LoanCards/CreateLoanCard/CreateLoanCardsUSD';
+
 import CloseLoanCard from './components/LoanCards/CloseLoanCard';
 
 import Dashboard from './components/Dashboard';
@@ -49,7 +51,11 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 				/>
 			</OverviewContainer>
 			<LoanCardsContainer>
-				<CreateLoanCard collateralPair={collateralPair} />
+				{contractType === 'sETH' ? (
+					<CreateLoanCard collateralPair={collateralPair} />
+				) : (
+					<CreateLoanCardsUSD collateralPair={collateralPair} />
+				)}
 				<SectionVerticalSpacer />
 				<CloseLoanCard
 					collateralPair={collateralPair}
