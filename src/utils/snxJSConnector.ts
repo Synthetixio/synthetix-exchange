@@ -60,7 +60,7 @@ const snxJSConnector: SnxJSConnector = {
 		this.etherCollateralsUSDContract = new ethers.Contract(
 			ethersCollateralsUSD.addresses[contractSettings.networkId],
 			ethersCollateralsUSD.abi,
-			this.provider
+			this.signer || this.provider
 		);
 	},
 };

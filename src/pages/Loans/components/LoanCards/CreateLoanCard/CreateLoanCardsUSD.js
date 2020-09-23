@@ -35,6 +35,7 @@ import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
 import SelectCRatio from 'pages/shared/components/SelectCRatio';
+import { getContract } from 'ducks/loans/contractInfo';
 
 export const C_RATIO = {
 	SAFE: '200',
@@ -49,6 +50,7 @@ export const CreateLoanCardsUSD = ({
 	walletBalance,
 	createLoan,
 	collateralPair,
+	contract,
 }) => {
 	const { t } = useTranslation();
 
@@ -61,7 +63,7 @@ export const CreateLoanCardsUSD = ({
 	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
 	const [cRatio, setCRatio] = useState(C_RATIO.SAFE);
 
-	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
+	const { collateralCurrencyKey, loanCurrencyKey, minLoanSize } = collateralPair;
 
 	const onLoanModalConfirmation = () => {
 		setIsLoanConfirmationModalOpen(false);
@@ -69,28 +71,26 @@ export const CreateLoanCardsUSD = ({
 	};
 
 	const handleSubmit = async () => {
-		const {
-			snxJS: { EtherCollateral },
-			utils,
-		} = snxJSConnector;
+		const { utils, signer } = snxJSConnector;
 
 		setTxErrorMessage(null);
 
 		try {
-			const openLoanArgs = {
-				value: utils.parseEther(collateralAmount),
-				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit,
-			};
+			const loan = utils.parseEther(loanAmount.toString());
+			const collateral = utils.parseEther(collateralAmount.toString());
 
-			const gasEstimate = await EtherCollateral.contract.estimate.openLoan(openLoanArgs);
+			const ContractWithSigner = contract.connect(signer);
+
+			const gasEstimate = await ContractWithSigner.estimate.openLoan(loan, { value: collateral });
+
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
 			setLocalGasLimit(updatedGasEstimate);
 
-			const tx = await EtherCollateral.openLoan({
-				...openLoanArgs,
+			const tx = await ContractWithSigner.openLoan(loan, {
+				value: collateral,
 				gasLimit: updatedGasEstimate,
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 			});
 
 			createLoan({
@@ -115,6 +115,11 @@ export const CreateLoanCardsUSD = ({
 
 	const collateralCurrencyBalance = getCurrencyKeyBalance(walletBalance, collateralCurrencyKey);
 	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
+
+	useEffect(() => {
+		setLoanAmount('');
+		setCollateralAmount('');
+	}, [cRatio]);
 
 	useEffect(() => {
 		setCollateralAmountErrorMessage(null);
@@ -170,7 +175,7 @@ export const CreateLoanCardsUSD = ({
 						}
 						onChange={(_, val) => {
 							setCollateralAmount(val);
-							setLoanAmount(val * issuanceRatio);
+							setLoanAmount(val * (100 / parseFloat(cRatio)) * ethRate);
 						}}
 						errorMessage={collateralAmountErrorMessage}
 					/>
@@ -197,7 +202,7 @@ export const CreateLoanCardsUSD = ({
 						}
 						onChange={(_, val) => {
 							setLoanAmount(val);
-							setCollateralAmount(val / issuanceRatio);
+							setCollateralAmount(val / (100 / parseFloat(cRatio)) / ethRate);
 						}}
 					/>
 				</FormInputRow>
@@ -261,6 +266,7 @@ const mapStateToProps = (state) => ({
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),
 	walletBalance: getWalletBalancesMap(state),
+	contract: getContract(state),
 });
 
 const mapDispatchToProps = {

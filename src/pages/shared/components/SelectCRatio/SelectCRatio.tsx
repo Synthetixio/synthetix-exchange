@@ -20,9 +20,6 @@ export const SelectCRatio = ({ cRatio, setCRatio, addPadding = false }: SelectCR
 	const { t } = useTranslation();
 	const [cRatioDropdownOpen, setcRatioDropdownOpen] = useState(false);
 	const setDropdownIsOpen = (isOpen: boolean, cRatio: string) => {
-		if (!isOpen && !cRatioDropdownOpen) {
-			return;
-		}
 		setCRatio(cRatio);
 		setcRatioDropdownOpen(isOpen);
 	};
