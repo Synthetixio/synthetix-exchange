@@ -36,6 +36,12 @@ import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 import { TxErrorMessage } from '../commonStyles';
 import SelectCRatio from 'pages/shared/components/SelectCRatio';
 
+export const C_RATIO = {
+	SAFE: '200',
+	MEDIUM: '165',
+	HIGH: '155',
+};
+
 export const CreateLoanCardsUSD = ({
 	gasInfo,
 	ethRate,
@@ -53,7 +59,7 @@ export const CreateLoanCardsUSD = ({
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
-	const [cRatio, setCRatio] = useState('200');
+	const [cRatio, setCRatio] = useState(C_RATIO.SAFE);
 
 	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
 
@@ -201,6 +207,7 @@ export const CreateLoanCardsUSD = ({
 						<SelectCRatio setCRatio={setCRatio} cRatio={cRatio} />
 					</NetworkData>
 				</NetworkDataRow>
+				<StyledDivider />
 				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary
 					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
@@ -235,6 +242,10 @@ const NetworkData = styled(DataSmall)`
 const NetworkDataRow = styled(FlexDivRow)`
 	display: flex;
 	align-items: center;
+`;
+
+const StyledDivider = styled.hr`
+	border-color: ${(props) => props.theme.colors.accentL1};
 `;
 
 CreateLoanCardsUSD.propTypes = {

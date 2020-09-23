@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import NumericInput from 'components/Input/NumericInput';
 import { Message } from 'shared/commonStyles';
+import { C_RATIO } from '../../../../pages/Loans/components/LoanCards/CreateLoanCard/CreateLoanCardsUSD';
 
 type GasMenuProps = {
 	cRatio: string;
@@ -10,12 +11,13 @@ type GasMenuProps = {
 	setDropdownIsOpen: (isOpen: boolean, updatedCRatio: string) => void;
 };
 
-const SelectCRatioBody: FC<GasMenuProps> = ({ setCRatio, cRatio, setDropdownIsOpen }) => {
+const SelectCRatioBody: FC<GasMenuProps> = ({ setCRatio, setDropdownIsOpen }) => {
 	const { t } = useTranslation();
 	const [customCRatio, setCustomCRatio] = useState<string>('');
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
 	const setCRatioAndCloseDropdown = (updatedCRatio: string) => {
+		setCustomCRatio('');
 		setCRatio(updatedCRatio);
 		setDropdownIsOpen(false, updatedCRatio);
 	};
@@ -24,7 +26,6 @@ const SelectCRatioBody: FC<GasMenuProps> = ({ setCRatio, cRatio, setDropdownIsOp
 		if (customCRatio) {
 			const customGasPriceNum = Number(customCRatio);
 			const exceedsCRatioLimit = customGasPriceNum < 150;
-
 			setCRatio(exceedsCRatioLimit ? 150 : Math.max(0, customGasPriceNum).toString());
 			setErrorMessage(exceedsCRatioLimit ? t('common.errors.c-ratio-exceeded') : undefined);
 		}
@@ -48,18 +49,18 @@ const SelectCRatioBody: FC<GasMenuProps> = ({ setCRatio, cRatio, setDropdownIsOp
 			)}
 			<DefinedGasSelector
 				needsPadding={errorMessage !== undefined}
-				onClick={() => setCRatioAndCloseDropdown('200')}
+				onClick={() => setCRatioAndCloseDropdown(C_RATIO.SAFE)}
 			>
 				<div>{t('modals.c-ratio.safe')}</div>
-				<div>200%</div>
+				<div>{C_RATIO.SAFE}%</div>
 			</DefinedGasSelector>
-			<DefinedGasSelector onClick={() => setCRatioAndCloseDropdown('165')}>
+			<DefinedGasSelector onClick={() => setCRatioAndCloseDropdown(C_RATIO.MEDIUM)}>
 				<div>{t('modals.c-ratio.safe-max')}</div>
-				<div>165%</div>
+				<div>{C_RATIO.MEDIUM}%</div>
 			</DefinedGasSelector>
-			<DefinedGasSelector onClick={() => setCRatioAndCloseDropdown('155')}>
+			<DefinedGasSelector onClick={() => setCRatioAndCloseDropdown(C_RATIO.HIGH)}>
 				<div>{t('modals.c-ratio.high-risk')}</div>
-				<div>155%</div>
+				<div>{C_RATIO.HIGH}%</div>
 			</DefinedGasSelector>
 		</Content>
 	);
