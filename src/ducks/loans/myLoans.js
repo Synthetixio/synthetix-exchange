@@ -91,6 +91,7 @@ export const fetchLoans = () => async (dispatch, getState) => {
 	const {
 		snxJS: { EtherCollateral, contractSettings },
 		etherCollateralsUSDContract,
+		provider,
 	} = snxJSConnector;
 
 	const state = getState();
@@ -108,18 +109,20 @@ export const fetchLoans = () => async (dispatch, getState) => {
 			toBlock: 9e9,
 			...contract.filters.LoanCreated(walletInfo.currentWallet),
 		};
-
 		const events = await contractSettings.provider.getLogs(filter);
+
+		const txHashs = events.map((e) => e.transactionHash);
+
 		const loanIDs = events
 			.map((log) => contract.interface.parseLog(log))
 			.map((event) => Number(event.values.loanID));
 
 		const loans = {};
-
+		let i = 0;
 		for (const loanID of loanIDs) {
+			const tx = await provider.getTransactionReceipt(txHashs[i]);
 			const loan = await contract.getLoan(walletInfo.currentWallet, loanID);
 			const timeClosed = toJSTimestamp(loan.timeClosed);
-
 			loans[loanID] = {
 				collateralAmount: bigNumberFormatter(loan.collateralAmount),
 				loanAmount: bigNumberFormatter(loan.loanAmount),
@@ -130,9 +133,24 @@ export const fetchLoans = () => async (dispatch, getState) => {
 				currentInterest: bigNumberFormatter(loan.interest),
 				status: timeClosed > 0 ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
 				transactionHash: null,
+				loanType: tx.to === EtherCollateral.address ? 'sETH' : 'sUSD',
 			};
+			i++;
 		}
-		dispatch(fetchLoansSuccess({ loans }));
+
+		//@TODO remove console logs after verifying the loans are filtered
+		const filteredLoans = loans.filter((e) => {
+			console.log(e);
+			if (contractType === 'sETH') {
+				return e.loanType === 'sETH';
+			} else {
+				return e.loanType === 'sUSD';
+			}
+		});
+
+		console.log(filteredLoans);
+
+		dispatch(fetchLoansSuccess({ filteredLoans }));
 	} catch (e) {
 		dispatch(fetchLoansFailure({ error: e.message }));
 	}

@@ -51,14 +51,17 @@ export const MyLoans = ({
 	contractType,
 }) => {
 	const { t } = useTranslation();
-	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
+	const { collateralCurrencyKey } = collateralPair;
 
 	const columns = useMemo(
 		() => [
 			{
 				Header: <>{t('loans.my-loans.table.amount-borrowed-col')}</>,
 				accessor: 'loanAmount',
-				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => {
+					const { loanType } = cellProps.row.original;
+					return formatCurrencyWithKey(loanType === 'sETH' ? 'sETH' : 'sUSD', cellProps.cell.value);
+				},
 				width: 150,
 				sortable: true,
 			},
@@ -79,22 +82,40 @@ export const MyLoans = ({
 			{
 				Header: <>{t('loans.my-loans.table.current-interest-fee-col')}</>,
 				accessor: 'currentInterest',
-				Cell: (cellProps) => (
-					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
-						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value, 4)}</span>
-					</Tooltip>
-				),
+				Cell: (cellProps) => {
+					const { loanType } = cellProps.row.original;
+					return (
+						<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+							<span>
+								{formatCurrencyWithKey(
+									loanType === 'sETH' ? 'sETH' : 'sUSD',
+									cellProps.cell.value,
+									4
+								)}
+							</span>
+						</Tooltip>
+					);
+				},
 				width: 150,
 				sortable: true,
 			},
 			{
 				Header: <>{t('loans.my-loans.table.fees-payable-col')}</>,
 				accessor: 'feesPayable',
-				Cell: (cellProps) => (
-					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
-						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value, 4)}</span>
-					</Tooltip>
-				),
+				Cell: (cellProps) => {
+					const { loanType } = cellProps.row.original;
+					return (
+						<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+							<span>
+								{formatCurrencyWithKey(
+									loanType === 'sETH' ? 'sETH' : 'sUSD',
+									cellProps.cell.value,
+									4
+								)}
+							</span>
+						</Tooltip>
+					);
+				},
 				width: 150,
 				sortable: true,
 			},
@@ -181,7 +202,6 @@ export const MyLoans = ({
 						<TableBody {...getTableBodyProps()}>
 							{rows.map((row) => {
 								prepareRow(row);
-
 								return (
 									<TableBodyRow
 										{...row.getRowProps()}
