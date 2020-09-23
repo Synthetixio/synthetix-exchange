@@ -29,7 +29,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	};
 
 	useEffect(() => {
-		fetchLoansContractInfo(contractType);
+		fetchLoansContractInfo();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contractType]);
 
@@ -66,6 +66,7 @@ Loans.propTypes = {
 	updateLoan: PropTypes.func,
 	fetchLoansContractInfo: PropTypes.func,
 	collateralPair: PropTypes.object,
+	contractType: PropTypes.string,
 };
 
 const OverviewContainer = styled.div`

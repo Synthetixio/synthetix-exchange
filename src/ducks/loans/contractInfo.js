@@ -63,12 +63,15 @@ const {
 	setContract,
 } = contractInfoSlice.actions;
 
-export const fetchLoansContractInfo = (contractType) => async (dispatch) => {
+export const fetchLoansContractInfo = () => async (dispatch, getState) => {
 	const {
 		snxJS: { EtherCollateral },
 		etherCollateralsUSDContract,
 	} = snxJSConnector;
 	let contract;
+
+	const state = getState();
+	const { contractType } = state.loans.contractInfo;
 
 	if (contractType === 'sETH') {
 		contract = EtherCollateral.contract;
@@ -85,12 +88,13 @@ export const fetchLoansContractInfo = (contractType) => async (dispatch) => {
 			snxJSConnector.provider.getBalance(contract.address),
 		]);
 
-		console.log(contractInfo);
-
 		const collateralPair = {
 			collateralCurrencyKey: CRYPTO_CURRENCY_MAP.ETH,
-			loanCurrencyKey: SYNTHS_MAP.sETH,
-			minLoanSize: bigNumberFormatter(contractInfo._minLoanSize),
+			loanCurrencyKey: contractType === 'sETH' ? SYNTHS_MAP.sETH : SYNTHS_MAP.sUSD,
+			minLoanSize:
+				contractType === 'sETH'
+					? bigNumberFormatter(contractInfo._minLoanSize)
+					: bigNumberFormatter(contractInfo._minLoanCollateralSize),
 			issuanceRatio: 100 / bigNumberFormatter(contractInfo._collateralizationRatio),
 			issueFeeRatePercent: bigNumberFormatter(contractInfo._issueFeeRate),
 			collateralizationRatioPercent: bigNumberFormatter(contractInfo._collateralizationRatio) / 100,

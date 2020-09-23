@@ -34,6 +34,7 @@ import { showWalletPopup } from 'ducks/ui';
 import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'utils/formatters';
 
 import { CARD_HEIGHT } from 'constants/ui';
+import { getContractType } from 'ducks/loans/contractInfo';
 
 export const MyLoans = ({
 	onSelectLoan,
@@ -47,6 +48,7 @@ export const MyLoans = ({
 	myLoansLoadingError,
 	isLoadedMyLoans,
 	showWalletPopup,
+	contractType,
 }) => {
 	const { t } = useTranslation();
 	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
@@ -140,7 +142,7 @@ export const MyLoans = ({
 		if (currentWallet) {
 			fetchLoans();
 		}
-	}, [fetchLoans, currentWallet]);
+	}, [fetchLoans, currentWallet, contractType]);
 
 	return (
 		<StyledCard>
@@ -340,6 +342,7 @@ const mapStateToProps = (state) => ({
 	isRefreshingMyLoans: getIsRefreshingMyLoans(state),
 	myLoansLoadingError: getMyLoansLoadingError(state),
 	isLoadedMyLoans: getIsLoadedMyLoans(state),
+	contractType: getContractType(state),
 });
 
 const mapDispatchToProps = {
