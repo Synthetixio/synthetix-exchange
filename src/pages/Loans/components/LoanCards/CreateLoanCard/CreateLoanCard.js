@@ -223,7 +223,7 @@ CreateLoanCard.propTypes = {
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
-	walletBalance: PropTypes.number,
+	walletBalance: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
