@@ -11,7 +11,6 @@ import {
 } from './networkUtils';
 import { synthSummaryUtilContract } from './contracts/synthSummaryUtilContract';
 import binaryOptionsMarketDataContract from './contracts/binaryOptionsMarketDataContract';
-import { ethersCollateralsUSD } from './contracts/etherCollateralsUSD';
 
 type SnxJSConnector = {
 	initialized: boolean;
@@ -55,13 +54,6 @@ const snxJSConnector: SnxJSConnector = {
 			binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
 			binaryOptionsMarketDataContract.abi,
 			this.provider
-		);
-		// @ts-ignore
-		//@TODO: remove when snxjs updates
-		this.etherCollateralsUSDContract = new ethers.Contract(
-			ethersCollateralsUSD.addresses[contractSettings.networkId],
-			ethersCollateralsUSD.abi,
-			this.signer || this.provider
 		);
 	},
 };

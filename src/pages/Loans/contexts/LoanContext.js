@@ -10,13 +10,12 @@ export const LoanProvider = ({ children }) => {
 	useEffect(() => {
 		const getSelectedContract = async () => {
 			const {
-				snxJS: { EtherCollateral },
-				etherCollateralsUSDContract,
+				snxJS: { EtherCollateral, EtherCollateralsUSD },
 			} = snxJSConnector;
 			if (contractType === 'sETH') {
 				setContract(EtherCollateral.contract);
 			} else {
-				setContract(etherCollateralsUSDContract);
+				setContract(EtherCollateralsUSD.contract);
 			}
 		};
 		getSelectedContract();
