@@ -14,7 +14,7 @@ import {
 	getIsRefreshingLoansContractInfo,
 	setSelectedContractType,
 } from 'ducks/loans/contractInfo';
-import { getIsFetchingWalletBalances } from 'ducks/wallet/walletBalances';
+import { getIsFetchingWalletBalances, getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getWalletInfo, getNetworkId } from 'ducks/wallet/walletDetails';
 
 import { getCurrencyKeyBalance } from 'utils/balances';
@@ -38,8 +38,9 @@ import Spinner from 'components/Spinner';
 import { getEtherscanAddressLink } from 'utils/explorers';
 
 export const Dashboard = ({
-	walletInfo: { balances, currentWallet },
+	walletInfo: { currentWallet },
 	collateralPair,
+	walletBalance,
 	isFetchingWalletBalances,
 	isRefreshingLoansContractInfo,
 	networkId,
@@ -176,12 +177,12 @@ export const Dashboard = ({
 						<td style={{ width: '60%' }} />
 						<td>
 							{currentWallet
-								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
+								? formatCurrency(getCurrencyKeyBalance(walletBalance, loanCurrencyKey))
 								: EMPTY_VALUE}
 						</td>
 						<td>
 							{currentWallet
-								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
+								? formatCurrency(getCurrencyKeyBalance(walletBalance, collateralCurrencyKey))
 								: EMPTY_VALUE}
 						</td>
 					</tr>
@@ -269,6 +270,7 @@ const StyledButton = styled(Button)`
 const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 	walletInfo: getWalletInfo(state),
+	walletBalance: getWalletBalancesMap(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),
 	contractType: getContractType(state),

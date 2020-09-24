@@ -1,6 +1,5 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-import merge from 'lodash/merge';
-
+import keyBy from 'lodash/keyBy';
 import snxJSConnector from '../../utils/snxJSConnector';
 import { getWalletInfo } from '../wallet/walletDetails';
 import { bigNumberFormatter, toJSTimestamp } from '../../utils/formatters';
@@ -35,7 +34,7 @@ export const myLoansSlice = createSlice({
 			state.isRefreshing = false;
 		},
 		fetchLoansSuccess: (state, action) => {
-			state.loans = merge(state.loans, action.payload.loans);
+			state.loans = action.payload.loans;
 			state.isLoading = false;
 			state.isRefreshing = false;
 			state.isLoaded = true;
@@ -105,42 +104,47 @@ export const fetchLoans = () => async (dispatch, getState) => {
 
 	try {
 		const filter = {
-			fromBlock: 0,
-			toBlock: 9e9,
+			fromBlock: 'earliest',
+			toBlock: 'latest',
 			...contract.filters.LoanCreated(walletInfo.currentWallet),
 		};
 		const events = await contractSettings.provider.getLogs(filter);
 
-		const txHashs = events.map((e) => e.transactionHash);
-
 		const loanIDs = events
-			.map((log) => contract.interface.parseLog(log))
-			.map((event) => Number(event.values.loanID));
+			.map((log) => {
+				return {
+					log: contract.interface.parseLog(log),
+					txHash: log.transactionHash,
+				};
+			})
+			.map((event) => {
+				return {
+					txHash: event.txHash,
+					id: Number(event.log.values.loanID),
+				};
+			});
 
-		const loans = {};
-		let i = 0;
-		for (const loanID of loanIDs) {
-			const tx = await provider.getTransactionReceipt(txHashs[i]);
-			const loan = await contract.getLoan(walletInfo.currentWallet, loanID);
+		const loans = loanIDs.map(async (element) => {
+			const tx = await provider.getTransactionReceipt(element.txHash);
+			const loan = await contract.getLoan(walletInfo.currentWallet, element.id);
 			const timeClosed = toJSTimestamp(loan.timeClosed);
-			loans[loanID] = {
+			return {
 				collateralAmount: bigNumberFormatter(loan.collateralAmount),
 				loanAmount: bigNumberFormatter(loan.loanAmount),
 				timeCreated: toJSTimestamp(loan.timeCreated),
-				loanID,
+				loanID: element.id,
 				timeClosed,
 				feesPayable: bigNumberFormatter(loan.totalFees),
-				currentInterest: bigNumberFormatter(loan.interest),
+				currentInterest: bigNumberFormatter(loan.interest ?? loan.accruedInterest),
 				status: timeClosed > 0 ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
 				transactionHash: null,
-				loanType: tx.to === EtherCollateral.address ? 'sETH' : 'sUSD',
+				loanType: tx.to === EtherCollateral.contract.address ? 'sETH' : 'sUSD',
 			};
-			i++;
-		}
+		});
 
-		//@TODO remove console logs after verifying the loans are filtered
-		const filteredLoans = loans.filter((e) => {
-			console.log(e);
+		const promiseLoansResolved = await Promise.all(loans);
+
+		const filteredLoans = promiseLoansResolved.filter((e) => {
 			if (contractType === 'sETH') {
 				return e.loanType === 'sETH';
 			} else {
@@ -148,9 +152,11 @@ export const fetchLoans = () => async (dispatch, getState) => {
 			}
 		});
 
-		console.log(filteredLoans);
+		const objectLoans = keyBy(filteredLoans, (loan) => {
+			return `${loan.loanID}-${loan.loanType}`;
+		});
 
-		dispatch(fetchLoansSuccess({ filteredLoans }));
+		dispatch(fetchLoansSuccess({ loans: objectLoans }));
 	} catch (e) {
 		dispatch(fetchLoansFailure({ error: e.message }));
 	}

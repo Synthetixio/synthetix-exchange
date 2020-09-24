@@ -57,6 +57,7 @@ const snxJSConnector: SnxJSConnector = {
 			this.provider
 		);
 		// @ts-ignore
+		//@TODO: remove when snxjs updates
 		this.etherCollateralsUSDContract = new ethers.Contract(
 			ethersCollateralsUSD.addresses[contractSettings.networkId],
 			ethersCollateralsUSD.abi,

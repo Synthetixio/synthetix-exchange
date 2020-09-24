@@ -3,7 +3,7 @@ export const ethersCollateralsUSD = {
 		1: '0x0D69755e12107695E544842BF7F61D9193f09a54',
 		3: '0x26a3C1878c4f3598e58f8bFB60B3cD9EF083e892',
 		4: '0xba6c0220157008cecb7364b37e27885e7b5be74a',
-		42: '0x83908C2ce5cD86C2924f69C4C8B17dCFB789C026',
+		42: '0x62B66e664d68a0dd2494aE148C6c556d27af885F',
 	},
 	abi: [
 		{
@@ -116,12 +116,7 @@ export const ethersCollateralsUSD = {
 				{ indexed: false, internalType: 'uint256', name: 'loanID', type: 'uint256' },
 				{ indexed: false, internalType: 'address', name: 'liquidator', type: 'address' },
 				{ indexed: false, internalType: 'uint256', name: 'liquidatedAmount', type: 'uint256' },
-				{
-					indexed: false,
-					internalType: 'uint256',
-					name: 'liquidatedCollateral',
-					type: 'uint256',
-				},
+				{ indexed: false, internalType: 'uint256', name: 'liquidatedCollateral', type: 'uint256' },
 			],
 			name: 'LoanPartiallyLiquidated',
 			type: 'event',
@@ -140,12 +135,7 @@ export const ethersCollateralsUSD = {
 		{
 			anonymous: false,
 			inputs: [
-				{
-					indexed: false,
-					internalType: 'uint256',
-					name: 'minLoanCollateralSize',
-					type: 'uint256',
-				},
+				{ indexed: false, internalType: 'uint256', name: 'minLoanCollateralSize', type: 'uint256' },
 			],
 			name: 'MinLoanCollateralSizeUpdated',
 			type: 'event',
@@ -352,7 +342,6 @@ export const ethersCollateralsUSD = {
 				{ internalType: 'uint256', name: 'loanID', type: 'uint256' },
 				{ internalType: 'uint256', name: 'timeClosed', type: 'uint256' },
 				{ internalType: 'uint256', name: 'accruedInterest', type: 'uint256' },
-				{ internalType: 'uint256', name: 'totalInterest', type: 'uint256' },
 				{ internalType: 'uint256', name: 'totalFees', type: 'uint256' },
 			],
 			payable: false,
