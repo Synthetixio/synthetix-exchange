@@ -17,7 +17,7 @@ import snxJSConnector from 'utils/snxJSConnector';
 
 import {
 	// LOAN_EVENTS,
-	// EXCHANGE_RATES_EVENTS,
+	EXCHANGE_RATES_EVENTS,
 	EXCHANGE_EVENTS,
 	SYSTEM_STATUS_EVENTS,
 } from 'constants/events';
@@ -49,7 +49,8 @@ const GlobalEventsGate: FC<GlobalEventsGateProps> = ({
 	useEffect(() => {
 		const {
 			snxJS: {
-				// EtherCollateral, ExchangeRates,
+				// EtherCollateral,
+				ExchangeRates,
 				SystemStatus,
 			},
 		} = snxJSConnector as any;
@@ -103,9 +104,9 @@ const GlobalEventsGate: FC<GlobalEventsGateProps> = ({
 			// Object.values(LOAN_EVENTS).forEach((event) =>
 			// 	EtherCollateral.contract.removeAllListeners(event)
 			// );
-			// Object.values(EXCHANGE_RATES_EVENTS).forEach((event) =>
-			// 	ExchangeRates.contract.removeAllListeners(event)
-			// );
+			Object.values(EXCHANGE_RATES_EVENTS).forEach((event) =>
+				ExchangeRates.contract.removeAllListeners(event)
+			);
 			Object.values(SYSTEM_STATUS_EVENTS).forEach((event) =>
 				SystemStatus.contract.removeAllListeners(event)
 			);
