@@ -45,8 +45,8 @@ const SYNTH_CONTRACT_DECIMALS = 18;
 export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 	const { t } = useTranslation();
 
-	const assetDesc = synth.desc.replace(/^Inverse /, '');
-	const assetSymbol = synth.desc !== synth.asset ? ` (${synth.asset})` : '';
+	const assetDesc = synth.description.replace(/^Inverse /, '');
+	const assetSymbol = synth.description !== synth.asset ? ` (${synth.asset})` : '';
 
 	const { snxJS } = snxJSConnector;
 	// @ts-ignore
@@ -90,10 +90,10 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 						</thead>
 						<tbody>
 							{orderBy(synth.index, 'weight', 'desc').map(
-								({ asset, desc, description, units, weight }) => (
+								({ asset, description, units, weight }) => (
 									<TableRowBody key={asset}>
 										<td>
-											{asset} ({description ?? desc})
+											{asset} ({description})
 										</td>
 										<td>{units}</td>
 										<td>{weight}%</td>
@@ -120,7 +120,7 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 						values={{
 							name: synth.name,
 							desc: t('common.currency.synthetic-currency', {
-								currencyKey: synth.desc,
+								currencyKey: synth.description,
 							}),
 						}}
 						components={[<Description />]}
