@@ -9,7 +9,6 @@ import rates from './rates';
 import historicalRates from './historicalRates';
 import app from './app';
 import markets from './markets';
-import trades from './trades';
 import options from './options';
 
 export default combineReducers({
@@ -22,6 +21,5 @@ export default combineReducers({
 	rates,
 	historicalRates,
 	markets,
-	trades,
 	options,
 });
