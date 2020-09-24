@@ -91,7 +91,7 @@ const GlobalEventsGate: FC<GlobalEventsGateProps> = ({
 		// 	});
 		// });
 
-		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRatesRequest);
+		// ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRatesRequest);
 		SystemStatus.contract.on(SYSTEM_STATUS_EVENTS.SYSTEM_SUSPENDED, () => {
 			setSystemSuspended({ status: true });
 		});
