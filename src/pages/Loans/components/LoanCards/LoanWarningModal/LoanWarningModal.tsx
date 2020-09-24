@@ -14,8 +14,7 @@ import { connect } from 'react-redux';
 
 const TRANSLATION_KEY = 'loans.modal.loan-trial';
 const sETH_BLOG_LINK = 'https://blog.synthetix.io/ether-collateral-second-trial/';
-const sUSD_BLOG_LINK =
-	'https://blog.synthetix.io/everything-you-need-to-know-before-using-ether-as-collateral-to-borrow-susd';
+const sUSD_BLOG_LINK = 'https://blog.synthetix.io/ether-collateral-trial-susd/';
 
 type LoanWarningModalProps = {
 	onClose: () => void;
