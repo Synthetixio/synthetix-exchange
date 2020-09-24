@@ -22,7 +22,7 @@ export type SynthDefinition = {
 	asset: string;
 	category: Category;
 	sign: string;
-	desc: string;
+	description: string;
 	aggregator: string;
 	inverted?: {
 		entryPoint: number;
@@ -31,7 +31,6 @@ export type SynthDefinition = {
 	};
 	index?: Array<{
 		asset: CurrencyKey;
-		desc: string;
 		description: string;
 		units: number;
 		weight: number;

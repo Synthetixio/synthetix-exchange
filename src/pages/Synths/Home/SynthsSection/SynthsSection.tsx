@@ -83,11 +83,12 @@ export const SynthsSection: FC<SynthsSectionProps> = ({
 	const filteredSynths = useDebouncedMemo(
 		() =>
 			assetSearch
-				? filteredSynthsWithRates.filter(({ name, desc }) => {
+				? filteredSynthsWithRates.filter(({ name, description }) => {
 						const assetSearchL = assetSearch.toLowerCase();
 
 						return (
-							name.toLowerCase().includes(assetSearchL) || desc.toLowerCase().includes(assetSearchL)
+							name.toLowerCase().includes(assetSearchL) ||
+							description.toLowerCase().includes(assetSearchL)
 						);
 				  })
 				: filteredSynthsWithRates,

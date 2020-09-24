@@ -76,7 +76,7 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 									<>
 										<StyledCurrencyName
 											currencyKey={cellProps.cell.value}
-											currencyDesc={cellProps.row.original.desc}
+											currencyDesc={cellProps.row.original.description}
 											showIcon={true}
 											iconProps={{ width: '24px', height: '24px' }}
 										/>
