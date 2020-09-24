@@ -513,7 +513,7 @@
 		"modal": {
 			"loan-trial": {
 				"title": "Please note: this is a trial!",
-				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading the blog post first:",
+				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading <0>{{blogLink}}</0> first.",
 				"button-label": "Open loan - I have read the blog post"
 			}
 		}

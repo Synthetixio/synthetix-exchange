@@ -1,7 +1,7 @@
 import React, { memo, FC } from 'react';
 import styled from 'styled-components';
 import Modal from '@material-ui/core/Modal';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import { headingH5CSS } from 'components/Typography/Heading';
 import { bodyCSS } from 'components/Typography/General';
@@ -36,8 +36,11 @@ const LoanWarningModal: FC<LoanWarningModalProps> = memo(
 					</Dismissable>
 					<Heading>{t(`${TRANSLATION_KEY}.title`)}</Heading>
 					<Content>
-						{t(`${TRANSLATION_KEY}.content`)}
-						<StyledExternalLink href={BLOG_LINK}>{BLOG_LINK}</StyledExternalLink>
+						<Trans
+							i18nKey={`${TRANSLATION_KEY}.content`}
+							values={{ blogLink: 'this blog post' }}
+							components={[<StyledExternalLink href={BLOG_LINK} />]}
+						/>
 					</Content>
 					<ButtonPrimary onClick={onConfirm}>{t(`${TRANSLATION_KEY}.button-label`)}</ButtonPrimary>
 				</Container>
