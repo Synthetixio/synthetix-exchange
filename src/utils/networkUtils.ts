@@ -44,7 +44,7 @@ export const SUPPORTED_WALLETS_MAP: Record<WalletType, string> = {
 	METAMASK: 'Metamask',
 	TREZOR: 'Trezor',
 	LEDGER: 'Ledger',
-	COINBASE: 'Coinbase',
+	COINBASE: 'Coinbase Wallet',
 	WALLET_CONNECT: 'WalletConnect',
 	PORTIS: 'Portis',
 };

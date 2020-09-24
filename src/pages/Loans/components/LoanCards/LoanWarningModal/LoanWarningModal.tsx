@@ -1,7 +1,7 @@
 import React, { memo, FC } from 'react';
 import styled from 'styled-components';
 import Modal from '@material-ui/core/Modal';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import { headingH5CSS } from 'components/Typography/Heading';
 import { bodyCSS } from 'components/Typography/General';
@@ -9,34 +9,45 @@ import { ButtonPrimary } from 'components/Button';
 import { FlexDivCol, FlexDiv, ExternalLink } from 'shared/commonStyles';
 
 import { ReactComponent as CloseIcon } from 'assets/images/close-cross.svg';
+import { getContractType } from 'ducks/loans/contractInfo';
+import { connect } from 'react-redux';
 
 const TRANSLATION_KEY = 'loans.modal.loan-trial';
-const BLOG_LINK = 'https://blog.synthetix.io/ether-collateral-second-trial/';
+const sETH_BLOG_LINK = 'https://blog.synthetix.io/ether-collateral-second-trial/';
+const sUSD_BLOG_LINK =
+	'https://blog.synthetix.io/everything-you-need-to-know-before-using-ether-as-collateral-to-borrow-susd';
 
 type LoanWarningModalProps = {
 	onClose: () => void;
 	onConfirm: () => void;
 	isOpen: boolean;
+	contractType: string;
 };
 
-const LoanWarningModal: FC<LoanWarningModalProps> = memo(({ isOpen, onClose, onConfirm }) => {
-	const { t } = useTranslation();
-	return (
-		<StyledModal open={isOpen}>
-			<Container>
-				<Dismissable>
-					<StyledCloseButton onClick={onClose} />
-				</Dismissable>
-				<Heading>{t(`${TRANSLATION_KEY}.title`)}</Heading>
-				<Content>
-					{t(`${TRANSLATION_KEY}.content`)}
-					<StyledExternalLink href={BLOG_LINK}>{BLOG_LINK}</StyledExternalLink>
-				</Content>
-				<ButtonPrimary onClick={onConfirm}>{t(`${TRANSLATION_KEY}.button-label`)}</ButtonPrimary>
-			</Container>
-		</StyledModal>
-	);
-});
+const LoanWarningModal: FC<LoanWarningModalProps> = memo(
+	({ isOpen, onClose, onConfirm, contractType }) => {
+		const { t } = useTranslation();
+		const BLOG_LINK = contractType === 'sETH' ? sETH_BLOG_LINK : sUSD_BLOG_LINK;
+		return (
+			<StyledModal open={isOpen}>
+				<Container>
+					<Dismissable>
+						<StyledCloseButton onClick={onClose} />
+					</Dismissable>
+					<Heading>{t(`${TRANSLATION_KEY}.title`)}</Heading>
+					<Content>
+						<Trans
+							i18nKey={`${TRANSLATION_KEY}.content`}
+							values={{ blogLink: 'this blog post' }}
+							components={[<StyledExternalLink href={BLOG_LINK} />]}
+						/>
+					</Content>
+					<ButtonPrimary onClick={onConfirm}>{t(`${TRANSLATION_KEY}.button-label`)}</ButtonPrimary>
+				</Container>
+			</StyledModal>
+		);
+	}
+);
 
 const Dismissable = styled(FlexDiv)`
 	width: 100%;
@@ -81,4 +92,8 @@ const StyledExternalLink = styled(ExternalLink)`
 	color: ${(props) => props.theme.colors.hyperlink};
 `;
 
-export default LoanWarningModal;
+const mapStateToProps = (state: any) => ({
+	contractType: getContractType(state),
+});
+
+export default connect(mapStateToProps, null)(LoanWarningModal);
