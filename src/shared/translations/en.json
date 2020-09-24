@@ -503,7 +503,8 @@
 			"close-loan": {
 				"title": "close loan",
 				"currency-unlocked": "<0>{{currencyKey}}</0> being unlocked:",
-				"currency-burned": "<0>{{currencyKey}}</0> being burned:"
+				"currency-burned": "<0>{{currencyKey}}</0> being burned:",
+				"min-susd": "Min sUSD required to close loan"
 			},
 			"errors": {
 				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
