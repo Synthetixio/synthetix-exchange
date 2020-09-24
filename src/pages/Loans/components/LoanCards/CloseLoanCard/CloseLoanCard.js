@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import snxJSConnector from 'utils/snxJSConnector';
 import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
 
 import { getGasInfo } from 'ducks/transaction';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { updateLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
@@ -22,6 +22,7 @@ import { InfoBox, InfoBoxLabel, InfoBoxValue, CurrencyKey } from 'shared/commonS
 import NetworkInfo from 'components/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
+import { getContract, getContractType } from 'ducks/loans/contractInfo';
 
 export const CloseLoanCard = ({
 	gasInfo,
@@ -29,9 +30,12 @@ export const CloseLoanCard = ({
 	isInteractive = true,
 	selectedLoan,
 	walletInfo: { currentWallet },
+	walletBalance,
 	updateLoan,
 	collateralPair,
 	onLoanClosed,
+	contract,
+	contractType,
 }) => {
 	const { t } = useTranslation();
 
@@ -40,31 +44,33 @@ export const CloseLoanCard = ({
 
 	let collateralAmount = null;
 	let loanAmount = null;
+	let currentInterest = null;
 	let loanID = null;
+	let loanType = 'sETH';
+	let minimumAmountToClose = null;
 
 	if (selectedLoan != null) {
 		collateralAmount = selectedLoan.collateralAmount;
 		loanAmount = selectedLoan.loanAmount;
+		currentInterest = selectedLoan.currentInterest;
 		loanID = selectedLoan.loanID;
+		loanType = selectedLoan.loanType;
+		minimumAmountToClose = loanAmount + currentInterest;
 	}
 
-	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
+	const { collateralCurrencyKey } = collateralPair;
 
 	const handleSubmit = async () => {
-		const {
-			snxJS: { EtherCollateral },
-		} = snxJSConnector;
-
 		setTxErrorMessage(null);
 
 		try {
 			const loanIDStr = loanID.toString();
 
-			const gasEstimate = await EtherCollateral.contract.estimate.closeLoan(loanIDStr);
+			const gasEstimate = await contract.estimate.closeLoan(loanIDStr);
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
-			await EtherCollateral.closeLoan(loanIDStr, {
+			await contract.closeLoan(loanIDStr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
@@ -105,7 +111,13 @@ export const CloseLoanCard = ({
 						<InfoBoxLabel>
 							<Trans
 								i18nKey="loans.loan-card.close-loan.currency-burned"
-								values={{ currencyKey: loanCurrencyKey }}
+								values={{
+									currencyKey: selectedLoan
+										? loanType === 'sETH'
+											? 'sETH'
+											: 'sUSD'
+										: contractType,
+								}}
 								components={[<CurrencyKey />]}
 							/>
 						</InfoBoxLabel>
@@ -113,6 +125,19 @@ export const CloseLoanCard = ({
 							{t('common.wallet.balance-currency', { balance: loanAmount })}
 						</InfoBoxValue>
 					</InfoBox>
+					{loanType === 'sUSD' && (
+						<InfoBox>
+							<InfoBoxLabel>
+								<Trans
+									i18nKey="loans.loan-card.close-loan.min-susd"
+									components={[<CurrencyKey />]}
+								/>
+							</InfoBoxLabel>
+							<InfoBoxValue>
+								{t('common.wallet.balance-currency', { balance: minimumAmountToClose ?? 0 })}
+							</InfoBoxValue>
+						</InfoBox>
+					)}
 				</LoanInfoContainer>
 				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary onClick={handleSubmit} disabled={!selectedLoan || !currentWallet}>
@@ -162,6 +187,9 @@ const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),
+	contract: getContract(state),
+	contractType: getContractType(state),
+	walletBalance: getWalletBalancesMap(state),
 });
 
 const mapDispatchToProps = {
