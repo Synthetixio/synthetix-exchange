@@ -23,7 +23,7 @@ console.log(bugsnag.releaseStage);
 
 bugsnagClient.use(bugsnagReact, React);
 
-const SYSTEM_ON_MAINTENANCE = true;
+const SYSTEM_ON_MAINTENANCE = false;
 
 const ErrorBoundary = bugsnagClient.getPlugin('react');
 const App = () => {
