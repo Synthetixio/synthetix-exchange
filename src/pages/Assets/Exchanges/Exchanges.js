@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -27,35 +27,19 @@ import {
 
 import { TableNoResults } from 'shared/commonStyles';
 
-import { getNetworkId } from 'ducks/wallet/walletDetails';
-import {
-	fetchMyTradesRequest,
-	getMyTrades,
-	getIsLoadingMyTrades,
-	getIsRefreshingMyTrades,
-	getIsLoadedMyTrades,
-} from 'ducks/trades/myTrades';
+import { getNetworkId, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { useTradesQuery } from 'queries/myTrades';
 
-export const Exchanges = ({
-	myTrades,
-	isLoadingMyTrades,
-	isLoadedMyTrades,
-	isRefreshingMyTrades,
-	networkId,
-	fetchMyTradesRequest,
-}) => {
+export const Exchanges = ({ networkId, walletAddress }) => {
 	const { t } = useTranslation();
 
-	useEffect(() => {
-		fetchMyTradesRequest();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const myTradesQuery = useTradesQuery({ walletAddress: walletAddress });
 
 	return (
 		<StyledCard>
 			<Card.Header>
 				<HeadingSmall>{t('assets.exchanges.title')}</HeadingSmall>
-				{isRefreshingMyTrades && <Spinner size="sm" />}
+				{myTradesQuery.isFetching && <Spinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
 				<Table
@@ -168,10 +152,10 @@ export const Exchanges = ({
 							),
 						},
 					]}
-					data={myTrades}
-					isLoading={isLoadingMyTrades && !isLoadedMyTrades}
+					data={myTradesQuery.data}
+					isLoading={myTradesQuery.isLoading && !myTradesQuery.isSuccess}
 					noResultsMessage={
-						isLoadedMyTrades && myTrades.length === 0 ? (
+						myTradesQuery.isSuccess && myTradesQuery.data.length === 0 ? (
 							<TableNoResults>{t('assets.exchanges.table.no-results')}</TableNoResults>
 						) : undefined
 					}
@@ -182,10 +166,7 @@ export const Exchanges = ({
 };
 
 Exchanges.propTypes = {
-	myTrades: PropTypes.array.isRequired,
-	isLoadingMyTrades: PropTypes.bool.isRequired,
-	isRefreshingMyTrades: PropTypes.bool.isRequired,
-	isLoadedMyTrades: PropTypes.bool.isRequired,
+	walletAddress: PropTypes.string.isRequired,
 	networkId: PropTypes.number.isRequired,
 };
 
@@ -199,15 +180,8 @@ const StyledCardBody = styled(Card.Body)`
 `;
 
 const mapStateToProps = (state) => ({
+	walletAddress: getCurrentWalletAddress(state),
 	networkId: getNetworkId(state),
-	myTrades: getMyTrades(state),
-	isLoadingMyTrades: getIsLoadingMyTrades(state),
-	isRefreshingMyTrades: getIsRefreshingMyTrades(state),
-	isLoadedMyTrades: getIsLoadedMyTrades(state),
 });
 
-const mapDispatchToProps = {
-	fetchMyTradesRequest,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Exchanges);
+export default connect(mapStateToProps)(Exchanges);

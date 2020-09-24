@@ -1,49 +1,32 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import {
-	fetchMyTradesRequest,
-	getMyTrades,
-	getIsLoadingMyTrades,
-	getIsLoadedMyTrades,
-} from 'ducks/trades/myTrades';
-
 import { RootState } from 'ducks/types';
-
-import useInterval from 'shared/hooks/useInterval';
-
+import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import TradeHistory from './TradeHistory';
 
-import { REFRESH_INTERVAL } from './constants';
+import { useTradesQuery } from 'queries/myTrades';
 
 const mapStateToProps = (state: RootState) => ({
-	trades: getMyTrades(state),
-	isLoading: getIsLoadingMyTrades(state),
-	isLoaded: getIsLoadedMyTrades(state),
+	walletAddress: getCurrentWalletAddress(state),
 });
 
-const mapDispatchToProps = {
-	fetchMyTradesRequest,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type MyTradesProps = PropsFromRedux;
 
-const MyTrades: FC<MyTradesProps> = ({ fetchMyTradesRequest, trades, isLoading, isLoaded }) => {
-	useEffect(() => {
-		fetchMyTradesRequest();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useInterval(() => {
-		fetchMyTradesRequest();
-	}, REFRESH_INTERVAL);
+const MyTrades: FC<MyTradesProps> = ({ walletAddress }) => {
+	const tradesQuery = useTradesQuery({ walletAddress: walletAddress || '' });
 
 	return (
-		<TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} showSettled={true} />
+		<TradeHistory
+			trades={tradesQuery.data || []}
+			isLoading={tradesQuery.isLoading}
+			isLoaded={tradesQuery.isSuccess}
+			showSettled={true}
+		/>
 	);
 };
 
