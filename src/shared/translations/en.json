@@ -43,6 +43,11 @@
 			},
 			"retry": "Retry"
 		},
+		"c-ratio": {
+			"safe": "Safe",
+			"safe-max": "Safe Max",
+			"high-risk": "High Risk"
+		},
 		"gwei": {
 			"title": "Set transaction speed & price",
 			"desc": "Adjust the slider below to set the transaction speed.",
@@ -427,6 +432,7 @@
 			"frozen-synth": "Synth is frozen",
 			"retry-button": "Retry",
 			"network-info": {
+				"c-ratio": "C-Ratio",
 				"usd-value": "USD Value",
 				"fee": "Fee"
 			},
@@ -457,6 +463,10 @@
 	"loans": {
 		"dashboard": {
 			"title": "{{currencyKey}} as collateral",
+			"tabs": {
+				"sUSD": "sUSD",
+				"sETH": "sETH"
+			},
 			"loan-info": {
 				"interest-fee": "interest fee",
 				"minting-fee": "minting fee",
@@ -493,7 +503,8 @@
 			"close-loan": {
 				"title": "close loan",
 				"currency-unlocked": "<0>{{currencyKey}}</0> being unlocked:",
-				"currency-burned": "<0>{{currencyKey}}</0> being burned:"
+				"currency-burned": "<0>{{currencyKey}}</0> being burned:",
+				"min-susd": "Min sUSD required to close loan"
 			},
 			"errors": {
 				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
@@ -502,7 +513,7 @@
 		"modal": {
 			"loan-trial": {
 				"title": "Please note: this is a trial!",
-				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading the blog post first:",
+				"content": "The Ether collateral initiative goes for 3 months, after which any remaining loans can be liquidated. Do not open a loan without reading <0>{{blogLink}}</0> first.",
 				"button-label": "Open loan - I have read the blog post"
 			}
 		}
@@ -651,7 +662,8 @@
 			"gas-exceeds-limit": "Max input is {{gasPrice}}",
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
-			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}"
+			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}",
+			"c-ratio-exceeded": "Min c-ratio is 150%"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",

@@ -5,7 +5,9 @@ import styled from 'styled-components';
 
 import { CenteredPageLayout, SectionVerticalSpacer } from '../../shared/commonStyles';
 
-import CreateLoanCard from './components/LoanCards/CreateLoanCard';
+import CreateLoanCard from './components/LoanCards/CreateLoanCard/CreateLoanCard';
+import CreateLoanCardsUSD from './components/LoanCards/CreateLoanCard/CreateLoanCardsUSD';
+
 import CloseLoanCard from './components/LoanCards/CloseLoanCard';
 
 import Dashboard from './components/Dashboard';
@@ -13,12 +15,17 @@ import MyLoans from './components/MyLoans';
 
 import Spinner from '../../components/Spinner';
 
-import { fetchLoansContractInfo, getLoansCollateralPair } from '../../ducks/loans/contractInfo';
+import {
+	fetchLoansContractInfo,
+	getContractType,
+	getLoansCollateralPair,
+} from '../../ducks/loans/contractInfo';
 
-const Loans = ({ collateralPair, fetchLoansContractInfo }) => {
+const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 
 	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
+
 	const clearSelectedLoan = () => {
 		setSelectedLoan(null);
 	};
@@ -26,7 +33,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo }) => {
 	useEffect(() => {
 		fetchLoansContractInfo();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [contractType]);
 
 	if (collateralPair == null) {
 		return <Spinner centered={true} size="sm" />;
@@ -44,7 +51,11 @@ const Loans = ({ collateralPair, fetchLoansContractInfo }) => {
 				/>
 			</OverviewContainer>
 			<LoanCardsContainer>
-				<CreateLoanCard collateralPair={collateralPair} />
+				{contractType === 'sETH' ? (
+					<CreateLoanCard collateralPair={collateralPair} />
+				) : (
+					<CreateLoanCardsUSD collateralPair={collateralPair} />
+				)}
 				<SectionVerticalSpacer />
 				<CloseLoanCard
 					collateralPair={collateralPair}
@@ -61,6 +72,7 @@ Loans.propTypes = {
 	updateLoan: PropTypes.func,
 	fetchLoansContractInfo: PropTypes.func,
 	collateralPair: PropTypes.object,
+	contractType: PropTypes.string,
 };
 
 const OverviewContainer = styled.div`
@@ -77,6 +89,7 @@ const LoanCardsContainer = styled.div`
 
 const mapStateToProps = (state) => ({
 	collateralPair: getLoansCollateralPair(state),
+	contractType: getContractType(state),
 });
 
 const mapDispatchToProps = {

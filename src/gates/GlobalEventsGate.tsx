@@ -1,7 +1,11 @@
 import { useEffect, FC } from 'react';
 import { connect } from 'react-redux';
 
-import { updateLoan, swapTxHashWithLoanID, LOAN_STATUS } from 'ducks/loans/myLoans';
+import {
+	updateLoan,
+	swapTxHashWithLoanID,
+	// LOAN_STATUS
+} from 'ducks/loans/myLoans';
 import { fetchWalletBalancesRequest } from 'ducks/wallet/walletBalances';
 import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { fetchRatesRequest } from 'ducks/rates';
@@ -12,7 +16,7 @@ import { setSystemSuspended } from 'ducks/app';
 import snxJSConnector from 'utils/snxJSConnector';
 
 import {
-	LOAN_EVENTS,
+	// LOAN_EVENTS,
 	EXCHANGE_RATES_EVENTS,
 	EXCHANGE_EVENTS,
 	SYSTEM_STATUS_EVENTS,
@@ -34,56 +38,60 @@ type DispatchProps = {
 type GlobalEventsGateProps = StateProps & DispatchProps;
 
 const GlobalEventsGate: FC<GlobalEventsGateProps> = ({
-	updateLoan,
+	// updateLoan,
 	fetchWalletBalancesRequest,
-	fetchLoansContractInfo,
-	swapTxHashWithLoanID,
-	fetchRatesRequest,
+	// fetchLoansContractInfo,
+	// swapTxHashWithLoanID,
+	// fetchRatesRequest,
 	currentWallet,
 	setSystemSuspended,
 }) => {
 	useEffect(() => {
 		const {
-			snxJS: { EtherCollateral, ExchangeRates, SystemStatus },
+			snxJS: {
+				// EtherCollateral,
+				ExchangeRates,
+				SystemStatus,
+			},
 		} = snxJSConnector as any;
 
-		EtherCollateral.contract.on(
-			LOAN_EVENTS.LOAN_CREATED,
-			(_account: string, loanID: string, _amount: string, tx: { transactionHash: string }) => {
-				fetchLoansContractInfo();
-				fetchWalletBalancesRequest();
+		// EtherCollateral.contract.on(
+		// 	LOAN_EVENTS.LOAN_CREATED,
+		// 	(_account: string, loanID: string, _amount: string, tx: { transactionHash: string }) => {
+		// 		fetchLoansContractInfo();
+		// 		fetchWalletBalancesRequest();
 
-				const { transactionHash } = tx;
-				const loanIDNumber = Number(loanID);
+		// 		const { transactionHash } = tx;
+		// 		const loanIDNumber = Number(loanID);
 
-				updateLoan({
-					transactionHash,
-					loanInfo: {
-						loanID: loanIDNumber,
-						status: LOAN_STATUS.OPEN,
-					},
-					swapTransactionHashWithLoanID: true,
-				});
+		// 		updateLoan({
+		// 			transactionHash,
+		// 			loanInfo: {
+		// 				loanID: loanIDNumber,
+		// 				status: LOAN_STATUS.OPEN,
+		// 			},
+		// 			swapTransactionHashWithLoanID: true,
+		// 		});
 
-				swapTxHashWithLoanID({
-					transactionHash,
-					loanID: loanIDNumber,
-				});
-			}
-		);
+		// 		swapTxHashWithLoanID({
+		// 			transactionHash,
+		// 			loanID: loanIDNumber,
+		// 		});
+		// 	}
+		// );
 
-		EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_: any, loanID: string) => {
-			fetchLoansContractInfo();
-			fetchWalletBalancesRequest();
-			updateLoan({
-				loanID: Number(loanID),
-				loanInfo: {
-					status: LOAN_STATUS.CLOSED,
-				},
-			});
-		});
+		// EtherCollateral.contract.on(LOAN_EVENTS.LOAN_CLOSED, (_: any, loanID: string) => {
+		// 	fetchLoansContractInfo();
+		// 	fetchWalletBalancesRequest();
+		// 	updateLoan({
+		// 		loanID: Number(loanID),
+		// 		loanInfo: {
+		// 			status: LOAN_STATUS.CLOSED,
+		// 		},
+		// 	});
+		// });
 
-		ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRatesRequest);
+		// ExchangeRates.contract.on(EXCHANGE_RATES_EVENTS.RATES_UPDATED, fetchRatesRequest);
 		SystemStatus.contract.on(SYSTEM_STATUS_EVENTS.SYSTEM_SUSPENDED, () => {
 			setSystemSuspended({ status: true });
 		});
@@ -93,9 +101,9 @@ const GlobalEventsGate: FC<GlobalEventsGateProps> = ({
 		});
 
 		return () => {
-			Object.values(LOAN_EVENTS).forEach((event) =>
-				EtherCollateral.contract.removeAllListeners(event)
-			);
+			// Object.values(LOAN_EVENTS).forEach((event) =>
+			// 	EtherCollateral.contract.removeAllListeners(event)
+			// );
 			Object.values(EXCHANGE_RATES_EVENTS).forEach((event) =>
 				ExchangeRates.contract.removeAllListeners(event)
 			);

@@ -84,6 +84,7 @@ const Root = ({
 			const _intervalId = setInterval(() => {
 				fetchAndSetExchangeData();
 				fetchWalletBalancesRequest();
+				fetchRatesRequest();
 			}, REFRESH_INTERVAL);
 			setIntervalId(_intervalId);
 		};
