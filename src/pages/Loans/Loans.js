@@ -30,7 +30,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
 
 	const clearSelectedLoan = () => {
-		setSelectedLoan(null);
+		setVisiblePanel(null);
 	};
 
 	useEffect(() => {

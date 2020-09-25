@@ -9,6 +9,7 @@ import { getEthRate } from 'ducks/rates';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import { useTranslation } from 'react-i18next';
+import snxJSConnector from 'utils/snxJSConnector';
 import {
 	InfoBox,
 	InfoBoxLabel,
@@ -21,12 +22,11 @@ import {
 } from 'shared/commonStyles';
 import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
-import { updateLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { updateLoan } from 'ducks/loans/myLoans';
 import NetworkInfo from 'components/NetworkInfo';
 import { getContract, getContractType, getLoansCollateralPair } from 'ducks/loans/contractInfo';
 import { getGasInfo } from 'ducks/transaction';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-// import { getCurrencyKeyBalance } from 'utils/balances';
 import { ActionTypes } from '../../Actions';
 import DropdownPanel from 'components/DropdownPanel';
 import SelectCRatioBody from 'pages/shared/components/SelectCRatio/SelectCRatioBody';
@@ -37,8 +37,6 @@ const ModifyCollateral = ({
 	gasInfo,
 	ethRate,
 	walletInfo: { currentWallet },
-	walletBalance,
-	updateLoan,
 	collateralPair,
 	contract,
 	onLoanModified,
@@ -61,37 +59,50 @@ const ModifyCollateral = ({
 	};
 	const [collateralDifference, setCollateralDifference] = useState(0);
 
-	const {
-		collateralCurrencyKey,
-		// loanCurrencyKey,
-		// issuanceRatio,
-		// minLoanSize,
-	} = collateralPair;
-
-	// const collateralCurrencyBalance = getCurrencyKeyBalance(walletBalance, collateralCurrencyKey);
-	// const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
+	const { collateralCurrencyKey } = collateralPair;
 
 	const handleSubmit = async () => {
+		const { utils, signer } = snxJSConnector;
+
 		setTxErrorMessage(null);
 
 		try {
 			const loanIDStr = loanID?.toString();
 
-			const gasEstimate = await contract.estimate.closeLoan(loanIDStr);
+			const ContractWithSigner = contract.connect(signer);
+
+			const collateralDifferenceBN = utils.parseEther(collateralDifference.toString());
+			let gasEstimate;
+			if (type === ActionTypes.ADD) {
+				gasEstimate = await ContractWithSigner.estimate.depositCollateral(
+					currentWallet,
+					loanIDStr,
+					{
+						value: collateralDifferenceBN,
+					}
+				);
+			} else {
+				gasEstimate = await ContractWithSigner.estimate.withdrawCollateral(
+					loanIDStr,
+					collateralDifferenceBN
+				);
+			}
+
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
-			await contract.closeLoan(loanIDStr, {
-				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: updatedGasEstimate,
-			});
-
-			updateLoan({
-				loanID,
-				loanInfo: {
-					status: LOAN_STATUS.CLOSING,
-				},
-			});
+			if (type === ActionTypes.ADD) {
+				await ContractWithSigner.depositCollateral(currentWallet, loanIDStr, {
+					value: collateralDifferenceBN,
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasLimit: updatedGasEstimate,
+				});
+			} else {
+				await ContractWithSigner.withdrawCollateral(loanIDStr, collateralDifferenceBN, {
+					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+					gasLimit: updatedGasEstimate,
+				});
+			}
 
 			onLoanModified();
 		} catch (e) {
@@ -145,7 +156,7 @@ const ModifyCollateral = ({
 									</FormInputLabel>
 									<FormInputLabelSmall>
 										{t('loans.loan-card.current-collateral', {
-											collateralAmount: selectedLoan.collateralAmount,
+											collateralAmount: selectedLoan.collateralAmount.toFixed(2),
 											currencyKey: collateralCurrencyKey,
 										})}
 									</FormInputLabelSmall>

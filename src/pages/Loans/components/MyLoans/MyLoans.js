@@ -181,7 +181,7 @@ export const MyLoans = ({
 				>
 					<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
 				</StyledButton>
-				{contractType === 'sUSD' && (
+				{/* {contractType === 'sUSD' && (
 					<StyledButton
 						isActive={activeTab === 1}
 						size="sm"
@@ -190,7 +190,7 @@ export const MyLoans = ({
 					>
 						<HeadingSmall>{t('loans.liquidations.title')}</HeadingSmall>
 					</StyledButton>
-				)}
+				)} */}
 				{isRefreshingMyLoans && <Spinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
