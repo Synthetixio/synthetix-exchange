@@ -20,6 +20,7 @@ import {
 	getContractType,
 	getLoansCollateralPair,
 } from '../../ducks/loans/contractInfo';
+import Actions from './components/Actions';
 
 const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
@@ -57,12 +58,16 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 					<CreateLoanCardsUSD collateralPair={collateralPair} />
 				)}
 				<SectionVerticalSpacer />
-				<CloseLoanCard
-					collateralPair={collateralPair}
-					isInteractive={selectedLoan != null}
-					selectedLoan={selectedLoan}
-					onLoanClosed={clearSelectedLoan}
-				/>
+				{contractType === 'sETH' ? (
+					<CloseLoanCard
+						collateralPair={collateralPair}
+						isInteractive={selectedLoan != null}
+						selectedLoan={selectedLoan}
+						onLoanClosed={clearSelectedLoan}
+					/>
+				) : (
+					<Actions />
+				)}
 			</LoanCardsContainer>
 		</CenteredPageLayout>
 	);
