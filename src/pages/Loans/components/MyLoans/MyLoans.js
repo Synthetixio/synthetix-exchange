@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { ReactComponent as SortUpIcon } from 'assets/images/sort-up.svg';
 import { ReactComponent as SortIcon } from 'assets/images/sort.svg';
 
 import Card from 'components/Card';
-import { ButtonPrimarySmall } from 'components/Button';
+import { Button, ButtonPrimarySmall } from 'components/Button';
 import { HeadingSmall } from 'components/Typography';
 import Spinner from 'components/Spinner';
 
@@ -52,6 +52,7 @@ export const MyLoans = ({
 }) => {
 	const { t } = useTranslation();
 	const { collateralCurrencyKey } = collateralPair;
+	const [activeTab, setActiveTab] = useState(0);
 
 	const columns = useMemo(
 		() => [
@@ -168,7 +169,22 @@ export const MyLoans = ({
 	return (
 		<StyledCard>
 			<Card.Header>
-				<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
+				<StyledButton
+					isActive={activeTab === 0}
+					size="sm"
+					palette="tab"
+					onClick={() => setActiveTab(0)}
+				>
+					<HeadingSmall>{t('loans.my-loans.title')}</HeadingSmall>
+				</StyledButton>
+				<StyledButton
+					isActive={activeTab === 1}
+					size="sm"
+					palette="tab"
+					onClick={() => setActiveTab(1)}
+				>
+					<HeadingSmall>{t('loans.liquidations.title')}</HeadingSmall>
+				</StyledButton>
 				{isRefreshingMyLoans && <Spinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
@@ -343,6 +359,12 @@ const SortIconContainer = styled.span`
 	display: flex;
 	align-items: center;
 	margin-left: 5px;
+`;
+
+const StyledButton = styled(Button)`
+	color: ${(props) => (props.isActive ? 'white' : props.theme.colors.secondary)};
+	margin: 0;
+	height: 100%;
 `;
 
 MyLoans.propTypes = {

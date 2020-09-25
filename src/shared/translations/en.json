@@ -490,6 +490,10 @@
 				"no-results": "No loans associated with this wallet."
 			}
 		},
+		"liquidations": {
+			"title": "Liquidations"
+
+		},
 		"loan-card": {
 			"create-loan": {
 				"title": "create a loan",
