@@ -84,7 +84,7 @@ export const Dashboard = ({
 					components={[<CurrencyKey />]}
 				/>
 			),
-			value: formatCurrency(issueLimit),
+			value: formatCurrency(issueLimit, 0),
 		},
 		{
 			label: (
@@ -95,7 +95,7 @@ export const Dashboard = ({
 				/>
 			),
 
-			value: formatCurrency(totalIssuedSynths),
+			value: formatCurrency(totalIssuedSynths, 0),
 		},
 		{
 			label: t('loans.dashboard.loan-info.min-loan-size'),
