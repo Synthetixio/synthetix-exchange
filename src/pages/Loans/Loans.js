@@ -20,10 +20,11 @@ import {
 	getContractType,
 	getLoansCollateralPair,
 } from '../../ducks/loans/contractInfo';
-import Actions from './components/Actions';
+import Actions, { ActionTypes } from './components/Actions';
 
 const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
+	const [visiblePanel, setVisiblePanel] = useState(null);
 
 	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
 
@@ -33,12 +34,50 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 
 	useEffect(() => {
 		fetchLoansContractInfo();
+		setSelectedLoan(null);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contractType]);
 
 	if (collateralPair == null) {
 		return <Spinner centered={true} size="sm" />;
 	}
+
+	const onActionPress = (tab) => {
+		switch (tab) {
+			case ActionTypes.ADD:
+				setVisiblePanel(ActionTypes.ADD);
+				break;
+			case ActionTypes.WITHDRAW:
+				setVisiblePanel(ActionTypes.WITHDRAW);
+				break;
+			case ActionTypes.REPAY:
+				setVisiblePanel(ActionTypes.REPAY);
+				break;
+			case ActionTypes.CLOSE:
+				setVisiblePanel(ActionTypes.CLOSE);
+				break;
+			default:
+				setVisiblePanel(null);
+				break;
+		}
+	};
+
+	const returnActions = () => {
+		switch (visiblePanel) {
+			case null:
+				return <Actions onActionPress={onActionPress} isInteractive={selectedLoan != null} />;
+			case ActionTypes.ADD:
+				return <></>;
+			case ActionTypes.WITHDRAW:
+				return <></>;
+			case ActionTypes.REPAY:
+				return <></>;
+			case ActionTypes.CLOSE:
+				return <></>;
+			default:
+				return <Actions onActionPress={onActionPress} isInteractive={selectedLoan != null} />;
+		}
+	};
 
 	return (
 		<CenteredPageLayout>
@@ -66,7 +105,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 						onLoanClosed={clearSelectedLoan}
 					/>
 				) : (
-					<Actions />
+					returnActions()
 				)}
 			</LoanCardsContainer>
 		</CenteredPageLayout>

@@ -30,7 +30,6 @@ export const CloseLoanCard = ({
 	isInteractive = true,
 	selectedLoan,
 	walletInfo: { currentWallet },
-	walletBalance,
 	updateLoan,
 	collateralPair,
 	onLoanClosed,
@@ -46,7 +45,7 @@ export const CloseLoanCard = ({
 	let loanAmount = null;
 	let currentInterest = null;
 	let loanID = null;
-	let loanType = 'sETH';
+	let loanType = contractType;
 	let minimumAmountToClose = null;
 
 	if (selectedLoan != null) {

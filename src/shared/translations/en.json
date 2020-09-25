@@ -504,6 +504,16 @@
 					"button-label": "read this post for info"
 				}
 			},
+			"actions": {
+				"title": "Choose action",
+				"add": "add collateral",
+				"withdraw": "withdraw collateral",
+				"repay": "repay",
+				"close": "close loan"
+			},
+			"select-loan": {
+				"title": "Select loan to start"
+			},
 			"close-loan": {
 				"title": "close loan",
 				"currency-unlocked": "<0>{{currencyKey}}</0> being unlocked:",
@@ -630,6 +640,7 @@
 		"actions": {
 			"submit": "submit",
 			"close": "close",
+			"options": "options",
 			"edit": "edit",
 			"confirm": "confirm",
 			"click-to-retry": "click to retry",
@@ -656,6 +667,7 @@
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
 			"currency-balance": "{{currencyKey}} BALANCE",
+			"eth-value": "ETH PRICE (USD)",
 			"balance-currency": "Balance: {{balance}}",
 			"no-wallet-connected": "No wallet currently connected",
 			"connect-currency-wallet": "connect {{currencyKey}} wallet to start",

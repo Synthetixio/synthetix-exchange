@@ -138,14 +138,14 @@ export const MyLoans = ({
 							onClick={() => onSelectLoan(loanData)}
 							disabled={loanData.status !== LOAN_STATUS.OPEN}
 						>
-							{t('common.actions.close')}
+							{contractType === 'sETH' ? t('common.actions.close') : t('common.actions.options')}
 						</ButtonPrimarySmall>
 					);
 				},
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+		[contractType]
 	);
 
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
@@ -216,7 +216,7 @@ export const MyLoans = ({
 							))}
 						</TableRow>
 					))}
-					{isLoadedMyLoans && rows.length > 0 ? (
+					{!isLoadingMyLoans && isLoadedMyLoans && rows.length > 0 ? (
 						<TableBody {...getTableBodyProps()}>
 							{rows.map((row) => {
 								prepareRow(row);
