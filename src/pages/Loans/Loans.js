@@ -21,6 +21,7 @@ import {
 	getLoansCollateralPair,
 } from '../../ducks/loans/contractInfo';
 import Actions, { ActionTypes } from './components/Actions';
+import ModifyCollateral from './components/LoanCards/ModifyCollateral';
 
 const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
@@ -37,6 +38,10 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 		setSelectedLoan(null);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contractType]);
+
+	useEffect(() => {
+		setVisiblePanel(null);
+	}, [selectedLoan]);
 
 	if (collateralPair == null) {
 		return <Spinner centered={true} size="sm" />;
@@ -67,13 +72,32 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 			case null:
 				return <Actions onActionPress={onActionPress} isInteractive={selectedLoan != null} />;
 			case ActionTypes.ADD:
-				return <></>;
+				return (
+					<ModifyCollateral
+						onLoanModified={clearSelectedLoan}
+						type={ActionTypes.ADD}
+						selectedLoan={selectedLoan}
+					/>
+				);
 			case ActionTypes.WITHDRAW:
-				return <></>;
+				return (
+					<ModifyCollateral
+						onLoanModified={clearSelectedLoan}
+						type={ActionTypes.WITHDRAW}
+						selectedLoan={selectedLoan}
+					/>
+				);
 			case ActionTypes.REPAY:
 				return <></>;
 			case ActionTypes.CLOSE:
-				return <></>;
+				return (
+					<CloseLoanCard
+						collateralPair={collateralPair}
+						isInteractive={selectedLoan != null}
+						selectedLoan={selectedLoan}
+						onLoanClosed={clearSelectedLoan}
+					/>
+				);
 			default:
 				return <Actions onActionPress={onActionPress} isInteractive={selectedLoan != null} />;
 		}
@@ -88,6 +112,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 					onSelectLoan={handleSelectLoan}
 					selectedLoan={selectedLoan}
 					collateralPair={collateralPair}
+					setVisiblePanel={setVisiblePanel}
 				/>
 			</OverviewContainer>
 			<LoanCardsContainer>

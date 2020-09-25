@@ -492,7 +492,6 @@
 		},
 		"liquidations": {
 			"title": "Liquidations"
-
 		},
 		"loan-card": {
 			"create-loan": {
@@ -503,6 +502,16 @@
 					"message": "Ether Collateral loans have been paused.",
 					"button-label": "read this post for info"
 				}
+			},
+			"current-collateral": "Collateral: {{collateralAmount}} {{currencyKey}}",
+			"new-c-ratio": "New C-Ratio",
+			"withdraw-collateral": {
+				"title": "WITHDRAW COLLATERAL",
+				"subtitle": "ETH being withdrawn"
+			},
+			"add-collateral": {
+				"title": "ADD COLLATERAL",
+				"subtitle": "ETH being added"
 			},
 			"actions": {
 				"title": "Choose action",
@@ -679,7 +688,9 @@
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}",
-			"c-ratio-exceeded": "Min c-ratio is 150%"
+			"c-ratio-exceeded": "Min c-ratio is 150%",
+			"c-ratio-below": "C-ratio below current ratio",
+			"c-ratio-above": "C-ratio above current ratio"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",

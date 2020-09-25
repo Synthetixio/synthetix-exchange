@@ -39,6 +39,7 @@ import { getContractType } from 'ducks/loans/contractInfo';
 export const MyLoans = ({
 	onSelectLoan,
 	selectedLoan,
+	setVisiblePanel,
 	fetchLoans,
 	walletInfo: { currentWallet },
 	loans,
@@ -135,7 +136,10 @@ export const MyLoans = ({
 
 					return isLoanClosed ? null : (
 						<ButtonPrimarySmall
-							onClick={() => onSelectLoan(loanData)}
+							onClick={() => {
+								setVisiblePanel(null);
+								onSelectLoan(loanData);
+							}}
 							disabled={loanData.status !== LOAN_STATUS.OPEN}
 						>
 							{contractType === 'sETH' ? t('common.actions.close') : t('common.actions.options')}
@@ -145,7 +149,7 @@ export const MyLoans = ({
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[contractType]
+		[contractType, selectedLoan]
 	);
 
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
