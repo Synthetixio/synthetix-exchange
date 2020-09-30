@@ -50,11 +50,6 @@ export const myLoansSlice = createSlice({
 
 			const loanKey = loanID || transactionHash;
 			const loan = state.loans[loanKey];
-			console.log(loanKey);
-
-			console.log(state.loans);
-
-			console.log(loan);
 
 			if (loan != null) {
 				state.loans[loanKey] = { ...loan, ...loanInfo };
