@@ -22,12 +22,21 @@ import {
 } from '../../ducks/loans/contractInfo';
 import Actions, { ActionTypes } from './components/Actions';
 import ModifyCollateral from './components/LoanCards/ModifyCollateral';
+import LiquidateCard from './components/LiquidateCard';
+
+export const VIEWS = {
+	LOANS: 'loan',
+	LIQUIDATIONS: 'liquidations',
+};
 
 const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
+	const [selectedLiquidation, setSelectedLiquidation] = useState(null);
 	const [visiblePanel, setVisiblePanel] = useState(null);
+	const [view, setView] = useState(VIEWS.LOANS);
 
 	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
+	const handleSelectLiquidation = (liquidationInfo) => setSelectedLiquidation(liquidationInfo);
 
 	const clearSelectedLoan = () => {
 		setVisiblePanel(null);
@@ -42,6 +51,11 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 	useEffect(() => {
 		setVisiblePanel(null);
 	}, [selectedLoan]);
+
+	useEffect(() => {
+		setVisiblePanel(null);
+		setSelectedLoan(null);
+	}, [view]);
 
 	if (collateralPair == null) {
 		return <Spinner centered={true} size="sm" />;
@@ -111,8 +125,10 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 				<MyLoans
 					onSelectLoan={handleSelectLoan}
 					selectedLoan={selectedLoan}
-					collateralPair={collateralPair}
+					onSelectLiquidation={handleSelectLiquidation}
+					selectedLiquidation={selectedLiquidation}
 					setVisiblePanel={setVisiblePanel}
+					setView={setView}
 				/>
 			</OverviewContainer>
 			<LoanCardsContainer>
@@ -129,8 +145,10 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 						selectedLoan={selectedLoan}
 						onLoanClosed={clearSelectedLoan}
 					/>
-				) : (
+				) : view === VIEWS.LOANS ? (
 					returnActions()
+				) : (
+					<LiquidateCard selectedLiquidation={selectedLiquidation} />
 				)}
 			</LoanCardsContainer>
 		</CenteredPageLayout>

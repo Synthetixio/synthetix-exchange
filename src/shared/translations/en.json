@@ -478,6 +478,35 @@
 				"locked-currency": "LOCKED {{currencyKey}}"
 			}
 		},
+		"liquidations": {
+			"title": "Liquidations",
+			"table": {
+				"address-col": "address",
+				"c-ratio-col": "c-ratio",
+				"collateral-col": "total collateral",
+				"debt-col": "total debt to cover",
+				"no-results": "No loans available to liquidate.",
+				"no-partial-liquidations": "No partial liquidations available.",
+				"activity": "activity",
+				"liquidate": "liquidate"
+			},
+			"sub-table": {
+				"collateral-col": "collateral",
+				"penalty-col": "penalty amount",
+				"repaid-col": "debt repaid",
+				"liquidator-col": "liquidator",
+				"verify-col": "verify",
+				"view": "view"
+			},
+			"card": {
+				"title": "liquidation details",
+				"total": "Total debt to cover: {{debtAmount}}",
+				"debt": "debt to cover",
+				"amount": "amount",
+				"receive": "you will receive",
+				"bonus": "liquidation bonus (10%)"
+			}
+		},
 		"my-loans": {
 			"title": "your loans",
 			"table": {
@@ -489,9 +518,6 @@
 				"status-col": "status",
 				"no-results": "No loans associated with this wallet."
 			}
-		},
-		"liquidations": {
-			"title": "Liquidations"
 		},
 		"loan-card": {
 			"create-loan": {
