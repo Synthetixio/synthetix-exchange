@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import Card from 'components/Card';
 import { ButtonPrimary } from 'components/Button';
 import { TxErrorMessage } from '../commonStyles';
-import { HeadingSmall } from 'components/Typography';
+import { DataSmall, HeadingSmall } from 'components/Typography';
 import { getEthRate } from 'ducks/rates';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
-import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { useTranslation } from 'react-i18next';
 import snxJSConnector from 'utils/snxJSConnector';
 import {
@@ -31,10 +31,12 @@ import { ActionTypes } from '../../Actions';
 import DropdownPanel from 'components/DropdownPanel';
 import SelectCRatioBody from 'pages/shared/components/SelectCRatio/SelectCRatioBody';
 import { media } from 'shared/media';
+import { getEtherscanTxLink } from 'utils/explorers';
 
 const ModifyCollateral = ({
 	selectedLoan,
 	gasInfo,
+	networkId,
 	ethRate,
 	walletInfo: { currentWallet },
 	collateralPair,
@@ -53,6 +55,7 @@ const ModifyCollateral = ({
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [cRatio, setCRatio] = useState(currentCRatio);
 	const [cRatioDropdownOpen, setcRatioDropdownOpen] = useState(false);
+	const [transactionHash, setTransactionHash] = useState(null);
 	const setDropdownIsOpen = (isOpen, cRatio) => {
 		setCRatio(cRatio);
 		setcRatioDropdownOpen(isOpen);
@@ -91,20 +94,28 @@ const ModifyCollateral = ({
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
+			let tx;
 			if (type === ActionTypes.ADD) {
-				await ContractWithSigner.depositCollateral(currentWallet, loanIDStr, {
+				tx = await ContractWithSigner.depositCollateral(currentWallet, loanIDStr, {
 					value: collateralDifferenceBN,
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 					gasLimit: updatedGasEstimate,
 				});
 			} else {
-				await ContractWithSigner.withdrawCollateral(loanIDStr, collateralDifferenceBN, {
+				tx = await ContractWithSigner.withdrawCollateral(loanIDStr, collateralDifferenceBN, {
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 					gasLimit: updatedGasEstimate,
 				});
 			}
 
-			onLoanModified();
+			const status = await tx.wait();
+
+			setTransactionHash(status.transactionHash);
+
+			if (!status) {
+				throw new Error();
+			} else {
+			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
@@ -199,6 +210,22 @@ const ModifyCollateral = ({
 				>
 					{t('common.actions.confirm')}
 				</ButtonPrimary>
+				{transactionHash && (
+					<TxErrorMessage
+						onDismiss={() => setTransactionHash(null)}
+						size="sm"
+						type="success"
+						floating={true}
+					>
+						<StyledLink
+							as="a"
+							target="_blank"
+							href={getEtherscanTxLink(networkId, transactionHash)}
+						>
+							VIEW TRANSACTION RECEIPT
+						</StyledLink>
+					</TxErrorMessage>
+				)}
 				{txErrorMessage && (
 					<TxErrorMessage
 						onDismiss={() => setTxErrorMessage(null)}
@@ -251,6 +278,11 @@ const LoanInfoContainer = styled.div`
 	grid-row-gap: 15px;
 `;
 
+const StyledLink = styled(DataSmall)`
+	text-decoration: none;
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
 const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
@@ -259,6 +291,7 @@ const mapStateToProps = (state) => ({
 	contract: getContract(state),
 	contractType: getContractType(state),
 	collateralPair: getLoansCollateralPair(state),
+	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {

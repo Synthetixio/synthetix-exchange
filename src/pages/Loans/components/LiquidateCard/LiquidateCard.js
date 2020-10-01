@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import Card from 'components/Card';
 import { ButtonPrimary } from 'components/Button';
 import { TxErrorMessage } from '../LoanCards/commonStyles';
-import { HeadingSmall } from 'components/Typography';
+import { HeadingSmall, DataSmall } from 'components/Typography';
 import { getEthRate } from 'ducks/rates';
-import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { useTranslation, Trans } from 'react-i18next';
 import {
 	InfoBox,
@@ -24,9 +24,11 @@ import { getCurrencyKeyBalance } from 'utils/balances';
 import snxJSConnector from 'utils/snxJSConnector';
 import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
+import { getEtherscanTxLink } from 'utils/explorers';
 
 const LiquidateCard = ({
 	collateralPair,
+	networkId,
 	walletInfo: { currentWallet },
 	walletBalance,
 	gasInfo,
@@ -41,6 +43,7 @@ const LiquidateCard = ({
 	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+	const [transactionHash, setTransactionHash] = useState(null);
 
 	useEffect(() => {
 		if (selectedLiquidation) {
@@ -67,18 +70,20 @@ const LiquidateCard = ({
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
-			await contract.liquidateLoan(loanOwner, loanIDStr, debtToCover, {
+			const tx = await contract.liquidateLoan(loanOwner, loanIDStr, debtToCover, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
 
-			// updateLoan({
-			// 	loanID,
-			// 	loanInfo: {
-			// 		status: LOAN_STATUS.CLOSING,
-			// 	},
-			// });
-			// onLoanLiquidated();
+			const status = await tx.wait();
+
+			setTransactionHash(status.transactionHash);
+
+			if (!status) {
+				throw new Error();
+			} else {
+				setLiquidateAmount('');
+			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
@@ -147,6 +152,22 @@ const LiquidateCard = ({
 				<ButtonPrimary onClick={handleSubmit} disabled={!selectedLiquidation || !currentWallet}>
 					{t('common.actions.liquidate')}
 				</ButtonPrimary>
+				{transactionHash && (
+					<TxErrorMessage
+						onDismiss={() => setTransactionHash(null)}
+						size="sm"
+						type="success"
+						floating={true}
+					>
+						<StyledLink
+							as="a"
+							target="_blank"
+							href={getEtherscanTxLink(networkId, transactionHash)}
+						>
+							VIEW TRANSACTION RECEIPT
+						</StyledLink>
+					</TxErrorMessage>
+				)}
 				{txErrorMessage && (
 					<TxErrorMessage
 						onDismiss={() => setTxErrorMessage(null)}
@@ -171,6 +192,11 @@ const StyledCard = styled(Card)`
 		`}
 `;
 
+const StyledLink = styled(DataSmall)`
+	text-decoration: none;
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
 const LoanInfoContainer = styled.div`
 	display: grid;
 	grid-row-gap: 15px;
@@ -181,8 +207,7 @@ const mapStateToProps = (state) => ({
 	walletInfo: getWalletInfo(state),
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
+	networkId: getNetworkId(state),
 });
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LiquidateCard);
+export default connect(mapStateToProps, null)(LiquidateCard);

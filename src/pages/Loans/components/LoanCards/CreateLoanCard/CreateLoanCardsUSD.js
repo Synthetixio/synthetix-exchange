@@ -16,7 +16,7 @@ import Card from 'components/Card';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
 import { DataSmall, HeadingSmall } from 'components/Typography';
 import { getGasInfo } from 'ducks/transaction';
-import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
@@ -36,6 +36,7 @@ import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 import { TxErrorMessage } from '../commonStyles';
 import SelectCRatio from 'pages/shared/components/SelectCRatio';
 import { getContract } from 'ducks/loans/contractInfo';
+import { getEtherscanTxLink } from 'utils/explorers';
 
 export const C_RATIO = {
 	SAFE: '200',
@@ -45,6 +46,7 @@ export const C_RATIO = {
 
 export const CreateLoanCardsUSD = ({
 	gasInfo,
+	networkId,
 	ethRate,
 	walletInfo: { currentWallet },
 	walletBalance,
@@ -62,6 +64,7 @@ export const CreateLoanCardsUSD = ({
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
 	const [cRatio, setCRatio] = useState(C_RATIO.SAFE);
+	const [transactionHash, setTransactionHash] = useState(null);
 
 	const { collateralCurrencyKey, loanCurrencyKey, minLoanSize } = collateralPair;
 
@@ -93,21 +96,29 @@ export const CreateLoanCardsUSD = ({
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 			});
 
-			createLoan({
-				loan: {
-					collateralAmount: Number(collateralAmount),
-					loanAmount: Number(loanAmount),
-					timeCreated: Date.now(),
-					timeClosed: 0,
-					feesPayable: 0,
-					currentInterest: 0,
-					status: LOAN_STATUS.WAITING,
-					loanID: null,
-					transactionHash: tx.hash,
-				},
-			});
-			setCollateralAmount('');
-			setLoanAmount('');
+			const status = await tx.wait();
+
+			setTransactionHash(status.transactionHash);
+
+			if (!status) {
+				throw new Error();
+			} else {
+				createLoan({
+					loan: {
+						collateralAmount: Number(collateralAmount),
+						loanAmount: Number(loanAmount),
+						timeCreated: Date.now(),
+						timeClosed: 0,
+						feesPayable: 0,
+						currentInterest: 0,
+						status: LOAN_STATUS.OPEN,
+						loanID: null,
+						transactionHash: tx.hash,
+					},
+				});
+				setCollateralAmount('');
+				setLoanAmount('');
+			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
@@ -220,6 +231,24 @@ export const CreateLoanCardsUSD = ({
 				>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
+
+				{transactionHash && (
+					<TxErrorMessage
+						onDismiss={() => setTransactionHash(null)}
+						size="sm"
+						type="success"
+						floating={true}
+					>
+						<StyledLink
+							as="a"
+							target="_blank"
+							href={getEtherscanTxLink(networkId, transactionHash)}
+						>
+							VIEW TRANSACTION RECEIPT
+						</StyledLink>
+					</TxErrorMessage>
+				)}
+
 				{txErrorMessage && (
 					<TxErrorMessage
 						onDismiss={() => setTxErrorMessage(null)}
@@ -261,12 +290,18 @@ CreateLoanCardsUSD.propTypes = {
 	walletBalance: PropTypes.object,
 };
 
+const StyledLink = styled(DataSmall)`
+	text-decoration: none;
+	color: ${(props) => props.theme.colors.fontPrimary};
+`;
+
 const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),
 	walletBalance: getWalletBalancesMap(state),
 	contract: getContract(state),
+	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {

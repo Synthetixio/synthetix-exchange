@@ -10,8 +10,10 @@ import { formatCurrencyWithKey } from 'utils/formatters';
 
 import { CARD_HEIGHT } from 'constants/ui';
 import { getLoansCollateralPair } from 'ducks/loans/contractInfo';
+import { getNetworkId } from 'ducks/wallet/walletDetails';
+import { getEtherscanTxLink } from 'utils/explorers';
 
-const Activity = ({ partialLiquidations, collateralPair }) => {
+const Activity = ({ networkId, partialLiquidations, collateralPair }) => {
 	const { t } = useTranslation();
 	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 
@@ -50,12 +52,11 @@ const Activity = ({ partialLiquidations, collateralPair }) => {
 				Header: <>{t('loans.liquidations.sub-table.verify-col')}</>,
 				accessor: 'txHash',
 				Cell: (cellProps) => {
-					console.log(cellProps.cell);
 					return (
 						<LinkTextSmall
 							as="a"
 							target="_blank"
-							href={`https://etherscan.io/tx/${cellProps.cell.value}`}
+							href={getEtherscanTxLink(networkId, cellProps.cell.value)}
 						>
 							{t('loans.liquidations.sub-table.view')}
 						</LinkTextSmall>
@@ -64,7 +65,7 @@ const Activity = ({ partialLiquidations, collateralPair }) => {
 				width: 150,
 			},
 		],
-		[collateralCurrencyKey, t, loanCurrencyKey]
+		[collateralCurrencyKey, t, loanCurrencyKey, networkId]
 	);
 
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
@@ -174,6 +175,7 @@ const StyledTableNoResults = styled(TableNoResults)`
 
 const mapStateToProps = (state) => ({
 	collateralPair: getLoansCollateralPair(state),
+	networkId: getNetworkId(state),
 });
 
 export default connect(mapStateToProps, null)(Activity);

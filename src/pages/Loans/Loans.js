@@ -109,7 +109,6 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 						collateralPair={collateralPair}
 						isInteractive={selectedLoan != null}
 						selectedLoan={selectedLoan}
-						onLoanClosed={clearSelectedLoan}
 					/>
 				);
 			default:
@@ -143,7 +142,6 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 						collateralPair={collateralPair}
 						isInteractive={selectedLoan != null}
 						selectedLoan={selectedLoan}
-						onLoanClosed={clearSelectedLoan}
 					/>
 				) : view === VIEWS.LOANS ? (
 					returnActions()
