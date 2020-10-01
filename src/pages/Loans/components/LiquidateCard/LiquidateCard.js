@@ -34,42 +34,33 @@ const LiquidateCard = ({
 	selectedLiquidation,
 }) => {
 	const { t } = useTranslation();
-	const [liquidateAmount, setLiquidateAmount] = useState('');
+	const [liquidateAmount, setLiquidateAmount] = useState(selectedLiquidation.totalDebtToCover);
 	const [liquidateAmountErrorMessage, setLiquidateAmountErrorMessage] = useState(null);
 	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 
-	// let collateralAmount = null;
-	let loanAmount = null;
-	let currentInterest = null;
-	let loanID = null;
-	let minimumAmountToClose = null;
-
-	if (selectedLiquidation != null) {
-		// collateralAmount = selectedLiquidation.collateralAmount;
-		loanAmount = selectedLiquidation.loanAmount;
-		currentInterest = selectedLiquidation.currentInterest;
-		loanID = selectedLiquidation.id;
-		minimumAmountToClose = loanAmount + currentInterest;
-	}
-
 	const handleSubmit = async () => {
 		const {
 			snxJS: { EtherCollateralsUSD },
+			utils,
 		} = snxJSConnector;
 
 		setTxErrorMessage(null);
 
-		try {
-			const loanIDStr = loanID.toString();
+		let contract = EtherCollateralsUSD.contract;
 
-			const gasEstimate = await EtherCollateralsUSD.estimate.liquidateLoan(loanIDStr);
+		try {
+			const loanIDStr = selectedLiquidation.loanId.toString();
+			const loanOwner = selectedLiquidation.account;
+			const debtToCover = utils.parseEther(liquidateAmount.toString());
+
+			const gasEstimate = await contract.estimate.liquidateLoan(loanOwner, loanIDStr, debtToCover);
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
-			await EtherCollateralsUSD.closeLoan(loanIDStr, {
+			await contract.liquidateLoan(loanOwner, loanIDStr, debtToCover, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: updatedGasEstimate,
 			});
@@ -89,11 +80,11 @@ const LiquidateCard = ({
 	useEffect(() => {
 		setLiquidateAmountErrorMessage(null);
 		if (liquidateAmount !== '') {
-			if (currentWallet && liquidateAmount > loanCurrencyBalance) {
+			if (currentWallet && liquidateAmount > selectedLiquidation.totalDebtToCover) {
 				setLiquidateAmountErrorMessage(t('common.errors.amount-exceeds-balance'));
 			}
 		}
-	}, [liquidateAmount, t, currentWallet, loanCurrencyBalance]);
+	}, [liquidateAmount, t, currentWallet, loanCurrencyBalance, selectedLiquidation]);
 
 	return (
 		<StyledCard isInteractive={selectedLiquidation}>
@@ -116,7 +107,7 @@ const LiquidateCard = ({
 								</FormInputLabel>
 								<FormInputLabelSmall>
 									{t('loans.liquidations.card.total', {
-										debtAmount: loanCurrencyBalance,
+										debtAmount: selectedLiquidation.totalDebtToCover,
 									})}
 								</FormInputLabelSmall>
 							</>
@@ -130,18 +121,20 @@ const LiquidateCard = ({
 						<InfoBoxLabel>
 							<Trans i18nKey="loans.liquidations.card.receive" components={[<CurrencyKey />]} />
 						</InfoBoxLabel>
-						<InfoBoxValue>{`${minimumAmountToClose} ${collateralCurrencyKey}`}</InfoBoxValue>
+						<InfoBoxValue>{`${liquidateAmount / ethRate} ${collateralCurrencyKey}`}</InfoBoxValue>
 					</InfoBox>
 					<InfoBox>
 						<InfoBoxLabel>
 							<Trans i18nKey="loans.liquidations.card.bonus" components={[<CurrencyKey />]} />
 						</InfoBoxLabel>
-						<InfoBoxValue>{`${minimumAmountToClose} ${collateralCurrencyKey}`}</InfoBoxValue>
+						<InfoBoxValue>{`${
+							(liquidateAmount / ethRate) * selectedLiquidation.penaltyPercentage
+						} ${collateralCurrencyKey}`}</InfoBoxValue>
 					</InfoBox>
 				</LoanInfoContainer>
 				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
 				<ButtonPrimary onClick={handleSubmit} disabled={!selectedLiquidation || !currentWallet}>
-					{t('common.actions.confirm')}
+					{t('common.actions.liquidate')}
 				</ButtonPrimary>
 				{txErrorMessage && (
 					<TxErrorMessage

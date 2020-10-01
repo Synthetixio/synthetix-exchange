@@ -65,7 +65,7 @@ const Liquidations = ({
 			{
 				Header: <>{t('loans.liquidations.table.c-ratio-col')}</>,
 				accessor: 'cRatioPercentage',
-				Cell: (cellProps) => `${cellProps.cell.value}%`,
+				Cell: (cellProps) => `${cellProps.cell.value.toFixed(2)}%`,
 				width: 150,
 				sortable: true,
 			},
@@ -78,7 +78,7 @@ const Liquidations = ({
 			},
 			{
 				Header: <>{t('loans.liquidations.table.debt-col')}</>,
-				accessor: 'loanAmount',
+				accessor: 'totalDebtToCover',
 				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,

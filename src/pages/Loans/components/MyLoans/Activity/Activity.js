@@ -13,13 +13,13 @@ import { getLoansCollateralPair } from 'ducks/loans/contractInfo';
 
 const Activity = ({ partialLiquidations, collateralPair }) => {
 	const { t } = useTranslation();
-	const { collateralCurrencyKey } = collateralPair;
+	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 
 	const columns = useMemo(
 		() => [
 			{
 				Header: <>{t('loans.liquidations.sub-table.collateral-col')}</>,
-				accessor: 'collateralAmount',
+				accessor: 'liquidatedCollateral',
 				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,
@@ -33,25 +33,30 @@ const Activity = ({ partialLiquidations, collateralPair }) => {
 			},
 			{
 				Header: <>{t('loans.liquidations.sub-table.repaid-col')}</>,
-				accessor: 'debtRepaid',
-				Cell: (cellProps) => formatCurrencyWithKey(cellProps.cell.value),
+				accessor: 'liquidatedAmount',
+				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
 				width: 150,
 				sortable: true,
 			},
 			{
 				Header: <>{t('loans.liquidations.sub-table.liquidator-col')}</>,
 				accessor: 'liquidator',
-				Cell: (cellProps) => formatCurrencyWithKey(cellProps.cell.value),
+				Cell: (cellProps) => cellProps.cell.value,
 				width: 150,
 				sortable: true,
 			},
 			{
 				id: 'verify',
 				Header: <>{t('loans.liquidations.sub-table.verify-col')}</>,
-				Cell: ({ row }) => {
-					console.log(row.original.id);
+				accessor: 'txHash',
+				Cell: (cellProps) => {
+					console.log(cellProps.cell);
 					return (
-						<LinkTextSmall onClick={() => {}}>
+						<LinkTextSmall
+							as="a"
+							target="_blank"
+							href={`https://kovan.etherscan.io/tx/${cellProps.cell.value}`}
+						>
 							{t('loans.liquidations.sub-table.view')}
 						</LinkTextSmall>
 					);
@@ -59,7 +64,7 @@ const Activity = ({ partialLiquidations, collateralPair }) => {
 				width: 150,
 			},
 		],
-		[collateralCurrencyKey, t]
+		[collateralCurrencyKey, t, loanCurrencyKey]
 	);
 
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
