@@ -32,14 +32,21 @@ const LiquidateCard = ({
 	gasInfo,
 	ethRate,
 	selectedLiquidation,
+	isInteractive,
 }) => {
 	const { t } = useTranslation();
-	const [liquidateAmount, setLiquidateAmount] = useState(selectedLiquidation.totalDebtToCover);
+	const [liquidateAmount, setLiquidateAmount] = useState('');
 	const [liquidateAmountErrorMessage, setLiquidateAmountErrorMessage] = useState(null);
 	const { collateralCurrencyKey, loanCurrencyKey } = collateralPair;
 	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+
+	useEffect(() => {
+		if (selectedLiquidation) {
+			setLiquidateAmount(selectedLiquidation.totalDebtToCover);
+		}
+	}, [selectedLiquidation]);
 
 	const handleSubmit = async () => {
 		const {
@@ -79,15 +86,15 @@ const LiquidateCard = ({
 
 	useEffect(() => {
 		setLiquidateAmountErrorMessage(null);
-		if (liquidateAmount !== '') {
+		if (selectedLiquidation && liquidateAmount !== '') {
 			if (currentWallet && liquidateAmount > selectedLiquidation.totalDebtToCover) {
-				setLiquidateAmountErrorMessage(t('common.errors.amount-exceeds-balance'));
+				setLiquidateAmountErrorMessage(t('common.errors.amount-exceeds-liquidatable'));
 			}
 		}
 	}, [liquidateAmount, t, currentWallet, loanCurrencyBalance, selectedLiquidation]);
 
 	return (
-		<StyledCard isInteractive={selectedLiquidation}>
+		<StyledCard isInteractive={isInteractive}>
 			<Card.Header>
 				<HeadingSmall>{t('loans.liquidations.card.title')}</HeadingSmall>
 			</Card.Header>
@@ -107,7 +114,7 @@ const LiquidateCard = ({
 								</FormInputLabel>
 								<FormInputLabelSmall>
 									{t('loans.liquidations.card.total', {
-										debtAmount: selectedLiquidation.totalDebtToCover,
+										debtAmount: selectedLiquidation ? selectedLiquidation.totalDebtToCover : 0,
 									})}
 								</FormInputLabelSmall>
 							</>
@@ -121,14 +128,18 @@ const LiquidateCard = ({
 						<InfoBoxLabel>
 							<Trans i18nKey="loans.liquidations.card.receive" components={[<CurrencyKey />]} />
 						</InfoBoxLabel>
-						<InfoBoxValue>{`${liquidateAmount / ethRate} ${collateralCurrencyKey}`}</InfoBoxValue>
+						<InfoBoxValue>{`${
+							selectedLiquidation ? liquidateAmount / ethRate : 0
+						} ${collateralCurrencyKey}`}</InfoBoxValue>
 					</InfoBox>
 					<InfoBox>
 						<InfoBoxLabel>
 							<Trans i18nKey="loans.liquidations.card.bonus" components={[<CurrencyKey />]} />
 						</InfoBoxLabel>
 						<InfoBoxValue>{`${
-							(liquidateAmount / ethRate) * selectedLiquidation.penaltyPercentage
+							selectedLiquidation
+								? (liquidateAmount / ethRate) * selectedLiquidation.penaltyPercentage
+								: 0
 						} ${collateralCurrencyKey}`}</InfoBoxValue>
 					</InfoBox>
 				</LoanInfoContainer>

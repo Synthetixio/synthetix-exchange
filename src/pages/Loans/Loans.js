@@ -148,7 +148,10 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 				) : view === VIEWS.LOANS ? (
 					returnActions()
 				) : (
-					<LiquidateCard selectedLiquidation={selectedLiquidation} />
+					<LiquidateCard
+						isInteractive={selectedLiquidation != null}
+						selectedLiquidation={selectedLiquidation}
+					/>
 				)}
 			</LoanCardsContainer>
 		</CenteredPageLayout>

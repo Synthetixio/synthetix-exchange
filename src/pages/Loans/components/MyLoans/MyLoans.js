@@ -26,8 +26,7 @@ export const MyLoans = ({
 	setView,
 }) => {
 	const { t } = useTranslation();
-	// @TODO: Reset to index 0
-	const [activeTab, setActiveTab] = useState(1);
+	const [activeTab, setActiveTab] = useState(0);
 	return (
 		<StyledCard>
 			<Card.Header>

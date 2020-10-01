@@ -13,8 +13,7 @@ export const contractInfoSlice = createSlice({
 		isLoading: false,
 		isLoaded: false,
 		isRefreshing: false,
-		// @TODO: Reset back to sETH
-		contractType: 'sUSD',
+		contractType: 'sETH',
 		contract: null,
 	},
 	reducers: {

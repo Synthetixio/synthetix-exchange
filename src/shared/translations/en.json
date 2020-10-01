@@ -717,7 +717,8 @@
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}",
 			"c-ratio-exceeded": "Min c-ratio is 150%",
 			"c-ratio-below": "C-ratio below current ratio",
-			"c-ratio-above": "C-ratio above current ratio"
+			"c-ratio-above": "C-ratio above current ratio",
+			"amount-exceeds-liquidatable": "Amount exceeds debt to cover"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",

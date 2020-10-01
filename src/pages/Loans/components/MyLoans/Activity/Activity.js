@@ -55,7 +55,7 @@ const Activity = ({ partialLiquidations, collateralPair }) => {
 						<LinkTextSmall
 							as="a"
 							target="_blank"
-							href={`https://kovan.etherscan.io/tx/${cellProps.cell.value}`}
+							href={`https://etherscan.io/tx/${cellProps.cell.value}`}
 						>
 							{t('loans.liquidations.sub-table.view')}
 						</LinkTextSmall>
