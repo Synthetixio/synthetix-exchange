@@ -1,12 +1,15 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import keyBy from 'lodash/keyBy';
 import snxJSConnector from '../../utils/snxJSConnector';
-import { bigNumberFormatter, toJSTimestamp } from '../../utils/formatters';
-import { pageResults } from 'synthetix-data';
+import {
+	bigNumberFormatter,
+	// toJSTimestamp
+} from '../../utils/formatters';
+// import { pageResults } from 'synthetix-data';
 import { getEthRate } from 'ducks/rates';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
-const loansGraph = 'https://api.thegraph.com/subgraphs/name/dvd-schwrtz/loans';
+// const loansGraph = 'https://api.thegraph.com/subgraphs/name/dvd-schwrtz/loans';
 
 export const liquidationsSlice = createSlice({
 	name: 'allLiquidations',
@@ -53,7 +56,7 @@ export const getLiquidations = createSelector(getLiquidationsMap, (liquidationsM
 const {
 	fetchLiquidationsRequest,
 	fetchLiquidationsSuccess,
-	fetchLiquidationsFailure,
+	// fetchLiquidationsFailure,
 } = liquidationsSlice.actions;
 
 const fetchPartialLiquidations = async (loanId, walletInfo) => {
