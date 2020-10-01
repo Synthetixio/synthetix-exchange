@@ -9,6 +9,7 @@ import { HeadingSmall } from 'components/Typography';
 import Spinner from 'components/Spinner';
 
 import { getIsRefreshingMyLoans } from 'ducks/loans/myLoans';
+import { getIsRefreshingLiquidations } from 'ducks/loans/allLiquidations';
 
 import { getContractType } from 'ducks/loans/contractInfo';
 import Loans from './Loans';
@@ -17,6 +18,7 @@ import { VIEWS } from 'pages/Loans/Loans';
 
 export const MyLoans = ({
 	isRefreshingMyLoans,
+	isRefreshingMyLiquidations,
 	contractType,
 	setVisiblePanel,
 	selectedLoan,
@@ -54,7 +56,7 @@ export const MyLoans = ({
 						<HeadingSmall>{t('loans.liquidations.title')}</HeadingSmall>
 					</StyledButton>
 				)}
-				{isRefreshingMyLoans && <Spinner size="sm" />}
+				{(isRefreshingMyLoans || isRefreshingMyLiquidations) && <Spinner size="sm" />}
 			</Card.Header>
 			<StyledCardBody>
 				{activeTab === 0 ? (
@@ -94,6 +96,7 @@ const StyledButton = styled(Button)`
 
 const mapStateToProps = (state) => ({
 	isRefreshingMyLoans: getIsRefreshingMyLoans(state),
+	isRefreshingMyLiquidations: getIsRefreshingLiquidations(state),
 	contractType: getContractType(state),
 });
 

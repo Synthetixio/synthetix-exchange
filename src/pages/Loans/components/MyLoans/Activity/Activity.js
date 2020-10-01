@@ -134,7 +134,7 @@ const TableBody = styled.div`
 `;
 
 const TableBodyRow = styled(TableRow)`
-	background-color: ${(props) => props.theme.colors.surfaceL3};
+	background-color: ${(props) => props.theme.colors.surfaceL2};
 	&:hover {
 		background-color: ${(props) => props.theme.colors.accentL1};
 		> * {

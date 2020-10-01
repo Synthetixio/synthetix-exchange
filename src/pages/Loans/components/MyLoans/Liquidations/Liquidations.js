@@ -221,7 +221,7 @@ const Liquidations = ({
 						{t('common.actions.click-to-retry')}
 					</ButtonPrimarySmall>
 				</MessageContainer>
-			) : isLoadedLiquidations && !isLoadedLiquidations ? (
+			) : isLoadingLiquidations && !isLoadedLiquidations ? (
 				<HeaderSpinner size="sm" centered={true} />
 			) : (
 				rows.length === 0 &&
