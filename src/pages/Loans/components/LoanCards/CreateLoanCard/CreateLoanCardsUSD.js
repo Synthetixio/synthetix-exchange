@@ -53,6 +53,7 @@ export const CreateLoanCardsUSD = ({
 	createLoan,
 	collateralPair,
 	contract,
+	notify,
 }) => {
 	const { t } = useTranslation();
 
@@ -96,28 +97,26 @@ export const CreateLoanCardsUSD = ({
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 			});
 
-			const status = await tx.wait();
-
-			setTransactionHash(status.transactionHash);
-
-			if (!status) {
-				throw new Error();
-			} else {
-				createLoan({
-					loan: {
-						collateralAmount: Number(collateralAmount),
-						loanAmount: Number(loanAmount),
-						timeCreated: Date.now(),
-						timeClosed: 0,
-						feesPayable: 0,
-						currentInterest: 0,
-						status: LOAN_STATUS.OPEN,
-						loanID: null,
-						transactionHash: tx.hash,
-					},
+			if (notify) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					createLoan({
+						loan: {
+							collateralAmount: Number(collateralAmount),
+							loanAmount: Number(loanAmount),
+							timeCreated: Date.now(),
+							timeClosed: 0,
+							feesPayable: 0,
+							currentInterest: 0,
+							status: LOAN_STATUS.OPEN,
+							loanID: null,
+							transactionHash: tx.hash,
+						},
+					});
+					setTransactionHash(tx.hash);
+					setCollateralAmount('');
+					setLoanAmount('');
 				});
-				setCollateralAmount('');
-				setLoanAmount('');
 			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
