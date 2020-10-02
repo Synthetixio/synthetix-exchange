@@ -9,7 +9,7 @@ import {
 import { getEthRate } from 'ducks/rates';
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 
-// const loansGraph = 'https://api.thegraph.com/subgraphs/name/dvd-schwrtz/loans';
+// const loansGraph = 'https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix-loans';
 
 export const liquidationsSlice = createSlice({
 	name: 'allLiquidations',
