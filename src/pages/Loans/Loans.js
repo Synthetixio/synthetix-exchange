@@ -23,17 +23,29 @@ import {
 import Actions, { ActionTypes } from './components/Actions';
 import ModifyCollateral from './components/LoanCards/ModifyCollateral';
 import LiquidateCard from './components/LiquidateCard';
+import { getNetworkId } from 'ducks/wallet/walletDetails';
+
+import Notify from 'bnc-notify';
 
 export const VIEWS = {
 	LOANS: 'loan',
 	LIQUIDATIONS: 'liquidations',
 };
 
-const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
+const Loans = ({ collateralPair, fetchLoansContractInfo, contractType, networkId }) => {
 	const [selectedLoan, setSelectedLoan] = useState(null);
 	const [selectedLiquidation, setSelectedLiquidation] = useState(null);
 	const [visiblePanel, setVisiblePanel] = useState(null);
 	const [view, setView] = useState(VIEWS.LOANS);
+	const [notify, setNotify] = useState(null);
+
+	useEffect(() => {
+		var notify = Notify({
+			dappId: '95a4ea13-9af6-4ea1-89db-a2c333236a77',
+			networkId: networkId,
+		});
+		setNotify(notify);
+	}, [networkId]);
 
 	const handleSelectLoan = (loanInfo) => setSelectedLoan(loanInfo);
 	const handleSelectLiquidation = (liquidationInfo) => setSelectedLiquidation(liquidationInfo);
@@ -88,6 +100,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 			case ActionTypes.ADD:
 				return (
 					<ModifyCollateral
+						notify={notify}
 						onLoanModified={clearSelectedLoan}
 						type={ActionTypes.ADD}
 						selectedLoan={selectedLoan}
@@ -96,6 +109,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 			case ActionTypes.WITHDRAW:
 				return (
 					<ModifyCollateral
+						notify={notify}
 						onLoanModified={clearSelectedLoan}
 						type={ActionTypes.WITHDRAW}
 						selectedLoan={selectedLoan}
@@ -106,6 +120,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 			case ActionTypes.CLOSE:
 				return (
 					<CloseLoanCard
+						notify={notify}
 						collateralPair={collateralPair}
 						isInteractive={selectedLoan != null}
 						selectedLoan={selectedLoan}
@@ -132,13 +147,14 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType }) => {
 			</OverviewContainer>
 			<LoanCardsContainer>
 				{contractType === 'sETH' ? (
-					<CreateLoanCard collateralPair={collateralPair} />
+					<CreateLoanCard notify={notify} collateralPair={collateralPair} />
 				) : (
-					<CreateLoanCardsUSD collateralPair={collateralPair} />
+					<CreateLoanCardsUSD notify={notify} collateralPair={collateralPair} />
 				)}
 				<SectionVerticalSpacer />
 				{contractType === 'sETH' ? (
 					<CloseLoanCard
+						notify={notify}
 						collateralPair={collateralPair}
 						isInteractive={selectedLoan != null}
 						selectedLoan={selectedLoan}
@@ -178,6 +194,7 @@ const LoanCardsContainer = styled.div`
 const mapStateToProps = (state) => ({
 	collateralPair: getLoansCollateralPair(state),
 	contractType: getContractType(state),
+	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {
