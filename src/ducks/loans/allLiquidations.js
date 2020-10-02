@@ -160,8 +160,6 @@ export const fetchLiquidations = () => async (dispatch, getState) => {
 
 		const promiseLiquidations = await Promise.all(liquidatedLoans);
 
-		console.log(promiseLiquidations);
-
 		const filteredLiquidations = promiseLiquidations.filter((e) => e.liquidatable);
 
 		const objectLiquidations = keyBy(filteredLiquidations, (loan) => {
