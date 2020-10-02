@@ -36,6 +36,7 @@ export const CloseLoanCard = ({
 	collateralPair,
 	contract,
 	contractType,
+	notify,
 }) => {
 	const { t } = useTranslation();
 
@@ -76,18 +77,17 @@ export const CloseLoanCard = ({
 				gasLimit: updatedGasEstimate,
 			});
 
-			const status = await tx.wait();
-
-			setTransactionHash(status.transactionHash);
-
-			if (!status) {
-				throw new Error();
-			} else {
-				updateLoan({
-					loanID,
-					loanInfo: {
-						status: LOAN_STATUS.CLOSED,
-					},
+			if (notify) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					updateLoan({
+						loanID,
+						loanType,
+						loanInfo: {
+							status: LOAN_STATUS.CLOSED,
+						},
+					});
+					setTransactionHash(tx.hash);
 				});
 			}
 		} catch (e) {
