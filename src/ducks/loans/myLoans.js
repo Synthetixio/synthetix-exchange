@@ -41,28 +41,15 @@ export const myLoansSlice = createSlice({
 		},
 		createLoan: (state, action) => {
 			const { loan } = action.payload;
-
 			// There is no loanID when creating a loan, so we are using the tx hash as key
 			state.loans[loan.transactionHash] = loan;
 		},
 		updateLoan: (state, action) => {
-			const { loanID, transactionHash, loanInfo } = action.payload;
-
-			const loanKey = loanID || transactionHash;
-			const loan = state.loans[loanKey];
+			const { loanID, loanInfo, loanType } = action.payload;
+			const loan = state.loans[`${loanID}-${loanType}`];
 
 			if (loan != null) {
-				state.loans[loanKey] = { ...loan, ...loanInfo };
-			}
-		},
-		swapTxHashWithLoanID: (state, action) => {
-			const { loanID, transactionHash } = action.payload;
-
-			const loan = state.loans[transactionHash];
-
-			if (loan != null) {
-				state.loans[loanID] = state.loans[transactionHash];
-				delete state.loans[transactionHash];
+				state.loans[`${loanID}-${loanType}`] = { ...loan, ...loanInfo };
 			}
 		},
 	},
@@ -80,7 +67,6 @@ export const getMyLoans = createSelector(getMyLoansMap, (loansMap) => Object.val
 const {
 	updateLoan,
 	createLoan,
-	swapTxHashWithLoanID,
 	fetchLoansRequest,
 	fetchLoansSuccess,
 	fetchLoansFailure,
@@ -163,4 +149,4 @@ export const fetchLoans = () => async (dispatch, getState) => {
 
 export default myLoansSlice.reducer;
 
-export { updateLoan, createLoan, swapTxHashWithLoanID };
+export { updateLoan, createLoan };
