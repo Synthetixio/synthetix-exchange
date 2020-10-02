@@ -41,7 +41,8 @@ const ModifyCollateral = ({
 	walletInfo: { currentWallet },
 	collateralPair,
 	contract,
-	onLoanModified,
+	contractType,
+	notify,
 	type,
 }) => {
 	let collateralAmount = selectedLoan.collateralAmount;
@@ -49,6 +50,8 @@ const ModifyCollateral = ({
 	let currentInterest = selectedLoan.currentInterest;
 	let loanID = selectedLoan.loanID;
 	let currentCRatio = ((collateralAmount * ethRate) / (loanAmount + currentInterest)) * 100;
+	let loanType = contractType;
+
 	const { t } = useTranslation();
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
@@ -108,13 +111,21 @@ const ModifyCollateral = ({
 				});
 			}
 
-			const status = await tx.wait();
-
-			setTransactionHash(status.transactionHash);
-
-			if (!status) {
-				throw new Error();
-			} else {
+			if (notify) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					updateLoan({
+						loanID,
+						loanType,
+						loanInfo: {
+							collateralAmount:
+								type === ActionTypes.ADD
+									? collateralAmount + collateralDifference
+									: collateralAmount - collateralDifference,
+						},
+					});
+					setTransactionHash(tx.hash);
+				});
 			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));

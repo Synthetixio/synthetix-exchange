@@ -35,6 +35,7 @@ const LiquidateCard = ({
 	ethRate,
 	selectedLiquidation,
 	isInteractive,
+	notify,
 }) => {
 	const { t } = useTranslation();
 	const [liquidateAmount, setLiquidateAmount] = useState('');
@@ -75,14 +76,12 @@ const LiquidateCard = ({
 				gasLimit: updatedGasEstimate,
 			});
 
-			const status = await tx.wait();
-
-			setTransactionHash(status.transactionHash);
-
-			if (!status) {
-				throw new Error();
-			} else {
-				setLiquidateAmount('');
+			if (notify) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					setTransactionHash(tx.hash);
+					setLiquidateAmount('');
+				});
 			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));

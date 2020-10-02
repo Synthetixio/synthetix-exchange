@@ -163,6 +163,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType, networkId
 					returnActions()
 				) : (
 					<LiquidateCard
+						notify={notify}
 						isInteractive={selectedLiquidation != null}
 						selectedLiquidation={selectedLiquidation}
 					/>
