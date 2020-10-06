@@ -515,7 +515,7 @@
 				"c-ratio-col": "c-ratio",
 				"time-opened-col": "time opened",
 				"current-interest-fee-col": "current interest fee",
-				"fees-payable-col": "fees payable",
+				"verify-tx-col": "verify",
 				"status-col": "status",
 				"no-results": "No loans associated with this wallet."
 			}

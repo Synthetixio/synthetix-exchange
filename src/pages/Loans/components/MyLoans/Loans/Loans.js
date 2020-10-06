@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { useTable, useFlexLayout, useSortBy } from 'react-table';
+import { useTable, useFlexLayout, useSortBy, useExpanded } from 'react-table';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { ReactComponent as NoWalletIcon } from 'assets/images/no-wallet.svg';
@@ -26,17 +26,21 @@ import {
 	getIsLoadedMyLoans,
 	LOAN_STATUS,
 } from 'ducks/loans/myLoans';
-import { getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { showWalletPopup } from 'ducks/ui';
 
 import { formatTxTimestamp, formatCurrencyWithKey, formatCurrency } from 'utils/formatters';
 
 import { CARD_HEIGHT } from 'constants/ui';
 import { getContractType, getLoansCollateralPair } from 'ducks/loans/contractInfo';
+import Activity from '../Activity';
+import { getEtherscanTxLink } from 'utils/explorers';
+import ViewLink, { ArrowIcon } from '../Activity/ViewLink';
 
 const Loans = ({
 	onSelectLoan,
 	selectedLoan,
+	networkId,
 	setVisiblePanel,
 	fetchLoans,
 	walletInfo: { currentWallet },
@@ -58,10 +62,16 @@ const Loans = ({
 				accessor: 'loanAmount',
 				Cell: (cellProps) => {
 					const { loanType } = cellProps.row.original;
-					return formatCurrencyWithKey(
-						loanType === 'sETH' ? 'sETH' : 'sUSD',
-						cellProps.cell.value,
-						4
+					return (
+						<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+							<span>
+								{formatCurrencyWithKey(
+									loanType === 'sETH' ? 'sETH' : 'sUSD',
+									cellProps.cell.value,
+									4
+								)}
+							</span>
+						</Tooltip>
 					);
 				},
 				width: 150,
@@ -70,7 +80,11 @@ const Loans = ({
 			{
 				Header: <>{t('loans.my-loans.table.collateral-col')}</>,
 				accessor: 'collateralAmount',
-				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value, 4),
+				Cell: (cellProps) => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value, 4)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
@@ -109,26 +123,6 @@ const Loans = ({
 				sortable: true,
 			},
 			{
-				Header: <>{t('loans.my-loans.table.fees-payable-col')}</>,
-				accessor: 'feesPayable',
-				Cell: (cellProps) => {
-					const { loanType } = cellProps.row.original;
-					return (
-						<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
-							<span>
-								{formatCurrencyWithKey(
-									loanType === 'sETH' ? 'sETH' : 'sUSD',
-									cellProps.cell.value,
-									4
-								)}
-							</span>
-						</Tooltip>
-					);
-				},
-				width: 150,
-				sortable: true,
-			},
-			{
 				Header: <>{t('loans.my-loans.table.status-col')}</>,
 				accessor: 'status',
 				Cell: (cellProps) => t(`common.tx-status.${cellProps.cell.value}`),
@@ -136,21 +130,75 @@ const Loans = ({
 				sortable: true,
 			},
 			{
-				id: 'close',
+				Header: <>{t('loans.my-loans.table.verify-tx-col')}</>,
+				accessor: 'txHash',
 				Cell: (cellProps) => {
-					const loanData = cellProps.row.original;
-					const isLoanClosed = loanData.status === LOAN_STATUS.CLOSED;
-
-					return isLoanClosed ? null : (
-						<ButtonPrimarySmall
-							onClick={() => {
-								setVisiblePanel(null);
-								onSelectLoan(loanData);
-							}}
-							disabled={loanData.status !== LOAN_STATUS.OPEN}
+					return (
+						<ViewLink
+							isDisabled={!cellProps.cell.value}
+							href={getEtherscanTxLink(networkId, cellProps.cell.value)}
 						>
-							{contractType === 'sETH' ? t('common.actions.close') : t('common.actions.options')}
-						</ButtonPrimarySmall>
+							{t('common.transaction.view')}
+							<ArrowIcon width="8" height="8" />
+						</ViewLink>
+					);
+				},
+				width: 150,
+				sortable: true,
+			},
+			{
+				id: 'action',
+				Cell: ({ row, rows, toggleRowExpanded }) => {
+					const loanData = row.original;
+					const isLoanClosed = loanData.status === LOAN_STATUS.CLOSED;
+					return (
+						<>
+							{contractType === 'sUSD' && (
+								<ButtonPrimarySmall
+									onClick={() => {
+										const expandedRow = rows.find((row) => row.isExpanded);
+										if (expandedRow) {
+											const isSubItemOfRow = Boolean(
+												expandedRow && row.id.split('.')[0] === expandedRow.id
+											);
+
+											if (isSubItemOfRow) {
+												const expandedSubItem = expandedRow.subRows.find(
+													(subRow) => subRow.isExpanded
+												);
+
+												if (expandedSubItem) {
+													const isClickedOnExpandedSubItem = expandedSubItem.id === row.id;
+													if (!isClickedOnExpandedSubItem) {
+														toggleRowExpanded(expandedSubItem.id, false);
+													}
+												}
+											} else {
+												toggleRowExpanded(expandedRow.id, false);
+											}
+										}
+										row.toggleRowExpanded();
+									}}
+								>
+									{t('loans.liquidations.table.activity')}
+								</ButtonPrimarySmall>
+							)}
+							{!isLoanClosed && (
+								<ButtonPrimarySmall
+									style={{
+										marginLeft: 16,
+									}}
+									onClick={() => {
+										setVisiblePanel(null);
+										onSelectLoan(loanData);
+									}}
+								>
+									{contractType === 'sETH'
+										? t('common.actions.close')
+										: t('common.actions.options')}
+								</ButtonPrimarySmall>
+							)}
+						</>
 					);
 				},
 			},
@@ -168,6 +216,7 @@ const Loans = ({
 			},
 		},
 		useSortBy,
+		useExpanded,
 		useFlexLayout
 	);
 
@@ -206,15 +255,22 @@ const Loans = ({
 					{rows.map((row) => {
 						prepareRow(row);
 						return (
-							<TableBodyRow
-								{...row.getRowProps()}
-								className="tr"
-								isSelectedLoan={selectedLoan != null && selectedLoan.loanID === row.original.loanID}
-							>
-								{row.cells.map((cell) => (
-									<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-								))}
-							</TableBodyRow>
+							<div key={row.id}>
+								<TableBodyRow
+									{...row.getRowProps()}
+									className="tr"
+									isSelectedLoan={
+										selectedLoan != null && selectedLoan.loanID === row.original.loanID
+									}
+								>
+									{row.cells.map((cell) => (
+										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+									))}
+								</TableBodyRow>
+								{row.isExpanded && (
+									<Activity partialLiquidations={row.original.partialLiquidations} />
+								)}
+							</div>
 						);
 					})}
 				</TableBody>
@@ -350,6 +406,7 @@ const mapStateToProps = (state) => ({
 	isLoadedMyLoans: getIsLoadedMyLoans(state),
 	contractType: getContractType(state),
 	collateralPair: getLoansCollateralPair(state),
+	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {

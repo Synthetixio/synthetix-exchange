@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useTable, useFlexLayout, useSortBy, useExpanded } from 'react-table';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { ReactComponent as NoWalletIcon } from 'assets/images/no-wallet.svg';
 import { ReactComponent as ErrorCircleIcon } from 'assets/images/error-circle.svg';
@@ -27,7 +28,7 @@ import {
 import { getWalletInfo } from 'ducks/wallet/walletDetails';
 import { showWalletPopup } from 'ducks/ui';
 
-import { formatCurrencyWithKey, truncateAddress } from 'utils/formatters';
+import { formatCurrencyWithKey, truncateAddress, formatCurrency } from 'utils/formatters';
 
 import { CARD_HEIGHT } from 'constants/ui';
 import { getContractType, getLoansCollateralPair } from 'ducks/loans/contractInfo';
@@ -72,14 +73,22 @@ const Liquidations = ({
 			{
 				Header: <>{t('loans.liquidations.table.collateral-col')}</>,
 				accessor: 'collateralAmount',
-				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
 			{
 				Header: <>{t('loans.liquidations.table.debt-col')}</>,
 				accessor: 'totalDebtToCover',
-				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},

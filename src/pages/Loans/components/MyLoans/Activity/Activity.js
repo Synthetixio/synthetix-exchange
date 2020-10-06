@@ -3,15 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { useTable, useFlexLayout, useSortBy } from 'react-table';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import Tooltip from '@material-ui/core/Tooltip';
 
-import { LinkTextSmall, TableNoResults } from 'shared/commonStyles';
+import { TableNoResults } from 'shared/commonStyles';
 
-import { formatCurrencyWithKey } from 'utils/formatters';
+import { formatCurrency, formatCurrencyWithKey } from 'utils/formatters';
 
 import { CARD_HEIGHT } from 'constants/ui';
 import { getLoansCollateralPair } from 'ducks/loans/contractInfo';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 import { getEtherscanTxLink } from 'utils/explorers';
+import ViewLink, { ArrowIcon } from './ViewLink';
 
 const Activity = ({ networkId, partialLiquidations, collateralPair }) => {
 	const { t } = useTranslation();
@@ -22,21 +24,33 @@ const Activity = ({ networkId, partialLiquidations, collateralPair }) => {
 			{
 				Header: <>{t('loans.liquidations.sub-table.collateral-col')}</>,
 				accessor: 'liquidatedCollateral',
-				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
 			{
 				Header: <>{t('loans.liquidations.sub-table.penalty-col')}</>,
 				accessor: 'penaltyAmount',
-				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
 			{
 				Header: <>{t('loans.liquidations.sub-table.repaid-col')}</>,
 				accessor: 'liquidatedAmount',
-				Cell: (cellProps) => formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => (
+					<Tooltip title={formatCurrency(cellProps.cell.value, 18)}>
+						<span>{formatCurrencyWithKey(loanCurrencyKey, cellProps.cell.value)}</span>
+					</Tooltip>
+				),
 				width: 150,
 				sortable: true,
 			},
@@ -53,13 +67,13 @@ const Activity = ({ networkId, partialLiquidations, collateralPair }) => {
 				accessor: 'txHash',
 				Cell: (cellProps) => {
 					return (
-						<LinkTextSmall
-							as="a"
-							target="_blank"
+						<ViewLink
+							isDisabled={!cellProps.cell.value}
 							href={getEtherscanTxLink(networkId, cellProps.cell.value)}
 						>
-							{t('loans.liquidations.sub-table.view')}
-						</LinkTextSmall>
+							{t('common.transaction.view')}
+							<ArrowIcon width="8" height="8" />
+						</ViewLink>
 					);
 				},
 				width: 150,
