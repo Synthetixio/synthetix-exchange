@@ -26,6 +26,7 @@ import LiquidateCard from './components/LiquidateCard';
 import { getNetworkId } from 'ducks/wallet/walletDetails';
 
 import Notify from 'bnc-notify';
+import RepayLoan from './components/LoanCards/RepayLoan';
 
 export const VIEWS = {
 	LOANS: 'loan',
@@ -116,7 +117,13 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType, networkId
 					/>
 				);
 			case ActionTypes.REPAY:
-				return <></>;
+				return (
+					<RepayLoan
+						notify={notify}
+						onLoanModified={clearSelectedLoan}
+						selectedLoan={selectedLoan}
+					/>
+				);
 			case ActionTypes.CLOSE:
 				return (
 					<CloseLoanCard

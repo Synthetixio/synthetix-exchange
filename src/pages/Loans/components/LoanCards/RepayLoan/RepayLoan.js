@@ -27,13 +27,12 @@ import NetworkInfo from 'components/NetworkInfo';
 import { getContract, getContractType, getLoansCollateralPair } from 'ducks/loans/contractInfo';
 import { getGasInfo } from 'ducks/transaction';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-import { ActionTypes } from '../../Actions';
 import DropdownPanel from 'components/DropdownPanel';
 import SelectCRatioBody from 'pages/shared/components/SelectCRatio/SelectCRatioBody';
 import { media } from 'shared/media';
 import { getEtherscanTxLink } from 'utils/explorers';
 
-const ModifyCollateral = ({
+const RepayLoan = ({
 	selectedLoan,
 	gasInfo,
 	networkId,
@@ -43,7 +42,6 @@ const ModifyCollateral = ({
 	contract,
 	contractType,
 	notify,
-	type,
 }) => {
 	let collateralAmount = selectedLoan.collateralAmount;
 	let loanAmount = selectedLoan.loanAmount;
@@ -55,7 +53,7 @@ const ModifyCollateral = ({
 	const { t } = useTranslation();
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
-	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
+	const [repayAmountError, setRepayAmountError] = useState(null);
 	const [cRatio, setCRatio] = useState(currentCRatio);
 	const [cRatioDropdownOpen, setcRatioDropdownOpen] = useState(false);
 	const [transactionHash, setTransactionHash] = useState(null);
@@ -63,9 +61,9 @@ const ModifyCollateral = ({
 		setCRatio(cRatio);
 		setcRatioDropdownOpen(isOpen);
 	};
-	const [collateralDifference, setCollateralDifference] = useState(0);
+	const [repayAmount, setRepayAmount] = useState(0);
 
-	const { collateralCurrencyKey } = collateralPair;
+	const { loanCurrencyKey } = collateralPair;
 
 	const handleSubmit = async () => {
 		const { utils, signer } = snxJSConnector;
@@ -77,39 +75,20 @@ const ModifyCollateral = ({
 
 			const ContractWithSigner = contract.connect(signer);
 
-			const collateralDifferenceBN = utils.parseEther(collateralDifference.toString());
-			let gasEstimate;
-			if (type === ActionTypes.ADD) {
-				gasEstimate = await ContractWithSigner.estimate.depositCollateral(
-					currentWallet,
-					loanIDStr,
-					{
-						value: collateralDifferenceBN,
-					}
-				);
-			} else {
-				gasEstimate = await ContractWithSigner.estimate.withdrawCollateral(
-					loanIDStr,
-					collateralDifferenceBN
-				);
-			}
+			const repayAmountBN = utils.parseEther(repayAmount.toString());
+			let gasEstimate = await ContractWithSigner.estimate.repayLoan(
+				currentWallet,
+				loanIDStr,
+				repayAmountBN
+			);
 
 			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 			setLocalGasLimit(updatedGasEstimate);
 
-			let tx;
-			if (type === ActionTypes.ADD) {
-				tx = await ContractWithSigner.depositCollateral(currentWallet, loanIDStr, {
-					value: collateralDifferenceBN,
-					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-					gasLimit: updatedGasEstimate,
-				});
-			} else {
-				tx = await ContractWithSigner.withdrawCollateral(loanIDStr, collateralDifferenceBN, {
-					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-					gasLimit: updatedGasEstimate,
-				});
-			}
+			let tx = await ContractWithSigner.repayLoan(currentWallet, loanIDStr, repayAmountBN, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: updatedGasEstimate,
+			});
 
 			if (notify) {
 				const { emitter } = notify.hash(tx.hash);
@@ -118,10 +97,7 @@ const ModifyCollateral = ({
 						loanID,
 						loanType,
 						loanInfo: {
-							collateralAmount:
-								type === ActionTypes.ADD
-									? collateralAmount + collateralDifference
-									: collateralAmount - collateralDifference,
+							loanAmount: loanAmount - repayAmount,
 						},
 					});
 					setTransactionHash(tx.hash);
@@ -133,59 +109,47 @@ const ModifyCollateral = ({
 	};
 
 	useEffect(() => {
-		const newCollateral = ((Number(cRatio) / 100) * (loanAmount + currentInterest)) / ethRate;
-		setCollateralDifference(
-			type === ActionTypes.ADD ? newCollateral - collateralAmount : collateralAmount - newCollateral
-		);
-	}, [cRatio, collateralAmount, currentInterest, ethRate, loanAmount, type]);
+		const newLoanAmount = (100 * (collateralAmount * ethRate)) / Number(cRatio) - currentInterest;
+		setRepayAmount(loanAmount - newLoanAmount);
+	}, [cRatio, collateralAmount, currentInterest, ethRate, loanAmount]);
 
 	useEffect(() => {
-		setCollateralAmountErrorMessage(null);
-		if (type === ActionTypes.ADD) {
-			if (cRatio < currentCRatio) {
-				setCollateralAmountErrorMessage(t('common.errors.c-ratio-below'));
-			}
-		} else {
-			if (cRatio > currentCRatio) {
-				setCollateralAmountErrorMessage(t('common.errors.c-ratio-above'));
-			}
+		setRepayAmountError(null);
+		if (cRatio < currentCRatio) {
+			setRepayAmountError(t('common.errors.c-ratio-below'));
 		}
-	}, [cRatio, currentCRatio, t, type]);
+	}, [cRatio, t, currentCRatio]);
 
-	const hasError = !!collateralAmountErrorMessage;
+	const hasError = !!repayAmountError;
 
 	return (
 		<StyledCard isInteractive={true}>
 			<Card.Header>
-				<HeadingSmall>
-					{type === ActionTypes.ADD
-						? t('loans.loan-card.add-collateral.title')
-						: t('loans.loan-card.withdraw-collateral.title')}
-				</HeadingSmall>
+				<HeadingSmall>{t('loans.loan-card.repay.title')}</HeadingSmall>
 			</Card.Header>
 			<Card.Body>
 				<LoanInfoContainer>
 					<FormInputRow>
 						<NumericInputWithCurrency
-							currencyKey={collateralCurrencyKey}
-							value={Math.abs(`${collateralDifference.toFixed(4) || collateralAmount}`)}
+							currencyKey={loanCurrencyKey}
+							value={Math.abs(`${repayAmount.toFixed(4) || loanAmount}`)}
 							label={
 								<>
 									<FormInputLabel>
-										{type === ActionTypes.ADD
-											? t('loans.loan-card.add-collateral.subtitle')
-											: t('loans.loan-card.withdraw-collateral.subtitle')}
+										{t('loans.loan-card.repay.subtitle', {
+											currencyKey: loanCurrencyKey,
+										})}
 									</FormInputLabel>
 									<FormInputLabelSmall>
-										{t('loans.loan-card.current-collateral', {
-											collateralAmount: selectedLoan.collateralAmount.toFixed(2),
-											currencyKey: collateralCurrencyKey,
+										{t('loans.loan-card.current-debt', {
+											loanAmount: selectedLoan.loanAmount.toFixed(2),
+											currencyKey: loanCurrencyKey,
 										})}
 									</FormInputLabelSmall>
 								</>
 							}
 							disabled={true}
-							errorMessage={collateralAmountErrorMessage}
+							errorMessage={repayAmountError}
 						/>
 					</FormInputRow>
 					<InfoBox>
@@ -309,4 +273,4 @@ const mapDispatchToProps = {
 	updateLoan,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyCollateral);
+export default connect(mapStateToProps, mapDispatchToProps)(RepayLoan);

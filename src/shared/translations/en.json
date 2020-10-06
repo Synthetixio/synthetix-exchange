@@ -531,6 +531,7 @@
 				}
 			},
 			"current-collateral": "Collateral: {{collateralAmount}} {{currencyKey}}",
+			"current-debt": "Debt: {{loanAmount}} {{currencyKey}}",
 			"new-c-ratio": "New C-Ratio",
 			"withdraw-collateral": {
 				"title": "WITHDRAW COLLATERAL",
@@ -539,6 +540,10 @@
 			"add-collateral": {
 				"title": "ADD COLLATERAL",
 				"subtitle": "ETH being added"
+			},
+			"repay": {
+				"title": "REPAY LOAN",
+				"subtitle": "{{currencyKey}} being repaid"
 			},
 			"actions": {
 				"title": "Choose action",

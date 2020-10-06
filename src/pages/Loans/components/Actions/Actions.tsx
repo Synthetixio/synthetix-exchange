@@ -38,9 +38,9 @@ const Actions: React.FC<ActionsProps> = ({ onActionPress, isInteractive }) => {
 					<StyledButton size="lg" palette="tab" onClick={() => onActionPress('withdraw')}>
 						{t('loans.loan-card.actions.withdraw')}
 					</StyledButton>
-					{/* <StyledButton size="lg" palette="tab" onClick={() => onActionPress('repay')}>
+					<StyledButton size="lg" palette="tab" onClick={() => onActionPress('repay')}>
 						{t('loans.loan-card.actions.repay')}
-					</StyledButton> */}
+					</StyledButton>
 					<StyledButton size="lg" palette="tab" onClick={() => onActionPress('close')}>
 						{t('loans.loan-card.actions.close')}
 					</StyledButton>
