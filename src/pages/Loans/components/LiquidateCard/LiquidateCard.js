@@ -83,6 +83,9 @@ const LiquidateCard = ({
 					setTransactionHash(tx.hash);
 					setLiquidateAmount('');
 					fetchLiquidations();
+					return {
+						onclick: () => window.open(getEtherscanTxLink(tx.hash), '_blank'),
+					};
 				});
 			}
 		} catch (e) {

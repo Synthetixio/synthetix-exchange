@@ -117,6 +117,9 @@ export const CreateLoanCardsUSD = ({
 					setCollateralAmount('');
 					setLoanAmount('');
 					fetchLoans();
+					return {
+						onclick: () => window.open(getEtherscanTxLink(tx.hash), '_blank'),
+					};
 				});
 			}
 		} catch (e) {

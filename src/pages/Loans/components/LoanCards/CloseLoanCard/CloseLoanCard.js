@@ -90,6 +90,9 @@ export const CloseLoanCard = ({
 					});
 					setTransactionHash(tx.hash);
 					fetchLoans();
+					return {
+						onclick: () => window.open(getEtherscanTxLink(tx.hash), '_blank'),
+					};
 				});
 			}
 		} catch (e) {
