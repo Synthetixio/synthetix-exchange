@@ -65,7 +65,7 @@ const Liquidations = ({
 			{
 				Header: <>{t('loans.liquidations.table.c-ratio-col')}</>,
 				accessor: 'cRatioPercentage',
-				Cell: (cellProps) => `${cellProps.cell.value.toFixed(2)}%`,
+				Cell: (cellProps) => `${cellProps.cell.value}%`,
 				width: 150,
 				sortable: true,
 			},
