@@ -3,6 +3,7 @@ import keyBy from 'lodash/keyBy';
 import snxJSConnector from '../../utils/snxJSConnector';
 import { getWalletInfo } from '../wallet/walletDetails';
 import { bigNumberFormatter, toJSTimestamp } from '../../utils/formatters';
+import { getEthRate } from 'ducks/rates';
 
 export const LOAN_STATUS = {
 	OPEN: 'open',
@@ -79,6 +80,7 @@ export const fetchLoans = () => async (dispatch, getState) => {
 	} = snxJSConnector;
 
 	const state = getState();
+	const ethRate = getEthRate(state);
 	const walletInfo = getWalletInfo(state);
 
 	const { contractType } = state.loans.contractInfo;
@@ -112,16 +114,21 @@ export const fetchLoans = () => async (dispatch, getState) => {
 		const loans = loanIDs.map(async (element) => {
 			const tx = await provider.getTransactionReceipt(element.txHash);
 			const loan = await contract.getLoan(walletInfo.currentWallet, element.id);
+			const currentInterest = bigNumberFormatter(loan.interest ?? loan.accruedInterest);
 			const timeClosed = toJSTimestamp(loan.timeClosed);
+			const loanAmount = bigNumberFormatter(loan.loanAmount);
+			const collateralAmount = bigNumberFormatter(loan.collateralAmount);
+			const cRatio = (ethRate * collateralAmount) / (loanAmount + currentInterest);
 			return {
-				collateralAmount: bigNumberFormatter(loan.collateralAmount),
-				loanAmount: bigNumberFormatter(loan.loanAmount),
+				collateralAmount: collateralAmount,
+				loanAmount: loanAmount,
 				timeCreated: toJSTimestamp(loan.timeCreated),
 				loanID: element.id,
 				timeClosed,
 				feesPayable: bigNumberFormatter(loan.totalFees),
-				currentInterest: bigNumberFormatter(loan.interest ?? loan.accruedInterest),
+				currentInterest: currentInterest,
 				status: timeClosed > 0 ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
+				cRatio: cRatio * 100,
 				transactionHash: null,
 				loanType: tx.to === EtherCollateral.contract.address ? 'sETH' : 'sUSD',
 			};

@@ -512,6 +512,7 @@
 			"table": {
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
+				"c-ratio-col": "c-ratio",
 				"time-opened-col": "time opened",
 				"current-interest-fee-col": "current interest fee",
 				"fees-payable-col": "fees payable",

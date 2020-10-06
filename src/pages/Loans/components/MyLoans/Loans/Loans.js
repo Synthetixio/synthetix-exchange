@@ -58,7 +58,11 @@ const Loans = ({
 				accessor: 'loanAmount',
 				Cell: (cellProps) => {
 					const { loanType } = cellProps.row.original;
-					return formatCurrencyWithKey(loanType === 'sETH' ? 'sETH' : 'sUSD', cellProps.cell.value);
+					return formatCurrencyWithKey(
+						loanType === 'sETH' ? 'sETH' : 'sUSD',
+						cellProps.cell.value,
+						4
+					);
 				},
 				width: 150,
 				sortable: true,
@@ -66,7 +70,14 @@ const Loans = ({
 			{
 				Header: <>{t('loans.my-loans.table.collateral-col')}</>,
 				accessor: 'collateralAmount',
-				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value),
+				Cell: (cellProps) => formatCurrencyWithKey(collateralCurrencyKey, cellProps.cell.value, 4),
+				width: 150,
+				sortable: true,
+			},
+			{
+				Header: <>{t('loans.my-loans.table.c-ratio-col')}</>,
+				accessor: 'cRatio',
+				Cell: (cellProps) => `${cellProps.cell.value.toFixed(4)}%`,
 				width: 150,
 				sortable: true,
 			},
