@@ -18,7 +18,7 @@ import { DataSmall, HeadingSmall } from 'components/Typography';
 import { getGasInfo } from 'ducks/transaction';
 import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
-import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { createLoan, LOAN_STATUS, fetchLoans } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
 import LoanWarningModal from '../LoanWarningModal';
@@ -116,6 +116,7 @@ export const CreateLoanCardsUSD = ({
 					setTransactionHash(tx.hash);
 					setCollateralAmount('');
 					setLoanAmount('');
+					fetchLoans();
 				});
 			}
 		} catch (e) {
@@ -305,6 +306,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
 	createLoan,
+	fetchLoans,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateLoanCardsUSD);

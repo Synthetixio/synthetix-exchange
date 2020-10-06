@@ -25,6 +25,7 @@ import snxJSConnector from 'utils/snxJSConnector';
 import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
 import { getEtherscanTxLink } from 'utils/explorers';
+import { fetchLiquidations } from 'ducks/loans/allLiquidations';
 
 const LiquidateCard = ({
 	collateralPair,
@@ -81,6 +82,7 @@ const LiquidateCard = ({
 				emitter.on('txConfirmed', () => {
 					setTransactionHash(tx.hash);
 					setLiquidateAmount('');
+					fetchLiquidations();
 				});
 			}
 		} catch (e) {
@@ -209,4 +211,8 @@ const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 });
 
-export default connect(mapStateToProps, null)(LiquidateCard);
+const mapDispatchToProps = {
+	fetchLiquidations,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LiquidateCard);

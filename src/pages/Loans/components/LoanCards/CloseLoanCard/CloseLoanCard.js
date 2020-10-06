@@ -10,7 +10,7 @@ import { normalizeGasLimit } from 'utils/transactions';
 import { getGasInfo } from 'ducks/transaction';
 import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
-import { updateLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { updateLoan, LOAN_STATUS, fetchLoans } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
 import { ButtonPrimary } from 'components/Button';
@@ -29,6 +29,7 @@ export const CloseLoanCard = ({
 	gasInfo,
 	networkId,
 	ethRate,
+	fetchLoans,
 	isInteractive = true,
 	selectedLoan,
 	walletInfo: { currentWallet },
@@ -88,6 +89,7 @@ export const CloseLoanCard = ({
 						},
 					});
 					setTransactionHash(tx.hash);
+					fetchLoans();
 				});
 			}
 		} catch (e) {
@@ -223,6 +225,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
 	updateLoan,
+	fetchLoans,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CloseLoanCard);

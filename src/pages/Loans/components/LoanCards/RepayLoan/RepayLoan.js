@@ -22,7 +22,7 @@ import {
 } from 'shared/commonStyles';
 import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
-import { updateLoan } from 'ducks/loans/myLoans';
+import { updateLoan, fetchLoans } from 'ducks/loans/myLoans';
 import NetworkInfo from 'components/NetworkInfo';
 import { getContract, getContractType, getLoansCollateralPair } from 'ducks/loans/contractInfo';
 import { getGasInfo } from 'ducks/transaction';
@@ -36,6 +36,7 @@ const RepayLoan = ({
 	selectedLoan,
 	gasInfo,
 	networkId,
+	fetchLoans,
 	ethRate,
 	walletInfo: { currentWallet },
 	collateralPair,
@@ -101,6 +102,7 @@ const RepayLoan = ({
 						},
 					});
 					setTransactionHash(tx.hash);
+					fetchLoans();
 				});
 			}
 		} catch (e) {
@@ -271,6 +273,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
 	updateLoan,
+	fetchLoans,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RepayLoan);

@@ -98,37 +98,39 @@ const Liquidations = ({
 					const liquidationsData = row.original;
 					return (
 						<>
-							<ButtonPrimarySmall
-								style={{
-									marginRight: 16,
-								}}
-								onClick={() => {
-									const expandedRow = rows.find((row) => row.isExpanded);
-									if (expandedRow) {
-										const isSubItemOfRow = Boolean(
-											expandedRow && row.id.split('.')[0] === expandedRow.id
-										);
-
-										if (isSubItemOfRow) {
-											const expandedSubItem = expandedRow.subRows.find(
-												(subRow) => subRow.isExpanded
+							{liquidationsData.hasPartialLiquidations && (
+								<ButtonPrimarySmall
+									style={{
+										marginRight: 16,
+									}}
+									onClick={() => {
+										const expandedRow = rows.find((row) => row.isExpanded);
+										if (expandedRow) {
+											const isSubItemOfRow = Boolean(
+												expandedRow && row.id.split('.')[0] === expandedRow.id
 											);
 
-											if (expandedSubItem) {
-												const isClickedOnExpandedSubItem = expandedSubItem.id === row.id;
-												if (!isClickedOnExpandedSubItem) {
-													toggleRowExpanded(expandedSubItem.id, false);
+											if (isSubItemOfRow) {
+												const expandedSubItem = expandedRow.subRows.find(
+													(subRow) => subRow.isExpanded
+												);
+
+												if (expandedSubItem) {
+													const isClickedOnExpandedSubItem = expandedSubItem.id === row.id;
+													if (!isClickedOnExpandedSubItem) {
+														toggleRowExpanded(expandedSubItem.id, false);
+													}
 												}
+											} else {
+												toggleRowExpanded(expandedRow.id, false);
 											}
-										} else {
-											toggleRowExpanded(expandedRow.id, false);
 										}
-									}
-									row.toggleRowExpanded();
-								}}
-							>
-								{t('loans.liquidations.table.activity')}
-							</ButtonPrimarySmall>
+										row.toggleRowExpanded();
+									}}
+								>
+									{t('loans.liquidations.table.activity')}
+								</ButtonPrimarySmall>
+							)}
 							<ButtonPrimarySmall
 								onClick={() => {
 									setView(VIEWS.LIQUIDATIONS);
