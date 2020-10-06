@@ -107,73 +107,71 @@ export const fetchLiquidations = () => async (dispatch, getState) => {
 
 	dispatch(fetchLiquidationsRequest());
 
-	// try {
-	let loans = await pageResults({
-		api: loansGraph,
-		query: {
-			entity: 'loans',
-			selection: {
-				where: {
-					isOpen: true,
-					collateralMinted: '\\"sUSD\\"',
+	try {
+		let loans = await pageResults({
+			api: loansGraph,
+			query: {
+				entity: 'loans',
+				selection: {
+					where: {
+						isOpen: true,
+						collateralMinted: '\\"sUSD\\"',
+					},
 				},
+				properties: ['account', 'amount', 'id', 'isOpen', 'hasPartialLiquidations'],
 			},
-			properties: ['account', 'amount', 'id', 'isOpen', 'hasPartialLiquidations'],
-		},
-	});
+		});
 
-	const liquidatedLoans = loans.map(async (loan) => {
-		const id = Number(loan.id);
-		const loanMetaData = await contract.getLoan(loan.account, id);
-		const currentInterest = bigNumberFormatter(loanMetaData.accruedInterest);
-		const loanAmount = bigNumberFormatter(loan.amount);
-		const collateralAmount = bigNumberFormatter(loanMetaData.collateralAmount);
-		const cRatio = (ethRate * collateralAmount) / (loanAmount + currentInterest);
-		const debtBalance = loanAmount + currentInterest;
-		const collateralUSDValue = ethRate * collateralAmount;
-		let totalDebtToCover = 0;
+		const liquidatedLoans = loans.map(async (loan) => {
+			const id = Number(loan.id);
+			const loanMetaData = await contract.getLoan(loan.account, id);
+			const currentInterest = bigNumberFormatter(loanMetaData.accruedInterest);
+			const loanAmount = bigNumberFormatter(loan.amount);
+			const collateralAmount = bigNumberFormatter(loanMetaData.collateralAmount);
+			const cRatio = (ethRate * collateralAmount) / (loanAmount + currentInterest);
+			const debtBalance = loanAmount + currentInterest;
+			const collateralUSDValue = ethRate * collateralAmount;
+			let totalDebtToCover = 0;
 
-		if (cRatio < C_RATIO) {
-			const dividend = debtBalance - collateralUSDValue / C_RATIO;
-			const divisor = 1 - (1 + PENALTY) / C_RATIO;
-			totalDebtToCover = dividend / divisor;
-		}
+			if (cRatio < C_RATIO) {
+				const dividend = debtBalance - collateralUSDValue / C_RATIO;
+				const divisor = 1 - (1 + PENALTY) / C_RATIO;
+				totalDebtToCover = dividend / divisor;
+			}
 
-		let partialLiquidations = [];
-		if (loan.hasPartialLiquidations) {
-			partialLiquidations = await fetchPartialLiquidations(id);
-		}
+			let partialLiquidations = [];
+			if (loan.hasPartialLiquidations) {
+				partialLiquidations = await fetchPartialLiquidations(id);
+			}
 
-		return {
-			account: loan.account,
-			collateralAmount: collateralAmount,
-			loanAmount: loanAmount,
-			loanId: id,
-			currentInterest: currentInterest,
-			totalDebtToCover: totalDebtToCover,
-			penaltyPercentage: PENALTY,
-			liquidatable: cRatio < C_RATIO,
-			cRatioPercentage: cRatio * 100,
-			partialLiquidations: partialLiquidations,
-		};
-	});
+			return {
+				account: loan.account,
+				collateralAmount: collateralAmount,
+				loanAmount: loanAmount,
+				loanId: id,
+				currentInterest: currentInterest,
+				totalDebtToCover: totalDebtToCover,
+				penaltyPercentage: PENALTY,
+				liquidatable: cRatio < C_RATIO,
+				cRatioPercentage: cRatio * 100,
+				partialLiquidations: partialLiquidations,
+			};
+		});
 
-	const promiseLiquidations = await Promise.all(liquidatedLoans);
+		const promiseLiquidations = await Promise.all(liquidatedLoans);
 
-	const filteredLiquidations = promiseLiquidations.filter(
-		(e) => e
-		// e.liquidatable
-		//  && totalDebtToCover > 1
-	);
+		const filteredLiquidations = promiseLiquidations.filter(
+			(e) => e.liquidatable && e.totalDebtToCover > 1
+		);
 
-	const objectLiquidations = keyBy(filteredLiquidations, (loan) => {
-		return `${loan.loanId}-${loan.account}`;
-	});
+		const objectLiquidations = keyBy(filteredLiquidations, (loan) => {
+			return `${loan.loanId}-${loan.account}`;
+		});
 
-	dispatch(fetchLiquidationsSuccess({ liquidations: objectLiquidations }));
-	// } catch (e) {
-	// 	dispatch(fetchLiquidationsFailure({ error: e.message }));
-	// }
+		dispatch(fetchLiquidationsSuccess({ liquidations: objectLiquidations }));
+	} catch (e) {
+		dispatch(fetchLiquidationsFailure({ error: e.message }));
+	}
 };
 
 export default liquidationsSlice.reducer;
