@@ -23,6 +23,7 @@ type NumericInputWithCurrencyProps = {
 	value: string | number;
 	onChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
 	showIcon?: boolean;
+	disabled?: boolean;
 };
 
 const TradeInput: FC<NumericInputWithCurrencyProps> = ({
@@ -35,6 +36,7 @@ const TradeInput: FC<NumericInputWithCurrencyProps> = ({
 	errorMessage,
 	onMaxButtonClick,
 	showIcon = true,
+	disabled = false,
 }) => {
 	const { t } = useTranslation();
 	const hasMaxButton = onMaxButtonClick != null;
@@ -48,6 +50,7 @@ const TradeInput: FC<NumericInputWithCurrencyProps> = ({
 				</CurrencyContainer>
 				<StyledNumericInput
 					className="input"
+					disabled={disabled}
 					value={value}
 					placeholder="0"
 					onChange={(e) => onChange(e, e.target.value)}

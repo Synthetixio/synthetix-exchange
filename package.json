@@ -13,6 +13,7 @@
 		"@testing-library/user-event": "7.1.2",
 		"@types/jest": "24.0.0",
 		"bignumber.js": "9.0.0",
+		"bnc-notify": "^1.4.0",
 		"date-fns": "2.14.0",
 		"ethers": "4.0.46",
 		"history": "4.10.1",
