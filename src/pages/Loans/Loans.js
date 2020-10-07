@@ -41,7 +41,6 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType, networkId
 	const [notify, setNotify] = useState(null);
 
 	useEffect(() => {
-		// @TODO REPLACE KEYS
 		var notify = Notify({
 			dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY,
 			networkId: networkId,
