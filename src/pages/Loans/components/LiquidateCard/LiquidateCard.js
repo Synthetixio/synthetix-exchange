@@ -84,7 +84,7 @@ const LiquidateCard = ({
 					setLiquidateAmount('');
 					fetchLiquidations();
 					return {
-						onclick: () => window.open(getEtherscanTxLink(tx.hash), '_blank'),
+						onclick: () => window.open(getEtherscanTxLink(networkId, tx.hash), '_blank'),
 					};
 				});
 			}

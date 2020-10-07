@@ -104,7 +104,7 @@ const RepayLoan = ({
 					setTransactionHash(tx.hash);
 					fetchLoans();
 					return {
-						onclick: () => window.open(getEtherscanTxLink(tx.hash), '_blank'),
+						onclick: () => window.open(getEtherscanTxLink(networkId, tx.hash), '_blank'),
 					};
 				});
 			}
