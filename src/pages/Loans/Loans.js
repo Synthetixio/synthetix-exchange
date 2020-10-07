@@ -43,7 +43,7 @@ const Loans = ({ collateralPair, fetchLoansContractInfo, contractType, networkId
 	useEffect(() => {
 		// @TODO REPLACE KEYS
 		var notify = Notify({
-			dappId: '95a4ea13-9af6-4ea1-89db-a2c333236a77',
+			dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY,
 			networkId: networkId,
 		});
 		setNotify(notify);
