@@ -38,6 +38,7 @@ const ModifyCollateral = ({
 	gasInfo,
 	networkId,
 	ethRate,
+	fetchLoans,
 	walletInfo: { currentWallet },
 	collateralPair,
 	contract,
@@ -50,7 +51,6 @@ const ModifyCollateral = ({
 	let currentInterest = selectedLoan.currentInterest;
 	let loanID = selectedLoan.loanID;
 	let currentCRatio = ((collateralAmount * ethRate) / (loanAmount + currentInterest)) * 100;
-	let loanType = contractType;
 
 	const { t } = useTranslation();
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
@@ -114,16 +114,6 @@ const ModifyCollateral = ({
 			if (notify) {
 				const { emitter } = notify.hash(tx.hash);
 				emitter.on('txConfirmed', () => {
-					updateLoan({
-						loanID,
-						loanType,
-						loanInfo: {
-							collateralAmount:
-								type === ActionTypes.ADD
-									? collateralAmount + collateralDifference
-									: collateralAmount - collateralDifference,
-						},
-					});
 					setTransactionHash(tx.hash);
 					fetchLoans();
 					return {

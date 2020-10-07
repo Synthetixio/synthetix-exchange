@@ -144,7 +144,8 @@ const Liquidations = ({
 				},
 			},
 		],
-		[collateralCurrencyKey, loanCurrencyKey, setView, t, onSelectLiquidation]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[collateralCurrencyKey, loanCurrencyKey, setView, t, onSelectLiquidation, liquidations]
 	);
 
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(

@@ -18,7 +18,7 @@ import { DataSmall, HeadingSmall } from 'components/Typography';
 import { getGasInfo } from 'ducks/transaction';
 import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
 import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
-import { createLoan, LOAN_STATUS, fetchLoans } from 'ducks/loans/myLoans';
+import { fetchLoans } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
 import LoanWarningModal from '../LoanWarningModal';
@@ -42,7 +42,6 @@ export const CreateLoanCard = ({
 	ethRate,
 	walletInfo: { currentWallet },
 	walletBalance,
-	createLoan,
 	collateralPair,
 	notify,
 }) => {
@@ -92,19 +91,6 @@ export const CreateLoanCard = ({
 			if (notify) {
 				const { emitter } = notify.hash(tx.hash);
 				emitter.on('txConfirmed', () => {
-					createLoan({
-						loan: {
-							collateralAmount: Number(collateralAmount),
-							loanAmount: Number(loanAmount),
-							timeCreated: Date.now(),
-							timeClosed: 0,
-							feesPayable: 0,
-							currentInterest: 0,
-							status: LOAN_STATUS.OPEN,
-							loanID: null,
-							transactionHash: tx.hash,
-						},
-					});
 					setTransactionHash(tx.hash);
 					setCollateralAmount('');
 					setLoanAmount('');
@@ -274,7 +260,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	createLoan,
 	fetchLoans,
 };
 

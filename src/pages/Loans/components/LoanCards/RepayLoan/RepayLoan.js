@@ -22,7 +22,7 @@ import {
 } from 'shared/commonStyles';
 import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
-import { updateLoan, fetchLoans } from 'ducks/loans/myLoans';
+import { fetchLoans } from 'ducks/loans/myLoans';
 import NetworkInfo from 'components/NetworkInfo';
 import { getContract, getContractType, getLoansCollateralPair } from 'ducks/loans/contractInfo';
 import { getGasInfo } from 'ducks/transaction';
@@ -49,7 +49,6 @@ const RepayLoan = ({
 	let currentInterest = selectedLoan.currentInterest;
 	let loanID = selectedLoan.loanID;
 	let currentCRatio = ((collateralAmount * ethRate) / (loanAmount + currentInterest)) * 100;
-	let loanType = contractType;
 
 	const { t } = useTranslation();
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
@@ -94,13 +93,6 @@ const RepayLoan = ({
 			if (notify) {
 				const { emitter } = notify.hash(tx.hash);
 				emitter.on('txConfirmed', () => {
-					updateLoan({
-						loanID,
-						loanType,
-						loanInfo: {
-							loanAmount: loanAmount - repayAmount,
-						},
-					});
 					setTransactionHash(tx.hash);
 					fetchLoans();
 					return {
@@ -275,7 +267,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	updateLoan,
 	fetchLoans,
 };
 

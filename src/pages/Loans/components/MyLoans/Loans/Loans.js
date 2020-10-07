@@ -204,7 +204,7 @@ const Loans = ({
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[contractType, selectedLoan]
+		[contractType, selectedLoan, loans]
 	);
 
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
