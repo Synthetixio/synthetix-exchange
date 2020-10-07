@@ -179,7 +179,7 @@ export const fetchLoans = () => async (dispatch, getState) => {
 				loanID: id,
 				feesPayable: totalFees,
 				currentInterest: currentInterest,
-				status: timeClosed > timeCreated ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
+				status: !loan.isOpen ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
 				cRatio: cRatio,
 				loanType: contractType,
 				txHash: loan.txHash,
