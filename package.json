@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.28.4",
+	"version": "2.30.0",
 	"private": true,
 	"dependencies": {
 		"@bugsnag/js": "6.2.0",
@@ -13,6 +13,7 @@
 		"@testing-library/user-event": "7.1.2",
 		"@types/jest": "24.0.0",
 		"bignumber.js": "9.0.0",
+		"bnc-notify": "^1.4.0",
 		"date-fns": "2.14.0",
 		"ethers": "4.0.46",
 		"history": "4.10.1",
@@ -42,7 +43,7 @@
 		"styled-components": "5.0.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.23",
-		"synthetix-js": "2.28.4",
+		"synthetix-js": "2.30.0",
 		"typescript": "3.7.2",
 		"use-immer": "0.4.0"
 	},

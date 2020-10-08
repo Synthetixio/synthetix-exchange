@@ -478,14 +478,44 @@
 				"locked-currency": "LOCKED {{currencyKey}}"
 			}
 		},
+		"liquidations": {
+			"title": "Liquidations",
+			"table": {
+				"address-col": "address",
+				"c-ratio-col": "c-ratio",
+				"collateral-col": "total collateral",
+				"debt-col": "total debt to cover",
+				"no-results": "No loans available to liquidate.",
+				"no-partial-liquidations": "No partial liquidations available.",
+				"activity": "activity",
+				"liquidate": "liquidate"
+			},
+			"sub-table": {
+				"collateral-col": "collateral",
+				"penalty-col": "penalty amount",
+				"repaid-col": "debt repaid",
+				"liquidator-col": "liquidator",
+				"verify-col": "verify",
+				"view": "view"
+			},
+			"card": {
+				"title": "liquidation details",
+				"total": "Total debt to cover: {{debtAmount}}",
+				"debt": "debt to cover",
+				"amount": "amount",
+				"receive": "you will receive",
+				"bonus": "liquidation bonus (10%)"
+			}
+		},
 		"my-loans": {
 			"title": "your loans",
 			"table": {
 				"amount-borrowed-col": "amount borrowed",
 				"collateral-col": "collateral",
+				"c-ratio-col": "c-ratio",
 				"time-opened-col": "time opened",
 				"current-interest-fee-col": "current interest fee",
-				"fees-payable-col": "fees payable",
+				"verify-tx-col": "verify",
 				"status-col": "status",
 				"no-results": "No loans associated with this wallet."
 			}
@@ -499,6 +529,31 @@
 					"message": "Ether Collateral loans have been paused.",
 					"button-label": "read this post for info"
 				}
+			},
+			"current-collateral": "Collateral: {{collateralAmount}} {{currencyKey}}",
+			"current-debt": "Debt: {{loanAmount}} {{currencyKey}}",
+			"new-c-ratio": "New C-Ratio",
+			"withdraw-collateral": {
+				"title": "WITHDRAW COLLATERAL",
+				"subtitle": "ETH being withdrawn"
+			},
+			"add-collateral": {
+				"title": "ADD COLLATERAL",
+				"subtitle": "ETH being added"
+			},
+			"repay": {
+				"title": "REPAY LOAN",
+				"subtitle": "{{currencyKey}} being repaid"
+			},
+			"actions": {
+				"title": "Choose action",
+				"add": "add collateral",
+				"withdraw": "withdraw collateral",
+				"repay": "repay",
+				"close": "close loan"
+			},
+			"select-loan": {
+				"title": "Select loan to start"
 			},
 			"close-loan": {
 				"title": "close loan",
@@ -626,6 +681,7 @@
 		"actions": {
 			"submit": "submit",
 			"close": "close",
+			"options": "options",
 			"edit": "edit",
 			"confirm": "confirm",
 			"click-to-retry": "click to retry",
@@ -634,7 +690,8 @@
 			"convert-to-eth": "convert to eth",
 			"swap-via-1inch": "swap via 1inch",
 			"add-to-metamask": "add to metamask",
-			"view": "view"
+			"view": "view",
+			"liquidate": "liquidate"
 		},
 		"tx-status": {
 			"waiting": "Waiting",
@@ -652,6 +709,7 @@
 		"wallet": {
 			"your-wallet": "YOUR WALLET",
 			"currency-balance": "{{currencyKey}} BALANCE",
+			"eth-value": "ETH PRICE (USD)",
 			"balance-currency": "Balance: {{balance}}",
 			"no-wallet-connected": "No wallet currently connected",
 			"connect-currency-wallet": "connect {{currencyKey}} wallet to start",
@@ -663,7 +721,10 @@
 			"unknown-error-try-again": "An unknown error occurred after you submitted. Please try again.",
 			"error-loading": "An error occurred trying to load",
 			"fee-reclamation": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{currency}}",
-			"c-ratio-exceeded": "Min c-ratio is 150%"
+			"c-ratio-exceeded": "Min c-ratio is 150%",
+			"c-ratio-below": "C-ratio below current ratio",
+			"c-ratio-above": "C-ratio above current ratio",
+			"amount-exceeds-liquidatable": "Amount exceeds debt to cover"
 		},
 		"currency": {
 			"buy-currencyA-with-currencyB": "Buy {{currencyKeyA}} with {{currencyKeyB}}",
