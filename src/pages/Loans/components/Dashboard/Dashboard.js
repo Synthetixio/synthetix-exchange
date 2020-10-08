@@ -36,6 +36,7 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 import Spinner from 'components/Spinner';
 
 import { getEtherscanAddressLink } from 'utils/explorers';
+import { getEthRate } from 'ducks/rates';
 
 export const Dashboard = ({
 	walletInfo: { currentWallet },
@@ -47,6 +48,7 @@ export const Dashboard = ({
 	setSelectedContractType,
 	contractType,
 	contract,
+	ethRate,
 }) => {
 	const { t } = useTranslation();
 
@@ -84,7 +86,7 @@ export const Dashboard = ({
 					components={[<CurrencyKey />]}
 				/>
 			),
-			value: formatCurrency(issueLimit),
+			value: formatCurrency(issueLimit, 0),
 		},
 		{
 			label: (
@@ -95,11 +97,11 @@ export const Dashboard = ({
 				/>
 			),
 
-			value: formatCurrency(totalIssuedSynths),
+			value: formatCurrency(totalIssuedSynths, 0),
 		},
 		{
 			label: t('loans.dashboard.loan-info.min-loan-size'),
-			value: formatCurrencyWithKey(collateralCurrencyKey, minLoanSize),
+			value: formatCurrencyWithKey(collateralCurrencyKey, minLoanSize, 0),
 		},
 		{
 			label: t('loans.dashboard.loan-info.collateral-size'),
@@ -110,6 +112,10 @@ export const Dashboard = ({
 				currencyKey: collateralCurrencyKey,
 			}),
 			value: formatCurrency(lockedCollateralAmount, 0),
+		},
+		{
+			label: t('common.wallet.eth-value'),
+			value: formatCurrency(ethRate),
 		},
 	];
 
@@ -275,6 +281,7 @@ const mapStateToProps = (state) => ({
 	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),
 	contractType: getContractType(state),
 	contract: getContract(state),
+	ethRate: getEthRate(state),
 });
 
 const mapDispatchToProps = {
