@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import CardHeader, { CardHeaderProps } from './CardHeader';
@@ -14,9 +14,9 @@ interface StaticComponents {
 }
 
 // @ts-ignore
-const Card: FC<CardProps> & StaticComponents = memo(({ children, ...rest }) => (
+const Card: FC<CardProps> & StaticComponents = ({ children, ...rest }) => (
 	<Container {...rest}>{children}</Container>
-));
+);
 
 Card.Header = CardHeader;
 Card.Body = CardBody;

@@ -1,4 +1,4 @@
-import React, { memo, FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -40,44 +40,54 @@ type DispatchProps = {
 
 type PairListPanelProps = StateProps & DispatchProps;
 
-const PairListPanel: FC<PairListPanelProps> = memo(
-	({
-		synthPair: { base, quote },
-		marketsByQuote,
-		allMarkets,
-		marketsAssetFilter,
-		setMarketsAssetFilter,
-		setBlurBackgroundIsVisible,
-	}) => {
-		const [search, setSearch] = useState<string>(DEFAULT_SEARCH);
-		const [pairListDropdownIsOpen, setPairListDropdownIsOpen] = useState<boolean>(false);
-		const [advancedSearchIsOpen, setAdvancedIsSearchOpen] = useState<boolean>(false);
-		const [baseCurrencySearch, setBaseCurrencySearch] = useState<string>(DEFAULT_SEARCH);
-		const [quoteCurrencySearch, setQuoteCurrencySearch] = useState<string>(DEFAULT_SEARCH);
+const PairListPanel: FC<PairListPanelProps> = ({
+	synthPair: { base, quote },
+	marketsByQuote,
+	allMarkets,
+	marketsAssetFilter,
+	setMarketsAssetFilter,
+	setBlurBackgroundIsVisible,
+}) => {
+	const [search, setSearch] = useState<string>(DEFAULT_SEARCH);
+	const [pairListDropdownIsOpen, setPairListDropdownIsOpen] = useState<boolean>(false);
+	const [advancedSearchIsOpen, setAdvancedIsSearchOpen] = useState<boolean>(false);
+	const [baseCurrencySearch, setBaseCurrencySearch] = useState<string>(DEFAULT_SEARCH);
+	const [quoteCurrencySearch, setQuoteCurrencySearch] = useState<string>(DEFAULT_SEARCH);
 
-		const filteredMarkets = useDebouncedMemo(
-			() => {
-				if (!search && !baseCurrencySearch && !quoteCurrencySearch) {
-					return marketsByQuote;
+	const filteredMarkets = useDebouncedMemo(
+		() => {
+			if (!search && !baseCurrencySearch && !quoteCurrencySearch) {
+				return marketsByQuote;
+			} else {
+				if (advancedSearchIsOpen) {
+					const baseCurrencySearchLowered = baseCurrencySearch.toLowerCase();
+					const quoteCurrencySearchLowered = quoteCurrencySearch.toLowerCase();
+
+					return allMarkets.filter(({ baseCurrencyKey, quoteCurrencyKey }) => {
+						const matches = [];
+
+						if (baseCurrencySearch) {
+							matches.push(baseCurrencyKey.toLowerCase().includes(baseCurrencySearchLowered));
+						}
+						if (quoteCurrencySearch) {
+							matches.push(quoteCurrencyKey.toLowerCase().includes(quoteCurrencySearchLowered));
+						}
+
+						return matches.every((match) => match);
+					});
 				} else {
-					if (advancedSearchIsOpen) {
-						const baseCurrencySearchLowered = baseCurrencySearch.toLowerCase();
-						const quoteCurrencySearchLowered = quoteCurrencySearch.toLowerCase();
+					const searchLowered = search.toLowerCase();
 
-						return allMarkets.filter(({ baseCurrencyKey, quoteCurrencyKey }) => {
-							const matches = [];
+					// try to match "eth / btc", "eth/btc", etc...
+					const searchParts = searchLowered.replace(/([^a-z0-9]+)/gi, ' ').split(' ');
 
-							if (baseCurrencySearch) {
-								matches.push(baseCurrencyKey.toLowerCase().includes(baseCurrencySearchLowered));
-							}
-							if (quoteCurrencySearch) {
-								matches.push(quoteCurrencyKey.toLowerCase().includes(quoteCurrencySearchLowered));
-							}
-
-							return matches.every((match) => match);
-						});
+					if (searchParts.length > 1) {
+						return allMarkets.filter(
+							({ baseCurrencyKey, quoteCurrencyKey }) =>
+								baseCurrencyKey.toLowerCase().includes(searchParts[0]) &&
+								quoteCurrencyKey.toLowerCase().includes(searchParts[searchParts.length - 1])
+						);
 					} else {
-						const searchLowered = search.toLowerCase();
 						return allMarkets.filter(
 							({ baseCurrencyKey, quoteCurrencyKey }) =>
 								baseCurrencyKey.toLowerCase().includes(searchLowered) ||
@@ -85,106 +95,106 @@ const PairListPanel: FC<PairListPanelProps> = memo(
 						);
 					}
 				}
-			},
-			[
-				marketsByQuote,
-				allMarkets,
-				search,
-				advancedSearchIsOpen,
-				baseCurrencySearch,
-				quoteCurrencySearch,
-			],
-			SEARCH_DEBOUNCE_MS
-		);
+			}
+		},
+		[
+			marketsByQuote,
+			allMarkets,
+			search,
+			advancedSearchIsOpen,
+			baseCurrencySearch,
+			quoteCurrencySearch,
+		],
+		SEARCH_DEBOUNCE_MS
+	);
 
-		const resetSearch = () => {
-			setSearch(DEFAULT_SEARCH);
-			setBaseCurrencySearch(DEFAULT_SEARCH);
-			setQuoteCurrencySearch(DEFAULT_SEARCH);
+	const resetSearch = () => {
+		setSearch(DEFAULT_SEARCH);
+		setBaseCurrencySearch(DEFAULT_SEARCH);
+		setQuoteCurrencySearch(DEFAULT_SEARCH);
+	};
+
+	const toggleDropdown = (isOpen: boolean) => {
+		if (!isOpen && !pairListDropdownIsOpen) return;
+
+		resetSearch();
+		setAdvancedIsSearchOpen(false);
+		setPairListDropdownIsOpen(isOpen);
+		setBlurBackgroundIsVisible(isOpen);
+	};
+
+	useEffect(() => {
+		return () => {
+			setBlurBackgroundIsVisible(false);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-		const toggleDropdown = (isOpen: boolean) => {
-			if (!isOpen && !pairListDropdownIsOpen) return;
+	return (
+		<DropdownPanel
+			isOpen={pairListDropdownIsOpen}
+			handleClose={() => toggleDropdown(false)}
+			onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
+			width="300px"
+			header={
+				<DropdownPanelHeader>
+					<Currency.Pair
+						baseCurrencyKey={base.name}
+						quoteCurrencyKey={quote.name}
+						showIcon={true}
+					/>
+					<MenuArrowDownIcon className="arrow" />
+				</DropdownPanelHeader>
+			}
+			body={
+				<PairListContainer>
+					<SearchContainer>
+						{advancedSearchIsOpen ? (
+							<AdvancedSearch
+								baseCurrencySearch={baseCurrencySearch}
+								onBaseCurrencyChange={(e) => setBaseCurrencySearch(e.target.value)}
+								quoteCurrencySearch={quoteCurrencySearch}
+								onQuoteCurrencyChange={(e) => setQuoteCurrencySearch(e.target.value)}
+								onSwapCurrencies={() => {
+									const baseSearch = baseCurrencySearch;
+									const quoteSearch = quoteCurrencySearch;
 
-			resetSearch();
-			setAdvancedIsSearchOpen(false);
-			setPairListDropdownIsOpen(isOpen);
-			setBlurBackgroundIsVisible(isOpen);
-		};
-
-		useEffect(() => {
-			return () => {
-				setBlurBackgroundIsVisible(false);
-			};
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		return (
-			<DropdownPanel
-				isOpen={pairListDropdownIsOpen}
-				handleClose={() => toggleDropdown(false)}
-				onHeaderClick={() => toggleDropdown(!pairListDropdownIsOpen)}
-				width="300px"
-				header={
-					<DropdownPanelHeader>
-						<Currency.Pair
-							baseCurrencyKey={base.name}
-							quoteCurrencyKey={quote.name}
-							showIcon={true}
-						/>
-						<MenuArrowDownIcon className="arrow" />
-					</DropdownPanelHeader>
-				}
-				body={
-					<PairListContainer>
-						<SearchContainer>
-							{advancedSearchIsOpen ? (
-								<AdvancedSearch
-									baseCurrencySearch={baseCurrencySearch}
-									onBaseCurrencyChange={(e) => setBaseCurrencySearch(e.target.value)}
-									quoteCurrencySearch={quoteCurrencySearch}
-									onQuoteCurrencyChange={(e) => setQuoteCurrencySearch(e.target.value)}
-									onSwapCurrencies={() => {
-										const baseSearch = baseCurrencySearch;
-										const quoteSearch = quoteCurrencySearch;
-
-										setBaseCurrencySearch(quoteSearch);
-										setQuoteCurrencySearch(baseSearch);
-									}}
-									onClose={() => {
-										resetSearch();
-										setAdvancedIsSearchOpen(false);
-									}}
-								/>
-							) : (
-								<SimpleSearch
-									search={search}
-									marketsAssetFilter={marketsAssetFilter}
-									onSearchChange={(e) => setSearch(e.target.value)}
-									onAssetFilterClick={(_, asset) => {
-										resetSearch();
-										setMarketsAssetFilter({ marketsAssetFilter: asset });
-									}}
-									onAdvancedSearchClick={() => {
-										resetSearch();
-										setAdvancedIsSearchOpen(true);
-									}}
-								/>
-							)}
-						</SearchContainer>
-						<MarketsTable
-							markets={filteredMarkets}
-							onTableRowClick={(row: { original: MarketPair }) => {
-								navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
-								toggleDropdown(false);
-							}}
-						/>
-					</PairListContainer>
-				}
-			/>
-		);
-	}
-);
+									setBaseCurrencySearch(quoteSearch);
+									setQuoteCurrencySearch(baseSearch);
+								}}
+								onClose={() => {
+									resetSearch();
+									setAdvancedIsSearchOpen(false);
+								}}
+							/>
+						) : (
+							<SimpleSearch
+								search={search}
+								marketsAssetFilter={marketsAssetFilter}
+								onSearchChange={(e) => setSearch(e.target.value)}
+								onAssetFilterClick={(_, asset) => {
+									resetSearch();
+									setMarketsAssetFilter({ marketsAssetFilter: asset });
+								}}
+								onAdvancedSearchClick={() => {
+									resetSearch();
+									setAdvancedIsSearchOpen(true);
+								}}
+							/>
+						)}
+					</SearchContainer>
+					<MarketsTable
+						markets={filteredMarkets}
+						onTableRowClick={(row: { original: MarketPair }) => {
+							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
+							toggleDropdown(false);
+						}}
+					/>
+				</PairListContainer>
+			}
+		/>
+	);
+};
 
 const PairListContainer = styled.div`
 	height: 100%;

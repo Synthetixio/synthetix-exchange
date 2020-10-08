@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 import snxJSConnector from 'utils/snxJSConnector';
 import { GWEI_UNIT } from 'utils/networkUtils';
@@ -14,37 +14,36 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 import { ButtonPrimary } from 'components/Button';
 import Card from 'components/Card';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-import { HeadingSmall } from 'components/Typography';
+import { DataSmall, HeadingSmall } from 'components/Typography';
 import { getGasInfo } from 'ducks/transaction';
-import { getWalletInfo } from 'ducks/wallet/walletDetails';
-import { createLoan, LOAN_STATUS } from 'ducks/loans/myLoans';
+import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
+import { getWalletBalancesMap } from 'ducks/wallet/walletBalances';
+import { fetchLoans } from 'ducks/loans/myLoans';
 import { getEthRate } from 'ducks/rates';
 
-import Link from 'components/Link';
-
-import { toggleGweiPopup } from 'ducks/ui';
+import LoanWarningModal from '../LoanWarningModal';
 
 import {
 	FormInputRow,
 	FormInputLabel,
 	FormInputLabelSmall,
 	CurrencyKey,
-	FlexDivCentered,
 } from 'shared/commonStyles';
 
-import NetworkInfo from '../NetworkInfo';
+import NetworkInfo from 'components/NetworkInfo/NetworkInfo';
 
 import { TxErrorMessage } from '../commonStyles';
-
-const ETHER_COLLATERAL_BLOG_POST_LINK = 'https://blog.synthetix.io/bug-disclosure/';
+import { getEtherscanTxLink } from 'utils/explorers';
 
 export const CreateLoanCard = ({
-	toggleGweiPopup,
 	gasInfo,
+	networkId,
+	fetchLoans,
 	ethRate,
-	walletInfo: { balances, currentWallet },
-	createLoan,
+	walletInfo: { currentWallet },
+	walletBalance,
 	collateralPair,
+	notify,
 }) => {
 	const { t } = useTranslation();
 
@@ -54,11 +53,16 @@ export const CreateLoanCard = ({
 	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
 	const [collateralAmountErrorMessage, setCollateralAmountErrorMessage] = useState(null);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
+	const [isLoanConfirmationModalOpen, setIsLoanConfirmationModalOpen] = useState(false);
+	const [transactionHash, setTransactionHash] = useState(null);
 
 	const { collateralCurrencyKey, loanCurrencyKey, issuanceRatio, minLoanSize } = collateralPair;
 
-	// ETH collateral is blocked for now
-	// eslint-disable-next-line
+	const onLoanModalConfirmation = () => {
+		setIsLoanConfirmationModalOpen(false);
+		handleSubmit();
+	};
+
 	const handleSubmit = async () => {
 		const {
 			snxJS: { EtherCollateral },
@@ -84,30 +88,25 @@ export const CreateLoanCard = ({
 				gasLimit: updatedGasEstimate,
 			});
 
-			createLoan({
-				loan: {
-					collateralAmount: Number(collateralAmount),
-					loanAmount: Number(loanAmount),
-					timeCreated: Date.now(),
-					timeClosed: 0,
-					feesPayable: 0,
-					currentInterest: 0,
-					status: LOAN_STATUS.WAITING,
-					loanID: null,
-					transactionHash: tx.hash,
-				},
-			});
-			setCollateralAmount('');
-			setLoanAmount('');
+			if (notify) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					setTransactionHash(tx.hash);
+					setCollateralAmount('');
+					setLoanAmount('');
+					fetchLoans();
+					return {
+						onclick: () => window.open(getEtherscanTxLink(networkId, tx.hash), '_blank'),
+					};
+				});
+			}
 		} catch (e) {
 			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
 		}
 	};
 
-	const showGweiPopup = () => toggleGweiPopup(true);
-
-	const collateralCurrencyBalance = getCurrencyKeyBalance(balances, collateralCurrencyKey);
-	const loanCurrencyBalance = getCurrencyKeyBalance(balances, loanCurrencyKey);
+	const collateralCurrencyBalance = getCurrencyKeyBalance(walletBalance, collateralCurrencyKey);
+	const loanCurrencyBalance = getCurrencyKeyBalance(walletBalance, loanCurrencyKey);
 
 	useEffect(() => {
 		setCollateralAmountErrorMessage(null);
@@ -194,15 +193,31 @@ export const CreateLoanCard = ({
 						}}
 					/>
 				</FormInputRow>
-				<NetworkInfo
-					gasPrice={gasInfo.gasPrice}
-					gasLimit={gasLimit}
-					ethRate={ethRate}
-					onEditButtonClick={showGweiPopup}
-				/>
-				<ButtonPrimary disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}>
+				<NetworkInfo gasPrice={gasInfo.gasPrice} gasLimit={gasLimit} ethRate={ethRate} />
+				<ButtonPrimary
+					disabled={!collateralAmount || !loanAmount || !currentWallet || hasError}
+					onClick={() => setIsLoanConfirmationModalOpen(true)}
+				>
 					{t('common.actions.submit')}
 				</ButtonPrimary>
+
+				{transactionHash && (
+					<TxErrorMessage
+						onDismiss={() => setTransactionHash(null)}
+						size="sm"
+						type="success"
+						floating={true}
+					>
+						<StyledLink
+							as="a"
+							target="_blank"
+							href={getEtherscanTxLink(networkId, transactionHash)}
+						>
+							VIEW TRANSACTION RECEIPT
+						</StyledLink>
+					</TxErrorMessage>
+				)}
+
 				{txErrorMessage && (
 					<TxErrorMessage
 						onDismiss={() => setTxErrorMessage(null)}
@@ -213,53 +228,39 @@ export const CreateLoanCard = ({
 						{txErrorMessage}
 					</TxErrorMessage>
 				)}
-				<BlockingOverlay>
-					<PauseMessage>
-						<HeadingSmall>{t('loans.loan-card.create-loan.paused.message')}</HeadingSmall>
-					</PauseMessage>
-					<Link to={ETHER_COLLATERAL_BLOG_POST_LINK} isExternal={true}>
-						<ButtonPrimary size="sm">
-							{t('loans.loan-card.create-loan.paused.button-label')}
-						</ButtonPrimary>
-					</Link>
-				</BlockingOverlay>
 			</Card.Body>
+			<LoanWarningModal
+				isOpen={isLoanConfirmationModalOpen}
+				onClose={() => setIsLoanConfirmationModalOpen(false)}
+				onConfirm={() => onLoanModalConfirmation()}
+			/>
 		</Card>
 	);
 };
 
 CreateLoanCard.propTypes = {
-	toggleGweiPopup: PropTypes.func.isRequired,
 	gasInfo: PropTypes.object,
 	ethRate: PropTypes.number,
 	walletInfo: PropTypes.object,
 	collateralPair: PropTypes.object,
+	walletBalance: PropTypes.object,
 };
 
-const BlockingOverlay = styled(FlexDivCentered)`
-	background-color: ${(props) => props.theme.colors.surfaceL2};
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	left: 0;
-	top: 0;
-	flex-direction: column;
-	justify-content: center;
-`;
-
-const PauseMessage = styled.div`
-	padding-bottom: 30px;
+const StyledLink = styled(DataSmall)`
+	text-decoration: none;
+	color: ${(props) => props.theme.colors.fontPrimary};
 `;
 
 const mapStateToProps = (state) => ({
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	walletInfo: getWalletInfo(state),
+	walletBalance: getWalletBalancesMap(state),
+	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {
-	toggleGweiPopup,
-	createLoan,
+	fetchLoans,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateLoanCard);

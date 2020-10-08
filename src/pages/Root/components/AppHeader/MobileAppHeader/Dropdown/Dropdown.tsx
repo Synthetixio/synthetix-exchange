@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
@@ -9,9 +9,8 @@ type DropdownProps = {
 	children: React.ReactNode;
 };
 
-export const Dropdown: FC<DropdownProps> = memo(({ children, ...rest }) =>
-	ReactDOM.createPortal(<Container {...rest}>{children}</Container>, document.body)
-);
+export const Dropdown: FC<DropdownProps> = ({ children, ...rest }) =>
+	ReactDOM.createPortal(<Container {...rest}>{children}</Container>, document.body);
 
 const Container = styled.div`
 	top: ${APP_HEADER_HEIGHT};

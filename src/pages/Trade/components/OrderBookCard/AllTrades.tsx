@@ -1,60 +1,20 @@
-import React, { FC, memo, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { FC } from 'react';
 
-import {
-	fetchAllTradesRequest,
-	getAllTrades,
-	getIsLoadingAllTrades,
-	getIsLoadedAllTrades,
-} from 'ducks/trades/allTrades';
-
-import { RootState } from 'ducks/types';
-import { HistoricalTrades } from 'ducks/trades/types';
-
-import useInterval from 'shared/hooks/useInterval';
-
+import { useAllTradesQuery } from 'queries/myTrades';
 import TradeHistory from './TradeHistory';
 
-import { REFRESH_INTERVAL } from './constants';
+type AllTradesProps = {};
 
-type StateProps = {
-	trades: HistoricalTrades;
-	isLoading: boolean;
-	isLoaded: boolean;
+const AllTrades: FC<AllTradesProps> = () => {
+	const allTradesQuery = useAllTradesQuery();
+
+	return (
+		<TradeHistory
+			trades={allTradesQuery.data || []}
+			isLoading={allTradesQuery.isLoading && !allTradesQuery.isSuccess}
+			isLoaded={allTradesQuery.isSuccess}
+		/>
+	);
 };
 
-type DispatchProps = {
-	fetchAllTradesRequest: typeof fetchAllTradesRequest;
-};
-
-type AllTradesProps = StateProps & DispatchProps;
-
-const AllTrades: FC<AllTradesProps> = memo(
-	({ fetchAllTradesRequest, trades, isLoading, isLoaded }) => {
-		useEffect(() => {
-			fetchAllTradesRequest();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		useInterval(() => {
-			fetchAllTradesRequest();
-		}, REFRESH_INTERVAL);
-
-		return <TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} />;
-	}
-);
-
-const mapStateToProps = (state: RootState): StateProps => ({
-	trades: getAllTrades(state),
-	isLoaded: getIsLoadedAllTrades(state),
-	isLoading: getIsLoadingAllTrades(state),
-});
-
-const mapDispatchToProps: DispatchProps = {
-	fetchAllTradesRequest,
-};
-
-export default connect<StateProps, DispatchProps, {}, RootState>(
-	mapStateToProps,
-	mapDispatchToProps
-)(AllTrades);
+export default AllTrades;

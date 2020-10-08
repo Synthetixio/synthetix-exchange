@@ -12,7 +12,6 @@ const sliceName = 'ui';
 type UISliceState = {
 	theme: Theme;
 	walletPopupIsVisible: boolean;
-	gweiPopupIsVisible: boolean;
 	fiatCurrency: CurrencyKey;
 	hideSmallValueAssets: boolean;
 	marketsAssetFilter: CurrencyKey;
@@ -23,7 +22,6 @@ type UISliceState = {
 const initialState: UISliceState = {
 	theme: userPrefersDarkTheme ? THEMES.DARK : THEMES.LIGHT,
 	walletPopupIsVisible: false,
-	gweiPopupIsVisible: false,
 	fiatCurrency: FIAT_CURRENCY_MAP.USD,
 	hideSmallValueAssets: false,
 	marketsAssetFilter: SYNTHS_MAP.sUSD,
@@ -41,12 +39,6 @@ export const uiSlice = createSlice({
 		},
 		showWalletPopup: (state) => {
 			state.walletPopupIsVisible = true;
-		},
-		toggleGweiPopup: (state, action: PayloadAction<boolean>) => {
-			state.gweiPopupIsVisible = action.payload;
-		},
-		showGweiPopup: (state) => {
-			state.gweiPopupIsVisible = true;
 		},
 		toggleTheme: (state) => {
 			state.theme = isLightTheme(state.theme) ? THEMES.DARK : THEMES.LIGHT;
@@ -77,8 +69,6 @@ export const {
 	setSynthsCategoryFilter,
 	toggleWalletPopup,
 	showWalletPopup,
-	toggleGweiPopup,
-	showGweiPopup,
 	toggleTheme,
 	setFiatCurrency,
 	toggleHideSmallValueAssets,
@@ -90,7 +80,6 @@ export const getUIState = (state: RootState) => state[sliceName];
 export const getFiatCurrency = (state: RootState) => getUIState(state).fiatCurrency;
 export const getCurrentTheme = (state: RootState) => getUIState(state).theme;
 export const walletPopupIsVisible = (state: RootState) => getUIState(state).walletPopupIsVisible;
-export const gweiPopupIsVisible = (state: RootState) => getUIState(state).gweiPopupIsVisible;
 export const getHideSmallValueAssets = (state: RootState) => getUIState(state).hideSmallValueAssets;
 export const getMarketsAssetFilter = (state: RootState) => getUIState(state).marketsAssetFilter;
 export const getSynthsCategoryFilter = (state: RootState) => getUIState(state).synthsCategoryFilter;

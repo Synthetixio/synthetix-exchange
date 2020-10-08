@@ -1,60 +1,33 @@
-import React, { FC, memo, useEffect } from 'react';
-import { connect } from 'react-redux';
-
-import {
-	fetchMyTradesRequest,
-	getMyTrades,
-	getIsLoadingMyTrades,
-	getIsLoadedMyTrades,
-} from 'ducks/trades/myTrades';
+import React, { FC } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from 'ducks/types';
-import { HistoricalTrades } from 'ducks/trades/types';
-
-import useInterval from 'shared/hooks/useInterval';
-
+import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import TradeHistory from './TradeHistory';
 
-import { REFRESH_INTERVAL } from './constants';
+import { useTradesQuery } from 'queries/myTrades';
 
-type StateProps = {
-	trades: HistoricalTrades;
-	isLoading: boolean;
-	isLoaded: boolean;
-};
-
-type DispatchProps = {
-	fetchMyTradesRequest: typeof fetchMyTradesRequest;
-};
-
-type MyTradesProps = StateProps & DispatchProps;
-
-const MyTrades: FC<MyTradesProps> = memo(
-	({ fetchMyTradesRequest, trades, isLoading, isLoaded }) => {
-		useEffect(() => {
-			fetchMyTradesRequest();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
-
-		useInterval(() => {
-			fetchMyTradesRequest();
-		}, REFRESH_INTERVAL);
-
-		return <TradeHistory trades={trades} isLoading={isLoading} isLoaded={isLoaded} />;
-	}
-);
-
-const mapStateToProps = (state: RootState): StateProps => ({
-	trades: getMyTrades(state),
-	isLoading: getIsLoadingMyTrades(state),
-	isLoaded: getIsLoadedMyTrades(state),
+const mapStateToProps = (state: RootState) => ({
+	walletAddress: getCurrentWalletAddress(state),
 });
 
-const mapDispatchToProps: DispatchProps = {
-	fetchMyTradesRequest,
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type MyTradesProps = PropsFromRedux;
+
+const MyTrades: FC<MyTradesProps> = ({ walletAddress }) => {
+	const tradesQuery = useTradesQuery({ walletAddress: walletAddress || '' });
+
+	return (
+		<TradeHistory
+			trades={tradesQuery.data || []}
+			isLoading={tradesQuery.isLoading}
+			isLoaded={tradesQuery.isSuccess}
+			showSettled={true}
+		/>
+	);
 };
 
-export default connect<StateProps, DispatchProps, {}, RootState>(
-	mapStateToProps,
-	mapDispatchToProps
-)(MyTrades);
+export default connector(MyTrades);

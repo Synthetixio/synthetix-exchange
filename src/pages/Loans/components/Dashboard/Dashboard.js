@@ -8,8 +8,13 @@ import { ReactComponent as ArrowHyperlinkIcon } from 'assets/images/arrow-hyperl
 
 import Card from 'components/Card';
 import { HeadingSmall } from 'components/Typography';
-import { getIsRefreshingLoansContractInfo } from 'ducks/loans/contractInfo';
-import { getIsFetchingWalletBalances } from 'ducks/wallet/walletBalances';
+import {
+	getContract,
+	getContractType,
+	getIsRefreshingLoansContractInfo,
+	setSelectedContractType,
+} from 'ducks/loans/contractInfo';
+import { getIsFetchingWalletBalances, getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getWalletInfo, getNetworkId } from 'ducks/wallet/walletDetails';
 
 import { getCurrencyKeyBalance } from 'utils/balances';
@@ -17,25 +22,33 @@ import { formatPercentage, formatCurrency, formatCurrencyWithKey } from 'utils/f
 
 import { CARD_HEIGHT } from 'constants/ui';
 
+import { Button } from 'components/Button';
+
 import {
 	InfoBox,
 	InfoBoxLabel,
 	InfoBoxValue,
 	CurrencyKey,
 	ExternalLink,
+	FlexDiv,
 } from 'shared/commonStyles';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import Spinner from 'components/Spinner';
 
-import snxJSConnector from 'utils/snxJSConnector';
 import { getEtherscanAddressLink } from 'utils/explorers';
+import { getEthRate } from 'ducks/rates';
 
 export const Dashboard = ({
-	walletInfo: { balances, currentWallet },
+	walletInfo: { currentWallet },
 	collateralPair,
+	walletBalance,
 	isFetchingWalletBalances,
 	isRefreshingLoansContractInfo,
 	networkId,
+	setSelectedContractType,
+	contractType,
+	contract,
+	ethRate,
 }) => {
 	const { t } = useTranslation();
 
@@ -51,10 +64,6 @@ export const Dashboard = ({
 		totalIssuedSynths,
 		lockedCollateralAmount,
 	} = collateralPair;
-
-	const {
-		snxJS: { EtherCollateral },
-	} = snxJSConnector;
 
 	const loanInfoItems = [
 		{
@@ -77,7 +86,7 @@ export const Dashboard = ({
 					components={[<CurrencyKey />]}
 				/>
 			),
-			value: formatCurrency(issueLimit),
+			value: formatCurrency(issueLimit, 0),
 		},
 		{
 			label: (
@@ -88,11 +97,11 @@ export const Dashboard = ({
 				/>
 			),
 
-			value: formatCurrency(totalIssuedSynths),
+			value: formatCurrency(totalIssuedSynths, 0),
 		},
 		{
 			label: t('loans.dashboard.loan-info.min-loan-size'),
-			value: formatCurrencyWithKey(collateralCurrencyKey, minLoanSize),
+			value: formatCurrencyWithKey(collateralCurrencyKey, minLoanSize, 0),
 		},
 		{
 			label: t('loans.dashboard.loan-info.collateral-size'),
@@ -104,19 +113,41 @@ export const Dashboard = ({
 			}),
 			value: formatCurrency(lockedCollateralAmount, 0),
 		},
+		{
+			label: t('common.wallet.eth-value'),
+			value: formatCurrency(ethRate),
+		},
 	];
 
 	return (
 		<>
 			<Card>
 				<Card.Header>
-					<HeadingSmall>
-						{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
-					</HeadingSmall>
+					<>
+						<HeadingSmall>
+							{t('loans.dashboard.title', { currencyKey: collateralCurrencyKey })}
+						</HeadingSmall>
+						<FlexDiv>
+							<StyledButton
+								isActive={contractType === 'sETH'}
+								size="sm"
+								palette="secondary"
+								onClick={() => setSelectedContractType('sETH')}
+							>
+								{t('loans.dashboard.tabs.sETH')}
+							</StyledButton>
+							<StyledButton
+								isActive={contractType === 'sUSD'}
+								size="sm"
+								palette="secondary"
+								onClick={() => setSelectedContractType('sUSD')}
+							>
+								{t('loans.dashboard.tabs.sUSD')}
+							</StyledButton>
+						</FlexDiv>
+					</>
 					{isRefreshingLoansContractInfo && <Spinner size="sm" />}
-					<StyledExternalLink
-						href={getEtherscanAddressLink(networkId, EtherCollateral.contract.address)}
-					>
+					<StyledExternalLink href={getEtherscanAddressLink(networkId, contract.address)}>
 						{t('common.contracts.view')}
 						<StyledArrowHyperlinkIcon width="8" height="8" />
 					</StyledExternalLink>
@@ -152,12 +183,12 @@ export const Dashboard = ({
 						<td style={{ width: '60%' }} />
 						<td>
 							{currentWallet
-								? formatCurrency(getCurrencyKeyBalance(balances, loanCurrencyKey))
+								? formatCurrency(getCurrencyKeyBalance(walletBalance, loanCurrencyKey))
 								: EMPTY_VALUE}
 						</td>
 						<td>
 							{currentWallet
-								? formatCurrency(getCurrencyKeyBalance(balances, collateralCurrencyKey))
+								? formatCurrency(getCurrencyKeyBalance(walletBalance, collateralCurrencyKey))
 								: EMPTY_VALUE}
 						</td>
 					</tr>
@@ -172,7 +203,7 @@ Dashboard.propTypes = {
 	collateralPair: PropTypes.object.isRequired,
 	isFetchingWalletBalances: PropTypes.bool.isRequired,
 	isRefreshingLoansContractInfo: PropTypes.bool.isRequired,
-	networkId: PropTypes.string.isRequired,
+	networkId: PropTypes.number.isRequired,
 };
 
 const StyledExternalLink = styled(ExternalLink)`
@@ -237,11 +268,24 @@ const TableRowHeader = styled.tr`
 	background-color: ${(props) => props.theme.colors.surfaceL3};
 `;
 
+const StyledButton = styled(Button)`
+	margin-right: 8px;
+	text-transform: none;
+`;
+
 const mapStateToProps = (state) => ({
 	networkId: getNetworkId(state),
 	walletInfo: getWalletInfo(state),
+	walletBalance: getWalletBalancesMap(state),
 	isFetchingWalletBalances: getIsFetchingWalletBalances(state),
 	isRefreshingLoansContractInfo: getIsRefreshingLoansContractInfo(state),
+	contractType: getContractType(state),
+	contract: getContract(state),
+	ethRate: getEthRate(state),
 });
 
-export default connect(mapStateToProps, null)(Dashboard);
+const mapDispatchToProps = {
+	setSelectedContractType,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

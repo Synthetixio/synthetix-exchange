@@ -38,6 +38,7 @@ const useGetWallets = () => {
 	const { t } = useTranslation();
 
 	useEffect(() => {
+		let mounted = true;
 		const walletIndex = walletPaginatorIndex * WALLET_PAGE_SIZE;
 		if (availableWallets[walletIndex]) return;
 		setIsLoading(true);
@@ -47,6 +48,7 @@ const useGetWallets = () => {
 					walletIndex,
 					WALLET_PAGE_SIZE
 				);
+
 				if (!nextWalletAddresses) throw new Error(t('modals.wallet.errors.could-not-get-address'));
 
 				const nextWallets = nextWalletAddresses.map((address) => ({
@@ -57,15 +59,15 @@ const useGetWallets = () => {
 						ethBalance: null,
 					},
 				}));
-
-				dispatch(
-					updateWalletReducer({
-						unlocked: true,
-						availableWallets: [...availableWallets, ...nextWallets],
-					})
-				);
-
-				setIsLoading(false);
+				if (mounted) {
+					dispatch(
+						updateWalletReducer({
+							unlocked: true,
+							availableWallets: [...availableWallets, ...nextWallets],
+						})
+					);
+					setIsLoading(false);
+				}
 
 				const nextWalletsWithBalances = [];
 
@@ -79,12 +81,13 @@ const useGetWallets = () => {
 						},
 					});
 				}
-
-				dispatch(
-					updateWalletReducer({
-						availableWallets: [...availableWallets, ...nextWalletsWithBalances],
-					})
-				);
+				if (mounted) {
+					dispatch(
+						updateWalletReducer({
+							availableWallets: [...availableWallets, ...nextWalletsWithBalances],
+						})
+					);
+				}
 			} catch (e) {
 				console.log(e);
 				setError(e.message);
@@ -96,6 +99,10 @@ const useGetWallets = () => {
 			}
 		};
 		getWallets();
+
+		return () => {
+			mounted = false;
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [walletPaginatorIndex, derivationPath]);
 	return { isLoading, getAddressError: error };

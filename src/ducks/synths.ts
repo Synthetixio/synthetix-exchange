@@ -22,7 +22,7 @@ export type SynthDefinition = {
 	asset: string;
 	category: Category;
 	sign: string;
-	desc: string;
+	description: string;
 	aggregator: string;
 	inverted?: {
 		entryPoint: number;
@@ -30,9 +30,10 @@ export type SynthDefinition = {
 		lowerLimit: number;
 	};
 	index?: Array<{
-		symbol: CurrencyKey;
-		name: string;
+		asset: CurrencyKey;
+		description: string;
 		units: number;
+		weight: number;
 	}>;
 	isFrozen?: boolean;
 };

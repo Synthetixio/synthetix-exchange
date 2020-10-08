@@ -1,115 +1,219 @@
-import React, { FC, memo, useContext } from 'react';
-import { connect } from 'react-redux';
+import React, { FC, useContext, useMemo } from 'react';
+import { ConnectedProps, connect } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
 import { AreaChart, XAxis, YAxis, Area, Tooltip } from 'recharts';
 import format from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
 import isNumber from 'lodash/isNumber';
+import find from 'lodash/find';
 
 import RechartsResponsiveContainer from 'components/RechartsResponsiveContainer';
 
 import { DataLarge } from 'components/Typography';
 import Spinner from 'components/Spinner';
 
-import { formatCurrencyWithPrecision } from 'utils/formatters';
+import { formatCurrencyWithSign } from 'utils/formatters';
 
 import { RootState } from 'ducks/types';
-import { SynthPair, SynthDefinitionMap, getAvailableSynthsMap } from 'ducks/synths';
+import { getIsWalletConnected, getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
+import { useTradesQuery } from 'queries/myTrades';
+import { HistoricalTrade } from 'ducks/trades/types';
+import { SynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { PeriodLabel, PERIOD_IN_HOURS } from 'constants/period';
+import { getMarketPairByMC } from 'constants/currency';
 
 import { ChartData } from './types';
 
-type StateProps = {
-	synthsMap: SynthDefinitionMap;
-};
+const mapStateToProps = (state: RootState) => ({
+	synthsMap: getAvailableSynthsMap(state),
+	isWalletConnected: getIsWalletConnected(state),
+	walletAddress: getCurrentWalletAddress(state),
+});
 
-type Props = {
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type ChartProps = PropsFromRedux & {
 	data: ChartData;
 	isLoading: boolean;
 	period: PeriodLabel;
 	synthPair: SynthPair;
+	showTrades: boolean;
 };
-type ChartProps = StateProps & Props;
 
-const Chart: FC<ChartProps> = memo(
-	({ synthPair: { quote }, data, isLoading, period, synthsMap }) => {
-		const { colors } = useContext(ThemeContext);
-		const { t } = useTranslation();
-		const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
+const Chart: FC<ChartProps> = ({
+	isWalletConnected,
+	synthPair: { base, quote },
+	data,
+	isLoading,
+	period,
+	synthsMap,
+	showTrades,
+	walletAddress,
+}) => {
+	const { colors } = useContext(ThemeContext);
+	const { t } = useTranslation();
+	const myTradesQuery = useTradesQuery({ walletAddress: walletAddress || '' });
+	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
 
-		return (
-			<ChartContainer>
-				{isLoading ? <Spinner size="sm" /> : null}
-				{!isLoading && data.rates.length === 0 ? (
-					<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
-				) : null}
-				{!isLoading && data.rates && data.rates.length > 0 ? (
-					<RechartsResponsiveContainer width="100%" height={250}>
-						<AreaChart data={data.rates} margin={{ top: 0, right: -6, left: 10, bottom: 0 }}>
-							<defs>
-								<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-									<stop offset="5%" stopColor={colors.hyperlink} stopOpacity={0.5} />
-									<stop offset="95%" stopColor={colors.hyperlink} stopOpacity={0} />
-								</linearGradient>
-							</defs>
-							<XAxis
-								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
-								dataKey="timestamp"
-								tickFormatter={(val) => {
-									if (!isNumber(val)) {
-										return '';
-									}
-									return period.value > PERIOD_IN_HOURS.ONE_DAY
-										? format(val, 'dd MMM')
-										: format(val, 'h:mma');
-								}}
-								axisLine={false}
-								tickLine={false}
-							/>
-							<YAxis
-								type="number"
-								domain={['auto', 'auto']}
-								tickFormatter={(val) => `${synthSign}${formatCurrencyWithPrecision(val)}`}
-								tick={{ fontSize: '9px', fill: colors.fontTertiary }}
-								orientation="right"
-								axisLine={false}
-								tickLine={false}
-							/>
-							<Area
-								dataKey="rate"
-								stroke={colors.hyperlink}
-								fillOpacity={0.5}
-								fill="url(#colorUv)"
-							/>
-							<Tooltip
-								// @ts-ignore
-								cursor={{ strokeWidth: 1, stroke: colors.fontTertiary }}
-								contentStyle={{
-									border: `none`,
-									borderRadius: '4px',
-									backgroundColor: colors.accentL1,
-								}}
-								itemStyle={{
-									color: colors.fontPrimary,
-									fontSize: '12px',
-									textTransform: 'capitalize',
-								}}
-								labelStyle={{
-									color: colors.fontPrimary,
-									fontSize: '12px',
-								}}
-								formatter={(value: string | number) =>
-									`${synthSign}${formatCurrencyWithPrecision(value)}`
+	const ratesLength = (data?.rates ?? []).length;
+	const tradesLength = ((myTradesQuery != null && myTradesQuery.data) || []).length;
+
+	const dataWithTrades = useMemo(() => {
+		if (tradesLength > 0 && ratesLength > 0 && isWalletConnected && showTrades) {
+			const newRates = data.rates.map((rate, index) => {
+				const trade = find(
+					myTradesQuery != null ? myTradesQuery.data : [],
+					(trade: HistoricalTrade) =>
+						rate.block < trade.block &&
+						index < data.rates.length - 1 &&
+						data.rates[index + 1].block > trade.block &&
+						((base.name === trade.fromCurrencyKey && quote.name === trade.toCurrencyKey) ||
+							(quote.name === trade.fromCurrencyKey && base.name === trade.toCurrencyKey))
+				);
+
+				return trade
+					? {
+							...rate,
+							trade,
+					  }
+					: rate;
+			});
+
+			return {
+				...data,
+				rates: newRates,
+			};
+		}
+		return data;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ratesLength, tradesLength, isWalletConnected, showTrades]);
+
+	const CustomizedDot = ({
+		cx,
+		cy,
+		payload,
+	}: {
+		cx: number;
+		cy: number;
+		payload: {
+			trade?: HistoricalTrade;
+		};
+	}) => {
+		if ((payload.trade?.fromAmount ?? 0) > 0) {
+			const { fromCurrencyKey, toCurrencyKey } = payload.trade as HistoricalTrade;
+			const marketPair = getMarketPairByMC(fromCurrencyKey, toCurrencyKey);
+			const color = marketPair.base.startsWith(toCurrencyKey) ? colors.green : colors.red;
+			return (
+				<svg x={cx - 5} y={cy - 5} width="6" height="15" viewBox="0 0 6 15" fill="none">
+					<rect width="6" height="15" rx="1" fill={color} />
+				</svg>
+			);
+		}
+
+		return null;
+	};
+
+	const CustomTooltip = ({
+		active,
+		label,
+		payload,
+	}: {
+		active: boolean;
+		payload: [
+			{
+				value: number;
+				payload: {
+					trade?: HistoricalTrade;
+				};
+			}
+		];
+		label: Date;
+	}) => {
+		if (active) {
+			const { value, payload: innerPayload } = payload[0];
+			return (
+				<TooltipContentStyle>
+					<LabelStyle>{format(label, 'do MMM yy | HH:mm')}</LabelStyle>
+					<ItemStyle>{`${t('trade.chart-tooltip.price')}: ${formatCurrencyWithSign(
+						synthSign,
+						value
+					)}`}</ItemStyle>
+					{(innerPayload.trade?.fromAmount ?? 0) > 0 ? (
+						<ItemStyle>{`${t('trade.chart-tooltip.trade-total')}: ${formatCurrencyWithSign(
+							synthSign,
+							(innerPayload.trade as HistoricalTrade).fromAmountInUSD
+						)}`}</ItemStyle>
+					) : null}
+				</TooltipContentStyle>
+			);
+		}
+
+		return null;
+	};
+
+	return (
+		<ChartContainer>
+			{isLoading ? <Spinner size="sm" /> : null}
+			{!isLoading && data.rates.length === 0 ? (
+				<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
+			) : null}
+			{!isLoading && dataWithTrades.rates && dataWithTrades.rates.length > 0 ? (
+				<RechartsResponsiveContainer width="100%" height={250}>
+					<AreaChart
+						data={dataWithTrades.rates}
+						margin={{ top: 0, right: -6, left: 10, bottom: 0 }}
+					>
+						<defs>
+							<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+								<stop offset="5%" stopColor={colors.hyperlink} stopOpacity={0.5} />
+								<stop offset="95%" stopColor={colors.hyperlink} stopOpacity={0} />
+							</linearGradient>
+						</defs>
+						<XAxis
+							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+							dataKey="timestamp"
+							tickFormatter={(val) => {
+								if (!isNumber(val)) {
+									return '';
 								}
-								labelFormatter={(label) => format(label, 'do MMM yy | HH:mm')}
-							/>
-						</AreaChart>
-					</RechartsResponsiveContainer>
-				) : null}
-			</ChartContainer>
-		);
-	}
-);
+								return period.value > PERIOD_IN_HOURS.ONE_DAY
+									? format(val, 'dd MMM')
+									: format(val, 'h:mma');
+							}}
+							axisLine={false}
+							tickLine={false}
+						/>
+						<YAxis
+							type="number"
+							domain={['auto', 'auto']}
+							tickFormatter={(val) => `${formatCurrencyWithSign(synthSign, val)}`}
+							tick={{ fontSize: '9px', fill: colors.fontTertiary }}
+							orientation="right"
+							axisLine={false}
+							tickLine={false}
+						/>
+						<Area
+							dataKey="rate"
+							stroke={colors.hyperlink}
+							fillOpacity={0.5}
+							fill="url(#colorUv)"
+							// @ts-ignore
+							dot={<CustomizedDot />}
+						/>
+						<Tooltip
+							content={
+								// @ts-ignore
+								<CustomTooltip />
+							}
+						/>
+					</AreaChart>
+				</RechartsResponsiveContainer>
+			) : null}
+		</ChartContainer>
+	);
+};
 
 const ChartContainer = styled.div`
 	width: 100%;
@@ -123,8 +227,21 @@ const ChartContainer = styled.div`
 	}
 `;
 
-const mapStateToProps = (state: RootState): StateProps => ({
-	synthsMap: getAvailableSynthsMap(state),
-});
+const TooltipContentStyle = styled.div`
+	padding: 5px;
+	border-radius: 4px;
+	background-color: ${(props) => props.theme.colors.accentL1};
+	text-align: center;
+`;
 
-export default connect<StateProps, {}, Props, RootState>(mapStateToProps)(Chart);
+const ItemStyle = styled.div`
+	color: ${(props) => props.theme.colors.fontPrimary};
+	font-size: 12px;
+	padding: 3px 5px;
+`;
+
+const LabelStyle = styled(ItemStyle)`
+	text-transform: capitalize;
+`;
+
+export default connector(Chart);

@@ -1,4 +1,4 @@
-import React, { useState, memo, FC, useEffect, useMemo } from 'react';
+import React, { useState, FC, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled, { ThemeProvider } from 'styled-components';
 import { useTranslation, Trans } from 'react-i18next';
@@ -52,113 +52,108 @@ type SynthsSectionProps = StateProps & DispatchProps;
 
 const MAX_TOP_SYNTHS = 3;
 
-export const SynthsSection: FC<SynthsSectionProps> = memo(
-	({
-		synths,
-		synthsWithRates,
-		filteredSynthsWithRates,
-		fetchHistoricalRatesRequest,
-		synthsCategoryFilter,
-		setSynthsCategoryFilter,
-	}) => {
-		const [assetSearch, setAssetSearch] = useState('');
+export const SynthsSection: FC<SynthsSectionProps> = ({
+	synths,
+	synthsWithRates,
+	filteredSynthsWithRates,
+	fetchHistoricalRatesRequest,
+	synthsCategoryFilter,
+	setSynthsCategoryFilter,
+}) => {
+	const [assetSearch, setAssetSearch] = useState('');
 
-		const { t } = useTranslation();
+	const { t } = useTranslation();
 
-		const currencyKeys = useMemo(() => synths.map((synth) => synth.name), [synths]);
+	const currencyKeys = useMemo(() => synths.map((synth) => synth.name), [synths]);
 
-		useEffect(() => {
-			fetchHistoricalRatesRequest({
-				currencyKeys,
-				periods: ['ONE_DAY'],
-			});
-		}, [fetchHistoricalRatesRequest, currencyKeys]);
+	useEffect(() => {
+		fetchHistoricalRatesRequest({
+			currencyKeys,
+			periods: ['ONE_DAY'],
+		});
+	}, [fetchHistoricalRatesRequest, currencyKeys]);
 
-		useInterval(() => {
-			fetchHistoricalRatesRequest({
-				currencyKeys,
-				periods: ['ONE_DAY'],
-			});
-		}, SYNTHS_REFRESH_INTERVAL_MS);
+	useInterval(() => {
+		fetchHistoricalRatesRequest({
+			currencyKeys,
+			periods: ['ONE_DAY'],
+		});
+	}, SYNTHS_REFRESH_INTERVAL_MS);
 
-		const filteredSynths = useDebouncedMemo(
-			() =>
-				assetSearch
-					? filteredSynthsWithRates.filter(({ name, desc }) => {
-							const assetSearchL = assetSearch.toLowerCase();
+	const filteredSynths = useDebouncedMemo(
+		() =>
+			assetSearch
+				? filteredSynthsWithRates.filter(({ name, description }) => {
+						const assetSearchL = assetSearch.toLowerCase();
 
-							return (
-								name.toLowerCase().includes(assetSearchL) ||
-								desc.toLowerCase().includes(assetSearchL)
-							);
-					  })
-					: filteredSynthsWithRates,
-			[filteredSynthsWithRates, assetSearch],
-			SEARCH_DEBOUNCE_MS
-		);
+						return (
+							name.toLowerCase().includes(assetSearchL) ||
+							description.toLowerCase().includes(assetSearchL)
+						);
+				  })
+				: filteredSynthsWithRates,
+		[filteredSynthsWithRates, assetSearch],
+		SEARCH_DEBOUNCE_MS
+	);
 
-		const topGainersLosersSynths = useMemo(
-			() => [
-				...synthsWithRates.slice(0, MAX_TOP_SYNTHS),
-				...synthsWithRates.slice(-MAX_TOP_SYNTHS),
-			],
-			[synthsWithRates]
-		);
+	const topGainersLosersSynths = useMemo(
+		() => [...synthsWithRates.slice(0, MAX_TOP_SYNTHS), ...synthsWithRates.slice(-MAX_TOP_SYNTHS)],
+		[synthsWithRates]
+	);
 
-		return (
-			<ThemeProvider theme={lightTheme}>
-				<SynthsChartsContent>
-					<SynthsCharts synthsWithRates={topGainersLosersSynths} maxTopSynths={MAX_TOP_SYNTHS} />
-				</SynthsChartsContent>
-				<SynthsTableContainer>
-					<PageContent>
-						<FiltersRow>
-							<CategoryFilters>
+	return (
+		<ThemeProvider theme={lightTheme}>
+			<SynthsChartsContent>
+				<SynthsCharts synthsWithRates={topGainersLosersSynths} maxTopSynths={MAX_TOP_SYNTHS} />
+			</SynthsChartsContent>
+			<SynthsTableContainer>
+				<PageContent>
+					<FiltersRow>
+						<CategoryFilters>
+							<Button
+								size="md"
+								palette="toggle"
+								isActive={synthsCategoryFilter == null}
+								onClick={() => setSynthsCategoryFilter({ category: null })}
+							>
+								{t('common.filters.all')}
+							</Button>
+							{CATEGORY_FILTERS.map((category) => (
 								<Button
 									size="md"
 									palette="toggle"
-									isActive={synthsCategoryFilter == null}
-									onClick={() => setSynthsCategoryFilter({ category: null })}
+									isActive={synthsCategoryFilter === category}
+									onClick={() => setSynthsCategoryFilter({ category })}
+									key={category}
 								>
-									{t('common.filters.all')}
+									{t(`common.currency-category.${category}`)}
 								</Button>
-								{CATEGORY_FILTERS.map((category) => (
-									<Button
-										size="md"
-										palette="toggle"
-										isActive={synthsCategoryFilter === category}
-										onClick={() => setSynthsCategoryFilter({ category })}
-										key={category}
-									>
-										{t(`common.currency-category.${category}`)}
-									</Button>
-								))}
-							</CategoryFilters>
-							<AssetSearchInput
-								onChange={(e) => setAssetSearch(e.target.value)}
-								value={assetSearch}
-							/>
-						</FiltersRow>
-						<SynthsTable
-							synthsWithRates={filteredSynths}
-							noResultsMessage={
-								assetSearch && filteredSynths.length === 0 ? (
-									<NoResultsMessage>
-										<Trans
-											i18nKey="common.search-results.no-results-for-query"
-											values={{ searchQuery: assetSearch }}
-											components={[<Strong />]}
-										/>
-									</NoResultsMessage>
-								) : undefined
-							}
+							))}
+						</CategoryFilters>
+						<AssetSearchInput
+							onChange={(e) => setAssetSearch(e.target.value)}
+							value={assetSearch}
 						/>
-					</PageContent>
-				</SynthsTableContainer>
-			</ThemeProvider>
-		);
-	}
-);
+					</FiltersRow>
+					<SynthsTable
+						synthsWithRates={filteredSynths}
+						noResultsMessage={
+							assetSearch && filteredSynths.length === 0 ? (
+								<NoResultsMessage>
+									<Trans
+										i18nKey="common.search-results.no-results-for-query"
+										values={{ searchQuery: assetSearch }}
+										components={[<Strong />]}
+									/>
+								</NoResultsMessage>
+							) : undefined
+						}
+					/>
+				</PageContent>
+			</SynthsTableContainer>
+		</ThemeProvider>
+	);
+};
 
 const SynthsTableContainer = styled.div`
 	background-color: ${({ theme }) => theme.colors.white};

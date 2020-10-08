@@ -29,6 +29,8 @@ import { TableOverflowContainer } from 'shared/commonStyles';
 
 import { mockRates } from 'pages/Synths/mockData';
 import { bodyCSS } from 'components/Typography/General';
+import { SnowflakeCircle } from 'components/Icons';
+import Margin from 'components/Margin';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -71,14 +73,21 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 								Cell: (
 									cellProps: CellProps<SynthDefinitionWithRates, SynthDefinitionWithRates['name']>
 								) => (
-									<StyledCurrencyName
-										currencyKey={cellProps.cell.value}
-										currencyDesc={cellProps.row.original.desc}
-										showIcon={true}
-										iconProps={{ width: '24px', height: '24px' }}
-									/>
+									<>
+										<StyledCurrencyName
+											currencyKey={cellProps.cell.value}
+											currencyDesc={cellProps.row.original.description}
+											showIcon={true}
+											iconProps={{ width: '24px', height: '24px' }}
+										/>
+										{cellProps.row.original.isFrozen ? (
+											<Margin left="10px" right="10px">
+												<SnowflakeCircle currencyKey={cellProps.row.original.name} />
+											</Margin>
+										) : null}
+									</>
 								),
-								width: 200,
+								width: 220,
 								sortable: true,
 							},
 							{
@@ -102,21 +111,15 @@ export const SynthsTable: FC<SynthsTableProps> = memo(
 							{
 								Header: <>{t('synths.home.table.24h-change-col')}</>,
 								sortType: 'basic',
+								accessor: (originalRow: any) =>
+									get(originalRow.historicalRates, 'ONE_DAY.data.change', null),
 								id: '24change-col',
-								Cell: (cellProps: CellProps<SynthDefinitionWithRates>) => {
-									const change: number | null = get(
-										cellProps.row.original.historicalRates,
-										'ONE_DAY.data.change',
-										null
-									);
-
-									return change == null ? (
+								Cell: (cellProps: CellProps<SynthDefinitionWithRates, number | null>) =>
+									cellProps.cell.value == null ? (
 										<span>{EMPTY_VALUE}</span>
 									) : (
-										<ChangePercent isLabel={true} value={change} />
-									);
-								},
-
+										<ChangePercent isLabel={true} value={cellProps.cell.value} />
+									),
 								sortable: true,
 								width: 100,
 							},
@@ -208,6 +211,9 @@ const StyledTable = styled(Table)`
 
 const StyledCurrencyName = styled(Currency.Name)`
 	${bodyCSS};
+	.currency-desc {
+		max-width: 180px;
+	}
 `;
 
 const StyledPopover = styled(Popover)`

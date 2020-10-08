@@ -42,12 +42,10 @@ export const getPhaseAndEndDate = (
 		};
 	}
 
-	// TODO: need to check if this is correct
-
 	return {
 		phase: 'expiry',
 		timeRemaining: expiryDate,
 	};
 };
 
-export const PHASES = ['bidding', 'trading', 'maturity'] as Phase[];
+export const PHASES = ['bidding', 'trading', 'maturity', 'expiry'] as Phase[];

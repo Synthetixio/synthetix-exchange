@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
@@ -6,7 +6,7 @@ import { headingH2CSS } from 'components/Typography/Heading';
 import { media } from 'shared/media';
 import { darkTheme } from 'styles/theme';
 
-export const Hero = memo(() => {
+export const Hero = () => {
 	const { t } = useTranslation();
 
 	return (
@@ -17,7 +17,7 @@ export const Hero = memo(() => {
 			</Content>
 		</Container>
 	);
-});
+};
 
 const Container = styled.div`
 	width: 100%;

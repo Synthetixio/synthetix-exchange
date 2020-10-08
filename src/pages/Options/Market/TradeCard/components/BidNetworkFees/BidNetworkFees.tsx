@@ -1,15 +1,21 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import Tooltip from '@material-ui/core/Tooltip';
 
-import { TextButton, FlexDivRow, GridDivRow, FlexDivCentered, FlexDiv } from 'shared/commonStyles';
+import {
+	FlexDivRow,
+	GridDivRow,
+	FlexDivCentered,
+	FlexDiv,
+	QuestionMarkIcon,
+} from 'shared/commonStyles';
 import { DataSmall } from 'components/Typography';
 
 import { formatCurrencyWithSign, formatPercentage } from 'utils/formatters';
 import { getTransactionPrice } from 'utils/networkUtils';
 
-import { toggleGweiPopup } from 'ducks/ui';
 import { getEthRate, getRatesExchangeRates } from 'ducks/rates';
 import { getGasInfo } from 'ducks/transaction';
 import { RootState } from 'ducks/types';
@@ -18,8 +24,9 @@ import { OptionsTransaction } from 'pages/Options/types';
 import { USD_SIGN } from 'constants/currency';
 
 import { formDataCSS } from 'components/Typography/Form';
-import NetworkInfoTooltip from 'pages/Trade/components/CreateOrderCard/NetworkInfoTooltip';
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
+
+import SelectGasMenu from 'pages/shared/components/SelectGasMenu';
 
 const mapStateToProps = (state: RootState) => ({
 	exchangeRates: getRatesExchangeRates(state),
@@ -27,11 +34,7 @@ const mapStateToProps = (state: RootState) => ({
 	ethRate: getEthRate(state),
 });
 
-const mapDispatchToProps = {
-	toggleGweiPopup,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -43,68 +46,67 @@ type NetworkFeesProps = PropsFromRedux & {
 	amount: string | number;
 };
 
-const NetworkFees: FC<NetworkFeesProps> = memo(
-	({ className, toggleGweiPopup, gasInfo, ethRate, gasLimit, fees, type, amount }) => {
-		const { t } = useTranslation();
+const NetworkFees: FC<NetworkFeesProps> = ({
+	className,
+	gasInfo,
+	ethRate,
+	gasLimit,
+	fees,
+	type,
+	amount,
+}) => {
+	const { t } = useTranslation();
 
-		const { gasPrice } = gasInfo;
-		const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
-		const bidOrRefundFee = fees
-			? type === 'bid'
-				? fees.creatorFee + fees.poolFee
-				: fees.refundFee
-			: 0;
+	const { gasPrice } = gasInfo;
+	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
+	const bidOrRefundFee = fees
+		? type === 'bid'
+			? fees.creatorFee + fees.poolFee
+			: fees.refundFee
+		: 0;
 
-		const totalCost = networkFee + bidOrRefundFee * Number(amount);
+	const totalCost = networkFee + bidOrRefundFee * Number(amount);
 
-		const getTooltipBody = () => (
-			<TooltipContent>
-				<TooltipContentRow>
-					<StyledFlexDiv>
-						<TooltipFeeBlock>
-							<TooltipLabel>
-								{t(`options.market.trade-card.bidding.common.${type}-fee`)}
-							</TooltipLabel>
-							<TooltipLabel>{`(${formatPercentage(bidOrRefundFee, 0)})`}</TooltipLabel>
-						</TooltipFeeBlock>
-						<TooltipLabel>
-							{formatCurrencyWithSign(USD_SIGN, bidOrRefundFee * Number(amount))}
-						</TooltipLabel>
-					</StyledFlexDiv>
-				</TooltipContentRow>
-				<TooltipContentRow>
-					<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
-					<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, networkFee)}</TooltipLabel>
-				</TooltipContentRow>
-			</TooltipContent>
-		);
+	const getTooltipBody = () => (
+		<TooltipContent>
+			<TooltipContentRow>
+				<StyledFlexDiv>
+					<TooltipFeeBlock>
+						<TooltipLabel>{t(`options.market.trade-card.bidding.common.${type}-fee`)}</TooltipLabel>
+						<TooltipLabel>{`(${formatPercentage(bidOrRefundFee, 0)})`}</TooltipLabel>
+					</TooltipFeeBlock>
+					<TooltipLabel>
+						{formatCurrencyWithSign(USD_SIGN, bidOrRefundFee * Number(amount))}
+					</TooltipLabel>
+				</StyledFlexDiv>
+			</TooltipContentRow>
+			<TooltipContentRow>
+				<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
+				<TooltipLabel>{formatCurrencyWithSign(USD_SIGN, networkFee)}</TooltipLabel>
+			</TooltipContentRow>
+		</TooltipContent>
+	);
 
-		return (
-			<Container className={className}>
-				<FlexDivRow>
-					<FlexDivCentered>
-						{t(`options.market.trade-card.bidding.common.${type}-fee`)}
-						<NetworkInfoTooltip title={getTooltipBody()}>
-							<QuestionMarkIcon>
-								<QuestionMarkStyled />
-							</QuestionMarkIcon>
-						</NetworkInfoTooltip>
-					</FlexDivCentered>
-					<div>{formatCurrencyWithSign(USD_SIGN, totalCost)}</div>
-				</FlexDivRow>
-				<FlexDivRow>
-					<div>{t('common.gas-price-gwei')}</div>
-					<div>
-						{gasPrice || 0}
-						<ButtonEdit onClick={() => toggleGweiPopup(true)}>
-							{t('common.actions.edit')}
-						</ButtonEdit>
-					</div>
-				</FlexDivRow>
-			</Container>
-		);
-	}
-);
+	return (
+		<Container className={className}>
+			<FlexDivRow>
+				<FlexDivCentered>
+					{t(`options.market.trade-card.bidding.common.${type}-fee`)}
+					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
+						<QuestionMarkIcon>
+							<QuestionMark />
+						</QuestionMarkIcon>
+					</Tooltip>
+				</FlexDivCentered>
+				<div>{formatCurrencyWithSign(USD_SIGN, totalCost)}</div>
+			</FlexDivRow>
+			<FlexDivRow>
+				<div>{t('common.gas-price-gwei')}</div>
+				<SelectGasMenu gasPrice={gasPrice} addPadding={true} />
+			</FlexDivRow>
+		</Container>
+	);
+};
 
 export const Container = styled(GridDivRow)`
 	${formDataCSS};
@@ -114,31 +116,9 @@ export const Container = styled(GridDivRow)`
 	padding-bottom: 16px;
 `;
 
-export const ButtonEdit = styled(TextButton)`
-	${formDataCSS};
-	margin-left: 10px;
-	color: ${(props) => props.theme.colors.buttonHover};
-	text-transform: uppercase;
-`;
-
-const QuestionMarkIcon = styled.div`
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 50%;
-	width: 12px;
-	height: 12px;
-	background-color: ${(props) => props.theme.colors.accentL1};
-	margin-left: 4px;
-`;
-
-const QuestionMarkStyled = styled(QuestionMark)`
-	height: 8px;
-`;
-
 const TooltipContent = styled.div`
 	width: 200px;
+	padding: 2px;
 	& > * + * {
 		margin-top: 8px;
 	}

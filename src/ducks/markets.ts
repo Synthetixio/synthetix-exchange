@@ -11,10 +11,32 @@ import { PERIOD_IN_HOURS } from 'constants/period';
 import { RateUpdates } from 'constants/rates';
 import { getAvailableMarketNames, CurrencyKey } from 'constants/currency';
 
-import { fetchSynthRateUpdates, fetchSynthVolumeInUSD } from 'services/rates/rates';
+import { fetchSynthRateUpdates, fetchExchanges } from 'services/rates/rates';
+import { calculateTotalVolumeForExchanges } from 'services/rates/utils';
 
 import { RootState } from './types';
 import { getMarketsAssetFilter } from './ui';
+
+export type SynthExchange = {
+	block: number;
+	date: Date;
+	feesInUSD: number;
+	fromAddress: string;
+	fromAmount: number;
+	fromAmountInUSD: number;
+	fromCurrencyKey: CurrencyKey;
+	fromCurrencyKeyBytes: string;
+	gasPrice: number;
+	hash: string;
+	timestamp: number;
+	toAddress: string;
+	toAmount: number;
+	toAmountInUSD: number;
+	toCurrencyKey: CurrencyKey;
+	toCurrencyKeyBytes: string;
+};
+
+export type SynthExchanges = SynthExchange[];
 
 export type BaseMarketPair = {
 	pair: string;
@@ -149,13 +171,13 @@ export const getOrderedMarkets = createSelector(
 const { fetchMarketsRequest, fetchMarketSuccess, fetchMarketsFailure } = marketsSlice.actions;
 
 // @ts-ignore
-function* fetchMarket(marketPair: BaseMarketPair) {
+function* fetchMarket(marketPair: BaseMarketPair, period: number, exchanges: SynthExchanges) {
 	const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;
 
-	const [rates24H, volume24H] = yield all([
-		fetchSynthRateUpdates(baseCurrencyKey, quoteCurrencyKey, PERIOD_IN_HOURS.ONE_DAY),
-		fetchSynthVolumeInUSD(baseCurrencyKey, quoteCurrencyKey, PERIOD_IN_HOURS.ONE_DAY),
-	]);
+	const rates24H = yield fetchSynthRateUpdates(baseCurrencyKey, quoteCurrencyKey, period);
+	const volume24H: number | null = exchanges
+		? calculateTotalVolumeForExchanges(baseCurrencyKey, quoteCurrencyKey, exchanges)
+		: null;
 
 	const market = {
 		rates: rates24H.rates,
@@ -176,9 +198,12 @@ function* fetchMarkets(
 	}>
 ) {
 	const { pairs: marketPairs } = action.payload;
+	// exchanges are calculated once for each period, and can be used for all the markets.
+	const period = PERIOD_IN_HOURS.ONE_DAY;
+	const exchanges = yield fetchExchanges(period) as SynthExchanges;
 
 	try {
-		yield all(marketPairs.map((marketPair) => fetchMarket(marketPair)));
+		yield all(marketPairs.map((marketPair) => fetchMarket(marketPair, period, exchanges)));
 	} catch (e) {
 		yield put(fetchMarketsFailure({ error: e.message }));
 	}

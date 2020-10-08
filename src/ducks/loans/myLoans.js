@@ -1,9 +1,12 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-import merge from 'lodash/merge';
-
+import keyBy from 'lodash/keyBy';
 import snxJSConnector from '../../utils/snxJSConnector';
 import { getWalletInfo } from '../wallet/walletDetails';
 import { bigNumberFormatter, toJSTimestamp } from '../../utils/formatters';
+import { getEthRate } from 'ducks/rates';
+import { pageResults } from 'synthetix-data';
+
+const loansGraph = 'https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix-loans';
 
 export const LOAN_STATUS = {
 	OPEN: 'open',
@@ -35,35 +38,22 @@ export const myLoansSlice = createSlice({
 			state.isRefreshing = false;
 		},
 		fetchLoansSuccess: (state, action) => {
-			state.loans = merge(state.loans, action.payload.loans);
+			state.loans = action.payload.loans;
 			state.isLoading = false;
 			state.isRefreshing = false;
 			state.isLoaded = true;
 		},
 		createLoan: (state, action) => {
 			const { loan } = action.payload;
-
 			// There is no loanID when creating a loan, so we are using the tx hash as key
 			state.loans[loan.transactionHash] = loan;
 		},
 		updateLoan: (state, action) => {
-			const { loanID, transactionHash, loanInfo } = action.payload;
-
-			const loanKey = loanID || transactionHash;
-			const loan = state.loans[loanKey];
+			const { loanID, loanInfo, loanType } = action.payload;
+			const loan = state.loans[`${loanID}-${loanType}`];
 
 			if (loan != null) {
-				state.loans[loanKey] = { ...loan, ...loanInfo };
-			}
-		},
-		swapTxHashWithLoanID: (state, action) => {
-			const { loanID, transactionHash } = action.payload;
-
-			const loan = state.loans[transactionHash];
-
-			if (loan != null) {
-				state.loans[loanID] = state.loans[transactionHash];
-				delete state.loans[transactionHash];
+				state.loans[`${loanID}-${loanType}`] = { ...loan, ...loanInfo };
 			}
 		},
 	},
@@ -81,52 +71,129 @@ export const getMyLoans = createSelector(getMyLoansMap, (loansMap) => Object.val
 const {
 	updateLoan,
 	createLoan,
-	swapTxHashWithLoanID,
 	fetchLoansRequest,
 	fetchLoansSuccess,
 	fetchLoansFailure,
 } = myLoansSlice.actions;
 
+const fetchPartialLiquidations = async (loanId) => {
+	const partialLiquidations = await pageResults({
+		api: loansGraph,
+		query: {
+			entity: 'loanPartiallyLiquidateds',
+			selection: {
+				where: {
+					loanId: `\\"${loanId}\\"`,
+				},
+			},
+			properties: [
+				'account',
+				'liquidatedAmount',
+				'liquidator',
+				'liquidatedCollateral',
+				'loanId',
+				'id',
+			],
+		},
+	});
+
+	const mappedPartialLiquidations = partialLiquidations.map((partial) => {
+		const liquidatedCollateral = bigNumberFormatter(partial.liquidatedCollateral);
+		const penaltyAmount = liquidatedCollateral * 0.1;
+		const parsedTx = partial.id.split('-')[0];
+		return {
+			txHash: parsedTx,
+			liquidator: partial.liquidator,
+			liquidatedAmount: bigNumberFormatter(partial.liquidatedAmount),
+			liquidatedCollateral: liquidatedCollateral,
+			penaltyAmount: penaltyAmount,
+			loanId: Number(partial.loanID),
+		};
+	});
+
+	return mappedPartialLiquidations;
+};
+
 export const fetchLoans = () => async (dispatch, getState) => {
 	const {
-		snxJS: { EtherCollateral, contractSettings },
+		snxJS: { EtherCollateral, EtherCollateralsUSD },
 	} = snxJSConnector;
 
 	const state = getState();
+	const ethRate = getEthRate(state);
 	const walletInfo = getWalletInfo(state);
+
+	const { contractType } = state.loans.contractInfo;
+
+	let contract = contractType === 'sETH' ? EtherCollateral.contract : EtherCollateralsUSD.contract;
 
 	dispatch(fetchLoansRequest());
 
 	try {
-		const filter = {
-			fromBlock: 0,
-			toBlock: 9e9,
-			...EtherCollateral.contract.filters.LoanCreated(walletInfo.currentWallet),
-		};
-		const events = await contractSettings.provider.getLogs(filter);
-		const loanIDs = events
-			.map((log) => EtherCollateral.contract.interface.parseLog(log))
-			.map((event) => Number(event.values.loanID));
+		let loansResponse = await pageResults({
+			api: loansGraph,
+			query: {
+				entity: 'loans',
+				selection: {
+					where: {
+						account: `\\"${walletInfo.currentWallet}\\"`,
+						collateralMinted: `\\"${contractType}\\"`,
+					},
+				},
+				properties: [
+					'account',
+					'amount',
+					'id',
+					'isOpen',
+					'hasPartialLiquidations',
+					'createdAt',
+					'closedAt',
+					'txHash',
+				],
+			},
+		});
 
-		const loans = {};
+		const loans = loansResponse.map(async (loan) => {
+			const id = Number(loan.id);
+			const loanMetaData = await contract.getLoan(loan.account, id);
+			const currentInterest = bigNumberFormatter(
+				loanMetaData.interest ?? loanMetaData.accruedInterest
+			);
+			const loanAmount = bigNumberFormatter(loan.amount);
+			const collateralAmount = bigNumberFormatter(loanMetaData.collateralAmount);
+			const cRatio = ((ethRate * collateralAmount) / (loanAmount + currentInterest)) * 100;
+			const timeCreated = toJSTimestamp(loan.createdAt);
+			const timeClosed = toJSTimestamp(loan.closedAt);
+			const totalFees = bigNumberFormatter(loanMetaData.totalFees);
 
-		for (const loanID of loanIDs) {
-			const loan = await EtherCollateral.getLoan(walletInfo.currentWallet, loanID);
-			const timeClosed = toJSTimestamp(loan.timeClosed);
+			let partialLiquidations = [];
+			if (loan.hasPartialLiquidations) {
+				partialLiquidations = await fetchPartialLiquidations(id);
+			}
 
-			loans[loanID] = {
-				collateralAmount: bigNumberFormatter(loan.collateralAmount),
-				loanAmount: bigNumberFormatter(loan.loanAmount),
-				timeCreated: toJSTimestamp(loan.timeCreated),
-				loanID,
+			return {
+				collateralAmount: collateralAmount,
+				loanAmount: loanAmount,
+				timeCreated: timeCreated,
 				timeClosed,
-				feesPayable: bigNumberFormatter(loan.totalFees),
-				currentInterest: bigNumberFormatter(loan.interest),
-				status: timeClosed > 0 ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
-				transactionHash: null,
+				loanID: id,
+				feesPayable: totalFees,
+				currentInterest: currentInterest,
+				status: !loan.isOpen ? LOAN_STATUS.CLOSED : LOAN_STATUS.OPEN,
+				cRatio: cRatio,
+				loanType: contractType,
+				txHash: loan.txHash,
+				partialLiquidations: partialLiquidations,
 			};
-		}
-		dispatch(fetchLoansSuccess({ loans }));
+		});
+
+		const promiseLoansResolved = await Promise.all(loans);
+
+		const objectLoans = keyBy(promiseLoansResolved, (loan) => {
+			return `${loan.loanID}-${loan.loanType}`;
+		});
+
+		dispatch(fetchLoansSuccess({ loans: objectLoans }));
 	} catch (e) {
 		dispatch(fetchLoansFailure({ error: e.message }));
 	}
@@ -134,4 +201,4 @@ export const fetchLoans = () => async (dispatch, getState) => {
 
 export default myLoansSlice.reducer;
 
-export { updateLoan, createLoan, swapTxHashWithLoanID };
+export { updateLoan, createLoan };
