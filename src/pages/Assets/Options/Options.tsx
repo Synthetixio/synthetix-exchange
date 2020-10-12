@@ -43,7 +43,7 @@ const Options: FC<OptionsProps> = ({
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 
 	const marketsQuery = useQuery<OptionsMarkets, any>(QUERY_KEYS.BinaryOptions.Markets, () =>
-		snxData.binaryOptions.markets()
+		snxData.binaryOptions.markets({ max: Infinity })
 	);
 
 	const userBidsMarketsQuery = useQuery<string[], any>(
