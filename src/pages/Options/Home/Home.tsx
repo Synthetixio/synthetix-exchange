@@ -39,7 +39,7 @@ const MAX_HOT_MARKETS = 4;
 
 const Home: FC<HomeProps> = ({ synthsMap }) => {
 	const marketsQuery = useQuery<OptionsMarkets, any>(QUERY_KEYS.BinaryOptions.Markets, () =>
-		snxData.binaryOptions.markets()
+		snxData.binaryOptions.markets({ max: Infinity })
 	);
 
 	const optionsMarkets = useMemo(
