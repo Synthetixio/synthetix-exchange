@@ -68,13 +68,9 @@ export const CloseLoanCard = ({
 		try {
 			const loanIDStr = loanID.toString();
 
-			const gasEstimate = await contract.estimate.closeLoan(loanIDStr);
-			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-			setLocalGasLimit(updatedGasEstimate);
-
 			const tx = await contract.closeLoan(loanIDStr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: updatedGasEstimate,
+				gasLimit: 600000,
 			});
 
 			if (notify) {
