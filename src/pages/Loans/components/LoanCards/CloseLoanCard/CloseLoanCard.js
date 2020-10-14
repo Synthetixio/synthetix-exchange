@@ -5,7 +5,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import { GWEI_UNIT } from 'utils/networkUtils';
-import { normalizeGasLimit } from 'utils/transactions';
 
 import { getGasInfo } from 'ducks/transaction';
 import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
@@ -40,7 +39,7 @@ export const CloseLoanCard = ({
 }) => {
 	const { t } = useTranslation();
 
-	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
+	const [gasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [transactionHash, setTransactionHash] = useState(null);
 
@@ -68,13 +67,9 @@ export const CloseLoanCard = ({
 		try {
 			const loanIDStr = loanID.toString();
 
-			const gasEstimate = await contract.estimate.closeLoan(loanIDStr);
-			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-			setLocalGasLimit(updatedGasEstimate);
-
 			const tx = await contract.closeLoan(loanIDStr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: updatedGasEstimate,
+				gasLimit: 600000,
 			});
 
 			if (notify) {
