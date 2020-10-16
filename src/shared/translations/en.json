@@ -562,7 +562,8 @@
 				"min-susd": "Min sUSD required to close loan"
 			},
 			"errors": {
-				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan"
+				"min-loan-size": "You need at least {{minLoanSize}} {{currencyKey}} to create a loan",
+				"insufficient-balance": "You do not have enough {{currencyKey}} to close the loan"
 			}
 		},
 		"modal": {
