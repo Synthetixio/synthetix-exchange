@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ export const CloseLoanCard = ({
 	isInteractive = true,
 	selectedLoan,
 	walletInfo: { currentWallet },
+	walletBalance,
 	collateralPair,
 	contract,
 	contractType,
@@ -58,6 +59,20 @@ export const CloseLoanCard = ({
 		loanType = selectedLoan.loanType;
 		minimumAmountToClose = loanAmount + currentInterest;
 	}
+
+	useEffect(() => {
+		if (walletBalance) {
+			const { synths } = walletBalance;
+			setTxErrorMessage(null);
+			if (synths.balances[contractType].balance < minimumAmountToClose) {
+				setTxErrorMessage(
+					t('loans.loan-card.errors.insufficient-balance', {
+						currencyKey: contractType,
+					})
+				);
+			}
+		}
+	}, [walletBalance, minimumAmountToClose, contractType, t]);
 
 	const { collateralCurrencyKey } = collateralPair;
 
