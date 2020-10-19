@@ -52,35 +52,27 @@ const Margin = styled.div<MarginProps>`
 			`;
 		}
 		return css`
-      ${
-				top != null
-					? css`
-							margin-top: ${top};
-					  `
-					: css``
-			}
-      ${
-				left != null
-					? css`
-							margin-left: ${left};
-					  `
-					: css``
-			}
-      ${
-				right != null
-					? css`
-							margin-right: ${right};
-					  `
-					: css``
-			}
-      ${
-				bottom != null
-					? css`
-							margin-bottom: ${bottom};
-					  `
-					: css``
-			}
-      `;
+			${top != null
+				? css`
+						margin-top: ${top};
+				  `
+				: css``}
+			${left != null
+				? css`
+						margin-left: ${left};
+				  `
+				: css``}
+      ${right != null
+				? css`
+						margin-right: ${right};
+				  `
+				: css``}
+      ${bottom != null
+				? css`
+						margin-bottom: ${bottom};
+				  `
+				: css``}
+		`;
 	}}
 `;
 

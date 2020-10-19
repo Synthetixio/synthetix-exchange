@@ -122,7 +122,7 @@ export const Message = styled(FlexDivCentered)<MessageProps>`
 	border-radius: 1px;
 	transition: opacity 0.2s ease-out;
 	width: 100%;
-	
+
 	${(props) =>
 		props.size === 'sm'
 			? css`
@@ -132,7 +132,7 @@ export const Message = styled(FlexDivCentered)<MessageProps>`
 			: css`
 					font-size: 13px;
 					padding: 11px 10px;
-			  `}		
+			  `}
 
 	${(props) =>
 		props.floating &&

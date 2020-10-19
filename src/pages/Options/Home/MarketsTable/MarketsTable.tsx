@@ -211,8 +211,8 @@ const Shorts = styled.span<{ isLabel: boolean }>`
 `;
 
 const PhaseDiv = styled.div<{ phase: Phase; isLabel: boolean }>`
-  border-radius: 2px;
-  padding: 5px 8px;
+	border-radius: 2px;
+	padding: 5px 8px;
 	text-transform: uppercase;
 
 	color: ${darkTheme.colors.accentL1};
@@ -227,15 +227,15 @@ const PhaseDiv = styled.div<{ phase: Phase; isLabel: boolean }>`
 			background-color: #9fe3d5;
 		`}
     ${(props) =>
-			props.phase === 'maturity' &&
-			css`
-				background-color: #c5d5ff;
-			`}
+		props.phase === 'maturity' &&
+		css`
+			background-color: #c5d5ff;
+		`}
 		${(props) =>
-			props.phase === 'expiry' &&
-			css`
-				background-color: #f5607066;
-			`}
+		props.phase === 'expiry' &&
+		css`
+			background-color: #f5607066;
+		`}
 	${(props) =>
 		!props.isLabel &&
 		css`
