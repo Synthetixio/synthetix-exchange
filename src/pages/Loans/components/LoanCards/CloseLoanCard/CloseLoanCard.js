@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import { GWEI_UNIT } from 'utils/networkUtils';
-import { normalizeGasLimit } from 'utils/transactions';
 
 import { getGasInfo } from 'ducks/transaction';
 import { getNetworkId, getWalletInfo } from 'ducks/wallet/walletDetails';
@@ -33,6 +32,7 @@ export const CloseLoanCard = ({
 	isInteractive = true,
 	selectedLoan,
 	walletInfo: { currentWallet },
+	walletBalance,
 	collateralPair,
 	contract,
 	contractType,
@@ -40,7 +40,7 @@ export const CloseLoanCard = ({
 }) => {
 	const { t } = useTranslation();
 
-	const [gasLimit, setLocalGasLimit] = useState(gasInfo.gasLimit);
+	const [gasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState(null);
 	const [transactionHash, setTransactionHash] = useState(null);
 
@@ -60,6 +60,20 @@ export const CloseLoanCard = ({
 		minimumAmountToClose = loanAmount + currentInterest;
 	}
 
+	useEffect(() => {
+		if (walletBalance) {
+			const { synths } = walletBalance;
+			setTxErrorMessage(null);
+			if (synths.balances[contractType].balance < minimumAmountToClose) {
+				setTxErrorMessage(
+					t('loans.loan-card.errors.insufficient-balance', {
+						currencyKey: contractType,
+					})
+				);
+			}
+		}
+	}, [walletBalance, minimumAmountToClose, contractType, t]);
+
 	const { collateralCurrencyKey } = collateralPair;
 
 	const handleSubmit = async () => {
@@ -68,13 +82,9 @@ export const CloseLoanCard = ({
 		try {
 			const loanIDStr = loanID.toString();
 
-			const gasEstimate = await contract.estimate.closeLoan(loanIDStr);
-			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
-			setLocalGasLimit(updatedGasEstimate);
-
 			const tx = await contract.closeLoan(loanIDStr, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: updatedGasEstimate,
+				gasLimit: 600000,
 			});
 
 			if (notify) {

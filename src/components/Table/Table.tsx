@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { FC, useMemo, DependencyList } from 'react';
 import styled, { css } from 'styled-components';
 import { useTable, useFlexLayout, useSortBy, Column, Row } from 'react-table';
@@ -187,32 +188,32 @@ const ReactTable = styled.div<{ palette: TablePalette }>`
 			}
 		`}
 
-${(props) =>
-	props.palette === 'striped' &&
-	css`
-		${TableBody} {
-			max-height: calc(100% - 48px);
-		}
-		${TableCell} {
-			color: ${(props) => props.theme.colors.fontPrimary};
-			font-size: 12px;
-			height: 48px;
-		}
-		${TableRow} {
-			background-color: ${(props) => props.theme.colors.surfaceL3};
-			&:nth-child(odd) {
-				background-color: ${(props) => props.theme.colors.surfaceL2};
+	${(props) =>
+		props.palette === 'striped' &&
+		css`
+			${TableBody} {
+				max-height: calc(100% - 48px);
 			}
-		}
-		${TableCellHead} {
-			font-family: ${(props) => props.theme.fonts.medium};
-			color: ${(props) => props.theme.colors.fontTertiary};
-			background-color: ${(props) => props.theme.colors.surfaceL3};
-		}
-		${TableBodyRow} {
-			background-color: ${(props) => props.theme.colors.surfaceL3};
-		}
-	`}
+			${TableCell} {
+				color: ${(props) => props.theme.colors.fontPrimary};
+				font-size: 12px;
+				height: 48px;
+			}
+			${TableRow} {
+				background-color: ${(props) => props.theme.colors.surfaceL3};
+				&:nth-child(odd) {
+					background-color: ${(props) => props.theme.colors.surfaceL2};
+				}
+			}
+			${TableCellHead} {
+				font-family: ${(props) => props.theme.fonts.medium};
+				color: ${(props) => props.theme.colors.fontTertiary};
+				background-color: ${(props) => props.theme.colors.surfaceL3};
+			}
+			${TableBodyRow} {
+				background-color: ${(props) => props.theme.colors.surfaceL3};
+			}
+		`}
 
 	${(props) =>
 		props.palette === 'light-secondary' &&

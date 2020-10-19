@@ -81,22 +81,22 @@ const Button = styled.button<ButtonProps>`
 		`}
 
 		${(props) =>
-			props.palette === 'tab' &&
-			css`
-				color: ${(props) => props.theme.colors.fontTertiary};
-				background-color: ${(props) => props.theme.colors.surfaceL3};
-				&:hover {
-					&:not(:disabled) {
-						background-color: ${(props) => props.theme.colors.accentL1};
-					}
+		props.palette === 'tab' &&
+		css`
+			color: ${(props) => props.theme.colors.fontTertiary};
+			background-color: ${(props) => props.theme.colors.surfaceL3};
+			&:hover {
+				&:not(:disabled) {
+					background-color: ${(props) => props.theme.colors.accentL1};
 				}
-				${(props) =>
-					(props as ButtonProps).isActive &&
-					css`
-						color: ${(props) => props.theme.colors.fontPrimary};
-						background-color: ${(props) => props.theme.colors.accentL1};
-					`}
-			`}
+			}
+			${(props) =>
+				(props as ButtonProps).isActive &&
+				css`
+					color: ${(props) => props.theme.colors.fontPrimary};
+					background-color: ${(props) => props.theme.colors.accentL1};
+				`}
+		`}
 
 
 	${(props) =>
@@ -119,25 +119,25 @@ const Button = styled.button<ButtonProps>`
 		`}	
 
 		${(props) =>
-			props.palette === 'outline-secondary' &&
-			css`
-				border-radius: 1px;
-				color: ${(props) => props.theme.colors.fontSecondary};
-				background-color: ${(props) => props.theme.colors.surfaceL3};
-				border: 1px solid ${(props) => props.theme.colors.accentL2};
-				&:hover {
-					&:not(:disabled) {
-						color: ${(props) => props.theme.colors.fontPrimary};
-						background-color: ${(props) => props.theme.colors.accentL2};
-					}
+		props.palette === 'outline-secondary' &&
+		css`
+			border-radius: 1px;
+			color: ${(props) => props.theme.colors.fontSecondary};
+			background-color: ${(props) => props.theme.colors.surfaceL3};
+			border: 1px solid ${(props) => props.theme.colors.accentL2};
+			&:hover {
+				&:not(:disabled) {
+					color: ${(props) => props.theme.colors.fontPrimary};
+					background-color: ${(props) => props.theme.colors.accentL2};
 				}
-				${(props) =>
-					(props as ButtonProps).isActive &&
-					css`
-						color: ${(props) => props.theme.colors.fontPrimary};
-						background-color: ${(props) => props.theme.colors.accentL2};
-					`}
-			`}	
+			}
+			${(props) =>
+				(props as ButtonProps).isActive &&
+				css`
+					color: ${(props) => props.theme.colors.fontPrimary};
+					background-color: ${(props) => props.theme.colors.accentL2};
+				`}
+		`}	
 
 
 	${(props) =>
@@ -160,7 +160,7 @@ const Button = styled.button<ButtonProps>`
 					color: ${(props) => props.theme.colors.fontPrimary};
 					border-color: transparent;
 				`}
-		`}			
+		`}
 `;
 
 export default Button;

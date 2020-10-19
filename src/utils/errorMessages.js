@@ -3,10 +3,10 @@ const USER_DENIED = { type: 'cancelled', message: 'User denied transaction signa
 const ERROR_CODES = {
 	Metamask: {
 		'-32603': USER_DENIED,
-		'4001': USER_DENIED,
+		4001: USER_DENIED,
 	},
 	Ledger: {
-		'27013': USER_DENIED,
+		27013: USER_DENIED,
 	},
 	Trezor: {},
 	Coinbase: {
