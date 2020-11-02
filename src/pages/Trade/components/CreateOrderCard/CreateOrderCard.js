@@ -47,6 +47,8 @@ import NetworkInfo from '../../../../components/NetworkInfo/NetworkInfo';
 
 const INPUT_DEFAULT_VALUE = '';
 
+const EXCHANGE_TRACKING_CODE = bytesFormatter('SX');
+
 const CreateOrderCard = ({
 	synthPair,
 	walletInfo: { currentWallet, walletType },
@@ -198,10 +200,12 @@ const CreateOrderCard = ({
 				? quoteBalance.balanceBN
 				: utils.parseEther(quoteAmount.toString());
 
-			const gasEstimate = await Synthetix.contract.estimate.exchange(
+			const gasEstimate = await Synthetix.contract.estimate.exchangeWithTracking(
 				bytesFormatter(quote.name),
 				amountToExchange,
-				bytesFormatter(base.name)
+				bytesFormatter(base.name),
+				currentWallet,
+				EXCHANGE_TRACKING_CODE
 			);
 			const rectifiedGasLimit = normalizeGasLimit(Number(gasEstimate));
 			setGasLimit(rectifiedGasLimit);
@@ -232,10 +236,12 @@ const CreateOrderCard = ({
 				? quoteBalance.balanceBN
 				: utils.parseEther(quoteAmount.toString());
 
-			const gasEstimate = await Synthetix.contract.estimate.exchange(
+			const gasEstimate = await Synthetix.contract.estimate.exchangeWithTracking(
 				bytesFormatter(quote.name),
 				amountToExchange,
-				bytesFormatter(base.name)
+				bytesFormatter(base.name),
+				currentWallet,
+				EXCHANGE_TRACKING_CODE
 			);
 			const rectifiedGasLimit = normalizeGasLimit(Number(gasEstimate));
 
@@ -263,10 +269,12 @@ const CreateOrderCard = ({
 				status: TRANSACTION_STATUS.WAITING,
 			});
 
-			const tx = await Synthetix.exchange(
+			const tx = await Synthetix.exchangeWithTracking(
 				bytesFormatter(quote.name),
 				amountToExchange,
 				bytesFormatter(base.name),
+				currentWallet,
+				EXCHANGE_TRACKING_CODE,
 				{
 					gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 					gasLimit: rectifiedGasLimit,
