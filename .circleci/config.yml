@@ -2,6 +2,9 @@ env_defaults: &env_defaults
   working_directory: ~
   docker:
     - image: circleci/node:10.16
+      auth:
+        username: $DOCKERHUB_USERNAME
+        password: $DOCKERHUB_TOKEN
 
 version: 2.1
 jobs:
