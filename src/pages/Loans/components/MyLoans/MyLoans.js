@@ -89,9 +89,25 @@ const StyledCardBody = styled(Card.Body)`
 `;
 
 const StyledButton = styled(Button)`
-	color: ${(props) => (props.isActive ? 'white' : props.theme.colors.secondary)};
 	margin: 0;
 	height: 100%;
+	color: ${({ theme }) => theme.colors.fontTertiary};
+	&:hover {
+		color: ${({ theme }) => theme.colors.fontPrimary};
+		background-color: ${({ theme }) => theme.colors.accentL1};
+		span {
+			background-color: ${(props) => props.theme.colors.accentL2};
+		}
+	}
+	&.active {
+		background-color: ${({ theme }) => theme.colors.accentL2};
+		color: ${({ theme }) => theme.colors.fontPrimary};
+		&:hover {
+			span {
+				background-color: ${(props) => props.theme.colors.accentL1};
+			}
+		}
+	}
 `;
 
 const mapStateToProps = (state) => ({
