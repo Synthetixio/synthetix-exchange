@@ -2,10 +2,8 @@ import { createSlice, createSelector } from '@reduxjs/toolkit';
 import keyBy from 'lodash/keyBy';
 import snxJSConnector from '../../utils/snxJSConnector';
 import { bigNumberFormatter } from '../../utils/formatters';
-import { pageResults } from 'synthetix-data';
+import snxData from 'synthetix-data';
 import { getEthRate } from 'ducks/rates';
-
-const loansGraph = 'https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix-loans';
 
 export const liquidationsSlice = createSlice({
 	name: 'allLiquidations',
@@ -55,44 +53,6 @@ const {
 	fetchLiquidationsFailure,
 } = liquidationsSlice.actions;
 
-const fetchPartialLiquidations = async (loanId) => {
-	const partialLiquidations = await pageResults({
-		api: loansGraph,
-		query: {
-			entity: 'loanPartiallyLiquidateds',
-			selection: {
-				where: {
-					loanId: `\\"${loanId}\\"`,
-				},
-			},
-			properties: [
-				'account',
-				'liquidatedAmount',
-				'liquidator',
-				'liquidatedCollateral',
-				'loanId',
-				'id',
-			],
-		},
-	});
-
-	const mappedPartialLiquidations = partialLiquidations.map((partial) => {
-		const liquidatedCollateral = bigNumberFormatter(partial.liquidatedCollateral);
-		const penaltyAmount = liquidatedCollateral * 0.1;
-		const parsedTx = partial.id.split('-')[0];
-		return {
-			txHash: parsedTx,
-			liquidator: partial.liquidator,
-			liquidatedAmount: bigNumberFormatter(partial.liquidatedAmount),
-			liquidatedCollateral: liquidatedCollateral,
-			penaltyAmount: penaltyAmount,
-			loanId: Number(partial.loanID),
-		};
-	});
-
-	return mappedPartialLiquidations;
-};
-
 export const fetchLiquidations = () => async (dispatch, getState) => {
 	const {
 		snxJS: { EtherCollateralsUSD },
@@ -108,28 +68,14 @@ export const fetchLiquidations = () => async (dispatch, getState) => {
 	dispatch(fetchLiquidationsRequest());
 
 	try {
-		let loans = await pageResults({
-			api: loansGraph,
-			query: {
-				entity: 'loans',
-				selection: {
-					where: {
-						isOpen: true,
-						collateralMinted: '\\"sUSD\\"',
-					},
-				},
-				properties: ['account', 'amount', 'id', 'isOpen', 'hasPartialLiquidations'],
-			},
-		});
+		let loans = await snxData.etherCollateral.loans({ isOpen: true, collateralMinted: 'sUSD' });
 
 		const liquidatedLoans = loans.map(async (loan) => {
-			const id = Number(loan.id);
-			const loanMetaData = await contract.getLoan(loan.account, id);
+			const loanMetaData = await contract.getLoan(loan.account, loan.id);
 			const currentInterest = bigNumberFormatter(loanMetaData.accruedInterest);
-			const loanAmount = bigNumberFormatter(loan.amount);
 			const collateralAmount = bigNumberFormatter(loanMetaData.collateralAmount);
-			const cRatio = (ethRate * collateralAmount) / (loanAmount + currentInterest);
-			const debtBalance = loanAmount + currentInterest;
+			const cRatio = (ethRate * collateralAmount) / (loan.amount + currentInterest);
+			const debtBalance = loan.amount + currentInterest;
 			const collateralUSDValue = ethRate * collateralAmount;
 			let totalDebtToCover = 0;
 
@@ -141,14 +87,16 @@ export const fetchLiquidations = () => async (dispatch, getState) => {
 
 			let partialLiquidations = [];
 			if (loan.hasPartialLiquidations) {
-				partialLiquidations = await fetchPartialLiquidations(id);
+				partialLiquidations = await snxData.etherCollateral.partiallyLiquidatedLoans({
+					loanId: loan.id,
+				});
 			}
 
 			return {
 				account: loan.account,
 				collateralAmount: collateralAmount,
-				loanAmount: loanAmount,
-				loanId: id,
+				loanAmount: loan.amount,
+				loanId: loan.id,
 				currentInterest: currentInterest,
 				totalDebtToCover: totalDebtToCover,
 				penaltyPercentage: PENALTY,
