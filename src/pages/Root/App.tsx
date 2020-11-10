@@ -43,13 +43,15 @@ type AppProps = PropsFromRedux & {
 	isAppReady: boolean;
 };
 
+const IS_PROD = !!process.env.NEXT_PUBLIC_IS_PROD;
+
 const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 	const themeStyle = isDarkTheme(currentTheme) ? darkTheme : lightTheme;
 
 	return (
 		<ThemeProvider theme={themeStyle}>
 			<MaterialUIThemeProvider>
-				{isSystemSuspended ? (
+				{IS_PROD && isSystemSuspended ? (
 					<>
 						<GlobalEventsGate />
 						<MaintenanceMessage />
