@@ -12,11 +12,11 @@ import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
 import { fetchRatesRequest } from 'ducks/rates';
 import { setNetworkGasInfo } from 'ducks/transaction';
 
-import { setAppReady, getIsAppReady, setSystemSuspended } from 'ducks/app';
+import { setAppReady, getIsAppReady, fetchAppStatusRequest } from 'ducks/app';
 
 import App from './App';
 
-const REFRESH_INTERVAL = 3 * 60 * 1000;
+const REFRESH_INTERVAL = 2 * 60 * 1000;
 
 const Root = ({
 	setAvailableSynths,
@@ -28,7 +28,7 @@ const Root = ({
 	fetchRatesRequest,
 	setAppReady,
 	isAppReady,
-	setSystemSuspended,
+	fetchAppStatusRequest,
 }) => {
 	const [intervalId, setIntervalId] = useState(null);
 	const fetchAndSetExchangeData = useCallback(async () => {
@@ -42,27 +42,8 @@ const Root = ({
 		if (isAppReady && currentWallet != null) {
 			fetchWalletBalancesRequest();
 		}
-	}, [isAppReady, currentWallet, fetchWalletBalancesRequest]);
-
-	useEffect(() => {
-		if (isAppReady) {
-			fetchRatesRequest();
-
-			const checkSystemStatus = async () => {
-				const {
-					snxJS: { SystemStatus },
-				} = snxJSConnector;
-				try {
-					const isSystemUpgrading = await SystemStatus.isSystemUpgrading();
-					if (isSystemUpgrading) {
-						setSystemSuspended({ status: true });
-					}
-				} catch (e) {}
-			};
-
-			checkSystemStatus();
-		}
-	}, [isAppReady, fetchRatesRequest, setSystemSuspended]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isAppReady, currentWallet]);
 
 	useEffect(() => {
 		const init = async () => {
@@ -79,12 +60,14 @@ const Root = ({
 			setAvailableSynths({ synths });
 			setAppReady();
 			fetchAndSetExchangeData();
+			fetchAppStatusRequest();
 			// TODO: stop fetching data when system is suspended
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
 				fetchAndSetExchangeData();
 				fetchWalletBalancesRequest();
 				fetchRatesRequest();
+				fetchAppStatusRequest();
 			}, REFRESH_INTERVAL);
 			setIntervalId(_intervalId);
 		};
@@ -113,7 +96,7 @@ const mapDispatchToProps = {
 	fetchWalletBalancesRequest,
 	fetchRatesRequest,
 	setAppReady,
-	setSystemSuspended,
+	fetchAppStatusRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);
