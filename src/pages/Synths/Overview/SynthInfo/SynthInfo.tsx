@@ -138,11 +138,14 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 							sOIL index uses a dynamic weighting scheme (in continuous time) of the near two
 							contract months, with emphasis initially given to the near contract. As expiry
 							approaches, however, weight is progressively shifted out of the near contract in favor
-							of the 2nd month. Moreover, upon reaching 5 days (configurable via SCCP) prior the
-							last trade time (2:30PM EST on the exchange stipulated Last Trade day), zero weighting
-							in the near contract is achieved, with the weight instead being allocated between the
-							2nd and 3rd contract months. Once the front month expires, the next nearest two live
-							contracts become the 1st and 2nd months, and the dynamic weighting process repeats.
+							of the 2nd month.
+						</div>
+						<div>
+							Moreover, upon reaching 5 days (configurable via SCCP) prior the last trade time
+							(2:30PM EST on the exchange stipulated Last Trade day), zero weighting in the near
+							contract is achieved, with the weight instead being allocated between the 2nd and 3rd
+							contract months. Once the front month expires, the next nearest two live contracts
+							become the 1st and 2nd months, and the dynamic weighting process repeats.
 						</div>
 						<div>
 							For more information, see{' '}
