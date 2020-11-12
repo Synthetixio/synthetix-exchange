@@ -127,6 +127,32 @@ export const SynthInfo: FC<SynthInfoProps> = ({ synth, networkId }) => {
 					/>
 				</Title>
 				<Info>{getInfo()}</Info>
+				{/* The text is not translated because SX is going to be deprecated */}
+				{[SYNTHS_MAP.sOIL, SYNTHS_MAP.iOIL].includes(synth.name) ? (
+					<Info>
+						<div>
+							sOIL is a non-expiring Crude Oil Index based on ICE Brent Crude Oil futures prices.
+						</div>
+						<div>
+							To create a single reference price for futures markets with varying expiry dates, the
+							sOIL index uses a dynamic weighting scheme (in continuous time) of the near two
+							contract months, with emphasis initially given to the near contract. As expiry
+							approaches, however, weight is progressively shifted out of the near contract in favor
+							of the 2nd month. Moreover, upon reaching 5 days (configurable via SCCP) prior the
+							last trade time (2:30PM EST on the exchange stipulated Last Trade day), zero weighting
+							in the near contract is achieved, with the weight instead being allocated between the
+							2nd and 3rd contract months. Once the front month expires, the next nearest two live
+							contracts become the 1st and 2nd months, and the dynamic weighting process repeats.
+						</div>
+						<div>
+							For more information, see{' '}
+							<Link to="https://sips.synthetix.io/sips/sip-62" isExternal={true}>
+								SIP-62
+							</Link>
+							.
+						</div>
+					</Info>
+				) : null}
 			</div>
 			<ContractInfo>
 				<Table>
@@ -197,6 +223,9 @@ const Description = styled.span`
 const Info = styled.div`
 	${bodyCSS};
 	color: ${(props) => props.theme.colors.fontPrimary};
+	div {
+		padding-top: 20px;
+	}
 `;
 
 const ContractInfo = styled.div`

@@ -218,7 +218,12 @@ export const ChartCard: FC<ChartCardProps> = ({
 							}}
 							labelStyle={fontStyle}
 							formatter={(val: string | number) => formatCurrencyWithSign(synthSign, val)}
-							labelFormatter={(label) => format(label, 'do MMM yy | HH:mm')}
+							labelFormatter={(label) => {
+								try {
+									console.log(label);
+									return format(label, 'do MMM yy | HH:mm');
+								} catch (e) {}
+							}}
 						/>
 					</AreaChart>
 				</RechartsResponsiveContainer>
