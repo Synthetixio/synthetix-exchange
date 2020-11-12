@@ -61,6 +61,7 @@ const Root = ({
 			setAppReady();
 			fetchAndSetExchangeData();
 			fetchAppStatusRequest();
+			fetchRatesRequest();
 			// TODO: stop fetching data when system is suspended
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {
