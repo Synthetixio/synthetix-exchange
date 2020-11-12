@@ -72,6 +72,8 @@ import { ReactComponent as iLINKIcon } from '@synthetixio/assets/synths/iLINK.sv
 // Commoditiy Synths
 import { ReactComponent as sXAUIcon } from '@synthetixio/assets/synths/sXAU.svg';
 import { ReactComponent as sXAGIcon } from '@synthetixio/assets/synths/sXAG.svg';
+import { ReactComponent as sOILIcon } from '@synthetixio/assets/synths/sOIL.svg';
+import { ReactComponent as iOILIcon } from '@synthetixio/assets/synths/iOIL.svg';
 // import { ReactComponent as sOILIcon } from '@synthetixio/assets/synths/sOIL.svg';
 // Crypto Index Synths
 import { ReactComponent as sDEFIIcon } from '@synthetixio/assets/synths/sDEFI.svg';
@@ -138,6 +140,8 @@ export const SYNTHS = [
 	// 'sNIKKEI',
 	'sXAU',
 	'sXAG',
+	'sOIL',
+	'iOIL',
 	// 'sBZ',
 	'sEUR',
 	// 'sJPY',
@@ -261,6 +265,8 @@ export const currencyKeyToIconMap = {
 	// [SYNTHS_MAP.sCHF]: { SynthIcon: sCHFIcon, AssetIcon: CHFIcon },
 	[SYNTHS_MAP.sXAU]: { SynthIcon: sXAUIcon, AssetIcon: GOLDIcon },
 	[SYNTHS_MAP.sXAG]: { SynthIcon: sXAGIcon, AssetIcon: SILVERIcon },
+	[SYNTHS_MAP.sOIL]: { SynthIcon: sOILIcon, AssetIcon: sOILIcon },
+	[SYNTHS_MAP.iOIL]: { SynthIcon: iOILIcon, AssetIcon: iOILIcon },
 	// disable for now
 	// [SYNTHS_MAP.sOIL]: { SynthIcon: sOILIcon, AssetIcon: sOILIcon },
 	// [SYNTHS_MAP.sCEX]: { SynthIcon: sCEXIcon, AssetIcon: CEXIcon },
