@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.32.2",
+	"version": "2.32.2-sip-95-remove-BCH-aggregator",
 	"private": true,
 	"dependencies": {
 		"@bugsnag/js": "6.2.0",
