@@ -26,6 +26,7 @@ import Options from '../Options';
 import Synths from '../Synths';
 
 const Trade = lazy(() => import('../Trade'));
+const Futures = lazy(() => import('../Futures'));
 const Loans = lazy(() => import('../Loans'));
 const Markets = lazy(() => import('../Markets'));
 const Assets = lazy(() => import('../Assets'));
@@ -78,6 +79,22 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 									render={(routeProps) => (
 										<MainLayout isAppReady={isAppReady}>
 											<Trade {...routeProps} />
+										</MainLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.FuturesMatch}
+									render={(routeProps) => (
+										<MainLayout isAppReady={isAppReady}>
+											<Futures {...routeProps} />
+										</MainLayout>
+									)}
+								/>
+								<Route
+									path={ROUTES.Futures}
+									render={(routeProps) => (
+										<MainLayout isAppReady={isAppReady}>
+											<Futures {...routeProps} />
 										</MainLayout>
 									)}
 								/>

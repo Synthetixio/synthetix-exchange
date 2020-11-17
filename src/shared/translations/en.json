@@ -4,6 +4,7 @@
 		"links": {
 			"trade": "trade",
 			"loans": "loans",
+			"futures": "futures",
 			"markets": "markets",
 			"synths": "synths",
 			"support": "support",
@@ -396,6 +397,32 @@
 	"exchange": {
 		"errors": {
 			"waitingPeriod": "There is a waiting period after completing a trade. Please wait approximately {{waitingPeriod}} minutes before attempting to exchange {{quote}}"
+		}
+	},
+	"futures": {
+		"futures-order-card": {
+			"input-label": {
+				"amount": "amount",
+				"margin": "margin",
+				"leverage": "leverage"
+			},
+			"button": {
+				"long":  "long",
+				"short": "short"
+			},
+			"order-info": {
+				"notional-value": "Notional value",
+				"pnl": "PNL",
+				"order-price": "Order price",
+				"liquidation-price": "Liquidation price",
+				"daily-funding-rate": "Daily funding rate",
+				"net-funding": "Net funding"
+			},
+			"order-submit-card": {
+				"heading": {
+					"futures": "futures"
+				}
+			}
 		}
 	},
 	"trade": {

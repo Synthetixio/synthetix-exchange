@@ -5,6 +5,8 @@ export const ROUTES = {
 	Home: '/',
 	Trade: '/trade',
 	TradeMatch: '/trade/:baseCurrencyKey-:quoteCurrencyKey',
+	Futures: '/futures',
+	FuturesMatch: '/futures/:baseCurrencyKey-:quoteCurrencyKey',
 	Loans: '/loans',
 	Assets: {
 		Home: '/assets',
@@ -37,6 +39,9 @@ export const buildSynthOverviewLink = (currencyKey: CurrencyKey) =>
 export const buildTradeLink = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
 	`${ROUTES.Trade}/${baseCurrencyKey}-${quoteCurrencyKey}`;
 
+export const buildFuturesLink = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
+	`${ROUTES.Futures}/${baseCurrencyKey}-${quoteCurrencyKey}`;
+
 export const navigateTo = (
 	path: string,
 	replacePath: boolean = false,
@@ -53,6 +58,12 @@ export const navigateToTrade = (
 	quoteCurrencyKey: CurrencyKey,
 	replacePath: boolean = false
 ) => navigateTo(buildTradeLink(baseCurrencyKey, quoteCurrencyKey), replacePath);
+
+export const navigateToFutures = (
+	baseCurrencyKey: CurrencyKey,
+	quoteCurrencyKey: CurrencyKey,
+	replacePath: boolean = false
+) => navigateTo(buildFuturesLink(baseCurrencyKey, quoteCurrencyKey), replacePath);
 
 export const navigateToSynthOverview = (
 	currencyKey: CurrencyKey,

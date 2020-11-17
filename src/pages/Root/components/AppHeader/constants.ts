@@ -28,6 +28,10 @@ export const MENU_LINKS: MenuLinks = [
 	{
 		i18nLabel: 'header.links.options',
 		link: ROUTES.Options.Home,
+	},
+	{
+		i18nLabel: 'header.links.futures',
+		link: ROUTES.Futures,
 		isBeta: true,
 	},
 ];
