@@ -13,7 +13,6 @@ import {
 } from 'ducks/wallet/walletBalances';
 import { showWalletPopup } from 'ducks/ui';
 
-import { ROUTES } from 'constants/routes';
 import { FIAT_CURRENCY_MAP, USD_SIGN } from 'constants/currency';
 import { EMPTY_VALUE } from 'constants/placeholder';
 
@@ -29,7 +28,6 @@ import Card from 'components/Card';
 import { ButtonPrimaryExtraSmall, ButtonPrimarySmall } from 'components/Button/ButtonPrimary';
 import { HeadingSmall, DataMedium } from 'components/Typography';
 import { InfoBoxLabel, FlexDivCentered, TableNoResults } from 'shared/commonStyles';
-import Link from 'components/Link';
 import Table from 'components/Table';
 import Currency from 'components/Currency';
 
@@ -139,9 +137,6 @@ const WalletMenu = ({
 				</StyleCardBody>
 			</Card>
 			<Bottom>
-				<Link to={ROUTES.Assets.Home}>
-					<StyledButton>{t('header.wallet-menu.buttons.wallet-overview')}</StyledButton>
-				</Link>
 				<StyledButton onClick={logout}>{t('header.wallet-menu.buttons.log-out')}</StyledButton>
 			</Bottom>
 		</Content>

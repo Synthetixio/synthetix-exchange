@@ -160,7 +160,7 @@ const Chart: FC<ChartProps> = ({
 				<DataLarge>{t('common.chart.no-data-available')}</DataLarge>
 			) : null}
 			{!isLoading && dataWithTrades.rates && dataWithTrades.rates.length > 0 ? (
-				<RechartsResponsiveContainer width="100%" height={250}>
+				<RechartsResponsiveContainer width="100%" height="100%">
 					<AreaChart
 						data={dataWithTrades.rates}
 						margin={{ top: 0, right: -6, left: 10, bottom: 0 }}
@@ -217,7 +217,7 @@ const Chart: FC<ChartProps> = ({
 
 const ChartContainer = styled.div`
 	width: 100%;
-	height: 250px;
+	height: 40vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;

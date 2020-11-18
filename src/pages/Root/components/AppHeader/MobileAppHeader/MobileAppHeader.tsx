@@ -7,9 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { labelMediumCSS } from 'components/Typography/Label';
 import Link from 'components/Link';
 
-import { ReactComponent as MenuHamburgerIcon } from 'assets/images/menu-hamburger.svg';
-import { ReactComponent as MenuCloseIcon } from 'assets/images/menu-close.svg';
-
 import { ROUTES } from 'constants/routes';
 import { LINKS } from 'constants/links';
 import { APP_HEADER_HEIGHT, MOBILE_APP_HEADER_HEIGHT, Z_INDEX } from 'constants/ui';
@@ -69,11 +66,6 @@ export const MobileAppHeader: FC<MobileAppHeaderProps> = ({
 					<MenuItemsRight>
 						<MenuItem>
 							<UserInfo isOnSplashPage={isOnSplashPage} />
-						</MenuItem>
-						<MenuItem>
-							<MenuToggleButton onClick={toggleMenu}>
-								{menuOpen ? <MenuCloseIcon /> : <MenuHamburgerIcon />}
-							</MenuToggleButton>
 						</MenuItem>
 					</MenuItemsRight>
 				</Content>
@@ -204,29 +196,6 @@ const DropdownMenuLink = styled(Link)`
 
 const DropdownMenuItem = styled.div.attrs({ role: 'button' })`
 	${dropdownItemCSS};
-`;
-
-const MenuToggleButton = styled.button`
-	background: transparent;
-	border: 0;
-	margin: 0;
-	padding: 0;
-	cursor: pointer;
-	width: 24px;
-	height: 24px;
-	outline: none;
-
-	${media.small`
-		width: 16px;
-		height: 16px;
-	`}
-
-	> svg {
-		${media.small`
-			width: 16px;
-			height: 16px;
-		`}
-	}
 `;
 
 const MenuPusher = styled.div`

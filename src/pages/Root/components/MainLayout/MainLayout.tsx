@@ -19,7 +19,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, isAppReady }) => (
 		<FullScreenContainer>
 			<AppHeader />
 			<Suspense fallback={<Spinner size="sm" centered={true} />}>
-				{isAppReady ? children : <Spinner centered={true} size="sm" />}
+				<Content>{isAppReady ? children : <Spinner centered={true} size="sm" />}</Content>
 			</Suspense>
 		</FullScreenContainer>
 	</>
@@ -37,6 +37,13 @@ const FullScreenContainer = styled(FlexDiv)`
 	width: 100%;
 	height: 100vh;
 	position: relative;
+`;
+
+const Content = styled.div`
+	max-width: 1200px;
+	margin: 0 auto;
+	width: 100%;
+	height: 100%;
 `;
 
 export default MainLayout;

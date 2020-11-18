@@ -1,10 +1,8 @@
 import React, { FC } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
-import { labelMediumCSS } from 'components/Typography/Label';
 import Link from 'components/Link';
 
 import { ROUTES } from 'constants/routes';
@@ -24,9 +22,6 @@ import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
 
-import { MENU_LINKS, MENU_LINKS_WALLET_CONNECTED } from './constants';
-import { BetaLabel } from './common';
-
 type StateProps = {
 	isWalletConnected: boolean;
 };
@@ -41,7 +36,6 @@ type AppHeaderProps = StateProps & Props;
 
 export const AppHeader: FC<AppHeaderProps> = (props) => {
 	const { showThemeToggle = true, isOnSplashPage, isWalletConnected, ...rest } = props;
-	const { t } = useTranslation();
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
 
@@ -58,19 +52,6 @@ export const AppHeader: FC<AppHeaderProps> = (props) => {
 							<Logo />
 						</StyledLogoLink>
 					</MenuItem>
-					{MENU_LINKS.map(({ i18nLabel, link, isBeta }) => (
-						<MenuLinkItem key={link}>
-							<MenuLink to={link}>
-								{t(i18nLabel)} {isBeta && <BetaLabel>{t('common.beta')}</BetaLabel>}
-							</MenuLink>
-						</MenuLinkItem>
-					))}
-					{isWalletConnected &&
-						MENU_LINKS_WALLET_CONNECTED.map(({ i18nLabel, link }) => (
-							<MenuLinkItem key={link}>
-								<MenuLink to={link}>{t(i18nLabel)}</MenuLink>
-							</MenuLinkItem>
-						))}
 				</MenuItemsLeft>
 				<MenuItemsRight>
 					<MenuItem>
@@ -113,35 +94,6 @@ const Content = styled(FlexDivCentered)`
 
 const MenuItem = styled(FlexDivCentered)`
 	height: 100%;
-`;
-
-const MenuLinkItem = styled(MenuItem)`
-	padding: 0;
-`;
-
-const MenuLink = styled(Link)`
-	${labelMediumCSS};
-	padding: 6px 10px;
-	display: flex;
-	align-items: center;
-	color: ${({ theme }) => theme.colors.fontTertiary};
-	height: 32px;
-	&:hover {
-		color: ${({ theme }) => theme.colors.fontPrimary};
-		background-color: ${({ theme }) => theme.colors.accentL1};
-		span {
-			background-color: ${(props) => props.theme.colors.accentL2};
-		}
-	}
-	&.active {
-		background-color: ${({ theme }) => theme.colors.accentL2};
-		color: ${({ theme }) => theme.colors.fontPrimary};
-		&:hover {
-			span {
-				background-color: ${(props) => props.theme.colors.accentL1};
-			}
-		}
-	}
 `;
 
 const MenuItems = styled(FlexDivCentered)`

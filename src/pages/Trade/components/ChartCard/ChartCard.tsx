@@ -1,6 +1,6 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import styled, { ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
@@ -30,7 +30,7 @@ type StateProps = {
 
 type ChartCardProps = StateProps;
 
-const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
+const ChartCard: FC<ChartCardProps> = ({ synthPair }) => {
 	const { t } = useTranslation();
 	const [chartData, setChartData] = useState<ChartData>({
 		rates: [],
@@ -38,8 +38,7 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 		high24H: 0,
 		change24H: 0,
 	});
-	const { colors } = useContext(ThemeContext);
-	const [showTrades, setShowTrades] = useState<boolean>(false);
+	const [showTrades] = useState<boolean>(false);
 	const [volume24H, setVolume24H] = useState<number>(0);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [selectedPeriod, setSelectedPeriod] = useState<PeriodLabel>(PERIOD_LABELS_MAP.ONE_DAY);
@@ -123,24 +122,6 @@ const ChartCard: FC<ChartCardProps> = ({ synthPair, isWalletConnected }) => {
 								<VerticalDivider />
 							</InverseInfoWrap>
 						) : null}
-						{isWalletConnected ? (
-							<>
-								<YourTradesButton
-									palette="secondary"
-									size="xs"
-									isActive={showTrades}
-									onClick={() => setShowTrades(!showTrades)}
-								>
-									<YourTradesWrapper>
-										<svg width="4" height="10" viewBox="0 0 4 10" fill="none">
-											<rect width="4" height="10" rx="1" fill={colors.fontTertiary} />
-										</svg>
-										{t(t('trade.chart-card.info-boxes.your-trades'))}
-									</YourTradesWrapper>
-								</YourTradesButton>
-								<VerticalDivider />{' '}
-							</>
-						) : null}
 						{PERIOD_LABELS.map((period) => (
 							<Button
 								key={period.value}
@@ -191,16 +172,6 @@ const VerticalDivider = styled.div`
 	width: 1px;
 	margin: auto 10px;
 	height: 20px;
-`;
-
-const YourTradesWrapper = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-`;
-
-const YourTradesButton = styled(Button)`
-	width: 115px;
 `;
 
 const InverseInfoWrap = styled.div`

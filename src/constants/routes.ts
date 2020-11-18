@@ -3,10 +3,10 @@ import { CurrencyKey } from './currency';
 
 export const ROUTES = {
 	Home: '/',
-	Trade: '/trade',
-	TradeMatch: '/trade/:baseCurrencyKey-:quoteCurrencyKey',
-	Futures: '/futures',
-	FuturesMatch: '/futures/:baseCurrencyKey-:quoteCurrencyKey',
+	Trade: '/',
+	TradeMatch: '/:baseCurrencyKey-:quoteCurrencyKey',
+	Futures: '/',
+	FuturesMatch: '/:baseCurrencyKey-:quoteCurrencyKey',
 	Loans: '/loans',
 	Assets: {
 		Home: '/assets',
@@ -37,10 +37,10 @@ export const buildSynthOverviewLink = (currencyKey: CurrencyKey) =>
 	`${ROUTES.Synths.Home}/${currencyKey}`;
 
 export const buildTradeLink = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
-	`${ROUTES.Trade}/${baseCurrencyKey}-${quoteCurrencyKey}`;
+	`${ROUTES.Trade}${baseCurrencyKey}-${quoteCurrencyKey}`;
 
 export const buildFuturesLink = (baseCurrencyKey: CurrencyKey, quoteCurrencyKey: CurrencyKey) =>
-	`${ROUTES.Futures}/${baseCurrencyKey}-${quoteCurrencyKey}`;
+	`${ROUTES.Futures}${baseCurrencyKey}-${quoteCurrencyKey}`;
 
 export const navigateTo = (
 	path: string,
