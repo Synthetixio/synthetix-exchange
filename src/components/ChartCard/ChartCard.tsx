@@ -220,7 +220,6 @@ export const ChartCard: FC<ChartCardProps> = ({
 							formatter={(val: string | number) => formatCurrencyWithSign(synthSign, val)}
 							labelFormatter={(label) => {
 								try {
-									console.log(label);
 									return format(label, 'do MMM yy | HH:mm');
 								} catch (e) {}
 							}}
