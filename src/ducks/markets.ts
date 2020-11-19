@@ -9,7 +9,7 @@ import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 import { PERIOD_IN_HOURS } from 'constants/period';
 import { RateUpdates } from 'constants/rates';
-import { getAvailableMarketNames, CurrencyKey } from 'constants/currency';
+import { getAvailableMarketNames, CurrencyKey, toMarketPair } from 'constants/currency';
 
 import { fetchSynthRateUpdates, fetchExchanges } from 'services/rates/rates';
 import { calculateTotalVolumeForExchanges } from 'services/rates/utils';
@@ -59,6 +59,27 @@ export type MarketPair = BaseMarketPair & {
 
 export type MarketPairsMap = Record<string, MarketPair>;
 export type MarketPairs = MarketPair[];
+
+export const FUTURES_MARKETS = [
+	{
+		baseCurrencyKey: 'sETH',
+		quoteCurrencyKey: 'sUSD',
+		address: '',
+	},
+	{
+		baseCurrencyKey: 'sBTC',
+		quoteCurrencyKey: 'sUSD',
+		address: '',
+	},
+	{
+		baseCurrencyKey: 'sLINK',
+		quoteCurrencyKey: 'sUSD',
+		address: '',
+	},
+].map((market) => ({
+	...market,
+	pair: toMarketPair(market.baseCurrencyKey, market.quoteCurrencyKey),
+}));
 
 const getMarketDefaults = (marketPairs: BaseMarketPairs) =>
 	marketPairs.reduce((markets: MarketPairsMap, marketPair) => {
@@ -143,6 +164,16 @@ export const getFilteredMarkets = createSelector(
 	(marketsList, assetFilter, exchangeRates) =>
 		mapExchangeRatesToMarkets(
 			marketsList.filter((market) => market.quoteCurrencyKey === assetFilter),
+			exchangeRates
+		)
+);
+
+export const getFuturesMarkets = createSelector(
+	getMarketsMap,
+	getRatesExchangeRates,
+	(marketMap, exchangeRates) =>
+		mapExchangeRatesToMarkets(
+			FUTURES_MARKETS.map((market) => marketMap[market.pair]),
 			exchangeRates
 		)
 );
