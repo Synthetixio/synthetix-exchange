@@ -5,7 +5,7 @@ import { formatCurrencyPair } from '../../../utils/formatters';
 import CurrencyIcon from '../CurrencyIcon';
 
 import { Container } from '../commonStyles';
-import { CurrencyKey, synthToAsset } from 'constants/currency';
+import { CurrencyKey } from 'constants/currency';
 
 type CurrencyPairProps = {
 	baseCurrencyKey: CurrencyKey;
@@ -25,7 +25,7 @@ export const CurrencyPair: FC<CurrencyPairProps> = ({
 }) => (
 	<Container showIcon={showIcon} {...rest}>
 		{showIcon && <CurrencyIcon currencyKey={baseCurrencyKey} {...iconProps} />}
-		{formatCurrencyPair(baseCurrencyAsset || synthToAsset(baseCurrencyKey), quoteCurrencyKey)}
+		{formatCurrencyPair(baseCurrencyAsset || baseCurrencyKey, quoteCurrencyKey)}
 	</Container>
 );
 
