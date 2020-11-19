@@ -81,6 +81,8 @@ export const FUTURES_MARKETS = [
 	pair: toMarketPair(market.baseCurrencyKey, market.quoteCurrencyKey),
 }));
 
+export const FUTURES_MARKETS_MAP = keyBy(FUTURES_MARKETS, 'baseCurrencyKey');
+
 const getMarketDefaults = (marketPairs: BaseMarketPairs) =>
 	marketPairs.reduce((markets: MarketPairsMap, marketPair) => {
 		const { baseCurrencyKey, quoteCurrencyKey, pair } = marketPair;

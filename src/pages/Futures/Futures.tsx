@@ -16,6 +16,7 @@ import ChartCard from '../Trade/components/ChartCard';
 import OrderCard from './components/OrderCard';
 
 import { getSynthPair, setSynthPair, getAvailableSynthsMap } from 'ducks/synths';
+import { FUTURES_MARKETS_MAP } from 'ducks/markets';
 
 const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
@@ -46,7 +47,8 @@ const Futures: FC<FuturesProps> = ({ match, setSynthPair, synthPair, synthsMap }
 			params.baseCurrencyKey &&
 			params.quoteCurrencyKey &&
 			synthsMap[params.baseCurrencyKey] &&
-			synthsMap[params.quoteCurrencyKey]
+			synthsMap[params.quoteCurrencyKey] &&
+			FUTURES_MARKETS_MAP[params.baseCurrencyKey]
 		) {
 			const { base, quote, reversed } = getMarketPairByMC(
 				params.baseCurrencyKey,
