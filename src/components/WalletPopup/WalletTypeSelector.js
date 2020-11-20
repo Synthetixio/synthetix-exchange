@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import snxJSConnector, { connectToWallet } from 'utils/snxJSConnector';
 import {
-	hasWeb3,
+	hasEthereumInjected,
 	SUPPORTED_WALLETS,
 	SUPPORTED_WALLETS_MAP,
 	onMetamaskAccountChange,
@@ -70,7 +70,7 @@ const WalletTypeSelector = ({
 			<Title>{t('modals.wallet.connect-your-wallet')}</Title>
 			<Wallets>
 				{SUPPORTED_WALLETS.map((wallet) => {
-					const noMetamask = wallet === METAMASK && !hasWeb3();
+					const noMetamask = wallet === METAMASK && !hasEthereumInjected();
 					const Icon = walletTypeToIconMap[wallet];
 
 					// unsupported wallet
