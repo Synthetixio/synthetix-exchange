@@ -25,3 +25,5 @@ yarn-error.log*
 
 .yalc
 yalc.lock
+
+lint-results.sarif
