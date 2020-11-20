@@ -48,6 +48,7 @@
 		"use-immer": "0.4.0"
 	},
 	"devDependencies": {
+		"@microsoft/eslint-formatter-sarif": "2.1.5",
 		"@storybook/addon-actions": "^5.3.18",
 		"@storybook/addon-backgrounds": "^5.3.18",
 		"@storybook/addon-knobs": "^5.3.18",
@@ -89,6 +90,7 @@
 		"lint:fix": "eslint --fix './src/**/*.{js,ts,tsx}'",
 		"lint:css": "stylelint './src/**/*.{js,ts,tsx}'",
 		"lint": "eslint './src/**/*.{js,ts,tsx}' && tsc",
+		"lint:sarif": "node scripts/lint.js './src/**/*.{js,ts,tsx}' && tsc",
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook"
 	},
