@@ -50,7 +50,7 @@ export const SUPPORTED_WALLETS_MAP: Record<WalletType, string> = {
 };
 export const SUPPORTED_WALLETS = Object.values(SUPPORTED_WALLETS_MAP);
 
-export const hasWeb3 = () => !!window.web3;
+export const hasEthereumInjected = () => !!window.ethereum;
 
 export const defaultNetwork: { name: string; networkId: NetworkId } = {
 	name: 'MAINNET',
@@ -58,23 +58,23 @@ export const defaultNetwork: { name: string; networkId: NetworkId } = {
 };
 
 export async function getEthereumNetwork() {
-	if (!hasWeb3()) {
+	if (!hasEthereumInjected()) {
 		return defaultNetwork;
 	}
 
 	let networkId: NetworkId = 1;
 
 	try {
-		if (window.web3?.eth?.net) {
+		if (window.ethereum?.networkVersion) {
+			networkId = Number(window.ethereum?.networkVersion) as NetworkId;
+
+			return { name: SUPPORTED_NETWORKS[networkId], networkId };
+		} else if (window.web3?.eth?.net) {
 			networkId = await window.web3.eth.net.getId();
 
 			return { name: SUPPORTED_NETWORKS[networkId], networkId: Number(networkId) as NetworkId };
 		} else if (window.web3?.version?.network) {
 			networkId = Number(window.web3.version.network) as NetworkId;
-
-			return { name: SUPPORTED_NETWORKS[networkId], networkId };
-		} else if (window.ethereum?.networkVersion) {
-			networkId = Number(window.ethereum?.networkVersion) as NetworkId;
 
 			return { name: SUPPORTED_NETWORKS[networkId], networkId };
 		}
