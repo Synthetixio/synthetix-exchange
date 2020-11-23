@@ -18,6 +18,7 @@ type NumericInputWithCurrencyProps = {
 	label?: React.ReactNode;
 	errorMessage?: React.ReactNode;
 	currencyKey?: CurrencyKey;
+	currencyIconProps?: object;
 	inputProps?: object;
 	onMaxButtonClick?: () => void;
 	value: string | number;
@@ -30,6 +31,7 @@ const TradeInput: FC<NumericInputWithCurrencyProps> = ({
 	className,
 	label,
 	currencyKey = SYNTHS_MAP.sUSD,
+	currencyIconProps = {},
 	onChange,
 	value,
 	inputProps,
@@ -46,7 +48,11 @@ const TradeInput: FC<NumericInputWithCurrencyProps> = ({
 			{label != null && <Label>{label}</Label>}
 			<Container className={className}>
 				<CurrencyContainer className="currency-container">
-					<StyledCurrencyName currencyKey={currencyKey} showIcon={showIcon} />
+					<StyledCurrencyName
+						currencyKey={currencyKey}
+						showIcon={showIcon}
+						iconProps={currencyIconProps}
+					/>
 				</CurrencyContainer>
 				<StyledNumericInput
 					className="input"

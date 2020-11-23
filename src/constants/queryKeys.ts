@@ -42,6 +42,9 @@ export const QUERY_KEYS = {
 			walletAddress,
 		],
 	},
+	Futures: {
+		AllMarketSummaries: ['futures', 'allMarketSummaries'],
+	},
 };
 
 export default QUERY_KEYS;

@@ -22,6 +22,7 @@ import { ButtonPrimary } from 'components/Button';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 import { SYNTHS_MAP } from 'constants/currency';
 import { FlexDiv } from 'shared/commonStyles';
+import { MarketSummaryMap } from 'pages/Futures/types';
 
 const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
@@ -36,13 +37,16 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type OrderSubmitCardProps = PropsFromRedux;
+type OrderSubmitCardProps = PropsFromRedux & {
+	futureMarkets: MarketSummaryMap | null;
+};
 
 const OrderSubmitCard: FC<OrderSubmitCardProps> = ({
 	synthPair,
 	gasInfo,
 	ethRate,
 	exchangeRates,
+	futureMarkets,
 }) => {
 	const { t } = useTranslation();
 	const { base, quote } = synthPair;
@@ -51,7 +55,14 @@ const OrderSubmitCard: FC<OrderSubmitCardProps> = ({
 	return (
 		<Card>
 			<StyledCardHeader>
-				<Currency.Pair baseCurrencyKey={base.name} quoteCurrencyKey={quote.name} showIcon={true} />
+				<Currency.Pair
+					baseCurrencyKey={base.name}
+					quoteCurrencyKey={quote.name}
+					showIcon={true}
+					iconProps={{
+						badge: futureMarkets != null ? `${futureMarkets[base.name].maxLeverage}x` : undefined,
+					}}
+				/>
 				<StyledLabelSmall>
 					{t('futures.futures-order-card.order-submit-card.heading.futures')}
 				</StyledLabelSmall>

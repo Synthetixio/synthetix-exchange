@@ -48,11 +48,12 @@ const MarketsTable: FC<MarketsTableProps> = memo(
 									baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
 									quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
 									showIcon={true}
-									maxLeverage={
-										futureMarkets != null
-											? futureMarkets[cellProps.row.original.baseCurrencyKey].maxLeverage
-											: undefined
-									}
+									iconProps={{
+										badge:
+											futureMarkets != null
+												? `${futureMarkets[cellProps.row.original.baseCurrencyKey].maxLeverage}x`
+												: undefined,
+									}}
 								/>
 								{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
 									<Margin left="10px">

@@ -81,7 +81,9 @@ const PairListPanel: FC<PairListPanelProps> = ({
 						baseCurrencyKey={base.name}
 						quoteCurrencyKey={quote.name}
 						showIcon={true}
-						maxLeverage={futureMarkets != null ? futureMarkets[base.name].maxLeverage : undefined}
+						iconProps={{
+							badge: futureMarkets != null ? `${futureMarkets[base.name].maxLeverage}x` : undefined,
+						}}
 					/>
 					<MenuArrowDownIcon className="arrow" />
 				</DropdownPanelHeader>

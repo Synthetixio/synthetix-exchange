@@ -20,6 +20,8 @@ import LeverageInput from './LeverageInput';
 import OrderInfoBlock from './OrderInfoBlock';
 import OrderSubmitCard from './OrderSubmitCard';
 
+import { MarketSummaryMap } from 'pages/Futures/types';
+
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
 
@@ -35,12 +37,15 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type OrderBookCardProps = PropsFromRedux;
+type OrderBookCardProps = PropsFromRedux & {
+	futureMarkets: MarketSummaryMap | null;
+};
 
 const OrderBookCard: FC<OrderBookCardProps> = ({
 	synthPair,
 	isWalletConnected,
 	synthsWalletBalances,
+	futureMarkets,
 }) => {
 	const { t } = useTranslation();
 	const { base, quote } = synthPair;
@@ -64,6 +69,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				<OrderInfoColumn>
 					<NumericInputWithCurrency
 						currencyKey={base.name}
+						currencyIconProps={{
+							badge: futureMarkets != null ? `${futureMarkets[base.name].maxLeverage}x` : undefined,
+						}}
 						value={`${amount}`}
 						label={
 							<FormInputLabel>{t('futures.futures-order-card.input-label.amount')}:</FormInputLabel>
@@ -154,7 +162,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 					/>
 				</OrderInfoColumn>
 				<OrderInfoColumn>
-					<OrderSubmitCard />
+					<OrderSubmitCard futureMarkets={futureMarkets} />
 				</OrderInfoColumn>
 			</StyledCardBody>
 		</StyledCard>

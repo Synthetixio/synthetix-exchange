@@ -23,6 +23,7 @@ import { BigNumberish } from 'ethers/utils';
 import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
 
 import { MarketSummaryMap, MarketSummary } from './types';
+import QUERY_KEYS from 'constants/queryKeys';
 
 const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
@@ -54,7 +55,7 @@ const Futures: FC<FuturesProps> = ({
 	const [isReady, setIsReady] = useState<boolean>(false);
 
 	const allMarketSummariesQuery = useQuery<MarketSummaryMap, any>(
-		['futures', 'allMarketSummaries'],
+		QUERY_KEYS.Futures.AllMarketSummaries,
 		async () => {
 			const allMarkets = (await (snxJSConnector as any).snxJS.FuturesMarketData.allMarketSummaries()) as MarketSummary<
 				BigNumberish
@@ -147,7 +148,7 @@ const Futures: FC<FuturesProps> = ({
 					</RowContainer>
 					<SectionVerticalSpacer />
 					<RowContainer>
-						<OrderCard />
+						<OrderCard futureMarkets={futureMarkets} />
 					</RowContainer>
 				</FuturesContainer>
 			</CenteredPageLayout>
