@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { FlexDiv } from 'shared/commonStyles';
 import { DataSmall } from 'components/Typography/Data';
 
 type OrderInfoRowProps = {
-	label: string;
-	value: string;
+	label: ReactNode;
+	value: ReactNode;
 };
 
 type OrderInfoBlockProps = {
-	orderData: Array<OrderInfoRowProps>;
+	orderData: OrderInfoRowProps[];
 };
 
 const OrderInfoRow: FC<OrderInfoRowProps> = ({ label, value }) => {

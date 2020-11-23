@@ -24,6 +24,7 @@ import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
 
 import { MarketSummaryMap, MarketSummary } from './types';
 import QUERY_KEYS from 'constants/queryKeys';
+import CurrentPositionCard from './components/CurrentPositionCard';
 
 const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
@@ -137,6 +138,8 @@ const Futures: FC<FuturesProps> = ({
 		return <Spinner size="sm" centered={true} />;
 	}
 
+	const futureMarket = futureMarkets != null ? futureMarkets[synthPair.base.name] : null;
+
 	return (
 		<Container>
 			<CenteredPageLayout>
@@ -148,7 +151,8 @@ const Futures: FC<FuturesProps> = ({
 					</RowContainer>
 					<SectionVerticalSpacer />
 					<RowContainer>
-						<OrderCard futureMarkets={futureMarkets} />
+						<CurrentPositionCard futureMarket={futureMarket} />
+						<OrderCard futureMarket={futureMarket} />
 					</RowContainer>
 				</FuturesContainer>
 			</CenteredPageLayout>

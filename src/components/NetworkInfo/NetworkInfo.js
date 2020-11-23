@@ -63,7 +63,7 @@ export const TransactionInfo = ({
 				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
 			<NetworkDataRow>
-				<NetworkData>{t('common.gas-price-gwei')}</NetworkData>
+				<NetworkData>Gas (GWEI)</NetworkData>
 				<NetworkData>
 					<SelectGasMenu gasPrice={gasPrice} />
 				</NetworkData>
@@ -98,7 +98,8 @@ const TooltipContentRow = styled.div`
 `;
 
 const Container = styled.div`
-	margin: 18px 0;
+	width: 180px;
+	padding-bottom: 25px;
 `;
 
 const NetworkData = styled(DataSmall)`
