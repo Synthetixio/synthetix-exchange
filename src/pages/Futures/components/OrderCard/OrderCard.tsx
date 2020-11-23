@@ -16,9 +16,9 @@ import { FormInputLabel, FormInputLabelSmall, FlexDiv } from 'shared/commonStyle
 
 import Card from 'components/Card';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
-import LeverageInput from '../LeverageInput';
-import OrderInfoBlock from '../OrderInfoBlock';
-import OrderSubmitCard from '../OrderSubmitCard';
+import LeverageInput from './LeverageInput';
+import OrderInfoBlock from './OrderInfoBlock';
+import OrderSubmitCard from './OrderSubmitCard';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
