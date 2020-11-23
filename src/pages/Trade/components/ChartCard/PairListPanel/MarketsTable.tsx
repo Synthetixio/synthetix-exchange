@@ -15,6 +15,7 @@ import { SynthDefinitionMap } from 'ducks/synths';
 
 import { SnowflakeCircle } from 'components/Icons';
 import Margin from 'components/Margin';
+import { MarketSummaryMap } from 'pages/Futures/types';
 
 type StateProps = {
 	synthsMap: SynthDefinitionMap;
@@ -23,68 +24,76 @@ type StateProps = {
 type Props = {
 	markets: MarketPairs;
 	onTableRowClick: (row: Row<MarketPair>) => void;
+	futureMarkets: MarketSummaryMap | null;
 };
 
 type MarketsTableProps = StateProps & Props;
 
-const MarketsTable: FC<MarketsTableProps> = memo(({ synthsMap, markets, onTableRowClick }) => {
-	const { t } = useTranslation();
+const MarketsTable: FC<MarketsTableProps> = memo(
+	({ synthsMap, markets, onTableRowClick, futureMarkets }) => {
+		const { t } = useTranslation();
 
-	return (
-		<StyledTable
-			palette="primary"
-			columnsDeps={[synthsMap]}
-			columns={[
-				{
-					Header: <>{t('markets.table.pair-col')}</>,
-					accessor: 'pair',
-					width: 150,
-					Cell: (cellProps: CellProps<MarketPair>) => (
-						<>
-							<Currency.Pair
-								baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
-								quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
-								showIcon={true}
-							/>
-							{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
-								<Margin left="10px">
-									<SnowflakeCircle
-										radius={16}
-										innerRadius={10}
-										currencyKey={cellProps.row.original.baseCurrencyKey}
-									/>
-								</Margin>
-							) : null}
-						</>
-					),
-					sortable: true,
-				},
-				{
-					Header: <>{t('markets.table.last-price-col')}</>,
-					accessor: 'lastPrice',
-					sortType: 'basic',
-					width: 100,
-					Cell: (cellProps: CellProps<MarketPair, MarketPair['lastPrice']>) => (
-						<RightAlignedCell>
-							<CurrencyCol
-								sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
-								value={cellProps.cell.value}
-							/>
-						</RightAlignedCell>
-					),
-					sortable: true,
-				},
-			]}
-			data={markets}
-			onTableRowClick={onTableRowClick}
-			noResultsMessage={
-				markets.length === 0 ? (
-					<NoResults>{t('trade.chart-card.pair-list.table.no-results')}</NoResults>
-				) : undefined
-			}
-		/>
-	);
-});
+		return (
+			<StyledTable
+				palette="primary"
+				columnsDeps={[synthsMap]}
+				columns={[
+					{
+						Header: <>{t('markets.table.pair-col')}</>,
+						accessor: 'pair',
+						width: 150,
+						Cell: (cellProps: CellProps<MarketPair>) => (
+							<>
+								<Currency.Pair
+									baseCurrencyKey={cellProps.row.original.baseCurrencyKey}
+									quoteCurrencyKey={cellProps.row.original.quoteCurrencyKey}
+									showIcon={true}
+									maxLeverage={
+										futureMarkets != null
+											? futureMarkets[cellProps.row.original.baseCurrencyKey].maxLeverage
+											: undefined
+									}
+								/>
+								{synthsMap[cellProps.row.original.baseCurrencyKey]?.isFrozen ? (
+									<Margin left="10px">
+										<SnowflakeCircle
+											radius={16}
+											innerRadius={10}
+											currencyKey={cellProps.row.original.baseCurrencyKey}
+										/>
+									</Margin>
+								) : null}
+							</>
+						),
+						sortable: true,
+					},
+					{
+						Header: <>{t('markets.table.last-price-col')}</>,
+						accessor: 'lastPrice',
+						sortType: 'basic',
+						width: 100,
+						Cell: (cellProps: CellProps<MarketPair, MarketPair['lastPrice']>) => (
+							<RightAlignedCell>
+								<CurrencyCol
+									sign={synthsMap[cellProps.row.original.quoteCurrencyKey]?.sign}
+									value={cellProps.cell.value}
+								/>
+							</RightAlignedCell>
+						),
+						sortable: true,
+					},
+				]}
+				data={markets}
+				onTableRowClick={onTableRowClick}
+				noResultsMessage={
+					markets.length === 0 ? (
+						<NoResults>{t('trade.chart-card.pair-list.table.no-results')}</NoResults>
+					) : undefined
+				}
+			/>
+		);
+	}
+);
 
 const NoResults = styled.div`
 	padding: 18px;

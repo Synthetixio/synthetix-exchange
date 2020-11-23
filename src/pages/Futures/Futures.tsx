@@ -16,11 +16,18 @@ import ChartCard from '../Trade/components/ChartCard';
 import OrderCard from './components/OrderCard';
 
 import { getSynthPair, setSynthPair, getAvailableSynthsMap } from 'ducks/synths';
-import { FUTURES_MARKETS_MAP } from 'ducks/markets';
+import { useQuery } from 'react-query';
+import snxJSConnector from 'utils/snxJSConnector';
+import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
+import { BigNumberish } from 'ethers/utils';
+import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
+
+import { MarketSummaryMap, MarketSummary } from './types';
 
 const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
 	synthsMap: getAvailableSynthsMap(state),
+	isWalletConnected: getIsWalletConnected(state),
 });
 
 const mapDispatchToProps = {
@@ -37,8 +44,64 @@ type FuturesProps = PropsFromRedux &
 		quoteCurrencyKey: CurrencyKey;
 	}>;
 
-const Futures: FC<FuturesProps> = ({ match, setSynthPair, synthPair, synthsMap }) => {
+const Futures: FC<FuturesProps> = ({
+	match,
+	setSynthPair,
+	synthPair,
+	synthsMap,
+	isWalletConnected,
+}) => {
 	const [isReady, setIsReady] = useState<boolean>(false);
+
+	const allMarketSummariesQuery = useQuery<MarketSummaryMap, any>(
+		['futures', 'allMarketSummaries'],
+		async () => {
+			const allMarkets = (await (snxJSConnector as any).snxJS.FuturesMarketData.allMarketSummaries()) as MarketSummary<
+				BigNumberish
+			>[];
+
+			const marketsMap = allMarkets.reduce(
+				(
+					acc,
+					{
+						asset,
+						market,
+						currentFundingRate,
+						exchangeFee,
+						marketDebt,
+						marketSize,
+						marketSkew,
+						maxLeverage,
+						price,
+					}
+				) => {
+					const _asset = parseBytes32String(asset);
+
+					acc[_asset] = {
+						asset: _asset,
+						market,
+						currentFundingRate: bigNumberFormatter(currentFundingRate),
+						exchangeFee: bigNumberFormatter(exchangeFee),
+						marketDebt: bigNumberFormatter(marketDebt),
+						marketSize: bigNumberFormatter(marketSize),
+						marketSkew: bigNumberFormatter(marketSkew),
+						maxLeverage: bigNumberFormatter(maxLeverage),
+						price: bigNumberFormatter(price),
+					};
+					return acc;
+				},
+				{} as MarketSummaryMap
+			);
+
+			return marketsMap;
+		},
+		{
+			// TODO: remove this when contracts are on TestNet/MainNet
+			enabled: isWalletConnected,
+		}
+	);
+
+	const futureMarkets = allMarketSummariesQuery.isSuccess ? allMarketSummariesQuery.data : null;
 
 	useEffect(() => {
 		const { params } = match;
@@ -48,7 +111,8 @@ const Futures: FC<FuturesProps> = ({ match, setSynthPair, synthPair, synthsMap }
 			params.quoteCurrencyKey &&
 			synthsMap[params.baseCurrencyKey] &&
 			synthsMap[params.quoteCurrencyKey] &&
-			FUTURES_MARKETS_MAP[params.baseCurrencyKey]
+			futureMarkets != null &&
+			futureMarkets[params.baseCurrencyKey]
 		) {
 			const { base, quote, reversed } = getMarketPairByMC(
 				params.baseCurrencyKey,
@@ -66,7 +130,7 @@ const Futures: FC<FuturesProps> = ({ match, setSynthPair, synthPair, synthsMap }
 			navigateToFutures(synthPair.base.name, synthPair.quote.name, true);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [match, setSynthPair]);
+	}, [match, setSynthPair, futureMarkets]);
 
 	if (!isReady) {
 		return <Spinner size="sm" centered={true} />;
@@ -78,7 +142,7 @@ const Futures: FC<FuturesProps> = ({ match, setSynthPair, synthPair, synthsMap }
 				<FuturesContainer>
 					<RowContainer>
 						<ChartContainer>
-							<ChartCard />
+							<ChartCard futureMarkets={futureMarkets} />
 						</ChartContainer>
 					</RowContainer>
 					<SectionVerticalSpacer />

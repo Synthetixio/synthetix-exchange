@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useMemo } from 'react';
 
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import { navigateToTrade } from 'constants/routes';
 
 import { getSynthPair, SynthPair } from 'ducks/synths';
 import { getMarketsAssetFilter, setMarketsAssetFilter, setBlurBackgroundIsVisible } from 'ducks/ui';
-import { getFuturesMarkets, getAllMarkets, MarketPairs, MarketPair } from 'ducks/markets';
+import { getAllMarkets, MarketPairs, MarketPair } from 'ducks/markets';
 
 import { ReactComponent as MenuArrowDownIcon } from 'assets/images/menu-arrow-down.svg';
 
@@ -19,10 +19,10 @@ import { FlexDiv } from 'shared/commonStyles';
 import { RootState } from 'ducks/types';
 
 import MarketsTable from './MarketsTable';
+import { MarketSummaryMap } from 'pages/Futures/types';
 
 type StateProps = {
 	synthPair: SynthPair;
-	marketsByQuote: MarketPairs;
 	allMarkets: MarketPairs;
 	marketsAssetFilter: string;
 };
@@ -32,14 +32,28 @@ type DispatchProps = {
 	setBlurBackgroundIsVisible: typeof setBlurBackgroundIsVisible;
 };
 
-type PairListPanelProps = StateProps & DispatchProps;
+type PairListPanelProps = StateProps &
+	DispatchProps & {
+		futureMarkets: MarketSummaryMap | null;
+	};
 
 const PairListPanel: FC<PairListPanelProps> = ({
 	synthPair: { base, quote },
-	marketsByQuote,
 	setBlurBackgroundIsVisible,
+	allMarkets,
+	futureMarkets,
 }) => {
 	const [pairListDropdownIsOpen, setPairListDropdownIsOpen] = useState<boolean>(false);
+
+	const filteredMarkets = useMemo(
+		() =>
+			futureMarkets != null
+				? allMarkets.filter(
+						(market) => futureMarkets[market.baseCurrencyKey] && market.quoteCurrencyKey === 'sUSD'
+				  )
+				: allMarkets,
+		[allMarkets, futureMarkets]
+	);
 
 	const toggleDropdown = (isOpen: boolean) => {
 		if (!isOpen && !pairListDropdownIsOpen) return;
@@ -67,6 +81,7 @@ const PairListPanel: FC<PairListPanelProps> = ({
 						baseCurrencyKey={base.name}
 						quoteCurrencyKey={quote.name}
 						showIcon={true}
+						maxLeverage={futureMarkets != null ? futureMarkets[base.name].maxLeverage : undefined}
 					/>
 					<MenuArrowDownIcon className="arrow" />
 				</DropdownPanelHeader>
@@ -74,7 +89,8 @@ const PairListPanel: FC<PairListPanelProps> = ({
 			body={
 				<PairListContainer>
 					<MarketsTable
-						markets={marketsByQuote}
+						markets={filteredMarkets}
+						futureMarkets={futureMarkets}
 						onTableRowClick={(row: { original: MarketPair }) => {
 							navigateToTrade(row.original.baseCurrencyKey, row.original.quoteCurrencyKey);
 							toggleDropdown(false);
@@ -102,7 +118,6 @@ const DropdownPanelHeader = styled(FlexDiv)`
 
 const mapStateToProps = (state: RootState): StateProps => ({
 	synthPair: getSynthPair(state),
-	marketsByQuote: getFuturesMarkets(state),
 	allMarkets: getAllMarkets(state),
 	marketsAssetFilter: getMarketsAssetFilter(state),
 });
