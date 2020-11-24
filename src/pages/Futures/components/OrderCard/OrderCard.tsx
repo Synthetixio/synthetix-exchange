@@ -19,7 +19,13 @@ import { EMPTY_VALUE } from 'constants/placeholder';
 import { formatCurrency } from 'utils/formatters';
 import TxErrorMessage from 'components/TxErrorMessage';
 
-import { FormInputLabel, FormInputLabelSmall, FlexDiv, FlexDivRow } from 'shared/commonStyles';
+import {
+	FormInputLabel,
+	FormInputLabelSmall,
+	FlexDiv,
+	FlexDivRow,
+	TextButton,
+} from 'shared/commonStyles';
 
 import Card from 'components/Card';
 import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency';
@@ -87,8 +93,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const [isLong, setIsLong] = useState(true);
 	const [gasLimit, setGasLimit] = useState(gasInfo.gasLimit);
 	const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
-
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+	const [isClosingPosition, setIsClosingPosition] = useState<boolean>(false);
+	const [isCancellingOrder, setIsCancellingOrder] = useState<boolean>(false);
 
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 	const assetPriceInUSD = futureMarket?.price ?? 0;
@@ -108,7 +115,35 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting;
 
-	const handleSubmit = async () => {
+	const handleCancelOrder = async () => {
+		try {
+			const { snxJS } = snxJSConnector as any;
+
+			setIsCancellingOrder(true);
+
+			const FuturesMarketContract = snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+
+			const gasEstimate = await FuturesMarketContract.contract.estimate.cancelOrder();
+
+			setGasLimit(gasEstimate);
+
+			const tx = await FuturesMarketContract.cancelOrder({
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: normalizeGasLimit(gasEstimate),
+			});
+
+			const txResult = await tx.wait();
+			if (txResult && txResult.transactionHash) {
+				refetchMarketAndPosition();
+			}
+		} catch (e) {
+			console.log(e);
+		} finally {
+			setIsCancellingOrder(false);
+		}
+	};
+
+	const handleSubmitOrder = async () => {
 		try {
 			const {
 				snxJS,
@@ -131,9 +166,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			});
 
 			const txResult = await tx.wait();
-			console.log(txResult);
 			if (txResult && txResult.transactionHash) {
-				// TODO
 				fetchWalletBalancesRequest();
 				refetchMarketAndPosition();
 			}
@@ -145,9 +178,55 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 		}
 	};
 
+	const handleClosePosition = async () => {
+		try {
+			const { snxJS } = snxJSConnector as any;
+
+			setTxErrorMessage(null);
+			setIsClosingPosition(true);
+
+			const FuturesMarketContract = snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+
+			const gasEstimate = await FuturesMarketContract.contract.estimate.closePosition();
+
+			setGasLimit(gasEstimate);
+
+			const tx = await FuturesMarketContract.closePosition({
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: normalizeGasLimit(gasEstimate),
+			});
+
+			const txResult = await tx.wait();
+			if (txResult && txResult.transactionHash) {
+				fetchWalletBalancesRequest();
+				refetchMarketAndPosition();
+			}
+		} catch (e) {
+			console.log(e);
+			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+		} finally {
+			setIsClosingPosition(false);
+		}
+	};
+
 	return (
 		<StyledCard>
-			<StyledCardHeader>submit/modify position</StyledCardHeader>
+			<StyledCardHeader>
+				submit/modify position{' '}
+				{positionDetails != null && positionDetails.hasOrderOrPosition ? (
+					<>
+						{positionDetails.hasOpenOrder && (
+							<>
+								<HeaderLabel>pending</HeaderLabel>
+								<CancelOrderButton onClick={handleCancelOrder}>
+									{isCancellingOrder ? 'cancelling...' : 'cancel'}
+								</CancelOrderButton>
+							</>
+						)}
+						{positionDetails.hasPosition && <HeaderLabel>confirmed</HeaderLabel>}
+					</>
+				) : null}{' '}
+			</StyledCardHeader>
 			<StyledCardBody>
 				<FlexDivRow>
 					<OrderInfoColumn>
@@ -292,7 +371,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							size="sm"
 							palette="primary"
 							disabled={isSubmissionDisabled}
-							onClick={handleSubmit}
+							onClick={handleSubmitOrder}
 						>
 							{isSubmitting ? 'submitting...' : t('common.actions.submit')}
 						</Button>
@@ -300,8 +379,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							size="sm"
 							palette="primary"
 							disabled={positionDetails != null ? !positionDetails.hasPosition : true}
+							onClick={handleClosePosition}
 						>
-							{t('common.actions.close')}
+							{isClosingPosition ? 'closing...' : t('common.actions.close')}
 						</CloseButton>
 						{txErrorMessage && (
 							<TxErrorMessage onDismiss={() => setTxErrorMessage(null)}>
@@ -314,6 +394,26 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 		</StyledCard>
 	);
 };
+
+const HeaderLabel = styled.span`
+	color: ${(props) => props.theme.colors.fontSecondary};
+	font-size: 10px;
+	text-transform: uppercase;
+	border-radius: 100px;
+	background: ${(props) => props.theme.colors.accentL2};
+	margin-left: 8px;
+	text-align: center;
+	font-family: ${(props) => props.theme.fonts.medium};
+	height: 20px;
+	padding: 5px 10px;
+`;
+
+const CancelOrderButton = styled(TextButton)`
+	color: ${(props) => props.theme.colors.red};
+	font-family: ${(props) => props.theme.fonts.medium};
+	font-size: 12px;
+	margin-left: 16px;
+`;
 
 const StyledCard = styled(Card)`
 	display: flex;
