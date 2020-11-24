@@ -268,7 +268,7 @@ const Futures: FC<FuturesProps> = ({
 				<FuturesContainer>
 					<RowContainer>
 						<ChartContainer>
-							<ChartCard futureMarkets={futureMarkets} />
+							<ChartCard futureMarkets={futureMarkets} futureMarketDetails={futureMarketDetails} />
 						</ChartContainer>
 					</RowContainer>
 					<SectionVerticalSpacer />

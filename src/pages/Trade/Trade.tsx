@@ -81,7 +81,7 @@ const Trade: FC<TradeProps> = ({ match, setSynthPair, synthPair, synthsMap }) =>
 				<TradeContainer>
 					<RowContainer>
 						<ChartContainer>
-							<ChartCard futureMarkets={null} />
+							<ChartCard futureMarkets={null} futureMarketDetails={null} />
 						</ChartContainer>
 						<CreateOrderContainer>
 							<CreateOrderCard />

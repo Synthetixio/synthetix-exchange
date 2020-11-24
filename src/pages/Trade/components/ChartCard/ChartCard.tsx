@@ -23,7 +23,8 @@ import Link from 'components/Link';
 import { RootState } from 'ducks/types';
 import { ChartData } from './types';
 
-import { MarketSummaryMap } from 'pages/Futures/types';
+import { MarketDetails, MarketSummaryMap } from 'pages/Futures/types';
+import OpenInterest from './OpenInterest';
 
 type StateProps = {
 	synthPair: SynthPair;
@@ -35,8 +36,9 @@ type ChartCardProps = StateProps;
 const ChartCard: FC<
 	ChartCardProps & {
 		futureMarkets: MarketSummaryMap | null;
+		futureMarketDetails: MarketDetails | null;
 	}
-> = ({ synthPair, futureMarkets }) => {
+> = ({ synthPair, futureMarkets, futureMarketDetails }) => {
 	const { t } = useTranslation();
 	const [chartData, setChartData] = useState<ChartData>({
 		rates: [],
@@ -103,6 +105,12 @@ const ChartCard: FC<
 				<HeaderContainer>
 					<PairListPanel futureMarkets={futureMarkets} />
 					<Periods>
+						{futureMarketDetails != null && (
+							<OpenInterest
+								long={futureMarketDetails.marketSizeDetails.sides.long}
+								short={futureMarketDetails.marketSizeDetails.sides.short}
+							/>
+						)}
 						{base.inverted ? (
 							<InverseInfoWrap>
 								<InverseInfo>
