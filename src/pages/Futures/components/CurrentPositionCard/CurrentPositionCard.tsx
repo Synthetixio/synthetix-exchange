@@ -68,8 +68,8 @@ const CurrentPositionCard: FC<CurrentPositionCardProps> = ({
 							label: 'Position Size',
 							value:
 								positionDetails != null && positionDetails.hasPosition
-									? `${formatCurrency(positionDetails.position.size)} ${SYNTHS_MAP.sUSD}`
-									: `- ${SYNTHS_MAP.sUSD}`,
+									? `${formatCurrency(positionDetails.position.size)} ${base.name}`
+									: `- ${base.name}`,
 						},
 						{
 							label: 'Remaining Margin',

@@ -277,7 +277,12 @@ const Futures: FC<FuturesProps> = ({
 							futureMarketDetails={futureMarketDetails}
 							positionDetails={positionDetails}
 						/>
-						<OrderCard futureMarket={futureMarket} />
+						<OrderCard
+							futureMarket={futureMarket}
+							futureMarketDetails={futureMarketDetails}
+							positionDetails={positionDetails}
+							refetchMarketAndPosition={refetchMarketAndPosition}
+						/>
 					</RowContainer>
 				</FuturesContainer>
 			</CenteredPageLayout>

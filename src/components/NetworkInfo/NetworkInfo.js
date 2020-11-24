@@ -48,10 +48,6 @@ export const TransactionInfo = ({
 	return (
 		<Container>
 			<NetworkDataRow>
-				<NetworkData>{t('trade.trade-card.network-info.usd-value')}</NetworkData>
-				<NetworkData>${formatCurrency(usdValue) || 0}</NetworkData>
-			</NetworkDataRow>
-			<NetworkDataRow>
 				<NetworkDataLabelFlex>
 					{t('trade.trade-card.network-info.fee')}
 					<Tooltip title={getTooltipBody()} placement="bottom" arrow={true}>
@@ -63,10 +59,14 @@ export const TransactionInfo = ({
 				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
 			<NetworkDataRow>
+				<NetworkData>$ Value:</NetworkData>
+				<NetworkData>${formatCurrency(usdValue) || 0}</NetworkData>
+			</NetworkDataRow>
+			<NetworkDataRow>
 				<NetworkData>Gas (GWEI)</NetworkData>
-				<NetworkData>
+				<NetworkDataGasMenu>
 					<SelectGasMenu gasPrice={gasPrice} />
-				</NetworkData>
+				</NetworkDataGasMenu>
 			</NetworkDataRow>
 		</Container>
 	);
@@ -98,7 +98,6 @@ const TooltipContentRow = styled.div`
 `;
 
 const Container = styled.div`
-	width: 180px;
 	padding-bottom: 25px;
 `;
 
@@ -115,6 +114,12 @@ const NetworkDataRow = styled(FlexDivRow)`
 	display: flex;
 	align-items: center;
 	margin-bottom: 8px;
+	position: relative;
+`;
+
+const NetworkDataGasMenu = styled(NetworkData)`
+	position: absolute;
+	right: 0;
 `;
 
 export default TransactionInfo;

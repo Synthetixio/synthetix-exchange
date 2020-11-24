@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 import { getSynthPair } from 'ducks/synths';
-import { getSynthsWalletBalances } from 'ducks/wallet/walletBalances';
+import { getSynthsWalletBalances, getWalletBalancesMap } from 'ducks/wallet/walletBalances';
 import { getEthRate, getRatesExchangeRates } from 'ducks/rates';
 import { getGasInfo } from 'ducks/transaction';
 
@@ -21,13 +21,13 @@ import NumericInputWithCurrency from 'components/Input/NumericInputWithCurrency'
 import LeverageInput from './LeverageInput';
 import OrderInfoBlock from '../OrderInfoBlock';
 
-import { MarketSummary } from 'pages/Futures/types';
+import { MarketDetails, MarketSummary, PositionDetails } from 'pages/Futures/types';
 import { Button } from 'components/Button';
 import NetworkInfo from 'components/NetworkInfo';
 import { SYNTHS_MAP } from 'constants/currency';
 
-import { getExchangeRatesForCurrencies } from 'utils/rates';
 import { StyledCardBody, StyledCardHeader } from '../common';
+import { getCurrencyKeyBalance } from 'utils/balances';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
@@ -39,6 +39,7 @@ const mapStateToProps = (state: RootState) => ({
 	exchangeRates: getRatesExchangeRates(state),
 	synthPair: getSynthPair(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
+	walletBalancesMap: getWalletBalancesMap(state),
 });
 
 const mapDispatchToProps = {};
@@ -49,6 +50,9 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type OrderBookCardProps = PropsFromRedux & {
 	futureMarket: MarketSummary | null;
+	futureMarketDetails: MarketDetails | null;
+	positionDetails: PositionDetails | null;
+	refetchMarketAndPosition: () => void;
 };
 
 const OrderBookCard: FC<OrderBookCardProps> = ({
@@ -59,6 +63,10 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	ethRate,
 	exchangeRates,
 	futureMarket,
+	futureMarketDetails,
+	walletBalancesMap,
+	refetchMarketAndPosition,
+	positionDetails,
 }) => {
 	const { t } = useTranslation();
 	const { base, quote } = synthPair;
@@ -68,14 +76,23 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const [isLong, setIsLong] = useState(true);
 	const [gasLimit, setGasLimit] = useState(gasInfo.gasLimit);
 
-	const sUSDBalance =
-		(synthsWalletBalances && synthsWalletBalances.find((synth) => synth.name === quote.name)) || 0;
+	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
+	const assetPriceInUSD = futureMarket?.price ?? 0;
+
+	const amountNum = Number(amount);
+	const marginNum = Number(margin);
 
 	const setMaxSUSDBalance = () => {
-		if (!sUSDBalance || !sUSDBalance.balance) return;
-		setAmount(sUSDBalance.balance);
-		setMargin(sUSDBalance.balance);
+		setMargin(`${sUSDBalance}`);
+		setAmount(`${sUSDBalance / assetPriceInUSD}`);
 	};
+
+	const isValidLeverage =
+		futureMarketDetails != null
+			? leverage >= 1 && leverage <= futureMarketDetails.limits.maxLeverage
+			: false;
+
+	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0;
 
 	return (
 		<StyledCard>
@@ -86,9 +103,12 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 						<NumericInputWithCurrency
 							currencyKey={base.name}
 							currencyIconProps={{
-								badge: futureMarket != null ? `${futureMarket.maxLeverage}x` : undefined,
+								badge:
+									futureMarketDetails != null
+										? `${futureMarketDetails.limits.maxLeverage}x`
+										: undefined,
 							}}
-							value={`${amount}`}
+							value={amount}
 							label={
 								<FormInputLabel>
 									{t('futures.futures-order-card.input-label.amount')}:
@@ -96,29 +116,35 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							}
 							onChange={(_, value) => {
 								setAmount(value);
-								setMargin(value);
+								setMargin(`${Number(value) * assetPriceInUSD}`);
 							}}
 							errorMessage={null}
-							onMaxButtonClick={() => {
-								setAmount('100');
-								setMargin('100');
-							}}
+							onMaxButtonClick={setMaxSUSDBalance}
 						/>
 
 						<OrderInfoBlock
 							orderData={[
 								{
 									label: t('futures.futures-order-card.order-info.notional-value'),
-									value: '- sUSD',
+									value:
+										positionDetails != null && positionDetails.hasPosition
+											? `${formatCurrency(positionDetails.notionalValue)} ${SYNTHS_MAP.sUSD}`
+											: `- ${SYNTHS_MAP.sUSD}`,
 								},
-								{ label: t('futures.futures-order-card.order-info.pnl'), value: '- sUSD' },
+								{
+									label: t('futures.futures-order-card.order-info.pnl'),
+									value:
+										positionDetails != null && positionDetails.hasPosition
+											? `${formatCurrency(positionDetails.profitLoss)} ${SYNTHS_MAP.sUSD}`
+											: `- ${SYNTHS_MAP.sUSD}`,
+								},
 							]}
 						/>
 					</OrderInfoColumn>
 					<OrderInfoColumn>
 						<NumericInputWithCurrency
 							currencyKey={quote.name}
-							value={`${amount}`}
+							value={margin}
 							label={
 								<>
 									<FormInputLabel>
@@ -130,7 +156,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 									>
 										{t('common.wallet.balance-currency', {
 											balance: sUSDBalance
-												? formatCurrency(sUSDBalance.balance)
+												? formatCurrency(sUSDBalance)
 												: !isEmpty(synthsWalletBalances)
 												? 0
 												: EMPTY_VALUE,
@@ -139,17 +165,26 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								</>
 							}
 							onChange={(_, value) => {
-								setAmount(value);
 								setMargin(value);
+								setAmount(`${Number(value) / assetPriceInUSD}`);
 							}}
 							errorMessage={null}
 						/>
 						<OrderInfoBlock
 							orderData={[
-								{ label: t('futures.futures-order-card.order-info.order-price'), value: '- sUSD' },
+								{
+									label: t('futures.futures-order-card.order-info.order-price'),
+									value:
+										positionDetails != null && positionDetails.hasPosition
+											? `${formatCurrency(positionDetails.position.entryPrice)} ${SYNTHS_MAP.sUSD}`
+											: `- ${SYNTHS_MAP.sUSD}`,
+								},
 								{
 									label: t('futures.futures-order-card.order-info.liquidation-price'),
-									value: '- sUSD',
+									value:
+										positionDetails != null && positionDetails.hasPosition
+											? `${formatCurrency(positionDetails.liquidationPrice)} ${SYNTHS_MAP.sUSD}`
+											: `- ${SYNTHS_MAP.sUSD}`,
 								},
 							]}
 						/>
@@ -179,9 +214,18 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							orderData={[
 								{
 									label: t('futures.futures-order-card.order-info.daily-funding-rate'),
-									value: '- sUSD',
+									value:
+										futureMarket != null
+											? `${futureMarket.currentFundingRate} bps`
+											: `- ${SYNTHS_MAP.sUSD}`,
 								},
-								{ label: t('futures.futures-order-card.order-info.net-funding'), value: '- sUSD' },
+								{
+									label: t('futures.futures-order-card.order-info.net-funding'),
+									value:
+										positionDetails != null && positionDetails.hasPosition
+											? `${formatCurrency(positionDetails.accruedFunding)} ${SYNTHS_MAP.sUSD}`
+											: `- ${SYNTHS_MAP.sUSD}`,
+								},
 							]}
 						/>
 					</OrderInfoColumn>
@@ -189,13 +233,18 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 						<NetworkInfo
 							gasPrice={gasInfo.gasPrice}
 							gasLimit={gasLimit}
-							ethRate={0}
-							usdRate={getExchangeRatesForCurrencies(exchangeRates, base.name, SYNTHS_MAP.sUSD)}
+							ethRate={ethRate ?? 0}
+							usdRate={assetPriceInUSD}
+							amount={amountNum}
 						/>
-						<Button size="sm" palette="primary">
+						<Button size="sm" palette="primary" disabled={isSubmissionDisabled}>
 							{t('common.actions.submit')}
 						</Button>
-						<CloseButton size="sm" palette="primary">
+						<CloseButton
+							size="sm"
+							palette="primary"
+							disabled={positionDetails != null ? !positionDetails.hasPosition : true}
+						>
 							{t('common.actions.close')}
 						</CloseButton>
 					</OrderInfoColumn>
@@ -208,6 +257,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 const StyledCard = styled(Card)`
 	display: flex;
 	margin-left: 8px;
+	flex-grow: 1;
 `;
 
 const OrderInfoColumn = styled(FlexDiv)`
@@ -235,7 +285,7 @@ const StyledFormInputLabelSmall = styled(FormInputLabelSmall)<{ isInteractive: b
 const CloseButton = styled(Button)`
 	margin-top: 12px;
 	background: ${(props) => props.theme.colors.red};
-	&:hover {
+	&:hover:not(:disabled) {
 		background: #ef717f !important;
 	}
 `;
