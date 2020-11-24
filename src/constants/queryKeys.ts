@@ -44,6 +44,7 @@ export const QUERY_KEYS = {
 	},
 	Futures: {
 		AllMarketSummaries: ['futures', 'allMarketSummaries'],
+		MarketDetails: (marketAddress: string) => ['futures', 'allMarketSummaries', marketAddress],
 	},
 };
 

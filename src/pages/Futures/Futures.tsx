@@ -22,7 +22,7 @@ import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 import { BigNumberish } from 'ethers/utils';
 import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
 
-import { MarketSummaryMap, MarketSummary } from './types';
+import { MarketSummaryMap, MarketSummary, MarketDetails } from './types';
 import QUERY_KEYS from 'constants/queryKeys';
 import CurrentPositionCard from './components/CurrentPositionCard';
 
@@ -104,6 +104,67 @@ const Futures: FC<FuturesProps> = ({
 	);
 
 	const futureMarkets = allMarketSummariesQuery.isSuccess ? allMarketSummariesQuery.data : null;
+	const futureMarket = futureMarkets != null ? futureMarkets[synthPair.base.name] : null;
+	const futureMarketAddress = futureMarkets != null ? futureMarket?.market : null;
+
+	const marketDetailsQuery = useQuery<MarketDetails, any>(
+		QUERY_KEYS.Futures.MarketDetails(futureMarketAddress ?? ''),
+		async () => {
+			const marketDetails = (await (snxJSConnector as any).snxJS.FuturesMarketData.marketDetails(
+				futureMarketAddress
+			)) as MarketDetails<BigNumberish>;
+
+			const {
+				baseAsset,
+				exchangeFee,
+				fundingParameters,
+				marketSizeDetails,
+				limits,
+				market,
+				priceDetails,
+			} = marketDetails;
+
+			return {
+				baseAsset: parseBytes32String(baseAsset),
+				exchangeFee: bigNumberFormatter(exchangeFee),
+				fundingParameters: {
+					maxFundingRate: bigNumberFormatter(fundingParameters.maxFundingRate),
+					maxFundingRateSkew: bigNumberFormatter(fundingParameters.maxFundingRateSkew),
+					maxFundingRateDelta: bigNumberFormatter(fundingParameters.maxFundingRateDelta),
+				},
+				marketSizeDetails: {
+					entryMarginSumMinusNotionalSkew: bigNumberFormatter(
+						marketSizeDetails.entryMarginSumMinusNotionalSkew
+					),
+					marketDebt: bigNumberFormatter(marketSizeDetails.marketDebt),
+					marketSize: bigNumberFormatter(marketSizeDetails.marketSize),
+					marketSkew: bigNumberFormatter(marketSizeDetails.marketSkew),
+					pendingOrderValue: bigNumberFormatter(marketSizeDetails.pendingOrderValue),
+					proportionalSkew: bigNumberFormatter(marketSizeDetails.proportionalSkew),
+					sides: {
+						long: bigNumberFormatter(marketSizeDetails.sides.long),
+						short: bigNumberFormatter(marketSizeDetails.sides.short),
+					},
+				},
+				limits: {
+					maxLeverage: bigNumberFormatter(limits.maxLeverage),
+					maxMarketDebt: bigNumberFormatter(limits.maxMarketDebt),
+					minInitialMargin: bigNumberFormatter(limits.minInitialMargin),
+				},
+				market,
+				priceDetails: {
+					price: bigNumberFormatter(priceDetails.price),
+					currentRoundId: bigNumberFormatter(priceDetails.currentRoundId),
+					isInvalid: priceDetails.isInvalid,
+				},
+			};
+		},
+		{
+			enabled: futureMarketAddress != null,
+		}
+	);
+
+	const futureMarketDetails = marketDetailsQuery.isSuccess ? marketDetailsQuery.data : null;
 
 	useEffect(() => {
 		const { params } = match;
@@ -137,8 +198,6 @@ const Futures: FC<FuturesProps> = ({
 	if (!isReady) {
 		return <Spinner size="sm" centered={true} />;
 	}
-
-	const futureMarket = futureMarkets != null ? futureMarkets[synthPair.base.name] : null;
 
 	return (
 		<Container>
