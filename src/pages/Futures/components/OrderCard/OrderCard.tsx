@@ -30,6 +30,8 @@ import { SYNTHS_MAP } from 'constants/currency';
 import { StyledCardBody, StyledCardHeader } from '../common';
 import { getCurrencyKeyBalance } from 'utils/balances';
 import snxJSConnector from 'utils/snxJSConnector';
+import { GWEI_UNIT } from 'utils/networkUtils';
+import { normalizeGasLimit } from 'utils/transactions';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
@@ -97,14 +99,29 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			? leverage >= 1 && leverage <= futureMarketDetails.limits.maxLeverage
 			: false;
 
-	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0;
+	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting;
 
 	const handleSubmit = async () => {
 		try {
+			const {
+				snxJS,
+				utils: { parseEther },
+			} = snxJSConnector as any;
+
 			setTxErrorMessage(null);
 			setIsSubmitting(true);
-			console.log((snxJSConnector as any).snxJS);
-			const tx = await (snxJSConnector as any).snxJS.FuturesMarket.submitOrder(margin, leverage);
+
+			const FuturesMarketContract = snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+			const params = [parseEther(margin.toString()), parseEther(leverage.toString())];
+
+			const gasEstimate = await FuturesMarketContract.contract.estimate.submitOrder(...params);
+
+			setGasLimit(gasEstimate);
+
+			const tx = await FuturesMarketContract.submitOrder(...params, {
+				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
+				gasLimit: normalizeGasLimit(gasEstimate),
+			});
 
 			const txResult = await tx.wait();
 			console.log(txResult);
@@ -268,7 +285,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							disabled={isSubmissionDisabled}
 							onClick={handleSubmit}
 						>
-							{t('common.actions.submit')}
+							{isSubmitting ? 'submitting...' : t('common.actions.submit')}
 						</Button>
 						<CloseButton
 							size="sm"
