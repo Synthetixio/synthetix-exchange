@@ -26,8 +26,8 @@ const OrderInfoBlock: FC<OrderInfoBlockProps> = ({ orderData }) => {
 	if (!orderData || !orderData.length) return null;
 	return (
 		<Wrapper>
-			{orderData.map(({ label, value }) => (
-				<OrderInfoRow label={label} value={value} />
+			{orderData.map(({ label, value }, idx: number) => (
+				<OrderInfoRow key={idx} label={label} value={value} />
 			))}
 		</Wrapper>
 	);
