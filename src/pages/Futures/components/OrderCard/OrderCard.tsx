@@ -13,6 +13,7 @@ import { getGasInfo } from 'ducks/transaction';
 import { RootState } from 'ducks/types';
 import { EMPTY_VALUE } from 'constants/placeholder';
 import { formatCurrency } from 'utils/formatters';
+import TxErrorMessage from 'components/TxErrorMessage';
 
 import { FormInputLabel, FormInputLabelSmall, FlexDiv, FlexDivRow } from 'shared/commonStyles';
 
@@ -28,6 +29,7 @@ import { SYNTHS_MAP } from 'constants/currency';
 
 import { StyledCardBody, StyledCardHeader } from '../common';
 import { getCurrencyKeyBalance } from 'utils/balances';
+import snxJSConnector from 'utils/snxJSConnector';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
@@ -75,6 +77,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const [leverage, setLeverage] = useState(INPUT_DEFAULT_LEVERAGE);
 	const [isLong, setIsLong] = useState(true);
 	const [gasLimit, setGasLimit] = useState(gasInfo.gasLimit);
+	const [txErrorMessage, setTxErrorMessage] = useState<string | null>(null);
+
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 	const assetPriceInUSD = futureMarket?.price ?? 0;
@@ -93,6 +98,26 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			: false;
 
 	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0;
+
+	const handleSubmit = async () => {
+		try {
+			setTxErrorMessage(null);
+			setIsSubmitting(true);
+			console.log((snxJSConnector as any).snxJS);
+			const tx = await (snxJSConnector as any).snxJS.FuturesMarket.submitOrder(margin, leverage);
+
+			const txResult = await tx.wait();
+			console.log(txResult);
+			if (txResult && txResult.transactionHash) {
+				// TODO
+			}
+		} catch (e) {
+			console.log(e);
+			setTxErrorMessage(t('common.errors.unknown-error-try-again'));
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	return (
 		<StyledCard>
@@ -237,7 +262,12 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							usdRate={assetPriceInUSD}
 							amount={amountNum}
 						/>
-						<Button size="sm" palette="primary" disabled={isSubmissionDisabled}>
+						<Button
+							size="sm"
+							palette="primary"
+							disabled={isSubmissionDisabled}
+							onClick={handleSubmit}
+						>
 							{t('common.actions.submit')}
 						</Button>
 						<CloseButton
@@ -247,6 +277,11 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 						>
 							{t('common.actions.close')}
 						</CloseButton>
+						{txErrorMessage && (
+							<TxErrorMessage onDismiss={() => setTxErrorMessage(null)}>
+								{txErrorMessage}
+							</TxErrorMessage>
+						)}
 					</OrderInfoColumn>
 				</FlexDivRow>
 			</StyledCardBody>
