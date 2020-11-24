@@ -167,7 +167,7 @@ const Futures: FC<FuturesProps> = ({
 	);
 
 	const positionDetailsQuery = useQuery<PositionDetails, any>(
-		QUERY_KEYS.Futures.PositionDetails(currentWalletAddress ?? ''),
+		QUERY_KEYS.Futures.PositionDetails(futureMarketAddress ?? '', currentWalletAddress ?? ''),
 		async () => {
 			const positionDetails = (await (snxJSConnector as any).snxJS.FuturesMarketData.positionDetails(
 				futureMarketAddress,
@@ -258,7 +258,8 @@ const Futures: FC<FuturesProps> = ({
 		positionDetailsQuery.refetch();
 	}, [marketDetailsQuery, positionDetailsQuery]);
 
-	if (!isReady) {
+	// TODO: this might be a bit too aggressive, just a quick win
+	if (!isReady || marketDetailsQuery.isLoading || positionDetailsQuery.isLoading) {
 		return <Spinner size="sm" centered={true} />;
 	}
 
