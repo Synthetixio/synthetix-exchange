@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -184,6 +184,12 @@ const Futures: FC<FuturesProps> = ({
 				remainingMargin,
 			} = positionDetails;
 
+			const isLong = order.margin > 0;
+			const isShort = order.margin < 0;
+			const hasPosition = isLong || isShort;
+			const hasOpenOrder = order.pending;
+			const hasOrderOrPosition = hasPosition || hasOpenOrder;
+
 			return {
 				accruedFunding: bigNumberFormatter(accruedFunding),
 				liquidationPrice: bigNumberFormatter(liquidationPrice),
@@ -203,6 +209,11 @@ const Futures: FC<FuturesProps> = ({
 				},
 				profitLoss: bigNumberFormatter(profitLoss),
 				remainingMargin: bigNumberFormatter(remainingMargin),
+				isLong,
+				isShort,
+				hasPosition,
+				hasOpenOrder,
+				hasOrderOrPosition,
 			};
 		},
 		{
@@ -212,8 +223,6 @@ const Futures: FC<FuturesProps> = ({
 
 	const futureMarketDetails = marketDetailsQuery.isSuccess ? marketDetailsQuery.data : null;
 	const positionDetails = positionDetailsQuery.isSuccess ? positionDetailsQuery.data : null;
-
-	console.log(positionDetails);
 
 	useEffect(() => {
 		const { params } = match;
@@ -244,6 +253,11 @@ const Futures: FC<FuturesProps> = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [match, setSynthPair, futureMarkets]);
 
+	const refetchMarketAndPosition = useCallback(() => {
+		marketDetailsQuery.refetch();
+		positionDetailsQuery.refetch();
+	}, [marketDetailsQuery, positionDetailsQuery]);
+
 	if (!isReady) {
 		return <Spinner size="sm" centered={true} />;
 	}
@@ -259,7 +273,10 @@ const Futures: FC<FuturesProps> = ({
 					</RowContainer>
 					<SectionVerticalSpacer />
 					<RowContainer>
-						<CurrentPositionCard futureMarket={futureMarket} />
+						<CurrentPositionCard
+							futureMarketDetails={futureMarketDetails}
+							positionDetails={positionDetails}
+						/>
 						<OrderCard futureMarket={futureMarket} />
 					</RowContainer>
 				</FuturesContainer>

@@ -109,9 +109,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							orderData={[
 								{
 									label: t('futures.futures-order-card.order-info.notional-value'),
-									value: '- sBTC',
+									value: '- sUSD',
 								},
-								{ label: t('futures.futures-order-card.order-info.pnl'), value: '- sBTC' },
+								{ label: t('futures.futures-order-card.order-info.pnl'), value: '- sUSD' },
 							]}
 						/>
 					</OrderInfoColumn>
@@ -146,10 +146,10 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 						/>
 						<OrderInfoBlock
 							orderData={[
-								{ label: t('futures.futures-order-card.order-info.order-price'), value: '- sBTC' },
+								{ label: t('futures.futures-order-card.order-info.order-price'), value: '- sUSD' },
 								{
 									label: t('futures.futures-order-card.order-info.liquidation-price'),
-									value: '- sBTC',
+									value: '- sUSD',
 								},
 							]}
 						/>
@@ -179,9 +179,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							orderData={[
 								{
 									label: t('futures.futures-order-card.order-info.daily-funding-rate'),
-									value: '- sBTC',
+									value: '- sUSD',
 								},
-								{ label: t('futures.futures-order-card.order-info.net-funding'), value: '- sBTC' },
+								{ label: t('futures.futures-order-card.order-info.net-funding'), value: '- sUSD' },
 							]}
 						/>
 					</OrderInfoColumn>

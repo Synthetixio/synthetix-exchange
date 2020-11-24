@@ -60,4 +60,11 @@ export type PositionDetails<T = number> = {
 	};
 	profitLoss: T;
 	remainingMargin: T;
+	isLong: boolean;
+	isShort: boolean;
+	hasPosition: boolean;
+	hasOpenOrder: boolean;
+	hasOrderOrPosition: boolean;
 };
+
+export type Side = 'long' | 'short';
