@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
 import { getSynthPair } from 'ducks/synths';
-import { getSynthsWalletBalances, getWalletBalancesMap } from 'ducks/wallet/walletBalances';
+import {
+	fetchWalletBalancesRequest,
+	getSynthsWalletBalances,
+	getWalletBalancesMap,
+} from 'ducks/wallet/walletBalances';
 import { getEthRate, getRatesExchangeRates } from 'ducks/rates';
 import { getGasInfo } from 'ducks/transaction';
 
@@ -46,7 +50,9 @@ const mapStateToProps = (state: RootState) => ({
 	walletBalancesMap: getWalletBalancesMap(state),
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+	fetchWalletBalancesRequest,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -70,6 +76,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	futureMarketDetails,
 	walletBalancesMap,
 	refetchMarketAndPosition,
+	fetchWalletBalancesRequest,
 	positionDetails,
 }) => {
 	const { t } = useTranslation();
@@ -127,6 +134,8 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			console.log(txResult);
 			if (txResult && txResult.transactionHash) {
 				// TODO
+				fetchWalletBalancesRequest();
+				refetchMarketAndPosition();
 			}
 		} catch (e) {
 			console.log(e);
