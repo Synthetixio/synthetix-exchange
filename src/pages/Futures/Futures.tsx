@@ -18,11 +18,11 @@ import OrderCard from './components/OrderCard';
 import { getSynthPair, setSynthPair, getAvailableSynthsMap } from 'ducks/synths';
 import { useQuery } from 'react-query';
 import snxJSConnector from 'utils/snxJSConnector';
-import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
+import { getCurrentWalletAddress, getIsWalletConnected } from 'ducks/wallet/walletDetails';
 import { BigNumberish } from 'ethers/utils';
 import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
 
-import { MarketSummaryMap, MarketSummary, MarketDetails } from './types';
+import { MarketSummaryMap, MarketSummary, MarketDetails, PositionDetails } from './types';
 import QUERY_KEYS from 'constants/queryKeys';
 import CurrentPositionCard from './components/CurrentPositionCard';
 
@@ -30,6 +30,7 @@ const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
 	synthsMap: getAvailableSynthsMap(state),
 	isWalletConnected: getIsWalletConnected(state),
+	currentWalletAddress: getCurrentWalletAddress(state),
 });
 
 const mapDispatchToProps = {
@@ -52,6 +53,7 @@ const Futures: FC<FuturesProps> = ({
 	synthPair,
 	synthsMap,
 	isWalletConnected,
+	currentWalletAddress,
 }) => {
 	const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -164,7 +166,54 @@ const Futures: FC<FuturesProps> = ({
 		}
 	);
 
+	const positionDetailsQuery = useQuery<PositionDetails, any>(
+		QUERY_KEYS.Futures.PositionDetails(currentWalletAddress ?? ''),
+		async () => {
+			const positionDetails = (await (snxJSConnector as any).snxJS.FuturesMarketData.positionDetails(
+				futureMarketAddress,
+				currentWalletAddress
+			)) as PositionDetails<BigNumberish>;
+
+			const {
+				accruedFunding,
+				liquidationPrice,
+				notionalValue,
+				order,
+				position,
+				profitLoss,
+				remainingMargin,
+			} = positionDetails;
+
+			return {
+				accruedFunding: bigNumberFormatter(accruedFunding),
+				liquidationPrice: bigNumberFormatter(liquidationPrice),
+				notionalValue: bigNumberFormatter(notionalValue),
+				order: {
+					pending: false,
+					margin: bigNumberFormatter(order.margin),
+					leverage: bigNumberFormatter(order.leverage),
+					fee: bigNumberFormatter(order.fee),
+					roundId: bigNumberFormatter(order.roundId),
+				},
+				position: {
+					margin: bigNumberFormatter(position.margin),
+					size: bigNumberFormatter(position.size),
+					entryPrice: bigNumberFormatter(position.entryPrice),
+					entryIndex: bigNumberFormatter(position.entryIndex),
+				},
+				profitLoss: bigNumberFormatter(profitLoss),
+				remainingMargin: bigNumberFormatter(remainingMargin),
+			};
+		},
+		{
+			enabled: isWalletConnected && futureMarketAddress != null,
+		}
+	);
+
 	const futureMarketDetails = marketDetailsQuery.isSuccess ? marketDetailsQuery.data : null;
+	const positionDetails = positionDetailsQuery.isSuccess ? positionDetailsQuery.data : null;
+
+	console.log(positionDetails);
 
 	useEffect(() => {
 		const { params } = match;

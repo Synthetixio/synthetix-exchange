@@ -40,3 +40,24 @@ export type MarketDetails<T = number> = {
 		isInvalid: true;
 	};
 };
+
+export type PositionDetails<T = number> = {
+	accruedFunding: T;
+	liquidationPrice: T;
+	notionalValue: T;
+	order: {
+		pending: false;
+		margin: T;
+		leverage: T;
+		fee: T;
+		roundId: T;
+	};
+	position: {
+		margin: T;
+		size: T;
+		entryPrice: T;
+		entryIndex: T;
+	};
+	profitLoss: T;
+	remainingMargin: T;
+};
