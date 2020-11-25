@@ -1,10 +1,15 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
+import Notify from 'bnc-notify';
 
-import { getCurrentWalletAddress, getIsWalletConnected } from 'ducks/wallet/walletDetails';
+import {
+	getCurrentWalletAddress,
+	getIsWalletConnected,
+	getNetworkId,
+} from 'ducks/wallet/walletDetails';
 import { getSynthPair } from 'ducks/synths';
 import {
 	fetchWalletBalancesRequest,
@@ -40,8 +45,10 @@ import { SYNTHS_MAP } from 'constants/currency';
 import { StyledCardBody, StyledCardHeader } from '../common';
 import { getCurrencyKeyBalance } from 'utils/balances';
 import snxJSConnector from 'utils/snxJSConnector';
-import { GWEI_UNIT } from 'utils/networkUtils';
+import { GWEI_UNIT, NetworkId } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
+import { ethers } from 'ethers';
+import { getEtherscanTxLink } from 'utils/explorers';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
@@ -55,6 +62,7 @@ const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	walletBalancesMap: getWalletBalancesMap(state),
+	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {
@@ -72,6 +80,15 @@ type OrderBookCardProps = PropsFromRedux & {
 	refetchMarketAndPosition: () => void;
 };
 
+const BN_NOTIFY_ENABLED = false; // enable on TestNet/MainNet, since bn-notify does not support local nodes
+
+const initNotify = (networkId: NetworkId, darkMode: boolean) =>
+	Notify({
+		dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY,
+		networkId,
+		darkMode,
+	});
+
 const OrderBookCard: FC<OrderBookCardProps> = ({
 	synthPair,
 	currentWalletAddress,
@@ -86,6 +103,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	refetchMarketAndPosition,
 	fetchWalletBalancesRequest,
 	positionDetails,
+	networkId,
 }) => {
 	const { t } = useTranslation();
 	const { base, quote } = synthPair;
@@ -98,17 +116,14 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [isClosingPosition, setIsClosingPosition] = useState<boolean>(false);
 	const [isCancellingOrder, setIsCancellingOrder] = useState<boolean>(false);
+	const [notify, setNotify] = useState<ReturnType<typeof initNotify> | null>(null);
+	const { isDarkTheme } = useContext(ThemeContext);
 
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 	const assetPriceInUSD = futureMarket?.price ?? 0;
 
 	const amountNum = Number(amount);
 	const marginNum = Number(margin);
-
-	const setMaxSUSDBalance = () => {
-		setMargin(`${sUSDBalance}`);
-		setAmount(`${sUSDBalance / assetPriceInUSD}`);
-	};
 
 	const isValidLeverage =
 		futureMarketDetails != null
@@ -119,6 +134,16 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 	const isSubmissionDisabled =
 		!isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting || insufficientBalance;
+
+	useEffect(() => {
+		const notify = initNotify(networkId, isDarkTheme);
+		setNotify(notify);
+	}, [networkId, isDarkTheme]);
+
+	const setMaxSUSDBalance = () => {
+		setMargin(`${sUSDBalance}`);
+		setAmount(`${sUSDBalance / assetPriceInUSD}`);
+	};
 
 	const getFuturesMarketContract = () => {
 		const { snxJS } = snxJSConnector as any;
@@ -136,14 +161,26 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 			setGasLimit(gasEstimate);
 
-			const tx = await FuturesMarketContract.cancelOrder({
+			const tx = (await FuturesMarketContract.cancelOrder({
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: normalizeGasLimit(gasEstimate),
-			});
+			})) as ethers.ContractTransaction;
 
-			const txResult = await tx.wait();
-			if (txResult && txResult.transactionHash) {
-				refetchMarketAndPosition();
+			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					refetchMarketAndPosition();
+
+					return {
+						autoDismiss: 0,
+						link: getEtherscanTxLink(networkId, tx.hash),
+					};
+				});
+			} else {
+				const txResult = await tx.wait();
+				if (txResult && txResult.transactionHash) {
+					refetchMarketAndPosition();
+				}
 			}
 		} catch (e) {
 			console.log(e);
@@ -168,15 +205,28 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 			setGasLimit(gasEstimate);
 
-			const tx = await FuturesMarketContract.submitOrder(...params, {
+			const tx = (await FuturesMarketContract.submitOrder(...params, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
 				gasLimit: normalizeGasLimit(gasEstimate),
-			});
+			})) as ethers.ContractTransaction;
 
-			const txResult = await tx.wait();
-			if (txResult && txResult.transactionHash) {
-				fetchWalletBalancesRequest();
-				refetchMarketAndPosition();
+			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					fetchWalletBalancesRequest();
+					refetchMarketAndPosition();
+
+					return {
+						autoDismiss: 0,
+						link: getEtherscanTxLink(networkId, tx.hash),
+					};
+				});
+			} else {
+				const txResult = await tx.wait();
+				if (txResult && txResult.transactionHash) {
+					fetchWalletBalancesRequest();
+					refetchMarketAndPosition();
+				}
 			}
 		} catch (e) {
 			console.log(e);
@@ -202,10 +252,23 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: normalizeGasLimit(gasEstimate),
 			});
 
-			const txResult = await tx.wait();
-			if (txResult && txResult.transactionHash) {
-				fetchWalletBalancesRequest();
-				refetchMarketAndPosition();
+			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
+				const { emitter } = notify.hash(tx.hash);
+				emitter.on('txConfirmed', () => {
+					fetchWalletBalancesRequest();
+					refetchMarketAndPosition();
+
+					return {
+						autoDismiss: 0,
+						link: getEtherscanTxLink(networkId, tx.hash),
+					};
+				});
+			} else {
+				const txResult = await tx.wait();
+				if (txResult && txResult.transactionHash) {
+					fetchWalletBalancesRequest();
+					refetchMarketAndPosition();
+				}
 			}
 		} catch (e) {
 			console.log(e);
