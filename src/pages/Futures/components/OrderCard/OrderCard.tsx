@@ -195,7 +195,10 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			setIsSubmitting(true);
 
 			const FuturesMarketContract = getFuturesMarketContract();
-			const params = [parseEther(margin.toString()), parseEther(leverage.toString())];
+			const params = [
+				parseEther(!isLong ? (Number(margin) * -1).toString() : margin),
+				parseEther(leverage.toString()),
+			];
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.submitOrder(...params);
 
