@@ -1,10 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import styled from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 
-import { getIsWalletConnected } from 'ducks/wallet/walletDetails';
+import { getCurrentWalletAddress, getIsWalletConnected } from 'ducks/wallet/walletDetails';
 import { getSynthPair } from 'ducks/synths';
 import {
 	fetchWalletBalancesRequest,
@@ -48,6 +48,7 @@ const INPUT_DEFAULT_LEVERAGE = 1;
 
 const mapStateToProps = (state: RootState) => ({
 	isWalletConnected: getIsWalletConnected(state),
+	currentWalletAddress: getCurrentWalletAddress(state),
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
 	exchangeRates: getRatesExchangeRates(state),
@@ -73,6 +74,7 @@ type OrderBookCardProps = PropsFromRedux & {
 
 const OrderBookCard: FC<OrderBookCardProps> = ({
 	synthPair,
+	currentWalletAddress,
 	isWalletConnected,
 	synthsWalletBalances,
 	gasInfo,
@@ -115,13 +117,17 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting;
 
+	const getFuturesMarketContract = () => {
+		const { snxJS } = snxJSConnector as any;
+
+		return snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+	};
+
 	const handleCancelOrder = async () => {
 		try {
-			const { snxJS } = snxJSConnector as any;
-
 			setIsCancellingOrder(true);
 
-			const FuturesMarketContract = snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+			const FuturesMarketContract = getFuturesMarketContract();
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.cancelOrder();
 
@@ -146,14 +152,13 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const handleSubmitOrder = async () => {
 		try {
 			const {
-				snxJS,
 				utils: { parseEther },
 			} = snxJSConnector as any;
 
 			setTxErrorMessage(null);
 			setIsSubmitting(true);
 
-			const FuturesMarketContract = snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+			const FuturesMarketContract = getFuturesMarketContract();
 			const params = [parseEther(margin.toString()), parseEther(leverage.toString())];
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.submitOrder(...params);
@@ -180,12 +185,10 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 	const handleClosePosition = async () => {
 		try {
-			const { snxJS } = snxJSConnector as any;
-
 			setTxErrorMessage(null);
 			setIsClosingPosition(true);
 
-			const FuturesMarketContract = snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+			const FuturesMarketContract = getFuturesMarketContract();
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.closePosition();
 
@@ -208,6 +211,49 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			setIsClosingPosition(false);
 		}
 	};
+
+	useEffect(() => {
+		const FuturesMarketContract = getFuturesMarketContract();
+
+		const setEventListeners = () => {
+			FuturesMarketContract.contract.on(
+				'OrderSubmitted',
+				(address: string, _margin: number, _leverage: number, _fee: number, _roundId: number) => {
+					if (address === currentWalletAddress) {
+						refetchMarketAndPosition();
+					}
+				}
+			);
+			FuturesMarketContract.contract.on(
+				'OrderConfirmed',
+				(
+					address: string,
+					_margin: number,
+					_size: number,
+					_fee: number,
+					_entryPrice: number,
+					_entryIndex: number
+				) => {
+					if (address === currentWalletAddress) {
+						refetchMarketAndPosition();
+					}
+				}
+			);
+			FuturesMarketContract.contract.on('OrderCancelled', (address: string) => {
+				if (address === currentWalletAddress) {
+					refetchMarketAndPosition();
+				}
+			});
+		};
+		setEventListeners();
+
+		return () => {
+			FuturesMarketContract.contract.removeAllListeners('OrderSubmitted');
+			FuturesMarketContract.contract.removeAllListeners('OrderConfirmed');
+			FuturesMarketContract.contract.removeAllListeners('OrderCancelled');
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<StyledCard>
