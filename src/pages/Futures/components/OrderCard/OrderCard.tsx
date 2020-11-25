@@ -49,6 +49,7 @@ import { GWEI_UNIT, NetworkId } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
 import { ethers } from 'ethers';
 import { getEtherscanTxLink } from 'utils/explorers';
+import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
@@ -120,7 +121,8 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const { isDarkTheme } = useContext(ThemeContext);
 
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
-	const assetPriceInUSD = futureMarket?.price ?? 0;
+	// const assetPriceInUSD = futureMarket?.price ?? 0;
+	const assetPriceInUSD = getExchangeRatesForCurrencies(exchangeRates, quote.name, base.name);
 
 	const amountNum = Number(amount);
 	const marginNum = Number(margin);
