@@ -5,11 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import Notify from 'bnc-notify';
 
-import {
-	getCurrentWalletAddress,
-	getIsWalletConnected,
-	getNetworkId,
-} from 'ducks/wallet/walletDetails';
+import { getCurrentWalletAddress, getNetworkId } from 'ducks/wallet/walletDetails';
 import { getSynthPair } from 'ducks/synths';
 import {
 	fetchWalletBalancesRequest,
@@ -55,7 +51,6 @@ const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
 
 const mapStateToProps = (state: RootState) => ({
-	isWalletConnected: getIsWalletConnected(state),
 	currentWalletAddress: getCurrentWalletAddress(state),
 	gasInfo: getGasInfo(state),
 	ethRate: getEthRate(state),
@@ -81,7 +76,7 @@ type OrderBookCardProps = PropsFromRedux & {
 	refetchMarketAndPosition: () => void;
 };
 
-const BN_NOTIFY_ENABLED = false; // enable on TestNet/MainNet, since bn-notify does not support local nodes
+const BN_NOTIFY_ENABLED = true; // enable on TestNet/MainNet, since bn-notify does not support local nodes
 
 const initNotify = (networkId: NetworkId, darkMode: boolean) =>
 	Notify({
@@ -93,7 +88,6 @@ const initNotify = (networkId: NetworkId, darkMode: boolean) =>
 const OrderBookCard: FC<OrderBookCardProps> = ({
 	synthPair,
 	currentWalletAddress,
-	isWalletConnected,
 	synthsWalletBalances,
 	gasInfo,
 	ethRate,
