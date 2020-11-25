@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -21,6 +21,8 @@ import UserInfo from './UserInfo';
 import SupportLink from './SupportLink';
 
 import MobileAppHeader from './MobileAppHeader';
+import { Button } from 'components/Button';
+import LiquidationsModal from 'pages/Futures/components/LiquidationsModal';
 
 type StateProps = {
 	isWalletConnected: boolean;
@@ -35,6 +37,7 @@ type Props = {
 type AppHeaderProps = StateProps & Props;
 
 export const AppHeader: FC<AppHeaderProps> = (props) => {
+	const [liquidationsModalVisible, setLiquidationsModalVisible] = useState<boolean>(false);
 	const { showThemeToggle = true, isOnSplashPage, isWalletConnected, ...rest } = props;
 
 	const isTabletOrMobile = useMediaQuery({ query: mediumMediaQuery });
@@ -44,30 +47,44 @@ export const AppHeader: FC<AppHeaderProps> = (props) => {
 	}
 
 	return (
-		<Container isOnSplashPage={isOnSplashPage} {...rest}>
-			<Content>
-				<MenuItemsLeft>
-					<MenuItem>
-						<StyledLogoLink to={ROUTES.Home}>
-							<Logo />
-						</StyledLogoLink>
-					</MenuItem>
-				</MenuItemsLeft>
-				<MenuItemsRight>
-					<MenuItem>
-						<SupportLink isOnSplashPage={isOnSplashPage} />
-					</MenuItem>
-					{showThemeToggle && (
+		<>
+			<Container isOnSplashPage={isOnSplashPage} {...rest}>
+				<Content>
+					<MenuItemsLeft>
 						<MenuItem>
-							<ThemeToggle />
+							<StyledLogoLink to={ROUTES.Home}>
+								<Logo />
+							</StyledLogoLink>
 						</MenuItem>
-					)}
-					<MenuItem>
-						<UserInfo isOnSplashPage={isOnSplashPage} />
-					</MenuItem>
-				</MenuItemsRight>
-			</Content>
-		</Container>
+					</MenuItemsLeft>
+					<MenuItemsRight>
+						<MenuItem>
+							<Button
+								palette="secondary"
+								size="sm"
+								onClick={() => setLiquidationsModalVisible(true)}
+							>
+								liquidations
+							</Button>
+						</MenuItem>
+						<MenuItem>
+							<SupportLink isOnSplashPage={isOnSplashPage} />
+						</MenuItem>
+						{showThemeToggle && (
+							<MenuItem>
+								<ThemeToggle />
+							</MenuItem>
+						)}
+						<MenuItem>
+							<UserInfo isOnSplashPage={isOnSplashPage} />
+						</MenuItem>
+					</MenuItemsRight>
+				</Content>
+			</Container>
+			{liquidationsModalVisible && (
+				<LiquidationsModal onClose={() => setLiquidationsModalVisible(false)} />
+			)}
+		</>
 	);
 };
 
