@@ -25,6 +25,7 @@ import { bigNumberFormatter, parseBytes32String } from 'utils/formatters';
 import { MarketSummaryMap, MarketSummary, MarketDetails, PositionDetails } from './types';
 import QUERY_KEYS from 'constants/queryKeys';
 import CurrentPositionCard from './components/CurrentPositionCard';
+import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 
 const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
@@ -102,6 +103,7 @@ const Futures: FC<FuturesProps> = ({
 		{
 			// TODO: remove this when contracts are on TestNet/MainNet
 			enabled: isWalletConnected,
+			refetchInterval: DEFAULT_REQUEST_REFRESH_INTERVAL,
 		}
 	);
 
@@ -163,6 +165,7 @@ const Futures: FC<FuturesProps> = ({
 		},
 		{
 			enabled: futureMarketAddress != null,
+			refetchInterval: DEFAULT_REQUEST_REFRESH_INTERVAL,
 		}
 	);
 
@@ -218,6 +221,7 @@ const Futures: FC<FuturesProps> = ({
 		},
 		{
 			enabled: isWalletConnected && futureMarketAddress != null,
+			refetchInterval: DEFAULT_REQUEST_REFRESH_INTERVAL,
 		}
 	);
 
