@@ -115,7 +115,10 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			? leverage >= 1 && leverage <= futureMarketDetails.limits.maxLeverage
 			: false;
 
-	const isSubmissionDisabled = !isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting;
+	const insufficientBalance = margin > sUSDBalance;
+
+	const isSubmissionDisabled =
+		!isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting || insufficientBalance;
 
 	const getFuturesMarketContract = () => {
 		const { snxJS } = snxJSConnector as any;
@@ -344,7 +347,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								setMargin(value);
 								setAmount(`${Number(value) / assetPriceInUSD}`);
 							}}
-							errorMessage={null}
+							errorMessage={insufficientBalance && 'Amount exceeds balance'}
 						/>
 						<OrderInfoBlock
 							orderData={[
@@ -384,7 +387,11 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							isLong={isLong}
 							onLongButtonClick={() => setIsLong(true)}
 							onShortButtonClick={() => setIsLong(false)}
-							errorMessage={null}
+							errorMessage={
+								!isValidLeverage &&
+								futureMarketDetails &&
+								`Leverage should be between 1-${futureMarketDetails.limits.maxLeverage}`
+							}
 						/>
 						<OrderInfoBlock
 							orderData={[
