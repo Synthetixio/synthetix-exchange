@@ -77,6 +77,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const Button = styled(ButtonPrimary).attrs({ size: 'sm' })<{ isActive: boolean }>`
+	outline: none;
 	height: 100%;
 	line-height: unset;
 	border-radius: 0;
