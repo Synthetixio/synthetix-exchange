@@ -118,6 +118,7 @@ const Wallets = styled.div`
 `;
 
 const Wallet = styled.button`
+	outline: none;
 	cursor: pointer;
 	border: 1px solid ${(props) => props.theme.colors.accentL1};
 	border-radius: 2px;
