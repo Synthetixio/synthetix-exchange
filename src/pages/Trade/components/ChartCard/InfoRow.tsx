@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from 'react-query';
 
 import { USD_SIGN } from 'constants/currency';
 
@@ -14,7 +15,10 @@ import { formatCurrencyWithPrecision, formatCurrencyWithSign } from 'utils/forma
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 import ChangePercent from 'components/ChangePercent';
-import { ChartData } from './types';
+import { PERIOD_IN_HOURS } from 'constants/period';
+import { fetchSynthRateUpdates, fetchSynthVolumeInUSD } from 'services/rates/rates';
+
+import { DEFAULT_REQUEST_REFRESH_INTERVAL } from 'constants/ui';
 
 type StateProps = {
 	exchangeRates: Rates | null;
@@ -23,24 +27,42 @@ type StateProps = {
 
 type Props = {
 	synthPair: SynthPair;
-	data: ChartData;
-	volume24H: number;
 };
 
 type InfoRowProps = StateProps & Props;
 
-const InfoRow: FC<InfoRowProps> = ({
-	data: { low24H, high24H, change24H },
-	volume24H,
-	exchangeRates,
-	synthPair: { base, quote },
-	synthsMap,
-}) => {
+const InfoRow: FC<InfoRowProps> = ({ exchangeRates, synthPair: { base, quote }, synthsMap }) => {
 	const { t } = useTranslation();
 	const rate = getExchangeRatesForCurrencies(exchangeRates, base.name, quote.name) || 0;
 	const synthSign = synthsMap[quote.name] && synthsMap[quote.name].sign;
 	const [prevRate, setPrevRate] = useState<number>(rate);
 	const [rateChange, setRateChange] = useState<number>(0);
+
+	const vol24HQuery = useQuery(
+		['historicalVolume', base.name, quote.name, PERIOD_IN_HOURS.ONE_DAY],
+		async () => {
+			const totalVolume = await fetchSynthVolumeInUSD(
+				base.name,
+				quote.name,
+				PERIOD_IN_HOURS.ONE_DAY
+			);
+			return totalVolume;
+		},
+		{
+			refetchInterval: DEFAULT_REQUEST_REFRESH_INTERVAL,
+		}
+	);
+
+	const rates24HQuery = useQuery(
+		['historicalTrades', base.name, quote.name, PERIOD_IN_HOURS.ONE_DAY],
+		async () => {
+			const rates = await fetchSynthRateUpdates(base.name, quote.name, PERIOD_IN_HOURS.ONE_DAY);
+			return rates;
+		},
+		{
+			refetchInterval: DEFAULT_REQUEST_REFRESH_INTERVAL,
+		}
+	);
 
 	useEffect(() => {
 		if (rate > 0 && prevRate > 0) {
@@ -65,19 +87,19 @@ const InfoRow: FC<InfoRowProps> = ({
 	const infoBoxItems = [
 		{
 			label: t('trade.chart-card.info-boxes.24h-change'),
-			value: <ChangePercent value={change24H} />,
+			value: <ChangePercent value={rates24HQuery.data?.change ?? 0} />,
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-high'),
-			value: formatCurrencyWithSign(synthSign, high24H),
+			value: formatCurrencyWithSign(synthSign, rates24HQuery.data?.high ?? 0),
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-low'),
-			value: formatCurrencyWithSign(synthSign, low24H),
+			value: formatCurrencyWithSign(synthSign, rates24HQuery.data?.low ?? 0),
 		},
 		{
 			label: t('trade.chart-card.info-boxes.24h-volume'),
-			value: formatCurrencyWithSign(USD_SIGN, volume24H),
+			value: formatCurrencyWithSign(USD_SIGN, vol24HQuery.data ?? 0),
 		},
 	];
 
