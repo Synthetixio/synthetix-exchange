@@ -55,7 +55,7 @@ const Root = ({
 
 			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
 
-			const synths = snxJSConnector.snxJS.contractSettings.synths.filter((synth) => synth.asset);
+			const synths = snxJSConnector.synths.filter((synth) => synth.asset);
 
 			setAvailableSynths({ synths });
 			setAppReady();

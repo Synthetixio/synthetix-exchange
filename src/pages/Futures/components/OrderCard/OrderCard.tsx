@@ -76,11 +76,11 @@ type OrderBookCardProps = PropsFromRedux & {
 	refetchMarketAndPosition: () => void;
 };
 
-const BN_NOTIFY_ENABLED = true; // enable on TestNet/MainNet, since bn-notify does not support local nodes
+const BN_NOTIFY_ENABLED = false; // enable on TestNet/MainNet, since bn-notify does not support local nodes
 
 const initNotify = (networkId: NetworkId, darkMode: boolean) =>
 	Notify({
-		dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY,
+		dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY ?? 'db0a0f30-6ed1-4e05-aff5-548ae5d3bd6f',
 		networkId,
 		darkMode,
 	});
@@ -154,12 +154,13 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			const FuturesMarketContract = getFuturesMarketContract();
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.cancelOrder();
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
-			setGasLimit(gasEstimate);
+			setGasLimit(updatedGasEstimate);
 
 			const tx = (await FuturesMarketContract.cancelOrder({
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: normalizeGasLimit(gasEstimate),
+				gasLimit: updatedGasEstimate,
 			})) as ethers.ContractTransaction;
 
 			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
@@ -201,12 +202,13 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			];
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.submitOrder(...params);
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
-			setGasLimit(gasEstimate);
+			setGasLimit(updatedGasEstimate);
 
 			const tx = (await FuturesMarketContract.submitOrder(...params, {
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: normalizeGasLimit(gasEstimate),
+				gasLimit: updatedGasEstimate,
 			})) as ethers.ContractTransaction;
 
 			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
@@ -243,12 +245,13 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 			const FuturesMarketContract = getFuturesMarketContract();
 
 			const gasEstimate = await FuturesMarketContract.contract.estimate.closePosition();
+			const updatedGasEstimate = normalizeGasLimit(Number(gasEstimate));
 
-			setGasLimit(gasEstimate);
+			setGasLimit(updatedGasEstimate);
 
 			const tx = await FuturesMarketContract.closePosition({
 				gasPrice: gasInfo.gasPrice * GWEI_UNIT,
-				gasLimit: normalizeGasLimit(gasEstimate),
+				gasLimit: updatedGasEstimate,
 			});
 
 			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {

@@ -29,6 +29,42 @@ type SnxJSConnector = {
 	contractSettings: ContractSettings;
 };
 
+const synths = [
+	{
+		asset: 'USD',
+		category: 'forex',
+		sign: '$',
+		description: 'US Dollars',
+		name: 'sUSD',
+		subclass: 'MultiCollateralSynth',
+	},
+	{
+		feed: '0x6135b13325bfC4B00278B4abC5e20bbce2D6580e',
+		asset: 'BTC',
+		category: 'crypto',
+		sign: '₿',
+		description: 'Bitcoin',
+		name: 'sBTC',
+	},
+	{
+		feed: '0x396c5E36DD0a0F5a5D33dae44368D4193f69a1F0',
+		asset: 'LINK',
+		category: 'crypto',
+		sign: '',
+		description: 'Chainlink',
+		name: 'sLINK',
+	},
+	{
+		feed: '0x9326BFA02ADD2366b30bacB125260Af641031331',
+		asset: 'ETH',
+		category: 'crypto',
+		sign: 'Ξ',
+		description: 'Ether',
+		name: 'sETH',
+		subclass: 'MultiCollateralSynth',
+	},
+];
+
 // @ts-ignore
 const snxJSConnector: SnxJSConnector = {
 	initialized: false,
@@ -37,7 +73,8 @@ const snxJSConnector: SnxJSConnector = {
 	setContractSettings: function (contractSettings: ContractSettings) {
 		this.initialized = true;
 		this.snxJS = new SynthetixJs(contractSettings);
-		this.synths = this.snxJS.contractSettings.synths;
+		// @ts-ignore
+		this.synths = synths;
 		this.signer = this.snxJS.contractSettings.signer;
 		this.provider = this.snxJS.contractSettings.provider;
 		this.utils = this.snxJS.utils;

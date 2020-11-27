@@ -101,8 +101,6 @@ const Futures: FC<FuturesProps> = ({
 			return marketsMap;
 		},
 		{
-			// TODO: remove this when contracts are on TestNet/MainNet
-			enabled: isWalletConnected,
 			refetchInterval: DEFAULT_REQUEST_REFRESH_INTERVAL,
 		}
 	);
