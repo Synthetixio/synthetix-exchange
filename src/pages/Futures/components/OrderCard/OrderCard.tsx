@@ -134,6 +134,12 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 		setNotify(notify);
 	}, [networkId, isDarkTheme]);
 
+	useEffect(() => {
+		setAmount(INPUT_DEFAULT_VALUE);
+		setMargin(INPUT_DEFAULT_VALUE);
+		setLeverage(INPUT_DEFAULT_LEVERAGE);
+	}, [synthPair.base, synthPair.quote]);
+
 	const setMaxSUSDBalance = () => {
 		setMargin(`${sUSDBalance}`);
 		setAmount(`${sUSDBalance / assetPriceInUSD}`);
