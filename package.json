@@ -43,7 +43,7 @@
 		"styled-components": "5.0.1",
 		"styled-system": "5.1.2",
 		"synthetix-data": "2.1.37",
-		"synthetix-js": "synthetixio/synthetix-js#futures-testnet",
+		"synthetix-js": "synthetixio/synthetix-js#futures-implementation",
 		"typescript": "3.7.2",
 		"use-immer": "0.4.0"
 	},
