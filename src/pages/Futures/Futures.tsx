@@ -190,6 +190,7 @@ const Futures: FC<FuturesProps> = ({
 			const hasPosition = isLong || isShort;
 			const hasOpenOrder = order.pending;
 			const hasOrderOrPosition = hasPosition || hasOpenOrder;
+			const hasConfirmedOrder = hasPosition && !hasOpenOrder;
 
 			return {
 				accruedFunding: bigNumberFormatter(accruedFunding),
@@ -215,6 +216,7 @@ const Futures: FC<FuturesProps> = ({
 				hasPosition,
 				hasOpenOrder,
 				hasOrderOrPosition,
+				hasConfirmedOrder,
 			};
 		},
 		{
@@ -260,8 +262,7 @@ const Futures: FC<FuturesProps> = ({
 		positionDetailsQuery.refetch();
 	}, [marketDetailsQuery, positionDetailsQuery]);
 
-	// TODO: this might be a bit too aggressive, just a quick win
-	if (!isReady || marketDetailsQuery.isLoading || positionDetailsQuery.isLoading) {
+	if (!isReady) {
 		return <Spinner size="sm" centered={true} />;
 	}
 

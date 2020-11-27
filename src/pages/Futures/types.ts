@@ -65,6 +65,7 @@ export type PositionDetails<T = number> = {
 	hasPosition: boolean;
 	hasOpenOrder: boolean;
 	hasOrderOrPosition: boolean;
+	hasConfirmedOrder: boolean;
 };
 
 export type Side = 'long' | 'short';

@@ -54,7 +54,7 @@ const CurrentPositionCard: FC<CurrentPositionCardProps> = ({
 									: undefined,
 						}}
 					/>
-					{positionDetails != null && positionDetails.hasPosition ? (
+					{positionDetails != null && positionDetails.hasConfirmedOrder ? (
 						positionDetails.isLong ? (
 							<PositionSide side="long">long</PositionSide>
 						) : (
@@ -67,21 +67,21 @@ const CurrentPositionCard: FC<CurrentPositionCardProps> = ({
 						{
 							label: 'Position Size',
 							value:
-								positionDetails != null && positionDetails.hasPosition
+								positionDetails != null && positionDetails.hasConfirmedOrder
 									? `${formatCurrency(positionDetails.position.size)} ${base.name}`
 									: `- ${base.name}`,
 						},
 						{
 							label: 'Remaining Margin',
 							value:
-								positionDetails != null && positionDetails.hasPosition
+								positionDetails != null && positionDetails.hasConfirmedOrder
 									? `${formatCurrency(positionDetails.position.size)} ${SYNTHS_MAP.sUSD}`
 									: `- ${SYNTHS_MAP.sUSD}`,
 						},
 						{
 							label: 'Leverage',
 							value:
-								positionDetails != null && positionDetails.hasPosition
+								positionDetails != null && positionDetails.hasConfirmedOrder
 									? formatCurrency(positionDetails.position.size)
 									: '-',
 						},

@@ -76,8 +76,6 @@ type OrderBookCardProps = PropsFromRedux & {
 	refetchMarketAndPosition: () => void;
 };
 
-const BN_NOTIFY_ENABLED = false; // enable on TestNet/MainNet, since bn-notify does not support local nodes
-
 const initNotify = (networkId: NetworkId, darkMode: boolean) =>
 	Notify({
 		dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY ?? 'db0a0f30-6ed1-4e05-aff5-548ae5d3bd6f',
@@ -141,6 +139,23 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 		setAmount(`${sUSDBalance / assetPriceInUSD}`);
 	};
 
+	const monitorTx = (tx: ethers.ContractTransaction) => {
+		if (tx.hash != null && notify != null) {
+			const { emitter } = notify.hash(tx.hash);
+			emitter.on('txConfirmed', () => {
+				return {
+					autoDismiss: 0,
+					link: getEtherscanTxLink(networkId, tx.hash),
+				};
+			});
+			emitter.on('all', () => {
+				return {
+					link: getEtherscanTxLink(networkId, tx.hash),
+				};
+			});
+		}
+	};
+
 	const getFuturesMarketContract = () => {
 		const { snxJS } = snxJSConnector as any;
 
@@ -163,21 +178,10 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: updatedGasEstimate,
 			})) as ethers.ContractTransaction;
 
-			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
-				const { emitter } = notify.hash(tx.hash);
-				emitter.on('txConfirmed', () => {
-					refetchMarketAndPosition();
-
-					return {
-						autoDismiss: 0,
-						link: getEtherscanTxLink(networkId, tx.hash),
-					};
-				});
-			} else {
-				const txResult = await tx.wait();
-				if (txResult && txResult.transactionHash) {
-					refetchMarketAndPosition();
-				}
+			// monitorTx(tx);
+			const txResult = await tx.wait();
+			if (txResult && txResult.transactionHash) {
+				refetchMarketAndPosition();
 			}
 		} catch (e) {
 			console.log(e);
@@ -211,23 +215,11 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: updatedGasEstimate,
 			})) as ethers.ContractTransaction;
 
-			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
-				const { emitter } = notify.hash(tx.hash);
-				emitter.on('txConfirmed', () => {
-					fetchWalletBalancesRequest();
-					refetchMarketAndPosition();
-
-					return {
-						autoDismiss: 0,
-						link: getEtherscanTxLink(networkId, tx.hash),
-					};
-				});
-			} else {
-				const txResult = await tx.wait();
-				if (txResult && txResult.transactionHash) {
-					fetchWalletBalancesRequest();
-					refetchMarketAndPosition();
-				}
+			// monitorTx(tx);
+			const txResult = await tx.wait();
+			if (txResult && txResult.transactionHash) {
+				fetchWalletBalancesRequest();
+				refetchMarketAndPosition();
 			}
 		} catch (e) {
 			console.log(e);
@@ -254,23 +246,11 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: updatedGasEstimate,
 			});
 
-			if (BN_NOTIFY_ENABLED && tx.hash != null && notify != null) {
-				const { emitter } = notify.hash(tx.hash);
-				emitter.on('txConfirmed', () => {
-					fetchWalletBalancesRequest();
-					refetchMarketAndPosition();
-
-					return {
-						autoDismiss: 0,
-						link: getEtherscanTxLink(networkId, tx.hash),
-					};
-				});
-			} else {
-				const txResult = await tx.wait();
-				if (txResult && txResult.transactionHash) {
-					fetchWalletBalancesRequest();
-					refetchMarketAndPosition();
-				}
+			// monitorTx(tx);
+			const txResult = await tx.wait();
+			if (txResult && txResult.transactionHash) {
+				fetchWalletBalancesRequest();
+				refetchMarketAndPosition();
 			}
 		} catch (e) {
 			console.log(e);
@@ -337,9 +317,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								</CancelOrderButton>
 							</>
 						)}
-						{!positionDetails.hasOpenOrder && positionDetails.hasPosition && (
-							<HeaderLabel>confirmed</HeaderLabel>
-						)}
+						{positionDetails.hasConfirmedOrder && <HeaderLabel>confirmed</HeaderLabel>}
 					</>
 				) : null}{' '}
 			</StyledCardHeader>
@@ -373,14 +351,14 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								{
 									label: t('futures.futures-order-card.order-info.notional-value'),
 									value:
-										positionDetails != null && positionDetails.hasPosition
+										positionDetails != null && positionDetails.hasConfirmedOrder
 											? `${formatCurrency(positionDetails.notionalValue)} ${SYNTHS_MAP.sUSD}`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
 								{
 									label: t('futures.futures-order-card.order-info.pnl'),
 									value:
-										positionDetails != null && positionDetails.hasPosition
+										positionDetails != null && positionDetails.hasConfirmedOrder
 											? `${formatCurrency(positionDetails.profitLoss)} ${SYNTHS_MAP.sUSD}`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
@@ -421,14 +399,14 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								{
 									label: t('futures.futures-order-card.order-info.order-price'),
 									value:
-										positionDetails != null && positionDetails.hasPosition
+										positionDetails != null && positionDetails.hasConfirmedOrder
 											? `${formatCurrency(positionDetails.position.entryPrice)} ${SYNTHS_MAP.sUSD}`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
 								{
 									label: t('futures.futures-order-card.order-info.liquidation-price'),
 									value:
-										positionDetails != null && positionDetails.hasPosition
+										positionDetails != null && positionDetails.hasConfirmedOrder
 											? `${formatCurrency(positionDetails.liquidationPrice)} ${SYNTHS_MAP.sUSD}`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
@@ -472,7 +450,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								{
 									label: t('futures.futures-order-card.order-info.net-funding'),
 									value:
-										positionDetails != null && positionDetails.hasPosition
+										positionDetails != null && positionDetails.hasConfirmedOrder
 											? `${formatCurrency(positionDetails.accruedFunding)} ${SYNTHS_MAP.sUSD}`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
@@ -533,6 +511,7 @@ const CancelOrderButton = styled(TextButton)`
 	font-family: ${(props) => props.theme.fonts.medium};
 	font-size: 12px;
 	margin-left: 16px;
+	text-transform: uppercase;
 `;
 
 const StyledCard = styled(Card)`
