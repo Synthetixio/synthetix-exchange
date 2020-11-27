@@ -75,14 +75,14 @@ const CurrentPositionCard: FC<CurrentPositionCardProps> = ({
 							label: 'Remaining Margin',
 							value:
 								positionDetails != null && positionDetails.hasConfirmedOrder
-									? `${formatCurrency(positionDetails.position.size)} ${SYNTHS_MAP.sUSD}`
+									? `${formatCurrency(positionDetails.remainingMargin)} ${SYNTHS_MAP.sUSD}`
 									: `- ${SYNTHS_MAP.sUSD}`,
 						},
 						{
 							label: 'Leverage',
 							value:
 								positionDetails != null && positionDetails.hasConfirmedOrder
-									? formatCurrency(positionDetails.position.size)
+									? formatCurrency(positionDetails.order.leverage, 0)
 									: '-',
 						},
 					]}
@@ -102,7 +102,7 @@ const PositionSide = styled.div<{ side: Side }>`
 	color: ${(props) => props.theme.colors.white};
 	border-radius: 1000px;
 	text-align: center;
-	padding: 4px 5px;
+	padding: 4px 10px;
 	height: 20px;
 	font-family: ${(props) => props.theme.fonts.medium};
 	background-color: ${(props) =>

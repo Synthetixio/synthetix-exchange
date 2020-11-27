@@ -197,7 +197,7 @@ const Futures: FC<FuturesProps> = ({
 				liquidationPrice: bigNumberFormatter(liquidationPrice),
 				notionalValue: bigNumberFormatter(notionalValue),
 				order: {
-					pending: false,
+					pending: order.pending,
 					margin: bigNumberFormatter(order.margin),
 					leverage: bigNumberFormatter(order.leverage),
 					fee: bigNumberFormatter(order.fee),
