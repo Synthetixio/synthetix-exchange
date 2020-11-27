@@ -337,7 +337,9 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 								</CancelOrderButton>
 							</>
 						)}
-						{positionDetails.hasPosition && <HeaderLabel>confirmed</HeaderLabel>}
+						{!positionDetails.hasOpenOrder && positionDetails.hasPosition && (
+							<HeaderLabel>confirmed</HeaderLabel>
+						)}
 					</>
 				) : null}{' '}
 			</StyledCardHeader>
