@@ -464,7 +464,7 @@
 				"fee": "Fee"
 			},
 			"network-info-tooltip": {
-				"order-fee": "Order fee",
+				"order-fee": "Taker fee",
 				"network-fee": "Network fee (gas)"
 			}
 		},

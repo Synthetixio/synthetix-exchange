@@ -125,6 +125,11 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	};
 
 	useEffect(() => {
+		setAmount(`${Number(margin) * assetPriceInUSD * getValidLeverage()}`);
+		// eslint-disable-next-line
+	}, [leverage]);
+
+	useEffect(() => {
 		setAmount(INPUT_DEFAULT_VALUE);
 		setMargin(INPUT_DEFAULT_VALUE);
 		setLeverage(INPUT_DEFAULT_LEVERAGE);
@@ -155,9 +160,13 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 		// eslint-disable-next-line
 	}, [amount, margin, leverage, currentWalletAddress, isLong]);
 
+	const getValidLeverage = () => {
+		return isValidLeverage ? leverage : INPUT_DEFAULT_LEVERAGE;
+	};
+
 	const setMaxSUSDBalance = () => {
 		setMargin(`${sUSDBalance}`);
-		setAmount(`${sUSDBalance * assetPriceInUSD}`);
+		setAmount(`${sUSDBalance * assetPriceInUSD * getValidLeverage()}`);
 	};
 
 	const handleCancelOrder = async () => {
@@ -335,7 +344,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							}
 							onChange={(_, value) => {
 								setAmount(value);
-								setMargin(`${Number(value) / assetPriceInUSD}`);
+								setMargin(`${Number(value) / assetPriceInUSD / getValidLeverage()}`);
 							}}
 							errorMessage={null}
 							onMaxButtonClick={setMaxSUSDBalance}
@@ -385,7 +394,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							}
 							onChange={(_, value) => {
 								setMargin(value);
-								setAmount(`${Number(value) * assetPriceInUSD}`);
+								setAmount(`${Number(value) * assetPriceInUSD * getValidLeverage()}`);
 							}}
 							errorMessage={insufficientBalance && 'Amount exceeds balance'}
 						/>
