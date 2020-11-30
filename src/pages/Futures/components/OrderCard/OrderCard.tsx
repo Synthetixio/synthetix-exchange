@@ -44,6 +44,7 @@ import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
 import { ethers } from 'ethers';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
+import { BigNumberish, formatEther } from 'ethers/utils';
 
 const INPUT_DEFAULT_VALUE = '';
 const INPUT_DEFAULT_LEVERAGE = 1;
@@ -98,6 +99,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [isClosingPosition, setIsClosingPosition] = useState<boolean>(false);
 	const [isCancellingOrder, setIsCancellingOrder] = useState<boolean>(false);
+	const [orderFee, setOrderFee] = useState<number>(0);
 
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 	// const assetPriceInUSD = futureMarket?.price ?? 0;
@@ -116,21 +118,46 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const isSubmissionDisabled =
 		!isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting || insufficientBalance;
 
+	const getFuturesMarketContract = () => {
+		const { snxJS } = snxJSConnector as any;
+
+		return snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
+	};
+
 	useEffect(() => {
 		setAmount(INPUT_DEFAULT_VALUE);
 		setMargin(INPUT_DEFAULT_VALUE);
 		setLeverage(INPUT_DEFAULT_LEVERAGE);
 	}, [synthPair.base, synthPair.quote]);
 
+	useEffect(() => {
+		const calcOrderFee = async () => {
+			const FuturesMarketContract = getFuturesMarketContract();
+			try {
+				const {
+					utils: { parseEther },
+				} = snxJSConnector as any;
+
+				const fee = (await FuturesMarketContract.contract.orderFee(
+					currentWalletAddress,
+					parseEther(!isLong ? (Number(margin) * -1).toString() : margin),
+					parseEther(leverage.toString())
+				)) as BigNumberish;
+
+				setOrderFee(Number(formatEther(fee)));
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		if (margin && leverage && currentWalletAddress) {
+			calcOrderFee();
+		}
+		// eslint-disable-next-line
+	}, [amount, margin, leverage, currentWalletAddress, isLong]);
+
 	const setMaxSUSDBalance = () => {
 		setMargin(`${sUSDBalance}`);
 		setAmount(`${sUSDBalance / assetPriceInUSD}`);
-	};
-
-	const getFuturesMarketContract = () => {
-		const { snxJS } = snxJSConnector as any;
-
-		return snxJS[`FuturesMarket${base.asset.toUpperCase()}`];
 	};
 
 	const handleCancelOrder = async () => {
@@ -432,6 +459,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							ethRate={ethRate ?? 0}
 							usdRate={assetPriceInUSD}
 							amount={amountNum}
+							orderFee={orderFee}
 						/>
 						<Button
 							size="sm"

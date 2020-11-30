@@ -464,7 +464,7 @@
 				"fee": "Fee"
 			},
 			"network-info-tooltip": {
-				"exchange-fee": "Exchange fee",
+				"order-fee": "Order fee",
 				"network-fee": "Network fee (gas)"
 			}
 		},

@@ -14,7 +14,6 @@ import SelectGasMenu from 'pages/shared/components/SelectGasMenu';
 import { DataSmall } from 'components/Typography';
 
 import { ReactComponent as QuestionMark } from 'assets/images/question-mark.svg';
-import { formatPercentage } from 'utils/formatters';
 
 export const TransactionInfo = ({
 	gasPrice,
@@ -22,21 +21,19 @@ export const TransactionInfo = ({
 	ethRate = 0,
 	usdRate = 0,
 	amount = 0,
+	orderFee = 0,
 	exchangeFeeRate = 0,
 }) => {
 	const { t } = useTranslation();
 
 	const usdValue = amount * usdRate;
-	const exchangeFee = ((amount * exchangeFeeRate) / 100) * usdRate;
 	const networkFee = getTransactionPrice(gasPrice, gasLimit, ethRate);
 
 	const getTooltipBody = () => (
 		<TooltipContent>
 			<TooltipContentRow>
-				<TooltipLabel>{`${t(
-					'trade.trade-card.network-info-tooltip.exchange-fee'
-				)} (${formatPercentage(exchangeFeeRate / 100)})`}</TooltipLabel>
-				<TooltipLabel>${formatCurrency(exchangeFee)}</TooltipLabel>
+				<TooltipLabel>{t('trade.trade-card.network-info-tooltip.order-fee')}</TooltipLabel>
+				<TooltipLabel>${formatCurrency(orderFee)}</TooltipLabel>
 			</TooltipContentRow>
 			<TooltipContentRow>
 				<TooltipLabel>{t('trade.trade-card.network-info-tooltip.network-fee')}</TooltipLabel>
@@ -56,7 +53,7 @@ export const TransactionInfo = ({
 						</QuestionMarkIcon>
 					</Tooltip>
 				</NetworkDataLabelFlex>
-				<NetworkData>${formatCurrency(exchangeFee + networkFee)}</NetworkData>
+				<NetworkData>${formatCurrency(orderFee + networkFee)}</NetworkData>
 			</NetworkDataRow>
 			<NetworkDataRow>
 				<NetworkData>$ Value:</NetworkData>
