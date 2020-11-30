@@ -1,11 +1,10 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import styled, { ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
-import Notify from 'bnc-notify';
 
-import { getCurrentWalletAddress, getNetworkId } from 'ducks/wallet/walletDetails';
+import { getCurrentWalletAddress } from 'ducks/wallet/walletDetails';
 import { getSynthPair } from 'ducks/synths';
 import {
 	fetchWalletBalancesRequest,
@@ -41,10 +40,9 @@ import { SYNTHS_MAP } from 'constants/currency';
 import { StyledCardBody, StyledCardHeader } from '../common';
 import { getCurrencyKeyBalance } from 'utils/balances';
 import snxJSConnector from 'utils/snxJSConnector';
-import { GWEI_UNIT, NetworkId } from 'utils/networkUtils';
+import { GWEI_UNIT } from 'utils/networkUtils';
 import { normalizeGasLimit } from 'utils/transactions';
 import { ethers } from 'ethers';
-import { getEtherscanTxLink } from 'utils/explorers';
 import { getExchangeRatesForCurrencies } from 'utils/rates';
 
 const INPUT_DEFAULT_VALUE = '';
@@ -58,7 +56,6 @@ const mapStateToProps = (state: RootState) => ({
 	synthPair: getSynthPair(state),
 	synthsWalletBalances: getSynthsWalletBalances(state),
 	walletBalancesMap: getWalletBalancesMap(state),
-	networkId: getNetworkId(state),
 });
 
 const mapDispatchToProps = {
@@ -76,13 +73,6 @@ type OrderBookCardProps = PropsFromRedux & {
 	refetchMarketAndPosition: () => void;
 };
 
-const initNotify = (networkId: NetworkId, darkMode: boolean) =>
-	Notify({
-		dappId: process.env.REACT_APP_BLOCKNATIVE_NOTIFY ?? 'db0a0f30-6ed1-4e05-aff5-548ae5d3bd6f',
-		networkId,
-		darkMode,
-	});
-
 const OrderBookCard: FC<OrderBookCardProps> = ({
 	synthPair,
 	currentWalletAddress,
@@ -96,7 +86,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	refetchMarketAndPosition,
 	fetchWalletBalancesRequest,
 	positionDetails,
-	networkId,
 }) => {
 	const { t } = useTranslation();
 	const { base, quote } = synthPair;
@@ -109,8 +98,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [isClosingPosition, setIsClosingPosition] = useState<boolean>(false);
 	const [isCancellingOrder, setIsCancellingOrder] = useState<boolean>(false);
-	const [notify, setNotify] = useState<ReturnType<typeof initNotify> | null>(null);
-	const { isDarkTheme } = useContext(ThemeContext);
 
 	const sUSDBalance = getCurrencyKeyBalance(walletBalancesMap, SYNTHS_MAP.sUSD) || 0;
 	// const assetPriceInUSD = futureMarket?.price ?? 0;
@@ -130,11 +117,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 		!isValidLeverage || !marginNum || marginNum <= 0 || isSubmitting || insufficientBalance;
 
 	useEffect(() => {
-		const notify = initNotify(networkId, isDarkTheme);
-		setNotify(notify);
-	}, [networkId, isDarkTheme]);
-
-	useEffect(() => {
 		setAmount(INPUT_DEFAULT_VALUE);
 		setMargin(INPUT_DEFAULT_VALUE);
 		setLeverage(INPUT_DEFAULT_LEVERAGE);
@@ -143,23 +125,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 	const setMaxSUSDBalance = () => {
 		setMargin(`${sUSDBalance}`);
 		setAmount(`${sUSDBalance / assetPriceInUSD}`);
-	};
-
-	const monitorTx = (tx: ethers.ContractTransaction) => {
-		if (tx.hash != null && notify != null) {
-			const { emitter } = notify.hash(tx.hash);
-			emitter.on('txConfirmed', () => {
-				return {
-					autoDismiss: 0,
-					link: getEtherscanTxLink(networkId, tx.hash),
-				};
-			});
-			emitter.on('all', () => {
-				return {
-					link: getEtherscanTxLink(networkId, tx.hash),
-				};
-			});
-		}
 	};
 
 	const getFuturesMarketContract = () => {
@@ -184,7 +149,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: updatedGasEstimate,
 			})) as ethers.ContractTransaction;
 
-			// monitorTx(tx);
 			const txResult = await tx.wait();
 			if (txResult && txResult.transactionHash) {
 				refetchMarketAndPosition();
@@ -221,7 +185,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: updatedGasEstimate,
 			})) as ethers.ContractTransaction;
 
-			// monitorTx(tx);
 			const txResult = await tx.wait();
 			if (txResult && txResult.transactionHash) {
 				fetchWalletBalancesRequest();
@@ -252,7 +215,6 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 				gasLimit: updatedGasEstimate,
 			});
 
-			// monitorTx(tx);
 			const txResult = await tx.wait();
 			if (txResult && txResult.transactionHash) {
 				fetchWalletBalancesRequest();

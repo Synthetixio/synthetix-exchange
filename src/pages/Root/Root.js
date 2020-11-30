@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { ethers } from 'ethers';
 
 import snxJSConnector from 'utils/snxJSConnector';
 import { getEthereumNetwork } from 'utils/networkUtils';
@@ -48,11 +49,14 @@ const Root = ({
 	useEffect(() => {
 		const init = async () => {
 			const { networkId, name } = await getEthereumNetwork();
-
 			if (!snxJSConnector.initialized) {
-				snxJSConnector.setContractSettings({ networkId });
+				let infuraProvider = new ethers.providers.InfuraProvider(
+					'kovan',
+					process.env.REACT_APP_INFURA_PROJECT_ID
+				);
+				// force KOVAN
+				snxJSConnector.setContractSettings({ networkId: 42, provider: infuraProvider });
 			}
-
 			updateNetworkSettings({ networkId, networkName: name.toLowerCase() });
 
 			const synths = snxJSConnector.synths.filter((synth) => synth.asset);
@@ -62,6 +66,7 @@ const Root = ({
 			fetchAndSetExchangeData();
 			fetchAppStatusRequest();
 			fetchRatesRequest();
+
 			// TODO: stop fetching data when system is suspended
 			clearInterval(intervalId);
 			const _intervalId = setInterval(() => {

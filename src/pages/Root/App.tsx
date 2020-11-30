@@ -15,7 +15,7 @@ import MaterialUIThemeProvider from './components/MaterialUIThemeProvider';
 import MaintenanceMessage from './components/MaintenanceMessage';
 import MainLayout from './components/MainLayout';
 import WalletPopup from '../../components/WalletPopup';
-// import AppBanner from './components/AppBanner';
+import AppBanner from './components/AppBanner';
 
 const Futures = lazy(() => import('../Futures'));
 
@@ -45,10 +45,10 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 				) : (
 					<>
 						<Router>
+							<AppBanner />
 							{isAppReady && (
 								<>
 									<WalletPopup />
-									{/* <AppBanner /> */}
 								</>
 							)}
 							<Switch>

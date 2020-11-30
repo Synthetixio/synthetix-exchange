@@ -71,27 +71,31 @@ const snxJSConnector: SnxJSConnector = {
 	signers: SynthetixJs.signers,
 
 	setContractSettings: function (contractSettings: ContractSettings) {
-		this.initialized = true;
-		this.snxJS = new SynthetixJs(contractSettings);
-		// @ts-ignore
-		this.synths = synths;
-		this.signer = this.snxJS.contractSettings.signer;
-		this.provider = this.snxJS.contractSettings.provider;
-		this.utils = this.snxJS.utils;
-		this.ethersUtils = this.snxJS.ethers.utils;
-		this.binaryOptionsUtils = this.snxJS.binaryOptionsUtils;
-		this.ethers = ethers;
-		this.contractSettings = contractSettings;
-		this.synthSummaryUtilContract = new ethers.Contract(
-			synthSummaryUtilContract.addresses[contractSettings.networkId],
-			synthSummaryUtilContract.abi,
-			this.provider
-		);
-		this.binaryOptionsMarketDataContract = new ethers.Contract(
-			binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
-			binaryOptionsMarketDataContract.abi,
-			this.provider
-		);
+		try {
+			this.initialized = true;
+			this.snxJS = new SynthetixJs(contractSettings);
+			// @ts-ignore
+			this.synths = synths;
+			this.signer = this.snxJS.contractSettings.signer;
+			this.provider = this.snxJS.contractSettings.provider;
+			this.utils = this.snxJS.utils;
+			this.ethersUtils = this.snxJS.ethers.utils;
+			this.binaryOptionsUtils = this.snxJS.binaryOptionsUtils;
+			this.ethers = ethers;
+			this.contractSettings = contractSettings;
+			this.synthSummaryUtilContract = new ethers.Contract(
+				synthSummaryUtilContract.addresses[contractSettings.networkId],
+				synthSummaryUtilContract.abi,
+				this.provider
+			);
+			this.binaryOptionsMarketDataContract = new ethers.Contract(
+				binaryOptionsMarketDataContract.addresses[contractSettings.networkId],
+				binaryOptionsMarketDataContract.abi,
+				this.provider
+			);
+		} catch (e) {
+			console.log(e);
+		}
 	},
 };
 

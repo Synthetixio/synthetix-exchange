@@ -1,38 +1,52 @@
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { resetButtonCSS } from 'shared/commonStyles';
-
-import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
-
-import { LOCAL_STORAGE_KEYS } from 'constants/storage';
-import { useLocalStorage } from 'shared/hooks/useLocalStorage';
-
 import { media } from 'shared/media';
+import { getEthereumNetwork, NetworkId, SUPPORTED_NETWORKS } from 'utils/networkUtils';
+import { updateNetworkSettings } from 'ducks/wallet/walletDetails';
+import { connect, ConnectedProps } from 'react-redux';
 
-const { APP_BANNER_DISMISSED } = LOCAL_STORAGE_KEYS;
+const mapDispatchToProps = {
+	updateNetworkSettings,
+};
 
-// Since we currently can have only one "active" banner, all we need to do is to keep incrementing
-// the BANNER_ID which will be persisted to local storage (no need to keep an array of the banners the user saw)
+const connector = connect(null, mapDispatchToProps);
 
-const BANNER_ID = '2_eth_collat'; // set on 22 June, 2020
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const AppBanner = () => {
-	const [bannerDismissed, setBannerDismissed] = useLocalStorage(APP_BANNER_DISMISSED, null);
+const AppBanner: FC<PropsFromRedux> = ({ updateNetworkSettings }) => {
+	const [showBanner, setShowBanner] = useState<boolean>(false);
 
-	const shouldDisplayBanner = bannerDismissed == null || bannerDismissed !== BANNER_ID;
+	useEffect(() => {
+		const checkNetwork = async () => {
+			const { networkId } = await getEthereumNetwork();
+			if (networkId !== 42) {
+				setShowBanner(true);
+			}
+		};
+		checkNetwork();
+		// @ts-ignore
+		window.ethereum.on('networkChanged', (_networkId: string) => {
+			const networkId = Number(_networkId) as NetworkId;
 
-	return shouldDisplayBanner ? (
-		<Container>
-			{/* <Message> */}
-			The Ether collateral trial is complete — please close your loans before the APR is raised to
-			50% on June 26
-			{/* </Message> */}
-			<CloseButton onClick={() => setBannerDismissed(BANNER_ID)}>
-				<CloseCrossIcon width={10} />
-			</CloseButton>
-		</Container>
-	) : null;
+			// TODO: this isn't the "right" place for it... but does the job of showing correct network.
+			updateNetworkSettings({ networkId, networkName: SUPPORTED_NETWORKS[networkId] });
+
+			if (networkId !== 42) {
+				setShowBanner(true);
+			} else {
+				setShowBanner(false);
+			}
+		});
+
+		return () => {
+			// @ts-ignore
+			window.ethereum.off('networkChanged');
+		};
+		// eslint-disable-next-line
+	}, []);
+
+	return showBanner ? <Container>Please switch to KOVAN network</Container> : null;
 };
 
 const Container = styled.div`
@@ -57,9 +71,4 @@ const Container = styled.div`
 	`}
 `;
 
-const CloseButton = styled.button`
-	${resetButtonCSS};
-	color: ${(props) => props.theme.colors.white};
-`;
-
-export default AppBanner;
+export default connector(AppBanner);

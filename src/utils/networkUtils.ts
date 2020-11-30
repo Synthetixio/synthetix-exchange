@@ -53,8 +53,8 @@ export const SUPPORTED_WALLETS = Object.values(SUPPORTED_WALLETS_MAP);
 export const hasEthereumInjected = () => !!window.ethereum;
 
 export const defaultNetwork: { name: string; networkId: NetworkId } = {
-	name: 'MAINNET',
-	networkId: 1,
+	name: 'KOVAN',
+	networkId: 42,
 };
 
 export async function getEthereumNetwork() {
