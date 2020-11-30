@@ -157,7 +157,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 
 	const setMaxSUSDBalance = () => {
 		setMargin(`${sUSDBalance}`);
-		setAmount(`${sUSDBalance / assetPriceInUSD}`);
+		setAmount(`${sUSDBalance * assetPriceInUSD}`);
 	};
 
 	const handleCancelOrder = async () => {
@@ -335,7 +335,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							}
 							onChange={(_, value) => {
 								setAmount(value);
-								setMargin(`${Number(value) * assetPriceInUSD}`);
+								setMargin(`${Number(value) / assetPriceInUSD}`);
 							}}
 							errorMessage={null}
 							onMaxButtonClick={setMaxSUSDBalance}
@@ -385,7 +385,7 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 							}
 							onChange={(_, value) => {
 								setMargin(value);
-								setAmount(`${Number(value) / assetPriceInUSD}`);
+								setAmount(`${Number(value) * assetPriceInUSD}`);
 							}}
 							errorMessage={insufficientBalance && 'Amount exceeds balance'}
 						/>
