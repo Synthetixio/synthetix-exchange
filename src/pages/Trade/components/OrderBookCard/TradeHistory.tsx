@@ -66,7 +66,7 @@ const TradeHistory: FC<TradeHistoryProps> = memo(
 												i18nKey="assets.exchanges.table.fee-reclaim-tooltip"
 												components={[<Reclaim />, <Rebate />]}
 											/>{' '}
-											<StyledLink isExternal={true} to={LINKS.Blog.HowBinaryOptionsWork}>
+											<StyledLink isExternal={true} to={LINKS.Blog.HowFeeReclamationRebatesWork}>
 												{t('common.more-info')}
 												<ArrowIcon />
 											</StyledLink>
