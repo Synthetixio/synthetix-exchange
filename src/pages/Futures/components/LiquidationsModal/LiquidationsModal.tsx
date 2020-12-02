@@ -193,7 +193,7 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 };
 
 const Title = styled.div`
-	color: ${(props) => props.theme.colors.white};
+	color: ${(props) => props.theme.colors.brand};
 	font-size: 32px;
 	font-family: ${(props) => props.theme.fonts.medium};
 	padding-bottom: 24px;
