@@ -1,6 +1,7 @@
 import React, { FC, useContext, useState } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { connect, ConnectedProps } from 'react-redux';
+import snxData from 'synthetix-data';
 
 import { getCurrentWalletAddress, getNetworkId } from 'ducks/wallet/walletDetails';
 
@@ -47,13 +48,25 @@ type LiquidationsModalProps = PropsFromRedux & {
 };
 
 type Liquidation = {
-	asset: string;
-	address: string;
-	liquidatedAt: number;
-	liquidationPrice: number;
-	positionSize: number;
-	hash: string;
+	currency: string;
+	liquidator: string;
+	timestamp: number;
+	price: number;
+	size: number;
+	transactionHash: string;
 };
+
+/**
+ * 
+ * account: "0x133675afe710dd0da4a61e99e039c225671cc9a3"
+	currency: "sETH"
+	liquidator: "0xb64ff7a4a33acdf48d97dab0d764afd0f6176882"
+	market: "0x5f8cf32356f4b13a45326be52fa7589da2480dd5"
+	price: 1188.5806451612902
+	size: -3.3333333333333335
+	timestamp: 1606785232000
+	transactionHash: "0x5973761e546aef58d305016011a1a4952dd6ef98460dc1ac3fd00e70375b7b04
+ */
 
 const LiquidationsModal: FC<LiquidationsModalProps> = ({
 	currentWalletAddress,
@@ -66,9 +79,8 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 	const liquidationsQuery = useQuery<Liquidation[], any>(
 		QUERY_KEYS.Futures.Liquidations,
 		async () => {
-			// TODO
-			const liquidations: Liquidation[] = [];
-
+			const liquidations: Liquidation[] = await snxData.futures.liquidations();
+			console.log(liquidations);
 			return liquidations;
 		}
 	);
@@ -81,8 +93,8 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 	const addressFilteredLiquidations = useDebouncedMemo(
 		() =>
 			addressSearch
-				? liquidations.filter(({ address }) =>
-						address.toLowerCase().includes(addressSearch.toLowerCase())
+				? liquidations.filter(({ liquidator }) =>
+						liquidator.toLowerCase().includes(addressSearch.toLowerCase())
 				  )
 				: liquidations,
 		[liquidations, addressSearch],
@@ -109,8 +121,8 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 						columns={[
 							{
 								Header: <>WALLET ADDRESS</>,
-								accessor: 'address',
-								Cell: (cellProps: CellProps<Liquidation, Liquidation['address']>) => (
+								accessor: 'liquidator',
+								Cell: (cellProps: CellProps<Liquidation, Liquidation['liquidator']>) => (
 									<span>
 										{cellProps.value} {currentWalletAddress === cellProps.value && <StarIcon />}
 									</span>
@@ -120,8 +132,8 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 							},
 							{
 								Header: <>LIQUIDATED AT</>,
-								accessor: 'liquidatedAt',
-								Cell: (cellProps: CellProps<Liquidation, Liquidation['liquidatedAt']>) => (
+								accessor: 'timestamp',
+								Cell: (cellProps: CellProps<Liquidation, Liquidation['timestamp']>) => (
 									<span>{formatShortDate(cellProps.value)}</span>
 								),
 								width: 200,
@@ -129,8 +141,8 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 							},
 							{
 								Header: <>LIQUIDATION PRICE</>,
-								accessor: 'liquidationPrice',
-								Cell: (cellProps: CellProps<Liquidation, Liquidation['liquidationPrice']>) => (
+								accessor: 'price',
+								Cell: (cellProps: CellProps<Liquidation, Liquidation['price']>) => (
 									<span>{formatCurrencyWithKey(SYNTHS_MAP.sUSD, cellProps.value)}</span>
 								),
 								width: 200,
@@ -138,10 +150,10 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 							},
 							{
 								Header: <>POSITION SIZE</>,
-								accessor: 'positionSize',
-								Cell: (cellProps: CellProps<Liquidation, Liquidation['positionSize']>) => (
+								accessor: 'size',
+								Cell: (cellProps: CellProps<Liquidation, Liquidation['size']>) => (
 									<span>
-										{formatCurrencyWithKey(cellProps.row.original.asset, cellProps.value)}
+										{formatCurrencyWithKey(cellProps.row.original.currency, cellProps.value)}
 									</span>
 								),
 								sortable: true,
@@ -149,9 +161,9 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 							{
 								Header: <>VIEW</>,
 								id: 'txHash',
-								Cell: (cellProps: CellProps<Liquidation, Liquidation['positionSize']>) => (
+								Cell: (cellProps: CellProps<Liquidation>) => (
 									<Link
-										to={getEtherscanTxLink(networkId, cellProps.row.original.hash)}
+										to={getEtherscanTxLink(networkId, cellProps.row.original.transactionHash)}
 										isExternal={true}
 									>
 										<LinkImg width="20px" src={EtherScanImage} />
