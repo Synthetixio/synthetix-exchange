@@ -185,8 +185,8 @@ const Futures: FC<FuturesProps> = ({
 				remainingMargin,
 			} = positionDetails;
 
-			const isLong = order.margin > 0;
-			const isShort = order.margin < 0;
+			const isLong = position.margin > 0;
+			const isShort = position.margin < 0;
 			const hasPosition = isLong || isShort;
 			const hasOpenOrder = order.pending;
 			const hasOrderOrPosition = hasPosition || hasOpenOrder;
@@ -227,7 +227,7 @@ const Futures: FC<FuturesProps> = ({
 
 	const futureMarketDetails = marketDetailsQuery.isSuccess ? marketDetailsQuery.data : null;
 	const positionDetails = positionDetailsQuery.isSuccess ? positionDetailsQuery.data : null;
-
+	console.log(positionDetails);
 	useEffect(() => {
 		const { params } = match;
 		if (

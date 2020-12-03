@@ -448,14 +448,14 @@ const OrderBookCard: FC<OrderBookCardProps> = ({
 									label: t('futures.futures-order-card.order-info.daily-funding-rate'),
 									value:
 										futureMarket != null
-											? `${futureMarket.currentFundingRate} bps`
+											? `${formatCurrency(futureMarket.currentFundingRate, 4)} bps`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
 								{
 									label: t('futures.futures-order-card.order-info.net-funding'),
 									value:
 										positionDetails != null && positionDetails.hasConfirmedOrder
-											? `${formatCurrency(positionDetails.accruedFunding)} ${SYNTHS_MAP.sUSD}`
+											? `${formatCurrency(positionDetails.accruedFunding, 4)} ${SYNTHS_MAP.sUSD}`
 											: `- ${SYNTHS_MAP.sUSD}`,
 								},
 							]}
