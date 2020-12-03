@@ -80,7 +80,7 @@ const LiquidationsModal: FC<LiquidationsModalProps> = ({
 		QUERY_KEYS.Futures.Liquidations,
 		async () => {
 			const liquidations: Liquidation[] = await snxData.futures.liquidations();
-			console.log(liquidations);
+
 			return liquidations;
 		}
 	);
