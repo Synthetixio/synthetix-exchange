@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { labelSmallCSS } from 'components/Typography/Label';
 
 import { GridDivCentered, FlexDivRowCentered, FlexDivCentered } from 'shared/commonStyles';
-import { formatPercentage } from 'utils/formatters';
+import { formatCurrency, formatPercentage } from 'utils/formatters';
+import Tooltip from '@material-ui/core/Tooltip';
 
 type OpenInterestProps = {
 	long: number;
@@ -25,7 +26,11 @@ export const OpenInterest: FC<OpenInterestProps> = ({ long, short }) => {
 		<Container>
 			<Headline>open interest:</Headline>
 			<Interest>
-				<Longs className="longs label">{formatPercentage(longPercent)}</Longs>
+				<Longs className="longs label">
+					<Tooltip title={formatCurrency(long, 2)} placement="top">
+						<span>{formatPercentage(longPercent)}</span>
+					</Tooltip>
+				</Longs>
 				<FlexDivRowCentered>
 					<LongsPercent
 						className="longs-percent percent"
@@ -36,7 +41,11 @@ export const OpenInterest: FC<OpenInterestProps> = ({ long, short }) => {
 						style={{ width: `calc(${shortPercent * 100}% - 2px)` }}
 					/>
 				</FlexDivRowCentered>
-				<Shorts className="shorts label">{formatPercentage(shortPercent)}</Shorts>
+				<Shorts className="shorts label">
+					<Tooltip title={formatCurrency(short, 2)} placement="top">
+						<span>{formatPercentage(shortPercent)}</span>
+					</Tooltip>
+				</Shorts>
 			</Interest>
 		</Container>
 	);
