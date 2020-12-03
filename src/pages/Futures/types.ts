@@ -1,3 +1,5 @@
+import { CurrencyKey } from 'constants/currency';
+
 export type MarketSummary<T = number> = {
 	currentFundingRate: T;
 	exchangeFee: T;
@@ -66,6 +68,18 @@ export type PositionDetails<T = number> = {
 	hasOpenOrder: boolean;
 	hasOrderOrPosition: boolean;
 	hasConfirmedOrder: boolean;
+};
+
+export type Order<T = number> = {
+	account: string;
+	currency: CurrencyKey;
+	fee: T;
+	leverage: T;
+	margin: T;
+	market: string;
+	roundId: T;
+	status: 'confirmed' | 'pending';
+	timestamp: T;
 };
 
 export type Side = 'long' | 'short';
