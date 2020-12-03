@@ -227,7 +227,7 @@ const Futures: FC<FuturesProps> = ({
 
 	const futureMarketDetails = marketDetailsQuery.isSuccess ? marketDetailsQuery.data : null;
 	const positionDetails = positionDetailsQuery.isSuccess ? positionDetailsQuery.data : null;
-	console.log(positionDetails);
+
 	useEffect(() => {
 		const { params } = match;
 		if (
