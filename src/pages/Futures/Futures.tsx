@@ -235,22 +235,22 @@ const Futures: FC<FuturesProps> = ({
 			params.baseCurrencyKey &&
 			params.quoteCurrencyKey &&
 			synthsMap[params.baseCurrencyKey] &&
-			synthsMap[params.quoteCurrencyKey] &&
-			futureMarkets != null &&
-			futureMarkets[params.baseCurrencyKey]
+			synthsMap[params.quoteCurrencyKey]
 		) {
-			const { base, quote, reversed } = getMarketPairByMC(
-				params.baseCurrencyKey,
-				params.quoteCurrencyKey
-			);
+			if (futureMarkets != null && futureMarkets[params.baseCurrencyKey]) {
+				const { base, quote, reversed } = getMarketPairByMC(
+					params.baseCurrencyKey,
+					params.quoteCurrencyKey
+				);
 
-			setSynthPair({
-				baseCurrencyKey: base,
-				quoteCurrencyKey: quote,
-				isPairReversed: reversed,
-			});
+				setSynthPair({
+					baseCurrencyKey: base,
+					quoteCurrencyKey: quote,
+					isPairReversed: reversed,
+				});
 
-			setIsReady(true);
+				setIsReady(true);
+			}
 		} else {
 			navigateToFutures(synthPair.base.name, synthPair.quote.name, true);
 		}
