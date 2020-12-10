@@ -270,7 +270,7 @@ const Loans = ({
 											onSelectLoan(loanData);
 										}
 									}}
-									style={{ cursor: isLoanClosed ? 'none' : 'cursor', display: "flex", flexDirection: "row"}}
+									isLoanClosed={isLoanClosed}
 								>
 									{row.cells.map((cell) => (
 										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
@@ -341,6 +341,9 @@ const TableBody = styled.div`
 const TableBodyRow = styled(TableRow)`
 	background-color: ${(props) =>
 		props.isSelectedLoan ? props.theme.colors.accentL1 : props.theme.colors.surfaceL3};
+	display: flex;
+	flex-direction: row;
+	cursor: ${(props) => (props.isLoanClosed ? 'auto' : 'cursor')};
 	&:hover {
 		background-color: ${(props) => props.theme.colors.accentL1};
 		> * {
