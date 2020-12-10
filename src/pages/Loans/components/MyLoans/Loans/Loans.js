@@ -262,6 +262,10 @@ const Loans = ({
 									isSelectedLoan={
 										selectedLoan != null && selectedLoan.loanID === row.original.loanID
 									}
+									onClick={() => {
+										setVisiblePanel(null);
+										onSelectLoan(row.original);
+									}}
 								>
 									{row.cells.map((cell) => (
 										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
