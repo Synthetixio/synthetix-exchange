@@ -270,7 +270,7 @@ const Loans = ({
 											onSelectLoan(loanData);
 										}
 									}}
-									style={{ cursor: isLoanClosed ? 'none' : 'cursor' }}
+									style={{ cursor: isLoanClosed ? 'none' : 'cursor', display: "flex", flexDirection: "row"}}
 								>
 									{row.cells.map((cell) => (
 										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
