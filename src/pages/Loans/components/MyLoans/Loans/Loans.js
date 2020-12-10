@@ -256,6 +256,7 @@ const Loans = ({
 						prepareRow(row);
 						const loanData = row.original;
 						const isLoanClosed = loanData.status === LOAN_STATUS.CLOSED;
+
 						return (
 							<div key={row.id}>
 								<TableBodyRow
