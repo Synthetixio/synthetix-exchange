@@ -254,6 +254,8 @@ const Loans = ({
 				<TableBody {...getTableBodyProps()}>
 					{rows.map((row) => {
 						prepareRow(row);
+						const loanData = row.original;
+						const isLoanClosed = loanData.status === LOAN_STATUS.CLOSED;
 						return (
 							<div key={row.id}>
 								<TableBodyRow
@@ -263,9 +265,12 @@ const Loans = ({
 										selectedLoan != null && selectedLoan.loanID === row.original.loanID
 									}
 									onClick={() => {
-										setVisiblePanel(null);
-										onSelectLoan(row.original);
+										if (!isLoanClosed) {
+											setVisiblePanel(null);
+											onSelectLoan(loanData);
+										}
 									}}
+									style={{ cursor: isLoanClosed ? 'none' : 'cursor' }}
 								>
 									{row.cells.map((cell) => (
 										<TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
