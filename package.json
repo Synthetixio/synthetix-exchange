@@ -1,6 +1,6 @@
 {
 	"name": "synthetix.exchange",
-	"version": "2.38.0",
+	"version": "2.38.0-sccp-77-defi-rebalance",
 	"private": true,
 	"dependencies": {
 		"@bugsnag/js": "6.2.0",
