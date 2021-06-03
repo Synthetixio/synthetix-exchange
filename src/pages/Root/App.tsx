@@ -19,7 +19,7 @@ import MainLayout from './components/MainLayout';
 import HomeLayout from './components/HomeLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import WalletPopup from '../../components/WalletPopup';
-// import AppBanner from './components/AppBanner';
+import AppBanner from './components/AppBanner';
 
 import Home from '../Home';
 import Options from '../Options';
@@ -61,7 +61,7 @@ const App: FC<AppProps> = ({ isAppReady, currentTheme, isSystemSuspended }) => {
 								<>
 									<GlobalEventsGate />
 									<WalletPopup />
-									{/* <AppBanner /> */}
+									<AppBanner />
 								</>
 							)}
 							<Switch>

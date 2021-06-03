@@ -3,8 +3,6 @@ import styled from 'styled-components';
 
 import { resetButtonCSS } from 'shared/commonStyles';
 
-import { ReactComponent as CloseCrossIcon } from 'assets/images/close-cross.svg';
-
 import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 import { useLocalStorage } from 'shared/hooks/useLocalStorage';
 
@@ -18,24 +16,20 @@ const { APP_BANNER_DISMISSED } = LOCAL_STORAGE_KEYS;
 const BANNER_ID = '2_eth_collat'; // set on 22 June, 2020
 
 const AppBanner = () => {
-	const [bannerDismissed, setBannerDismissed] = useLocalStorage(APP_BANNER_DISMISSED, null);
+	const [bannerDismissed, _] = useLocalStorage(APP_BANNER_DISMISSED, null);
 
 	const shouldDisplayBanner = bannerDismissed == null || bannerDismissed !== BANNER_ID;
 
 	return shouldDisplayBanner ? (
-		<Container>
-			{/* <Message> */}
-			The Ether collateral trial is complete — please close your loans before the APR is raised to
-			50% on June 26
-			{/* </Message> */}
-			<CloseButton onClick={() => setBannerDismissed(BANNER_ID)}>
-				<CloseCrossIcon width={10} />
-			</CloseButton>
+		<Container href={'https://kwenta.io'} target="_blank">
+			Synthetix Exchange will be deprecated soon, to continue trading use https://kwenta.io
 		</Container>
 	) : null;
 };
 
-const Container = styled.div`
+const Container = styled.a`
+	${resetButtonCSS};
+	text-decoration: none;
 	background-color: ${(props) => props.theme.colors.buttonDefault};
 	color: ${(props) => props.theme.colors.white};
 	display: grid;
@@ -55,11 +49,6 @@ const Container = styled.div`
 	${media.small`
 		font-size: 11px;
 	`}
-`;
-
-const CloseButton = styled.button`
-	${resetButtonCSS};
-	color: ${(props) => props.theme.colors.white};
 `;
 
 export default AppBanner;
